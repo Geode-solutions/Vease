@@ -1,0 +1,26 @@
+{
+  "name": "geodeapp",
+  "version": "1.0.0",
+  "description": "Basic app",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Geode-solutions/GeodeApp.git"
+  },
+  "keywords": [
+    "Geology",
+    "Visualization",
+    "Web",
+    "Desktop",
+    "Meshing"
+  ],
+  "author": "Geode-solutions",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Geode-solutions/GeodeApp/issues"
+  },
+  "homepage": "https://github.com/Geode-solutions/GeodeApp#readme"
+}
