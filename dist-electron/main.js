@@ -1,0 +1,1 @@
+"use strict";const{app:o,BrowserWindow:n}=require("electron");o.whenReady().then(()=>{const e=new n({title:"Pragmatic",icon:"logo_color.svg",center:!0});e.removeMenu(),e.loadURL(process.env.VITE_DEV_SERVER_URL)});

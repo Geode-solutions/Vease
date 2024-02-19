@@ -2,8 +2,11 @@
   "name": "geodeapp",
   "version": "1.0.0",
   "description": "Basic app",
-  "main": "index.js",
+  "main": "electron/main.js",
   "scripts": {
+    "dev": "nuxi dev",
+    "generate": "nuxt generate",
+    "build": "nuxi build --prerender && electron-builder",
     "test": "vitest"
   },
   "repository": {
@@ -22,5 +25,17 @@
   "bugs": {
     "url": "https://github.com/Geode-solutions/GeodeApp/issues"
   },
-  "homepage": "https://github.com/Geode-solutions/GeodeApp#readme"
+  "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
+  "devDependencies": {
+    "electron": "^28.2.3",
+    "electron-builder": "^24.9.1",
+    "nuxt-electron": "^0.7.0",
+    "vite-plugin-electron": "^0.28.2",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  },
+  "dependencies": {
+    "nuxt": "^3.10.2",
+    "vue": "^3.4.19",
+    "vue-router": "^4.2.5"
+  }
 }
