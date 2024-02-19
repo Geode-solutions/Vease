@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
-    "build": "nuxi build --prerender && electron-builder",
+    "build": "nuxi build --prerender",
     "test": "vitest"
   },
   "repository": {

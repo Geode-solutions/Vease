@@ -8,10 +8,10 @@ app.whenReady().then(() => {
   });
   win.removeMenu();
 
-  // if (process.env.VITE_DEV_SERVER_URL) {
-  win.loadURL(process.env.VITE_DEV_SERVER_URL);
-  win.webContents.openDevTools();
-  // } else {
-  //   win.loadFile("index.html");
-  // }
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+    win.webContents.openDevTools();
+  } else {
+    win.loadFile(path.join(process.env.VITE_PUBLIC, "index.html"));
+  }
 });
