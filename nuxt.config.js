@@ -20,7 +20,7 @@ export default defineNuxtConfig({
           content: "Platform for geological data visualization",
         },
       ],
-      link: [{ rel: "icon", type: "image/ico", href: "/icon_share_twin.ico" }],
+      link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
   },
   devtools: {
