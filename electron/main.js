@@ -2,9 +2,12 @@ const { app, BrowserWindow } = require("electron");
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
-    title: "Pragmatic",
-    icon: "logo_color.svg",
+    title: "Vease",
+    icon: "logo_color.png",
     center: true,
+    webPreferences: {
+      devTools: false,
+    },
   });
   win.removeMenu();
 
