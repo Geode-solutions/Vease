@@ -1,5 +1,5 @@
 {
-  "name": "geodeapp",
+  "name": "vease",
   "version": "1.0.0",
   "description": "Basic app",
   "main": "electron/main.js",
