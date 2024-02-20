@@ -1,3 +1,3 @@
 <template>
-  <Test />
+  <div>Vease</div>
 </template>

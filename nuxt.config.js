@@ -1,4 +1,12 @@
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      API_URL:
+        process.env.NODE_ENV === "production"
+          ? "api.geode-solutions.com"
+          : "localhost",
+    },
+  },
   modules: ["nuxt-electron"],
   electron: {
     build: [
@@ -21,6 +29,12 @@ export default defineNuxtConfig({
         },
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
+    },
+  },
+
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
   devtools: {
