@@ -42,7 +42,6 @@
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
-    "@electron/asar": "^3.2.8",
     "electron-squirrel-startup": "^1.0.0",
     "nuxt": "^3.10.2",
     "vue": "^3.4.19",
