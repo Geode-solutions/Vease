@@ -3,7 +3,7 @@ const { app, BrowserWindow } = require("electron");
 app.whenReady().then(() => {
   const win = new BrowserWindow({
     title: "Vease",
-    icon: "logo_color.png",
+    icon: "public/favicon.ico",
     center: true,
     webPreferences: {
       devTools: false,
