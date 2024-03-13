@@ -1,3 +1,5 @@
+import VuetifyModule from "./modules/vuetify";
+
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -7,7 +9,7 @@ export default defineNuxtConfig({
           : "localhost",
     },
   },
-  modules: ["nuxt-electron"],
+  modules: ["nuxt-electron", "vuetify-nuxt-module", VuetifyModule],
   electron: {
     build: [
       {
@@ -32,6 +34,9 @@ export default defineNuxtConfig({
     },
   },
 
+  build: {
+    transpile: ["vuetify"],
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
