@@ -1,6 +1,6 @@
 {
   "name": "vease",
-  "version": "1.0.0",
+  "version": "0.0.0-semantically-released",
   "description": "Basic app",
   "main": "electron/main.js",
   "scripts": {
@@ -35,14 +35,15 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
     "electron": "^28.2.6",
     "nuxt-electron": "^0.7.0",
-    "vite-plugin-electron": "^0.28.2",
+    "vite-plugin-electron": "^0.28.3",
     "vite-plugin-electron-renderer": "^0.14.5",
     "vuetify-nuxt-module": "^0.12.0"
   },
   "dependencies": {
     "nuxt": "^3.10.3",
+    "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.5.8"
+    "vuetify": "^3.5.9"
   }
 }
