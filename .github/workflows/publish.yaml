@@ -29,5 +29,5 @@ jobs:
           npm i
           npm run make
           npm run package
-          gh release upload --clobber v.0.0.1
+          gh release upload --clobber $GITHUB_REPOSITORY v.0.0.1
       
