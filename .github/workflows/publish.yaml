@@ -14,7 +14,11 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
-
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v3
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v4
         with:
@@ -25,3 +29,5 @@ jobs:
           npm i
           npm run make
           npm run package
+          gh release upload --clobber v.0.0.1
+      
