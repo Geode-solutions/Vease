@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require("electron");
+require("update-electron-app")();
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
