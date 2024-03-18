@@ -22,7 +22,7 @@
       </v-tooltip>
     </v-navigation-drawer>
     <v-main class="page_background">
-      <slot />
+      <App />
     </v-main>
   </v-app>
 </template>

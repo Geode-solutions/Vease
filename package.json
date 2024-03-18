@@ -1,12 +1,13 @@
 {
   "name": "vease",
-  "version": "0.0.0-semantically-released",
+  "version": "0.0.1",
   "description": "Basic app",
-  "main": "electron/main.js",
+  "main": "dist-electron/main.js",
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
-    "build": "nuxi build --prerender",
+    "build": "nuxi build",
+    "build:electron": "nuxi build --prerender && electron-builder",
     "test": "vitest",
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -30,20 +31,22 @@
   },
   "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
   "devDependencies": {
+    "electron": "^28.2.7",
+    "electron-builder": "^24.13.3",
     "@electron-forge/cli": "^7.3.0",
     "@electron-forge/maker-zip": "^7.3.0",
+    "@electron-forge/maker-squirrel": "^7.3.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
-    "electron": "^28.2.6",
     "nuxt-electron": "^0.7.0",
     "vite-plugin-electron": "^0.28.3",
-    "vite-plugin-electron-renderer": "^0.14.5",
-    "vuetify-nuxt-module": "^0.12.0"
+    "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
     "nuxt": "^3.10.3",
     "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.5.9"
+    "vuetify": "^3.5.9",
+    "vuetify-nuxt-module": "^0.12.0"
   }
 }

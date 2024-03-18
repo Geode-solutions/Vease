@@ -1,0 +1,20 @@
+/**
+ * @see https://www.electron.build/configuration/configuration
+ */
+{
+  appId: "your.app.id",
+  asar: true,
+  directories: {
+    output: "release/${version}",
+  },
+  files: [".output/**/*", "dist-electron"],
+  win: {
+    target: [
+      {
+        target: "zip",
+        arch: ["x64"],
+      },
+    ],
+    artifactName: "${productName}_${version}.${ext}",
+  },
+}
