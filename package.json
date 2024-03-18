@@ -38,11 +38,11 @@
     "@electron-forge/maker-squirrel": "^7.3.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
     "nuxt-electron": "^0.7.0",
-    "vite-plugin-electron": "^0.28.3",
+    "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
-    "nuxt": "^3.10.3",
+    "nuxt": "^3.7.4",
     "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",

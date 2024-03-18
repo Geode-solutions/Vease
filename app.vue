@@ -1,5 +1,1 @@
-<template>
-  <NuxtLayout>
-    <Viewer />
-  </NuxtLayout>
-</template>
+<template>Test</template>
