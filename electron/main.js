@@ -12,6 +12,7 @@ process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? path.join(process.env.ROOT, "public")
   : path.join(process.env.ROOT, ".output/public");
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 console.log("VITE_PUBLIC", process.env.VITE_PUBLIC);
 
 const preload = path.join(process.env.DIST, "preload.js");
