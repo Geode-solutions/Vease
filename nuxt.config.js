@@ -7,13 +7,15 @@ export default defineNuxtConfig({
           : "localhost",
     },
   },
-  modules: ["nuxt-electron"],
+  modules: ["nuxt-electron", "vuetify-nuxt-module"],
   electron: {
     build: [
       {
+        // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
       },
     ],
+    renderer: {},
   },
 
   app: {

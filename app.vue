@@ -1,3 +1,3 @@
 <template>
-  <Test />
+  <NuxtLayout><App /></NuxtLayout>
 </template>

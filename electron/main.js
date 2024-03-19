@@ -1,16 +1,31 @@
-const { app, BrowserWindow } = require("electron");
+import { app, BrowserWindow } from "electron";
+import { updateElectronApp } from "update-electron-app";
+
+updateElectronApp();
+
+process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
-    title: "Vease",
+    title: "Vease - New project",
     icon: "public/favicon.ico",
     center: true,
+    webPreferences: {
+      nodeIntegrationInWorker: true,
+      contextIsolation: false,
+      nodeIntegration: true,
+      webSecurity: false,
+    },
   });
-  win.removeMenu();
-
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+  if (app.isPackaged) {
+    win.loadFile("../public/index.html");
   } else {
-    win.loadFile(path.join(process.env.VITE_PUBLIC, "index.html"));
+    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+    win.webContents.openDevTools();
   }
+});
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  app.quit();
 });
