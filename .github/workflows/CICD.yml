@@ -33,4 +33,4 @@ jobs:
           npm install
           npm run package
           npm run make
-          npm run publish --auth-token ${{ secrets.GITHUB_TOKEN }}
+          npm run publish --auth-token=${{ secrets.GITHUB_TOKEN }}
