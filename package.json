@@ -8,9 +8,9 @@
     "generate": "nuxt generate",
     "build": "nuxi build --prerender",
     "test": "vitest",
-    "start": "electron-forge start",
+    "start": "npm run build && electron-forge start",
     "package": "npm run build && electron-forge package",
-    "make": "electron-forge make"
+    "make": "npm run build && electron-forge make"
   },
   "repository": {
     "type": "git",
