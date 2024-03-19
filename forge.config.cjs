@@ -16,10 +16,12 @@ module.exports = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "me",
-          name: "awesome-thing",
+          owner: "Geode-solutions",
+          name: "GeodeApp",
         },
         prerelease: true,
+        generateReleaseNotes: true,
+        authToken: "github_token",
       },
     },
   ],
