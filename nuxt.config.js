@@ -1,5 +1,3 @@
-import VuetifyModule from "./modules/vuetify";
-
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -9,20 +7,12 @@ export default defineNuxtConfig({
           : "localhost",
     },
   },
-  modules: ["nuxt-electron", "vuetify-nuxt-module", VuetifyModule],
+  modules: ["nuxt-electron", "vuetify-nuxt-module"],
   electron: {
     build: [
       {
         // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
-      },
-      {
-        entry: "electron/preload.js",
-        onstart(args) {
-          // Notify the Renderer-Process to reload the page when the Preload-Scripts build is complete,
-          // instead of restarting the entire Electron App.
-          args.reload();
-        },
       },
     ],
     renderer: {},
@@ -44,9 +34,6 @@ export default defineNuxtConfig({
     },
   },
 
-  build: {
-    transpile: ["vuetify"],
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),

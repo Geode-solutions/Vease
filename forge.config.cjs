@@ -1,6 +1,6 @@
 module.exports = {
   packagerConfig: {
-    asar: false,
+    asar: true,
     extraResource: ["./.output/public/", "./dist-electron"],
   },
   rebuildConfig: {},
