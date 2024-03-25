@@ -19,6 +19,7 @@ module.exports = {
           owner: "Geode-solutions",
           name: "GeodeApp",
         },
+        draft: false,
         generateReleaseNotes: true,
       },
     },
