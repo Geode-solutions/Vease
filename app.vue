@@ -3,25 +3,12 @@
     <TopBar />
     <v-main class="custom-background">
       <SideBar />
-      <v-container>
+      <v-container fluid>
         <router-view></router-view>
       </v-container>
     </v-main>
   </v-app>
 </template>
-
-<script>
-import TopBar from "./components/TopBar.vue";
-import SideBar from "./components/SideBar.vue";
-
-export default {
-  components: {
-    TopBar,
-    SideBar,
-  },
-};
-</script>
-
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Michroma&display=swap");
 
