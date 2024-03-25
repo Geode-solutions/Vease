@@ -3,6 +3,9 @@ name: CICD
 on:
   push:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -33,4 +36,4 @@ jobs:
           npm install
           npm run package
           npm run make
-          npm run publish --auth-token=${{ secrets.GITHUB_TOKEN }}
+          npm run publish
