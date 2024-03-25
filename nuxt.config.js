@@ -9,7 +9,20 @@ export default defineNuxtConfig({
           : "localhost",
     },
   },
-  modules: ["nuxt-electron", "vuetify-nuxt-module", VuetifyModule],
+  extends: ["@geode/opengeodeweb-front"],
+  modules: [
+    "nuxt-electron",
+    "vuetify-nuxt-module",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["storeToRefs", "defineStore"],
+      },
+    ],
+    "@nuxt/devtools",
+    "@vueuse/nuxt",
+    VuetifyModule,
+  ],
   electron: {
     build: [
       {
@@ -42,6 +55,10 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+  },
+
+  imports: {
+    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },
 
   build: {

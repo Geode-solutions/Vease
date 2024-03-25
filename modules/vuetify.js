@@ -1,5 +1,5 @@
-import colors from "vuetify/lib/util/colors"
-import { defineNuxtModule } from "@nuxt/kit"
+import colors from "vuetify/lib/util/colors";
+import { defineNuxtModule } from "@nuxt/kit";
 
 const vuetify_defaults = {
   defaultAssets: true,
@@ -14,13 +14,18 @@ const vuetify_defaults = {
     VCard: {
       elevation: 5,
       style: "border-radius: 15px;",
+      color: colors.teal.darken1,
     },
     VExpansionPanel: {
       elevation: 5,
       style: "border-radius: 15px;",
     },
+    VToolbar: {
+      elevation: 5,
+      style: "border-radius: 15px;",
+    },
   },
-}
+};
 
 const light_theme = {
   dark: false,
@@ -34,8 +39,8 @@ const light_theme = {
     success: colors.green.accent4,
     warning: colors.orange.accent4,
   },
-}
-// console.log("vuetify", vuetify)
+};
+
 export default defineNuxtModule({
   setup(_options, nuxt) {
     nuxt.hook("vuetify:registerModule", (register) =>
@@ -50,7 +55,7 @@ export default defineNuxtModule({
             },
           },
         },
-      }),
-    )
+      })
+    );
   },
-})
+});
