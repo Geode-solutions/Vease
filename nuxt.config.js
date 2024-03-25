@@ -72,4 +72,16 @@ export default defineNuxtConfig({
   devtools: {
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
+  vite: {
+    optimizeDeps: {
+      include: [
+        "fast-deep-equal",
+        "seedrandom",
+        "lodash",
+        "@geode/opengeodeweb-front",
+        "ajv",
+        "globalthis",
+      ],
+    },
+  },
 });
