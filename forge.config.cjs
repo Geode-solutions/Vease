@@ -21,7 +21,6 @@ module.exports = {
         },
         prerelease: true,
         generateReleaseNotes: true,
-        authToken: "github_token",
       },
     },
   ],
