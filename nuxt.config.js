@@ -53,8 +53,4 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
-
-  // devtools: {
-  //   enabled: true,
-  // },
 });
