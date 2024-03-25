@@ -19,13 +19,26 @@
         single-line
       ></v-text-field>
       <v-spacer />
-      <v-toolbar-items>
-        <v-btn icon class="mr-6">
-          <v-icon class="couleur icon-border pa-5" size="30"
-            >mdi-account</v-icon
+      <v-tooltip text="Account">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            class="icon-style ml-2"
+            height="50"
+            width="50"
+            flat
+            icon
           >
-        </v-btn>
-      </v-toolbar-items>
+            <v-icon
+              icon="mdi-account"
+              color="white"
+              height="50px"
+              width="50px"
+              size="30"
+            />
+          </v-btn>
+        </template>
+      </v-tooltip>
     </v-row>
   </v-app-bar>
 </template>
@@ -38,7 +51,7 @@ const search = ref("");
 .couleur {
   color: white;
 }
-.icon-border {
+.icon-style {
   border-radius: 20%;
   background-color: #ffffff26;
 }
