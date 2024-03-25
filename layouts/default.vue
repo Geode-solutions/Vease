@@ -21,9 +21,7 @@
         </template>
       </v-tooltip>
     </v-navigation-drawer>
-    <v-main class="page_background">
-      <App />
-    </v-main>
+    <v-main class="page_background"> <NuxtPage / </v-main>
   </v-app>
 </template>
 

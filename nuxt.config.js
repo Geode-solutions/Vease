@@ -1,12 +1,26 @@
 export default defineNuxtConfig({
-  runtimeConfig: {
-    public: {
-      API_URL:
-        process.env.NODE_ENV === "production"
-          ? "api.geode-solutions.com"
-          : "localhost",
+  $production: {
+    runtimeConfig: {
+      public: {
+        API_URL: "api.geode-solutions.com",
+      },
+    },
+    devtools: {
+      enabled: false,
     },
   },
+
+  $development: {
+    runtimeConfig: {
+      public: {
+        API_URL: "localhost",
+      },
+    },
+    devtools: {
+      enabled: true,
+    },
+  },
+
   modules: ["nuxt-electron", "vuetify-nuxt-module"],
   electron: {
     build: [
@@ -39,7 +53,8 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
-  devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
-  },
+
+  // devtools: {
+  //   enabled: true,
+  // },
 });
