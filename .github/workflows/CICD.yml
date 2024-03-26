@@ -9,7 +9,7 @@ env:
 jobs:
   release:
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/next' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feat/v0'
+    if: github.ref == 'refs/heads/next' || github.ref == 'refs/heads/master'
 
     strategy:
       matrix:
