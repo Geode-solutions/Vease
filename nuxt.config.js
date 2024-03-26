@@ -3,6 +3,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
       public: {
         API_URL: "api.geode-solutions.com",
+        BASE_URL: "./public/",
       },
     },
     devtools: {
@@ -14,6 +15,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
       public: {
         API_URL: "localhost",
+        BASE_URL: "./public/",
       },
     },
     devtools: {
@@ -25,13 +27,17 @@ export default defineNuxtConfig({
   electron: {
     build: [
       {
-        // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
       },
     ],
     renderer: {},
   },
 
+  router: {
+    options: {
+      hashMode: true,
+    },
+  },
   app: {
     head: {
       titleTemplate: "Vease",
@@ -44,6 +50,9 @@ export default defineNuxtConfig({
           content: "Platform for geological data visualization",
         },
       ],
+      bodyAttrs: {
+        style: "margin: 0;",
+      },
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
   },
@@ -53,4 +62,6 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
+
+  css: ["vuetify/lib/styles/main.sass"],
 });
