@@ -1,23 +1,11 @@
 export default defineNuxtConfig({
   $production: {
-    runtimeConfig: {
-      public: {
-        API_URL: "api.geode-solutions.com",
-        BASE_URL: "./public/",
-      },
-    },
     devtools: {
       enabled: false,
     },
   },
 
   $development: {
-    runtimeConfig: {
-      public: {
-        API_URL: "localhost",
-        BASE_URL: "./public/",
-      },
-    },
     devtools: {
       enabled: true,
     },
@@ -54,7 +42,6 @@ export default defineNuxtConfig({
         style: "margin: 0;",
       },
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
-      baseURL: "./public/",
     },
   },
 

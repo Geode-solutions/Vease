@@ -1,17 +1,14 @@
 module.exports = {
   packagerConfig: {
     asar: false,
-    extraResource: ["./.output/public/", "./dist-electron"],
-    icon: "./public/favicon.ico",
+    extraResource: ["./.output/public/.", "./dist-electron"],
+    icon: "./favicon.ico",
   },
   rebuildConfig: {},
 
   makers: [
     {
       name: "@electron-forge/maker-zip",
-      config: {
-        icon: "./public/favicon.ico",
-      },
     },
   ],
   publishers: [
@@ -22,7 +19,7 @@ module.exports = {
           owner: "Geode-solutions",
           name: "GeodeApp",
         },
-        draft: false,
+        draft: true,
         generateReleaseNotes: true,
       },
     },
