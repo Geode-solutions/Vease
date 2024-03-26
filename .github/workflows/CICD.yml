@@ -36,4 +36,4 @@ jobs:
           npm install
           npm run package
           npm run make
-          npm run publish
+          npm run publish --prerelease
