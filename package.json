@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "nuxt": "^3.11.1",
+    "sass": "^1.72.0",
     "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
