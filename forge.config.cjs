@@ -2,13 +2,16 @@ module.exports = {
   packagerConfig: {
     asar: false,
     extraResource: ["./.output/public/", "./dist-electron"],
+    icon: "./public/favicon.ico",
   },
   rebuildConfig: {},
 
   makers: [
     {
       name: "@electron-forge/maker-zip",
-      config: {},
+      config: {
+        icon: "./public/favicon.ico",
+      },
     },
   ],
   publishers: [
