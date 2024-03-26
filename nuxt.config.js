@@ -54,6 +54,7 @@ export default defineNuxtConfig({
         style: "margin: 0;",
       },
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
+      baseURL: "./public/",
     },
   },
 
