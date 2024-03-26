@@ -7,11 +7,10 @@
     "dev": "nuxi dev",
     "generate": "nuxt generate",
     "build": "nuxi build --prerender",
-    "build:electron": "nuxi build --prerender && electron-builder",
     "test": "vitest",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "start": "npm run build && electron-forge start",
+    "package": "npm run build && electron-forge package",
+    "make": "npm run build && electron-forge make"
   },
   "repository": {
     "type": "git",

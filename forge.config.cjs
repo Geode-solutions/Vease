@@ -1,19 +1,13 @@
 module.exports = {
   packagerConfig: {
     asar: true,
-    extraResource: ["./.nuxt"],
+    extraResource: ["./.output/public/", "./dist-electron"],
   },
   rebuildConfig: {},
 
   makers: [
     {
       name: "@electron-forge/maker-zip",
-      config: {},
-    },
-  ],
-  plugins: [
-    {
-      name: "@electron-forge/plugin-auto-unpack-natives",
       config: {},
     },
   ],
