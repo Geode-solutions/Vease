@@ -19,7 +19,6 @@ export default defineNuxtConfig({
     ],
     "@nuxt/devtools",
     "@vueuse/nuxt",
-    VuetifyModule,
   ],
   electron: {
     build: [
@@ -51,9 +50,6 @@ export default defineNuxtConfig({
     dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },
 
-  build: {
-    transpile: ["vuetify"],
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
