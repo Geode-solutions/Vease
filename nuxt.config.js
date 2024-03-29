@@ -7,6 +7,8 @@ export default defineNuxtConfig({
           : "localhost",
     },
   },
+
+  ssr: true,
   extends: ["@geode/opengeodeweb-front"],
   modules: [
     "nuxt-electron",
