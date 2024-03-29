@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
-    "build": "nuxt build --prerender",
+    "build": "nuxt build",
     "test": "vitest",
     "start": "npm run build && electron-forge start",
     "package": "npm run build && electron-forge package",
