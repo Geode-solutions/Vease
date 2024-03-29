@@ -14,6 +14,7 @@ export default defineNuxtConfig({
 
   extends: ["@geode/opengeodeweb-front"],
   modules: [
+    "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
