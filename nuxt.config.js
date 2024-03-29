@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
+  ssr: false,
 
   extends: ["@geode/opengeodeweb-front"],
   modules: [
