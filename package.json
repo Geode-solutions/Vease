@@ -36,19 +36,27 @@
     "@electron-forge/maker-zip": "^7.3.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.3.1",
     "@electron-forge/publisher-github": "^7.3.1",
-    "electron": "^28.2.7",
+    "electron": "^28.2.9",
     "electron-builder": "^24.13.3",
     "nuxt-electron": "^0.7.0",
     "vite-plugin-electron": "^0.28.4",
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
+    "@geode/opengeodeweb-front": "^7.0.1",
+    "@mdi/font": "^7.4.47",
+    "@pinia/nuxt": "^0.5.1",
+    "@vueuse/components": "^10.9.0",
+    "@vueuse/core": "^10.9.0",
+    "@vueuse/nuxt": "^10.9.0",
+    "draggable": "^4.2.0",
     "nuxt": "^3.11.1",
-    "sass": "^1.72.0",
+    "pinia": "^2.1.7",
     "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
-    "vuetify": "^3.5.11",
-    "vuetify-nuxt-module": "^0.12.0"
+    "vuedraggable": "^2.24.3",
+    "vuetify": "^3.5.13",
+    "vuetify-nuxt-module": "^0.13.1"
   }
 }

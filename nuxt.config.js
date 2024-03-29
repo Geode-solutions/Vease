@@ -11,7 +11,19 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ["nuxt-electron", "vuetify-nuxt-module"],
+  extends: ["@geode/opengeodeweb-front"],
+  modules: [
+    "nuxt-electron",
+    "vuetify-nuxt-module",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["storeToRefs", "defineStore"],
+      },
+    ],
+    "@nuxt/devtools",
+    "@vueuse/nuxt",
+  ],
   electron: {
     build: [
       {
@@ -45,6 +57,10 @@ export default defineNuxtConfig({
     },
   },
 
+  imports: {
+    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
+  },
+
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
@@ -52,4 +68,17 @@ export default defineNuxtConfig({
   },
 
   css: ["vuetify/lib/styles/main.sass"],
+
+  vite: {
+    optimizeDeps: {
+      include: [
+        "fast-deep-equal",
+        "seedrandom",
+        "lodash",
+        "@geode/opengeodeweb-front",
+        "ajv",
+        "globalthis",
+      ],
+    },
+  },
 });
