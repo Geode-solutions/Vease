@@ -9,6 +9,6 @@
 </template>
 
 <script setup>
-const viewer_store = use_viewer_store();
-await viewer_store.ws_connect();
+// const viewer_store = use_viewer_store();
+// await viewer_store.ws_connect();
 </script>
