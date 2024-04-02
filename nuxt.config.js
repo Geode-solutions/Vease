@@ -82,4 +82,10 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  nitro: {
+    devProxy: {
+      host: "127.0.0.1",
+    },
+  },
 });
