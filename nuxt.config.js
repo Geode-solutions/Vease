@@ -4,7 +4,7 @@ export default defineNuxtConfig({
       enabled: false,
     },
   },
-
+  
   $development: {
     devtools: {
       enabled: true,
