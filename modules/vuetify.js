@@ -30,7 +30,7 @@ const vuetify_defaults = {
 const light_theme = {
   dark: false,
   colors: {
-    background: "#FFFFFF",
+    background: "#FFFFFF0",
     primary: colors.teal.darken1,
     secondary: colors.teal.lighten4,
     accent: colors.amber.accent4,
