@@ -8,15 +8,22 @@ body {
   overflow: hidden;
 }
 
+p {
+  color:white;
+}
+
 h2 {
   font-family: "Michroma", sans-serif;
+  color:white;
+
 }
 
 .custom-background {
   background: linear-gradient(
     135deg,
     rgba(56, 157, 133, 1) 0%,
-    rgba(0, 0, 0, 1) 100%
+    rgb(60, 153, 131) 50%,
+    rgb(20, 19, 19) 100%
   );
 }
 

@@ -1,8 +1,8 @@
 <template>
   <v-navigation-drawer
-    position-fixed
+    fixed
     v-model="drawer"
-    :width="50"
+    width="50"
     class="mt-10 ma-2"
     color="#FFFFFF00"
     height="100%"
@@ -22,15 +22,7 @@
           flat
           color="#FFFFFF00"
           :class="item.title === 'Back' ? 'mb-8' : 'mb-1'"
-          @click="
-            item.title === 'Home'
-              ? goHome()
-              : item.title === 'Back'
-              ? goBack()
-              : item.title === 'Open Project'
-              ? openFileDialog()
-              : null
-          "
+          @click="item.click"
           style="border-radius: 20%"
           :icon="item.icon"
         >
@@ -43,6 +35,31 @@
         </v-btn>
       </template>
     </v-tooltip>
+    <v-dialog v-model="dialog" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">New Project</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="14" sm="8" md="8">
+                <v-text-field label="Project Name" required></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog = false"
+            >Close</v-btn
+          >
+          <v-btn color="blue darken-1" text @click="dialog = false"
+            >Create</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <input
       type="file"
       id="fileInput"
@@ -53,33 +70,38 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 const drawer = ref(true);
 const router = useRouter();
-
+const dialog = ref(false);
 const items = [
-  { title: "Back", icon: "mdi-arrow-left" },
-  { title: "Home", icon: "mdi-home" },
-  { title: "New Project", icon: "mdi-plus" },
-  { title: "Open Project", icon: "mdi-folder-outline" },
-  { title: "Supperposition", icon: "mdi-layers" },
-  { title: "Download", icon: "mdi-upload" },
-  { title: "Extensions", icon: "mdi-puzzle" },
-  { title: "Settings", icon: "mdi-cog" },
+  { title: "Back", icon: "mdi-arrow-left", click: () => router.go(-1) },
+  { title: "Home", icon: "mdi-home", click: () => router.push("/") },
+  {
+    title: "New Project",
+    icon: "mdi-plus",
+    click: () => (dialog.value = true),
+  },
+  {
+    title: "Open Project",
+    icon: "mdi-folder-outline",
+  },
+  {
+    title: "Supperposition",
+    icon: "mdi-layers",
+    click: () => router.push("/supperposition"),
+  },
+  {
+    title: "Download",
+    icon: "mdi-upload",
+    click: () => router.push("/download"),
+  },
+  {
+    title: "Extensions",
+    icon: "mdi-puzzle",
+    click: () => router.push("/extensions"),
+  },
+  { title: "Settings", icon: "mdi-cog", click: () => router.push("/settings") },
 ];
-
-function goBack() {
-  router.go(-1);
-}
-
-function openFileDialog() {
-  document.getElementById("fileInput").click();
-}
-
-function fileSelected(event) {
-  const file = event.target.files[0];
-}
-
-function goHome() {
-  router.push("/");
-}
 </script>

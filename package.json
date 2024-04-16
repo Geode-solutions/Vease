@@ -43,8 +43,6 @@
   "dependencies": {
     "@geode/opengeodeweb-front": "^7.0.1",
     "@pinia/nuxt": "^0.5.1",
-    "@vueuse/components": "^10.9.0",
-    "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "draggable": "^4.2.0",
     "nuxt": "^3.7.4",
