@@ -35,37 +35,75 @@
         </v-btn>
       </template>
     </v-tooltip>
-    <v-dialog v-model="dialog" max-width="800px">
-      <v-card>
+    <v-dialog v-model="newproject" max-width="800px" class="text-center">
+      <v-card color="#3c9983">
         <v-card-title>
-          <span class="headline">New Project</span>
+          <h3 class="mt-4">New Project</h3>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="14" sm="8" md="8">
+              <v-col>
                 <v-text-field label="Project Name" required></v-text-field>
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false"
+        <v-card-actions justify-center>
+          <v-btn
+            variant="outlined"
+            color="white"
+            text
+            @click="newproject = false"
+            class="ml-8 mb-4"
             >Close</v-btn
           >
-          <v-btn color="blue darken-1" text @click="dialog = false"
+          <v-btn
+            variant="outlined"
+            class="mb-4"
+            color="white"
+            text
+            @click="newproject = false"
             >Create</v-btn
           >
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <input
-      type="file"
-      id="fileInput"
-      style="display: none"
-      @change="fileSelected"
-    />
+
+    <v-dialog v-model="openproject" max-width="800px" class="text-center">
+      <v-card color="#3c9983">
+        <v-card-title>
+          <h3 class="mt-4">Open Project</h3>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-file-input label="Open Project" required></v-file-input>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions justify-center>
+          <v-btn
+            variant="outlined"
+            color="white"
+            text
+            @click="openproject = false"
+            class="ml-8 mb-4"
+            >Close</v-btn
+          >
+          <v-btn
+            variant="outlined"
+            class="mb-4"
+            color="white"
+            text
+            @click="openproject = false"
+            >Load</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-navigation-drawer>
 </template>
 
@@ -74,18 +112,20 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 const drawer = ref(true);
 const router = useRouter();
-const dialog = ref(false);
+const newproject = ref(false);
+const openproject = ref(false);
 const items = [
   { title: "Back", icon: "mdi-arrow-left", click: () => router.go(-1) },
   { title: "Home", icon: "mdi-home", click: () => router.push("/") },
   {
     title: "New Project",
     icon: "mdi-plus",
-    click: () => (dialog.value = true),
+    click: () => (newproject.value = true),
   },
   {
     title: "Open Project",
     icon: "mdi-folder-outline",
+    click: () => (openproject.value = true),
   },
   {
     title: "Supperposition",

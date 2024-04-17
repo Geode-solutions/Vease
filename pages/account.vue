@@ -12,7 +12,7 @@
               v-model="valid"
               lazy-validation
               enctype="multipart/form-data"
-              style="color: white"
+              @submit.prevent="updateProfile"
             >
               <v-text-field
                 v-model="firstName"
@@ -64,27 +64,19 @@
               <v-file-input
                 v-model="profileImage"
                 :rules="imageRules"
-                accept="image/png, image/jpeg, image/bmp"
-                label="Profil "
-                class="mb-2"
+                accept="image/*"
+                label="Profile image"
                 prepend-icon="mdi-camera"
+                class="mb-2"
                 required
-                @change="onImageSelected"
               ></v-file-input>
-
-              <v-img
-                v-if="imagePreview"
-                :src="imagePreview"
-                contain
-                height="200"
-              ></v-img>
 
               <v-btn
                 :disabled="!valid"
                 color="#277a67"
                 block
                 class="icon-style custom-button"
-                @click="updateProfile"
+                type="submit"
               >
                 Update profile
               </v-btn>
@@ -114,14 +106,38 @@ import { ref, computed } from "vue";
 import { useUserStore } from "@/src/userStore.js";
 
 const valid = ref(true);
-const firstName = ref("");
-const lastName = ref("");
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
 const showPassword = ref(false);
-const profileImage = ref(null);
-const imagePreview = ref(null);
+const userStore = useUserStore();
+
+const firstName = computed({
+  get: () => userStore.firstName,
+  set: (value) => userStore.$patch({ firstName: value }),
+});
+
+const lastName = computed({
+  get: () => userStore.lastName,
+  set: (value) => userStore.$patch({ lastName: value }),
+});
+
+const email = computed({
+  get: () => userStore.email,
+  set: (value) => userStore.$patch({ email: value }),
+});
+
+const password = computed({
+  get: () => userStore.password,
+  set: (value) => userStore.$patch({ password: value }),
+});
+
+const confirmPassword = computed({
+  get: () => userStore.confirmPassword,
+  set: (value) => userStore.$patch({ confirmPassword: value }),
+});
+
+const profileImage = computed({
+  get: () => userStore.profileImage,
+  set: (value) => userStore.$patch({ profileImage: value }),
+});
 
 const nameRules = [
   (v) => !!v || "Name is required",
@@ -139,7 +155,7 @@ const emailRules = [
 
 const passwordRules = [
   (v) => !!v || "Password is required",
-  (v) => (v && v.length >= 8) || "Password must be at least 8 characters",
+  (v) => (v && v.length >= 12) || "Password must be at least 12 characters",
 ];
 
 const confirmPasswordRules = [
@@ -147,7 +163,10 @@ const confirmPasswordRules = [
   (v) => v === password.value || "Passwords are different",
 ];
 
-const imageRules = [(v) => !!v || "A picture is required"];
+const imageRules = [
+  (v) => !!v || "Profile image is required",
+  // (v) => v.size > 2000000 || "Image size should be less than 2 MB",
+];
 
 const updateProfile = () => {
   if (valid.value) {
@@ -157,16 +176,11 @@ const updateProfile = () => {
     formData.append("email", email.value);
     formData.append("password", password.value);
     formData.append("confirmPassword", confirmPassword.value);
-    formData.append("profileImage", profileImage.value);
+    if (profileImage.value) {
+      formData.append("profileImage", profileImage.value);
+    }
+    userStore.updateProfile(formData);
   }
-};
-
-const userStore = useUserStore();
-
-const onImageSelected = (event) => {
-  profileImage.value = event;
-  imagePreview.value = URL.createObjectURL(event);
-  userStore.setUserImage(event);
 };
 
 const togglePasswordVisibility = () => {

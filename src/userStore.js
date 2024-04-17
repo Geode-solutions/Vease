@@ -1,13 +1,16 @@
 import { defineStore } from "pinia";
 
-export const useUserStore = defineStore({
-  id: "user",
+export const useUserStore = defineStore("userStore", {
   state: () => ({
-    userImage: null,
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    profileImage: null,
   }),
   actions: {
-    setUserImage(image) {
-      this.userImage = image;
-    },
+    fetchUserData() {},
+    updateProfile() {},
   },
 });
