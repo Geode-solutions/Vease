@@ -3,12 +3,12 @@
     <v-row class="pa-1 ma-1 align-center">
       <v-img
         :src="logo"
-        max-height="40"
-        max-width="40"
+        max-height="50"
+        max-width="50"
         class="ml-3 mr-0"
         contain
       />
-      <h2 style="color: white" class="ml-2 title-text">Vease</h2>
+      <h2 style="color: white" class="ml-2 mb-1 title-text">Vease</h2>
       <v-spacer />
       <v-text-field
         prepend-inner-icon="mdi-magnify"
@@ -20,43 +20,46 @@
         single-line
       ></v-text-field>
       <v-spacer />
-      <v-tooltip text="Account">
+      <v-tooltip>
         <template v-slot:activator="{ props }">
           <v-btn
-            v-for="(link, i) in links"
-            :key="i"
             v-bind="props"
             class="ml-2 mr-8"
             style="border-radius: 20%"
             flat
             icon
-            :to="link.to"
+            to="/account"
           >
             <v-icon
-              v-if="!userImage"
+              v-if="!profileImagePath"
               class="icon-style pa-6"
               icon="mdi-account"
               color="white"
               size="40"
             />
-            <v-avatar v-else size="40">
-              <v-img :src="URL.createObjectURL(userImage)" />
+            <v-avatar v-else size="50">
+              <v-img :src="getProfileImage(profileImagePath)" />
             </v-avatar>
           </v-btn>
         </template>
+        <span>Account</span>
       </v-tooltip>
     </v-row>
   </v-app-bar>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useUserStore } from "@/src/userStore.js";
 import logo from "@/assets/img/logo.png";
 
 const search = ref("");
 const links = [{ title: "Account", to: "/account" }];
-
 const userStore = useUserStore();
-const userImage = computed(() => userStore.userImage);
+const { profileImagePath } = storeToRefs(userStore);
+
+const getProfileImage = (path) => {
+  if (path) {
+    return URL.createObjectURL(path);
+  }
+  return "";
+};
 </script>

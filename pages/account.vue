@@ -22,7 +22,6 @@
                 :counter="50"
                 class="mb-2"
               ></v-text-field>
-
               <v-text-field
                 v-model="lastName"
                 :rules="nameRules"
@@ -31,7 +30,6 @@
                 :counter="50"
                 class="mb-2"
               ></v-text-field>
-
               <v-text-field
                 v-model="email"
                 :rules="emailRules"
@@ -39,7 +37,6 @@
                 class="mb-2"
                 required
               ></v-text-field>
-
               <v-text-field
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
@@ -49,9 +46,7 @@
                 required
                 @click:append="togglePasswordVisibility"
               ></v-text-field>
-
               <v-text-field
-                v-model="confirmPassword"
                 :type="showPassword ? 'text' : 'password'"
                 :rules="confirmPasswordRules"
                 label="Confirm Password"
@@ -60,19 +55,53 @@
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="togglePasswordVisibility"
               ></v-text-field>
-
-              <v-file-input
-                v-model="profileImage"
-                :rules="imageRules"
-                accept="image/*"
-                label="Profile image"
-                prepend-icon="mdi-camera"
-                class="mb-2"
-                required
-              ></v-file-input>
-
+              <form
+                class="mt-4 flex flex-col space-y-4"
+                @submit.prevent="uploadImage"
+              >
+                <div class="flex items-center space-x-4">
+                  <div class="flex items-center justify-center h-40 w-40">
+                    <label
+                      for="dropzone-file"
+                      class="flex flex-col items-center justify-center border-2 h-40 w-40 border-gray-300 rounded-full cursor-pointer bg-gray-50 hover:bg-gray-100"
+                      ><v-file-input
+                        prepend-icon="mdi-camera"
+                        label="Profil Picture"
+                        ref="files"
+                        accept="image/*"
+                        id="dropzone-file"
+                        type="file"
+                        class="hidden"
+                        @change="onFileChange"
+                      />
+                      <div
+                        v-if="!image"
+                        class="flex flex-col items-center justify-center pt-5 pb-6"
+                      ></div>
+                      <img
+                        v-else
+                        :src="image"
+                        class="rounded-full object-fill"
+                        :width="250"
+                        aspect-ratio="16/19"
+                        cover
+                      />
+                    </label>
+                  </div>
+                  <v-btn type="submit" class="mb-6"> Upload Image </v-btn>
+                </div>
+                <span
+                  v-if="success || error"
+                  :class="{
+                    'text-green-600': success,
+                    'text-red-600': error,
+                  }"
+                  class="font-medium mb-6"
+                  >{{ success || error }}</span
+                >
+              </form>
               <v-btn
-                :disabled="!valid"
+                :disabled="!valid || !imageUploaded"
                 color="#277a67"
                 block
                 class="icon-style custom-button"
@@ -102,42 +131,17 @@
 </style>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useUserStore } from "@/src/userStore.js";
-
 const valid = ref(true);
 const showPassword = ref(false);
 const userStore = useUserStore();
 
-const firstName = computed({
-  get: () => userStore.firstName,
-  set: (value) => userStore.$patch({ firstName: value }),
-});
+const { firstName, lastName, email, password, profileImage } = userStore;
 
-const lastName = computed({
-  get: () => userStore.lastName,
-  set: (value) => userStore.$patch({ lastName: value }),
-});
-
-const email = computed({
-  get: () => userStore.email,
-  set: (value) => userStore.$patch({ email: value }),
-});
-
-const password = computed({
-  get: () => userStore.password,
-  set: (value) => userStore.$patch({ password: value }),
-});
-
-const confirmPassword = computed({
-  get: () => userStore.confirmPassword,
-  set: (value) => userStore.$patch({ confirmPassword: value }),
-});
-
-const profileImage = computed({
-  get: () => userStore.profileImage,
-  set: (value) => userStore.$patch({ profileImage: value }),
-});
+const files = ref();
+const image = ref();
+const success = ref();
+const error = ref();
+const imageUploaded = ref(false);
 
 const nameRules = [
   (v) => !!v || "Name is required",
@@ -160,30 +164,49 @@ const passwordRules = [
 
 const confirmPasswordRules = [
   (v) => !!v || "Confirm password is required",
-  (v) => v === password.value || "Passwords are different",
-];
-
-const imageRules = [
-  (v) => !!v || "Profile image is required",
-  // (v) => v.size > 2000000 || "Image size should be less than 2 MB",
+  (v) => v === password || "Passwords are different",
 ];
 
 const updateProfile = () => {
   if (valid.value) {
-    const formData = new FormData();
-    formData.append("firstName", firstName.value);
-    formData.append("lastName", lastName.value);
-    formData.append("email", email.value);
-    formData.append("password", password.value);
-    formData.append("confirmPassword", confirmPassword.value);
-    if (profileImage.value) {
-      formData.append("profileImage", profileImage.value);
-    }
-    userStore.updateProfile(formData);
+    console.log("Update profile", image);
+    userStore.$patch({
+      firstName,
+      lastName,
+      email,
+      password,
+      image,
+    });
   }
 };
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
+
+function onFileChange(e) {
+  const file = e.target.files[0];
+  image.value = URL.createObjectURL(file);
+}
+
+async function uploadImage() {
+  try {
+    error.value = null;
+    success.value = null;
+    const formData = new FormData();
+    Array.from(files.value.files).map((file, index) =>
+      formData.append(index, file)
+    );
+
+    const { message } = await $fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    success.value = message;
+    imageUploaded.value = true;
+  } catch (e) {
+    error.value = e.statusMessage;
+  }
+}
 </script>
