@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Michroma&display=swap");
+
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+p {
+  color:white;
+}
+
+h2 {
+  font-family: "Michroma", sans-serif;
+  color:white;
+
+}
+
+.custom-background {
+  background: linear-gradient(
+    135deg,
+    rgba(56, 157, 133, 1) 0%,
+    rgb(60, 153, 131) 50%,
+    rgb(20, 19, 19) 100%
+  );
+}
+
+.icon-style {
+  border-radius: 20%;
+  background-color: #ffffff26;
+}  
+
+.icon-style:hover {
+  background-color: #ffffff4d;
+}
+
+.title-text {
+font-size: 30px;
+font-weight: 100;
+}

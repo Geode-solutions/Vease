@@ -2,62 +2,64 @@
   <v-app-bar flat color="transparent" class="ma-1" height="60" :elevation="0">
     <v-row class="pa-1 ma-1 align-center">
       <v-img
-        src="/assets/img/logo.png"
-        max-height="40"
-        max-width="40"
+        :src="logo"
+        max-height="50"
+        max-width="50"
         class="ml-3 mr-0"
         contain
       />
-      <h2 class="couleur ml-2 title-text">Vease</h2>
+      <h2 style="color: white" class="ml-2 mb-1 title-text">Vease</h2>
       <v-spacer />
       <v-text-field
         prepend-inner-icon="mdi-magnify"
         hide-details
         label="Search"
-        class="couleur mt-1"
+        style="color: white"
+        class="mt-1"
         v-model="search"
         single-line
       ></v-text-field>
       <v-spacer />
-      <v-tooltip text="Account">
+      <v-tooltip>
         <template v-slot:activator="{ props }">
           <v-btn
             v-bind="props"
-            class="icon-style ml-2"
-            height="50"
-            width="50"
+            class="ml-2 mr-8"
+            style="border-radius: 20%"
             flat
             icon
+            to="/account"
           >
             <v-icon
+              v-if="!profileImagePath"
+              class="icon-style pa-6"
               icon="mdi-account"
               color="white"
-              height="50px"
-              width="50px"
-              size="30"
+              size="40"
             />
+            <v-avatar v-else size="50">
+              <v-img :src="getProfileImage(profileImagePath)" />
+            </v-avatar>
           </v-btn>
         </template>
+        <span>Account</span>
       </v-tooltip>
     </v-row>
   </v-app-bar>
 </template>
 
 <script setup>
+import logo from "@/assets/img/logo.png";
+
 const search = ref("");
+const links = [{ title: "Account", to: "/account" }];
+const userStore = useUserStore();
+const { profileImagePath } = storeToRefs(userStore);
+
+const getProfileImage = (path) => {
+  if (path) {
+    return URL.createObjectURL(path);
+  }
+  return "";
+};
 </script>
-
-<style scoped>
-.couleur {
-  color: white;
-}
-.icon-style {
-  border-radius: 20%;
-  background-color: #ffffff26;
-}
-
-.title-text {
-  font-size: 30px;
-  font-weight: 100;
-}
-</style>

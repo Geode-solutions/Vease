@@ -1,59 +1,60 @@
 {
-  "name": "vease",
-  "version": "0.0.1",
-  "description": "Basic app",
-  "main": "dist-electron/main.js",
-  "scripts": {
-    "dev": "nuxi dev",
-    "generate": "nuxt generate",
-    "build": "nuxi build --prerender",
-    "test": "vitest",
-    "start": "npm run build && electron-forge start",
-    "package": "npm run build && electron-forge package",
-    "make": "npm run build && electron-forge make"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Geode-solutions/GeodeApp.git"
-  },
-  "keywords": [
-    "Geology",
-    "Visualization",
-    "Web",
-    "Desktop",
-    "Meshing"
-  ],
-  "author": "Geode-solutions",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Geode-solutions/GeodeApp/issues"
-  },
-  "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
-  "devDependencies": {
-    "@electron-forge/cli": "^7.3.0",
-    "@electron-forge/maker-squirrel": "^7.3.0",
-    "@electron-forge/maker-zip": "^7.3.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
-    "electron": "^28.2.7",
-    "electron-builder": "^24.13.3",
-    "nuxt-electron": "^0.7.0",
-    "vite-plugin-electron": "^0.28.4",
-    "vite-plugin-electron-renderer": "^0.14.5"
-  },
-  "dependencies": {
-    "@geode/opengeodeweb-front": "^7.0.1",
-    "@pinia/nuxt": "^0.5.1",
-    "draggable": "^4.2.0",
-    "nuxt": "^3.7.4",
-    "pinia": "^2.1.7",
-    "update-electron-app": "^3.0.0",
-    "@vueuse/components": "^10.9.0",
-    "@vueuse/core": "^10.9.0",
-    "@vueuse/nuxt": "^10.9.0",
-    "vue": "^3.4.21",
-    "vue-router": "^4.3.0",
-    "vuedraggable": "^2.24.3",
-    "vuetify": "^3.5.9",
-    "vuetify-nuxt-module": "^0.12.0"
-  }
+    "name": "vease",
+    "version": "0.0.1",
+    "description": "Basic app",
+    "main": "dist-electron/main.js",
+    "scripts": {
+        "dev": "nuxi dev",
+        "generate": "nuxt generate",
+        "build": "nuxi build --prerender",
+        "test": "vitest",
+        "start": "npm run build && electron-forge start",
+        "package": "npm run build && electron-forge package",
+        "make": "npm run build && electron-forge make"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Geode-solutions/GeodeApp.git"
+    },
+    "keywords": [
+        "Geology",
+        "Visualization",
+        "Web",
+        "Desktop",
+        "Meshing"
+    ],
+    "author": "Geode-solutions",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Geode-solutions/GeodeApp/issues"
+    },
+    "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
+    "devDependencies": {
+        "@electron-forge/cli": "^7.3.0",
+        "@electron-forge/maker-squirrel": "^7.3.0",
+        "@electron-forge/maker-zip": "^7.3.0",
+        "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
+        "electron": "^28.2.7",
+        "electron-builder": "^24.13.3",
+        "nuxt-electron": "^0.7.0",
+        "vite-plugin-electron": "^0.28.4",
+        "vite-plugin-electron-renderer": "^0.14.5"
+    },
+    "dependencies": {
+        "@geode/opengeodeweb-front": "^7.0.1",
+        "@pinia/nuxt": "^0.5.1",
+        "@vueuse/nuxt": "^10.9.0",
+        "draggable": "^4.2.0",
+        "nuxt": "^3.7.4",
+        "pinia": "^2.1.7",
+        "update-electron-app": "^3.0.0",
+        "vue": "^3.4.21",
+        "vue-cropperjs": "^5.0.0",
+        "vue-router": "^4.3.0",
+        "vuedraggable": "^2.24.3",
+        "vuetify": "^3.5.9",
+        "vuetify-nuxt-module": "^0.12.0",
+        "@nuxtjs/tailwindcss": "^6.8.0",
+        "h3-formidable": "^1.0.0"
+    }
 }
