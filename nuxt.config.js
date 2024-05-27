@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: true,
+  ssr: false,
   extends: ["@geode/opengeodeweb-front"],
   modules: [
     "nuxt-electron",
@@ -58,7 +58,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
+    enabled: process.env.NODE_ENV === "production" ? false : false,
   },
   css: ["assets/css/main.css"],
   vite: {

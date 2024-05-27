@@ -18,7 +18,7 @@ app.whenReady().then(() => {
     },
   });
   if (app.isPackaged) {
-    win.loadFile("../public/index.html");
+    win.loadFile("../index.html");
   } else {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();

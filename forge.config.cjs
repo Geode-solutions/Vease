@@ -1,7 +1,8 @@
 module.exports = {
   packagerConfig: {
-    asar: true,
-    extraResource: ["./.output/public/", "./dist-electron"],
+    asar: false,
+    extraResource: ["./.output/public/.", "./dist-electron"],
+    icon: "./favicon.ico",
   },
   rebuildConfig: {},
 
@@ -16,10 +17,10 @@ module.exports = {
       name: "@electron-forge/publisher-github",
       config: {
         repository: {
-          owner: "me",
-          name: "awesome-thing",
+          owner: "Geode-solutions",
+          name: "GeodeApp",
         },
-        prerelease: true,
+        draft: false,
       },
     },
   ],
