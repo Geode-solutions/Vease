@@ -4,7 +4,7 @@ export default defineNuxtConfig({
       enabled: false,
     },
   },
-  
+
   $development: {
     devtools: {
       enabled: true,
@@ -29,6 +29,10 @@ export default defineNuxtConfig({
     build: [
       {
         entry: "electron/main.js",
+      },
+      {
+        // Main-Process entry file of the Electron App.
+        entry: "electron/preload.js",
       },
     ],
     renderer: {},
