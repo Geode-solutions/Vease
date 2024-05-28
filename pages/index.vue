@@ -11,10 +11,17 @@
 <script setup>
 const viewer_store = use_viewer_store();
 await viewer_store.ws_connect();
+
+const testStore = useTestStore();
+// console.log("window.electron", window.electron);
+// window.electron.on_viewer_port((value) => {
+//   console.log("vue port ", value);
+//   testStore.setPort(value);
+// });
 </script>
 
-<style scoped>
-body {
-  overflow-y: hidden;
+<style>
+html {
+  overflow-y: auto;
 }
 </style>
