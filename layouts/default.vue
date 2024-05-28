@@ -1,4 +1,4 @@
-<template style="overflow-y: hidden">
+<template>
   <v-app>
     <TopBar />
     <SideBar />
