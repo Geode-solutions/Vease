@@ -9,15 +9,15 @@
 </template>
 
 <script setup>
-const viewer_store = use_viewer_store();
-await viewer_store.ws_connect();
+// const viewer_store = use_viewer_store();
+// await viewer_store.ws_connect();
 
-const testStore = useTestStore();
-// console.log("window.electron", window.electron);
-// window.electron.on_viewer_port((value) => {
-//   console.log("vue port ", value);
-//   testStore.setPort(value);
-// });
+onMounted(async () => {
+  const result = await window.electronAPI.run_back(
+    useRuntimeConfig().public.GEODE_PORT
+  );
+  console.log("FROM INDEX", result);
+});
 </script>
 
 <style>

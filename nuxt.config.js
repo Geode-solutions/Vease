@@ -28,8 +28,22 @@ export default defineNuxtConfig({
         // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
       },
+      {
+        entry: "electron/preload.js",
+        onstart(args) {
+          args.reload();
+        },
+      },
     ],
-    renderer: {},
+  },
+
+  build: {
+    extend(config, { isClient }) {
+      // Extend only webpack config for client-bundle
+      if (isClient) {
+        config.target = "electron-renderer";
+      }
+    },
   },
 
   app: {
