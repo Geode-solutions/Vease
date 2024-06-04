@@ -18,7 +18,7 @@ async function getAvailablePort(port) {
   return available_port;
 }
 
-function run_script(command, args, callback) {
+function run_script(win, command, args, callback) {
   console.log("run_script", command, args);
   var child = child_process.spawn(command, args, {
     encoding: "utf8",
@@ -33,20 +33,20 @@ function run_script(command, args, callback) {
   //   });
   // });
 
-  // child.stdout.setEncoding("utf8");
-  // child.stdout.on("data", (data) => {
-  //   //Here is the output
-  //   data = data.toString();
-  //   console.log(data);
-  // });
+  child.stdout.setEncoding("utf8");
+  child.stdout.on("data", (data) => {
+    //Here is the output
+    data = data.toString();
+    console.log(data);
+  });
 
-  // child.stderr.setEncoding("utf8");
-  // child.stderr.on("data", (data) => {
-  //   // Return some data to the renderer process with the mainprocess-response ID
-  //   mainWindow.webContents.send("mainprocess-response", data);
-  //   //Here is the output from the command
-  //   console.log(data);
-  // });
+  child.stderr.setEncoding("utf8");
+  child.stderr.on("data", (data) => {
+    // Return some data to the renderer process with the mainprocess-response ID
+    win.webContents.send("mainprocess-response", data);
+    //Here is the output from the command
+    console.log(data);
+  });
 
   // child.on("close", (code) => {
   //   //Here you can get the exit code of the script
@@ -64,21 +64,6 @@ function run_script(command, args, callback) {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle("run_back", async (event, ...args) => {
-    console.log("HANDLE", args);
-    const port = await getAvailablePort(args[0]);
-    console.log("RESULT FROM MAIN", port);
-
-    run_script("npm run install_back", [], () => {
-      console.log("DONE 1");
-    });
-    run_script("geodeapp_server", ["--port " + port], () => {
-      console.log("DONE 2");
-    });
-
-    return port;
-  });
-
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: "public/favicon.ico",
@@ -95,6 +80,23 @@ app.whenReady().then(() => {
   });
 
   win.setMinimumSize(800, 600);
+
+  ipcMain.handle("run_back", async (event, ...args) => {
+    console.log("HANDLE", args);
+    const port = await getAvailablePort(args[0]);
+    console.log("RESULT FROM MAIN", port);
+    if (process.env.NODE_ENV == "development") {
+      run_script(win, "npm run install_back", [], () => {
+        console.log("DONE 1");
+      });
+    }
+
+    run_script(win, "geodeapp_server", ["--port " + port], () => {
+      console.log("DONE 2");
+    });
+
+    return port;
+  });
 
   if (app.isPackaged) {
     win.loadFile("../index.html");
