@@ -4,4 +4,4 @@ python3 -m venv venv_back
 ./venv_back/bin/python -m pip-compile ./electron-server/requirements_back.in
 ./venv_back/bin/pip install -r ./electron-server/requirements_back.txt
 ./venv_back/bin/pip install pyinstaller
-pyinstaller --onefile --collect-data opengeodeweb_back ./venv_back/bin/geodeapp_server
+pyinstaller --onedir --collect-data opengeodeweb_back ./venv_back/bin/geodeapp_server
