@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
+    "install_back": "./scripts/install_back.sh",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "start": "npm run build && electron-forge start",
