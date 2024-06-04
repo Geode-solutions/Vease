@@ -9,14 +9,14 @@
 </template>
 
 <script setup>
-// const viewer_store = use_viewer_store();
-// await viewer_store.ws_connect();
+const geode_store = use_geode_store();
 
 onMounted(async () => {
   const result = await window.electronAPI.run_back(
     useRuntimeConfig().public.GEODE_PORT
   );
   console.log("FROM INDEX", result);
+  await geode_store.ping_task();
 });
 </script>
 
