@@ -5,6 +5,7 @@
 .nitro
 .cache
 build
+dist
 
 # Node dependencies
 node_modules
@@ -30,3 +31,4 @@ venv_back
 venv_viewer
 lock
 time
+*.spec
