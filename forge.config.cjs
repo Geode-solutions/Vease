@@ -1,7 +1,11 @@
 module.exports = {
   packagerConfig: {
     asar: false,
-    extraResource: ["./.output/public/.", "./dist-electron"],
+    extraResource: [
+      "./.output/public/.",
+      "./dist-electron",
+      "./electron-server/",
+    ],
     icon: "./favicon.ico",
   },
   rebuildConfig: {},
