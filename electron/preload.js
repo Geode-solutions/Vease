@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     const result = await ipcRenderer.invoke("run_back", port);
     console.log("RESULT", result);
     console.log("POST");
+    return result;
   },
 });
