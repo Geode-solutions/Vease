@@ -2,9 +2,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_URL:
-        process.env.NODE_ENV === "production"
-          ? "api.geode-solutions.com"
-          : "localhost",
+        process.env.NODE_ENV === "production" ? "localhost" : "localhost",
     },
   },
 
