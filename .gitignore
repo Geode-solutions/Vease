@@ -4,7 +4,7 @@
 .nuxt
 .nitro
 .cache
-dist
+build
 
 # Node dependencies
 node_modules
@@ -26,3 +26,7 @@ logs
 # Other
 /out
 /dist-electron
+venv_back
+venv_viewer
+lock
+time
