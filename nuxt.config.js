@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
   extends: ["@geode/opengeodeweb-front"],
   modules: [
     "nuxt-electron",
@@ -46,15 +45,8 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
-    baseURL: "./",
   },
-
-  router: {
-    options: {
-      hashMode: true,
-    },
-  },
-
+  
   imports: {
     dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },
