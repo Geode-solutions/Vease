@@ -91,7 +91,7 @@ app.whenReady().then(() => {
       });
     }
 
-    run_script(win, "geodeapp_server", ["--port " + port], () => {
+    run_script(win, "./dist/geodeapp_server", ["--port " + port], () => {
       console.log("DONE 2");
     });
 
