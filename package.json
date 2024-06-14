@@ -7,12 +7,14 @@
     "dev": "nuxi dev",
     "generate": "nuxt generate",
     "install_back": "./electron-server/install_back.sh",
+    "install_viewer": "./electron-server/install_viewer.sh",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "start": "npm run build && electron-forge start",
     "package": "npm run build && electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
     "type": "git",
@@ -44,7 +46,7 @@
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
-    "@geode/opengeodeweb-front": "^7.0.1",
+    "@geode/opengeodeweb-front": "^8.0.0",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/nuxt": "^10.9.0",
@@ -58,7 +60,6 @@
     "vue-cropperjs": "^5.0.0",
     "vue-router": "^4.3.0",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^3.5.9",
     "vuetify-nuxt-module": "^0.12.0"
   }
 }
