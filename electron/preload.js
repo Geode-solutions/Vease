@@ -4,10 +4,11 @@ console.log("_____TEST ELECTRON PRELOAD_______");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   run_back: async (port) => {
-    console.log("FROM PRELOAD", port);
     const result = await ipcRenderer.invoke("run_back", port);
-    console.log("RESULT", result);
-    console.log("POST");
+    return result;
+  },
+  run_viewer: async (port) => {
+    const result = await ipcRenderer.invoke("run_viewer", port);
     return result;
   },
 });
