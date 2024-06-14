@@ -1,12 +1,4 @@
 export default defineNuxtConfig({
-  runtimeConfig: {
-    public: {
-      API_URL:
-        process.env.NODE_ENV === "production" ? "localhost" : "localhost",
-    },
-  },
-
-  ssr: false,
   extends: ["@geode/opengeodeweb-front"],
   modules: [
     "nuxt-electron",
@@ -58,13 +50,6 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
-    baseURL: "./",
-  },
-
-  router: {
-    options: {
-      hashMode: true,
-    },
   },
 
   imports: {
@@ -77,7 +62,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : false,
+    enabled: process.env.NODE_ENV === "production" ? false : true,
   },
   css: ["assets/css/main.css"],
   vite: {
