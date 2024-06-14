@@ -67,14 +67,7 @@ export default defineNuxtConfig({
   css: ["assets/css/main.css"],
   vite: {
     optimizeDeps: {
-      include: [
-        "fast-deep-equal",
-        "seedrandom",
-        "lodash",
-        "@geode/opengeodeweb-front",
-        "ajv",
-        "globalthis",
-      ],
+      include: ["@geode/opengeodeweb-front"],
     },
   },
 });
