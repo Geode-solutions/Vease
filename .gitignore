@@ -6,6 +6,11 @@
 .cache
 build
 dist
+/dist-electron
+/dist_back
+/dist_viewer
+/venv_back
+/venv_viewer
 
 # Node dependencies
 node_modules
@@ -26,9 +31,8 @@ logs
 
 # Other
 /out
-/dist-electron
-venv_back
-venv_viewer
+
+
 lock
 time
 *.spec
