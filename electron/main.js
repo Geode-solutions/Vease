@@ -11,56 +11,66 @@ updateElectronApp();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 async function getAvailablePort(port) {
-  console.log("getAvailablePort", port);
   const available_port = await getPort({ port });
   console.log("available_port", available_port);
-
   return available_port;
 }
 
-function run_script(win, command, args, callback) {
-  console.log("run_script", command, args);
-  var child = child_process.spawn(command, args, {
-    encoding: "utf8",
-    shell: true,
-  });
-  // You can also use a variable to save the output for when the script closes later
-  // child.on("error", (error) => {
-  //   dialog.showMessageBox({
-  //     title: "Title",
-  //     type: "warning",
-  //     message: "Error occured.\r\n" + error,
-  //   });
-  // });
+async function run_script(
+  win,
+  command,
+  args,
+  expected_response,
+  timeout_seconds = 30
+) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject("Timed out after " + timeout_seconds + " seconds");
+    }, timeout_seconds * 1000);
+    var child = child_process.spawn(command, args, {
+      encoding: "utf8",
+      shell: true,
+    });
 
-  child.stdout.setEncoding("utf8");
-  child.stdout.on("data", (data) => {
-    //Here is the output
-    data = data.toString();
-    console.log(data);
-  });
+    // You can also use a variable to save the output for when the script closes later
+    child.stderr.setEncoding("utf8");
+    child.on("error", (error) => {
+      dialog.showMessageBox({
+        title: "Title",
+        type: "warning",
+        message: "Error occured.\r\n" + error,
+      });
+    });
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (data) => {
+      //Here is the output
+      data = data.toString();
+      if (data.includes(expected_response)) {
+        resolve();
+      }
+      console.log(data);
+    });
 
-  child.stderr.setEncoding("utf8");
-  child.stderr.on("data", (data) => {
-    // Return some data to the renderer process with the mainprocess-response ID
-    win.webContents.send("mainprocess-response", data);
-    //Here is the output from the command
-    console.log(data);
-  });
+    child.stderr.on("data", (data) => {
+      // Return some data to the renderer process with the mainprocess-response ID
+      win.webContents.send("mainprocess-response", data);
+      //Here is the output from the command
+      console.log(data);
+    });
 
-  // child.on("close", (code) => {
-  //   //Here you can get the exit code of the script
-  //   switch (code) {
-  //     case 0:
-  //       dialog.showMessageBox({
-  //         title: "Title",
-  //         type: "info",
-  //         message: "End process.\r\n",
-  //       });
-  //       break;
-  //   }
-  // });
-  if (typeof callback === "function") callback();
+    child.on("close", (code) => {
+      //Here you can get the exit code of the script
+      switch (code) {
+        case 0:
+          dialog.showMessageBox({
+            title: "Title",
+            type: "info",
+            message: "End process.\r\n",
+          });
+          break;
+      }
+    });
+  });
 }
 
 app.whenReady().then(() => {
@@ -82,19 +92,26 @@ app.whenReady().then(() => {
   win.setMinimumSize(800, 600);
 
   ipcMain.handle("run_back", async (event, ...args) => {
-    console.log("HANDLE", args);
     const port = await getAvailablePort(args[0]);
-    console.log("RESULT FROM MAIN", port);
-    if (process.env.NODE_ENV == "development") {
-      run_script(win, "npm run install_back", [], () => {
-        console.log("DONE 1");
-      });
-    }
+    console.log("BACK PORT", port);
+    await run_script(
+      win,
+      "./dist_back/geodeapp_back",
+      ["--port " + port],
+      "Serving Flask app"
+    );
+    return port;
+  });
 
-    run_script(win, "./dist/geodeapp_server", ["--port " + port], () => {
-      console.log("DONE 2");
-    });
-
+  ipcMain.handle("run_viewer", async (event, ...args) => {
+    const port = await getAvailablePort(args[0]);
+    console.log("VIEWER PORT", port);
+    await run_script(
+      win,
+      "./dist_viewer/geodeapp_viewer",
+      ["--port " + port],
+      "Starting factory"
+    );
     return port;
   });
 
