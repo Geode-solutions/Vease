@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import { updateElectronApp } from "update-electron-app";
 import child_process from "child_process";
 import path from "path";
@@ -82,7 +82,7 @@ app.whenReady().then(() => {
       nodeIntegrationInWorker: true,
       contextIsolation: true,
       nodeIntegration: true,
-      webSecurity: false,
+      webSecurity: true,
       preload: path.join(__dirname, "preload.js"),
     },
   });
