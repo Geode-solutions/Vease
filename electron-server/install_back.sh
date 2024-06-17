@@ -19,7 +19,7 @@ wait
 source ./electron-server/venv_back/bin/activate
 echo 'Activating venv'
 wait
-./electron-server/venv_back/bin/pyinstaller --onefile --collect-all opengeodeweb_back ./electron-server/venv_back/bin/geodeapp_back --distpath ./electron-server/dist-back
+./electron-server/venv_back/bin/pyinstaller --onefile --collect-all opengeodeweb_back ./electron-server/venv_back/bin/geodeapp_back --distpath ./electron-server/dist_back
 echo 'Bundling geodeapp_back'
 wait
 
