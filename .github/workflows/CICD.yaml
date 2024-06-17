@@ -36,6 +36,8 @@ jobs:
           npm install
           npm run package
           npm run make
-        if: github.ref == 'refs/heads/next'
-        run: npm run publish --prerelease
-        else: npm run publish
+          if [[ "$github.ref == 'refs/heads/next'" ]] then
+            npm run publish --prerelease
+          else
+            npm run publish
+          fi
