@@ -5,11 +5,10 @@
     width="50"
     class="mt-10 ma-2"
     color="#FFFFFF00"
-    height="100%"
     elevation="0"
-    absolute
     floating
     app
+    permanent
   >
     <v-tooltip
       v-for="(item, index) in items"

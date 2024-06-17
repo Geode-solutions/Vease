@@ -1,13 +1,4 @@
 export default defineNuxtConfig({
-  runtimeConfig: {
-    public: {
-      API_URL:
-        process.env.NODE_ENV === "production"
-          ? "api.geode-solutions.com"
-          : "localhost",
-    },
-  },
-
   extends: ["@geode/opengeodeweb-front"],
   modules: [
     "nuxt-electron",
@@ -27,9 +18,15 @@ export default defineNuxtConfig({
         // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
       },
+      {
+        entry: "electron/preload.js",
+        onstart(args) {
+          args.reload();
+        },
+      },
     ],
-    renderer: {},
   },
+
 
   app: {
     head: {
@@ -62,14 +59,7 @@ export default defineNuxtConfig({
   css: ["assets/css/main.css"],
   vite: {
     optimizeDeps: {
-      include: [
-        "fast-deep-equal",
-        "seedrandom",
-        "lodash",
-        "@geode/opengeodeweb-front",
-        "ajv",
-        "globalthis",
-      ],
+      include: ["@geode/opengeodeweb-front"],
     },
   },
 });

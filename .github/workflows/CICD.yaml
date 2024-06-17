@@ -1,0 +1,41 @@
+name: CICD
+
+on:
+  push:
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/next' || github.ref == 'refs/heads/master'
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          npm install
+          npm run package
+          npm run make
+        if: github.ref == 'refs/heads/next'
+        run: npm run publish --prerelease
+        else: npm run publish
