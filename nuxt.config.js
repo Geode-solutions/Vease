@@ -27,14 +27,6 @@ export default defineNuxtConfig({
     ],
   },
 
-  // build: {
-  //   extend(config, { isClient }) {
-  //     // Extend only webpack config for client-bundle
-  //     if (isClient) {
-  //       config.target = "electron-renderer";
-  //     }
-  //   },
-  // },
 
   app: {
     head: {
