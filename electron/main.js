@@ -94,7 +94,7 @@ app.whenReady().then(() => {
     console.log("BACK PORT", port);
     await run_script(
       win,
-      "./dist_back/geodeapp_back",
+      "./electron-server/dist_back/geodeapp_back",
       ["--port " + port],
       "Serving Flask app"
     );
@@ -106,7 +106,7 @@ app.whenReady().then(() => {
     console.log("VIEWER PORT", port);
     await run_script(
       win,
-      "./dist_viewer/geodeapp_viewer",
+      "./electron-server/dist_viewer/geodeapp_viewer",
       ["--port " + port],
       "Starting factory"
     );
