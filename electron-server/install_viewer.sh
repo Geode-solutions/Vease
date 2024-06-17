@@ -1,10 +1,9 @@
-rm -rf venv_viewer dist_viewer build
-python3 -m venv venv_viewer
-./venv_viewer/bin/pip install pip-tools
-./venv_viewer/bin/python -m pip-compile ./electron-server/requirements_viewer.in
-./venv_viewer/bin/pip install -r ./electron-server/requirements_viewer.txt
-./venv_viewer/bin/pip install pyinstaller
-source ./venv_viewer/bin/activate
-./venv_viewer/bin/pyinstaller --onefile --collect-all opengeodeweb_viewer --collect-all vtkmodules ./venv_viewer/bin/geodeapp_viewer --distpath ./dist_viewer
-
-
+#! /bin/sh
+rm -rf ./electron-server/venv_viewer ./electron-server/dist_viewer ./electron-server/build ./electron-server/requirements_viewer.txt
+python3 -m venv ./electron-server/venv_viewer
+. ./electron-server/venv_viewer/bin/activate
+pip install pip-tools
+pip-compile ./electron-server/requirements_viewer.in
+pip install -r ./electron-server/requirements_viewer.txt
+pip install pyinstaller
+pyinstaller --onefile --collect-data opengeodeweb_viewer --collect-all vtkmodules ./electron-server/venv_viewer/bin/geodeapp_viewer --distpath ./electron-server/dist_viewer
