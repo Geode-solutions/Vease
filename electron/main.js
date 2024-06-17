@@ -78,8 +78,6 @@ app.whenReady().then(() => {
     title: "Vease - New project",
     icon: "public/favicon.ico",
     center: true,
-    width: 800,
-    height: 600,
     webPreferences: {
       nodeIntegrationInWorker: true,
       contextIsolation: true,
@@ -88,7 +86,7 @@ app.whenReady().then(() => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-
+  win.maximize();
   win.setMinimumSize(800, 600);
 
   ipcMain.handle("run_back", async (event, ...args) => {
