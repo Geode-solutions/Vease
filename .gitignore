@@ -7,10 +7,10 @@
 build
 dist
 /dist-electron
-/dist_back
-/dist_viewer
-/venv_back
-/venv_viewer
+/electron-server/dist_back
+/electron-server/dist_viewer
+/electron-server/venv_back
+/electron-server/venv_viewer
 
 # Node dependencies
 node_modules
