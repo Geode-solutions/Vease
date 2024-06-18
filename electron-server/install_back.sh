@@ -1,7 +1,7 @@
-#! /bin/sh
+#! /bin/bash
 rm -rf ./electron-server/venv_back ./electron-server/dist_back ./electron-server/build ./electron-server/requirements_back.txt
 python3 -m venv ./electron-server/venv_back
-. ./electron-server/venv_back/bin/activate
+source ./electron-server/venv_back/bin/activate
 pip install pip-tools
 pip-compile ./electron-server/requirements_back.in
 pip install -r ./electron-server/requirements_back.txt
