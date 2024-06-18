@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   release:
@@ -41,5 +41,3 @@ jobs:
           else
             npm run publish
           fi
-        env: 
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
