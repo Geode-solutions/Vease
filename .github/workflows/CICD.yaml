@@ -41,3 +41,5 @@ jobs:
           else
             npm run publish
           fi
+        env: 
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
