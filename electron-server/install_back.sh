@@ -4,6 +4,8 @@ rm -rf electron-server/venv_back electron-server/dist_back electron-server/build
 folder=electron-server/venv_back
 python3 -m venv $folder
 bin_folder=$folder/bin
+ls $folder
+ls $bin_folder
 $bin_folder/pip install pip-tools
 $bin_folder/pip-compile electron-server/requirements_back.in
 $bin_folder/pip install -r electron-server/requirements_back.txt

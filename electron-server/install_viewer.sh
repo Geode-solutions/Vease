@@ -4,6 +4,8 @@ rm -rf electron-server/venv_viewer electron-server/dist_back electron-server/bui
 folder=electron-server/venv_viewer
 python3 -m venv $folder
 bin_folder=$folder/bin
+ls $folder
+ls $bin_folder
 $bin_folder/pip install pip-tools
 $bin_folder/pip-compile electron-server/requirements_viewer.in
 $bin_folder/pip install -r electron-server/requirements_viewer.txt
