@@ -6,7 +6,7 @@ python3 -m venv $folder
 echo $OSTYPE
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     bin_folder=$folder/bin
-elif [[ "$OSTYPE" == "win32" ]]; then
+elif [[ "$OSTYPE" == "msys" ]]; then
     bin_folder=$folder/scripts
 fi
 bin_folder=$folder/bin
