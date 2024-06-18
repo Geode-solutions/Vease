@@ -3,7 +3,6 @@ rm -rf ./electron-server/venv_back ./electron-server/dist_back ./electron-server
 folder=./electron-server/venv_back
 python3 -m venv $folder
 bin_folder=$folder/bin
-# source $folder/bin/activate
 $bin_folder/pip install pip-tools
 $bin_folder/pip-compile ./electron-server/requirements_back.in
 $bin_folder/pip install -r ./electron-server/requirements_back.txt
