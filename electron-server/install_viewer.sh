@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 rm -rf electron-server/venv_viewer electron-server/dist_back electron-server/build electron-server/requirements_viewer.txt
 folder=electron-server/venv_viewer
 python3 -m venv $folder
