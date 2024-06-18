@@ -9,19 +9,19 @@ env:
 jobs:
   semantic:
     runs-on: ubuntu-latest
+    outputs:
+      new_release: ${{ steps.semantic.outputs.new_release_published }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic
-        outputs:
-          new_release_published: ${{ steps.semantic.outputs.new_release_published }}
 
   release:
     runs-on: ${{ matrix.os }}
     needs: [semantic]
-    if: needs.semantic.outputs.new_release_published == 'true'
+    if: needs.semantic.outputs.new_release == 'true'
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
