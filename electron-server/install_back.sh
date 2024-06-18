@@ -14,5 +14,5 @@ pip install pip-tools
 pip-compile electron-server/requirements_back.in
 pip install -r electron-server/requirements_back.txt
 pip install pyinstaller
-ls -r electron-server/venv_back
+ls -R electron-server/venv_back
 pyinstaller --onefile --collect-data opengeodeweb_back $bin_folder/geodeapp_back --distpath electron-server/dist_back
