@@ -1,5 +1,5 @@
 #!/bin/bash
-ls
+echo "TEST"
 rm -rf ./electron-server/venv_back ./electron-server/dist_back ./electron-server/build ./electron-server/requirements_back.txt
 echo "Remove"
 folder=./electron-server/venv_back
