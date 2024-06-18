@@ -3,7 +3,11 @@ set -e
 rm -rf electron-server/venv_viewer electron-server/dist_back electron-server/build electron-server/requirements_viewer.txt
 folder=electron-server/venv_viewer
 python3 -m venv $folder
-bin_folder=$folder/bin
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    bin_folder=$folder/bin
+elif [[ "$OSTYPE" == "win32" ]]; then
+    bin_folder=$folder/scripts
+fi
 ls $folder
 ls $bin_folder
 $bin_folder/pip install pip-tools

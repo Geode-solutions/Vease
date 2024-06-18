@@ -3,6 +3,11 @@ set -e
 rm -rf electron-server/venv_back electron-server/dist_back electron-server/build electron-server/requirements_back.txt
 folder=electron-server/venv_back
 python3 -m venv $folder
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    bin_folder=$folder/bin
+elif [[ "$OSTYPE" == "win32" ]]; then
+    bin_folder=$folder/scripts
+fi
 bin_folder=$folder/bin
 ls $folder
 ls $bin_folder
