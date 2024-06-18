@@ -7,14 +7,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/next' || github.ref == 'refs/heads/master'
-
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-
+  semantic:
+    runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
@@ -22,13 +16,22 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic
+
+  release:
+    runs-on: ${{ matrix.os }}
+    needs: [semantic]
+    if: needs.semantic.outputs.new_release_published == 'true'
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install dependencies
-        if: steps.semantic.outputs.new_release_published == 'true'
         run: |
           npm install
           npm run package
@@ -38,3 +41,4 @@ jobs:
           else
             npm run publish
           fi
+        shell: bash
