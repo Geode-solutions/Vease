@@ -7,9 +7,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     bin_folder=$folder/bin
 elif [[ "$OSTYPE" == "msys" ]]; then
     bin_folder=$folder/Scripts
-    $bin_folder\activate
+    $bin_folder/activate
 fi
-
 pip install pip-tools
 pip-compile electron-server/requirements_viewer.in
 pip install -r electron-server/requirements_viewer.txt
