@@ -8,7 +8,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     source $bin_folder/activate
 elif [[ "$OSTYPE" == "msys" ]]; then
     bin_folder=$folder/Scripts
-    $bin_folder/activate
+    $bin_folder/activate.bat
 fi
 pip install pip-tools
 pip-compile electron-server/requirements_back.in
