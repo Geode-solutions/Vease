@@ -22,8 +22,6 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v4
         with:
