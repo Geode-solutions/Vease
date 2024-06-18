@@ -9,7 +9,6 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 elif [[ "$OSTYPE" == "msys" ]]; then
     bin_folder=$folder/scripts
 fi
-bin_folder=$folder/bin
 ls $folder
 ls $bin_folder
 $bin_folder/pip install pip-tools
