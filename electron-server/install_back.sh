@@ -1,5 +1,7 @@
 #!/bin/bash
+ls
 rm -rf ./electron-server/venv_back ./electron-server/dist_back ./electron-server/build ./electron-server/requirements_back.txt
+echo "Remove"
 folder=./electron-server/venv_back
 python3 -m venv $folder
 echo "Activate venv"
