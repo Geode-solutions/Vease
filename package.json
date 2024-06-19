@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
-    "install_back": "bash electron-server/install_back.sh",
-    "install_viewer": "bash electron-server/install_viewer.sh",
+    "install_back": "node electron-server/install_back.js",
+    "install_viewer": "node electron-server/install_viewer.js",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "start": "npm run build && electron-forge start",
