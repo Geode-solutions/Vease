@@ -2,10 +2,10 @@ module.exports = {
   packagerConfig: {
     asar: false,
     extraResource: [
-      ".output/public/.",
-      "dist-electron",
-      "electron-server/dist_viewer/geodeapp_viewer",
-      "electron-server/dist_back/geodeapp_back",
+      "./.output/public/.",
+      "./dist-electron",
+      "./electron-server/dist_viewer/geodeapp_viewer",
+      "./electron-server/dist_back/geodeapp_back",
     ],
     icon: "./favicon.ico",
   },

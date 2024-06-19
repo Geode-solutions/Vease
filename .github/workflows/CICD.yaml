@@ -24,7 +24,7 @@ jobs:
     if: needs.semantic.outputs.new_release == 'true'
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [ubuntu-latest]
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
