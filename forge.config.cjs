@@ -5,7 +5,6 @@ module.exports = {
       "./.output/public/.",
       "./dist-electron",
       "./electron-server/dist_back/app.exe",
-      "./electron-server/dist_viewer/app.exe",
     ],
     icon: "./favicon.ico",
   },
