@@ -10,5 +10,5 @@ pip install pip-tools
 pip-compile electron-server/requirements_viewer.in
 pip install -r electron-server/requirements_viewer.txt
 pip install pyinstaller
-pyinstaller --onefile --collect-data opengeodeweb_viewer --collect-all vtkmodules $packages_path/geodeapp_viewer/app.py --distpath electron-server/dist_viewer -n geodeapp_viewer --clean
+pyinstaller --onefile --collect-data opengeodeweb_viewer --collect-all vtkmodules $packages_path/geodeapp_viewer/app.py --distpath ./electron-server/dist_viewer -n geodeapp_viewer --clean
 cp ./electron-server/dist_viewer/geodeapp_viewer ./resources
