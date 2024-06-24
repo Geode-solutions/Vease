@@ -4,7 +4,8 @@ module.exports = {
     extraResource: [
       "./.output/public/.",
       "./dist-electron",
-      "./electron-server/dist_back/app.exe",
+      "./electron-server/dist_back/geodeapp_back.exe",
+      "./electron-server/dist_back/geodeapp_viewer.exe",
     ],
     icon: "./favicon.ico",
   },
