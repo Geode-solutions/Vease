@@ -13,4 +13,5 @@ if (process.platform === "win32") {
   fileContent = fileContent.replace("//GEODEAPP_VIEWER", "./electron-server/dist_viewer/geodeapp_viewer");
 }
 fs.writeFileSync("./forge.config.cjs", fileContent);
+console.log("forge.config.cjs updated", fileContent);
 
