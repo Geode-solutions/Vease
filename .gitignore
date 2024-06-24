@@ -11,6 +11,7 @@ dist
 /electron-server/dist_viewer
 /electron-server/venv_back
 /electron-server/venv_viewer
+resources
 
 # Node dependencies
 node_modules

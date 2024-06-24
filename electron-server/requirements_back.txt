@@ -80,7 +80,7 @@ geode-viewables==2.2.3
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geodeapp-back==0.1.0
+geodeapp-back==0.1.1
     # via -r electron-server/requirements_back.in
 itsdangerous==2.2.0
     # via

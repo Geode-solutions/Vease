@@ -92,21 +92,28 @@ app.whenReady().then(() => {
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
-    await run_script(
-      win,
-      "./electron-server/dist_back/geodeapp_back",
-      ["--port " + port],
-      "Serving Flask app"
-    );
+    var command;
+    if (process.platform === "win32") {
+      command = "resources/geodeapp_back.exe";
+    } else if (process.platform === "linux") {
+      command = "./resources/geodeapp_back";
+    }
+    await run_script(win, command, ["--port " + port], "Serving Flask app");
     return port;
   });
 
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
+    var command;
+    if (process.platform === "win32") {
+      command = "resources/geodeapp_viewer.exe";
+    } else if (process.platform === "linux") {
+      command = "./resources/geodeapp_viewer";
+    }
     await run_script(
       win,
-      "./electron-server/dist_viewer/geodeapp_viewer",
+      command,
       ["--port " + port],
       "Starting factory"
     );
