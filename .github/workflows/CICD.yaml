@@ -38,7 +38,7 @@ jobs:
           node-version: 20
       - name: Publish version
         run: |
-          jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > "$tmp" && mv "$tmp" package.json
+          jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
           cat package.json
           npm install
           npm run prepackage

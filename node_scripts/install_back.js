@@ -8,10 +8,10 @@ if (process.platform === "win32"){
 }
 
 child.stdout.on("data",function(data){
-    console.log(data);
+    console.log("" + data);
 });
 child.stderr.on("data",function(data){
-    console.log(data);
+    console.log("" + data);
 });
 child.on("exit",function(){
     console.log("Exit script");
