@@ -5,13 +5,13 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   semantic:
     runs-on: ubuntu-latest
     outputs:
       new_release: ${{ steps.semantic.outputs.new_release_published }}
+      version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
@@ -38,11 +38,8 @@ jobs:
           node-version: 20
       - name: Publish version
         run: |
+          jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > "$tmp" && mv "$tmp" package.json
           npm install
-          pwd
-          ls -l
-          ls -l ./electron-server
-          ls -l ./electron-server/dist_back
           npm run prepackage
           npm run package
           npm run make
