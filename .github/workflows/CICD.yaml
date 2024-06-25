@@ -38,6 +38,10 @@ jobs:
       - name: Publish version
         run: |
           npm install
+          pwd
+          ls -l
+          ls -l ./electron-server
+          ls -l ./electron-server/dist_back
           npm run prepackage
           npm run package
           npm run make
