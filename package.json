@@ -1,6 +1,6 @@
 {
   "name": "vease",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "description": "Basic app",
   "main": "dist-electron/main.js",
   "scripts": {
