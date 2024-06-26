@@ -119,9 +119,8 @@ app.whenReady().then(() => {
     );
     return port;
   });
-
   if (app.isPackaged) {
-    win.loadFile("../index.html");
+    win.loadFile(process.resourcesPath + "/index.html");
   } else {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();

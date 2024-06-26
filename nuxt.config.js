@@ -26,8 +26,7 @@ export default defineNuxtConfig({
       },
     ],
   },
-
-
+  ssr: false,
   app: {
     head: {
       titleTemplate: "Vease",
