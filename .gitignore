@@ -29,11 +29,10 @@ logs
 .env
 .env.*
 !.env.example
-
+/electron-server/venv_back
+/electron-server/venv_viewer
 # Other
 /out
-
-
-lock
-time
-*.spec
+/dist-electron
+/build
+/electron-server

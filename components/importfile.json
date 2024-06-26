@@ -1,0 +1,20 @@
+{
+    "$id": "/opengeodeweb_back/save_viewable_file",
+    "type": "object",
+    "methods": [
+        "POST"
+    ],
+    "properties": {
+        "input_geode_object": {
+            "type": "string"
+        },
+        "filename": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "input_geode_object",
+        "filename"
+    ],
+    "additionalProperties": false
+}
