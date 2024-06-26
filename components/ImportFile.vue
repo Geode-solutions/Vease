@@ -9,6 +9,7 @@
 </template>
 
 <script setup>
+import schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import schema from "@/components/importfile.json";
 
 const emit = defineEmits(["update_values", "increment_step", "decrement_step"]);
@@ -46,8 +47,6 @@ async function import_files() {
         },
       }
     );
-
-    router;
   }
   toggle_loading();
 }
