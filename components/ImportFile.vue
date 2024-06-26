@@ -10,7 +10,7 @@
 
 <script setup>
 import schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import schema from "@/components/importfile.json";
+import schema from "@geode/opengeodeweb-back/schemas.json";
 
 const emit = defineEmits(["update_values", "increment_step", "decrement_step"]);
 

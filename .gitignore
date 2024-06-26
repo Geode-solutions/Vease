@@ -36,3 +36,6 @@ logs
 /dist-electron
 /build
 /electron-server
+/lock
+geodeapp_back.spec
+geodeapp_viewer.spec
