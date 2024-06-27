@@ -4,7 +4,14 @@
 .nuxt
 .nitro
 .cache
+build
 dist
+/dist-electron
+/electron-server/dist_back
+/electron-server/dist_viewer
+/electron-server/venv_back
+/electron-server/venv_viewer
+resources
 
 # Node dependencies
 node_modules
@@ -25,3 +32,8 @@ logs
 
 # Other
 /out
+
+
+lock
+time
+*.spec

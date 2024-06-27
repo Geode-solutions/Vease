@@ -1,0 +1,52 @@
+name: CICD
+
+on:
+  push:
+
+env:
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+jobs:
+  semantic:
+    runs-on: ubuntu-latest
+    outputs:
+      new_release: ${{ steps.semantic.outputs.new_release_published }}
+      version: ${{ steps.semantic.outputs.new_release_version }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
+        id: semantic
+
+  release:
+    runs-on: ${{ matrix.os }}
+    needs: [semantic]
+    if: needs.semantic.outputs.new_release == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5 
+        with:
+          python-version: '3.10' 
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Publish version
+        run: |
+          jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
+          cat package.json
+          npm install
+          npm run prepackage
+          npm run package
+          npm run make
+          if [[ "$github.ref == 'refs/heads/next'" ]]; then
+            npm run publish --prerelease
+          else
+            npm run publish
+          fi
+        shell: bash

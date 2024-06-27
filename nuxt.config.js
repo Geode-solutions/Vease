@@ -1,21 +1,32 @@
 export default defineNuxtConfig({
-  runtimeConfig: {
-    public: {
-      API_URL:
-        process.env.NODE_ENV === "production"
-          ? "api.geode-solutions.com"
-          : "localhost",
-    },
-  },
-  modules: ["nuxt-electron"],
+  extends: ["@geode/opengeodeweb-front"],
+  modules: [
+    "nuxt-electron",
+    "vuetify-nuxt-module",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["storeToRefs", "defineStore"],
+      },
+    ],
+    "@nuxt/devtools",
+    "@vueuse/nuxt",
+  ],
   electron: {
     build: [
       {
+        // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
+      },
+      {
+        entry: "electron/preload.js",
+        onstart(args) {
+          args.reload();
+        },
       },
     ],
   },
-
+  ssr: false,
   app: {
     head: {
       titleTemplate: "Vease",
@@ -31,6 +42,10 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
   },
+  
+  imports: {
+    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
+  },
 
   vue: {
     compilerOptions: {
@@ -39,5 +54,11 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: process.env.NODE_ENV === "production" ? false : true,
+  },
+  css: ["assets/css/main.css"],
+  vite: {
+    optimizeDeps: {
+      include: ["@geode/opengeodeweb-front"],
+    },
   },
 });
