@@ -14,7 +14,8 @@
     "prepackage": "node node_scripts/prepackage.js",
     "package": "npm run build && electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
     "type": "git",
