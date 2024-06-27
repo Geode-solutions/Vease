@@ -1,16 +1,20 @@
 {
   "name": "vease",
-  "version": "0.0.1",
+  "version": "0.0.0-semantically-released",
   "description": "Basic app",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
+    "install_back": "node node_scripts/install_back.js",
+    "install_viewer": "node node_scripts/install_viewer.js",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "start": "npm run build && electron-forge start",
+    "prepackage": "node node_scripts/prepackage.js",
     "package": "npm run build && electron-forge package",
-    "make": "npm run build && electron-forge make"
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "repository": {
     "type": "git",
@@ -30,10 +34,10 @@
   },
   "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
   "devDependencies": {
-    "@electron-forge/cli": "^7.3.0",
-    "@electron-forge/maker-squirrel": "^7.3.0",
-    "@electron-forge/maker-zip": "^7.3.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.3.0",
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "electron": "^28.2.7",
     "electron-builder": "^24.13.3",
     "nuxt-electron": "^0.7.0",
@@ -43,7 +47,7 @@
   "dependencies": {
     "@geode/opengeodeweb-front": "^8.0.2",
     "@pinia/nuxt": "^0.5.1",
-    "@vueuse/nuxt": "^10.9.0",
+    "@vueuse/nuxt": "^10.11.0",
     "draggable": "^4.2.0",
     "nuxt": "^3.7.4",
     "js-file-download": "^0.4.12",

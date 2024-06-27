@@ -37,5 +37,6 @@ logs
 /build
 /electron-server
 /lock
+/uploads
 geodeapp_back.spec
 geodeapp_viewer.spec
