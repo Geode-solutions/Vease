@@ -7,7 +7,6 @@ module.exports = {
       "//GEODEAPP_BACK",
       "//GEODEAPP_VIEWER"
     ],
-    icon: "./favicon.ico",
   },
   rebuildConfig: {},
 
