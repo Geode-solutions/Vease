@@ -2,7 +2,7 @@ const { spawn } = require('node:child_process')
 
 var child
 if (process.platform === "win32"){
-    child = spawn("powershell.exe", ["electron-server/install_back.ps1"]);
+    child = spawn("powershell.exe", ["./electron-server/install_viewer.ps1"]);
 } else if (process.platform === "linux"){
     child = spawn("./electron-server/install_viewer.sh", []);
 }
