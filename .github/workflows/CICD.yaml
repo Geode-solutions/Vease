@@ -44,9 +44,13 @@ jobs:
           npm run prepackage
           npm run package
           npm run make
-          if [[ "$github.ref == 'refs/heads/next'" ]]; then
-            npm run publish --prerelease
-          else
-            npm run publish
-          fi
+          npm run publish
         shell: bash
+      - name: Merge master -> next
+        if: github.ref == 'refs/heads/master'
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: master
+          target_branch: next
+          github_token: ${{ secrets.TOKEN }}
