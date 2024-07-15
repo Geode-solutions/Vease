@@ -42,7 +42,7 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
   },
-  
+
   imports: {
     dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },

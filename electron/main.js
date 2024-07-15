@@ -76,7 +76,7 @@ async function run_script(
 app.whenReady().then(() => {
   const win = new BrowserWindow({
     title: "Vease - New project",
-    icon: "public/favicon.ico",
+    icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
     center: true,
     webPreferences: {
       nodeIntegrationInWorker: true,
