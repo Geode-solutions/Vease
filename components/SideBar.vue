@@ -12,29 +12,27 @@
   >
     <v-tooltip v-for="(item, index) in items" :key="item.id" :text="item.title">
       <template v-slot:activator="{ props }">
-        <div>
-          <v-btn
-            v-bind="(props, attrs)"
-            flat
-            color="#FFFFFF00"
-            @click="item.click"
-            style="border-radius: 20%"
+        <v-btn
+          v-bind="(props, attrs)"
+          flat
+          color="#FFFFFF00"
+          @click="item.click"
+          style="border-radius: 20%"
+          :icon="item.icon"
+          class="mb-1"
+          draggable="true"
+          @dragstart="startDrag($event, item)"
+          @drop="onDrop($event, index)"
+          @dragover.prevent
+          v-on="on"
+        >
+          <v-icon
+            class="icon-style pa-6"
             :icon="item.icon"
-            class="mb-1"
-            draggable="true"
-            @dragstart="startDrag($event, item)"
-            @drop="onDrop($event, index)"
-            @dragover.prevent
-            v-on="on"
-          >
-            <v-icon
-              class="icon-style pa-6"
-              :icon="item.icon"
-              color="white"
-              size="28"
-            />
-          </v-btn>
-        </div>
+            color="white"
+            size="28"
+          />
+        </v-btn>
       </template>
     </v-tooltip>
 
