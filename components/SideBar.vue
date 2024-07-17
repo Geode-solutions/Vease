@@ -12,22 +12,20 @@
   >
     <v-tooltip v-for="(item, index) in items" :key="item.id" :text="item.title">
       <template v-slot:activator="{ props }">
-        <div
-          draggable="true"
-          @dragstart="startDrag($event, item)"
-          @drop="onDrop($event, index)"
-          @dragover.prevent
-          v-bind="attrs"
-          v-on="on"
-        >
+        <div>
           <v-btn
-            v-bind="props"
+            v-bind="(props, attrs)"
             flat
             color="#FFFFFF00"
             @click="item.click"
             style="border-radius: 20%"
             :icon="item.icon"
             class="mb-1"
+            draggable="true"
+            @dragstart="startDrag($event, item)"
+            @drop="onDrop($event, index)"
+            @dragover.prevent
+            v-on="on"
           >
             <v-icon
               class="icon-style pa-6"
@@ -46,19 +44,14 @@
       radius="20px"
       class="text-center"
     >
-      <!-- Dialog content for new project -->
     </v-dialog>
 
     <v-dialog v-model="openproject" max-width="800px" class="text-center">
-      <!-- Dialog content for open project -->
     </v-dialog>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
