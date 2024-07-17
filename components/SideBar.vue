@@ -2,7 +2,7 @@
   <v-navigation-drawer
     fixed
     v-model="drawer"
-    width="50"
+    width="70"
     class="mt-10 ma-2"
     color="#FFFFFF00"
     elevation="0"
@@ -10,30 +10,42 @@
     app
     permanent
   >
-    <v-tooltip
-      v-for="(item, index) in items"
-      :key="item.title"
-      :text="item.title"
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          flat
-          color="#FFFFFF00"
-          :class="item.title === 'Back' ? 'mb-8' : 'mb-1'"
-          @click="item.click"
-          style="border-radius: 20%"
-          :icon="item.icon"
-        >
-          <v-icon
-            class="icon-style pa-6"
-            :icon="item.icon"
-            color="white"
-            size="28"
-          />
-        </v-btn>
-      </template>
-    </v-tooltip>
+    <div>
+      <v-tooltip
+        v-for="(item, index) in items"
+        :key="item.id"
+        :text="item.title"
+      >
+        <template v-slot:activator="{ props }">
+          <div
+            draggable="true"
+            @dragstart="startDrag($event, item)"
+            @drop="onDrop($event, index)"
+            @dragover.prevent
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-btn
+              v-bind="props"
+              flat
+              color="#FFFFFF00"
+              @click="item.click"
+              style="border-radius: 20%"
+              :icon="item.icon"
+              class="mb-1"
+            >
+              <v-icon
+                class="icon-style pa-6"
+                :icon="item.icon"
+                color="white"
+                size="28"
+              />
+            </v-btn>
+          </div>
+        </template>
+      </v-tooltip>
+    </div>
+
     <v-dialog
       v-model="newproject"
       max-width="800px"
@@ -75,6 +87,7 @@
         </v-card>
       </v-sheet>
     </v-dialog>
+
     <v-dialog v-model="openproject" max-width="800px" class="text-center">
       <v-sheet border="md">
         <v-card color="#3c9983">
@@ -114,41 +127,90 @@
   </v-navigation-drawer>
 </template>
 
-<script setup>
+<script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-const drawer = ref(true);
-const router = useRouter();
-const newproject = ref(false);
-const openproject = ref(false);
-const items = [
-  { title: "Back", icon: "mdi-arrow-left", click: () => router.go(-1) },
-  { title: "Home", icon: "mdi-home", click: () => router.push("/") },
-  {
-    title: "New Project",
-    icon: "mdi-plus",
-    click: () => (newproject.value = true),
+
+export default {
+  setup() {
+    const drawer = ref(true);
+    const newproject = ref(false);
+    const openproject = ref(false);
+    const router = useRouter();
+    const items = ref([
+      {
+        id: 1,
+        title: "Back",
+        icon: "mdi-arrow-left",
+        click: () => router.go(-1),
+      },
+      {
+        id: 2,
+        title: "Home",
+        icon: "mdi-home",
+        click: () => router.push("/"),
+      },
+      {
+        id: 3,
+        title: "New Project",
+        icon: "mdi-plus",
+        click: () => (newproject.value = true),
+      },
+      {
+        id: 4,
+        title: "Open Project",
+        icon: "mdi-folder-outline",
+        click: () => (openproject.value = true),
+      },
+      {
+        id: 5,
+        title: "Supperposition",
+        icon: "mdi-layers",
+        click: () => router.push("/supperposition"),
+      },
+      {
+        id: 6,
+        title: "Download",
+        icon: "mdi-upload",
+        click: () => router.push("/download"),
+      },
+      {
+        id: 7,
+        title: "Extensions",
+        icon: "mdi-puzzle",
+        click: () => router.push("/extensions"),
+      },
+      {
+        id: 8,
+        title: "Settings",
+        icon: "mdi-cog",
+        click: () => router.push("/settings"),
+      },
+    ]);
+
+    let draggedItem = null;
+
+    const startDrag = (event, item) => {
+      draggedItem = item;
+    };
+
+    const onDrop = (event, dropIndex) => {
+      const dragIndex = items.value.findIndex((item) => item === draggedItem);
+      if (dragIndex === dropIndex) return;
+
+      items.value.splice(dragIndex, 1);
+      items.value.splice(dropIndex, 0, draggedItem);
+      draggedItem = null;
+    };
+
+    return {
+      drawer,
+      newproject,
+      openproject,
+      items,
+      startDrag,
+      onDrop,
+    };
   },
-  {
-    title: "Open Project",
-    icon: "mdi-folder-outline",
-    click: () => (openproject.value = true),
-  },
-  {
-    title: "Supperposition",
-    icon: "mdi-layers",
-    click: () => router.push("/supperposition"),
-  },
-  {
-    title: "Download",
-    icon: "mdi-upload",
-    click: () => router.push("/download"),
-  },
-  {
-    title: "Extensions",
-    icon: "mdi-puzzle",
-    click: () => router.push("/extensions"),
-  },
-  { title: "Settings", icon: "mdi-cog", click: () => router.push("/settings") },
-];
+};
 </script>
