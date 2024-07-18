@@ -40,3 +40,17 @@ h2 {
 font-size: 30px;
 font-weight: 100;
 }
+
+.drop-zone {
+  width: 5%;
+  padding: 30px;
+  min-height: 10px;
+}
+
+.drag-el {
+  padding: 6px;
+}
+
+.drag-el:last-child {
+  margin-bottom: 0;
+}
