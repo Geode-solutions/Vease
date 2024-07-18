@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
-    "requirements_back": "pip install pip-tools && pip-compile electron-server/requirements_back.in --pre --upgrade",
-    "requirements_viewer": "pip install pip-tools && pip-compile electron-server/requirements_viewer.in --pre --upgrade",
+    "requirements_back": "pip install pip-tools && pip-compile electron-server/requirements_back.in --upgrade",
+    "requirements_viewer": "pip install pip-tools && pip-compile electron-server/requirements_viewer.in --upgrade",
     "install_back": "node node_scripts/install_back.js",
     "install_viewer": "node node_scripts/install_viewer.js",
     "build": "nuxi build --prerender",
