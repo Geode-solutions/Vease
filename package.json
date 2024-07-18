@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nuxi dev",
     "generate": "nuxt generate",
+    "requirements_back": "pip install pip-tools && pip-compile electron-server/requirements_back.in --pre --upgrade",
+    "requirements_viewer": "pip install pip-tools && pip-compile electron-server/requirements_viewer.in --pre --upgrade",
     "install_back": "node node_scripts/install_back.js",
     "install_viewer": "node node_scripts/install_viewer.js",
     "build": "nuxi build --prerender",
@@ -14,8 +16,7 @@
     "prepackage": "node node_scripts/prepackage.js",
     "package": "npm run build && electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "postinstall": "npm run install_back && npm run install_viewer"
+    "publish": "electron-forge publish"
   },
   "repository": {
     "type": "git",
@@ -55,7 +56,7 @@
     "get-port-please": "^3.1.2",
     "h3-formidable": "^1.0.0",
     "js-file-download": "^0.4.12",
-    "nuxt": "^3.7.4",
+    "nuxt": "^3.12.3",
     "pinia": "^2.1.7",
     "update-electron-app": "^3.0.0",
     "vue": "^3.4.21",

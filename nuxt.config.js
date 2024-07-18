@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
+
   modules: [
     "nuxt-electron",
     "vuetify-nuxt-module",
@@ -12,6 +13,7 @@ export default defineNuxtConfig({
     "@nuxt/devtools",
     "@vueuse/nuxt",
   ],
+
   electron: {
     build: [
       {
@@ -26,7 +28,9 @@ export default defineNuxtConfig({
       },
     ],
   },
+
   ssr: false,
+
   app: {
     head: {
       titleTemplate: "Vease",
@@ -52,13 +56,18 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
+
   devtools: {
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
+
   css: ["assets/css/main.css"],
+
   vite: {
     optimizeDeps: {
       include: ["@geode/opengeodeweb-front"],
     },
   },
+
+  compatibilityDate: "2024-06-30",
 });
