@@ -3,6 +3,7 @@
     fixed
     v-model="drawer"
     width="70"
+    align="center"
     class="mt-10 ma-2"
     color="#FFFFFF00"
     elevation="0"
