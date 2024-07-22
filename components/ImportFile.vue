@@ -9,8 +9,9 @@
 </template>
 
 <script setup>
-import schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import schema from "@geode/opengeodeweb-back/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+
 
 const emit = defineEmits(["update_values", "increment_step", "decrement_step"]);
 
@@ -33,12 +34,12 @@ async function import_files() {
     };
 
     await api_fetch(
-      { schema, params },
+      { schema: back_schemas.opengeodeweb_back.save_viewable_file, params },
       {
         requestErrorFunction: () => {},
         response_function: async (response) => {
           await viewer_call({
-            schema: schemas.opengeodeweb_viewer.create_object_pipeline,
+            schema: viewer_schemas.opengeodeweb_viewer.create_object_pipeline,
             params: {
               id: response._data.id,
               file_name: response._data.viewable_file_name,
