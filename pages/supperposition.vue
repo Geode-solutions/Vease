@@ -18,13 +18,11 @@ viewer_store.$patch({ is_running: true });
 const files = ref([]);
 const input_geode_object = ref("");
 const additional_files = ref([]);
-const supported_feature = "crs";
 
 const stepper_tree = reactive({
   current_step_index: ref(0),
   files,
   input_geode_object,
-  supported_feature,
   steps: [
     {
       step_title: "Please select a file to convert",
@@ -32,7 +30,6 @@ const stepper_tree = reactive({
         component_name: shallowRef(FileSelector),
         component_options: {
           multiple: true,
-          supported_feature,
         },
       },
       chips: computed(() => {
@@ -47,7 +44,6 @@ const stepper_tree = reactive({
           filenames: computed(() => {
             return files.value.map((file) => file.name);
           }),
-          supported_feature,
         },
       },
       chips: computed(() => {
@@ -90,7 +86,7 @@ const stepper_tree = reactive({
       },
       chips: computed(() => {
         const output_params = computed(() => {
-          return [files, input_geode_object, input_geode_object];
+          return [files.value.map((file) => file.name), input_geode_object, additional_files.value.map((file) => file.name)];
         });
         if (_.isEmpty(output_params)) {
           return [];
@@ -107,6 +103,24 @@ const stepper_tree = reactive({
     },
   ],
 });
-
+const schema = {
+  "$id": "/ping",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+  },
+  "required": [],
+  "additionalProperties": false
+}
+const schema2 = {
+  "$id": "/",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+  },
+  "required": [],
+  "additionalProperties": false
+}
+await api_fetch({ schema: schema2, params: {} });
 provide("stepper_tree", stepper_tree);
 </script>

@@ -1,12 +1,13 @@
 module.exports = {
   packagerConfig: {
     asar: false,
-    extraResource: [
-      "./.output/public/.",
-      "./dist-electron",
-      "//GEODEAPP_BACK",
-      "//GEODEAPP_VIEWER"
-    ],
+    // extraResource: [
+    //   "./.output/public/.",
+    //   "./dist-electron/",
+    //   "./electron-server/dist_back/geodeapp_back",
+    //   "./electron-server/dist_viewer/geodeapp_viewer"
+    // ],
+    ignore: ["./node_modules"],
   },
   rebuildConfig: {},
 

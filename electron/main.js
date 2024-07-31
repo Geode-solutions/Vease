@@ -89,6 +89,23 @@ app.whenReady().then(() => {
   win.maximize();
   win.setMinimumSize(800, 600);
 
+  win.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
+    },
+  );
+
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        'Access-Control-Allow-Origin': ['*'],
+        // We use this to bypass headers
+        'Access-Control-Allow-Headers': ['*'],
+        ...details.responseHeaders,
+      },
+    });
+  });
+
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
@@ -98,7 +115,7 @@ app.whenReady().then(() => {
     } else if (process.platform === "linux") {
       command = "./resources/geodeapp_back";
     }
-    await run_script(win, command, ["--port " + port, "--data_folder_path ./data"], "Serving Flask app");
+    await run_script(win, command, ["--port " + port, "--data_folder_path /temp/Vease"], "Serving Flask app");
     return port;
   });
 
@@ -114,14 +131,16 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port, "--data_folder_path ./data"],
+      ["--port " + port, "--data_folder_path /temp/Vease"],
       "Starting factory"
     );
     return port;
   });
   if (app.isPackaged) {
+    console.log("process.resourcesPath", process.resourcesPath);
     win.loadFile(process.resourcesPath + "/index.html");
   } else {
+    console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   }

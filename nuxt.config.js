@@ -27,6 +27,10 @@ export default defineNuxtConfig({
         },
       },
     ],
+    disableDefaultOptions: true
+  },
+  experimental: {
+    appManifest: false,
   },
 
   ssr: false,
@@ -45,6 +49,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+    baseURL: "./",
   },
 
   imports: {
@@ -58,7 +63,7 @@ export default defineNuxtConfig({
   },
 
   devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
+    enabled: process.env.NODE_ENV === "production" ? false : false,
   },
 
   css: ["assets/css/main.css"],
@@ -66,6 +71,15 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ["@geode/opengeodeweb-front"],
+    },
+    watch: {
+      ignored: ["**"],
+    }
+  },
+
+  router: {
+    options: {
+      hashMode: true,
     },
   },
 
