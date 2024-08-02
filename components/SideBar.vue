@@ -26,6 +26,7 @@
           @drop="onDrop($event, index)"
           @dragover.prevent
           v-on="on"
+          data-type="sidebar-icon"
         >
           <v-icon
             class="icon-style pa-6"
@@ -118,6 +119,9 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
@@ -170,6 +174,7 @@ let draggedItem = null;
 
 const startDrag = (event, item) => {
   draggedItem = item;
+  event.dataTransfer.setData("text/plain", "sidebar-icon");
 };
 
 const onDrop = (event, dropIndex) => {

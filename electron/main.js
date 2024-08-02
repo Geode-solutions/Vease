@@ -98,7 +98,12 @@ app.whenReady().then(() => {
     } else if (process.platform === "linux") {
       command = "./resources/geodeapp_back";
     }
-    await run_script(win, command, ["--port " + port], "Serving Flask app");
+    await run_script(
+      win,
+      command,
+      ["--port " + port, "--data_folder_path " + "./uploads"],
+      "Serving Flask app"
+    );
     return port;
   });
 
@@ -114,7 +119,7 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port],
+      ["--port " + port, "--data_folder_path " + "./uploads"],
       "Starting factory"
     );
     return port;

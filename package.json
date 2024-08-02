@@ -4,7 +4,7 @@
   "description": "Basic app",
   "main": "dist-electron/main.js",
   "scripts": {
-    "dev": "nuxi dev",
+    "dev": "npx nuxi@3.11.0 dev",
     "generate": "nuxt generate",
     "install_back": "node node_scripts/install_back.js",
     "install_viewer": "node node_scripts/install_viewer.js",
@@ -47,9 +47,10 @@
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
-    "@geode/opengeodeweb-front": "^8.0.2",
+    "@geode/opengeodeweb-front": "^8.1.1",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
+    "@vueuse/core": "^10.11.0",
     "@vueuse/nuxt": "^10.9.0",
     "draggable": "^4.2.0",
     "get-port-please": "^3.1.2",

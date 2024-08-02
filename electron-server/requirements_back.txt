@@ -25,8 +25,6 @@ click==8.1.7
     #   flask
     #   geodeapp-back
     #   opengeodeweb-back
-colorama==0.4.6
-    # via click
 flask[async]==3.0.3
     # via
     #   flask-cors
@@ -82,7 +80,7 @@ geode-viewables==2.2.3
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geodeapp-back==0.1.1
+geodeapp-back==0.2.0
     # via -r electron-server/requirements_back.in
 itsdangerous==2.2.0
     # via
@@ -151,9 +149,7 @@ opengeode-io==6.5.1
     #   geodeapp-back
     #   opengeode-geosciencesio
     #   opengeodeweb-back
-opengeodeweb-back==4.2.1
-    # via geodeapp-back
-python-dotenv==1.0.1
+opengeodeweb-back==4.3.0
     # via geodeapp-back
 referencing==0.35.1
     # via
@@ -168,7 +164,9 @@ rpds-py==0.18.1
     #   opengeodeweb-back
     #   referencing
 typing-extensions==4.12.2
-    # via asgiref
+    # via
+    #   asgiref
+    #   geodeapp-back
 werkzeug==3.0.3
     # via
     #   flask
