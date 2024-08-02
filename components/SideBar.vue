@@ -119,9 +119,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);

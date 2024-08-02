@@ -10,12 +10,6 @@ import ObjectSelector from "@geode/opengeodeweb-front/components/ObjectSelector.
 import ImportFile from "@/components/ImportFile.vue";
 import { defineProps, ref, reactive, computed, provide, shallowRef } from "vue";
 
-const geode_store = use_geode_store();
-const viewer_store = use_viewer_store();
-
-geode_store.$patch({ is_running: true });
-viewer_store.$patch({ is_running: true });
-
 const files = ref([]);
 const input_geode_object = ref("");
 const additional_files = ref([]);
