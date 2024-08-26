@@ -12,7 +12,7 @@ import ImportFile from "@/components/ImportFile.vue";
 const files = ref([]);
 const input_geode_object = ref("");
 const additional_files = ref([]);
-const supported_feature = "crs";
+const supported_feature = "";
 const props = defineProps({
   files: {
     type: Array,
@@ -92,7 +92,7 @@ const stepper_tree = reactive({
       },
       chips: computed(() => {
         const output_params = computed(() => {
-          return [files, input_geode_object, input_geode_object];
+          return [input_geode_object, additional_files];
         });
         if (_.isEmpty(output_params)) {
           return [];
