@@ -29,13 +29,10 @@ logs
 .env
 .env.*
 !.env.example
-/electron-server/venv_back
-/electron-server/venv_viewer
 # Other
 /out
 /dist-electron
 /build
-/electron-server
 /lock
 /uploads
 geodeapp_back.spec
