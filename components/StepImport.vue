@@ -1,5 +1,5 @@
 <template>
-  <StepImport class="mr-12" />
+  <Stepper @close="$emit('close')" />
 </template>
 
 <script setup>
@@ -9,20 +9,23 @@ import MissingFilesSelector from "@geode/opengeodeweb-front/components/MissingFi
 import ObjectSelector from "@geode/opengeodeweb-front/components/ObjectSelector.vue";
 import ImportFile from "@/components/ImportFile.vue";
 
-const geode_store = use_geode_store();
-const viewer_store = use_viewer_store();
-
-geode_store.$patch({ is_running: true });
-viewer_store.$patch({ is_running: true });
-
 const files = ref([]);
 const input_geode_object = ref("");
 const additional_files = ref([]);
+const supported_feature = "";
+const props = defineProps({
+  files: {
+    type: Array,
+    default: [],
+  },
+});
+files.value = props.files;
 
 const stepper_tree = reactive({
   current_step_index: ref(0),
   files,
   input_geode_object,
+  supported_feature,
   steps: [
     {
       step_title: "Please select a file to convert",
@@ -30,6 +33,8 @@ const stepper_tree = reactive({
         component_name: shallowRef(FileSelector),
         component_options: {
           multiple: true,
+          supported_feature,
+          files,
         },
       },
       chips: computed(() => {
@@ -44,6 +49,7 @@ const stepper_tree = reactive({
           filenames: computed(() => {
             return files.value.map((file) => file.name);
           }),
+          supported_feature,
         },
       },
       chips: computed(() => {
@@ -86,7 +92,7 @@ const stepper_tree = reactive({
       },
       chips: computed(() => {
         const output_params = computed(() => {
-          return [files.value.map((file) => file.name), input_geode_object, additional_files.value.map((file) => file.name)];
+          return [input_geode_object, additional_files];
         });
         if (_.isEmpty(output_params)) {
           return [];
@@ -103,24 +109,6 @@ const stepper_tree = reactive({
     },
   ],
 });
-const schema = {
-  "$id": "/ping",
-  "methods": ["POST"],
-  "type": "object",
-  "properties": {
-  },
-  "required": [],
-  "additionalProperties": false
-}
-const schema2 = {
-  "$id": "/",
-  "methods": ["POST"],
-  "type": "object",
-  "properties": {
-  },
-  "required": [],
-  "additionalProperties": false
-}
-await api_fetch({ schema: schema2, params: {} });
+
 provide("stepper_tree", stepper_tree);
 </script>

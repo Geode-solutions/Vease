@@ -55,7 +55,11 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },
-
+  router: {
+    options: {
+      hashMode: true,
+    },
+  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
