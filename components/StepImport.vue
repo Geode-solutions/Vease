@@ -8,7 +8,6 @@ import FileSelector from "@geode/opengeodeweb-front/components/FileSelector.vue"
 import MissingFilesSelector from "@geode/opengeodeweb-front/components/MissingFilesSelector.vue";
 import ObjectSelector from "@geode/opengeodeweb-front/components/ObjectSelector.vue";
 import ImportFile from "@/components/ImportFile.vue";
-import { defineProps, ref, reactive, computed, provide, shallowRef } from "vue";
 
 const files = ref([]);
 const input_geode_object = ref("");
