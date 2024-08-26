@@ -47,7 +47,7 @@
     "vite-plugin-electron-renderer": "^0.14.5"
   },
   "dependencies": {
-    "@geode/opengeodeweb-front": "^8.1.1",
+    "@geode/opengeodeweb-front": "^9.0.0-rc.2",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/core": "^10.11.0",

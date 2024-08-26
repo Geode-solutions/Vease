@@ -10,6 +10,7 @@
       <NuxtPage style="z-index: 1" />
       <TopBar />
       <SideBar />
+      <FeedBackSnackers />
 
       <v-btn
         class="icon-style"
@@ -43,22 +44,15 @@
           />
         </v-navigation-drawer>
       </transition>
-
       <v-card class="drop-zone" />
-      <v-snackbar v-model="showMessage" :timeout="3000" :color="messageType">
-        {{ message }}
-      </v-snackbar>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-import { ref } from "vue";
+const feedback_store = use_feedback_store();
 
 const showDropZone = ref(false);
-const showMessage = ref(false);
-const message = ref("");
-const messageType = ref("success");
 const showStepper = ref(false);
 const droppedFiles = ref([]);
 const showButton = ref(false);
@@ -74,17 +68,21 @@ const onDrop = (e) => {
   }
 
   if (files.length === 0) {
-    message.value = "Aucun fichier déposé.";
-    messageType.value = "error";
+    feedback_store.add_error(
+      500,
+      "/internal",
+      "Internal error",
+      "No file dropped."
+    );
   } else {
-    message.value = `Fichier déposé : ${files[0].name} ${files[0].type}`;
-    messageType.value = "success";
+    feedback_store.add_success(
+      `File(s) dropped : ${files[0].name} ${files[0].type}`
+    );
     droppedFiles.value = Array.from(files);
     showStepper.value = true;
   }
 
   showDropZone.value = false;
-  showMessage.value = true;
 };
 
 const handleMouseMove = (e) => {
