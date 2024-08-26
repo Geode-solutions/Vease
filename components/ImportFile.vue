@@ -33,7 +33,7 @@ async function import_files() {
     };
 
     await api_fetch(
-      { schema, params },
+      { schema: schema.opengeodeweb_back.save_viewable_file, params },
       {
         requestErrorFunction: () => {},
         response_function: async (response) => {

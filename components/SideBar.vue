@@ -26,6 +26,7 @@
           @drop="onDrop($event, index)"
           @dragover.prevent
           v-on="on"
+          data-type="sidebar-icon"
         >
           <v-icon
             class="icon-style pa-6"
@@ -132,7 +133,7 @@ const items = ref([
   {
     title: "Home",
     icon: "mdi-home",
-    click: () => router.push("/"),
+    click: () => navigateTo('/'),
   },
   {
     title: "New Project",
@@ -147,22 +148,22 @@ const items = ref([
   {
     title: "Supperposition",
     icon: "mdi-layers",
-    click: () => router.push("/supperposition"),
+    click: () => navigateTo('/supperposition'),
   },
   {
     title: "Download",
     icon: "mdi-upload",
-    click: () => router.push("/download"),
+    click: () => navigateTo('/download'),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => router.push("/extensions"),
+    click: () => navigateTo('/extensions'),
   },
   {
     title: "Settings",
     icon: "mdi-cog",
-    click: () => router.push("/settings"),
+    click: () => navigateTo('/settings'),
   },
 ]);
 
@@ -170,6 +171,7 @@ let draggedItem = null;
 
 const startDrag = (event, item) => {
   draggedItem = item;
+  event.dataTransfer.setData("text/plain", "sidebar-icon");
 };
 
 const onDrop = (event, dropIndex) => {
