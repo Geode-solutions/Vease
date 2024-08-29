@@ -1,18 +1,7 @@
 export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
-  modules: [
-    "nuxt-electron",
-    "vuetify-nuxt-module",
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["storeToRefs", "defineStore"],
-      },
-    ],
-    "@nuxt/devtools",
-    "@vueuse/nuxt",
-  ],
+  modules: ["nuxt-electron", "vuetify-nuxt-module", "@nuxt/devtools"],
 
   electron: {
     build: [
@@ -27,7 +16,7 @@ export default defineNuxtConfig({
         },
       },
     ],
-    disableDefaultOptions: true
+    disableDefaultOptions: true,
   },
   experimental: {
     appManifest: false,
@@ -78,7 +67,7 @@ export default defineNuxtConfig({
     },
     watch: {
       ignored: ["**"],
-    }
+    },
   },
 
   router: {
