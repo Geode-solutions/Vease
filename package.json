@@ -44,6 +44,7 @@
     "nuxt-electron": "^0.7.0"
   },
   "dependencies": {
+    "@fontsource/michroma": "^5.0.21",
     "@geode/opengeodeweb-front": "^9.0.0-rc.2",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@pinia/nuxt": "^0.5.1",
