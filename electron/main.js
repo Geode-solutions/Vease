@@ -91,16 +91,16 @@ app.whenReady().then(() => {
 
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
-      callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } });
-    },
+      callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+    }
   );
 
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
-        'Access-Control-Allow-Origin': ['*'],
+        "Access-Control-Allow-Origin": ["*"],
         // We use this to bypass headers
-        'Access-Control-Allow-Headers': ['*'],
+        "Access-Control-Allow-Headers": ["*"],
         ...details.responseHeaders,
       },
     });
@@ -115,7 +115,18 @@ app.whenReady().then(() => {
     } else if (process.platform === "linux") {
       command = "./resources/geodeapp_back";
     }
-    await run_script(win, command, ["--port " + port, "--data_folder_path /temp/Vease"], "Serving Flask app");
+    await run_script(
+      win,
+      command,
+      [
+        "--port " + port,
+        "--data_folder_path ./vease_data",
+        "--desktop",
+        "--allowed_origin ",
+        process.env.VITE_DEV_SERVER_URL,
+      ],
+      "Serving Flask app"
+    );
     return port;
   });
 
@@ -131,7 +142,7 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port, "--data_folder_path /temp/Vease"],
+      ["--port " + port, "--data_folder_path ./vease_data"],
       "Starting factory"
     );
     return port;
