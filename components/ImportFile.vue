@@ -9,9 +9,9 @@
 </template>
 
 <script setup>
+import { useToggle } from "@vueuse/core";
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
-
 
 const emit = defineEmits(["update_values", "increment_step", "decrement_step"]);
 
