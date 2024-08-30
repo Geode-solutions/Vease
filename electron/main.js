@@ -10,6 +10,8 @@ updateElectronApp();
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
+const data_folder_path = "./vease_data/";
+
 async function getAvailablePort(port) {
   const available_port = await getPort({ port });
   console.log("available_port", available_port);
@@ -89,6 +91,23 @@ app.whenReady().then(() => {
   win.maximize();
   win.setMinimumSize(800, 600);
 
+  win.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+    }
+  );
+
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        "Access-Control-Allow-Origin": ["*"],
+        // We use this to bypass headers
+        "Access-Control-Allow-Headers": ["*"],
+        ...details.responseHeaders,
+      },
+    });
+  });
+
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
@@ -101,7 +120,13 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port, "--data_folder_path " + "./uploads"],
+      [
+        "--port " + port,
+        "--data_folder_path " + data_folder_path,
+        "--desktop",
+        "--allowed_origin ",
+        process.env.VITE_DEV_SERVER_URL,
+      ],
       "Serving Flask app"
     );
     return port;
@@ -119,14 +144,16 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port, "--data_folder_path " + "./uploads"],
+      ["--port " + port, "--data_folder_path " + data_folder_path],
       "Starting factory"
     );
     return port;
   });
   if (app.isPackaged) {
+    console.log("process.resourcesPath", process.resourcesPath);
     win.loadFile(process.resourcesPath + "/index.html");
   } else {
+    console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   }

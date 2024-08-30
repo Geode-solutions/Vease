@@ -1,7 +1,6 @@
 Remove-Item -Recurse -Force /electron-server/venv_viewer/ -ErrorAction:SilentlyContinue
 Remove-Item -Recurse -Force /electron-server/dist_viewer/ -ErrorAction:SilentlyContinue
 Remove-Item -Recurse -Force /electron-server/build/ -ErrorAction:SilentlyContinue
-
 $folder="electron-server/venv_viewer"
 python -m venv $folder
 

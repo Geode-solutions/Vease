@@ -27,6 +27,7 @@ export default defineNuxtConfig({
         },
       },
     ],
+    disableDefaultOptions: true,
   },
 
   ssr: false,
@@ -45,6 +46,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+    baseURL: "./",
   },
 
   imports: {
@@ -71,7 +73,16 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ["@geode/opengeodeweb-front"],
     },
+    watch: {
+      ignored: ["**"],
+    },
   },
 
-  compatibilityDate: "2024-07-18",
+  router: {
+    options: {
+      hashMode: true,
+    },
+  },
+
+  compatibilityDate: "2024-06-30",
 });
