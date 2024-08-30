@@ -35,5 +35,6 @@ logs
 /build
 /lock
 /uploads
+/vease_data
 geodeapp_back.spec
 geodeapp_viewer.spec

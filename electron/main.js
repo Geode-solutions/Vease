@@ -10,6 +10,8 @@ updateElectronApp();
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
+const data_folder_path = "./vease_data/";
+
 async function getAvailablePort(port) {
   const available_port = await getPort({ port });
   console.log("available_port", available_port);
@@ -120,7 +122,7 @@ app.whenReady().then(() => {
       command,
       [
         "--port " + port,
-        "--data_folder_path ./vease_data",
+        "--data_folder_path " + data_folder_path,
         "--desktop",
         "--allowed_origin ",
         process.env.VITE_DEV_SERVER_URL,
@@ -142,7 +144,7 @@ app.whenReady().then(() => {
     await run_script(
       win,
       command,
-      ["--port " + port, "--data_folder_path ./vease_data"],
+      ["--port " + port, "--data_folder_path " + data_folder_path],
       "Starting factory"
     );
     return port;
