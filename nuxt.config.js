@@ -56,7 +56,7 @@ export default defineNuxtConfig({
   },
 
   devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : false,
+    enabled: process.env.NODE_ENV === "production" ? false : true,
   },
 
   css: ["assets/css/main.css"],
