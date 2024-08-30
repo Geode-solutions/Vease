@@ -9,7 +9,6 @@
 </template>
 
 <script setup>
-import { useToggle } from "@vueuse/core";
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
@@ -26,7 +25,6 @@ const loading = ref(false);
 const toggle_loading = useToggle(loading);
 
 async function import_files() {
-  toggle_loading();
   for (const filename of filenames) {
     const params = {
       input_geode_object,
@@ -49,6 +47,5 @@ async function import_files() {
       }
     );
   }
-  toggle_loading();
 }
 </script>
