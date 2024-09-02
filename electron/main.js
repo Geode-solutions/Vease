@@ -125,7 +125,7 @@ app.whenReady().then(() => {
         "--data_folder_path " + data_folder_path,
         "--desktop",
         "--allowed_origin ",
-        process.env.VITE_DEV_SERVER_URL,
+        "" * "",
       ],
       "Serving Flask app"
     );
