@@ -2,7 +2,8 @@
   <v-navigation-drawer
     fixed
     v-model="drawer"
-    width="50"
+    width="70"
+    align="center"
     class="mt-10 ma-2"
     color="#FFFFFF00"
     elevation="0"
@@ -10,20 +11,22 @@
     app
     permanent
   >
-    <v-tooltip
-      v-for="(item, index) in items"
-      :key="item.title"
-      :text="item.title"
-    >
+    <v-tooltip v-for="(item, index) in items" :key="index" :text="item.title">
       <template v-slot:activator="{ props }">
         <v-btn
-          v-bind="props"
+          v-bind="(props, attrs)"
           flat
           color="#FFFFFF00"
-          :class="item.title === 'Back' ? 'mb-8' : 'mb-1'"
           @click="item.click"
           style="border-radius: 20%"
           :icon="item.icon"
+          class="mb-1"
+          draggable="true"
+          @dragstart="startDrag($event, item)"
+          @drop="onDrop($event, index)"
+          @dragover.prevent
+          v-on="on"
+          data-type="sidebar-icon"
         >
           <v-icon
             class="icon-style pa-6"
@@ -34,6 +37,7 @@
         </v-btn>
       </template>
     </v-tooltip>
+
     <v-dialog
       v-model="newproject"
       max-width="800px"
@@ -115,15 +119,22 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 const drawer = ref(true);
-const router = useRouter();
 const newproject = ref(false);
 const openproject = ref(false);
-const items = [
-  { title: "Back", icon: "mdi-arrow-left", click: () => router.go(-1) },
-  { title: "Home", icon: "mdi-home", click: () => router.push("/") },
+const router = useRouter();
+
+const items = ref([
+  {
+    title: "Back",
+    icon: "mdi-arrow-left",
+    click: () => router.go(-1),
+  },
+  {
+    title: "Home",
+    icon: "mdi-home",
+    click: () => navigateTo('/'),
+  },
   {
     title: "New Project",
     icon: "mdi-plus",
@@ -137,18 +148,38 @@ const items = [
   {
     title: "Supperposition",
     icon: "mdi-layers",
-    click: () => router.push("/supperposition"),
+    click: () => navigateTo('/supperposition'),
   },
   {
     title: "Download",
     icon: "mdi-upload",
-    click: () => router.push("/download"),
+    click: () => navigateTo('/download'),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => router.push("/extensions"),
+    click: () => navigateTo('/extensions'),
   },
-  { title: "Settings", icon: "mdi-cog", click: () => router.push("/settings") },
-];
+  {
+    title: "Settings",
+    icon: "mdi-cog",
+    click: () => navigateTo('/settings'),
+  },
+]);
+
+let draggedItem = null;
+
+const startDrag = (event, item) => {
+  draggedItem = item;
+  event.dataTransfer.setData("text/plain", "sidebar-icon");
+};
+
+const onDrop = (event, dropIndex) => {
+  const dragIndex = items.value.findIndex((item) => item === draggedItem);
+  if (dragIndex === dropIndex) return;
+
+  items.value.splice(dragIndex, 1);
+  items.value.splice(dropIndex, 0, draggedItem);
+  draggedItem = null;
+};
 </script>

@@ -5,8 +5,9 @@ module.exports = {
       "./.output/public/.",
       "./dist-electron",
       "//GEODEAPP_BACK",
-      "//GEODEAPP_VIEWER"
+      "//GEODEAPP_VIEWER",
     ],
+    ignore: ["./node_modules"],
   },
   rebuildConfig: {},
 
