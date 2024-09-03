@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "asar": false,
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    ".output/**/*",
+    "dist-electron"
+  ],
+  "extraResources": [
+    "geodeapp_back",
+    "geodeapp_viewer"
+  ],
+  "linux": {
+    "target": [
+      {
+        "target": "zip"
+      }
+    ]
+  },
+  "win": {
+    "target": [
+      {
+        "target": "zip"
+      }
+    ]
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "Geode-solutions",
+      "repo": "GeodeApp"
+    }
+  ]
+}
