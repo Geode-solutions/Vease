@@ -42,7 +42,6 @@ jobs:
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
-          npm run package
           npm run publish
         shell: bash
 

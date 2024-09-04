@@ -12,8 +12,8 @@
     "install_viewer": "node node_scripts/run_script_file.js --script_name=install_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
-    "package": "npm run build && electron-builder build",
-    "publish": "electron-builder",
+    "package": "npm run build && electron-builder build --publish=never",
+    "publish": "npm run build && electron-builder build --publish=always",
     "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
