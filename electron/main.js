@@ -126,7 +126,7 @@ app.whenReady().then(() => {
         "--port " + port,
         "--data_folder_path " + data_folder_path,
         "--desktop",
-        "-origin ",
+        "--allowed_origin ",
         "" * "",
       ],
       "Serving Flask app"
