@@ -6,12 +6,7 @@
 .cache
 build
 dist
-/dist-electron
-/electron-server/dist_back
-/electron-server/dist_viewer
-/electron-server/venv_back
-/electron-server/venv_viewer
-resources
+
 
 # Node dependencies
 node_modules
@@ -30,11 +25,15 @@ logs
 .env.*
 !.env.example
 # Other
-/out
-/dist-electron
 /build
-/lock
+/dist-electron
+/electron-server/dist_back
+/electron-server/dist_viewer
+/electron-server/venv_back
+/electron-server/venv_viewer
+/release
 /uploads
-/vease_data
+geodeapp_back
 geodeapp_back.spec
+geodeapp_viewer
 geodeapp_viewer.spec

@@ -4,13 +4,14 @@ import child_process from "child_process";
 import path from "path";
 
 const { getPort } = require("get-port-please");
+const os = require("os");
 
 // Checks for updates
 updateElectronApp();
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
-const data_folder_path = "./vease_data/";
+const data_folder_path = `${os.tmpdir()}/vease/`;
 
 async function getAvailablePort(port) {
   const available_port = await getPort({ port });
@@ -101,6 +102,7 @@ app.whenReady().then(() => {
     callback({
       responseHeaders: {
         "Access-Control-Allow-Origin": ["*"],
+        "Access-Control-Allow-Methods": ["*"],
         // We use this to bypass headers
         "Access-Control-Allow-Headers": ["*"],
         ...details.responseHeaders,
@@ -113,9 +115,9 @@ app.whenReady().then(() => {
     console.log("BACK PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "resources/geodeapp_back.exe";
+      command = "geodeapp_back.exe";
     } else if (process.platform === "linux") {
-      command = "./resources/geodeapp_back";
+      command = "./geodeapp_back";
     }
     await run_script(
       win,
@@ -137,9 +139,9 @@ app.whenReady().then(() => {
     console.log("VIEWER PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "resources/geodeapp_viewer.exe";
+      command = "geodeapp_viewer.exe";
     } else if (process.platform === "linux") {
-      command = "./resources/geodeapp_viewer";
+      command = "./geodeapp_viewer";
     }
     await run_script(
       win,
@@ -151,7 +153,7 @@ app.whenReady().then(() => {
   });
   if (app.isPackaged) {
     console.log("process.resourcesPath", process.resourcesPath);
-    win.loadFile(process.resourcesPath + "/index.html");
+    win.loadFile(process.resourcesPath + "/app/.output/public/index.html");
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
