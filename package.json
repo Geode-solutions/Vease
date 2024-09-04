@@ -12,7 +12,8 @@
     "install_viewer": "node node_scripts/run_script_file.js --script_name=install_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
-    "package": "npm run build && electron-builder --publish always",
+    "package": "npm run build && electron-builder build",
+    "puslish": "electron-builder --publish always",
     "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
@@ -36,7 +37,7 @@
     "@geode/opengeodeweb-front": "^9.0.0",
     "electron": "^32.0.1",
     "electron-builder": "^25.0.5",
-    "nuxt": "^3.13.0",
+    "nuxt": "^3.13.1",
     "nuxt-electron": "^0.7.0",
     "vuetify": "^3.7.1",
     "vuetify-nuxt-module": "^0.18.2"
