@@ -44,16 +44,9 @@ jobs:
           npm install
           npm run package
         shell: bash
-      - name: Create tag
-        run: |
-          git tag ${{ needs.semantic.outputs.version }}
-          git push origin ${{ needs.semantic.outputs.version }}
       - name: Release
-        uses: ncipollo/release-action@v1
-        with:
-          prerelease: if [[ ${{ needs.semantic.outputs.version }} == *"rc"* ]]; then true; else false; fi
-          artifacts: release/${{ needs.semantic.outputs.version }}/vease-${{ needs.semantic.outputs.version }}.zip
-          tag: ${{ needs.semantic.outputs.version }}
+        - run: |
+          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/vease-${{ needs.semantic.outputs.version }}.zip
 
   merge:
     runs-on: ubuntu-latest
