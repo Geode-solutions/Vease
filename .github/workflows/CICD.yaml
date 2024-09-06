@@ -45,7 +45,7 @@ jobs:
           npm run package
         shell: bash
       - name: Release
-        - run: |
+        run: |
           gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/vease-${{ needs.semantic.outputs.version }}.zip
 
   merge:
