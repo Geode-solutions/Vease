@@ -49,10 +49,11 @@ jobs:
           git tag ${{ needs.semantic.outputs.version }}
           git push origin ${{ needs.semantic.outputs.version }}
       - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          prerelease: if [[ ${{ needs.semantic.outputs.version }} == *"rc"* ]]; then true; else false; fi
-          files: vease-${{ needs.semantic.outputs.version }}.zip
+        uses: ncipollo/release-action@v1
+          with:
+            prerelease: if [[ ${{ needs.semantic.outputs.version }} == *"rc"* ]]; then true; else false; fi
+            artifacts: release/${{ needs.semantic.outputs.version }}/vease-${{ needs.semantic.outputs.version }}.zip
+            tag: ${{ needs.semantic.outputs.version }}
 
   merge:
     runs-on: ubuntu-latest
