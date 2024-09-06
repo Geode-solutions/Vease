@@ -44,6 +44,10 @@ jobs:
           npm install
           npm run package
         shell: bash
+      - name: Create tag
+        run: |
+          git tag ${{ needs.semantic.outputs.version }}
+          git push origin ${{ needs.semantic.outputs.version }}
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
