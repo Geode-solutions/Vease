@@ -12,11 +12,7 @@
     "install_viewer": "node node_scripts/run_script_file.js --script_name=install_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
-    "start": "npm run build && electron-forge start",
-    "prepackage": "node node_scripts/prepackage.js",
-    "package": "npm run build && electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "package": "npm run build && electron-builder build --publish=never",
     "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
@@ -37,30 +33,22 @@
   },
   "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
   "devDependencies": {
-    "@electron-forge/cli": "^7.4.0",
-    "@electron-forge/maker-zip": "^7.4.0",
-    "@electron-forge/publisher-github": "^7.4.0",
-    "electron": "^28.2.7",
-    "nuxt": "^3.12.3",
-    "nuxt-electron": "^0.7.0"
+    "@geode/opengeodeweb-front": "^9.0.0",
+    "electron": "^32.0.1",
+    "electron-builder": "^25.0.5",
+    "nuxt": "^3.13.1",
+    "nuxt-electron": "^0.7.0",
+    "vuetify": "^3.7.1",
+    "vuetify-nuxt-module": "^0.18.2"
   },
   "dependencies": {
     "@fontsource/michroma": "^5.0.21",
-    "@geode/opengeodeweb-front": "^9.0.0-rc.3",
-    "@nuxtjs/tailwindcss": "^6.8.0",
-    "@pinia/nuxt": "^0.5.1",
+    "@pinia/nuxt": "^0.5.4",
     "@vueuse/nuxt": "^11.0.3",
     "draggable": "^4.2.0",
     "get-port-please": "^3.1.2",
     "h3-formidable": "^1.0.0",
-    "js-file-download": "^0.4.12",
     "pinia": "^2.2.2",
-    "update-electron-app": "^3.0.0",
-    "vue": "^3.4.38",
-    "vue-cropperjs": "^5.0.0",
-    "vue-router": "^4.3.0",
-    "vuedraggable": "^2.24.3",
-    "vuetify": "^3.7.1",
-    "vuetify-nuxt-module": "^0.12.0"
+    "update-electron-app": "^3.0.0"
   }
 }

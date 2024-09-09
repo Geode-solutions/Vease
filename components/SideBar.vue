@@ -128,12 +128,12 @@ const items = ref([
   {
     title: "Back",
     icon: "mdi-arrow-left",
-    click: () => router.go(-1),
+    click: () => router.back(),
   },
   {
     title: "Home",
     icon: "mdi-home",
-    click: () => navigateTo('/'),
+    click: () => navigateTo("/"),
   },
   {
     title: "New Project",
@@ -148,22 +148,22 @@ const items = ref([
   {
     title: "Supperposition",
     icon: "mdi-layers",
-    click: () => navigateTo('/supperposition'),
+    click: () => navigateTo("/supperposition"),
   },
   {
     title: "Download",
     icon: "mdi-upload",
-    click: () => navigateTo('/download'),
+    click: () => navigateTo("/download"),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => navigateTo('/extensions'),
+    click: () => navigateTo("/extensions"),
   },
   {
     title: "Settings",
     icon: "mdi-cog",
-    click: () => navigateTo('/settings'),
+    click: () => navigateTo("/settings"),
   },
 ]);
 

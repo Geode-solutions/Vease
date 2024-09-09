@@ -27,27 +27,28 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - name: Check out Git repository
+      - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-python@v5 
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.10' 
-      - name: Install Node.js, NPM and Yarn
+          python-version: "3.10"
+      - name: Install Node.js, NPM
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - name: Publish version
+          node-version: latest
+      - name: Package
         run: |
           jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
-          npm run prepackage
           npm run package
-          npm run make
-          npm run publish
         shell: bash
-          
+      - name: Release
+        run: |
+          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/*.zip
+        shell: bash
+
   merge:
     runs-on: ubuntu-latest
     needs: [release]
