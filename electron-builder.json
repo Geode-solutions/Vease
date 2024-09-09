@@ -13,6 +13,7 @@
     "geodeapp_viewer"
   ],
   "linux": {
+    "artifactName": "${productName}_${platform}_${version}.${ext}",
     "target": [
       {
         "target": "zip"
@@ -20,6 +21,7 @@
     ]
   },
   "win": {
+    "artifactName": "${productName}_${platform}_${version}.${ext}",
     "target": [
       {
         "target": "zip"

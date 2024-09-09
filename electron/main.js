@@ -115,9 +115,9 @@ app.whenReady().then(() => {
     console.log("BACK PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "geodeapp_back.exe";
+      command = "resources/geodeapp_back.exe";
     } else if (process.platform === "linux") {
-      command = "./geodeapp_back";
+      command = "./resources/geodeapp_back";
     }
     await run_script(
       win,
@@ -139,9 +139,9 @@ app.whenReady().then(() => {
     console.log("VIEWER PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "geodeapp_viewer.exe";
+      command = "resources/geodeapp_viewer.exe";
     } else if (process.platform === "linux") {
-      command = "./geodeapp_viewer";
+      command = "./resources/geodeapp_viewer";
     }
     await run_script(
       win,
