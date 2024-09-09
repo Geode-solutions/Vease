@@ -47,6 +47,7 @@ jobs:
       - name: Release
         run: |
           gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/*.zip
+        shell: bash
 
   merge:
     runs-on: ubuntu-latest
