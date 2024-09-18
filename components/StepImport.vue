@@ -99,7 +99,7 @@ const stepper_tree = reactive({
         } else {
           const array = [];
           for (const property in output_params.value) {
-            if (output_params.value[property].value !== "") {
+            if (!([], "").includes(output_params.value[property].value)) {
               array.push(output_params.value[property].value);
             }
           }

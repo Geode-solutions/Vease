@@ -14,7 +14,7 @@
     <v-tooltip v-for="(item, index) in items" :key="index" :text="item.title">
       <template v-slot:activator="{ props }">
         <v-btn
-          v-bind="(props, attrs)"
+          v-bind="props"
           flat
           color="#FFFFFF00"
           @click="item.click"
@@ -25,7 +25,6 @@
           @dragstart="startDrag($event, item)"
           @drop="onDrop($event, index)"
           @dragover.prevent
-          v-on="on"
           data-type="sidebar-icon"
         >
           <v-icon
@@ -119,6 +118,9 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
@@ -133,7 +135,7 @@ const items = ref([
   {
     title: "Home",
     icon: "mdi-home",
-    click: () => navigateTo("/"),
+    click: () => router.push("/"),
   },
   {
     title: "New Project",
@@ -148,22 +150,22 @@ const items = ref([
   {
     title: "Supperposition",
     icon: "mdi-layers",
-    click: () => navigateTo("/supperposition"),
+    click: () => router.push("/supperposition"),
   },
   {
     title: "Download",
     icon: "mdi-upload",
-    click: () => navigateTo("/download"),
+    click: () => router.push("/download"),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => navigateTo("/extensions"),
+    click: () => router.push("/treeobject"),
   },
   {
     title: "Settings",
     icon: "mdi-cog",
-    click: () => navigateTo("/settings"),
+    click: () => router.push("/settings"),
   },
 ]);
 
