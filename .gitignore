@@ -35,5 +35,7 @@ logs
 /uploads
 geodeapp_back
 geodeapp_back.spec
+geodeapp_back.exe.spec
 geodeapp_viewer
 geodeapp_viewer.spec
+geodeapp_viewer.exe.spec
