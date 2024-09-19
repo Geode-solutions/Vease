@@ -32,6 +32,7 @@ logs
 /electron-server/venv_back
 /electron-server/venv_viewer
 /release
+/resources/*
 /uploads
 geodeapp_back
 geodeapp_back.spec
