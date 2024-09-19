@@ -13,6 +13,8 @@ process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 const data_folder_path = `${os.tmpdir()}/vease/`;
 
+var processes = [];
+
 async function getAvailablePort(port) {
   const available_port = await getPort({ port });
   console.log("available_port", available_port);
@@ -73,6 +75,7 @@ async function run_script(
           break;
       }
     });
+    processes.push(child);
   });
 }
 
@@ -115,7 +118,7 @@ app.whenReady().then(() => {
     console.log("BACK PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "resources/geodeapp_back.exe";
+      command = ".\\resources\\geodeapp_back.exe";
     } else if (process.platform === "linux") {
       command = "./resources/geodeapp_back";
     }
@@ -139,7 +142,7 @@ app.whenReady().then(() => {
     console.log("VIEWER PORT", port);
     var command;
     if (process.platform === "win32") {
-      command = "resources/geodeapp_viewer.exe";
+      command = ".\\resources\\geodeapp_viewer.exe";
     } else if (process.platform === "linux") {
       command = "./resources/geodeapp_viewer";
     }
@@ -159,6 +162,14 @@ app.whenReady().then(() => {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   }
+});
+
+// App close handler
+app.on('before-quit', function() {
+  // processes.forEach(function(proc) {
+  //   console.log( 'Process %s has been killed!', proc );
+  //   proc.kill();
+  // });
 });
 
 // Quit when all windows are closed.
