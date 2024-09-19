@@ -166,10 +166,10 @@ app.whenReady().then(() => {
 
 // App close handler
 app.on('before-quit', function() {
-  // processes.forEach(function(proc) {
-  //   console.log( 'Process %s has been killed!', proc );
-  //   proc.kill();
-  // });
+  processes.forEach(function(proc) {
+    console.log( 'Process %s has been killed!', proc );
+    proc.kill();
+  });
 });
 
 // Quit when all windows are closed.
