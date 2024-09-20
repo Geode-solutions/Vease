@@ -11,7 +11,7 @@ updateElectronApp();
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
-const data_folder_path = `${os.tmpdir()}/vease/`;
+const data_folder_path = path.join(os.tmpdir(), "vease");
 
 var processes = [];
 
@@ -165,9 +165,9 @@ app.whenReady().then(() => {
 });
 
 // App close handler
-app.on('before-quit', function() {
-  processes.forEach(function(proc) {
-    console.log( 'Process %s has been killed!', proc );
+app.on('before-quit', function () {
+  processes.forEach(function (proc) {
+    console.log('Process %s has been killed!', proc);
     proc.kill();
   });
 });
