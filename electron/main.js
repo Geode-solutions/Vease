@@ -75,6 +75,7 @@ async function run_script(
           break;
       }
     });
+    child.name=command.replace(/^.*[\\/]/, '')
     processes.push(child);
   });
 }
@@ -167,7 +168,7 @@ app.whenReady().then(() => {
 // App close handler
 app.on('before-quit', function () {
   processes.forEach(function (proc) {
-    console.log('Process %s has been killed!', proc);
+    console.log('Process %s has been killed!', proc.name);
     proc.kill();
   });
 });
