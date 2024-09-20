@@ -16,7 +16,7 @@ const data_folder_path = path.join(os.tmpdir(), "vease");
 var processes = [];
 
 async function getAvailablePort(port) {
-  const available_port = await getPort({ port });
+  const available_port = await getPort({ port, host: "0.0.0.0" });
   console.log("available_port", available_port);
   return available_port;
 }
