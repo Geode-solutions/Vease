@@ -8,13 +8,28 @@ const os = require("os");
 
 // Checks for updates
 updateElectronApp();
-
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
-const data_folder_path = `${os.tmpdir()}/vease/`;
+
+function resource_path() {
+  if (app.isPackaged) {
+    return process.resourcesPath
+  }
+  return app.getAppPath()
+}
+
+function executable_name(name) {
+  if (process.platform === "win32") {
+    return name + ".exe"
+  }
+  return name
+}
+const data_folder_path = path.join(os.tmpdir(), "vease");
+
+var processes = [];
 
 async function getAvailablePort(port) {
-  const available_port = await getPort({ port });
+  const available_port = await getPort({ port, host: "0.0.0.0" });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -73,6 +88,8 @@ async function run_script(
           break;
       }
     });
+    child.name = command.replace(/^.*[\\/]/, '')
+    processes.push(child);
   });
 }
 
@@ -113,12 +130,8 @@ app.whenReady().then(() => {
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
-    var command;
-    if (process.platform === "win32") {
-      command = "resources/geodeapp_back.exe";
-    } else if (process.platform === "linux") {
-      command = "./resources/geodeapp_back";
-    }
+    const command = path.join(resource_path(), executable_name("geodeapp_back"));
+    console.log("command", command)
     await run_script(
       win,
       command,
@@ -137,12 +150,8 @@ app.whenReady().then(() => {
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
-    var command;
-    if (process.platform === "win32") {
-      command = "resources/geodeapp_viewer.exe";
-    } else if (process.platform === "linux") {
-      command = "./resources/geodeapp_viewer";
-    }
+    const command = path.join(resource_path(), executable_name("geodeapp_viewer"));
+    console.log("command", command)
     await run_script(
       win,
       command,
@@ -152,13 +161,22 @@ app.whenReady().then(() => {
     return port;
   });
   if (app.isPackaged) {
-    console.log("process.resourcesPath", process.resourcesPath);
-    win.loadFile(process.resourcesPath + "/app/.output/public/index.html");
+    const app_path = path.join(app.getAppPath(), ".output", "public", "index.html")
+    console.log("APP_PATH", app_path)
+    win.loadFile(app_path);
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
   }
+});
+
+// App close handler
+app.on('before-quit', function () {
+  processes.forEach(function (proc) {
+    console.log('Process %s has been killed!', proc.name);
+    proc.kill();
+  });
 });
 
 // Quit when all windows are closed.
