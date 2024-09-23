@@ -9,8 +9,8 @@
     "dist-electron"
   ],
   "extraResources": [
-    "geodeapp_back",
-    "geodeapp_viewer"
+    "./geodeapp_back*",
+    "./geodeapp_viewer*"
   ],
   "linux": {
     "artifactName": "${productName}_${platform}_${version}.${ext}",
