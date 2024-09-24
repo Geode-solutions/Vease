@@ -34,4 +34,6 @@ logs
 /release
 /uploads
 geodeapp_back.*
+geodeapp_back
 geodeapp_viewer.*
+geodeapp_viewer
