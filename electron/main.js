@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
-import { updateElectronApp } from "update-electron-app";
+import { autoUpdater } from "electron-updater";
 import child_process from "child_process";
 import path from "path";
 
@@ -7,7 +7,7 @@ const { getPort } = require("get-port-please");
 const os = require("os");
 
 // Checks for updates
-updateElectronApp();
+autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 
