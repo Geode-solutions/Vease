@@ -26,6 +26,7 @@
   },
   "win": {
     "sign": "./customSign.js",
+    "signingHashAlgorithms": ["sha256"],
     "artifactName": "${productName}_${platform}_${version}.${ext}",
     "target": [
       {
