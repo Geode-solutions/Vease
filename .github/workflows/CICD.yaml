@@ -46,7 +46,7 @@ jobs:
         shell: bash
       - name: Release
         run: |
-          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/*.zip
+          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/*
         shell: bash
 
   merge:
