@@ -14,13 +14,18 @@
   ],
   "linux": {
     "artifactName": "${productName}_${platform}_${version}.${ext}",
-    "target": [
-      {
-        "target": "zip"
-      }
-    ]
+    "category": "Science",
+    "target": ["AppImage", "zip"],
+    "publish": [
+    {
+      "provider": "github",
+      "owner": "Geode-solutions",
+      "repo": "GeodeApp"
+    }
+  ]
   },
   "win": {
+    "sign": "./customSign.js",
     "artifactName": "${productName}_${platform}_${version}.${ext}",
     "target": [
       {
