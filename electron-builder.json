@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "asar": false,
+  "asar": true,
   "directories": {
     "output": "release/${version}"
   },
@@ -16,23 +16,18 @@
     "artifactName": "${productName}_${platform}_${version}.${ext}",
     "category": "Science",
     "target": ["AppImage", "zip"],
-    "publish": [
-    {
-      "provider": "github",
-      "owner": "Geode-solutions",
-      "repo": "GeodeApp"
-    }
-  ]
+    "publish": ["github"]
   },
   "win": {
+    "artifactName": "${productName}_${platform}_${version}.${ext}",
     "sign": "./customSign.js",
     "signingHashAlgorithms": ["sha256"],
-    "artifactName": "${productName}_${platform}_${version}.${ext}",
     "target": [
       {
         "target": "zip"
       }
-    ]
+    ],
+    "publish": ["github"]
   },
   "publish": [
     {
