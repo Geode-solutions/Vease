@@ -1,7 +1,8 @@
 {
   "name": "geodeapp",
   "version": "0.0.0",
-  "description": "Basic app",
+  "private": true,
+  "description": "Desktop and cloud sofware for data visualization",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "npx nuxi@3.11.0 dev --no-fork",
@@ -13,7 +14,7 @@
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
-    "publish": "electron-builder publish",
+    "release": "npm run build && electron-builder",
     "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {
