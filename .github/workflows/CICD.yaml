@@ -18,6 +18,8 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
   release:
     runs-on: ${{ matrix.os }}
