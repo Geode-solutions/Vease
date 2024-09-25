@@ -44,6 +44,7 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
           npm run package
+          npm run publish --version ${{ needs.semantic.outputs.version }} --files release/${{ needs.semantic.outputs.version }}/*
         shell: bash
         env:
           AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
