@@ -44,6 +44,7 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
           npm run package
+          npm run publish --version ${{ needs.semantic.outputs.version }} --files release/${{ needs.semantic.outputs.version }}/*
         shell: bash
         env:
           AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
@@ -51,10 +52,6 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
-      - name: Publish
-        run: |
-          npm run publish --version ${{ needs.semantic.outputs.version }} --files release/${{ needs.semantic.outputs.version }}/*
-        shell: bash
   merge:
     runs-on: ubuntu-latest
     needs: [release]
