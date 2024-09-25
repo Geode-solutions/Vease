@@ -14,7 +14,7 @@
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
-    "publish": "electron-builder publish --files $npm_config_files",
+    "release": "npm run build && electron-builder",
     "postinstall": "npm run install_back && npm run install_viewer"
   },
   "repository": {

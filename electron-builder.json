@@ -22,11 +22,7 @@
     "artifactName": "${productName}_${platform}_${version}.${ext}",
     "sign": "./customSign.js",
     "signingHashAlgorithms": ["sha256"],
-    "target": [
-      {
-        "target": "zip"
-      }
-    ],
+    "target": ["zip"],
     "publish": ["github"]
   },
   "publish": [
