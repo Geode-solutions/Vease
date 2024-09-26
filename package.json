@@ -1,6 +1,6 @@
 {
   "name": "geodeapp",
-  "version": "0.5.0-rc.16",
+  "version": "0.5.0-rc.17",
   "private": true,
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
