@@ -28,8 +28,10 @@
   "publish": [
     {
       "provider": "github",
+      "host": "github.com",
       "owner": "Geode-solutions",
-      "repo": "GeodeApp"
+      "repo": "GeodeApp",
+      "releaseType": "prerelease"
     }
   ]
 }
