@@ -46,6 +46,7 @@ jobs:
           cat package.json
           rm -rf node_modules package-lock.json
           npm install --ignore-scripts
+          npm run package
           npm run publish
         shell: bash
         env:
