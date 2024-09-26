@@ -2,7 +2,7 @@
   "name": "geodeapp",
   "version": "0.5.0-rc.16",
   "private": true,
-  "description": "Desktop and cloud sofware for data visualization",
+  "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "npx nuxi@3.11.0 dev --no-fork",
