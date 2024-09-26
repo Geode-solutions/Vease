@@ -30,8 +30,7 @@
       "provider": "github",
       "host": "github.com",
       "owner": "Geode-solutions",
-      "repo": "GeodeApp",
-      "releaseType": "prerelease"
+      "repo": "GeodeApp"
     }
   ]
 }
