@@ -56,7 +56,7 @@ jobs:
           AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
       - name: Release
         run: |
-          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/^[^\/]+(\.[^.]+)?$
+          gh release upload v${{ needs.semantic.outputs.version }} --glob 'release/${{ needs.semantic.outputs.version }}/*' release/${{ needs.semantic.outputs.version }}
         shell: bash
 
   merge:
