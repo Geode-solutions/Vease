@@ -47,7 +47,6 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install --ignore-scripts
           npm run package
-          npm run publish
         shell: bash
         env:
           AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
@@ -55,6 +54,10 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
           AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
+      - name: Release
+        run: |
+          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/^[^\/]+(\.[^.]+)?$
+        shell: bash
 
   merge:
     runs-on: ubuntu-latest
