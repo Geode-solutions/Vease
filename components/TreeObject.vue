@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="12">
         <v-treeview
           v-model:selected="selection"
           select-strategy="classic"
