@@ -118,9 +118,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
@@ -128,14 +125,9 @@ const router = useRouter();
 
 const items = ref([
   {
-    title: "Back",
-    icon: "mdi-arrow-left",
-    click: () => router.back(),
-  },
-  {
     title: "Home",
     icon: "mdi-home",
-    click: () => router.push("/"),
+    click: () => navigateTo("/"),
   },
   {
     title: "New Project",
@@ -150,22 +142,22 @@ const items = ref([
   {
     title: "Supperposition",
     icon: "mdi-layers",
-    click: () => router.push("/supperposition"),
+    click: () => navigateTo("/supperposition"),
   },
   {
     title: "Download",
     icon: "mdi-upload",
-    click: () => router.push("/download"),
+    click: () => navigateTo("/download"),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => router.push("/treeobject"),
+    click: () => navigateTo("/contextualmenu"),
   },
   {
     title: "Settings",
     icon: "mdi-cog",
-    click: () => router.push("/settings"),
+    click: () => navigateTo("/settings"),
   },
 ]);
 

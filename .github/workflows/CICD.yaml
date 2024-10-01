@@ -18,6 +18,8 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
   release:
     runs-on: ${{ matrix.os }}
@@ -32,21 +34,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - name: Install Node.js, NPM
+      - name: Setup Node.js, NPM
         uses: actions/setup-node@v4
         with:
           node-version: latest
       - name: Package
         run: |
+          dotnet tool install --global AzureSignTool --version 4.0.1
           jq '.version = "${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
           npm run package
         shell: bash
+        env:
+          AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
       - name: Release
         run: |
-          gh release upload v${{ needs.semantic.outputs.version }} release/${{ needs.semantic.outputs.version }}/*.zip
+          cd release/${{ needs.semantic.outputs.version }}
+          gh release upload v${{ needs.semantic.outputs.version }} geodeapp* latest*
         shell: bash
 
   merge:

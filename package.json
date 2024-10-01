@@ -1,7 +1,8 @@
 {
-  "name": "vease",
-  "version": "0.0.0-semantically-released",
-  "description": "Basic app",
+  "name": "geodeapp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "npx nuxi@3.11.0 dev --no-fork",
@@ -33,22 +34,23 @@
   },
   "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.0.0",
-    "electron": "^32.0.1",
+    "@geode/opengeodeweb-front": "^9.0.3",
+    "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
-    "nuxt": "^3.13.1",
+    "nuxt": "^3.13.2",
     "nuxt-electron": "^0.7.0",
-    "vuetify": "^3.7.1",
-    "vuetify-nuxt-module": "^0.18.2"
+    "vuetify": "^3.7.2",
+    "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
-    "@fontsource/michroma": "^5.0.21",
+    "@fontsource/michroma": "^5.1.0",
+    "@nuxt/kit": "^3.13.2",
     "@pinia/nuxt": "^0.5.4",
-    "@vueuse/nuxt": "^11.0.3",
+    "@vueuse/nuxt": "^11.1.0",
     "draggable": "^4.2.0",
+    "electron-updater": "^6.3.4",
     "get-port-please": "^3.1.2",
     "h3-formidable": "^1.0.0",
-    "pinia": "^2.2.2",
-    "update-electron-app": "^3.0.0"
+    "pinia": "^2.2.2"
   }
 }

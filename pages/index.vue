@@ -14,12 +14,10 @@
 
 <script setup>
 const infra_store = use_infra_store();
-const geode_store = use_geode_store();
 const viewer_store = use_viewer_store();
 
 onMounted(async () => {
-  await infra_store.create_connexion();
-  await geode_store.ping_task();
+  await infra_store.create_backend();
   await viewer_store.ws_connect();
 });
 
