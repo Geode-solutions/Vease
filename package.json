@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.0.3",
+    "@geode/opengeodeweb-front": "^9.1.0",
     "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
