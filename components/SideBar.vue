@@ -150,11 +150,6 @@ const items = ref([
     click: () => navigateTo("/download"),
   },
   {
-    title: "Extensions",
-    icon: "mdi-puzzle",
-    click: () => navigateTo("/contextualmenu"),
-  },
-  {
     title: "Settings",
     icon: "mdi-cog",
     click: () => navigateTo("/settings"),
