@@ -19,12 +19,17 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
+const treeStore = useTreeviewStore();
+const UIState = useUIState();
+
 const { filenames, input_geode_object } = props;
 
 const loading = ref(false);
 const toggle_loading = useToggle(loading);
 
 async function import_files() {
+  toggle_loading();
+
   for (const filename of filenames) {
     const params = {
       input_geode_object,
@@ -43,9 +48,14 @@ async function import_files() {
               file_name: response._data.viewable_file_name,
             },
           });
+          treeStore.addFile(input_geode_object, filename, response._data.id);
         },
       }
     );
   }
+
+  UIState.setShowStepper(false);
+
+  toggle_loading();
 }
 </script>

@@ -27,6 +27,7 @@ click==8.1.7
     #   opengeodeweb-back
 flask[async]==3.0.3
     # via
+    #   flask
     #   flask-cors
     #   geodeapp-back
     #   opengeodeweb-back

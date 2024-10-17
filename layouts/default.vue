@@ -2,8 +2,8 @@
   <v-app>
     <v-main
       class="custom-background drop-zone"
-      @dragover.prevent="showDropZone = true"
-      @dragleave.prevent="showDropZone = false"
+      @dragover.prevent="UIState.setShowDropZone(true)"
+      @dragleave.prevent="UIState.setShowDropZone(false)"
       @drop="onDrop"
       @mousemove="handleMouseMove"
     >
@@ -16,15 +16,18 @@
         class="icon-style"
         :class="[
           'toggle-drawer-btn',
-          { 'drawer-open': showStepper, show: showButton || showStepper },
+          {
+            'drawer-open': UIState.showStepper,
+            show: UIState.showButton || UIState.showStepper,
+          },
         ]"
         color="white"
-        @click="toggleDrawer"
+        @click="UIState.toggleDrawer"
         icon
         style="border-radius: 20%"
       >
         <v-icon
-          >{{ showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
+          >{{ UIState.showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
         </v-icon>
       </v-btn>
 
@@ -35,12 +38,12 @@
           :width="500"
           location="right"
           temporary
-          v-model="showStepper"
+          v-model="UIState.showStepper"
         >
           <StepImport
-            v-if="showStepper"
-            :files="droppedFiles"
-            @close="showStepper = false"
+            v-if="UIState.showStepper"
+            :files="UIState.droppedFiles"
+            @close="UIState.setShowStepper(false)"
           />
         </v-navigation-drawer>
       </transition>
@@ -50,12 +53,8 @@
 </template>
 
 <script setup>
+const UIState = useUIState();
 const feedback_store = use_feedback_store();
-
-const showDropZone = ref(false);
-const showStepper = ref(false);
-const droppedFiles = ref([]);
-const showButton = ref(false);
 
 const onDrop = (e) => {
   e.preventDefault();
@@ -78,26 +77,21 @@ const onDrop = (e) => {
     feedback_store.add_success(
       `File(s) dropped : ${files[0].name} ${files[0].type}`
     );
-    droppedFiles.value = Array.from(files);
-    showStepper.value = true;
+    UIState.setDroppedFiles(Array.from(files));
+    UIState.setShowStepper(true);
   }
 
-  showDropZone.value = false;
+  UIState.setShowDropZone(false);
 };
 
 const handleMouseMove = (e) => {
   const screenWidth = window.innerWidth;
   const threshold = 75;
   if (e.clientX > screenWidth - threshold) {
-    showButton.value = true;
+    UIState.setShowButton(true);
   } else {
-    showButton.value = false;
+    UIState.setShowButton(false);
   }
-};
-
-const toggleDrawer = () => {
-  droppedFiles.value = [];
-  showStepper.value = !showStepper.value;
 };
 </script>
 

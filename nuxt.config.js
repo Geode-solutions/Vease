@@ -29,6 +29,15 @@ export default defineNuxtConfig({
     ],
   },
 
+  vuetify: {
+    moduleOptions: {
+      /* module specific options */
+    },
+    vuetifyOptions: {
+      labComponents: true,
+    },
+  },
+
   ssr: false,
 
   app: {
