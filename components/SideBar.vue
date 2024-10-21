@@ -14,7 +14,7 @@
     <v-tooltip v-for="(item, index) in items" :key="index" :text="item.title">
       <template v-slot:activator="{ props }">
         <v-btn
-          v-bind="(props, attrs)"
+          v-bind="props"
           flat
           color="#FFFFFF00"
           @click="item.click"
@@ -25,7 +25,6 @@
           @dragstart="startDrag($event, item)"
           @drop="onDrop($event, index)"
           @dragover.prevent
-          v-on="on"
           data-type="sidebar-icon"
         >
           <v-icon
@@ -126,11 +125,6 @@ const router = useRouter();
 
 const items = ref([
   {
-    title: "Back",
-    icon: "mdi-arrow-left",
-    click: () => router.back(),
-  },
-  {
     title: "Home",
     icon: "mdi-home",
     click: () => navigateTo("/"),
@@ -154,11 +148,6 @@ const items = ref([
     title: "Download",
     icon: "mdi-upload",
     click: () => navigateTo("/download"),
-  },
-  {
-    title: "Extensions",
-    icon: "mdi-puzzle",
-    click: () => navigateTo("/extensions"),
   },
   {
     title: "Settings",

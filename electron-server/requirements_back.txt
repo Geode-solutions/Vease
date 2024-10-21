@@ -27,21 +27,22 @@ click==8.1.7
     #   opengeodeweb-back
 flask[async]==3.0.3
     # via
+    #   flask
     #   flask-cors
     #   geodeapp-back
     #   opengeodeweb-back
-flask-cors==4.0.1
+flask-cors==5.0.0
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geode-background==8.1.1
+geode-background==8.6.1
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   geodeapp-back
     #   opengeodeweb-back
-geode-common==32.0.8
+geode-common==33.0.4
     # via
     #   geode-background
     #   geode-conversion
@@ -52,37 +53,37 @@ geode-common==32.0.8
     #   geode-viewables
     #   geodeapp-back
     #   opengeodeweb-back
-geode-conversion==6.0.3
+geode-conversion==6.0.10
     # via
     #   geode-explicit
     #   geode-implicit
     #   geodeapp-back
     #   opengeodeweb-back
-geode-explicit==6.0.1
+geode-explicit==6.1.9
     # via
     #   geode-implicit
     #   geodeapp-back
     #   opengeodeweb-back
-geode-implicit==3.1.1
+geode-implicit==3.2.4
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geode-numerics==5.0.2
+geode-numerics==5.1.3
     # via
     #   geode-implicit
     #   geode-simplex
     #   geodeapp-back
     #   opengeodeweb-back
-geode-simplex==8.2.1
+geode-simplex==8.2.10
     # via
     #   geode-implicit
     #   geodeapp-back
     #   opengeodeweb-back
-geode-viewables==3.0.0
+geode-viewables==3.0.5
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geodeapp-back==0.3.0
+geodeapp-back==0.4.0
     # via -r electron-server/requirements_back.in
 itsdangerous==2.2.0
     # via
@@ -98,18 +99,18 @@ jsonschema==4.23.0
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-jsonschema-specifications==2023.12.1
+jsonschema-specifications==2024.10.1
     # via
     #   geodeapp-back
     #   jsonschema
     #   opengeodeweb-back
-markupsafe==2.1.5
+markupsafe==3.0.1
     # via
     #   geodeapp-back
     #   jinja2
     #   opengeodeweb-back
     #   werkzeug
-opengeode-core==15.2.1
+opengeode-core==15.5.0
     # via
     #   geode-background
     #   geode-common
@@ -125,33 +126,33 @@ opengeode-core==15.2.1
     #   opengeode-inspector
     #   opengeode-io
     #   opengeodeweb-back
-opengeode-geosciences==8.0.0
+opengeode-geosciences==8.1.0
     # via
     #   geode-implicit
     #   geode-viewables
     #   geodeapp-back
     #   opengeode-geosciencesio
     #   opengeodeweb-back
-opengeode-geosciencesio==5.0.1
+opengeode-geosciencesio==5.2.1
     # via
     #   geode-implicit
     #   geodeapp-back
     #   opengeodeweb-back
-opengeode-inspector==6.0.0
+opengeode-inspector==6.1.4
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   geodeapp-back
     #   opengeodeweb-back
-opengeode-io==7.0.1
+opengeode-io==7.0.3
     # via
     #   geode-implicit
     #   geode-viewables
     #   geodeapp-back
     #   opengeode-geosciencesio
     #   opengeodeweb-back
-opengeodeweb-back==5.0.0
+opengeodeweb-back==5.3.0
     # via geodeapp-back
 referencing==0.35.1
     # via
@@ -170,7 +171,7 @@ typing-extensions==4.12.2
     #   asgiref
     #   geodeapp-back
     #   opengeodeweb-back
-werkzeug==3.0.3
+werkzeug==3.0.4
     # via
     #   flask
     #   geodeapp-back
