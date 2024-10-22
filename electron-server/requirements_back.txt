@@ -86,7 +86,7 @@ geode-viewables==3.0.5
     # via
     #   geodeapp-back
     #   opengeodeweb-back
-geodeapp-back==0.4.1rc3
+geodeapp-back==0.4.1
     # via -r electron-server/requirements_back.in
 itsdangerous==2.2.0
     # via
@@ -155,7 +155,7 @@ opengeode-io==7.0.3
     #   geodeapp-back
     #   opengeode-geosciencesio
     #   opengeodeweb-back
-opengeodeweb-back==5.3.1rc1
+opengeodeweb-back==5.3.1
     # via geodeapp-back
 referencing==0.35.1
     # via

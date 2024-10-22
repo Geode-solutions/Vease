@@ -43,7 +43,7 @@ frozenlist==1.4.1
     #   aiosignal
     #   geodeapp-viewer
     #   opengeodeweb-viewer
-geodeapp-viewer[gpu]==0.2.2rc1
+geodeapp-viewer[gpu]==0.2.2
     # via -r electron-server/requirements_viewer.in
 idna==3.6
     # via
@@ -78,7 +78,7 @@ numpy==2.1.2
     #   contourpy
     #   geodeapp-viewer
     #   matplotlib
-opengeodeweb-viewer[gpu]==0.2.1rc2
+opengeodeweb-viewer[gpu]==0.2.1
     # via geodeapp-viewer
 packaging==24.1
     # via
