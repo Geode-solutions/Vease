@@ -52,7 +52,6 @@
 import logo from "@/assets/img/logo.png";
 
 const search = ref("");
-const links = [{ title: "Account", to: "/account" }];
 const userStore = useUserStore();
 const { profileImagePath } = storeToRefs(userStore);
 
