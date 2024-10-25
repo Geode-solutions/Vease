@@ -33,6 +33,7 @@
               <v-col cols="12">
                 <v-switch
                   v-model="include_background"
+                  :disabled="output_extension !== 'png'"
                   label="Include background"
                   inset
                 ></v-switch>
@@ -52,10 +53,11 @@
           <v-btn
             variant="outlined"
             class="mb-4"
+            :disabled="!filename || !output_extension"
             color="white"
             text
             @click="takeScreenshot()"
-            >Load</v-btn
+            >Screenshot</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -64,6 +66,8 @@
 </template>
 
 <script setup>
+import fileDownload from "js-file-download";
+
 const emit = defineEmits(["close"]);
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
@@ -77,16 +81,29 @@ const include_background = ref(true);
 
 async function takeScreenshot() {
   console.log("screenshot");
-
-  await viewer_call({
-    schema: viewer_schemas.opengeodeweb_viewer.take_screenshot,
-    params: {
-      filename: filename.value,
-      output_extension: output_extension.value,
-      include_background: include_background.value,
+  await viewer_call(
+    {
+      schema: viewer_schemas.opengeodeweb_viewer.take_screenshot,
+      params: {
+        filename: filename.value,
+        output_extension: output_extension.value,
+        include_background: include_background.value,
+      },
     },
-  });
+    {
+      response_function: async (response) => {
+        console.log("response", response);
+        fileDownload(response.file_content, response.new_filename);
+      },
+    }
+  );
 
   emit("close");
 }
+
+watch(output_extension, (value) => {
+  if (value !== "png") {
+    include_background.value = true;
+  }
+});
 </script>
