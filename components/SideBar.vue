@@ -114,8 +114,6 @@
         </v-card>
       </v-sheet>
     </v-dialog>
-
-    <Screenshot :show_dialog="screenshot" @close="screenshot = false" />
   </v-navigation-drawer>
 </template>
 
@@ -123,7 +121,6 @@
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
-const screenshot = ref(true);
 
 const items = ref([
   {
@@ -155,11 +152,6 @@ const items = ref([
     title: "Settings",
     icon: "mdi-cog",
     click: () => navigateTo("/settings"),
-  },
-  {
-    title: "Take a screenshot",
-    icon: "mdi-camera",
-    click: () => (screenshot.value = true),
   },
 ]);
 
