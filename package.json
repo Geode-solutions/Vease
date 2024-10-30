@@ -1,5 +1,5 @@
 {
-  "name": "geodeapp",
+  "name": "vease",
   "version": "0.0.0",
   "private": true,
   "description": "Desktop and cloud software for data visualization",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Geode-solutions/GeodeApp.git"
+    "url": "git+https://github.com/Geode-solutions/Vease.git"
   },
   "keywords": [
     "Geology",
@@ -30,9 +30,9 @@
   "author": "Geode-solutions",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Geode-solutions/GeodeApp/issues"
+    "url": "https://github.com/Geode-solutions/Vease/issues"
   },
-  "homepage": "https://github.com/Geode-solutions/GeodeApp#readme",
+  "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
     "@geode/opengeodeweb-front": "^9.1.0",
     "electron": "^32.1.2",

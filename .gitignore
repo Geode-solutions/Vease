@@ -33,5 +33,5 @@ logs
 /electron-server/venv_viewer
 /release
 /uploads
-geodeapp_back*
-geodeapp_viewer*
+vease-back*
+vease-viewer*
