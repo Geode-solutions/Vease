@@ -13,7 +13,7 @@
     "./vease-viewer*"
   ],
   "linux": {
-    "artifactName": "${productName}_${platform}_${version}.${ext}",
+    "artifactName": "${productName}.${ext}",
     "category": "Science",
     "target": [
       "AppImage",
@@ -24,7 +24,7 @@
     ]
   },
   "win": {
-    "artifactName": "${productName}_${platform}_${version}.${ext}",
+    "artifactName": "${productName}.${ext}",
     "sign": "./customSign.js",
     "signingHashAlgorithms": [
       "sha256"
