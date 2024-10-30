@@ -37,8 +37,83 @@
       </template>
     </v-tooltip>
 
-    <NewProject :show_dialog="newproject" @close="newproject = false" />
-    <OpenProject :show_dialog="openproject" @close="openproject = false" />
+    <v-dialog
+      v-model="newproject"
+      max-width="800px"
+      radius="20px"
+      class="text-center"
+    >
+      <v-sheet border="md">
+        <v-card color="#3c9983">
+          <v-card-title>
+            <h3 class="mt-4">New Project</h3>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-text-field label="Project Name" required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions justify-center>
+            <v-btn
+              variant="outlined"
+              color="white"
+              text
+              @click="newproject = false"
+              class="ml-8 mb-4"
+              >Close</v-btn
+            >
+            <v-btn
+              variant="outlined"
+              class="mb-4"
+              color="white"
+              text
+              @click="newproject = false"
+              >Create</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-sheet>
+    </v-dialog>
+    <v-dialog v-model="openproject" max-width="800px" class="text-center">
+      <v-sheet border="md">
+        <v-card color="#3c9983">
+          <v-card-title>
+            <h3 class="mt-4">Open Project</h3>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-file-input label="Open Project" required></v-file-input>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions justify-center>
+            <v-btn
+              variant="outlined"
+              color="white"
+              text
+              @click="openproject = false"
+              class="ml-8 mb-4"
+              >Close</v-btn
+            >
+            <v-btn
+              variant="outlined"
+              class="mb-4"
+              color="white"
+              text
+              @click="openproject = false"
+              >Load</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-sheet>
+    </v-dialog>
   </v-navigation-drawer>
 </template>
 
@@ -46,6 +121,7 @@
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
+const router = useRouter();
 
 const items = ref([
   {
@@ -62,6 +138,21 @@ const items = ref([
     title: "Open Project",
     icon: "mdi-folder-outline",
     click: () => (openproject.value = true),
+  },
+  {
+    title: "Supperposition",
+    icon: "mdi-layers",
+    click: () => navigateTo("/supperposition"),
+  },
+  {
+    title: "Download",
+    icon: "mdi-upload",
+    click: () => navigateTo("/download"),
+  },
+  {
+    title: "Settings",
+    icon: "mdi-cog",
+    click: () => navigateTo("/settings"),
   },
 ]);
 
