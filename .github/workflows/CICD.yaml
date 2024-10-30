@@ -56,7 +56,7 @@ jobs:
       - name: Release
         run: |
           cd release/${{ needs.semantic.outputs.version }}
-          gh release upload v${{ needs.semantic.outputs.version }} geodeapp* latest*
+          gh release upload v${{ needs.semantic.outputs.version }} vease* latest*
         shell: bash
 
   merge:

@@ -7,22 +7,21 @@ const { getPort } = require("get-port-please");
 const os = require("os");
 
 // Checks for updates
-autoUpdater.checkForUpdatesAndNotify()
+autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-
 
 function resource_path() {
   if (app.isPackaged) {
-    return process.resourcesPath
+    return process.resourcesPath;
   }
-  return app.getAppPath()
+  return app.getAppPath();
 }
 
 function executable_name(name) {
   if (process.platform === "win32") {
-    return name + ".exe"
+    return name + ".exe";
   }
-  return name
+  return name;
 }
 const data_folder_path = path.join(os.tmpdir(), "vease");
 
@@ -88,7 +87,7 @@ async function run_script(
           break;
       }
     });
-    child.name = command.replace(/^.*[\\/]/, '')
+    child.name = command.replace(/^.*[\\/]/, "");
     processes.push(child);
   });
 }
@@ -130,8 +129,8 @@ app.whenReady().then(() => {
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
-    const command = path.join(resource_path(), executable_name("geodeapp_back"));
-    console.log("command", command)
+    const command = path.join(resource_path(), executable_name("vease-back"));
+    console.log("command", command);
     await run_script(
       win,
       command,
@@ -150,8 +149,8 @@ app.whenReady().then(() => {
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
-    const command = path.join(resource_path(), executable_name("geodeapp_viewer"));
-    console.log("command", command)
+    const command = path.join(resource_path(), executable_name("vease-viewer"));
+    console.log("command", command);
     await run_script(
       win,
       command,
@@ -161,8 +160,13 @@ app.whenReady().then(() => {
     return port;
   });
   if (app.isPackaged) {
-    const app_path = path.join(app.getAppPath(), ".output", "public", "index.html")
-    console.log("APP_PATH", app_path)
+    const app_path = path.join(
+      app.getAppPath(),
+      ".output",
+      "public",
+      "index.html"
+    );
+    console.log("APP_PATH", app_path);
     win.loadFile(app_path);
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
@@ -172,9 +176,9 @@ app.whenReady().then(() => {
 });
 
 // App close handler
-app.on('before-quit', function () {
+app.on("before-quit", function () {
   processes.forEach(function (proc) {
-    console.log('Process %s has been killed!', proc.name);
+    console.log("Process %s has been killed!", proc.name);
     proc.kill();
   });
 });

@@ -9,28 +9,40 @@
     "dist-electron"
   ],
   "extraResources": [
-    "./geodeapp_back*",
-    "./geodeapp_viewer*"
+    "./vease-back*",
+    "./vease-viewer*"
   ],
   "linux": {
-    "artifactName": "${productName}_${platform}_${version}.${ext}",
+    "artifactName": "${productName}.${ext}",
     "category": "Science",
-    "target": ["AppImage", "zip"],
-    "publish": ["github"]
+    "target": [
+      "AppImage",
+      "zip"
+    ],
+    "publish": [
+      "github"
+    ]
   },
   "win": {
-    "artifactName": "${productName}_${platform}_${version}.${ext}",
+    "artifactName": "${productName}.${ext}",
     "sign": "./customSign.js",
-    "signingHashAlgorithms": ["sha256"],
-    "target": ["nsis", "zip"],
-    "publish": ["github"]
+    "signingHashAlgorithms": [
+      "sha256"
+    ],
+    "target": [
+      "nsis",
+      "zip"
+    ],
+    "publish": [
+      "github"
+    ]
   },
   "publish": [
     {
       "provider": "github",
       "host": "github.com",
       "owner": "Geode-solutions",
-      "repo": "GeodeApp"
+      "repo": "Vease"
     }
   ]
 }
