@@ -163,14 +163,7 @@ app.whenReady().then(() => {
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
-<<<<<<< HEAD
-    const command = path.join(
-      resource_path(),
-      executable_name("geodeapp_viewer")
-    );
-=======
     const command = path.join(resource_path(), executable_name("vease-viewer"));
->>>>>>> 32c9b1c0c9121f2c3d4cf235f4596e95deed80e7
     console.log("command", command);
     await run_script(
       win,
