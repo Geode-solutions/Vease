@@ -141,7 +141,6 @@ app.whenReady().then(() => {
     } else {
       command = path.join(resource_path(), executable_name("vease-back"));
     }
-    console.log("NODE_ENV", process.env.NODE_ENV);
 
     console.log("command", command);
     await run_script(
