@@ -129,7 +129,20 @@ app.whenReady().then(() => {
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
-    const command = path.join(resource_path(), executable_name("vease-back"));
+    let command;
+    if (process.env.NODE_ENV === "development") {
+      command = path.join(
+        app.getAppPath(),
+        "electron-server",
+        "venv_back",
+        "bin",
+        executable_name("vease-back")
+      );
+    } else {
+      command = path.join(resource_path(), executable_name("vease-back"));
+    }
+    console.log("NODE_ENV", process.env.NODE_ENV);
+
     console.log("command", command);
     await run_script(
       win,
@@ -149,7 +162,18 @@ app.whenReady().then(() => {
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
-    const command = path.join(resource_path(), executable_name("vease-viewer"));
+    let command;
+    if (process.env.NODE_ENV === "development") {
+      command = path.join(
+        app.getAppPath(),
+        "electron-server",
+        "venv_viewer",
+        "bin",
+        executable_name("vease-viewer")
+      );
+    } else {
+      command = path.join(resource_path(), executable_name("vease-viewer"));
+    }
     console.log("command", command);
     await run_script(
       win,
