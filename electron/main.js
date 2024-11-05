@@ -28,7 +28,6 @@ function executable_path(app_name, microservice_name) {
   } else {
     command = path.join(resource_path(), executable);
   }
-  console.log("command", command);
   return command;
 }
 
