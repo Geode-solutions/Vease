@@ -5,7 +5,7 @@
       <v-progress-circular indeterminate size="20" color="white" width="3" />
     </template>
   </v-btn>
-  <v-btn variant="text" @click="$emit('decrement_step')"> Cancel </v-btn>
+  <v-btn variant="text" @click="UIState.setShowStepper(false)"> Cancel </v-btn>
 </template>
 
 <script setup>
