@@ -20,10 +20,11 @@ function executable_path(app_name, microservice_name) {
       "venv_" + microservice_name
     );
     if (process.platform === "win32") {
-      command = path.join(command, "Scripts", executable);
+      command = path.join(command, "Scripts");
     } else {
-      command = path.join(command, "bin", executable);
+      command = path.join(command, "bin");
     }
+    command = path.join(command, executable);
   } else {
     command = path.join(resource_path(), executable);
   }
