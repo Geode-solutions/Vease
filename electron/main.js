@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
 import child_process from "child_process";
 import path from "path";
+import fs from "fs";
 
 const { getPort } = require("get-port-please");
 const os = require("os");
@@ -45,6 +46,19 @@ function executable_name(name) {
   return name;
 }
 const data_folder_path = path.join(os.tmpdir(), "vease");
+
+function createPath(path) {
+  if (!fs.existsSync(path)) {
+    fs.mkdir(path, (err) => {
+      if (err) {
+        return console.error(err);
+      }
+      console.log(`${path} directory created successfully!`);
+    });
+  }
+}
+
+createPath(data_folder_path);
 
 var processes = [];
 
