@@ -7,7 +7,7 @@
     class="text-center"
   >
     <v-sheet border="md">
-      <v-card color="#3c9983">
+      <v-card color="primary">
         <v-card-title>
           <h3 class="mt-4">New Project</h3>
         </v-card-title>
