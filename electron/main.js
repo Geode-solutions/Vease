@@ -11,6 +11,27 @@ const os = require("os");
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
+function executable_path(app_name, microservice_name) {
+  const executable = executable_name(app_name + "-" + microservice_name);
+  let command;
+  if (process.env.NODE_ENV === "development") {
+    command = path.join(
+      app.getAppPath(),
+      "electron-server",
+      "venv_" + microservice_name
+    );
+    if (process.platform === "win32") {
+      command = path.join(command, "Scripts");
+    } else {
+      command = path.join(command, "bin");
+    }
+    command = path.join(command, executable);
+  } else {
+    command = path.join(resource_path(), executable);
+  }
+  return command;
+}
+
 function resource_path() {
   if (app.isPackaged) {
     return process.resourcesPath;
@@ -42,7 +63,7 @@ createPath(data_folder_path);
 var processes = [];
 
 async function getAvailablePort(port) {
-  const available_port = await getPort({ port, host: "0.0.0.0" });
+  const available_port = await getPort({ port, host: "localhost" });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -143,7 +164,7 @@ app.whenReady().then(() => {
   ipcMain.handle("run_back", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("BACK PORT", port);
-    const command = path.join(resource_path(), executable_name("vease-back"));
+    const command = executable_path("vease", "back");
     console.log("command", command);
     await run_script(
       win,
@@ -163,7 +184,7 @@ app.whenReady().then(() => {
   ipcMain.handle("run_viewer", async (event, ...args) => {
     const port = await getAvailablePort(args[0]);
     console.log("VIEWER PORT", port);
-    const command = path.join(resource_path(), executable_name("vease-viewer"));
+    const command = executable_path("vease", "viewer");
     console.log("command", command);
     await run_script(
       win,
