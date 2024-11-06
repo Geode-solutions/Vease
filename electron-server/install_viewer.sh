@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-# rm -rf electron-server/venv_viewer electron-server/dist_viewer electron-server/build
+rm -rf electron-server/venv_viewer electron-server/dist_viewer electron-server/build
 folder=electron-server/venv_viewer
-# python3 -m venv $folder
+python3 -m venv $folder
 bin_folder=$folder/bin
 source $bin_folder/activate
 packages_path=$folder/lib/python3.9/site-packages
