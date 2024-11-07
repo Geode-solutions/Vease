@@ -9,7 +9,7 @@ var child;
 if (process.platform === "win32") {
   child = spawn("powershell.exe", [`./electron-server/${script_name}.ps1`]);
 } else if (process.platform === "linux") {
-  child = spawn(`./electron-server/${script_name}.sh`, []);
+  child = spawn(`./electron-server/${script_name}.sh`, [process.argv[3]]);
 }
 
 child.stdout.on("data", function (data) {
