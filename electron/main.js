@@ -18,7 +18,8 @@ function executable_path(app_name, microservice_name) {
     command = path.join(
       app.getAppPath(),
       "electron-server",
-      "venv_" + microservice_name
+      microservice_name,
+      "venv"
     );
     if (process.platform === "win32") {
       command = path.join(command, "Scripts");
