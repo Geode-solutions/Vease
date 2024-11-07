@@ -4,6 +4,6 @@ $microservice_path=".\electron-server\$microservice_name"
 $venv_path="$microservice_path\venv"
 python -m venv $venv_path
 Remove-Item -Recurse -Force "$microservice_path\requirements.txt" -ErrorAction:SilentlyContinue
-"$venv_path\Scripts\Activate"
+. "$venv_path\Scripts\activate"
 pip install pip-tools
 pip-compile "$microservice_path\requirements.in"

@@ -2,7 +2,7 @@ const { spawn } = require("node:child_process");
 
 console.log("process.argv", process.argv);
 
-var script_name = process.argv[2].replace("--script_name=", "");
+var script_name = process.argv[2]
 console.log("script_name", script_name);
 
 var child;
