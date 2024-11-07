@@ -45,6 +45,8 @@ jobs:
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
+          npm run build_back
+          npm run build_viewer
           npm run package
         shell: bash
         env:
