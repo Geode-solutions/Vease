@@ -13,6 +13,7 @@
     "install_viewer": "node node_scripts/run_script_file.js --script_name=install viewer",
     "build_back": "node node_scripts/run_script_file.js --script_name=back/build",
     "build_viewer": "node node_scripts/run_script_file.js --script_name=viewer/build",
+    "build_microservices": "npm run build_back && npm run build_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
