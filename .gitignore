@@ -27,10 +27,10 @@ logs
 # Other
 /build
 /dist-electron
-/electron-server/dist_back
-/electron-server/dist_viewer
-/electron-server/venv_back
-/electron-server/venv_viewer
+/electron-server/back/dist
+/electron-server/viewer/dist
+/electron-server/back/venv
+/electron-server/viewer/venv
 /release
 /uploads
 vease-back*

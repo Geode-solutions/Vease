@@ -30,11 +30,26 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    moduleOptions: {
-      /* module specific options */
-    },
+    moduleOptions: {},
     vuetifyOptions: {
       labComponents: true,
+      theme: {
+        defaultTheme: "lightTheme",
+        themes: {
+          lightTheme: {
+            dark: false,
+            colors: {
+              primary: "#3c9983",
+              secondary: "#424242",
+              accent: "#82B1FF",
+              error: "#FF5252",
+              info: "#2196F3",
+              success: "#4CAF50",
+              warning: "#FB8C00",
+            },
+          },
+        },
+      },
     },
   },
 

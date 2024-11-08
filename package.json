@@ -7,10 +7,13 @@
   "scripts": {
     "dev": "npx nuxi@3.11.0 dev --no-fork",
     "generate": "nuxt generate",
-    "compile_back": "node node_scripts/run_script_file.js --script_name=compile_back",
-    "compile_viewer": "node node_scripts/run_script_file.js --script_name=compile_viewer",
-    "install_back": "node node_scripts/run_script_file.js --script_name=install_back",
-    "install_viewer": "node node_scripts/run_script_file.js --script_name=install_viewer",
+    "compile_back": "node node_scripts/run_script_file.js compile back",
+    "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
+    "install_back": "node node_scripts/run_script_file.js install back",
+    "install_viewer": "node node_scripts/run_script_file.js install viewer",
+    "build_back": "node node_scripts/run_script_file.js back/build",
+    "build_viewer": "node node_scripts/run_script_file.js viewer/build",
+    "build_microservices": "npm run build_back && npm run build_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
@@ -34,7 +37,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.1.0",
+    "@geode/opengeodeweb-front": "^9.2.0",
     "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
@@ -51,6 +54,7 @@
     "electron-updater": "^6.3.4",
     "get-port-please": "^3.1.2",
     "h3-formidable": "^1.0.0",
+    "js-file-download": "^0.4.12",
     "pinia": "^2.2.2"
   }
 }
