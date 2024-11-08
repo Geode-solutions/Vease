@@ -10,6 +10,7 @@ import ObjectSelector from "@geode/opengeodeweb-front/components/ObjectSelector.
 import ImportFile from "@/components/ImportFile.vue";
 
 const files = ref([]);
+const auto_upload = ref(true);
 const input_geode_object = ref("");
 const additional_files = ref([]);
 const supported_feature = "";
@@ -24,17 +25,19 @@ files.value = props.files;
 const stepper_tree = reactive({
   current_step_index: ref(0),
   files,
+  auto_upload,
   input_geode_object,
   supported_feature,
   steps: [
     {
-      step_title: "Please select a file to convert",
+      step_title: "Please select file(s) to import",
       component: {
         component_name: shallowRef(FileSelector),
         component_options: {
           multiple: true,
           supported_feature,
           files,
+          auto_upload,
         },
       },
       chips: computed(() => {
