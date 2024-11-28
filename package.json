@@ -9,6 +9,7 @@
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
+    "compile_microservices": "npm run compile_back && npm run compile_viewer",
     "install_back": "node node_scripts/run_script_file.js install back",
     "install_viewer": "node node_scripts/run_script_file.js install viewer",
     "build_back": "node node_scripts/run_script_file.js back/build",
