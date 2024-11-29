@@ -16,30 +16,36 @@
           <v-icon>{{ item.icon }}</v-icon>
         </div>
       </template>
-      <div v-if="item.contentType === 'card'">
-        <v-card
-          max-width="250"
-          class="elevation-1"
-          :title="item.content.title"
-          :text="item.content.text"
-        >
-          <v-card-actions>
-            <v-btn color="primary" @click="closeCard">Fermer</v-btn>
-          </v-card-actions>
-        </v-card>
-      </div>
-      <div v-else-if="item.contentType === 'text'">
-        <v-card max-width="250" class="elevation-1">
-          <v-card-text>{{ item.content.text }}</v-card-text>
-        </v-card>
-      </div>
-      <div v-else-if="item.contentType === 'colorpicker'">
-        <v-card max-width="250" class="elevation-1">
-          <v-card-text>
-            <input type="color" v-model="item.content.color" />
-          </v-card-text>
-        </v-card>
-      </div>
+
+      <v-card
+        v-if="item.contentType === 'card'"
+        max-width="250"
+        class="elevation-1"
+        :title="item.content.title"
+        :text="item.content.text"
+      >
+        <v-card-actions>
+          <v-btn color="primary" @click="closeCard">Fermer</v-btn>
+        </v-card-actions>
+      </v-card>
+
+      <v-card
+        v-else-if="item.contentType === 'text'"
+        max-width="250"
+        class="elevation-1"
+      >
+        <v-card-text>{{ item.content.text }}</v-card-text>
+      </v-card>
+
+      <v-card
+        v-else-if="item.contentType === 'colorpicker'"
+        max-width="250"
+        class="elevation-1"
+      >
+        <v-card-text>
+          <input type="color" v-model="item.content.color" />
+        </v-card-text>
+      </v-card>
     </v-tooltip>
   </div>
 </template>
