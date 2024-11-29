@@ -27,8 +27,6 @@ logs
 # Other
 /build
 /dist-electron
-/electron-server/venv_back
-/electron-server/venv_viewer
 /electron-server/back/dist
 /electron-server/viewer/dist
 /electron-server/back/venv
