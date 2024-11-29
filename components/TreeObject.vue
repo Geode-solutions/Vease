@@ -31,20 +31,12 @@ const treeviewStore = useTreeviewStore();
 
 const { selection } = toRefs(treeviewStore);
 
-async function toggle_object_visibility(id, is_visible) {
-  const result = validate_schema(
-    viewer_schemas.opengeodeweb_viewer.toggle_object_visibility,
-    {
-      id,
-      is_visible,
-    }
-  );
-
+async function toggle_object_visibility(id, visibility) {
   await viewer_call({
     schema: viewer_schemas.opengeodeweb_viewer.toggle_object_visibility,
     params: {
       id,
-      is_visible,
+      visibility,
     },
   });
 }
