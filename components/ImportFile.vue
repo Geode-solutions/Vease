@@ -61,7 +61,6 @@ async function import_files() {
   }
 
   UIState.setShowStepper(false);
-
   toggle_loading();
 }
 </script>
