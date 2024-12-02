@@ -12,13 +12,14 @@
     "compile_microservices": "npm run compile_back && npm run compile_viewer",
     "install_back": "node node_scripts/run_script_file.js install back",
     "install_viewer": "node node_scripts/run_script_file.js install viewer",
+    "install_microservices": "npm run install_back && npm run install_viewer",
     "build_back": "node node_scripts/run_script_file.js back/build",
     "build_viewer": "node node_scripts/run_script_file.js viewer/build",
     "build_microservices": "npm run build_back && npm run build_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
-    "postinstall": "npm run install_back && npm run install_viewer"
+    "postinstall": "npm run install_microservices"
   },
   "repository": {
     "type": "git",
@@ -38,7 +39,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.2.1",
+    "@geode/opengeodeweb-front": "^9.2.2",
     "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
@@ -48,7 +49,6 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.1.0",
-    "@geode/opengeodeweb-viewer": "^1.0.0-rc.2",
     "@nuxt/kit": "^3.13.2",
     "@pinia/nuxt": "^0.5.4",
     "@vueuse/nuxt": "^11.1.0",
