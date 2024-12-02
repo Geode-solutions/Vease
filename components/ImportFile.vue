@@ -40,20 +40,21 @@ async function import_files() {
       { schema: back_schemas.opengeodeweb_back.save_viewable_file, params },
       {
         response_function: async (response) => {
-
-          console.log("response", response);
-          await viewer_call({
-            schema: viewer_schemas.opengeodeweb_viewer.register,
-            params: {
-              id: response._data.id,
-              file_name: response._data.viewable_file_name,
-              viewer_object: response._data.object_type,
+          await viewer_call(
+            {
+              schema: viewer_schemas.opengeodeweb_viewer.generic.register,
+              params: {
+                id: response._data.id,
+                file_name: response._data.viewable_file_name,
+                viewer_object: response._data.object_type,
+              },
             },
-          }, 
-        { response_function: (response) => {
-          console.log("response", response);
-        }});
-          treeStore.addFile(input_geode_object, filename, response._data.id);
+            {
+              response_function: () => {
+                treeStore.addFile(input_geode_object, filename, response._data.id, response._data.object_type);
+              },
+            }
+          );
         },
       }
     );

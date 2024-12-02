@@ -33,7 +33,7 @@ const { selection } = toRefs(treeviewStore);
 
 async function toggle_object_visibility(id, visibility) {
   await viewer_call({
-    schema: viewer_schemas.opengeodeweb_viewer.toggle_object_visibility,
+    schema: viewer_schemas.opengeodeweb_viewer.model.set_components_visibility,
     params: {
       id,
       visibility,
