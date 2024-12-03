@@ -10,6 +10,7 @@
     <template #option>
       <v-card>
         <v-card-text class="justify-center">
+          <v-switch v-model="visibility" label="Visibility" />
           <v-combobox
             v-model="select"
             :items="styles"
@@ -46,6 +47,9 @@
 import LogoSurfaceColor from "@/assets/viewer_svgs/surface_color.svg";
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
+const data_style_store = useDataStyleStore();
+
+const visibility = ref(true);
 const color = reactive({ r: 0, g: 0, b: 0 });
 const select = "";
 const styles = ["Constant", "From vertex attribute", "From polygon attribute"];
@@ -62,8 +66,8 @@ onMounted(() => {
   getAttributeNames();
 });
 
-function getAttributeNames() {
-  api_fetch(
+async function getAttributeNames() {
+  await api_fetch(
     {
       schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
       params: {
@@ -93,37 +97,43 @@ function getAttributeNames() {
   );
 }
 
+watch(visibility, (value) => {
+  data_style_store.setMeshPointsVisibility({ id: props.item.id, value });
+});
+
+
 watch(select, (value) => {
-  this.$store.commit("setObjectStyle", {
-    id: this.item.id,
-    style: ["color", "type"],
-    value,
-  });
+  // this.$store.commit("setObjectStyle", {
+  //   id: this.item.id,
+  //   style: ["color", "type"],
+  //   value,
+  // });
 });
 
 watch(color, (value) => {
-  this.$store.dispatch("mesh/style/setColor", {
-    id: this.item.id,
-    color: [value.r / 255, value.g / 255, value.b / 255],
-  });
+  data_style_store.setMeshPointsColor({ id: props.item.id, color: value });
+  // this.$store.dispatch("mesh/style/setColor", {
+  //   id: this.item.id,
+  //   color: [value.r / 255, value.g / 255, value.b / 255],
+  // });
 });
 
 watch(vertexAttributeName, (value) => {
   if (!value) return;
-  this.$store.dispatch("mesh/style/setAttributeColor", {
-    id: this.item.id,
-    attribute: value,
-    location: "vertex",
-  });
-});
+  // this.$store.dispatch("mesh/style/setAttributeColor", {
+  //   id: this.item.id,
+  //   attribute: value,
+  //   location: "vertex",
+  // });
+}); 
 
 watch(polygonAttributeName, (value) => {
   if (!value) return;
-  this.$store.dispatch("mesh/style/setAttributeColor", {
-    id: this.item.id,
-    attribute: value,
-    location: "polygon",
-  });
+  // this.$store.dispatch("mesh/style/setAttributeColor", {
+  //   id: this.item.id,
+  //   attribute: value,
+  //   location: "polygon",
+  // });
 });
 
 onMounted(()=>{

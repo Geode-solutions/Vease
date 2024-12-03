@@ -1,4 +1,4 @@
-export const useUIState = defineStore("UIState", {
+export const useUIStore = defineStore("UI", {
   state: () => ({
     showDropZone: false,
     showStepper: false,

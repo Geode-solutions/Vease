@@ -8,7 +8,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
     addDataStyle(id) {
       this.data_style.push({ id });
     },
-
     async setMeshEdgesColor(id, color) {
       await viewer_call(
         {
@@ -55,7 +54,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
       await viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.set_points_color,
-          params: { id, color },
+          params: { id, red: color["r"], green: color["g"], blue: color["b"] },
         },
         {
           response_function: () => {
