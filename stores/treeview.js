@@ -6,8 +6,8 @@ export const useTreeviewStore = defineStore("treeview", {
     items: [],
   }),
   actions: {
-    addFile(geodeObject, filename, id) {
-      const child = { title: filename, id };
+    addFile(geodeObject, filename, id, object_type) {
+      const child = { title: filename, id, object_type };
       for (let i = 0; i < this.items.length; i++) {
         if (this.items[i].title === geodeObject) {
           this.items[i].children.push(child);
