@@ -1,21 +1,32 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" md="12">
-        <v-treeview
-          v-model:selected="selection"
-          select-strategy="classic"
-          item-value="id"
-          return-object
-          :items="treeviewStore.items"
-          selectable
-          class="transparent-treeview"
-          selected
-        >
-        </v-treeview>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div
+    style="
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      top: 0;
+      background-color: transparent;
+      border-radius: 16px;
+    "
+  >
+    <v-container>
+      <v-row>
+        <v-col cols="12" md="12">
+          <v-treeview
+            v-model:selected="selection"
+            select-strategy="classic"
+            item-value="id"
+            return-object
+            :items="treeviewStore.items"
+            selectable
+            class="transparent-treeview"
+            selected
+          >
+          </v-treeview>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

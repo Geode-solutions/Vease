@@ -35,5 +35,10 @@ export const useTreeviewStore = defineStore("treeview", {
     setDefaultSelection(defaultSelection) {
       this.selection = defaultSelection;
     },
+    get_ids() {
+      const ids = this.selection.map((item) => item.id);
+      console.log("ids", ids);
+      return ids;
+    },
   },
 });
