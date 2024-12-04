@@ -17,7 +17,6 @@ import SurfacePointsVisibility from "@/components/Viewer/Surface/Points/Visibili
 import SurfaceEdgesColor from "@/components/Viewer/Surface/Edges/Color.vue";
 import SurfaceEdgesVisibility from "@/components/Viewer/Surface/Edges/Visibility.vue";
 import SurfaceTrianglesColor from "@/components/Viewer/Surface/Triangles/Color.vue";
-import SurfaceTrianglesVisibility from "@/components/Viewer/Surface/Triangles/Visibility.vue";
 
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
@@ -33,13 +32,12 @@ const EdgedCurve_menu = [
 ];
 
 const Surface_menu = [
-  SurfacePointsColor,
-  SurfacePointsSize,
-  SurfacePointsVisibility,
-  SurfaceEdgesColor,
-  SurfaceEdgesVisibility,
-  SurfaceTrianglesColor,
-  SurfaceTrianglesVisibility,
+  // shallowRef(SurfacePointsColor),
+  // shallowRef(SurfacePointsSize),
+  // shallowRef(SurfacePointsVisibility),
+  // shallowRef(SurfaceEdgesColor),
+  // shallowRef(SurfaceEdgesVisibility),
+  shallowRef(SurfaceTrianglesColor),
 ];
 
 const menus = {
@@ -53,41 +51,45 @@ const menus = {
     // TriangulatedSurface2D: Surface_menu,
     // TriangulatedSurface3D: Surface_menu,
   },
-  // model: {
-  //   BRep,
-  //   CrossSection,
-  //   ImplicitCrossSection,
-  //   ImplicitStructuralModel,
-  //   Section,
-  //   StructuralModel,
-  // },
+  model: {
+    BRep: [],
+    CrossSection: [],
+    ImplicitCrossSection: [],
+    ImplicitStructuralModel: [],
+    Section: [],
+    StructuralModel: [],
+  },
 };
 
 export const useMenuStore = defineStore("menu", {
   state: () => ({
     menus,
-    items: [
-      {
-        title: "Option 1",
-        icon: "mdi-microscope",
-        visible: false,
-        dialog: false,
-        contentType: "card",
-        content: {
-          title: "Card Title 1",
-          text: "Content for Option 1",
-        },
-      },
-    ],
-    menu: false,
+    // items: [
+    //   {
+    //     title: "Option 1",
+    //     icon: "mdi-microscope",
+    //     visible: false,
+    //     dialog: false,
+    //     contentType: "card",
+    //     content: {
+    //       title: "Card Title 1",
+    //       text: "Content for Option 1",
+    //     },
+    //   },
+    // ],
+    display_menu: false,
   }),
   actions: {
+    setMenuItems(geode_object, object_type) {
+      this.items = this.menus[object_type][geode_object];
+      console.log("this.items", this.items);
+    },
     closeMenu() {
-      this.menu = false;
-      this.items.forEach((item) => {
-        item.visible = false;
-        item.dialog = false;
-      });
+      this.display_menu = false;
+      // this.items.forEach((item) => {
+      //   item.visible = false;
+      //   item.dialog = false;
+      // });
     },
     openMenu(x, y) {
       const treeview_store = useTreeviewStore();
@@ -97,27 +99,30 @@ export const useMenuStore = defineStore("menu", {
       // console.log("from openMenu x y", x, y);
       // console.log("from openMenu ids", ids);
 
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
-          params: { x, y, ids },
-        },
-        {
-          response_function: (response) => {
-            console.log("response", response);
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
+      //     params: { x, y, ids },
+      //   },
+      //   {
+      //     response_function: (response) => {
+      //       console.log("response", response);
 
-            const array_ids = response.array_ids;
-            console.log("array_ids", array_ids);
-            const id = array_ids[0];
-            const { geode_object, object_type } = treeview_store.idMetaData(id);
-            console.log("final geode_object", geode_object);
-            console.log("final object_type", object_type);
-          },
-        }
-      );
+      //       const array_ids = response.array_ids;
+      //       console.log("array_ids", array_ids);
+      //       const id = array_ids[0];
+      const id = "toto";
+      const { geode_object, object_type } = treeview_store.idMetaData(id);
+      //       console.log("final geode_object", geode_object);
+      //       console.log("final object_type", object_type);
+
+      this.setMenuItems(geode_object, object_type);
+      //   },
+      // }
+      // );
 
       setTimeout(() => {
-        this.menu = true;
+        this.display_menu = true;
         this.showItemsWithDelay();
       }, 0);
     },
@@ -129,6 +134,7 @@ export const useMenuStore = defineStore("menu", {
         }, index * DELAY);
       });
     },
+
     handleClick(item) {
       console.log(`Clicked on ${item.title}`);
       this.closeMenu();

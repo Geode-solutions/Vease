@@ -10,7 +10,6 @@ export const useTreeviewStore = defineStore("treeview", {
         if (this.items[i].title === geodeObject) {
           this.items[i].children.push(child);
           this.selection.push(child);
-
           return;
         }
       }
@@ -51,7 +50,9 @@ export const useTreeviewStore = defineStore("treeview", {
           }
         }
       }
-      return { geode_object, object_type };
+      return { geode_object: "PolygonalSurface3D", object_type: "mesh" };
+
+      // return { geode_object, object_type };
     },
   },
 });

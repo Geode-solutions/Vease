@@ -1,46 +1,35 @@
 <template>
-  <ViewerContextualMenuItem v-bind="$attrs">
-    <template #tooltip> points color </template>
-
-    <template #btn="{ btnStyle }">
-      <LogoPointsColor
-        :style="{ height: btnStyle.height, width: btnStyle.width }"
-      />
-    </template>
-    <template #option>
-      <v-card>
-        <v-card-text class="justify-center">
-          <v-switch v-model="visibility" label="Visibility" />
-          <v-combobox
-            v-model="select"
-            :items="styles"
-            label="Select color style"
-          ></v-combobox>
-          <v-color-picker
-            v-if="select === 'Constant'"
-            ref="action"
-            v-model="color"
-            flat
-            canvas-height="100"
-            hide-inputs
-            width="200"
-          ></v-color-picker>
-          <v-combobox
-            v-model="vertexAttributeName"
-            v-if="select === 'From vertex attribute'"
-            :items="vertexAttributes"
-            label="Select attribute"
-          ></v-combobox>
-          <v-combobox
-            v-model="polygonAttributeName"
-            v-if="select === 'From polygon attribute'"
-            :items="polygonAttributes"
-            label="Select attribute"
-          ></v-combobox>
-        </v-card-text>
-      </v-card>
-    </template>
-  </ViewerContextualMenuItem>
+  <v-card>
+    <v-card-text class="justify-center">
+      <v-switch v-model="visibility" label="Visibility" />
+      <v-combobox
+        v-model="select"
+        :items="styles"
+        label="Select color style"
+      ></v-combobox>
+      <v-color-picker
+        v-if="select === 'Constant'"
+        ref="action"
+        v-model="color"
+        flat
+        canvas-height="100"
+        hide-inputs
+        width="200"
+      ></v-color-picker>
+      <v-combobox
+        v-model="vertexAttributeName"
+        v-if="select === 'From vertex attribute'"
+        :items="vertexAttributes"
+        label="Select attribute"
+      ></v-combobox>
+      <v-combobox
+        v-model="polygonAttributeName"
+        v-if="select === 'From polygon attribute'"
+        :items="polygonAttributes"
+        label="Select attribute"
+      ></v-combobox>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script setup>

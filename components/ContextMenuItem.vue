@@ -13,38 +13,21 @@
     >
       <template v-slot:activator="{ props }">
         <div class="clickable-area" v-bind="props" @click.stop="toggleTooltip">
-          <v-icon>{{ item.icon }}</v-icon>
+          <slot name="btn" />
         </div>
       </template>
 
       <v-card
-        v-if="item.contentType === 'card'"
-        max-width="250"
-        class="elevation-1"
-        :title="item.content.title"
-        :text="item.content.text"
-      >
-        <v-card-actions>
-          <v-btn color="primary" @click="closeCard">Fermer</v-btn>
-        </v-card-actions>
-      </v-card>
-
-      <v-card
-        v-else-if="item.contentType === 'text'"
-        max-width="250"
-        class="elevation-1"
-      >
-        <v-card-text>{{ item.content.text }}</v-card-text>
-      </v-card>
-
-      <v-card
-        v-else-if="item.contentType === 'colorpicker'"
         max-width="250"
         class="elevation-1"
       >
         <v-card-text>
-          <input type="color" v-model="item.content.color" />
+          <slot name="options" />
         </v-card-text>
+
+        <v-card-actions>
+          <v-btn color="primary" @click="closeCard">Close</v-btn>
+        </v-card-actions>
       </v-card>
     </v-tooltip>
   </div>

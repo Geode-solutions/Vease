@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    v-model="menuStore.menu"
+    v-model="menuStore.display_menu"
     content-class="circular-menu"
     :style="getMenuStyle()"
   >
@@ -8,14 +8,23 @@
       class="circular-menu-items"
       :style="{ width: `${radius * 2}px`, height: `${radius * 2}px` }"
     >
-      <ContextMenuItem
+      <component
         v-for="(item, index) in menuStore.items"
-        :key="index"
+        :is="item"
+        :key="item"
         :item="item"
         :index="index"
         :radius="radius"
         :totalItems="menuStore.items.length"
-      />
+      ></component>
+      <!-- <ContextMenuItem
+        v-for="(item, index) in menuStore.items"
+        :key="item"
+        :item="item"
+        :index="index"
+        :radius="radius"
+        :totalItems="menuStore.items.length"
+      /> -->
     </div>
   </v-menu>
 </template>

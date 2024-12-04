@@ -1,5 +1,9 @@
 <template>
   <ViewerGenericMeshPointsColor />
+
+
+
+  
 </template>
 
 <script setup>
