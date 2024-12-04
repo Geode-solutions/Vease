@@ -1,7 +1,71 @@
+// PointSet components
+import PointSetPointsColor from "@/components/Viewer/PointSet/Points/Color.vue";
+import PointSetPointsSize from "@/components/Viewer/PointSet/Points/Size.vue";
+
+// EdgedCurve components
+import EdgedCurvePointsColor from "@/components/Viewer/EdgedCurve/Points/Color.vue";
+import EdgedCurvePointsSize from "@/components/Viewer/EdgedCurve/Points/Size.vue";
+import EdgedCurvePointsVisibility from "@/components/Viewer/EdgedCurve/Points/Visibility.vue";
+import EdgedCurveEdgesColor from "@/components/Viewer/EdgedCurve/Edges/Color.vue";
+import EdgedCurveEdgesSize from "@/components/Viewer/EdgedCurve/Edges/Size.vue";
+import EdgedCurveEdgesVisibility from "@/components/Viewer/EdgedCurve/Edges/Visibility.vue";
+
+// Surface components
+import SurfacePointsColor from "@/components/Viewer/Surface/Points/Color.vue";
+import SurfacePointsSize from "@/components/Viewer/Surface/Points/Size.vue";
+import SurfacePointsVisibility from "@/components/Viewer/Surface/Points/Visibility.vue";
+import SurfaceEdgesColor from "@/components/Viewer/Surface/Edges/Color.vue";
+import SurfaceEdgesVisibility from "@/components/Viewer/Surface/Edges/Visibility.vue";
+import SurfaceTrianglesColor from "@/components/Viewer/Surface/Triangles/Color.vue";
+import SurfaceTrianglesVisibility from "@/components/Viewer/Surface/Triangles/Visibility.vue";
+
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
-export const useMenuStore = defineStore("menuStore", {
+const PointSet_menu = [PointSetPointsColor, PointSetPointsSize];
+
+const EdgedCurve_menu = [
+  EdgedCurvePointsColor,
+  EdgedCurvePointsSize,
+  EdgedCurvePointsVisibility,
+  EdgedCurveEdgesColor,
+  EdgedCurveEdgesSize,
+  EdgedCurveEdgesVisibility,
+];
+
+const Surface_menu = [
+  SurfacePointsColor,
+  SurfacePointsSize,
+  SurfacePointsVisibility,
+  SurfaceEdgesColor,
+  SurfaceEdgesVisibility,
+  SurfaceTrianglesColor,
+  SurfaceTrianglesVisibility,
+];
+
+const menus = {
+  mesh: {
+    // PointSet2D: PointSet_menu,
+    // PointSet3D: PointSet_menu,
+    // EdgedCurve2D: EdgedCurve_menu,
+    // EdgedCurve3D: EdgedCurve_menu,
+    PolygonalSurface2D: Surface_menu,
+    PolygonalSurface3D: Surface_menu,
+    // TriangulatedSurface2D: Surface_menu,
+    // TriangulatedSurface3D: Surface_menu,
+  },
+  // model: {
+  //   BRep,
+  //   CrossSection,
+  //   ImplicitCrossSection,
+  //   ImplicitStructuralModel,
+  //   Section,
+  //   StructuralModel,
+  // },
+};
+
+export const useMenuStore = defineStore("menu", {
   state: () => ({
+    menus,
     items: [
       {
         title: "Option 1",
@@ -12,99 +76,6 @@ export const useMenuStore = defineStore("menuStore", {
         content: {
           title: "Card Title 1",
           text: "Content for Option 1",
-        },
-      },
-      {
-        title: "Option 2",
-        icon: "mdi-test-tube",
-        visible: false,
-        dialog: false,
-        contentType: "text",
-        content: {
-          text: "This is some text for Option 2",
-        },
-      },
-      {
-        title: "Option 3",
-        icon: "mdi-dna",
-        visible: false,
-        dialog: false,
-        contentType: "colorpicker",
-        content: {
-          color: "#ff0000",
-        },
-      },
-      {
-        title: "Option 4",
-        icon: "mdi-flask",
-        visible: false,
-        dialog: false,
-        contentType: "card",
-        content: {
-          title: "Card Title 4",
-          text: "Content for Option 4",
-        },
-      },
-      {
-        title: "Option 5",
-        icon: "mdi-atom",
-        visible: false,
-        dialog: false,
-        contentType: "text",
-        content: {
-          text: "This is some text for Option 5",
-        },
-      },
-      {
-        title: "Option 6",
-        icon: "mdi-axis-x-arrow",
-        visible: false,
-        dialog: false,
-        contentType: "colorpicker",
-        content: {
-          color: "#00ff00",
-        },
-      },
-      {
-        title: "Option 7",
-        icon: "mdi-alert-circle",
-        visible: false,
-        dialog: false,
-        contentType: "card",
-        content: {
-          title: "Card Title 7",
-          text: "Content for Option 7",
-        },
-      },
-      {
-        title: "Option 8",
-        icon: "mdi-magnify",
-        visible: false,
-        dialog: false,
-        contentType: "text",
-        content: {
-          text: "This is some text for Option 8",
-        },
-      },
-      {
-        title: "Option 9",
-        icon: "mdi-dots-vertical",
-        visible: false,
-        dialog: false,
-        contentType: "colorpicker",
-        content: {
-          color: "#0000ff",
-        },
-      },
-      {
-        title: "Option 10",
-        icon: "mdi-dots-horizontal",
-        visible: false,
-        dialog: false,
-        contentType: "card",
-        content: {
-          title: "Card Title 10",
-          text: "Content for Option 10",
         },
       },
     ],
@@ -123,35 +94,24 @@ export const useMenuStore = defineStore("menuStore", {
       this.closeMenu();
 
       const ids = treeview_store.get_ids();
-      console.log("from openMenu x y", x, y);
-      console.log("from openMenu ids", ids);
+      // console.log("from openMenu x y", x, y);
+      // console.log("from openMenu ids", ids);
 
       viewer_call(
         {
-          schema: viewer_schemas.opengeodeweb_viewer.get_mouse,
-          params: { x, y },
+          schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
+          params: { x, y, ids },
         },
         {
           response_function: (response) => {
-            console.log("from openMenu response", response);
+            console.log("response", response);
 
-            const id = response;
-            console.log("from openMenu id", id);
-            console.log("treeview_store.items", treeview_store.items);
-            let geode_object;
-            for (let i = 0; i < treeview_store.items.length; i++) {
-              for (
-                let j = 0;
-                j < treeview_store.items[i].children.length;
-                j++
-              ) {
-                if (treeview_store.items[i].children[j].id === id) {
-                  geode_object = treeview_store.items[i].title;
-                }
-              }
-            }
-
+            const array_ids = response.array_ids;
+            console.log("array_ids", array_ids);
+            const id = array_ids[0];
+            const { geode_object, object_type } = treeview_store.idMetaData(id);
             console.log("final geode_object", geode_object);
+            console.log("final object_type", object_type);
           },
         }
       );

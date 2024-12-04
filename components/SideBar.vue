@@ -63,12 +63,6 @@ const items = ref([
     icon: "mdi-folder-outline",
     click: () => (openproject.value = true),
   },
-
-  {
-    title: "Test",
-    icon: "mdi-test-tube",
-    click: () => navigateTo("/test"),
-  },
 ]);
 
 let draggedItem = null;

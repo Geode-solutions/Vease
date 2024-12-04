@@ -1,9 +1,9 @@
 <template>
   <ViewerContextualMenuItem v-bind="$attrs">
-    <template #tooltip> Color </template>
+    <template #tooltip> points color </template>
 
     <template #btn="{ btnStyle }">
-      <LogoSurfaceColor
+      <LogoPointsColor
         :style="{ height: btnStyle.height, width: btnStyle.width }"
       />
     </template>
@@ -44,11 +44,17 @@
 </template>
 
 <script setup>
-import LogoSurfaceColor from "@/assets/viewer_svgs/surface_color.svg";
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const data_style_store = useDataStyleStore();
+// Props
+const props = defineProps({
+  item: { type: Object, required: true },
+});
 
+// Stores
+const dataStyleStore = useDataStyleStore();
+
+// Variables
 const visibility = ref(true);
 const color = reactive({ r: 0, g: 0, b: 0 });
 const select = "";
@@ -57,10 +63,6 @@ const vertexAttributeName = ref("");
 const polygonAttributeName = ref("");
 const vertexAttributes = ref([]);
 const polygonAttributes = ref([]);
-
-const props = defineProps({
-  item: { type: Object, required: true },
-});
 
 onMounted(() => {
   getAttributeNames();
@@ -101,7 +103,6 @@ watch(visibility, (value) => {
   data_style_store.setMeshPointsVisibility({ id: props.item.id, value });
 });
 
-
 watch(select, (value) => {
   // this.$store.commit("setObjectStyle", {
   //   id: this.item.id,
@@ -111,11 +112,7 @@ watch(select, (value) => {
 });
 
 watch(color, (value) => {
-  data_style_store.setMeshPointsColor({ id: props.item.id, color: value });
-  // this.$store.dispatch("mesh/style/setColor", {
-  //   id: this.item.id,
-  //   color: [value.r / 255, value.g / 255, value.b / 255],
-  // });
+  dataStyleStore.setMeshPointsColor({ id: props.item.id, color: value });
 });
 
 watch(vertexAttributeName, (value) => {
@@ -125,7 +122,7 @@ watch(vertexAttributeName, (value) => {
   //   attribute: value,
   //   location: "vertex",
   // });
-}); 
+});
 
 watch(polygonAttributeName, (value) => {
   if (!value) return;
@@ -136,7 +133,7 @@ watch(polygonAttributeName, (value) => {
   // });
 });
 
-onMounted(()=>{
+onMounted(() => {
   select.value = this.item.style.color.type;
   vertexAttributeName.value = this.item.style.color.vertexAttributeName;
   polygonAttributeName.value = this.item.style.color.polygonAttributeName;
@@ -146,5 +143,5 @@ onMounted(()=>{
     g: color[1] * 255,
     b: color[2] * 255,
   };
-})
+});
 </script>
