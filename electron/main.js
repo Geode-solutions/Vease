@@ -113,15 +113,6 @@ async function run_script(
 
     child.on("close", (code) => {
       //Here you can get the exit code of the script
-      switch (code) {
-        case 0:
-          dialog.showMessageBox({
-            title: "Title",
-            type: "info",
-            message: "End process.\r\n",
-          });
-          break;
-      }
     });
     child.name = command.replace(/^.*[\\/]/, "");
     processes.push(child);

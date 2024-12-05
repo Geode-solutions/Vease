@@ -1,6 +1,4 @@
-import { defineStore } from "pinia";
-
-export const useTreeviewStore = defineStore("treeview", {
+export const use_treeview_store = defineStore("treeview", {
   state: () => ({
     selection: [],
     items: [],
@@ -12,7 +10,6 @@ export const useTreeviewStore = defineStore("treeview", {
         if (this.items[i].title === geodeObject) {
           this.items[i].children.push(child);
           this.selection.push(child);
-
           return;
         }
       }
@@ -34,6 +31,25 @@ export const useTreeviewStore = defineStore("treeview", {
     },
     setDefaultSelection(defaultSelection) {
       this.selection = defaultSelection;
+    },
+    get_ids() {
+      const ids = this.selection.map((item) => item.id);
+      console.log("ids", ids);
+      return ids;
+    },
+
+    idMetaData(id) {
+      console.log("idMetaData", id);
+      let object_type, geode_object;
+      for (let i = 0; i < this.items.length; i++) {
+        for (let j = 0; j < this.items[i].children.length; j++) {
+          if (this.items[i].children[j].id === id) {
+            geode_object = this.items[i].title;
+            object_type = this.items[i].children[j].object_type;
+          }
+        }
+      }
+      return { object_type, geode_object };
     },
   },
 });
