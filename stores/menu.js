@@ -5,17 +5,17 @@ import PointSetPointsSize from "@/components/Viewer/PointSet/Points/Size.vue";
 // EdgedCurve components
 import EdgedCurvePointsColor from "@/components/Viewer/EdgedCurve/Points/Color.vue";
 import EdgedCurvePointsSize from "@/components/Viewer/EdgedCurve/Points/Size.vue";
-import EdgedCurvePointsVisibility from "@/components/Viewer/EdgedCurve/Points/Visibility.vue";
+// import EdgedCurvePointsVisibility from "@/components/Viewer/EdgedCurve/Points/Visibility.vue";
 import EdgedCurveEdgesColor from "@/components/Viewer/EdgedCurve/Edges/Color.vue";
 import EdgedCurveEdgesSize from "@/components/Viewer/EdgedCurve/Edges/Size.vue";
-import EdgedCurveEdgesVisibility from "@/components/Viewer/EdgedCurve/Edges/Visibility.vue";
+// import EdgedCurveEdgesVisibility from "@/components/Viewer/EdgedCurve/Edges/Visibility.vue";
 
 // Surface components
 import SurfacePointsColor from "@/components/Viewer/Surface/Points/Color.vue";
 import SurfacePointsSize from "@/components/Viewer/Surface/Points/Size.vue";
 import SurfacePointsVisibility from "@/components/Viewer/Surface/Points/Visibility.vue";
 import SurfaceEdgesColor from "@/components/Viewer/Surface/Edges/Color.vue";
-import SurfaceEdgesVisibility from "@/components/Viewer/Surface/Edges/Visibility.vue";
+// import SurfaceEdgesVisibility from "@/components/Viewer/Surface/Edges/Visibility.vue";
 import SurfaceTrianglesColor from "@/components/Viewer/Surface/Triangles/Color.vue";
 
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
@@ -25,19 +25,19 @@ const PointSet_menu = [PointSetPointsColor, PointSetPointsSize];
 const EdgedCurve_menu = [
   EdgedCurvePointsColor,
   EdgedCurvePointsSize,
-  EdgedCurvePointsVisibility,
   EdgedCurveEdgesColor,
   EdgedCurveEdgesSize,
-  EdgedCurveEdgesVisibility,
 ];
 
 const Surface_menu = [
-  // shallowRef(SurfacePointsColor),
+  shallowRef(SurfacePointsColor),
   // shallowRef(SurfacePointsSize),
   // shallowRef(SurfacePointsVisibility),
   // shallowRef(SurfaceEdgesColor),
   // shallowRef(SurfaceEdgesVisibility),
-  shallowRef(SurfaceTrianglesColor),
+  // shallowRef(SurfaceTrianglesColor),
+  // shallowRef(SurfaceTrianglesColor),
+  // shallowRef(SurfaceTrianglesColor),
 ];
 
 const menus = {
@@ -46,7 +46,7 @@ const menus = {
     // PointSet3D: PointSet_menu,
     // EdgedCurve2D: EdgedCurve_menu,
     // EdgedCurve3D: EdgedCurve_menu,
-    PolygonalSurface2D: Surface_menu,
+    // PolygonalSurface2D: Surface_menu,
     PolygonalSurface3D: Surface_menu,
     // TriangulatedSurface2D: Surface_menu,
     // TriangulatedSurface3D: Surface_menu,
@@ -64,67 +64,25 @@ const menus = {
 export const useMenuStore = defineStore("menu", {
   state: () => ({
     menus,
-    // items: [
-    //   {
-    //     title: "Option 1",
-    //     icon: "mdi-microscope",
-    //     visible: false,
-    //     dialog: false,
-    //     contentType: "card",
-    //     content: {
-    //       title: "Card Title 1",
-    //       text: "Content for Option 1",
-    //     },
-    //   },
-    // ],
     display_menu: false,
   }),
-  actions: {
-    setMenuItems(geode_object, object_type) {
-      this.items = this.menus[object_type][geode_object];
-      console.log("this.items", this.items);
+  getters: {
+    getMenuItems: (state) => {
+      return (object_type, geode_object) => {
+        console.log("GETTER", object_type, geode_object);
+        console.log("RETURN", state.menus[object_type][geode_object]);
+        return state.menus[object_type][geode_object];
+      }
     },
+  },
+  actions: {
     closeMenu() {
       this.display_menu = false;
-      // this.items.forEach((item) => {
-      //   item.visible = false;
-      //   item.dialog = false;
-      // });
     },
-    openMenu(x, y) {
-      const treeview_store = useTreeviewStore();
+    openMenu() {
       this.closeMenu();
-
-      const ids = treeview_store.get_ids();
-      // console.log("from openMenu x y", x, y);
-      // console.log("from openMenu ids", ids);
-
-      // viewer_call(
-      //   {
-      //     schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
-      //     params: { x, y, ids },
-      //   },
-      //   {
-      //     response_function: (response) => {
-      //       console.log("response", response);
-
-      //       const array_ids = response.array_ids;
-      //       console.log("array_ids", array_ids);
-      //       const id = array_ids[0];
-      const id = "toto";
-      const { geode_object, object_type } = treeview_store.idMetaData(id);
-      //       console.log("final geode_object", geode_object);
-      //       console.log("final object_type", object_type);
-
-      this.setMenuItems(geode_object, object_type);
-      //   },
-      // }
-      // );
-
-      setTimeout(() => {
-        this.display_menu = true;
-        this.showItemsWithDelay();
-      }, 0);
+      this.display_menu = true;
+      console.log("FROM STORE", this.display_menu);
     },
     showItemsWithDelay() {
       const DELAY = 50;

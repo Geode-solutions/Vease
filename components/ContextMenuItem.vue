@@ -1,14 +1,13 @@
 <template>
   <div
     class="menu-item"
-    :style="getItemStyle"
-    :class="{ visible: item.visible }"
+    :style="props.itemStyle"
     @click.stop="handleClick"
   >
     <v-tooltip
       v-model="tooltipState"
-      :location="getLocation"
-      :origin="getOrigin"
+      :location="props.location"
+      :origin="props.origin"
       :open-on-hover="false"
     >
       <template v-slot:activator="{ props }">
@@ -35,50 +34,22 @@
 
 <script setup>
 const props = defineProps({
-  item: { type: Object, required: true },
-  index: { type: Number, required: true },
-  radius: { type: Number, required: true },
-  totalItems: { type: Number, required: true },
+  x: { type: Number, required: true },
+  y: { type: Number, required: true },
+  location: { type: String, required: true },
+  origin: { type: String, required: true },
+  itemStyle: { type: String, required: true },
 });
 
 const menuStore = useMenuStore();
 const tooltipState = ref(false);
 
-const getItemStyle = computed(() => {
-  const angle = (props.index / props.totalItems) * 2 * Math.PI;
-  const xRound = Math.cos(angle) * props.radius;
-  const yRound = Math.sin(angle) * props.radius;
-  return {
-    transform: `translate(${xRound}px, ${yRound}px)`,
-    opacity: props.item.visible ? 1 : 0,
-    transition: "opacity 0.1s ease, transform 0.1s ease",
-  };
-});
-
-const getLocation = computed(() => {
-  const angle = (props.index / props.totalItems) * 360;
-  if (angle >= 0 && angle < 90) return "top";
-  if (angle >= 90 && angle < 180) return "end";
-  if (angle >= 180 && angle < 270) return "bottom";
-  return "start";
-});
-
-const getOrigin = computed(() => {
-  const angle = (props.index / props.totalItems) * 360;
-  if (angle >= 0 && angle < 90) return "start";
-  if (angle >= 90 && angle < 180) return "top";
-  if (angle >= 180 && angle < 270) return "end";
-  return "bottom";
-});
-
 function toggleTooltip() {
   tooltipState.value = !tooltipState.value;
 }
-
 function closeCard() {
   tooltipState.value = false;
 }
-
 function handleClick() {
   menuStore.handleClick(props.item);
 }

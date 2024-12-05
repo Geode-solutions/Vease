@@ -1,4 +1,4 @@
-export const useTreeviewStore = defineStore("treeview", {
+export const use_treeview_store = defineStore("treeview", {
   state: () => ({
     selection: [],
     items: [],
@@ -40,8 +40,7 @@ export const useTreeviewStore = defineStore("treeview", {
 
     idMetaData(id) {
       console.log("idMetaData", id);
-      let geode_object;
-      let object_type;
+      let object_type, geode_object;
       for (let i = 0; i < this.items.length; i++) {
         for (let j = 0; j < this.items[i].children.length; j++) {
           if (this.items[i].children[j].id === id) {
@@ -50,9 +49,7 @@ export const useTreeviewStore = defineStore("treeview", {
           }
         }
       }
-      return { geode_object: "PolygonalSurface3D", object_type: "mesh" };
-
-      // return { geode_object, object_type };
+      return { object_type, geode_object };
     },
   },
 });

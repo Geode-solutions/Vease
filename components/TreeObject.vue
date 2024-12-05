@@ -38,7 +38,7 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-const treeviewStore = useTreeviewStore();
+const treeviewStore = use_treeview_store();
 
 const { selection } = toRefs(treeviewStore);
 

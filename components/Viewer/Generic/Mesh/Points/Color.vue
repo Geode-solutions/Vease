@@ -1,35 +1,43 @@
 <template>
-  <v-card>
-    <v-card-text class="justify-center">
-      <v-switch v-model="visibility" label="Visibility" />
-      <v-combobox
-        v-model="select"
-        :items="styles"
-        label="Select color style"
-      ></v-combobox>
-      <v-color-picker
-        v-if="select === 'Constant'"
-        ref="action"
-        v-model="color"
-        flat
-        canvas-height="100"
-        hide-inputs
-        width="200"
-      ></v-color-picker>
-      <v-combobox
-        v-model="vertexAttributeName"
-        v-if="select === 'From vertex attribute'"
-        :items="vertexAttributes"
-        label="Select attribute"
-      ></v-combobox>
-      <v-combobox
-        v-model="polygonAttributeName"
-        v-if="select === 'From polygon attribute'"
-        :items="polygonAttributes"
-        label="Select attribute"
-      ></v-combobox>
-    </v-card-text>
-  </v-card>
+  <ContextMenuItem v-bind="$attrs">
+    <template #tooltip> Points color </template>
+    <template #btn>
+      <slot name="btn" />
+    </template>
+    <template #options>
+      <v-card>
+        <v-card-text class="justify-center">
+          <v-switch v-model="visibility" label="Visibility" />
+          <v-combobox
+            v-model="select"
+            :items="styles"
+            label="Select color style"
+          ></v-combobox>
+          <v-color-picker
+            v-if="select === 'Constant'"
+            ref="action"
+            v-model="color"
+            flat
+            canvas-height="100"
+            hide-inputs
+            width="200"
+          ></v-color-picker>
+          <v-combobox
+            v-model="vertexAttributeName"
+            v-if="select === 'From vertex attribute'"
+            :items="vertexAttributes"
+            label="Select attribute"
+          ></v-combobox>
+          <v-combobox
+            v-model="polygonAttributeName"
+            v-if="select === 'From polygon attribute'"
+            :items="polygonAttributes"
+            label="Select attribute"
+          ></v-combobox>
+        </v-card-text>
+      </v-card>
+    </template>
+  </ContextMenuItem>
 </template>
 
 <script setup>
@@ -106,6 +114,7 @@ watch(color, (value) => {
 
 watch(vertexAttributeName, (value) => {
   if (!value) return;
+  dataStyleStore;
   // this.$store.dispatch("mesh/style/setAttributeColor", {
   //   id: this.item.id,
   //   attribute: value,
