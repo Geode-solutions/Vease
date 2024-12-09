@@ -4,6 +4,10 @@ import child_process from "child_process";
 import path from "path";
 import fs from "fs";
 
+// import installExtension, {
+//   VUEJS3_DEVTOOLS,
+// } from "electron-devtools-installer";
+
 const { getPort } = require("get-port-please");
 const os = require("os");
 
@@ -120,6 +124,12 @@ async function run_script(
 }
 
 app.whenReady().then(() => {
+  // VUEJS_DEVTOOLS,
+  // VUEJS3_DEVTOOLS,
+  // installExtension(VUEJS3_DEVTOOLS)
+  // .then((name) => console.log(`Added Extension:  ${name}`))
+  // .catch((err) => console.log('An error occurred: ', err));
+
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",

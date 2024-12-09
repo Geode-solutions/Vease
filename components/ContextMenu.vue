@@ -1,49 +1,82 @@
 <template>
   <v-menu
-    model-value="true"
+    v-model="show_menu"
     content-class="circular-menu"
     :style="getMenuStyle()"
-  >
+    >    
     <div
       class="circular-menu-items"
       :style="{ width: `${radius * 2}px`, height: `${radius * 2}px` }"
     >
-      <component
+      <ViewerSurfacePointsColor
+        v-bind="{
+          itemProps: {
+            id: props.id,
+            x: props.x,
+            y: props.y,
+            location: getLocation(0, 2),
+            origin: getOrigin(0, 2),
+            itemStyle: getItemStyle(0, 2),
+          },
+        }"
+      />
+
+      <!-- <component
         v-for="(item, index) in menu_items"
         :is="item"
         :key="item"
-        :itemProps="{
+        v-bind="{
+          id: props.id,
           x: props.x,
           y: props.y,
           location: getLocation(index, menu_items.length),
           origin: getOrigin(index, menu_items.length),
           itemStyle: getItemStyle(index, menu_items.length),
         }"
-      />
+      /> -->
     </div>
   </v-menu>
 </template>
 
 <script setup>
-import { computed } from 'vue';
 
 const menuStore = useMenuStore();
 const radius = 80;
 
 const props = defineProps({
-  object_type: { type: String, required: true },
-  geode_object: { type: String, required: true },
+  id: { type: String, required: true },
   x: { type: Number, required: true },
   y: { type: Number, required: true },
   containerWidth: { type: Number, required: true },
   containerHeight: { type: Number, required: true },
 });
 
-const menu_items = computed(() => {
-  return menuStore.getMenuItems(props.object_type, props.geode_object);
+const show_menu = ref(true)
+
+console.log("show_menu", show_menu.value);
+watch(show_menu, (value) => {
+  console.log("show_menu watch", value);
+  menuStore.closeMenu();
 })
 
 
+console.log("ContextMenu props", props);
+
+const tree_view_store = use_treeview_store();
+const meta_data = computed(() => {
+  return tree_view_store.idMetaData(props.id);
+});
+
+console.log("meta_data", meta_data);
+
+const menu_items = computed(() => {
+  const value = menuStore.getMenuItems(
+    meta_data.object_type,
+    meta_data.geode_object
+  );
+  console.log("menu_items", value);
+  return value;
+});
 function getMenuStyle() {
   let adjustedX = props.x;
   let adjustedY = props.y;
@@ -94,11 +127,7 @@ function getItemStyle(index, totalItems) {
 }
 
 console.log("display_menu", menuStore.display_menu);
-console.log("items", menuStore.items);
 
-watch(menuStore.items, (value) => {
-  console.log("itemsw", value);
-});
 watch(menuStore.display_menu, (value) => {
   console.log("display_menuw", value);
 });

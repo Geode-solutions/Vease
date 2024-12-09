@@ -5,6 +5,8 @@ export const use_treeview_store = defineStore("treeview", {
   }),
   actions: {
     addFile(geodeObject, filename, id, object_type) {
+      const dataStyleStore = useDataStyleStore();
+      dataStyleStore.addDataStyle(id, geodeObject);
       const child = { title: filename, id, object_type };
       for (let i = 0; i < this.items.length; i++) {
         if (this.items[i].title === geodeObject) {
@@ -39,17 +41,17 @@ export const use_treeview_store = defineStore("treeview", {
     },
 
     idMetaData(id) {
-      console.log("idMetaData", id);
-      let object_type, geode_object;
       for (let i = 0; i < this.items.length; i++) {
         for (let j = 0; j < this.items[i].children.length; j++) {
           if (this.items[i].children[j].id === id) {
-            geode_object = this.items[i].title;
-            object_type = this.items[i].children[j].object_type;
+            const geode_object = this.items[i].title;
+            const object_type = this.items[i].children[j].object_type;
+            const filename = this.items[i].children[j].title;
+            return { object_type, geode_object, filename };
           }
         }
       }
-      return { object_type, geode_object };
+      return null;
     },
   },
 });

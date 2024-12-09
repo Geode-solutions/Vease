@@ -1,36 +1,42 @@
 <template>
-  <v-card width="200">
-    <v-slider
-      v-model="size"
-      hide-details
-      min="0"
-      max="20"
-      step="2"
-      thumb-label
-      thumb-color="black"
-      ticks
-    ></v-slider>
-  </v-card>
+  <ContextMenuItem v-bind="itemProps">
+    <template #tooltip>Points size</template>
+    <template #btn>
+      <slot name="btn"></slot>
+    </template>
+    <template #options>
+      <v-card width="200">
+        <v-slider
+          v-model="size"
+          hide-details
+          min="0"
+          max="20"
+          step="2"
+          thumb-label
+          thumb-color="black"
+          ticks
+        ></v-slider>
+      </v-card>
+    </template>
+  </ContextMenuItem>
 </template>
 
 <script setup>
-
-// Props
 const props = defineProps({
   item: { type: Object, required: true },
 });
 
-// Stores
 const dataStyleStore = useDataStyleStore();
 
-// Variables
-const size = ref(0);
+const id = toRef(() => props.itemProps.id);
+console.log("id", id.value);
 
-watch(size, (value) => {
-  dataStyleStore.setMeshPointsSize({ id: props.item.id, value });
-});
-
-onMounted(() => {
-  size.value = this.item.style.size;
+const size = computed({
+  get() {
+    return dataStyleStore.pointsSize(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setPointsSize(id.value, newValue);
+  },
 });
 </script>

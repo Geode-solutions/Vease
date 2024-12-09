@@ -1,19 +1,20 @@
 <template>
-  <!-- <ViewerGenericMeshPointsColor v-bind="$attrs">
-    <template #btn="{ btnStyle }">
-      <Surface
-        :style="{ height: btnStyle.height, width: btnStyle.width }"
+  <ViewerGenericMeshPointsColor :itemProps="props.itemProps">
+    <template #btn>
+      <v-img
+        src="@/assets/viewer_svgs/surface.svg"
+        height="35"
+        width="35"
       />
     </template>
-  </ViewerGenericMeshPointsColor> -->
+  </ViewerGenericMeshPointsColor>
 </template>
 
 <script setup>
 import Surface from "@/assets/viewer_svgs/surface.svg";
 
-
-console.log("itemProps8888")
-console.log("itemProps", $attrs)
-
+const props = defineProps({
+  itemProps: { type: Object, required: true },
+});
+console.log("ViewerSurfacePointsColor props", props.itemProps);
 </script>
-

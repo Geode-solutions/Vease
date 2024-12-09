@@ -1,13 +1,80 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
+const polygonalSurface_defaultStyle = {
+  points: {
+    visibility: true,
+    color: {
+      active: "",
+      constant: { r: 0, g: 0, b: 0 },
+      vertex: { name: "" },
+    },
+    size: 1,
+  },
+  edges: {
+    visibility: true,
+    color: {
+      active: "",
+      constant: { r: 0, g: 0, b: 0 },
+    },
+    size: 1,
+  },
+  triangles: {
+    visibility: true,
+    color: {
+      active: "",
+      constant: { r: 0, g: 0, b: 0 },
+      polygon: { name: "" },
+      vertex: { name: "" },
+    },
+  },
+};
+
+const default_styles = {
+  PolygonalSurface2D: polygonalSurface_defaultStyle,
+  PolygonalSurface3D: polygonalSurface_defaultStyle,
+};
+
 export const useDataStyleStore = defineStore("dataStyle", {
   state: () => ({
     styles: {},
   }),
-  actions: {
-    addDataStyle(id) {
-      this.styles.push({ id });
+  getters: {
+    pointsVisibility() {
+      return (id) => this.styles[id].points.visibility
     },
+    pointsActiveColoring() {
+      return (id) => this.styles[id].points.color.active;
+    },
+    pointsConstantColor() {
+      return (id) => this.styles[id].points.color.constant;
+    },
+    pointsVertexAttributeName() {
+      return (id) => this.styles[id].points.color.vertex.name;
+    },
+    pointsSize() {
+      return (id) => this.styles[id].points.size;
+    },
+  },
+  actions: {
+    addDataStyle(id, geode_object) {
+      this.styles[id] = default_styles[geode_object];
+    },
+    setPointsVisibility(id, visibility) {
+      this.styles[id].points.visibility = visibility;
+    },
+    setPointsActiveColoring(id, type) {
+      this.styles[id].points.color.active = type;
+    },
+    setPointsConstantColor(id, color) {
+      this.styles[id].points.color.constant = color;
+    },
+    setPointsVertexAttributeName(id, name) {
+      this.styles[id].points.color.vertex.name = name;
+    },
+    setPointsSize(id, size) {
+      this.styles[id].points.size = size;
+    },
+
     setMeshEdgesColor(id, color) {
       viewer_call(
         {
@@ -16,7 +83,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
         },
         {
           response_function: () => {
-            this.styles[id].edges_color = color;
+            this.styles[id].edges_color = { color };
           },
         }
       );

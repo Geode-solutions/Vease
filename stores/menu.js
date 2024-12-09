@@ -30,13 +30,9 @@ const EdgedCurve_menu = [
 ];
 
 const Surface_menu = [
-  shallowRef(SurfacePointsColor),
+  // shallowRef(SurfacePointsColor),
   // shallowRef(SurfacePointsSize),
-  // shallowRef(SurfacePointsVisibility),
   // shallowRef(SurfaceEdgesColor),
-  // shallowRef(SurfaceEdgesVisibility),
-  // shallowRef(SurfaceTrianglesColor),
-  // shallowRef(SurfaceTrianglesColor),
   // shallowRef(SurfaceTrianglesColor),
 ];
 
@@ -68,19 +64,16 @@ export const useMenuStore = defineStore("menu", {
   }),
   getters: {
     getMenuItems: (state) => {
-      return (object_type, geode_object) => {
-        console.log("GETTER", object_type, geode_object);
-        console.log("RETURN", state.menus[object_type][geode_object]);
-        return state.menus[object_type][geode_object];
-      }
+      return (object_type, geode_object) => state.menus[object_type][geode_object]
     },
   },
   actions: {
     closeMenu() {
       this.display_menu = false;
+      console.log("CLOSE STORE", this.display_menu);
     },
-    openMenu() {
-      this.closeMenu();
+    async openMenu() {
+      await this.closeMenu();
       this.display_menu = true;
       console.log("FROM STORE", this.display_menu);
     },
@@ -91,11 +84,6 @@ export const useMenuStore = defineStore("menu", {
           item.visible = true;
         }, index * DELAY);
       });
-    },
-
-    handleClick(item) {
-      console.log(`Clicked on ${item.title}`);
-      this.closeMenu();
     },
   },
 });

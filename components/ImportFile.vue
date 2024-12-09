@@ -19,7 +19,7 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
-const treeStore = useTreeviewStore();
+const treeStore = use_treeview_store();
 const UIStore = useUIStore();
 
 const { filenames, input_geode_object } = props;
