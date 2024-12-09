@@ -8,60 +8,6 @@
       class="circular-menu-items"
       :style="{ width: `${radius * 2}px`, height: `${radius * 2}px` }"
     >
-      <!-- <ViewerSurfacePointsColor
-        v-bind="{
-          itemProps: {
-            id: props.id,
-            x: props.x,
-            y: props.y,
-            location: getLocation(0, 4),
-            origin: getOrigin(0, 4),
-            itemStyle: getItemStyle(0, 4),
-          },
-        }"
-      />
-
-      <ViewerSurfacePointsSize
-        v-bind="{
-          itemProps: {
-            id: props.id,
-            x: props.x,
-            y: props.y,
-            location: getLocation(1, 4),
-            origin: getOrigin(1, 4),
-            itemStyle: getItemStyle(1, 4),
-          },
-        }"
-      />
-
-
-      <ViewerSurfaceEdgesColor
-        v-bind="{
-          itemProps: {
-            id: props.id,
-            x: props.x,
-            y: props.y,
-            location: getLocation(2, 4),
-            origin: getOrigin(2, 4),
-            itemStyle: getItemStyle(2, 4),
-          },
-        }"
-      />
-
-
-      <ViewerSurfaceEdgesSize
-        v-bind="{
-          itemProps: {
-            id: props.id,
-            x: props.x,
-            y: props.y,
-            location: getLocation(3, 4),
-            origin: getOrigin(3, 4),
-            itemStyle: getItemStyle(3, 4),
-          },
-        }"
-      /> -->
-
       <component
         v-for="(item, index) in menu_items"
         :is="item"
@@ -71,11 +17,12 @@
             id: props.id,
             x: props.x,
             y: props.y,
-            location: getLocation(index, menu_items.length),
-            origin: getOrigin(index, menu_items.length),
+            tooltip_location: getTooltipLocation(index, menu_items.length),
+            tooltip_origin: getTooltipOrigin(index, menu_items.length),
             itemStyle: getItemStyle(index, menu_items.length),
           },
         }"
+        :style="getItemStyle(index, menu_items.length)"
       />
     </div>
   </v-menu>
@@ -112,12 +59,12 @@ console.log("meta_data", meta_data);
 
 const menu_items = computed(() => {
   console.log("META_DATA", meta_data);
-  // const value = menuStore.getMenuItems(
-  //   meta_data.value.object_type,
-  //   meta_data.value.geode_object
-  // );
+  const value = menuStore.getMenuItems(
+    meta_data.value.object_type,
+    meta_data.value.geode_object
+  );
 
-  const value = menuStore.getMenuItems("mesh", "PolygonalSurface3D");
+  // const value = menuStore.getMenuItems("mesh", "PolygonalSurface3D");
   console.log("menu_items", value);
   return value;
 });
@@ -144,7 +91,7 @@ function getMenuStyle() {
   };
 }
 
-function getLocation(index, totalItems) {
+function getTooltipLocation(index, totalItems) {
   const angle = (index / totalItems) * 360;
   if (angle >= 0 && angle < 90) return "top";
   if (angle >= 90 && angle < 180) return "end";
@@ -152,7 +99,7 @@ function getLocation(index, totalItems) {
   return "start";
 }
 
-function getOrigin(index, totalItems) {
+function getTooltipOrigin(index, totalItems) {
   const angle = (index / totalItems) * 360;
   if (angle >= 0 && angle < 90) return "start";
   if (angle >= 90 && angle < 180) return "top";

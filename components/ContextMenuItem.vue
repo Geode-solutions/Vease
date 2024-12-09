@@ -18,8 +18,8 @@
 const props = defineProps({
   x: { type: Number, required: true },
   y: { type: Number, required: true },
-  location: { type: String, required: true },
-  origin: { type: String, required: true },
+  tooltip_location: { type: String, required: true },
+  tooltip_origin: { type: String, required: true },
   itemStyle: { type: String, required: true },
 });
 const display_options = ref(false);
