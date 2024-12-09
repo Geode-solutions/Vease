@@ -21,6 +21,19 @@
         }"
       />
 
+      <ViewerSurfacePointsSize
+        v-bind="{
+          itemProps: {
+            id: props.id,
+            x: props.x,
+            y: props.y,
+            location: getLocation(1, 2),
+            origin: getOrigin(1, 2),
+            itemStyle: getItemStyle(1, 2),
+          },
+        }"
+      />
+
       <!-- <component
         v-for="(item, index) in menu_items"
         :is="item"

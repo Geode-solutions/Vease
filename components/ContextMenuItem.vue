@@ -1,14 +1,16 @@
 <template>
   <div class="menu-item" :style="props.itemStyle">
-    <!-- <template v-slot:activator="{ props }"> -->
     <v-btn icon :active="display_options" v-bind="props" @click.stop="display_options = !display_options">
       <slot name="btn" />
       <v-tooltip :location="props.location" :origin="props.origin">
         <span><slot name="tooltip" /></span>
       </v-tooltip>
     </v-btn>
-    <!-- </template> -->
-    <slot name="options" v-if="display_options" />
+    <v-row>
+
+
+      <slot name="options" v-if="display_options" />
+    </v-row>
   </div>
 </template>
 

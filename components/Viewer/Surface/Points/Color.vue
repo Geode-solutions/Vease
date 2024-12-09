@@ -2,7 +2,7 @@
   <ViewerGenericMeshPointsColor :itemProps="props.itemProps">
     <template #btn>
       <v-img
-        src="@/assets/viewer_svgs/surface.svg"
+        :src="SurfacePointsColor"
         height="35"
         width="35"
       />
@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import Surface from "@/assets/viewer_svgs/surface.svg";
+import SurfacePointsColor from "@/assets/viewer_svgs/surface_points_color.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

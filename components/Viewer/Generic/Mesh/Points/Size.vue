@@ -23,7 +23,7 @@
 
 <script setup>
 const props = defineProps({
-  item: { type: Object, required: true },
+  itemProps: { type: Object, required: true },
 });
 
 const dataStyleStore = useDataStyleStore();
