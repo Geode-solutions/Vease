@@ -2,8 +2,8 @@
   <v-app>
     <v-main
       class="custom-background drop-zone"
-      @dragover.prevent="UIState.setShowDropZone(true)"
-      @dragleave.prevent="UIState.setShowDropZone(false)"
+      @dragover.prevent="UIStore.setShowDropZone(true)"
+      @dragleave.prevent="UIStore.setShowDropZone(false)"
       @drop="onDrop"
       @mousemove="handleMouseMove"
     >
@@ -17,17 +17,17 @@
         :class="[
           'toggle-drawer-btn',
           {
-            'drawer-open': UIState.showStepper,
-            show: UIState.showButton || UIState.showStepper,
+            'drawer-open': UIStore.showStepper,
+            show: UIStore.showButton || UIStore.showStepper,
           },
         ]"
         color="white"
-        @click="UIState.toggleDrawer"
+        @click="UIStore.toggleDrawer"
         icon
         style="border-radius: 20%"
       >
         <v-icon
-          >{{ UIState.showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
+          >{{ UIStore.showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
         </v-icon>
       </v-btn>
 
@@ -38,12 +38,12 @@
           :width="500"
           location="right"
           temporary
-          v-model="UIState.showStepper"
+          v-model="UIStore.showStepper"
         >
           <StepImport
-            v-if="UIState.showStepper"
-            :files="UIState.droppedFiles"
-            @close="UIState.setShowStepper(false)"
+            v-if="UIStore.showStepper"
+            :files="UIStore.droppedFiles"
+            @close="UIStore.setShowStepper(false)"
           />
         </v-navigation-drawer>
       </transition>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-const UIState = useUIState();
+const UIStore = useUIStore();
 const feedback_store = use_feedback_store();
 
 const onDrop = (e) => {
@@ -77,20 +77,20 @@ const onDrop = (e) => {
     feedback_store.add_success(
       `File(s) dropped : ${files[0].name} ${files[0].type}`
     );
-    UIState.setDroppedFiles(Array.from(files));
-    UIState.setShowStepper(true);
+    UIStore.setDroppedFiles(Array.from(files));
+    UIStore.setShowStepper(true);
   }
 
-  UIState.setShowDropZone(false);
+  UIStore.setShowDropZone(false);
 };
 
 const handleMouseMove = (e) => {
   const screenWidth = window.innerWidth;
   const threshold = 75;
   if (e.clientX > screenWidth - threshold) {
-    UIState.setShowButton(true);
+    UIStore.setShowButton(true);
   } else {
-    UIState.setShowButton(false);
+    UIStore.setShowButton(false);
   }
 };
 </script>
