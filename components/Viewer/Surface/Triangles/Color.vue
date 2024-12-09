@@ -1,22 +1,20 @@
 <template>
-  <ContextMenuItem v-bind="$attrs">
-    <template #tooltip> Surface triangles color </template>
+  <ViewerGenericMeshPointsColor :itemProps="props.itemProps">
     <template #btn>
-      <!-- <SurfaceColor
-        :style="{ height: btnStyle.height, width: btnStyle.width }"
-      /> -->
-      jvqufzqfzbfjzqbf
+      <v-img
+        :src="SurfaceTrianglesColor"
+        height="35"
+        width="35"
+      />
     </template>
-    <template #options>
-      <ViewerGenericMeshPointsColor/>
-    </template>
-  </ContextMenuItem>
-
+  </ViewerGenericMeshPointsColor>
 </template>
 
 <script setup>
-import SurfaceColor from "@/assets/viewer_svgs/surface_color.svg";
+import SurfaceTrianglesColor from "@/assets/viewer_svgs/surface_triangles_color.svg";
 
-const dataStyleStore = useDataStyleStore()
-dataStyleStore.setMeshTrianglesColor()
+const props = defineProps({
+  itemProps: { type: Object, required: true },
+});
+console.log("ViewerSurfaceTrianglesColor props", props.itemProps);
 </script>

@@ -3,20 +3,20 @@
     v-model="show_menu"
     content-class="circular-menu"
     :style="getMenuStyle()"
-    >    
+  >
     <div
       class="circular-menu-items"
       :style="{ width: `${radius * 2}px`, height: `${radius * 2}px` }"
     >
-      <ViewerSurfacePointsColor
+      <!-- <ViewerSurfacePointsColor
         v-bind="{
           itemProps: {
             id: props.id,
             x: props.x,
             y: props.y,
-            location: getLocation(0, 2),
-            origin: getOrigin(0, 2),
-            itemStyle: getItemStyle(0, 2),
+            location: getLocation(0, 4),
+            origin: getOrigin(0, 4),
+            itemStyle: getItemStyle(0, 4),
           },
         }"
       />
@@ -27,32 +27,61 @@
             id: props.id,
             x: props.x,
             y: props.y,
-            location: getLocation(1, 2),
-            origin: getOrigin(1, 2),
-            itemStyle: getItemStyle(1, 2),
+            location: getLocation(1, 4),
+            origin: getOrigin(1, 4),
+            itemStyle: getItemStyle(1, 4),
           },
         }"
       />
 
-      <!-- <component
+
+      <ViewerSurfaceEdgesColor
+        v-bind="{
+          itemProps: {
+            id: props.id,
+            x: props.x,
+            y: props.y,
+            location: getLocation(2, 4),
+            origin: getOrigin(2, 4),
+            itemStyle: getItemStyle(2, 4),
+          },
+        }"
+      />
+
+
+      <ViewerSurfaceEdgesSize
+        v-bind="{
+          itemProps: {
+            id: props.id,
+            x: props.x,
+            y: props.y,
+            location: getLocation(3, 4),
+            origin: getOrigin(3, 4),
+            itemStyle: getItemStyle(3, 4),
+          },
+        }"
+      /> -->
+
+      <component
         v-for="(item, index) in menu_items"
         :is="item"
         :key="item"
         v-bind="{
-          id: props.id,
-          x: props.x,
-          y: props.y,
-          location: getLocation(index, menu_items.length),
-          origin: getOrigin(index, menu_items.length),
-          itemStyle: getItemStyle(index, menu_items.length),
+          itemProps: {
+            id: props.id,
+            x: props.x,
+            y: props.y,
+            location: getLocation(index, menu_items.length),
+            origin: getOrigin(index, menu_items.length),
+            itemStyle: getItemStyle(index, menu_items.length),
+          },
         }"
-      /> -->
+      />
     </div>
   </v-menu>
 </template>
 
 <script setup>
-
 const menuStore = useMenuStore();
 const radius = 80;
 
@@ -64,14 +93,13 @@ const props = defineProps({
   containerHeight: { type: Number, required: true },
 });
 
-const show_menu = ref(true)
+const show_menu = ref(true);
 
 console.log("show_menu", show_menu.value);
 watch(show_menu, (value) => {
   console.log("show_menu watch", value);
   menuStore.closeMenu();
-})
-
+});
 
 console.log("ContextMenu props", props);
 
@@ -83,10 +111,13 @@ const meta_data = computed(() => {
 console.log("meta_data", meta_data);
 
 const menu_items = computed(() => {
-  const value = menuStore.getMenuItems(
-    meta_data.object_type,
-    meta_data.geode_object
-  );
+  console.log("META_DATA", meta_data);
+  // const value = menuStore.getMenuItems(
+  //   meta_data.value.object_type,
+  //   meta_data.value.geode_object
+  // );
+
+  const value = menuStore.getMenuItems("mesh", "PolygonalSurface3D");
   console.log("menu_items", value);
   return value;
 });

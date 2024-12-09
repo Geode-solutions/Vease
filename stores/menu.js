@@ -26,10 +26,10 @@ const EdgedCurve_menu = [
 ];
 
 const Surface_menu = [
-  // shallowRef(SurfacePointsColor),
-  // shallowRef(SurfacePointsSize),
-  // shallowRef(SurfaceEdgesColor),
-  // shallowRef(SurfaceTrianglesColor),
+  SurfacePointsColor,
+  SurfacePointsSize,
+  SurfaceEdgesColor,
+  SurfaceTrianglesColor,
 ];
 
 const menus = {
@@ -38,7 +38,7 @@ const menus = {
     // PointSet3D: PointSet_menu,
     // EdgedCurve2D: EdgedCurve_menu,
     // EdgedCurve3D: EdgedCurve_menu,
-    // PolygonalSurface2D: Surface_menu,
+    PolygonalSurface2D: Surface_menu,
     PolygonalSurface3D: Surface_menu,
     // TriangulatedSurface2D: Surface_menu,
     // TriangulatedSurface3D: Surface_menu,

@@ -1,25 +1,20 @@
 <template>
-    <ContextMenuItem v-bind="itemProps">
-      <template #tooltip> Surface triangles color </template>
-      <template #btn>
-        <SurfaceEdgesColor/>
-      </template>
-      <template #options>
-        <ViewerGenericMeshEdgesColor/>
-      </template>
-    </ContextMenuItem>
-  
-  </template>
-  
-  <script setup>
-  import SurfaceEdgesColor from "@/assets/viewer_svgs/surface_color.svg";
-  
-  const props = defineProps({
-    itemProps: { type: Object, required: true },
-  })
+  <ViewerGenericMeshEdgesColor :itemProps="props.itemProps">
+    <template #btn>
+      <v-img
+        :src="SurfaceEdgesColor"
+        height="35"
+        width="35"
+      />
+    </template>
+  </ViewerGenericMeshEdgesColor>
+</template>
 
+<script setup>
+import SurfaceEdgesColor from "@/assets/viewer_svgs/surface_edges_color.svg";
 
-  console.log("itemProps", props.itemProps)
-  const dataStyleStore = useDataStyleStore()
-  dataStyleStore.setMeshTrianglesColor()
-  </script>
+const props = defineProps({
+  itemProps: { type: Object, required: true },
+});
+console.log("ViewerSurfaceEdgesColor props", props.itemProps);
+</script>

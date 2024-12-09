@@ -54,6 +54,39 @@ export const useDataStyleStore = defineStore("dataStyle", {
     pointsSize() {
       return (id) => this.styles[id].points.size;
     },
+
+
+    edgesVisibility() {
+      return (id) => this.styles[id].edges.visibility;
+    },
+    edgesActiveColoring() {
+      return (id) => this.styles[id].edges.color.active;
+    },
+    edgesConstantColor() {
+      return (id) => this.styles[id].edges.color.constant;
+    },
+    edgesSize() {
+      return (id) => this.styles[id].edges.size;
+    },
+
+
+
+    trianglesVisibility() {
+      return (id) => this.styles[id].triangles.visibility;
+    },
+    trianglesActiveColoring() {
+      return (id) => this.styles[id].triangles.color.active;
+    },
+    trianglesConstantColor() {
+      return (id) => this.styles[id].triangles.color.constant;
+    },
+    trianglesPolygonAttributeName() {
+      return (id) => this.styles[id].triangles.color.polygon.name;
+    },
+    trianglesVertexAttributeName() {
+      return (id) => this.styles[id].triangles.color.vertex.name;
+    }
+
   },
   actions: {
     addDataStyle(id, geode_object) {
@@ -81,116 +114,21 @@ export const useDataStyleStore = defineStore("dataStyle", {
       console.log("setPointsSize", this.styles[id].points.size);
     },
 
-    setMeshEdgesColor(id, color) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_color,
-          params: { id, color },
-        },
-        {
-          response_function: () => {
-            this.styles[id].edges_color = { color };
-          },
-        }
-      );
+    setEdgesVisibility(id, visibility) {
+      this.styles[id].edges.visibility = visibility;
+      console.log("setEdgesVisibility", this.styles[id].points.visibility);
     },
-
-    setMeshEdgesSize(id, size) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
-          params: { id, size },
-        },
-        {
-          response_function: () => {
-            this.styles[id].edges_size = size;
-          },
-        }
-      );
+    setEdgesActiveColoring(id, type) {
+      this.styles[id].edges.color.active = type;
+      console.log("setEdgesActiveColoring", this.styles[id].points.color.active);
     },
-
-    setMeshEdgesVisibility(id, visibility) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_visibility,
-          params: { id, visibility },
-        },
-        {
-          response_function: () => {
-            this.styles[id].edges_visibility = visibility;
-          },
-        }
-      );
+    setEdgesConstantColor(id, color) {
+      this.styles[id].edges.color.constant = color;
+      console.log("setEdgesConstantColor", this.styles[id].points.color.constant);
     },
-
-    setMeshPointsColor(id, color) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_points_color,
-          params: { id, red: color["r"], green: color["g"], blue: color["b"] },
-        },
-        {
-          response_function: () => {
-            this.styles[id].points_color = color;
-          },
-        }
-      );
-    },
-
-    setMeshPointsSize(id, size) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_points_size,
-          params: { id, size },
-        },
-        {
-          response_function: () => {
-            this.styles[id].points_size = size;
-          },
-        }
-      );
-    },
-
-    setMeshPointsVisibility(id, visibility) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_points_visibility,
-          params: { id, visibility },
-        },
-        {
-          response_function: () => {
-            this.styles[id].points_visibility = visibility;
-          },
-        }
-      );
-    },
-
-    setMeshTrianglesColor(id, color) {
-      viewer_call(
-        {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_triangles_color,
-          params: { id, color },
-        },
-        {
-          response_function: () => {
-            this.styles[id].triangles_color = color;
-          },
-        }
-      );
-    },
-    setMeshTrianglesVisibility(id, visibility) {
-      viewer_call(
-        {
-          schema:
-            viewer_schemas.opengeodeweb_viewer.mesh.set_triangles_visibility,
-          params: { id, visibility },
-        },
-        {
-          response_function: () => {
-            this.styles[id].triangles_visibility = visibility;
-          },
-        }
-      );
+    setEdgesSize(id, size) {
+      this.styles[id].edges.size = size;
+      console.log("setEdgesSize", this.styles[id].points.size);
     },
   },
 });
