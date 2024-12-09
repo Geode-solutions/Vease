@@ -58,21 +58,27 @@ export const useDataStyleStore = defineStore("dataStyle", {
   actions: {
     addDataStyle(id, geode_object) {
       this.styles[id] = default_styles[geode_object];
+      console.log("addDataStyle", this.styles[id]);
     },
     setPointsVisibility(id, visibility) {
       this.styles[id].points.visibility = visibility;
+      console.log("setPointsVisibility", this.styles[id].points.visibility);
     },
     setPointsActiveColoring(id, type) {
       this.styles[id].points.color.active = type;
+      console.log("setPointsActiveColoring", this.styles[id].points.color.active);
     },
     setPointsConstantColor(id, color) {
       this.styles[id].points.color.constant = color;
+      console.log("setPointsConstantColor", this.styles[id].points.color.constant);
     },
     setPointsVertexAttributeName(id, name) {
       this.styles[id].points.color.vertex.name = name;
+      console.log("setPointsVertexAttributeName", this.styles[id].points.color.vertex.name);
     },
     setPointsSize(id, size) {
       this.styles[id].points.size = size;
+      console.log("setPointsSize", this.styles[id].points.size);
     },
 
     setMeshEdgesColor(id, color) {
