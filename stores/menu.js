@@ -34,14 +34,14 @@ const Surface_menu = [
 
 const menus = {
   mesh: {
-    // PointSet2D: PointSet_menu,
-    // PointSet3D: PointSet_menu,
-    // EdgedCurve2D: EdgedCurve_menu,
-    // EdgedCurve3D: EdgedCurve_menu,
+    PointSet2D: PointSet_menu,
+    PointSet3D: PointSet_menu,
+    EdgedCurve2D: EdgedCurve_menu,
+    EdgedCurve3D: EdgedCurve_menu,
     PolygonalSurface2D: Surface_menu,
     PolygonalSurface3D: Surface_menu,
-    // TriangulatedSurface2D: Surface_menu,
-    // TriangulatedSurface3D: Surface_menu,
+    TriangulatedSurface2D: Surface_menu,
+    TriangulatedSurface3D: Surface_menu,
   },
   model: {
     BRep: [],
