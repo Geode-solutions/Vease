@@ -1,7 +1,6 @@
 <template>
   <v-combobox
     v-model="vertexAttributeName"
-    v-if="select === styles[1]"
     :items="vertexAttributes"
     label="Select attribute"
   ></v-combobox>

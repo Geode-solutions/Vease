@@ -2,7 +2,7 @@
   <ViewerGenericMeshEdgesColor :itemProps="props.itemProps">
     <template #btn>
       <v-img
-        :src="EdgeCurveEdgesColor"
+        :src="EdgedCurveEdgesColor"
         height="35"
         width="35"
       />
@@ -11,10 +11,10 @@
 </template>
 
 <script setup>
-import EdgeCurveEdgesColor from "@/assets/viewer_svgs/edged_curve_color.svg";
+import EdgedCurveEdgesColor from "@/assets/viewer_svgs/edged_curve_color.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
 });
-console.log("ViewerSurfacePointsColor props", props.itemProps);
+console.log("ViewerEdgedCurveEdgesColor props", props.itemProps);
 </script>
