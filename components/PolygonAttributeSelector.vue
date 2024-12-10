@@ -1,29 +1,40 @@
 <template>
   <v-combobox
-    v-model="vertexAttributeName"
-    v-if="select === styles[1]"
-    :items="vertexAttributes"
+    v-model="polygonAttributeName"
+    :items="polygonAttributes"
     label="Select attribute"
   ></v-combobox>
 </template>
 
-
-
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
+const emit = defineEmits(["update_value"]);
+
 const props = defineProps({
-    id: { type: String, required: true },
-})
+  id: { type: String, required: true },
+});
+
+const dataStyleStore = useDataStyleStore();
+
+const polygonAttributes = ref([]);
+const polygonAttributeName = ref("");
+const meta_data = computed(() => {
+  return dataStyleStore.getMetaData(props.id);
+});
+
+watch(polygonAttributeName, () => {
+  emit("update_value", polygonAttributeName.value);
+});
 
 onMounted(() => {
-    getVertexAttributeNames()
-})
+  getPolygonAttributeNames();
+});
 
-function getVertexAttributeNames() {
+function getPolygonAttributeNames() {
   api_fetch(
     {
-      schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
+      schema: back_schemas.opengeodeweb_back.polygon_attribute_names,
       params: {
         input_geode_object: meta_data.value.geode_object,
         filename: meta_data.value.filename,
@@ -31,10 +42,9 @@ function getVertexAttributeNames() {
     },
     {
       response_function: (response) => {
-        vertexAttributes.value = response._data.vertex_attribute_names;
+        polygonAttributes.value = response._data.polygon_attribute_names;
       },
     }
   );
 }
-
 </script>

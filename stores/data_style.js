@@ -40,7 +40,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
   }),
   getters: {
     pointsVisibility() {
-      return (id) => this.styles[id].points.visibility
+      return (id) => this.styles[id].points.visibility;
     },
     pointsActiveColoring() {
       return (id) => this.styles[id].points.color.active;
@@ -55,7 +55,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
       return (id) => this.styles[id].points.size;
     },
 
-
     edgesVisibility() {
       return (id) => this.styles[id].edges.visibility;
     },
@@ -68,8 +67,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
     edgesSize() {
       return (id) => this.styles[id].edges.size;
     },
-
-
 
     trianglesVisibility() {
       return (id) => this.styles[id].triangles.visibility;
@@ -85,8 +82,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
     },
     trianglesVertexAttributeName() {
       return (id) => this.styles[id].triangles.color.vertex.name;
-    }
-
+    },
   },
   actions: {
     addDataStyle(id, geode_object) {
@@ -94,41 +90,142 @@ export const useDataStyleStore = defineStore("dataStyle", {
       console.log("addDataStyle", this.styles[id]);
     },
     setPointsVisibility(id, visibility) {
-      this.styles[id].points.visibility = visibility;
-      console.log("setPointsVisibility", this.styles[id].points.visibility);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_point_visibility,
+          params: { id, visibility },
+        },
+        {
+          response_function: () => {
+            this.styles[id].points.visibility = visibility;
+            console.log(
+              "setPointsVisibility",
+              this.styles[id].points.visibility
+            );
+          },
+        }
+      );
     },
     setPointsActiveColoring(id, type) {
       this.styles[id].points.color.active = type;
-      console.log("setPointsActiveColoring", this.styles[id].points.color.active);
+      console.log(
+        "setPointsActiveColoring",
+        this.styles[id].points.color.active
+      );
+      if (type === "vertex") {
+        this.setPointsVertexAttributeName(
+          id,
+          this.styles[id].points.color.vertex.name
+        );
+      } else if (type === "constant") {
+        this.setPointsConstantColor(
+          id,
+          this.styles[id].points.color.constant.color
+        );
+      }
     },
     setPointsConstantColor(id, color) {
-      this.styles[id].points.color.constant = color;
-      console.log("setPointsConstantColor", this.styles[id].points.color.constant);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_points_color,
+          params: { id, color },
+        },
+        {
+          response_function: () => {
+            this.styles[id].points.color.constant = color;
+            console.log(
+              "setPointsConstantColor",
+              this.styles[id].points.color.constant
+            );
+          },
+        }
+      );
     },
     setPointsVertexAttributeName(id, name) {
-      this.styles[id].points.color.vertex.name = name;
-      console.log("setPointsVertexAttributeName", this.styles[id].points.color.vertex.name);
+      viewer_call(
+        {
+          schema:
+            viewer_schemas.opengeodeweb_viewer.mesh.display_vertex_attribute,
+          params: { id, name },
+        },
+        {
+          response_function: () => {
+            this.styles[id].points.color.vertex.name = name;
+            console.log(
+              "setPointsVertexAttributeName",
+              this.styles[id].points.color.vertex.name
+            );
+          },
+        }
+      );
     },
     setPointsSize(id, size) {
-      this.styles[id].points.size = size;
-      console.log("setPointsSize", this.styles[id].points.size);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_point_size,
+          params: { id, size },
+        },
+        {
+          response_function: () => {
+            this.styles[id].points.size = size;
+            console.log("setPointsSize", this.styles[id].points.size);
+          },
+        }
+      );
     },
 
     setEdgesVisibility(id, visibility) {
-      this.styles[id].edges.visibility = visibility;
-      console.log("setEdgesVisibility", this.styles[id].points.visibility);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_visibility,
+          params: { id, visibility },
+        },
+        {
+          response_function: () => {
+            this.styles[id].edges.visibility = visibility;
+            console.log("setEdgesVisibility", this.styles[id].edges.visibility);
+          },
+        }
+      );
     },
     setEdgesActiveColoring(id, type) {
       this.styles[id].edges.color.active = type;
-      console.log("setEdgesActiveColoring", this.styles[id].points.color.active);
+      console.log(
+        "setEdgesActiveColoring",
+        this.styles[id].points.color.active
+      );
+      this.setPointsConstantColor(id, this.styles[id].points.color[type]);
     },
     setEdgesConstantColor(id, color) {
-      this.styles[id].edges.color.constant = color;
-      console.log("setEdgesConstantColor", this.styles[id].points.color.constant);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_point_size,
+          params: { id, color },
+        },
+        {
+          response_function: () => {
+            this.styles[id].edges.color.constant = color;
+            console.log(
+              "setEdgesConstantColor",
+              this.styles[id].points.color.constant
+            );
+          },
+        }
+      );
     },
     setEdgesSize(id, size) {
-      this.styles[id].edges.size = size;
-      console.log("setEdgesSize", this.styles[id].points.size);
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+          params: { id, size },
+        },
+        {
+          response_function: () => {
+            this.styles[id].edges.size = size;
+            console.log("setEdgesSize", this.styles[id].points.size);
+          },
+        }
+      );
     },
   },
 });

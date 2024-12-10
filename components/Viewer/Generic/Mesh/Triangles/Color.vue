@@ -1,9 +1,109 @@
 <template>
-
-
+  <ContextMenuItem v-bind="itemProps">
+    <template #tooltip>Triangles color</template>
+    <template #btn>
+      <slot name="btn"></slot>
+    </template>
+    <template #options>
+      <v-card>
+        <v-card-text class="justify-center">
+          <v-switch v-model="visibility" inset label="Visibility" />
+          <template v-if="visibility">
+            <v-combobox
+              v-model="select"
+              :items="styles"
+              label="Select color style"
+            ></v-combobox>
+            <v-color-picker
+              v-if="select === styles[0]"
+              ref="action"
+              v-model="color"
+              flat
+              canvas-height="100"
+              hide-inputs
+              width="200"
+            ></v-color-picker>
+            <VertexAttributeSelector v-if="select === styles[1]" @update_value="vertexAttributeName = $event"/>
+            <PolygonAttributeSelector v-if="select === styles[2]" @update_value="polygonAttributeName = $event"/>
+          </template>
+        </v-card-text>
+      </v-card>
+    </template>
+  </ContextMenuItem>
 </template>
 
 <script setup>
-const dataStyleStore = useDataStyleStore()
-dataStyleStore.setMeshTrianglesColor()
+import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+
+const props = defineProps({
+  itemProps: { type: Object, required: true },
+});
+
+console.log("ViewerGenericMeshTrianglesColor props", props.itemProps);
+
+const dataStyleStore = useDataStyleStore();
+const tree_view_store = use_treeview_store();
+
+const id = toRef(() => props.itemProps.id);
+console.log("id", id.value);
+const meta_data = computed(() => {
+  return tree_view_store.idMetaData(id.value);
+});
+
+console.log("meta_data", meta_data);
+
+const visibility = computed({
+  get() {
+    return dataStyleStore.trianglesVisibility(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setTrianglesVisibility(id.value, newValue);
+  },
+});
+const color = computed({
+  get() {
+    return dataStyleStore.trianglesConstantColor(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setTrianglesConstantColor(id.value, newValue);
+  },
+});
+const styles = ["Constant", "From vertex attribute"];
+const storeStyles = ["constant", "vertex"];
+const select = computed({
+  get() {
+    const active = dataStyleStore.trianglesActiveColoring(id.value);
+    for (let i = 0; i < styles.length; i++) {
+      if (active === storeStyles[i]) {
+        return styles[i];
+      }
+    }
+    return "";
+  },
+  set(newValue) {
+    for (let i = 0; i < styles.length; i++) {
+      if (newValue === styles[i]) {
+        dataStyleStore.setTrianglesActiveColoring(id.value, storeStyles[i]);
+        return;
+      }
+    }
+  },
+});
+const vertexAttributeName = computed({
+  get() {
+    return dataStyleStore.trianglesVertexAttributeName(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setTrianglesVertexAttributeName(id.value, newValue);
+  },
+});
+
+const polygonAttributeName = computed({
+  get() {
+    return dataStyleStore.trianglesPolygonAttributeName(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setTrianglesPolygonAttributeName(id.value, newValue);
+  },
+});
 </script>

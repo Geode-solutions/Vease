@@ -23,12 +23,7 @@
               hide-inputs
               width="200"
             ></v-color-picker>
-            <v-combobox
-              v-model="vertexAttributeName"
-              v-if="select === styles[1]"
-              :items="vertexAttributes"
-              label="Select attribute"
-            ></v-combobox>
+            <VertexAttributeSelector v-if="select === styles[1]" @update_value="vertexAttributeName = $event"/>
           </template>
         </v-card-text>
       </v-card>
@@ -101,27 +96,4 @@ const vertexAttributeName = computed({
     dataStyleStore.setPointsVertexAttributeName(id.value, newValue);
   },
 });
-
-const vertexAttributes = ref([]);
-
-onMounted(() => {
-  getAttributeNames();
-});
-
-function getAttributeNames() {
-  api_fetch(
-    {
-      schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
-      params: {
-        input_geode_object: meta_data.value.geode_object,
-        filename: meta_data.value.filename,
-      },
-    },
-    {
-      response_function: (response) => {
-        vertexAttributes.value = response._data.vertex_attribute_names;
-      },
-    }
-  );
-}
 </script>
