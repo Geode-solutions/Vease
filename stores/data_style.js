@@ -227,5 +227,21 @@ export const useDataStyleStore = defineStore("dataStyle", {
         }
       );
     },
+
+    setTrianglesVisibility(id, visibility) {
+      this.styles[id].triangles.visibility = visibility;
+    },
+    setTrianglesActiveColoring(id, type) {
+      this.styles[id].triangles.color.active = type;
+    },
+    setTrianglesConstantColor(id, color) {
+      this.styles[id].triangles.color.constant = color;
+    },
+    setTrianglesVertexAttributeName(id, name) {
+      this.styles[id].triangles.color.vertex.name = name;
+    },
+    setTrianglesPolygonAttributeName(id, name) {
+      this.styles[id].triangles.color.polygon.name = name;
+    },
   },
 });
