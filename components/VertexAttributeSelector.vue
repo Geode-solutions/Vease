@@ -1,0 +1,50 @@
+<template>
+  <v-combobox
+    v-model="vertexAttributeName"
+    :items="vertexAttributes"
+    label="Select attribute"
+  ></v-combobox>
+</template>
+
+<script setup>
+import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+
+const emit = defineEmits(["update_value"]);
+
+const props = defineProps({
+  id: { type: String, required: true },
+});
+
+const dataStyleStore = useDataStyleStore();
+
+const vertexAttributes = ref([]);
+const vertexAttributeName = ref("");
+const meta_data = computed(() => {
+  return dataStyleStore.getMetaData(props.id);
+});
+
+watch(vertexAttributeName, () => {
+  emit("update_value", vertexAttributeName.value);
+});
+
+onMounted(() => {
+  getVertexAttributeNames();
+});
+
+function getVertexAttributeNames() {
+  api_fetch(
+    {
+      schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
+      params: {
+        input_geode_object: meta_data.value.geode_object,
+        filename: meta_data.value.filename,
+      },
+    },
+    {
+      response_function: (response) => {
+        vertexAttributes.value = response._data.vertex_attribute_names;
+      },
+    }
+  );
+}
+</script>

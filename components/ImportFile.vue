@@ -5,7 +5,7 @@
       <v-progress-circular indeterminate size="20" color="white" width="3" />
     </template>
   </v-btn>
-  <v-btn variant="text" @click="UIState.setShowStepper(false)"> Cancel </v-btn>
+  <v-btn variant="text" @click="UIStore.setShowStepper(false)"> Cancel </v-btn>
 </template>
 
 <script setup>
@@ -19,8 +19,8 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
-const treeStore = useTreeviewStore();
-const UIState = useUIState();
+const treeStore = use_treeview_store();
+const UIStore = useUIStore();
 
 const { filenames, input_geode_object } = props;
 
@@ -60,7 +60,7 @@ async function import_files() {
     );
   }
 
-  UIState.setShowStepper(false);
+  UIStore.setShowStepper(false);
   toggle_loading();
 }
 </script>
