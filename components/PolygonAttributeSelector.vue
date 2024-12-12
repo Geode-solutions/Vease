@@ -1,7 +1,7 @@
 <template>
   <v-combobox
-    v-model="vertexAttributeName"
-    :items="vertexAttributes"
+    v-model="polygonAttributeName"
+    :items="polygonAttributes"
     label="Select attribute"
   ></v-combobox>
 </template>
@@ -9,8 +9,7 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-
-const vertexAttributeName = defineModel()
+const polygonAttributeName = defineModel()
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -18,19 +17,19 @@ const props = defineProps({
 
 const dataStyleStore = useDataStyleStore();
 
-const vertexAttributes = ref([]);
+const polygonAttributes = ref([]);
 const meta_data = computed(() => {
   return dataStyleStore.getMetaData(props.id);
 });
 
 onMounted(() => {
-  getVertexAttributeNames();
+  getPolygonAttributeNames();
 });
 
-function getVertexAttributeNames() {
+function getPolygonAttributeNames() {
   api_fetch(
     {
-      schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
+      schema: back_schemas.opengeodeweb_back.polygon_attribute_names,
       params: {
         input_geode_object: meta_data.value.geode_object,
         filename: meta_data.value.filename,
@@ -38,7 +37,7 @@ function getVertexAttributeNames() {
     },
     {
       response_function: (response) => {
-        vertexAttributes.value = response._data.vertex_attribute_names;
+        polygonAttributes.value = response._data.polygon_attribute_names;
       },
     }
   );
