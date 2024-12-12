@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-item" :style="itemStyle">
+  <template class="menu-item" :style="itemStyle">
     <v-btn icon :active="display_options" @click.stop="toggleOptions">
       <slot name="btn" />
       <v-tooltip :location="tooltip_location" :origin="tooltip_origin">
@@ -9,7 +9,7 @@
     <div v-if="display_options" class="menu-options" @click.stop>
       <slot name="options" />
     </div>
-  </div>
+  </template>
 </template>
 
 <script setup>
