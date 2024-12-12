@@ -1,7 +1,11 @@
 <template>
   <v-row class="fill-height pa-5">
     <v-col cols="12">
-      <v-card style="height: 100%; width: 100%" @click.right="openMenu">
+      <v-card
+        ref="cardContainer"
+        style="height: 100%; width: 100%"
+        @click.right="openMenu"
+      >
         <RemoteRenderingView>
           <template #ui>
             <TreeObject />
@@ -32,18 +36,11 @@ const menuX = ref(0);
 const menuY = ref(0);
 const containerWidth = ref(0);
 const containerHeight = ref(0);
-
 const id = ref("");
+const cardContainer = ref(null);
 
 const { display_menu } = storeToRefs(menuStore);
 
-watch(display_menu, (value) => {
-  console.log("FROM INDEX WATCH", value);
-});
-watch(
-  () => menuStore.display_menu, (value) => {
-  console.log("FROM INDEX WATCH 2 ", value);
-});
 async function get_id(x, y) {
   const ids = treeview_store.get_ids();
   await viewer_call(
@@ -53,11 +50,8 @@ async function get_id(x, y) {
     },
     {
       response_function: (response) => {
-        console.log("response", response);
         const array_ids = response.array_ids;
-        console.log("array_ids", array_ids);
         id.value = array_ids[0];
-        console.log("id", id.value);
       },
     }
   );
@@ -69,23 +63,22 @@ async function openMenu(event) {
 
   await get_id(event.offsetX, event.offsetY);
   menuStore.openMenu();
-  console.log("openMenu", menuStore.display_menu);
 }
 
 onMounted(async () => {
   await infra_store.create_backend();
   await viewer_store.ws_connect();
 
-  const container = document.querySelector(".v-card");
-  const { width, height } = useElementSize(container);
-  containerWidth.value = width.value;
-  containerHeight.value = height.value;
-  console.log("containerWidth", containerWidth.value, containerHeight.value);
-});
+  if (cardContainer.value) {
+    const { width, height } = useElementSize(cardContainer.value);
+    containerWidth.value = width.value;
+    containerHeight.value = height.value;
+  }
 
-if (!viewer_store.client) {
-  await viewer_store.ws_connect();
-}
+  if (!viewer_store.client) {
+    await viewer_store.ws_connect();
+  }
+});
 </script>
 
 <style>

@@ -1,5 +1,5 @@
 <template>
-  <div
+  <v-container
     style="
       position: absolute;
       z-index: 2;
@@ -9,24 +9,22 @@
       border-radius: 16px;
     "
   >
-    <v-container>
-      <v-row>
-        <v-col cols="12" md="12">
-          <v-treeview
-            v-model:selected="selection"
-            select-strategy="classic"
-            item-value="id"
-            return-object
-            :items="treeviewStore.items"
-            selectable
-            class="transparent-treeview"
-            selected
-          >
-          </v-treeview>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+    <v-row>
+      <v-col cols="12" md="12">
+        <v-treeview
+          v-model:selected="selection"
+          select-strategy="classic"
+          item-value="id"
+          return-object
+          :items="treeviewStore.items"
+          selectable
+          class="transparent-treeview"
+          selected
+        >
+        </v-treeview>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>
@@ -39,8 +37,7 @@
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 const treeviewStore = use_treeview_store();
-
-const { selection } = toRefs(treeviewStore);
+const { selection } = storeToRefs(treeviewStore);
 
 async function toggle_object_visibility(id, visibility) {
   await viewer_call({

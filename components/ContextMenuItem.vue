@@ -1,17 +1,19 @@
 <template>
-  <div class="menu-item" :style="props.itemStyle">
-    <v-btn icon :active="display_options" v-bind="props" @click.stop="display_options = !display_options">
+  <template class="menu-item" :style="itemStyle">
+    <v-btn
+      icon
+      :active="display_options"
+      @click.stop="display_options = !display_options"
+    >
       <slot name="btn" />
-      <v-tooltip :location="props.location" :origin="props.origin">
+      <v-tooltip :location="tooltip_location" :origin="tooltip_origin">
         <span><slot name="tooltip" /></span>
       </v-tooltip>
     </v-btn>
-    <v-row>
-
-
-      <slot name="options" v-if="display_options" />
+    <v-row v-if="display_options">
+      <slot name="options" />
     </v-row>
-  </div>
+  </template>
 </template>
 
 <script setup>
@@ -20,8 +22,9 @@ const props = defineProps({
   y: { type: Number, required: true },
   tooltip_location: { type: String, required: true },
   tooltip_origin: { type: String, required: true },
-  itemStyle: { type: String, required: true },
+  itemStyle: { type: Object, required: true },
 });
+
 const display_options = ref(false);
 </script>
 
@@ -34,19 +37,5 @@ const display_options = ref(false);
   justify-content: center;
   cursor: pointer;
   transition: transform 0.3s;
-}
-.clickable-area {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  transition: background-color 0.3s;
-}
-
-.clickable-area:hover {
-  background-color: rgba(255, 255, 255, 0.5);
 }
 </style>

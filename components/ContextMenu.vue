@@ -11,18 +11,17 @@
       <component
         v-for="(item, index) in menu_items"
         :is="item"
-        :key="item"
-        v-bind="{
-          itemProps: {
-            id: props.id,
-            x: props.x,
-            y: props.y,
-            tooltip_location: getTooltipLocation(index, menu_items.length),
-            tooltip_origin: getTooltipOrigin(index, menu_items.length),
-            itemStyle: getItemStyle(index, menu_items.length),
-          },
+        :key="index"
+        :itemProps="{
+          id: props.id,
+          x: props.x,
+          y: props.y,
+          tooltip_location: getTooltipLocation(index),
+          tooltip_origin: getTooltipOrigin(index),
+          itemStyle: getItemStyle(index),
         }"
-        :style="getItemStyle(index, menu_items.length)"
+        class="menu-item-wrapper"
+        :style="getItemStyle(index)"
       />
     </div>
   </v-menu>
@@ -30,6 +29,8 @@
 
 <script setup>
 const menuStore = useMenuStore();
+const treeViewStore = use_treeview_store();
+
 const radius = 80;
 
 const props = defineProps({
@@ -42,86 +43,71 @@ const props = defineProps({
 
 const show_menu = ref(true);
 
-console.log("show_menu", show_menu.value);
 watch(show_menu, (value) => {
-  console.log("show_menu watch", value);
-  menuStore.closeMenu();
+  if (!value) {
+    menuStore.closeMenu();
+  }
 });
 
-console.log("ContextMenu props", props);
+const meta_data = computed(() => treeViewStore.idMetaData(props.id));
 
-const tree_view_store = use_treeview_store();
-const meta_data = computed(() => {
-  return tree_view_store.idMetaData(props.id);
-});
-
-console.log("meta_data", meta_data);
-
-const menu_items = computed(() => {
-  console.log("META_DATA", meta_data);
-  const value = menuStore.getMenuItems(
+const menu_items = computed(() =>
+  menuStore.getMenuItems(
     meta_data.value.object_type,
     meta_data.value.geode_object
+  )
+);
+
+const menuItemCount = computed(() => menu_items.value.length);
+
+function getMenuStyle() {
+  const adjustedX = Math.min(
+    Math.max(props.x, radius),
+    props.containerWidth - radius
+  );
+  const adjustedY = Math.min(
+    Math.max(props.y, radius),
+    props.containerHeight - radius
   );
 
-  // const value = menuStore.getMenuItems("mesh", "PolygonalSurface3D");
-  console.log("menu_items", value);
-  return value;
-});
-function getMenuStyle() {
-  let adjustedX = props.x;
-  let adjustedY = props.y;
-
-  if (adjustedX - radius < 0) {
-    adjustedX = radius;
-  } else if (adjustedX + radius > props.containerWidth) {
-    adjustedX = props.containerWidth - radius;
-  }
-
-  if (adjustedY - radius < 0) {
-    adjustedY = radius;
-  } else if (adjustedY + radius > props.containerHeight) {
-    adjustedY = props.containerHeight - radius;
-  }
-
-  console.log(adjustedX, adjustedY, radius);
   return {
     left: `${adjustedX - radius}px`,
     top: `${adjustedY - radius}px`,
   };
 }
 
-function getTooltipLocation(index, totalItems) {
-  const angle = (index / totalItems) * 360;
-  if (angle >= 0 && angle < 90) return "top";
-  if (angle >= 90 && angle < 180) return "end";
-  if (angle >= 180 && angle < 270) return "bottom";
-  return "start";
+function getTooltipLocation(index) {
+  const angle = (index / menuItemCount.value) * 360;
+  return angle < 90
+    ? "top"
+    : angle < 180
+    ? "end"
+    : angle < 270
+    ? "bottom"
+    : "start";
 }
 
-function getTooltipOrigin(index, totalItems) {
-  const angle = (index / totalItems) * 360;
-  if (angle >= 0 && angle < 90) return "start";
-  if (angle >= 90 && angle < 180) return "top";
-  if (angle >= 180 && angle < 270) return "end";
-  return "bottom";
+function getTooltipOrigin(index) {
+  const angle = (index / menuItemCount.value) * 360;
+  return angle < 90
+    ? "start"
+    : angle < 180
+    ? "top"
+    : angle < 270
+    ? "end"
+    : "bottom";
 }
 
-function getItemStyle(index, totalItems) {
-  const angle = (index / totalItems) * 2 * Math.PI;
-  const xRound = Math.cos(angle) * props.radius;
-  const yRound = Math.sin(angle) * props.radius;
+function getItemStyle(index) {
+  const angle = (index / menuItemCount.value) * 2 * Math.PI;
   return {
-    transform: `translate(${xRound}px, ${yRound}px)`,
+    transform: `translate(${Math.cos(angle) * radius}px, ${
+      Math.sin(angle) * radius
+    }px)`,
     transition: "opacity 0.1s ease, transform 0.1s ease",
+    position: "absolute",
   };
 }
-
-console.log("display_menu", menuStore.display_menu);
-
-watch(menuStore.display_menu, (value) => {
-  console.log("display_menuw", value);
-});
 </script>
 
 <style scoped>
@@ -136,5 +122,11 @@ watch(menuStore.display_menu, (value) => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.menu-item-wrapper {
+  position: absolute;
+  transform-origin: center;
+  will-change: transform, opacity;
 }
 </style>
