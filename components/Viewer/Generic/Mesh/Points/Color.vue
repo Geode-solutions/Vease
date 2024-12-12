@@ -14,16 +14,8 @@
               :items="styles"
               label="Select color style"
             ></v-combobox>
-            <v-color-picker
-              v-if="select === styles[0]"
-              ref="action"
-              v-model="color"
-              flat
-              canvas-height="100"
-              hide-inputs
-              width="200"
-            ></v-color-picker>
-            <VertexAttributeSelector v-if="select === styles[1]" @update_value="vertexAttributeName = $event"/>
+            <ConstantColorPicker v-if="select === styles[0]" v-model="color"/>
+            <VertexAttributeSelector v-if="select === styles[1]" v-model="vertexAttributeName"/>
           </template>
         </v-card-text>
       </v-card>
@@ -32,16 +24,14 @@
 </template>
 
 <script setup>
-import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+const dataStyleStore = useDataStyleStore();
+const tree_view_store = use_treeview_store();
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
 });
 
 console.log("ViewerGenericMeshPointsColor props", props.itemProps);
-
-const dataStyleStore = useDataStyleStore();
-const tree_view_store = use_treeview_store();
 
 const id = toRef(() => props.itemProps.id);
 console.log("id", id.value);

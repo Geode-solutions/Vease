@@ -14,15 +14,7 @@
                 :items="styles"
                 label="Select color style"
               ></v-combobox>
-              <v-color-picker
-                v-if="select === styles[0]"
-                ref="action"
-                v-model="color"
-                flat
-                canvas-height="100"
-                hide-inputs
-                width="200"
-              ></v-color-picker>
+              <ConstantColorPicker v-if="select === styles[0]" v-model="color"/>
             </template>
           </v-card-text>
         </v-card>
@@ -75,7 +67,7 @@
           return styles[i];
         }
       }
-      return "";
+      return "Select a coloring";
     },
     set(newValue) {
       for (let i = 0; i < styles.length; i++) {

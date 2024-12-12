@@ -9,7 +9,8 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const emit = defineEmits(["update_value"]);
+
+const vertexAttributeName = defineModel()
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -18,13 +19,8 @@ const props = defineProps({
 const dataStyleStore = useDataStyleStore();
 
 const vertexAttributes = ref([]);
-const vertexAttributeName = ref("");
 const meta_data = computed(() => {
   return dataStyleStore.getMetaData(props.id);
-});
-
-watch(vertexAttributeName, () => {
-  emit("update_value", vertexAttributeName.value);
 });
 
 onMounted(() => {
