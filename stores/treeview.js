@@ -20,6 +20,9 @@ export const use_treeview_store = defineStore("treeview", {
         children: [child],
       });
       this.selection.push(child);
+
+      console.log("this.items", this.items);
+      console.log("this.selection", this.selection);
     },
 
     setSelectionType(type) {
