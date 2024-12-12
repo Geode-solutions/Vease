@@ -14,8 +14,6 @@ import SurfacePointsSize from "@/components/Viewer/Surface/Points/Size.vue";
 import SurfaceEdgesColor from "@/components/Viewer/Surface/Edges/Color.vue";
 import SurfaceTrianglesColor from "@/components/Viewer/Surface/Triangles/Color.vue";
 
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-
 const PointSet_menu = [PointSetPointsColor, PointSetPointsSize];
 
 const EdgedCurve_menu = [

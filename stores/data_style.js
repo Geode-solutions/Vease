@@ -1,38 +1,5 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-
-const polygonalSurface_defaultStyle = {
-  points: {
-    visibility: true,
-    color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
-      vertex: { name: "" },
-    },
-    size: 1,
-  },
-  edges: {
-    visibility: true,
-    color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
-    },
-    size: 1,
-  },
-  triangles: {
-    visibility: true,
-    color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
-      polygon: { name: "" },
-      vertex: { name: "" },
-    },
-  },
-};
-
-const default_styles = {
-  PolygonalSurface2D: polygonalSurface_defaultStyle,
-  PolygonalSurface3D: polygonalSurface_defaultStyle,
-};
+import { getDefaultStyle } from "@/utils/default_styles";
 
 export const useDataStyleStore = defineStore("dataStyle", {
   state: () => ({
@@ -86,7 +53,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
   },
   actions: {
     addDataStyle(id, geode_object) {
-      this.styles[id] = default_styles[geode_object];
+      this.styles[id] = getDefaultStyle(geode_object);
       console.log("addDataStyle", this.styles[id]);
     },
     setPointsVisibility(id, visibility) {
