@@ -1,5 +1,5 @@
 <template>
-  <ViewerGenericMeshPointsColor
+  <ViewerGenericMeshTrianglesColor
     :itemProps="props.itemProps"
     :btn_image="SurfaceTrianglesColor"
   />
