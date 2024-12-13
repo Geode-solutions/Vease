@@ -5,7 +5,7 @@
     :btn_image="props.btn_image"
   >
     <template #options>
-      <v-switch v-model="visibility" inset label="Visibility" />
+      <VisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
         <v-combobox
           v-model="select"
@@ -75,3 +75,4 @@ const select = computed({
   },
 });
 </script>
+
