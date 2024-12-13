@@ -35,16 +35,16 @@
 </style>
 
 <script setup>
-
 const treeviewStore = use_treeview_store();
-// const dataStyleStore = useDataStyleStore();
-const { selection } = toRefs(treeviewStore);
+const dataStyleStore = useDataStyleStore();
 
-// function compare_selections(value, oldvalue) {
-//   const added = value.filter((item) => !oldvalue.includes(item));
-//   const removed = oldvalue.filter((item) => !value.includes(item));
-//   return { added, removed };
-// }
+const selection = computed(() => dataStyleStore.selectedObjects);
+
+function compare_selections(value, oldvalue) {
+  const added = value.filter((item) => !oldvalue.includes(item));
+  const removed = oldvalue.filter((item) => !value.includes(item));
+  return { added, removed };
+}
 
 watch(selection, (value, oldvalue) => {
   const { added, removed } = compare_selections(value, oldvalue);

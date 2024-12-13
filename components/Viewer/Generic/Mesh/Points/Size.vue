@@ -1,6 +1,6 @@
 <template>
   <ContextMenuItem
-    v-bind="itemProps"
+    :itemProps="props.itemProps"
     tooltip="Points size"
     :btn_image="props.btn_image"
   >

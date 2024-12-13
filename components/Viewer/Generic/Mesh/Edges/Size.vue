@@ -1,7 +1,7 @@
 <template>
   <ContextMenuItem
     :itemProps="props.itemProps"
-    tootip="Edges size"
+    tooltip="Edges size"
     :btn_image="props.btn_image"
   >
     <template #options>

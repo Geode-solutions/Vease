@@ -1,16 +1,23 @@
 <template>
   <template class="menu-item" :style="itemStyle">
-    <v-btn icon :active="display_options" @click.stop="toggleOptions">
-      <v-img :src="btn_image" height="35" width="35" />
-      <v-tooltip
-        :location="props.itemProps.tooltip_location"
-        :origin="props.itemProps.tooltip_origin"
-      >
-        <span>{{ props.tootip }}</span>
-      </v-tooltip>
-    </v-btn>
+    <v-tooltip
+      :location="props.itemProps.tooltip_location"
+      :origin="props.itemProps.tooltip_origin"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          icon
+          :active="display_options"
+          @click.stop="toggleOptions"
+          v-bind="props"
+        >
+          <v-img :src="btn_image" height="35" width="35" />
+        </v-btn>
+      </template>
+      <span>{{ props.tooltip }}</span>
+    </v-tooltip>
     <div v-if="display_options" class="menu-options" @click.stop>
-      <v-card :title="props.itemProps.tootip" class="bg-primary">
+      <v-card :title="props.tooltip" class="bg-primary">
         <v-card-text class="bg-primary">
           <slot name="options" />
         </v-card-text>
@@ -22,8 +29,11 @@
 <script setup>
 const props = defineProps({
   itemProps: { type: Object, required: true },
+  tooltip: { type: String, required: true },
   btn_image: { type: String, required: true },
 });
+
+console.log("ContextMenuItem props", props.itemProps);
 
 const display_options = ref(false);
 

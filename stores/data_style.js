@@ -85,7 +85,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
           response_function: () => {
             this.styles[id].visibility = visibility;
             console.log("setVisibility", this.styles[id].visibility);
-            removeObjectFromSelection(id);
           },
         }
       );

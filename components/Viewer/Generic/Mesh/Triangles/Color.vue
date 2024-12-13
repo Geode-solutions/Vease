@@ -1,9 +1,9 @@
 <template>
-  <ContextMenuItem v-bind="itemProps">
-    <template #tooltip>Triangles color</template>
-    <template #btn>
-      <slot name="btn"></slot>
-    </template>
+  <ContextMenuItem
+    :itemProps="props.itemProps"
+    tooltip="Triangles color"
+    :btn_image="props.btn_image"
+  >
     <template #options>
       <v-switch v-model="visibility" inset label="Visibility" />
       <template v-if="visibility">
@@ -32,6 +32,7 @@ const tree_view_store = use_treeview_store();
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
+  btn_image: { type: String, required: true },
 });
 
 console.log("ViewerGenericMeshTrianglesColor props", props.itemProps);
