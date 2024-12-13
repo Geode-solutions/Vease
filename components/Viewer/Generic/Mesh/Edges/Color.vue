@@ -25,17 +25,10 @@ const props = defineProps({
 });
 
 console.log("ViewerGenericMeshEdgesColor props", props.itemProps);
+const id = toRef(() => props.itemProps.id);
 
 const dataStyleStore = useDataStyleStore();
-const tree_view_store = use_treeview_store();
 
-const id = toRef(() => props.itemProps.id);
-console.log("id", id.value);
-const meta_data = computed(() => {
-  return tree_view_store.itemMetaDatas(id.value);
-});
-
-console.log("meta_data", meta_data);
 
 const visibility = computed({
   get() {

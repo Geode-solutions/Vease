@@ -16,6 +16,7 @@
         <VertexAttributeSelector
           v-if="select === styles[1]"
           v-model="vertexAttributeName"
+          :id="id"
         />
       </template>
     </template>
@@ -24,7 +25,6 @@
 
 <script setup>
 const dataStyleStore = useDataStyleStore();
-const tree_view_store = use_treeview_store();
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
@@ -32,14 +32,7 @@ const props = defineProps({
 });
 
 console.log("ViewerGenericMeshPointsColor props", props.itemProps);
-
 const id = toRef(() => props.itemProps.id);
-console.log("id", id.value);
-const meta_data = computed(() => {
-  return tree_view_store.itemMetaDatas(id.value);
-});
-
-console.log("meta_data", meta_data);
 
 const visibility = computed({
   get() {
