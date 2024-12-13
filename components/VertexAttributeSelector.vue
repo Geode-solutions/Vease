@@ -16,11 +16,11 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-const dataStyleStore = useDataStyleStore();
+const tree_view_store = use_treeview_store();
 
 const vertexAttributes = ref([]);
 const meta_data = computed(() => {
-  return dataStyleStore.getMetaData(props.id);
+  return tree_view_store.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
