@@ -5,21 +5,23 @@
       <slot name="btn"></slot>
     </template>
     <template #options>
-      <v-card>
-        <v-card-text class="justify-center">
-          <v-switch v-model="visibility" inset label="Visibility" />
-          <template v-if="visibility">
-            <v-combobox
-              v-model="select"
-              :items="styles"
-              label="Select color style"
-            ></v-combobox>
-            <ConstantColorPicker v-if="select === styles[0]" v-model="color"/>
-            <VertexAttributeSelector v-if="select === styles[1]" v-model="vertexAttributeName"/>
-            <PolygonAttributeSelector v-if="select === styles[2]" v-model="polygonAttributeName"/>
-          </template>
-        </v-card-text>
-      </v-card>
+      <v-switch v-model="visibility" inset label="Visibility" />
+      <template v-if="visibility">
+        <v-combobox
+          v-model="select"
+          :items="styles"
+          label="Select color style"
+        ></v-combobox>
+        <ConstantColorPicker v-if="select === styles[0]" v-model="color" />
+        <VertexAttributeSelector
+          v-if="select === styles[1]"
+          v-model="vertexAttributeName"
+        />
+        <PolygonAttributeSelector
+          v-if="select === styles[2]"
+          v-model="polygonAttributeName"
+        />
+      </template>
     </template>
   </ContextMenuItem>
 </template>

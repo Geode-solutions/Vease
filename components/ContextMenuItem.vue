@@ -1,31 +1,28 @@
 <template>
   <template class="menu-item" :style="itemStyle">
-    <v-btn
-      icon
-      :active="display_options"
-      @click.stop="toggleOptions"
-    >
-    <v-img
-        :src="btn_image"
-        height="35"
-        width="35"
-      />
-      <v-tooltip :location="props.tooltip_location" :origin="props.tooltip_origin">
+    <v-btn icon :active="display_options" @click.stop="toggleOptions">
+      <v-img :src="btn_image" height="35" width="35" />
+      <v-tooltip
+        :location="props.itemProps.tooltip_location"
+        :origin="props.itemProps.tooltip_origin"
+      >
         <span>{{ props.tootip }}</span>
       </v-tooltip>
     </v-btn>
     <div v-if="display_options" class="menu-options" @click.stop>
-      <slot name="options" />
+      <v-card :title="props.itemProps.tootip" class="bg-primary">
+        <v-card-text class="bg-primary">
+          <slot name="options" />
+        </v-card-text>
+      </v-card>
     </div>
   </template>
 </template>
 
 <script setup>
 const props = defineProps({
+  itemProps: { type: Object, required: true },
   btn_image: { type: String, required: true },
-  tootip: { type: String, required: true },
-  tooltip_location: { type: String, required: true },
-  tooltip_origin: { type: String, required: true },
 });
 
 const display_options = ref(false);

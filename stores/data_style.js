@@ -139,7 +139,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
               this.styles[id].points.color.constant
             );
           },
-          s,
         }
       );
     },

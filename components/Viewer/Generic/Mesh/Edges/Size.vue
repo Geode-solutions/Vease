@@ -5,18 +5,16 @@
     :btn_image="props.btn_image"
   >
     <template #options>
-      <v-card width="200">
-        <v-slider
-          v-model="size"
-          hide-details
-          min="0"
-          max="20"
-          step="2"
-          thumb-label
-          thumb-color="black"
-          ticks
-        ></v-slider>
-      </v-card>
+      <v-slider
+        v-model="size"
+        hide-details
+        min="0"
+        max="20"
+        step="2"
+        thumb-label
+        thumb-color="black"
+        ticks
+      ></v-slider>
     </template>
   </ContextMenuItem>
 </template>
