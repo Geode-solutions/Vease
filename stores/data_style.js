@@ -6,6 +6,17 @@ export const useDataStyleStore = defineStore("dataStyle", {
     styles: {},
   }),
   getters: {
+    objectVisibility() {
+      return (id) => this.styles[id].visibility;
+    },
+    selectedObjects() {
+        var selection = [];
+        for (const [id, value] of Object.entries(this.styles)) {
+          if (value.visibility == true) selection.push(id);
+        }
+        console.log("selectedObjects", selection);
+        return selection;
+    },
     pointsVisibility() {
       return (id) => this.styles[id].points.visibility;
     },
@@ -53,8 +64,31 @@ export const useDataStyleStore = defineStore("dataStyle", {
   },
   actions: {
     addDataStyle(id, geode_object) {
+      console.log("FROM addDataStyle", id, geode_object);
       this.styles[id] = getDefaultStyle(geode_object);
-      console.log("addDataStyle", this.styles[id]);
+      console.log("addDataStyle", this.styles);
+    },
+
+    removeObjectFromSelection(id) {
+      this.selection = this.selection.filter((item) => item.id !== id);
+      console.log("removeObjectFromSelection", this.selection);
+    },
+
+    setVisibility(id, visibility) {
+      viewer_call(
+        {
+          schema:
+            viewer_schemas.opengeodeweb_viewer.model.set_components_visibility,
+          params: { id, visibility },
+        },
+        {
+          response_function: () => {
+            this.styles[id].visibility = visibility;
+            console.log("setVisibility", this.styles[id].visibility);
+            removeObjectFromSelection(id);
+          },
+        }
+      );
     },
     setPointsVisibility(id, visibility) {
       viewer_call(
@@ -105,6 +139,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
               this.styles[id].points.color.constant
             );
           },
+          s,
         }
       );
     },
@@ -196,19 +231,91 @@ export const useDataStyleStore = defineStore("dataStyle", {
     },
 
     setTrianglesVisibility(id, visibility) {
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+      //     params: { id, size },
+      //   },
+      //   {
+      //     response_function: () => {
       this.styles[id].triangles.visibility = visibility;
+      console.log(
+        "setTrianglesVisibility",
+        this.styles[id].triangles.visibility
+      );
+      //     },
+      //   }
+      // )
     },
     setTrianglesActiveColoring(id, type) {
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+      //     params: { id, size },
+      //   },
+      //   {
+      //     response_function: () => {
+      this.styles[id].triangles.color.active = type;
+      console.log(
+        "setTrianglesActiveColoring",
+        this.styles[id].triangles.color.active
+      );
+      //     },
+      //   }
+      // )
+
       this.styles[id].triangles.color.active = type;
     },
     setTrianglesConstantColor(id, color) {
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+      //     params: { id, size },
+      //   },
+      //   {
+      //     response_function: () => {
       this.styles[id].triangles.color.constant = color;
+      console.log(
+        "setTrianglesConstantColor",
+        this.styles[id].triangles.color.constant
+      );
+      //     },
+      //   }
+      // )
     },
     setTrianglesVertexAttributeName(id, name) {
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+      //     params: { id, size },
+      //   },
+      //   {
+      //     response_function: () => {
       this.styles[id].triangles.color.vertex.name = name;
+      console.log(
+        "setTrianglesVertexAttributeName",
+        this.styles[id].triangles.color.vertex.name
+      );
+      //     },
+      //   }
+      // )
     },
     setTrianglesPolygonAttributeName(id, name) {
+      // viewer_call(
+      //   {
+      //     schema: viewer_schemas.opengeodeweb_viewer.mesh.set_edges_size,
+      //     params: { id, size },
+      //   },
+      //   {
+      //     response_function: () => {
       this.styles[id].triangles.color.polygon.name = name;
+      console.log(
+        "setTrianglesPolygonAttributeName",
+        this.styles[id].triangles.color.polygon.name
+      );
+      //     },
+      //   }
+      // )
     },
   },
 });

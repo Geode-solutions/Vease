@@ -29,8 +29,8 @@ import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
-const treeview_store = use_treeview_store();
 const menuStore = useMenuStore();
+const dataStyleStore = useDataStyleStore();
 
 const menuX = ref(0);
 const menuY = ref(0);
@@ -42,7 +42,8 @@ const cardContainer = ref(null);
 const { display_menu } = storeToRefs(menuStore);
 
 async function get_id(x, y) {
-  const ids = treeview_store.get_ids();
+  const ids = dataStyleStore.selectedObjects;
+  console.log("ids", ids);
   await viewer_call(
     {
       schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,

@@ -34,15 +34,18 @@ const trianglesDefaultStyle = (visibility) => {
 };
 
 const pointSet_defaultStyle = {
+  visibility: true,
   points: pointsDefaultStyle(true, 1),
 };
 
 const edgedCurve_defaultStyle = {
+  visibility: true,
   points: pointsDefaultStyle(true, 1),
   edges: edgesDefaultStyle(true, 1),
 };
 
 const surface_defaultStyle = {
+  visibility: true,
   points: pointsDefaultStyle(true, 1),
   edges: edgesDefaultStyle(true, 1),
   triangles: trianglesDefaultStyle(true),

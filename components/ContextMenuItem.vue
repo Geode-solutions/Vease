@@ -1,9 +1,17 @@
 <template>
   <template class="menu-item" :style="itemStyle">
-    <v-btn icon :active="display_options" @click.stop="toggleOptions">
-      <slot name="btn" />
-      <v-tooltip :location="tooltip_location" :origin="tooltip_origin">
-        <span><slot name="tooltip" /></span>
+    <v-btn
+      icon
+      :active="display_options"
+      @click.stop="toggleOptions"
+    >
+    <v-img
+        :src="btn_image"
+        height="35"
+        width="35"
+      />
+      <v-tooltip :location="props.tooltip_location" :origin="props.tooltip_origin">
+        <span>{{ props.tootip }}</span>
       </v-tooltip>
     </v-btn>
     <div v-if="display_options" class="menu-options" @click.stop>
@@ -14,11 +22,10 @@
 
 <script setup>
 const props = defineProps({
-  x: { type: Number, required: true },
-  y: { type: Number, required: true },
+  btn_image: { type: String, required: true },
+  tootip: { type: String, required: true },
   tooltip_location: { type: String, required: true },
   tooltip_origin: { type: String, required: true },
-  itemStyle: { type: Object, required: true },
 });
 
 const display_options = ref(false);

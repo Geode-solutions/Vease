@@ -1,9 +1,9 @@
 <template>
-  <ContextMenuItem v-bind="itemProps">
-    <template #tooltip>Points size</template>
-    <template #btn>
-      <slot name="btn"></slot>
-    </template>
+  <ContextMenuItem
+    v-bind="itemProps"
+    tooltip="Points size"
+    :btn_image="props.btn_image"
+  >
     <template #options>
       <v-card width="200">
         <v-slider
@@ -24,6 +24,7 @@
 <script setup>
 const props = defineProps({
   itemProps: { type: Object, required: true },
+  btn_image: { type: String, required: true },
 });
 
 const dataStyleStore = useDataStyleStore();

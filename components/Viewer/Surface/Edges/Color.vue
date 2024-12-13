@@ -1,13 +1,8 @@
 <template>
-  <ViewerGenericMeshEdgesColor :itemProps="props.itemProps">
-    <template #btn>
-      <v-img
-        :src="SurfaceEdgesColor"
-        height="35"
-        width="35"
-      />
-    </template>
-  </ViewerGenericMeshEdgesColor>
+  <ViewerGenericMeshEdgesColor
+    :itemProps="props.itemProps"
+    :btn_image="SurfaceEdgesColor"
+  />
 </template>
 
 <script setup>

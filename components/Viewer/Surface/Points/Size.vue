@@ -1,13 +1,8 @@
 <template>
-  <ViewerGenericMeshPointsSize :itemProps="props.itemProps">
-    <template #btn>
-      <v-img
-        :src="SurfacePointsSize"
-        height="35"
-        width="35"
-      />
-    </template>
-  </ViewerGenericMeshPointsSize>
+  <ViewerGenericMeshPointsSize
+    :itemProps="props.itemProps"
+    :btn_image="SurfacePointsSize"
+  />
 </template>
 
 <script setup>

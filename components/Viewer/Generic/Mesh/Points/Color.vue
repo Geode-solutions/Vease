@@ -1,9 +1,9 @@
 <template>
-  <ContextMenuItem v-bind="itemProps">
-    <template #tooltip>Points color</template>
-    <template #btn>
-      <slot name="btn"></slot>
-    </template>
+  <ContextMenuItem
+    :itemProps="props.itemProps"
+    tooltip="Points color"
+    :btn_image="props.btn_image"
+  >
     <template #options>
       <v-card>
         <v-card-text class="justify-center">
@@ -14,8 +14,11 @@
               :items="styles"
               label="Select color style"
             ></v-combobox>
-            <ConstantColorPicker v-if="select === styles[0]" v-model="color"/>
-            <VertexAttributeSelector v-if="select === styles[1]" v-model="vertexAttributeName"/>
+            <ConstantColorPicker v-if="select === styles[0]" v-model="color" />
+            <VertexAttributeSelector
+              v-if="select === styles[1]"
+              v-model="vertexAttributeName"
+            />
           </template>
         </v-card-text>
       </v-card>
@@ -29,6 +32,7 @@ const tree_view_store = use_treeview_store();
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
+  btn_image: { type: String, required: true },
 });
 
 console.log("ViewerGenericMeshPointsColor props", props.itemProps);
@@ -36,7 +40,7 @@ console.log("ViewerGenericMeshPointsColor props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 console.log("id", id.value);
 const meta_data = computed(() => {
-  return tree_view_store.idMetaData(id.value);
+  return tree_view_store.itemMetaDatas(id.value);
 });
 
 console.log("meta_data", meta_data);

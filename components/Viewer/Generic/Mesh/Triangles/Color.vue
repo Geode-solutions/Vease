@@ -37,7 +37,7 @@ console.log("ViewerGenericMeshTrianglesColor props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 console.log("id", id.value);
 const meta_data = computed(() => {
-  return tree_view_store.idMetaData(id.value);
+  return tree_view_store.itemMetaDatas(id.value);
 });
 console.log("meta_data", meta_data);
 

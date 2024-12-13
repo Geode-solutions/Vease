@@ -1,13 +1,8 @@
 <template>
-  <ViewerGenericMeshPointsColor :itemProps="props.itemProps">
-    <template #btn>
-      <v-img
-        :src="SurfaceTrianglesColor"
-        height="35"
-        width="35"
-      />
-    </template>
-  </ViewerGenericMeshPointsColor>
+  <ViewerGenericMeshPointsColor
+    :itemProps="props.itemProps"
+    :btn_image="SurfaceTrianglesColor"
+  />
 </template>
 
 <script setup>

@@ -14,11 +14,8 @@
         :key="index"
         :itemProps="{
           id: props.id,
-          x: props.x,
-          y: props.y,
           tooltip_location: getTooltipLocation(index),
           tooltip_origin: getTooltipOrigin(index),
-          itemStyle: getItemStyle(index),
         }"
         class="menu-item-wrapper"
         :style="getItemStyle(index)"
@@ -49,7 +46,8 @@ watch(show_menu, (value) => {
   }
 });
 
-const meta_data = computed(() => treeViewStore.idMetaData(props.id));
+const meta_data = computed(() => treeViewStore.itemMetaDatas(props.id));
+console.log("meta_data", meta_data);
 
 const menu_items = computed(() =>
   menuStore.getMenuItems(
