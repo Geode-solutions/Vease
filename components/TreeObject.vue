@@ -10,12 +10,10 @@
     "
   >
     <v-row>
-      <v-col cols="12" md="12">
+      <v-col cols="4" md="6">
         <v-treeview
           v-model:selected="selection"
           select-strategy="classic"
-          item-value="id"
-          return-object
           :items="treeviewStore.items"
           selectable
           class="transparent-treeview"
@@ -39,6 +37,7 @@ const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 
 const selection = computed(() => dataStyleStore.selectedObjects);
+console.log("TreeObject selection", selection);
 
 function compare_selections(value, oldvalue) {
   const added = value.filter((item) => !oldvalue.includes(item));
@@ -48,11 +47,13 @@ function compare_selections(value, oldvalue) {
 
 watch(selection, (value, oldvalue) => {
   const { added, removed } = compare_selections(value, oldvalue);
-  for (const file of added) {
-    dataStyleStore.setVisibility(file.id, true);
+  for (const id of added) {
+    console.log("added id", id);
+    dataStyleStore.setVisibility(id, true);
   }
-  for (const file of removed) {
-    dataStyleStore.setVisibility(file.id, false);
+  for (const id of removed) {
+    console.log("removed id", id);
+    dataStyleStore.setVisibility(id, false);
   }
 });
 </script>

@@ -1,9 +1,9 @@
 <template>
-  <v-combobox
+  <v-select
     v-model="vertexAttributeName"
     :items="vertexAttributes"
     label="Select attribute"
-  ></v-combobox>
+  ></v-select>
 </template>
 
 <script setup>

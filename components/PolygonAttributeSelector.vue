@@ -1,9 +1,9 @@
 <template>
-  <v-combobox
+  <v-select
     v-model="polygonAttributeName"
     :items="polygonAttributes"
     label="Select attribute"
-  ></v-combobox>
+  ></v-select>
 </template>
 
 <script setup>

@@ -7,11 +7,11 @@
     <template #options>
       <VisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
-        <v-combobox
+        <v-select
           v-model="select"
           :items="styles"
           label="Select color style"
-        ></v-combobox>
+        ></v-select>
         <ConstantColorPicker v-if="select === styles[0]" v-model="color" />
         <VertexAttributeSelector
           v-if="select === styles[1]"
