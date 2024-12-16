@@ -68,12 +68,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
       this.styles[id] = getDefaultStyle(geode_object);
       console.log("addDataStyle", this.styles);
     },
-
-    removeObjectFromSelection(id) {
-      this.selection = this.selection.filter((item) => item.id !== id);
-      console.log("removeObjectFromSelection", this.selection);
-    },
-
     setVisibility(id, visibility) {
       viewer_call(
         {
