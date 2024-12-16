@@ -76,24 +76,18 @@ function getMenuStyle() {
 
 function getTooltipLocation(index) {
   const angle = (index / menuItemCount.value) * 360;
-  return angle < 90
-    ? "top"
-    : angle < 180
-    ? "end"
-    : angle < 270
-    ? "bottom"
-    : "start";
+  if (angle < 45 || angle >= 315) return "right";
+  if (angle >= 45 && angle < 135) return "top";
+  if (angle >= 135 && angle < 225) return "left";
+  return "bottom";
 }
 
 function getTooltipOrigin(index) {
   const angle = (index / menuItemCount.value) * 360;
-  return angle < 90
-    ? "start"
-    : angle < 180
-    ? "top"
-    : angle < 270
-    ? "end"
-    : "bottom";
+  if (angle < 45 || angle >= 315) return "left";
+  if (angle >= 45 && angle < 135) return "bottom";
+  if (angle >= 135 && angle < 225) return "right";
+  return "top";
 }
 
 function getItemStyle(index) {
