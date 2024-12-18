@@ -17,7 +17,7 @@
       <span>{{ props.tooltip }}</span>
     </v-tooltip>
     <div v-if="display_options" class="menu-options pa-0" @click.stop>
-      <v-card :title="props.tooltip" class="bg-primary" width="250" v-click-outside="toggleOptions">
+      <v-card :title="props.tooltip" class="bg-primary" width="320" v-click-outside="toggleOptions">
         <v-card-text class="bg-primary">
           <slot name="options" />
         </v-card-text>

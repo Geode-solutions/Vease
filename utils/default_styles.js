@@ -21,7 +21,7 @@ const edgesDefaultStyle = (visibility, size) => {
   };
 };
 
-const trianglesDefaultStyle = (visibility) => {
+const polygonsDefaultStyle = (visibility) => {
   return {
     visibility,
     color: {
@@ -46,9 +46,9 @@ const edgedCurve_defaultStyle = {
 
 const surface_defaultStyle = {
   visibility: true,
-  points: pointsDefaultStyle(true, 1),
-  edges: edgesDefaultStyle(true, 1),
-  triangles: trianglesDefaultStyle(true),
+  points: pointsDefaultStyle(false, 1),
+  edges: edgesDefaultStyle(false, 1),
+  polygons: polygonsDefaultStyle(true),
 };
 
 const default_styles = {

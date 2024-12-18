@@ -1,18 +1,33 @@
 <template>
   <ContextMenuItem
     :itemProps="props.itemProps"
-    tooltip="Edges color"
+    tooltip="Edges options"
     :btn_image="props.btn_image"
   >
     <template #options>
       <VisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
-        <v-select
-          v-model="select"
-          :items="styles"
-          label="Select color style"
-        ></v-select>
-        <ConstantColorPicker v-if="select === styles[0]" v-model="color" />
+        <v-divider />
+        <v-row class="pa-2" align="center">
+          <v-col cols="auto" justify="center">
+            <v-icon
+              size="30"
+              icon="mdi-format-color-fill"
+              v-tooltip:left="'Filling'"
+            />
+          </v-col>
+          <v-col justify="center">
+            <v-select
+              v-model="select"
+              :items="styles"
+              label="Select a color style"
+            />
+            <template v-if="select === styles[0]">
+              <v-divider />
+              <ConstantColorPicker v-model="color" />
+            </template>
+          </v-col>
+        </v-row>
       </template>
     </template>
   </ContextMenuItem>
@@ -24,11 +39,10 @@ const props = defineProps({
   btn_image: { type: String, required: true },
 });
 
-console.log("ViewerGenericMeshEdgesColor props", props.itemProps);
+console.log("GenericMeshEdgesOptions props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 
 const dataStyleStore = useDataStyleStore();
-
 
 const visibility = computed({
   get() {
@@ -36,6 +50,14 @@ const visibility = computed({
   },
   set(newValue) {
     dataStyleStore.setEdgesVisibility(id.value, newValue);
+  },
+});
+const size = computed({
+  get() {
+    return dataStyleStore.edgesSize(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setEdgesSize(id.value, newValue);
   },
 });
 const color = computed({
@@ -68,4 +90,3 @@ const select = computed({
   },
 });
 </script>
-

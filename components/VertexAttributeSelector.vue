@@ -2,7 +2,7 @@
   <v-select
     v-model="vertexAttributeName"
     :items="vertexAttributes"
-    label="Select attribute"
+    label="Select an attribute"
   ></v-select>
 </template>
 

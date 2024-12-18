@@ -2,7 +2,7 @@
   <v-select
     v-model="polygonAttributeName"
     :items="polygonAttributes"
-    label="Select attribute"
+    label="Select an attribute"
   ></v-select>
 </template>
 

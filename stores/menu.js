@@ -1,33 +1,23 @@
 // PointSet components
-import PointSetPointsColor from "@/components/Viewer/PointSet/Points/Color.vue";
-import PointSetPointsSize from "@/components/Viewer/PointSet/Points/Size.vue";
+import PointSetPointsOptions from "@/components/Viewer/PointSet/PointsOptions.vue";
 
 // EdgedCurve components
-import EdgedCurvePointsColor from "@/components/Viewer/EdgedCurve/Points/Color.vue";
-import EdgedCurvePointsSize from "@/components/Viewer/EdgedCurve/Points/Size.vue";
-import EdgedCurveEdgesColor from "@/components/Viewer/EdgedCurve/Edges/Color.vue";
-import EdgedCurveEdgesSize from "@/components/Viewer/EdgedCurve/Edges/Size.vue";
+import EdgedCurvePointsOptions from "@/components/Viewer/EdgedCurve/PointsOptions.vue";
+import EdgedCurveEdgesOptions from "@/components/Viewer/EdgedCurve/EdgesOptions.vue";
 
 // Surface components
-import SurfacePointsColor from "@/components/Viewer/Surface/Points/Color.vue";
-import SurfacePointsSize from "@/components/Viewer/Surface/Points/Size.vue";
-import SurfaceEdgesColor from "@/components/Viewer/Surface/Edges/Color.vue";
-import SurfaceTrianglesColor from "@/components/Viewer/Surface/Triangles/Color.vue";
+import SurfacePointsOptions from "@/components/Viewer/Surface/PointsOptions.vue";
+import SurfaceEdgesOptions from "@/components/Viewer/Surface/EdgesOptions.vue";
+import SurfaceTrianglesOptions from "@/components/Viewer/Surface/TrianglesOptions.vue";
 
-const PointSet_menu = [PointSetPointsColor, PointSetPointsSize];
+const PointSet_menu = [PointSetPointsOptions];
 
-const EdgedCurve_menu = [
-  EdgedCurvePointsColor,
-  EdgedCurvePointsSize,
-  EdgedCurveEdgesColor,
-  EdgedCurveEdgesSize,
-];
+const EdgedCurve_menu = [EdgedCurvePointsOptions, EdgedCurveEdgesOptions];
 
 const Surface_menu = [
-  SurfacePointsColor,
-  SurfacePointsSize,
-  SurfaceEdgesColor,
-  SurfaceTrianglesColor,
+  SurfacePointsOptions,
+  SurfaceEdgesOptions,
+  SurfaceTrianglesOptions,
 ];
 
 const menus = {
@@ -58,7 +48,8 @@ export const useMenuStore = defineStore("menu", {
   }),
   getters: {
     getMenuItems: (state) => {
-      return (object_type, geode_object) => state.menus[object_type][geode_object]
+      return (object_type, geode_object) =>
+        state.menus[object_type][geode_object];
     },
   },
   actions: {
