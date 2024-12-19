@@ -1,4 +1,4 @@
-export const useUserStore = defineStore("userStore", {
+export const useUserStore = defineStore("user", {
   state: () => ({
     firstName: "",
     lastName: "",

@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.1.0",
+    "@geode/opengeodeweb-viewer": "^1.1.0",
     "@nuxt/kit": "^3.13.2",
     "@pinia/nuxt": "^0.5.4",
     "@vueuse/nuxt": "^11.1.0",

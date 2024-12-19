@@ -1,12 +1,19 @@
 <template>
-  <v-container>
+  <v-container
+    style="
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      top: 0;
+      background-color: transparent;
+      border-radius: 16px;
+    "
+  >
     <v-row>
-      <v-col cols="12" md="12">
+      <v-col cols="4" md="6">
         <v-treeview
           v-model:selected="selection"
           select-strategy="classic"
-          item-value="id"
-          return-object
           :items="treeviewStore.items"
           selectable
           class="transparent-treeview"
@@ -26,20 +33,11 @@
 </style>
 
 <script setup>
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-const treeviewStore = useTreeviewStore();
+const treeviewStore = use_treeview_store();
+const dataStyleStore = useDataStyleStore();
 
-const { selection } = toRefs(treeviewStore);
-
-async function toggle_object_visibility(id, visibility) {
-  await viewer_call({
-    schema: viewer_schemas.opengeodeweb_viewer.model.set_components_visibility,
-    params: {
-      id,
-      visibility,
-    },
-  });
-}
+const selection = computed(() => dataStyleStore.selectedObjects);
+console.log("TreeObject selection", selection);
 
 function compare_selections(value, oldvalue) {
   const added = value.filter((item) => !oldvalue.includes(item));
@@ -49,11 +47,13 @@ function compare_selections(value, oldvalue) {
 
 watch(selection, (value, oldvalue) => {
   const { added, removed } = compare_selections(value, oldvalue);
-  for (const file of added) {
-    toggle_object_visibility(file.id, true);
+  for (const id of added) {
+    console.log("added id", id);
+    dataStyleStore.setVisibility(id, true);
   }
-  for (const file of removed) {
-    toggle_object_visibility(file.id, false);
+  for (const id of removed) {
+    console.log("removed id", id);
+    dataStyleStore.setVisibility(id, false);
   }
 });
 </script>
