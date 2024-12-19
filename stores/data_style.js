@@ -290,7 +290,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.polygons.vertex_attribute,
-          params: { id, size },
+          params: { id, name },
         },
         {
           response_function: () => {
