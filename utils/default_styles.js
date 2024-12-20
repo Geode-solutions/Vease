@@ -2,8 +2,8 @@ const pointsDefaultStyle = (visibility, size) => {
   return {
     visibility,
     color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
+      active: "constant",
+      constant: { r: 255, g: 255, b: 255 },
       vertex: { name: "" },
     },
     size,
@@ -14,8 +14,8 @@ const edgesDefaultStyle = (visibility, size) => {
   return {
     visibility,
     color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
+      active: "constant",
+      constant: { r: 255, g: 255, b: 255 },
     },
     size,
   };
@@ -25,8 +25,8 @@ const polygonsDefaultStyle = (visibility) => {
   return {
     visibility,
     color: {
-      active: "",
-      constant: { r: 0, g: 0, b: 0 },
+      active: "constant",
+      constant: { r: 255, g: 255, b: 255 },
       polygon: { name: "" },
       vertex: { name: "" },
     },
@@ -84,4 +84,4 @@ const getDefaultStyle = (type) => {
 };
 
 
-export { getDefaultStyle, };
+export { getDefaultStyle };

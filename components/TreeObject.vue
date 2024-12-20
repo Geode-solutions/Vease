@@ -18,8 +18,7 @@
           selectable
           class="transparent-treeview"
           selected
-        >
-        </v-treeview>
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -36,8 +35,9 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 
-const selection = computed(() => dataStyleStore.selectedObjects);
-console.log("TreeObject selection", selection);
+const selection = ref([])
+// const selection = computed(() => dataStyleStore.selectedObjects.value);
+console.log("TreeObject selection", dataStyleStore.items);
 
 function compare_selections(value, oldvalue) {
   const added = value.filter((item) => !oldvalue.includes(item));

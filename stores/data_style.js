@@ -65,9 +65,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
   },
   actions: {
     addDataStyle(id, geode_object) {
-      console.log("FROM addDataStyle", id, geode_object);
       this.styles[id] = getDefaultStyle(geode_object);
-      console.log("addDataStyle", this.styles);
       this.applyDefaultStyle(id);
     },
     applyDefaultStyle(id) {
@@ -82,22 +80,16 @@ export const useDataStyleStore = defineStore("dataStyle", {
     applyPointsStyle(id, style) {
       this.setPointsVisibility(id, style.visibility);
       this.setPointsActiveColoring(id, style.color.active);
-      this.setPointsConstantColor(id, style.color.constant);
-      this.setPointsVertexAttributeName(id, style.color.vertex.name);
       this.setPointsSize(id, style.size);
     },
     applyEdgesStyle(id, style) {
       this.setEdgesVisibility(id, style.visibility);
       this.setEdgesActiveColoring(id, style.color.active);
-      this.setEdgesConstantColor(id, style.color.constant);
-      this.setEdgesSize(id, style.size);
+      // this.setEdgesSize(id, style.size);
     },
     applyPolygonsStyle(id, style) {
       this.setPolygonsVisibility(id, style.visibility);
       this.setPolygonsActiveColoring(id, style.color.active);
-      this.setPolygonsConstantColor(id, style.color.constant);
-      this.setPolygonsPolygonAttributeName(id, style.color.polygon.name);
-      this.setPolygonsVertexAttributeName(id, style.color.vertex.name);
     },
     setVisibility(id, visibility) {
       viewer_call(
@@ -138,30 +130,25 @@ export const useDataStyleStore = defineStore("dataStyle", {
           this.styles[id].points.color.vertex.name
         );
       } else if (type === "constant") {
-        this.setPointsConstantColor(
-          id,
-          this.styles[id].points.color.constant
-        );
+        this.setPointsConstantColor(id, this.styles[id].points.color.constant);
       }
     },
     setPointsConstantColor(id, color) {
-      // _.debounce(() => {
-        viewer_call(
-          {
-            schema: viewer_schemas.opengeodeweb_viewer.mesh.points.color,
-            params: { id, color },
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.points.color,
+          params: { id, color },
+        },
+        {
+          response_function: () => {
+            this.styles[id].points.color.constant = color;
+            console.log(
+              "setPointsConstantColor",
+              this.styles[id].points.color.constant
+            );
           },
-          {
-            response_function: () => {
-              this.styles[id].points.color.constant = color;
-              console.log(
-                "setPointsConstantColor",
-                this.styles[id].points.color.constant
-              );
-            },
-          }
-        );
-      // }, 500);
+        }
+      );
     },
     setPointsVertexAttributeName(id, name) {
       viewer_call(
@@ -228,23 +215,21 @@ export const useDataStyleStore = defineStore("dataStyle", {
       console.log("setEdgesActiveColoring", this.styles[id].edges.color.active);
     },
     setEdgesConstantColor(id, color) {
-      // _.debounce(() => {
-        viewer_call(
-          {
-            schema: viewer_schemas.opengeodeweb_viewer.mesh.edges.color,
-            params: { id, color },
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.edges.color,
+          params: { id, color },
+        },
+        {
+          response_function: () => {
+            this.styles[id].edges.color.constant = color;
+            console.log(
+              "setEdgesConstantColor",
+              this.styles[id].edges.color.constant
+            );
           },
-          {
-            response_function: () => {
-              this.styles[id].edges.color.constant = color;
-              console.log(
-                "setEdgesConstantColor",
-                this.styles[id].edges.color.constant
-              );
-            },
-          }
-        );
-      // }, 500);
+        }
+      );
     },
     setEdgesSize(id, size) {
       viewer_call(
@@ -298,7 +283,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
       }
     },
     setPolygonsConstantColor(id, color) {
-      console.log("setPolygonsConstantColor", color);
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.polygons.color,
