@@ -28,7 +28,11 @@
         <v-divider />
         <v-row class="pa-2" align="center">
           <v-col cols="auto" justify="center">
-            <v-icon size="30" icon="mdi-format-color-fill" v-tooltip:left="'Filling'" />
+            <v-icon
+              size="30"
+              icon="mdi-format-color-fill"
+              v-tooltip:left="'Filling'"
+            />
           </v-col>
           <v-col justify="center">
             <v-select
@@ -46,10 +50,10 @@
               />
             </template>
 
-            <template v-if="select === styles[1]">
+            <!-- <template v-if="select === styles[1]">
               <v-divider />
               <VertexAttributeSelector v-model="vertexAttributeName" :id="id" />
-            </template>
+            </template> -->
           </v-col>
         </v-row>
       </template>
@@ -92,8 +96,8 @@ const color = computed({
     dataStyleStore.setPointsConstantColor(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute"];
-const storeStyles = ["constant", "vertex"];
+const styles = ["Constant"]; // "From vertex attribute"
+const storeStyles = ["constant"]; // "vertex"
 const select = computed({
   get() {
     const active = dataStyleStore.pointsActiveColoring(id.value);
