@@ -35,13 +35,13 @@ const polygonsDefaultStyle = (visibility) => {
 
 const pointSet_defaultStyle = {
   visibility: true,
-  points: pointsDefaultStyle(true, 1),
+  points: pointsDefaultStyle(true, 5),
 };
 
 const edgedCurve_defaultStyle = {
   visibility: true,
-  points: pointsDefaultStyle(true, 1),
-  edges: edgesDefaultStyle(true, 1),
+  points: pointsDefaultStyle(true, 5),
+  edges: edgesDefaultStyle(true, 5),
 };
 
 const surface_defaultStyle = {
@@ -83,4 +83,5 @@ const getDefaultStyle = (type) => {
   return default_styles[type];
 };
 
-export { getDefaultStyle };
+
+export { getDefaultStyle, };

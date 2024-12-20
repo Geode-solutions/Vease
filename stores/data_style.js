@@ -68,6 +68,36 @@ export const useDataStyleStore = defineStore("dataStyle", {
       console.log("FROM addDataStyle", id, geode_object);
       this.styles[id] = getDefaultStyle(geode_object);
       console.log("addDataStyle", this.styles);
+      this.applyDefaultStyle(id);
+    },
+    applyDefaultStyle(id) {
+      const style = this.styles[id];
+      for (const [key, value] of Object.entries(style)) {
+        if (key === "visibility") this.setVisibility(id, value);
+        if (key === "points") this.applyPointsStyle(id, value);
+        if (key === "edges") this.applyEdgesStyle(id, value);
+        if (key === "polygons") this.applyPolygonsStyle(id, value);
+      }
+    },
+    applyPointsStyle(id, style) {
+      this.setPointsVisibility(id, style.visibility);
+      this.setPointsActiveColoring(id, style.color.active);
+      this.setPointsConstantColor(id, style.color.constant);
+      this.setPointsVertexAttributeName(id, style.color.vertex.name);
+      this.setPointsSize(id, style.size);
+    },
+    applyEdgesStyle(id, style) {
+      this.setEdgesVisibility(id, style.visibility);
+      this.setEdgesActiveColoring(id, style.color.active);
+      this.setEdgesConstantColor(id, style.color.constant);
+      this.setEdgesSize(id, style.size);
+    },
+    applyPolygonsStyle(id, style) {
+      this.setPolygonsVisibility(id, style.visibility);
+      this.setPolygonsActiveColoring(id, style.color.active);
+      this.setPolygonsConstantColor(id, style.color.constant);
+      this.setPolygonsPolygonAttributeName(id, style.color.polygon.name);
+      this.setPolygonsVertexAttributeName(id, style.color.vertex.name);
     },
     setVisibility(id, visibility) {
       viewer_call(
