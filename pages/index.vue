@@ -2,13 +2,16 @@
   <v-row class="fill-height pa-5">
     <v-col cols="12">
       <v-card
-        ref="cardContainer"
-        style="height: 100%; width: 100%"
-        @click.right="openMenu"
+      ref="cardContainer"
+      style="height: 100%; width: 100%"
+      @click.right="openMenu"
       >
-        <RemoteRenderingView>
-          <template #ui>
-            <TreeObject />
+      <RemoteRenderingView>
+        <template #tree-object>
+          
+          <TreeObject />
+        </template>
+        <template #ui>
             <ContextMenu
               v-if="display_menu"
               :id="id"

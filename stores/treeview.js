@@ -1,6 +1,7 @@
 export const use_treeview_store = defineStore("treeview", {
   state: () => ({
     items: [],
+    selection: [],
   }),
   getters: {
     itemMetaDatas: (state) => {
@@ -32,6 +33,7 @@ export const use_treeview_store = defineStore("treeview", {
       for (let i = 0; i < this.items.length; i++) {
         if (this.items[i].title === geodeObject) {
           this.items[i].children.push(child);
+          this.selection.push(child);
           console.log("this.items", this.items);
           console.log(
             "dataStyleStore.selectedObjects",
@@ -41,6 +43,7 @@ export const use_treeview_store = defineStore("treeview", {
         }
       }
       this.items.push({ title: geodeObject, children: [child] });
+      this.selection.push(child);
       console.log("dataStyleStore.selectedObjects", dataStyleStore.selectedObjects);
     },
   },

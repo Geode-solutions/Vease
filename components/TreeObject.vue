@@ -1,24 +1,26 @@
 <template>
-  <v-container
-    style="
+  <v-container @click="console.log('#######')"
+  >
+    <!-- style="
       position: absolute;
       z-index: 2;
       left: 0;
       top: 0;
       background-color: transparent;
       border-radius: 16px;
-    "
-  >
+    " -->
     <v-row>
       <v-col cols="4" md="6">
         <v-treeview
-          v-model:selected="selection"
-          select-strategy="classic"
-          :items="treeviewStore.items"
-          selectable
-          class="transparent-treeview"
-          selected
+        :items="treeviewStore.items"
         />
+        <!-- return-object -->
+        <!-- class="transparent-treeview" -->
+        <!-- item-value="id" -->
+        <!-- v-model:selected="selection" -->
+          <!-- select-strategy="classic" -->
+          <!-- selected -->
+          <!-- selectable -->
       </v-col>
     </v-row>
   </v-container>
@@ -35,9 +37,13 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 
-const selection = ref([])
+// const selection = ref(dataStyleStore.selectedObjects.value)
+// const { selection } = toRefs(treeviewStore);
+// console.log("selection", selection);
+// console.log("selectedObjects", dataStyleStore.selectedObjects.value);
+
 // const selection = computed(() => dataStyleStore.selectedObjects.value);
-console.log("TreeObject selection", dataStyleStore.items);
+console.log("TreeObject items", treeviewStore.items);
 
 function compare_selections(value, oldvalue) {
   const added = value.filter((item) => !oldvalue.includes(item));
@@ -45,15 +51,16 @@ function compare_selections(value, oldvalue) {
   return { added, removed };
 }
 
-watch(selection, (value, oldvalue) => {
-  const { added, removed } = compare_selections(value, oldvalue);
-  for (const id of added) {
-    console.log("added id", id);
-    dataStyleStore.setVisibility(id, true);
-  }
-  for (const id of removed) {
-    console.log("removed id", id);
-    dataStyleStore.setVisibility(id, false);
-  }
-});
+// watch(selection, (value, oldvalue) => {
+//   console.log("selection changed", value, oldvalue);
+//   const { added, removed } = compare_selections(value, oldvalue);
+//   for (const id of added) {
+//     console.log("added id", id);
+//     dataStyleStore.setVisibility(id, true);
+//   }
+//   for (const id of removed) {
+//     console.log("removed id", id);
+//     dataStyleStore.setVisibility(id, false);
+//   }
+// });
 </script>
