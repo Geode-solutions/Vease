@@ -1,26 +1,26 @@
 <template>
-  <v-container @click="console.log('#######')"
-  >
-    <!-- style="
+  <v-container
+    style="
       position: absolute;
       z-index: 2;
       left: 0;
       top: 0;
       background-color: transparent;
       border-radius: 16px;
-    " -->
+    "
+  >
     <v-row>
       <v-col cols="4" md="6">
         <v-treeview
-        :items="treeviewStore.items"
+        v-model:selected="selection"
+          :items="treeviewStore.items"
+          return-object
+          class="transparent-treeview"
+          item-value="id"
+          select-strategy="classic"
+          selected
+          selectable
         />
-        <!-- return-object -->
-        <!-- class="transparent-treeview" -->
-        <!-- item-value="id" -->
-        <!-- v-model:selected="selection" -->
-          <!-- select-strategy="classic" -->
-          <!-- selected -->
-          <!-- selectable -->
       </v-col>
     </v-row>
   </v-container>
@@ -38,9 +38,9 @@ const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 
 // const selection = ref(dataStyleStore.selectedObjects.value)
-// const { selection } = toRefs(treeviewStore);
-// console.log("selection", selection);
-// console.log("selectedObjects", dataStyleStore.selectedObjects.value);
+const { selection } = toRefs(treeviewStore);
+console.log("selection", selection);
+console.log("selectedObjects", dataStyleStore.selectedObjects.value);
 
 // const selection = computed(() => dataStyleStore.selectedObjects.value);
 console.log("TreeObject items", treeviewStore.items);

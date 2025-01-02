@@ -7,11 +7,8 @@
       @click.right="openMenu"
       >
       <RemoteRenderingView>
-        <template #tree-object>
-          
-          <TreeObject />
-        </template>
         <template #ui>
+          <TreeObject />
             <ContextMenu
               v-if="display_menu"
               :id="id"
