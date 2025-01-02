@@ -2,13 +2,13 @@
   <v-row class="fill-height pa-5">
     <v-col cols="12">
       <v-card
-      ref="cardContainer"
-      style="height: 100%; width: 100%"
-      @click.right="openMenu"
+        ref="cardContainer"
+        style="height: 100%; width: 100%"
+        @click.right="openMenu"
       >
-      <RemoteRenderingView>
-        <template #ui>
-          <TreeObject />
+        <RemoteRenderingView>
+          <template #ui>
+            <TreeObject @click="console.log('TreeObject')"/>
             <ContextMenu
               v-if="display_menu"
               :id="id"
@@ -26,6 +26,7 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
@@ -37,7 +38,7 @@ const menuY = ref(0);
 const containerWidth = ref(0);
 const containerHeight = ref(0);
 const id = ref("");
-const cardContainer = ref(null);
+const cardContainer = useTemplateRef("cardContainer");
 
 const { display_menu } = storeToRefs(menuStore);
 

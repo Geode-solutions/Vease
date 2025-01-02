@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-const el = ref(null);
+const el = useTemplateRef("el")
 const model = defineModel();
 const { pressed } = useMousePressed({ target: el });
 

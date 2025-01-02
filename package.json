@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.2.2",
+    "@geode/opengeodeweb-front": "^9.2.3-rc.1",
     "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
