@@ -36,37 +36,21 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 
-const selection = ref(dataStyleStore.selectedObjects.value)
-console.log("selectedObjects", dataStyleStore.selectedObjects);
-
-const selection = computed({
-  get() {
-    return dataStyleStore.selectedObjects;
-  },
-  set(newValue) {
-    dataStyleStore.setEdgesVisibility(id.value, newValue);
-  },
-});
-
-console.log("SELECTION", selection);
+const { selection } = toRefs(treeviewStore);
 
 function compare_selections(value, oldvalue) {
-  console.log("compare_selections", value, oldvalue);
   const added = value.filter((item) => !oldvalue.includes(item));
   const removed = oldvalue.filter((item) => !value.includes(item));
   return { added, removed };
 }
 
 watch(selection, (value, oldvalue) => {
-  console.log("SELECTION changed", value, oldvalue);
-  const { added, removed } = compare_selections(value[0], oldvalue);
-  for (const id of added) {
-    console.log("added id", id);
-    dataStyleStore.setVisibility(id, true);
+  const { added, removed } = compare_selections(value, oldvalue);
+  for (const value of added) {
+    dataStyleStore.setVisibility(value.id, true);
   }
-  for (const id of removed) {
-    console.log("removed id", id);
-    dataStyleStore.setVisibility(id, false);
+  for (const value of removed) {
+    dataStyleStore.setVisibility(value.id, false);
   }
 });
 </script>
