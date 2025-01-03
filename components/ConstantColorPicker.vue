@@ -14,20 +14,11 @@ const el = useTemplateRef("el")
 const model = defineModel();
 const { pressed } = useMousePressed({ target: el });
 
-const color = ref({
-  r: 0,
-  g: 0,
-  b: 0,
-  a: 1,});
+const color = ref(model);
 
 watch(pressed, (value) => {
-  console.log("pressed", value);
-
   if (!value) {
-    console.log("color", color.value);
-
     model.value = color.value;
-    console.log("model", model.value);
   }
 });
 </script>

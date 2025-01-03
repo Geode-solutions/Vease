@@ -54,7 +54,6 @@ const props = defineProps({
   tooltip: { type: String, required: true },
 });
 
-console.log("GenericMeshPolygonsOptions props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({

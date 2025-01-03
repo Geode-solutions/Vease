@@ -69,7 +69,6 @@ const props = defineProps({
   btn_image: { type: String, required: true },
 });
 
-console.log("GenericMeshPointsOptions props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({

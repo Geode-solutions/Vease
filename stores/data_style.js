@@ -14,11 +14,9 @@ export const useDataStyleStore = defineStore("dataStyle", {
       var selection = [];
       for (const [id, value] of Object.entries(this.styles)) {
         if (value.visibility == true) {
-          console.log("id visible", id);
           selection.push(id);
         }
       }
-      console.log("selectedObjects", selection);
       return selection;
     },
     pointsVisibility() {

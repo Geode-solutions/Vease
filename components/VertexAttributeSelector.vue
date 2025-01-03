@@ -23,8 +23,6 @@ const meta_data = computed(() => {
   return tree_view_store.itemMetaDatas(props.id);
 });
 
-console.log("meta_data", meta_data);
-
 onMounted(() => {
   getVertexAttributeNames();
 });

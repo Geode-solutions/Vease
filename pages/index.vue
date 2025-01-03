@@ -8,7 +8,7 @@
       >
         <RemoteRenderingView>
           <template #ui>
-            <TreeObject @click="console.log('TreeObject')"/>
+            <TreeObject />
             <ContextMenu
               v-if="display_menu"
               :id="id"
@@ -44,7 +44,6 @@ const { display_menu } = storeToRefs(menuStore);
 
 async function get_id(x, y) {
   const ids = dataStyleStore.selectedObjects;
-  console.log("ids", ids);
   await viewer_call(
     {
       schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,

@@ -39,7 +39,6 @@ const props = defineProps({
   btn_image: { type: String, required: true },
 });
 
-console.log("GenericMeshEdgesOptions props", props.itemProps);
 const id = toRef(() => props.itemProps.id);
 
 const dataStyleStore = useDataStyleStore();

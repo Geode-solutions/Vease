@@ -3,7 +3,7 @@ const pointsDefaultStyle = (visibility, size) => {
     visibility,
     color: {
       active: "constant",
-      constant: { r: 255, g: 255, b: 255 },
+      constant: { r: 255, g: 0, b: 0 },
       vertex: { name: "" },
     },
     size,
@@ -15,7 +15,7 @@ const edgesDefaultStyle = (visibility, size) => {
     visibility,
     color: {
       active: "constant",
-      constant: { r: 255, g: 255, b: 255 },
+      constant: { r: 0, g: 0, b: 0 },
     },
     size,
   };

@@ -33,8 +33,6 @@ const props = defineProps({
   btn_image: { type: String, required: true },
 });
 
-console.log("ContextMenuItem props", props.itemProps);
-
 const display_options = ref(false);
 
 function toggleOptions() {

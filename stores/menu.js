@@ -55,12 +55,10 @@ export const useMenuStore = defineStore("menu", {
   actions: {
     closeMenu() {
       this.display_menu = false;
-      console.log("CLOSE STORE", this.display_menu);
     },
     async openMenu() {
       await this.closeMenu();
       this.display_menu = true;
-      console.log("FROM STORE", this.display_menu);
     },
     showItemsWithDelay() {
       const DELAY = 50;
