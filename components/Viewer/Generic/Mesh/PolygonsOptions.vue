@@ -1,11 +1,11 @@
 <template>
-  <ContextMenuItem
+  <ViewerContextMenuItem
     :itemProps="props.itemProps"
     :tooltip="props.tooltip"
     :btn_image="props.btn_image"
   >
     <template #options>
-      <VisibilitySwitch v-model="visibility" />
+      <ViewerOptionsVisibilitySwitch v-model="visibility" />
 
       <template v-if="visibility">
         <v-divider />
@@ -23,17 +23,17 @@
 
             <template v-if="select === styles[0]">
               <v-divider />
-              <ConstantColorPicker v-model="color" />
+              <ViewerOptionsConstantColorPicker v-model="color" />
             </template>
 
             <template v-if="select === styles[1]">
               <v-divider />
-              <VertexAttributeSelector v-model="vertexAttributeName" :id="id" />
+              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
             </template>
 
             <template v-if="select === styles[2]">
               <v-divider />
-              <PolygonAttributeSelector
+              <ViewerOptionsPolygonAttributeSelector
                 v-model="polygonAttributeName"
                 :id="id"
               />
@@ -42,7 +42,7 @@
         </v-row>
       </template>
     </template>
-  </ContextMenuItem>
+  </ViewerContextMenuItem>
 </template>
 
 <script setup>

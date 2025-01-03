@@ -1,11 +1,11 @@
 <template>
-  <ContextMenuItem
+  <ViewerContextMenuItem
     :itemProps="props.itemProps"
     tooltip="Edges options"
     :btn_image="props.btn_image"
   >
     <template #options>
-      <VisibilitySwitch v-model="visibility" />
+      <ViewerOptionsVisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
         <v-divider />
         <v-row class="pa-2" align="center">
@@ -24,13 +24,13 @@
             />
             <template v-if="select === styles[0]">
               <v-divider />
-              <ConstantColorPicker v-model="color" />
+              <ViewerOptionsConstantColorPicker v-model="color" />
             </template>
           </v-col>
         </v-row>
       </template>
     </template>
-  </ContextMenuItem>
+  </ViewerContextMenuItem>
 </template>
 
 <script setup>

@@ -1,11 +1,11 @@
 <template>
-  <ContextMenuItem
+  <ViewerContextMenuItem
     :itemProps="props.itemProps"
     tooltip="Points options"
     :btn_image="props.btn_image"
   >
     <template #options>
-      <VisibilitySwitch v-model="visibility" />
+      <ViewerOptionsVisibilitySwitch v-model="visibility" />
 
       <template v-if="visibility">
         <v-divider />
@@ -44,7 +44,7 @@
 
             <template v-if="select === styles[0]">
               <v-divider />
-              <ConstantColorPicker
+              <ViewerOptionsConstantColorPicker
                 v-if="select === styles[0]"
                 v-model="color"
               />
@@ -52,13 +52,13 @@
 
             <!-- <template v-if="select === styles[1]">
               <v-divider />
-              <VertexAttributeSelector v-model="vertexAttributeName" :id="id" />
+              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
             </template> -->
           </v-col>
         </v-row>
       </template>
     </template>
-  </ContextMenuItem>
+  </ViewerContextMenuItem>
 </template>
 
 <script setup>

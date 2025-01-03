@@ -8,8 +8,8 @@
       >
         <RemoteRenderingView>
           <template #ui>
-            <TreeObject />
-            <ContextMenu
+            <ViewerTreeObject />
+            <ViewerContextMenu
               v-if="display_menu"
               :id="id"
               :x="menuX"
