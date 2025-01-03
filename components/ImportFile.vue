@@ -5,7 +5,7 @@
       <v-progress-circular indeterminate size="20" color="white" width="3" />
     </template>
   </v-btn>
-  <v-btn variant="text" @click="UIState.setShowStepper(false)"> Cancel </v-btn>
+  <v-btn variant="text" @click="UIStore.setShowStepper(false)"> Cancel </v-btn>
 </template>
 
 <script setup>
@@ -19,8 +19,8 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
-const treeStore = useTreeviewStore();
-const UIState = useUIState();
+const treeviewStore = use_treeview_store();
+const UIStore = useUIStore();
 
 const { filenames, input_geode_object } = props;
 
@@ -39,23 +39,28 @@ async function import_files() {
     await api_fetch(
       { schema: back_schemas.opengeodeweb_back.save_viewable_file, params },
       {
-        requestErrorFunction: () => {},
         response_function: async (response) => {
-          await viewer_call({
-            schema: viewer_schemas.opengeodeweb_viewer.create_object_pipeline,
-            params: {
-              id: response._data.id,
-              file_name: response._data.viewable_file_name,
+          await viewer_call(
+            {
+              schema: viewer_schemas.opengeodeweb_viewer.generic.register,
+              params: {
+                id: response._data.id,
+                file_name: response._data.viewable_file_name,
+                viewer_object: response._data.object_type,
+              },
             },
-          });
-          treeStore.addFile(input_geode_object, filename, response._data.id);
+            {
+              response_function: async () => {
+                await treeviewStore.addItem(input_geode_object, filename, response._data.id, response._data.object_type);
+              },
+            }
+          );
         },
       }
     );
   }
 
-  UIState.setShowStepper(false);
-
+  UIStore.setShowStepper(false);
   toggle_loading();
 }
 </script>
