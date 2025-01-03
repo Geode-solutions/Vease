@@ -58,7 +58,7 @@ jsonschema-specifications==2023.12.1
     #   jsonschema
     #   opengeodeweb-viewer
     #   vease-viewer
-kiwisolver==1.4.7
+kiwisolver==1.4.8
     # via
     #   matplotlib
     #   vease-viewer
@@ -72,22 +72,22 @@ multidict==6.0.5
     #   opengeodeweb-viewer
     #   vease-viewer
     #   yarl
-numpy==2.2.0
+numpy==2.2.1
     # via
     #   contourpy
     #   matplotlib
     #   vease-viewer
-opengeodeweb-viewer[gpu]==1.1.1
+opengeodeweb-viewer[gpu]==1.1.2
     # via vease-viewer
 packaging==24.2
     # via
     #   matplotlib
     #   vease-viewer
-pillow==11.0.0
+pillow==11.1.0
     # via
     #   matplotlib
     #   vease-viewer
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via
     #   matplotlib
     #   vease-viewer
@@ -115,7 +115,7 @@ six==1.17.0
     # via
     #   python-dateutil
     #   vease-viewer
-vease-viewer[gpu]==2.1.1
+vease-viewer[gpu]==2.1.2
     # via -r ./electron-server/viewer/requirements.in
 vtk==9.3.1
     # via
