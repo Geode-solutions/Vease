@@ -8,7 +8,7 @@
               <p class="text-h4 text-white">App version</p>
               <v-divider />
               <v-row class="pa-5">
-                <p class="text-white">The current version of the app is &nbsp</p>
+                <p class="text-white">The current version of the app is&nbsp</p>
                 <a
                   :href="
                     'https://github.com/Geode-solutions/Vease/releases/tag/v' +
@@ -55,7 +55,7 @@
                         "
                         target="_blank"
                         class="text-left text-white"
-                        >v{{ pkg.version }}</a
+                        >{{ pkg.version }}</a
                       >
                     </td>
                   </tr>
