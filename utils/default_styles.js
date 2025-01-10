@@ -80,8 +80,7 @@ const default_styles = {
 };
 
 const getDefaultStyle = (type) => {
-  return default_styles[type];
+  return { ...default_styles[type] };
 };
-
 
 export { getDefaultStyle };
