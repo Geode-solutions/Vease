@@ -4,24 +4,29 @@
     class="bg-primary"
   >
     <v-container>
-      <v-row class="pa-1">
-        <v-col cols="6" md="6">
-          <v-row class="pa-5">
+      <v-row>
+        <v-col cols="6">
+          <v-row class="pa-3">
             <p class="text-h4 text-white">App version</p>
             <v-divider />
-            <p class="text-white">The current version of the app is&nbsp</p>
-            <a
-              :href="
-                'https://github.com/Geode-solutions/Vease/releases/tag/v' +
-                version
-              "
-              target="_blank"
-              class="text-left text-white"
-            >
-              {{ version }}</a
-            >
+            <v-row class="pa-3">
+              <v-col cols="12">
+                <p class="text-white text-no-wrap">The current version of the app is <a
+                  :href="
+                    'https://github.com/Geode-solutions/Vease/releases/tag/v' +
+                    version
+                  "
+                  target="_blank"
+                  class="text-left text-white"
+                >
+                  {{ version }}</a
+                ></p>
+                
+              </v-col>
+             
+            </v-row>
           </v-row>
-          <v-row class="pa-5">
+          <v-row class="pa-3">
             <p class="text-h4 text-white">Internal dependencies</p>
             <v-divider />
             <v-table
@@ -56,28 +61,23 @@
               </tbody>
             </v-table>
           </v-row>
-          <v-row class="pa-5">
-            <v-btn
-              href="https://github.com/Geode-solutions/Vease/issues/new"
-              target="_blank"
-              >Report an issue</v-btn
-            >
-          </v-row>
-          <v-row class="pa-5">
-            <p class="text-white">
-              Vease is an open-source project.
-              <br />
-              Copyright © 2019 - {{ new Date().getFullYear() }} —
-              Geode-solutions SAS. All rights reserved.
-            </p>
+          <v-row class="pa-3">
+            <v-col cols="12">
+              <p class="text-white">
+                Vease is an open-source project.
+                <br />
+                Copyright © 2019 - {{ new Date().getFullYear() }} —
+                Geode-solutions SAS. All rights reserved.
+              </p>
+            </v-col>
           </v-row>
         </v-col>
-        <v-divider vertical/>
+        <v-divider vertical />
         <v-col cols="6">
-          <v-row class="pa-5">
+          <v-row class="pa-3">
             <p class="text-h4 text-white">Microservices status</p>
             <v-divider />
-            <v-row class="pa-5">
+            <v-row class="pa-3">
               <v-table
                 class="pa-2"
                 density="compact"
@@ -125,6 +125,16 @@
                 </tbody>
               </v-table>
             </v-row>
+          </v-row>
+          <v-row class="pa-3">
+
+            <v-col cols="12">
+                <v-btn
+                  href="https://github.com/Geode-solutions/Vease/issues/new"
+                  target="_blank"
+                  >Report an issue</v-btn
+                >
+              </v-col>
           </v-row>
         </v-col>
       </v-row>
