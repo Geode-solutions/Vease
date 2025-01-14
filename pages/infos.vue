@@ -11,19 +11,20 @@
             <v-divider />
             <v-row class="pa-3">
               <v-col cols="12">
-                <p class="text-white text-no-wrap">The current version of the app is <a
-                  :href="
-                    'https://github.com/Geode-solutions/Vease/releases/tag/v' +
-                    version
-                  "
-                  target="_blank"
-                  class="text-left text-white"
-                >
-                  {{ version }}</a
-                ></p>
-                
+                <p class="text-white text-no-wrap">
+                  The current version of the app is
+                  <a
+                    :href="
+                      'https://github.com/Geode-solutions/Vease/releases/tag/v' +
+                      version
+                    "
+                    target="_blank"
+                    class="text-left text-white"
+                  >
+                    {{ version }}</a
+                  >
+                </p>
               </v-col>
-             
             </v-row>
           </v-row>
           <v-row class="pa-3">
@@ -75,7 +76,7 @@
         <v-divider vertical />
         <v-col cols="6">
           <v-row class="pa-3">
-            <p class="text-h4 text-white">Microservices status</p>
+            <p class="text-h4 text-white">Microservices</p>
             <v-divider />
             <v-row class="pa-3">
               <v-table
@@ -84,38 +85,36 @@
                 style="background-color: transparent"
                 width="50%"
               >
-                <tbody>
+                <thead>
                   <tr>
-                    <td class="text-left text-white">Back</td>
-                    <td>
-                      <v-icon
-                        :icon="
-                          geode_store.is_running
-                            ? 'mdi-check-circle'
-                            : 'mdi-close-circle'
-                        "
-                        :color="geode_store.is_running ? 'white' : 'red'"
-                        v-tooltip:right="
-                          geode_store.is_running
-                            ? 'Microservice is running'
-                            : 'Microservice is not running'
-                        "
-                      />
-                    </td>
+                    <th class="text-left text-white"></th>
+                    <th class="text-left text-white">Version</th>
+                    <th class="text-left text-white">Status</th>
                   </tr>
-
-                  <tr>
-                    <td class="text-left text-white">Viewer</td>
+                </thead>
+                <tbody>
+                  <tr v-for="microservice in microservices" :key="microservice">
+                    <td class="text-left text-white">
+                      {{ microservice.name }}
+                    </td>
+                    <td>
+                      <a
+                        :href="`https://pypi.org/project/${microservice.package}/${microservice.version}/`"
+                        target="_blank"
+                        class="text-left text-white"
+                        >{{ microservice.version }}
+                      </a>
+                    </td>
                     <td>
                       <v-icon
                         :icon="
-                          viewer_store.is_running
+                          microservice.status
                             ? 'mdi-check-circle'
                             : 'mdi-close-circle'
                         "
-                        :color="viewer_store.is_running ? 'white' : 'red'"
+                        :color="microservice.status ? 'white' : 'red'"
                         v-tooltip:right="
-                          viewer_store.is_running
+                          microservice.status
                             ? 'Microservice is running'
                             : 'Microservice is not running'
                         "
@@ -127,14 +126,13 @@
             </v-row>
           </v-row>
           <v-row class="pa-3">
-
             <v-col cols="12">
-                <v-btn
-                  href="https://github.com/Geode-solutions/Vease/issues/new"
-                  target="_blank"
-                  >Report an issue</v-btn
-                >
-              </v-col>
+              <v-btn
+                href="https://github.com/Geode-solutions/Vease/issues/new"
+                target="_blank"
+                >Report an issue</v-btn
+              >
+            </v-col>
           </v-row>
         </v-col>
       </v-row>
@@ -144,19 +142,64 @@
 
 <script setup>
 import vease_back_schemas from "@geode/vease-back/schemas.json";
+import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
 
 const version = useRuntimeConfig().public.VERSION;
 const geode_store = use_geode_store();
 const viewer_store = use_viewer_store();
 
 const packages_versions = ref([]);
+const back_version = ref("");
+const viewer_version = ref("");
+
+const microservices = ref([
+  {
+    name: "Back",
+    package: "vease-back",
+    version: back_version,
+    status: geode_store.is_running,
+  },
+  {
+    name: "Viewer",
+    package: "vease-viewer",
+    version: viewer_version,
+    status: viewer_store.is_running,
+  },
+]);
 
 async function get_packages_versions() {
   api_fetch(
-    { schema: vease_back_schemas.routes.versions },
+    { schema: vease_back_schemas.vease_back.packages_versions },
     {
       response_function: (response) => {
-        packages_versions.value = response._data.versions;
+        packages_versions.value = response._data.packages_versions;
+      },
+    }
+  );
+}
+
+async function get_back_version() {
+  api_fetch(
+    { schema: vease_back_schemas.vease_back.microservice_version },
+    {
+      response_function: (response) => {
+        back_version.value = response._data.microservice_version;
+      },
+    }
+  );
+}
+
+async function get_viewer_version() {
+  console.log(
+    "get_viewer_version",
+    vease_viewer_schemas.vease_viewer.microservice_version
+  );
+  viewer_call(
+    { schema: vease_viewer_schemas.vease_viewer.microservice_version },
+    {
+      response_function: (response) => {
+        console.log("response", response);
+        viewer_version.value = response.microservice_version;
       },
     }
   );
@@ -164,5 +207,14 @@ async function get_packages_versions() {
 
 onMounted(() => {
   get_packages_versions();
+  get_back_version();
+  get_viewer_version();
 });
 </script>
+
+<style scoped>
+td {
+  text-align: left;
+}
+
+</style>
