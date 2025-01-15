@@ -1,27 +1,23 @@
 <template>
-  <v-row class="fill-height pa-5">
-    <v-col cols="12">
-      <v-card
-        ref="cardContainer"
-        style="height: 100%; width: 100%"
-        @click.right="openMenu"
-      >
-        <RemoteRenderingView>
-          <template #ui>
-            <ViewerTreeObject />
-            <ViewerContextMenu
-              v-if="display_menu"
-              :id="id"
-              :x="menuX"
-              :y="menuY"
-              :containerWidth="containerWidth"
-              :containerHeight="containerHeight"
-            />
-          </template>
-        </RemoteRenderingView>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-card
+    ref="cardContainer"
+    style="height: 100%; width: 100%; border-radius: 10px"
+    @click.right="openMenu"
+  >
+    <RemoteRenderingView>
+      <template #ui>
+        <ViewerTreeObject />
+        <ViewerContextMenu
+          v-if="display_menu"
+          :id="id"
+          :x="menuX"
+          :y="menuY"
+          :containerWidth="containerWidth"
+          :containerHeight="containerHeight"
+        />
+      </template>
+    </RemoteRenderingView>
+  </v-card>
 </template>
 
 <script setup>
@@ -67,17 +63,14 @@ async function openMenu(event) {
 }
 
 onMounted(async () => {
-  await infra_store.create_backend();
-  await viewer_store.ws_connect();
-
+  if (!viewer_store.is_running) {
+    await infra_store.create_backend();
+    await viewer_store.ws_connect();
+  }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);
     containerWidth.value = width.value;
     containerHeight.value = height.value;
-  }
-
-  if (!viewer_store.client) {
-    await viewer_store.ws_connect();
   }
 });
 </script>

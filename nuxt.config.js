@@ -1,4 +1,12 @@
+import package_json from "./package.json";
+
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      VERSION: package_json.version
+    },
+  },
+
   extends: ["@geode/opengeodeweb-front"],
 
   modules: [
