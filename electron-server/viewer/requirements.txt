@@ -115,7 +115,7 @@ six==1.17.0
     # via
     #   python-dateutil
     #   vease-viewer
-vease-viewer[gpu]==2.2.1
+vease-viewer[gpu]==2.2.2
     # via -r ./electron-server/viewer/requirements.in
 vtk==9.3.1
     # via
