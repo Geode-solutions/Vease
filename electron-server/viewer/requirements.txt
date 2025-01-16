@@ -77,7 +77,7 @@ numpy==2.2.1
     #   contourpy
     #   matplotlib
     #   vease-viewer
-opengeodeweb-viewer[gpu]==1.2.0
+opengeodeweb-viewer[gpu]==1.2.1
     # via vease-viewer
 packaging==24.2
     # via
@@ -115,7 +115,7 @@ six==1.17.0
     # via
     #   python-dateutil
     #   vease-viewer
-vease-viewer[gpu]==2.2.0
+vease-viewer[gpu]==2.2.1
     # via -r ./electron-server/viewer/requirements.in
 vtk==9.3.1
     # via
