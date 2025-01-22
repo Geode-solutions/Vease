@@ -1,5 +1,5 @@
 <template>
-  <v-btn :loading="loading" color="primary" @click="import_files()">
+  <v-btn :loading="loading" color="primary" @click="import_files()" ref="import_button">
     Import
     <template #loader>
       <v-progress-circular indeterminate size="20" color="white" width="3" />
@@ -19,6 +19,8 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
+const import_button = useTemplateRef("import_button")
+
 const treeviewStore = use_treeview_store();
 const UIStore = useUIStore();
 
@@ -26,6 +28,8 @@ const { filenames, input_geode_object } = props;
 
 const loading = ref(false);
 const toggle_loading = useToggle(loading);
+
+useFocus(import_button, { initialValue: true })
 
 async function import_files() {
   toggle_loading();
@@ -51,7 +55,12 @@ async function import_files() {
             },
             {
               response_function: async () => {
-                await treeviewStore.addItem(input_geode_object, filename, response._data.id, response._data.object_type);
+                await treeviewStore.addItem(
+                  input_geode_object,
+                  filename,
+                  response._data.id,
+                  response._data.object_type
+                );
               },
             }
           );
