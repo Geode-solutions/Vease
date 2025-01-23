@@ -10,6 +10,14 @@ import SurfacePointsOptions from "@/components/Viewer/Surface/PointsOptions.vue"
 import SurfaceEdgesOptions from "@/components/Viewer/Surface/EdgesOptions.vue";
 import SurfaceTrianglesOptions from "@/components/Viewer/Surface/TrianglesOptions.vue";
 
+
+// Solid components
+import SolidPointsOptions from "@/components/Viewer/Solid/PointsOptions.vue";
+import SolidEdgesOptions from "@/components/Viewer/Solid/EdgesOptions.vue";
+import SolidPolygonsOptions from "@/components/Viewer/Solid/PolygonsOptions.vue";
+import SolidPolyhedronsOptions from "@/components/Viewer/Solid/PolyhedronsOptions.vue";
+
+
 const PointSet_menu = [PointSetPointsOptions];
 
 const EdgedCurve_menu = [EdgedCurvePointsOptions, EdgedCurveEdgesOptions];
@@ -20,14 +28,24 @@ const Surface_menu = [
   SurfaceTrianglesOptions,
 ];
 
+const Solid2D_menu = [SolidPointsOptions, SolidEdgesOptions, SolidPolygonsOptions];
+const Solid3D_menu = [SolidPointsOptions, SolidEdgesOptions, SolidPolygonsOptions, SolidPolyhedronsOptions];
+
 const menus = {
   mesh: {
-    PointSet2D: PointSet_menu,
-    PointSet3D: PointSet_menu,
     EdgedCurve2D: EdgedCurve_menu,
     EdgedCurve3D: EdgedCurve_menu,
+    HybridSolid3D: Solid3D_menu,
+    LightRegularGrid2D: Solid2D_menu,
+    LightRegularGrid3D: Solid3D_menu,
+    PointSet2D: PointSet_menu,
+    PointSet3D: PointSet_menu,
     PolygonalSurface2D: Surface_menu,
     PolygonalSurface3D: Surface_menu,
+    PolyhedralSolid3D: Solid3D_menu,
+    RegularGrid2D: Solid2D_menu,
+    RegularGrid3D: Solid3D_menu,
+    TetrahedralSolid3D: Solid3D_menu,
     TriangulatedSurface2D: Surface_menu,
     TriangulatedSurface3D: Surface_menu,
   },
