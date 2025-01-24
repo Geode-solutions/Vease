@@ -17,7 +17,7 @@
           />
         </v-sheet>
       </div>
-      <div class="resizer" @mousedown="startResizing"></div>
+      <div class="resizer" @mousedown="onResizeStart"></div>
     </v-row>
   </v-container>
 </template>
@@ -28,9 +28,10 @@ const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
 const panelWidth = ref(300);
-let isResizing = false;
-let startX = 0;
-let startWidth = 0;
+const isResizing = ref(false);
+const startWidth = ref(0);
+const { x: mouseX } = useMouse();
+
 function compareSelections(current, previous) {
   const added = current.filter((item) => !previous.includes(item));
   const removed = previous.filter((item) => !current.includes(item));
@@ -49,38 +50,26 @@ watch(
   { immediate: true }
 );
 
-const resizePanel = (event) => {
-  if (isResizing) {
-    const deltaX = event.clientX - startX;
-    const newWidth = startWidth + deltaX;
-    if (newWidth > 150) {
-      panelWidth.value = Math.min(newWidth, window.innerWidth);
+function onResizeStart(event) {
+  isResizing.value = true;
+  startWidth.value = panelWidth.value;
+
+  const stopResize = () => (isResizing.value = false);
+
+  const resize = () => {
+    if (isResizing.value) {
+      const deltaX = mouseX.value - event.clientX;
+      const newWidth = startWidth.value + deltaX;
+      panelWidth.value = Math.max(150, Math.min(newWidth, window.innerWidth));
     }
-  }
-};
+  };
 
-const stopResizing = () => {
-  isResizing = false;
-  document.removeEventListener("mousemove", resizePanel);
-  document.removeEventListener("mouseup", stopResizing);
-};
-
-function startResizing(event) {
-  isResizing = true;
-  startX = event.clientX;
-  startWidth = panelWidth.value;
-
-  document.addEventListener("mousemove", resizePanel);
-  document.addEventListener("mouseup", stopResizing);
+  useEventListener(document, "mousemove", resize);
+  useEventListener(document, "mouseup", stopResize);
 }
 
-onMounted(() => {
-  document.addEventListener("mouseup", stopResizing);
-});
-
 onBeforeUnmount(() => {
-  document.removeEventListener("mousemove", resizePanel);
-  document.removeEventListener("mouseup", stopResizing);
+  isResizing.value = false;
 });
 </script>
 
