@@ -12,6 +12,7 @@ export const use_treeview_store = defineStore("treeview", {
               const geode_object = state.items[i].title;
               const object_type = state.items[i].children[j].object_type;
               const filename = state.items[i].children[j].title;
+              console.log("itemMetaDatas", geode_object, object_type, filename);
               return { object_type, geode_object, filename };
             }
           }
@@ -28,6 +29,7 @@ export const use_treeview_store = defineStore("treeview", {
       for (let i = 0; i < this.items.length; i++) {
         if (this.items[i].title === geodeObject) {
           this.items[i].children.push(child);
+          console.log("this.items[i].children", this.items[i].children);
           this.selection.push(child);
           dataStyleStore.styles[id].visibility = true;
           return;
@@ -35,6 +37,7 @@ export const use_treeview_store = defineStore("treeview", {
       }
       this.items.push({ title: geodeObject, children: [child] });
       this.selection.push(child);
+      console.log("this.items", this.items);
       dataStyleStore.styles[id].visibility = true;
     },
   },

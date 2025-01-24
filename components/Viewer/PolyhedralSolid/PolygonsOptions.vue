@@ -1,13 +1,13 @@
 <template>
   <ViewerGenericMeshPolygonsOptions
     :itemProps="props.itemProps"
-    :btn_image="SurfaceTriangles"
-    tooltip="Triangles options"
+    :btn_image="PolyhedralSolidPolygons"
   />
 </template>
 
 <script setup>
-import SurfaceTriangles from "@/assets/viewer_svgs/surface_triangles.svg";
+// TO CHANGE
+import PolyhedralSolidPolygons from "@/assets/viewer_svgs/edged_curve_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

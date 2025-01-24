@@ -40,6 +40,7 @@ async function import_files() {
       { schema: back_schemas.opengeodeweb_back.save_viewable_file, params },
       {
         response_function: async (response) => {
+          console.log("response", response);
           await viewer_call(
             {
               schema: viewer_schemas.opengeodeweb_viewer.generic.register,

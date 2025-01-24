@@ -48,6 +48,9 @@ watch(show_menu, (value) => {
 
 const meta_data = computed(() => treeViewStore.itemMetaDatas(props.id));
 
+
+
+console.log("META", meta_data.value);
 const menu_items = computed(() =>
   menuStore.getMenuItems(
     meta_data.value.object_type,

@@ -69,7 +69,17 @@ const surface_defaultStyle = () => {
   };
 };
 
-const solid_defaultStyle = () => {
+const solid2D_defaultStyle = () => {
+  return {
+    visibility: true,
+    points: pointsDefaultStyle(false, 1),
+    edges: edgesDefaultStyle(false, 1),
+    polygons: polygonsDefaultStyle(true),
+
+  };
+};
+
+const solid3D_defaultStyle = () => {
   return {
     visibility: true,
     points: pointsDefaultStyle(false, 1),
