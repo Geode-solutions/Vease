@@ -23,17 +23,14 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, toRefs } from "vue";
-
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
 const panelWidth = ref(300);
 let isResizing = false;
-let startX = 0; // Position initiale de la souris
-let startWidth = 0; // Largeur initiale du panneau
-
+let startX = 0;
+let startWidth = 0;
 function compareSelections(current, previous) {
   const added = current.filter((item) => !previous.includes(item));
   const removed = previous.filter((item) => !current.includes(item));
@@ -54,10 +51,10 @@ watch(
 
 const resizePanel = (event) => {
   if (isResizing) {
-    const deltaX = event.clientX - startX; // Différence entre la position actuelle et la position initiale
-    const newWidth = startWidth + deltaX; // Calcul de la nouvelle largeur
+    const deltaX = event.clientX - startX;
+    const newWidth = startWidth + deltaX;
     if (newWidth > 150) {
-      panelWidth.value = Math.min(newWidth, window.innerWidth); // Empêche le panneau de dépasser la largeur de la fenêtre
+      panelWidth.value = Math.min(newWidth, window.innerWidth);
     }
   }
 };
@@ -70,8 +67,8 @@ const stopResizing = () => {
 
 function startResizing(event) {
   isResizing = true;
-  startX = event.clientX; // Position initiale de la souris
-  startWidth = panelWidth.value; // Largeur actuelle du panneau
+  startX = event.clientX;
+  startWidth = panelWidth.value;
 
   document.addEventListener("mousemove", resizePanel);
   document.addEventListener("mouseup", stopResizing);
