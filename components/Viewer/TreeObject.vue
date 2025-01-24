@@ -67,10 +67,6 @@ function onResizeStart(event) {
   useEventListener(document, "mousemove", resize);
   useEventListener(document, "mouseup", stopResize);
 }
-
-onBeforeUnmount(() => {
-  isResizing.value = false;
-});
 </script>
 
 <style scoped>
