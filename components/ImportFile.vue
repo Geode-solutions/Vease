@@ -51,7 +51,7 @@ async function import_files() {
             },
             {
               response_function: async () => {
-                await treeviewStore.addItem(input_geode_object, filename, response._data.id, response._data.object_type);
+                await treeviewStore.addItem(input_geode_object, response._data.name, response._data.id, response._data.object_type);
               },
             }
           );
