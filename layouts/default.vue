@@ -38,7 +38,7 @@
 
       <transition name="slide">
         <v-navigation-drawer
-          class="rounded"
+          class="rounded align-start"
           radius="10px"
           :width="500"
           location="right"
