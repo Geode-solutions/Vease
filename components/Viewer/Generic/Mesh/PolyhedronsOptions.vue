@@ -33,8 +33,8 @@
 
             <template v-if="select === styles[2]">
               <v-divider />
-              <ViewerOptionsPolygonAttributeSelector
-                v-model="polygonAttributeName"
+              <ViewerOptionsPolyhedronAttributeSelector
+                v-model="polyhedronAttributeName"
                 :id="id"
               />
             </template>
@@ -72,8 +72,8 @@ const color = computed({
     dataStyleStore.setPolyhedronsConstantColor(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute"];
-const storeStyles = ["constant", "vertex"];
+const styles = ["Constant", "From vertex attribute", "From polyhedron attribute"];
+const storeStyles = ["constant", "vertex", "polyhedron"];
 const select = computed({
   get() {
     const active = dataStyleStore.polyhedronsActiveColoring(id.value);
@@ -102,12 +102,12 @@ const vertexAttributeName = computed({
   },
 });
 
-const polygonAttributeName = computed({
+const polyhedronAttributeName = computed({
   get() {
-    return dataStyleStore.polyhedronsPolygonAttributeName(id.value);
+    return dataStyleStore.polyhedronsPolyhedronAttributeName(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolyhedronsPolygonAttributeName(id.value, newValue);
+    dataStyleStore.setPolyhedronsPolyhedronAttributeName(id.value, newValue);
   },
 });
 </script>

@@ -15,28 +15,24 @@ import TriangulatedSurfacePointsOptions from "@/components/Viewer/TriangulatedSu
 import TriangulatedSurfaceEdgesOptions from "@/components/Viewer/TriangulatedSurface/EdgesOptions.vue";
 import TriangulatedSurfaceTrianglesOptions from "@/components/Viewer/TriangulatedSurface/TrianglesOptions.vue";
 
-// RegularGrid components
-import RegularGridPointsOptions from "@/components/Viewer/RegularGrid/PointsOptions.vue";
-import RegularGridEdgesOptions from "@/components/Viewer/RegularGrid/EdgesOptions.vue";
-import RegularGrid2DCellsOptions from "@/components/Viewer/RegularGrid/2D/CellsOptions.vue";
-import RegularGrid3DFacetsOptions from "@/components/Viewer/RegularGrid/3D/FacetsOptions.vue";
-import RegularGrid3DCellsOptions from "@/components/Viewer/RegularGrid/3D/CellsOptions.vue";
+// Grid 2D components
+import Grid2DPointsOptions from "@/components/Viewer/Grid/2D/PointsOptions.vue";
+import Grid2DEdgesOptions from "@/components/Viewer/Grid/2D/EdgesOptions.vue";
+import Grid2DCellsOptions from "@/components/Viewer/Grid/2D/CellsOptions.vue";
 
-// HybridSolid components
-import HybridSolidPointsOptions from "@/components/Viewer/HybridSolid/PointsOptions.vue";
-import HybridSolidEdgesOptions from "@/components/Viewer/HybridSolid/EdgesOptions.vue";
-import HybridSolidPolygonsOptions from "@/components/Viewer/HybridSolid/PolygonsOptions.vue";
-import HybridSolidPolyhedronsOptions from "@/components/Viewer/HybridSolid/PolyhedronsOptions.vue";
+// Grid 3D components
+import Grid3DPointsOptions from "@/components/Viewer/Grid/3D/PointsOptions.vue";
+import Grid3DEdgesOptions from "@/components/Viewer/Grid/3D/EdgesOptions.vue";
+import Grid3DFacetsOptions from "@/components/Viewer/Grid/3D/FacetsOptions.vue";
+import Grid3DCellsOptions from "@/components/Viewer/Grid/3D/CellsOptions.vue";
 
-// PolyhedralSolid components
-import PolyhedralSolidPointsOptions from "@/components/Viewer/PolyhedralSolid/PointsOptions.vue";
-import PolyhedralSolidEdgesOptions from "@/components/Viewer/PolyhedralSolid/EdgesOptions.vue";
-import PolyhedralSolidPolygonsOptions from "@/components/Viewer/PolyhedralSolid/PolygonsOptions.vue";
-import PolyhedralSolidPolyhedronsOptions from "@/components/Viewer/PolyhedralSolid/PolyhedronsOptions.vue";
+// Solid components
+import SolidPointsOptions from "@/components/Viewer/Solid/PointsOptions.vue";
+import SolidEdgesOptions from "@/components/Viewer/Solid/EdgesOptions.vue";
+import SolidPolygonsOptions from "@/components/Viewer/Solid/PolygonsOptions.vue";
+import SolidPolyhedronsOptions from "@/components/Viewer/Solid/PolyhedronsOptions.vue";
 
 // TetrahedralSolid components
-import TetrahedralSolidPointsOptions from "@/components/Viewer/TetrahedralSolid/PointsOptions.vue";
-import TetrahedralSolidEdgesOptions from "@/components/Viewer/TetrahedralSolid/EdgesOptions.vue";
 import TetrahedralSolidTrianglesOptions from "@/components/Viewer/TetrahedralSolid/TrianglesOptions.vue";
 import TetrahedralSolidTetrahedronsOptions from "@/components/Viewer/TetrahedralSolid/TetrahedronsOptions.vue";
 
@@ -56,34 +52,28 @@ const TriangulatedSurface_menu = [
   TriangulatedSurfaceTrianglesOptions,
 ];
 
-const RegularGrid2D_menu = [
-  RegularGridPointsOptions,
-  RegularGridEdgesOptions,
-  RegularGrid2DCellsOptions,
+const Grid2D_menu = [
+  Grid2DPointsOptions,
+  Grid2DEdgesOptions,
+  Grid2DCellsOptions,
 ];
-const RegularGrid3D_menu = [
-  RegularGridPointsOptions,
-  RegularGridEdgesOptions,
-  RegularGrid3DFacetsOptions,
-  RegularGrid3DCellsOptions,
+const Grid3D_menu = [
+  Grid3DPointsOptions,
+  Grid3DEdgesOptions,
+  Grid3DFacetsOptions,
+  Grid3DCellsOptions,
 ];
 
-const HybridSolid_menu = [
-  HybridSolidPointsOptions,
-  HybridSolidEdgesOptions,
-  HybridSolidPolygonsOptions,
-  HybridSolidPolyhedronsOptions,
-];
-const PolyhedralSolid_menu = [
-  PolyhedralSolidPointsOptions,
-  PolyhedralSolidEdgesOptions,
-  PolyhedralSolidPolygonsOptions,
-  PolyhedralSolidPolyhedronsOptions,
+const Solid_menu = [
+  SolidPointsOptions,
+  SolidEdgesOptions,
+  SolidPolygonsOptions,
+  SolidPolyhedronsOptions,
 ];
 
 const TetrahedralSolid_menu = [
-  TetrahedralSolidPointsOptions,
-  TetrahedralSolidEdgesOptions,
+  SolidPointsOptions,
+  SolidEdgesOptions,
   TetrahedralSolidTrianglesOptions,
   TetrahedralSolidTetrahedronsOptions,
 ];
@@ -92,16 +82,16 @@ const menus = {
   mesh: {
     EdgedCurve2D: EdgedCurve_menu,
     EdgedCurve3D: EdgedCurve_menu,
-    HybridSolid3D: HybridSolid_menu,
-    LightRegularGrid2D: RegularGrid2D_menu,
-    LightRegularGrid3D: RegularGrid3D_menu,
+    HybridSolid3D: Solid_menu,
+    LightRegularGrid2D: Grid2D_menu,
+    LightRegularGrid3D: Grid3D_menu,
     PointSet2D: PointSet_menu,
     PointSet3D: PointSet_menu,
     PolygonalSurface2D: PolygonalSurface_menu,
     PolygonalSurface3D: PolygonalSurface_menu,
-    PolyhedralSolid3D: PolyhedralSolid_menu,
-    RegularGrid2D: RegularGrid2D_menu,
-    RegularGrid3D: RegularGrid3D_menu,
+    PolyhedralSolid3D: Solid_menu,
+    RegularGrid2D: Grid2D_menu,
+    RegularGrid3D: Grid3D_menu,
     TetrahedralSolid3D: TetrahedralSolid_menu,
     TriangulatedSurface2D: TriangulatedSurface_menu,
     TriangulatedSurface3D: TriangulatedSurface_menu,

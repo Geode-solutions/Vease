@@ -1,13 +1,12 @@
 <template>
   <ViewerGenericMeshPointsOptions
     :itemProps="props.itemProps"
-    :btn_image="RegularGridPoints"
+    :btn_image="Grid2D_Points"
   />
 </template>
 
 <script setup>
-// TO CHANGE
-import RegularGridPoints from "@/assets/viewer_svgs/surface_points.svg";
+import Grid2D_Points from "@/assets/viewer_svgs/grid_2d_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

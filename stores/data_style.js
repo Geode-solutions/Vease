@@ -79,6 +79,9 @@ export const useDataStyleStore = defineStore("dataStyle", {
     polyhedronsVertexAttributeName() {
       return (id) => this.styles[id].polyhedrons.color.vertex.name;
     },
+    polyhedronsPolyhedronAttributeName() {
+      return (id) => this.styles[id].polyhedrons.color.polyhedron.name;
+    },
   },
   actions: {
     addDataStyle(id, geode_object) {
@@ -357,6 +360,14 @@ export const useDataStyleStore = defineStore("dataStyle", {
         }
       );
     },
+    setPolyhedronsActiveColoring(id, type) {
+      if (type == "constant") this.setPolyhedronsConstantColor(id, this.styles[id].polyhedrons.color.constant);
+      else if (type == "vertex") this.setPolyhedronsVertexAttributeName(id, this.styles[id].polyhedrons.color.vertex.name);
+      else if (type == "polyhedron") this.setPolyhedronsPolyhedronAttributeName(id, this.styles[id].polyhedrons.color.polyhedron.name);
+      else throw new Error("Unknown polyhedrons coloring type: " + type);
+      this.styles[id].polyhedrons.color.active = type;
+      console.log("setPolyhedronsActiveColoring", this.styles[id].polyhedrons.color.active);
+    },
     setPolyhedronsConstantColor(id, color) {
       viewer_call(
         {
@@ -369,6 +380,42 @@ export const useDataStyleStore = defineStore("dataStyle", {
             console.log(
               "setPolyhedronsConstantColor",
               this.styles[id].polyhedrons.color.constant
+            );
+          },
+        }
+      );
+    },
+
+    setPolyhedronsVertexAttributeName(id, name) {
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons.vertex_attribute,
+          params: { id, name },
+        },
+        {
+          response_function: () => {
+            this.styles[id].polyhedrons.color.vertex.name = name;
+            console.log(
+              "setPolyhedronsVertexAttributeName",
+              this.styles[id].polyhedrons.color.vertex.name
+            );
+          },
+        }
+      );
+    },
+
+    setPolyhedronsPolyhedronAttributeName(id, name) {
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons.polyhedron_attribute,
+          params: { id, name },
+        },
+        {
+          response_function: () => {
+            this.styles[id].polyhedrons.color.polyhedron.name = name;
+            console.log(
+              "setPolyhedronsPolyhedronAttributeName",
+              this.styles[id].polyhedrons.color.polyhedron.name
             );
           },
         }

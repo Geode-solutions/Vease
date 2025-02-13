@@ -1,13 +1,12 @@
 <template>
   <ViewerGenericMeshPointsOptions
     :itemProps="props.itemProps"
-    :btn_image="TetrahedralSolidPoints"
+    :btn_image="SolidPoints"
   />
 </template>
 
 <script setup>
-// TO CHANGE
-import TetrahedralSolidPoints from "@/assets/viewer_svgs/edged_curve_points.svg";
+import SolidPoints from "@/assets/viewer_svgs/solid_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

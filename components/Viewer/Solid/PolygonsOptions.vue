@@ -1,13 +1,12 @@
 <template>
-  <ViewerGenericMeshEdgesOptions
+  <ViewerGenericMeshPolygonsOptions
     :itemProps="props.itemProps"
-    :btn_image="PolyhedralSolidEdges"
+    :btn_image="SolidFacets"
   />
 </template>
 
 <script setup>
-// TO CHANGE
-import PolyhedralSolidEdges from "@/assets/viewer_svgs/edged_curve_edges.svg";
+import SolidFacets from "@/assets/viewer_svgs/solid_facets.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

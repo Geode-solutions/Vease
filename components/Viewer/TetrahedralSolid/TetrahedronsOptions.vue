@@ -7,8 +7,7 @@
 </template>
 
 <script setup>
-// TO CHANGE
-import TetrahedralSolidTetrahedrons from "@/assets/viewer_svgs/edged_curve_points.svg";
+import TetrahedralSolidTetrahedrons from "@/assets/viewer_svgs/solid_polyhedrons.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

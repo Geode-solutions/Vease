@@ -39,7 +39,7 @@ const polyhedronsDefaultStyle = (visibility) => {
     color: {
       active: "constant",
       constant: { r: 255, g: 255, b: 255 },
-      polygon: { name: "" },
+      polyhedron: { name: "" },
       vertex: { name: "" },
     },
   };

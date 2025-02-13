@@ -1,13 +1,12 @@
 <template>
   <ViewerGenericMeshEdgesOptions
     :itemProps="props.itemProps"
-    :btn_image="RegularGridEdges"
+    :btn_image="SolidEdges"
   />
 </template>
 
 <script setup>
-// TO CHANGE
-import RegularGridEdges from "@/assets/viewer_svgs/surface_edges.svg";
+import SolidEdges from "@/assets/viewer_svgs/solid_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

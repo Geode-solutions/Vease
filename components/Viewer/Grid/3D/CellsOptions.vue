@@ -7,8 +7,7 @@
 </template>
 
 <script setup>
-// TO CHANGE
-import Grid3DCells from "@/assets/viewer_svgs/surface_triangles.svg";
+import Grid3DCells from "@/assets/viewer_svgs/grid_3d_cells.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

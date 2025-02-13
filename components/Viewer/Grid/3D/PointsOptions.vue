@@ -1,13 +1,12 @@
 <template>
   <ViewerGenericMeshPointsOptions
     :itemProps="props.itemProps"
-    :btn_image="PolyhedralSolidPoints"
+    :btn_image="Grid3D_Points"
   />
 </template>
 
 <script setup>
-// TO CHANGE
-import PolyhedralSolidPoints from "@/assets/viewer_svgs/edged_curve_points.svg";
+import Grid3D_Points from "@/assets/viewer_svgs/grid_3d_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
