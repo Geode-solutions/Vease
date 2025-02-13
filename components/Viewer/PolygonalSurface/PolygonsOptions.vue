@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-// TO CHANGE
 import PolygonalSurfacePolygons from "@/assets/viewer_svgs/surface_triangles.svg";
 
 const props = defineProps({

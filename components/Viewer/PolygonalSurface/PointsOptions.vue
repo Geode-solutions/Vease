@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-// TO CHANGE
 import PolygonalSurfacePoints from "@/assets/viewer_svgs/surface_points.svg";
 
 const props = defineProps({

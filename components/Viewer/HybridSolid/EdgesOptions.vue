@@ -6,8 +6,7 @@
 </template>
 
 <script setup>
-// TO CHANGE
-import HybridSolidEdges from "@/assets/viewer_svgs/edged_curve_edges.svg";
+import HybridSolidEdges from "@/assets/viewer_svgs/solid_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

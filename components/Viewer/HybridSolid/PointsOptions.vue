@@ -6,8 +6,7 @@
 </template>
 
 <script setup>
-// TO CHANGE
-import HybridSolidPoints from "@/assets/viewer_svgs/edged_curve_points.svg";
+import HybridSolidPoints from "@/assets/viewer_svgs/solid_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

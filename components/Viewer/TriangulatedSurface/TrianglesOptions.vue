@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-// TO CHANGE
 import TriangulatedSurfaceEdgesTriangles from "@/assets/viewer_svgs/surface_triangles.svg";
 
 const props = defineProps({

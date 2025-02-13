@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-// TO CHANGE
 import PolygonalSurfaceEdges from "@/assets/viewer_svgs/surface_edges.svg";
 
 const props = defineProps({

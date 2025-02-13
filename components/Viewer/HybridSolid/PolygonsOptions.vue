@@ -6,8 +6,7 @@
 </template>
 
 <script setup>
-// TO CHANGE
-import HybridSolidPolygons from "@/assets/viewer_svgs/edged_curve_points.svg";
+import HybridSolidPolygons from "@/assets/viewer_svgs/solid_facets.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
