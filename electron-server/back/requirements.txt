@@ -150,7 +150,7 @@ opengeode-io==7.0.9
     #   opengeode-geosciencesio
     #   opengeodeweb-back
     #   vease-back
-opengeodeweb-back==5.4.3
+opengeodeweb-back==5.5.0
     # via vease-back
 referencing==0.36.2
     # via
@@ -170,7 +170,7 @@ typing-extensions==4.12.2
     #   opengeodeweb-back
     #   referencing
     #   vease-back
-vease-back==1.1.2
+vease-back==1.1.3
     # via -r ./electron-server/back/requirements.in
 werkzeug==3.1.3
     # via
