@@ -33,8 +33,8 @@
 
             <template v-if="select === styles[2]">
               <v-divider />
-              <ViewerOptionsPolygonAttributeSelector
-                v-model="polygonAttributeName"
+              <ViewerOptionsPolyhedronAttributeSelector
+                v-model="polyhedronAttributeName"
                 :id="id"
               />
             </template>
@@ -51,32 +51,32 @@ const dataStyleStore = useDataStyleStore();
 const props = defineProps({
   itemProps: { type: Object, required: true },
   btn_image: { type: String, required: true },
-  tooltip: { type: String, required: false, default: "Polygons options" },
+  tooltip: { type: String, required: false, default: "Polyhedrons options" },
 });
 
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({
   get() {
-    return dataStyleStore.polygonsVisibility(id.value);
+    return dataStyleStore.polyhedronsVisibility(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolygonsVisibility(id.value, newValue);
+    dataStyleStore.setPolyhedronsVisibility(id.value, newValue);
   },
 });
 const color = computed({
   get() {
-    return dataStyleStore.polygonsConstantColor(id.value);
+    return dataStyleStore.polyhedronsConstantColor(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolygonsConstantColor(id.value, newValue);
+    dataStyleStore.setPolyhedronsConstantColor(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute"];
-const storeStyles = ["constant", "vertex"];
+const styles = ["Constant", "From vertex attribute", "From polyhedron attribute"];
+const storeStyles = ["constant", "vertex", "polyhedron"];
 const select = computed({
   get() {
-    const active = dataStyleStore.polygonsActiveColoring(id.value);
+    const active = dataStyleStore.polyhedronsActiveColoring(id.value);
     for (let i = 0; i < styles.length; i++) {
       if (active === storeStyles[i]) {
         return styles[i];
@@ -87,7 +87,7 @@ const select = computed({
   set(newValue) {
     for (let i = 0; i < styles.length; i++) {
       if (newValue === styles[i]) {
-        dataStyleStore.setPolygonsActiveColoring(id.value, storeStyles[i]);
+        dataStyleStore.setPolyhedronsActiveColoring(id.value, storeStyles[i]);
         return;
       }
     }
@@ -95,19 +95,19 @@ const select = computed({
 });
 const vertexAttributeName = computed({
   get() {
-    return dataStyleStore.polygonsVertexAttributeName(id.value);
+    return dataStyleStore.polyhedronsVertexAttributeName(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolygonsVertexAttributeName(id.value, newValue);
+    dataStyleStore.setPolyhedronsVertexAttributeName(id.value, newValue);
   },
 });
 
-const polygonAttributeName = computed({
+const polyhedronAttributeName = computed({
   get() {
-    return dataStyleStore.polygonsPolygonAttributeName(id.value);
+    return dataStyleStore.polyhedronsPolyhedronAttributeName(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolygonsPolygonAttributeName(id.value, newValue);
+    dataStyleStore.setPolyhedronsPolyhedronAttributeName(id.value, newValue);
   },
 });
 </script>
