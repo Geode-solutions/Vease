@@ -33,6 +33,18 @@ const polygonsDefaultStyle = (visibility) => {
   };
 };
 
+const polyhedronsDefaultStyle = (visibility) => {
+  return {
+    visibility,
+    color: {
+      active: "constant",
+      constant: { r: 255, g: 255, b: 255 },
+      polyhedron: { name: "" },
+      vertex: { name: "" },
+    },
+  };
+};
+
 const pointSet_defaultStyle = () => {
   return {
     visibility: true,
@@ -57,6 +69,17 @@ const surface_defaultStyle = () => {
   };
 };
 
+
+const solid_defaultStyle = () => {
+  return {
+    visibility: true,
+    points: pointsDefaultStyle(false, 1),
+    edges: edgesDefaultStyle(false, 1),
+    polygons: polygonsDefaultStyle(true),
+    polyhedrons: polyhedronsDefaultStyle(true)
+  };
+};
+
 const default_styles = () => {
   return {
     BRep: {},
@@ -64,23 +87,23 @@ const default_styles = () => {
     EdgedCurve2D: edgedCurve_defaultStyle(),
     EdgedCurve3D: edgedCurve_defaultStyle(),
     Graph: {},
-    HybridSolid3D: {},
+    HybridSolid3D: solid_defaultStyle(),
     ImplicitCrossSection: {},
     ImplicitStructuralModel: {},
-    LightRegularGrid2D: {},
-    LightRegularGrid3D: {},
+    LightRegularGrid2D: surface_defaultStyle(),
+    LightRegularGrid3D: solid_defaultStyle(),
     PointSet2D: pointSet_defaultStyle(),
     PointSet3D: pointSet_defaultStyle(),
     PolygonalSurface2D: surface_defaultStyle(),
     PolygonalSurface3D: surface_defaultStyle(),
-    PolyhedralSolid3D: {},
+    PolyhedralSolid3D: solid_defaultStyle(),
     RasterImage2D: {},
     RasterImage3D: {},
-    RegularGrid2D: {},
-    RegularGrid3D: {},
+    RegularGrid2D: surface_defaultStyle(),
+    RegularGrid3D: solid_defaultStyle(),
     Section: {},
     StructuralModel: {},
-    TetrahedralSolid3D: {},
+    TetrahedralSolid3D: solid_defaultStyle(),
     TriangulatedSurface2D: surface_defaultStyle(),
     TriangulatedSurface3D: surface_defaultStyle(),
     VertexSet: {},

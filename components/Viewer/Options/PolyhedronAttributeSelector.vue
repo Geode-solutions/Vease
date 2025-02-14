@@ -1,7 +1,7 @@
 <template>
   <v-select
-    v-model="vertexAttributeName"
-    :items="vertexAttributes"
+    v-model="polyhedronAttributeName"
+    :items="polyhedronAttributes"
     label="Select an attribute"
   ></v-select>
 </template>
@@ -9,8 +9,7 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-
-const vertexAttributeName = defineModel()
+const polyhedronAttributeName = defineModel()
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -18,20 +17,19 @@ const props = defineProps({
 
 const tree_view_store = use_treeview_store();
 
-const vertexAttributes = ref([]);
+const polyhedronAttributes = ref([]);
 const meta_data = computed(() => {
   return tree_view_store.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
-  getVertexAttributeNames();
+  getPolyhedronAttributeNames();
 });
 
-function getVertexAttributeNames() {
-  console.log("getVertexAttributeNames",)
+function getPolyhedronAttributeNames() {
   api_fetch(
     {
-      schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
+      schema: back_schemas.opengeodeweb_back.polyhedron_attribute_names,
       params: {
         input_geode_object: meta_data.value.geode_object,
         filename: meta_data.value.native_filename,
@@ -39,7 +37,7 @@ function getVertexAttributeNames() {
     },
     {
       response_function: (response) => {
-        vertexAttributes.value = response._data.vertex_attribute_names;
+        polyhedronAttributes.value = response._data.polyhedron_attribute_names;
       },
     }
   );

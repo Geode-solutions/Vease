@@ -32,7 +32,7 @@ function getPolygonAttributeNames() {
       schema: back_schemas.opengeodeweb_back.polygon_attribute_names,
       params: {
         input_geode_object: meta_data.value.geode_object,
-        filename: meta_data.value.filename,
+        filename: meta_data.value.native_filename,
       },
     },
     {
