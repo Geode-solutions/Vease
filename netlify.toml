@@ -16,6 +16,6 @@
   PROJECT = "/vease"
   SITE_BRANCH = "/test"
   RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
-  SITE_URL = "https://vease-next.geode-solutions.com"
+  SITE_URL = "https://next.vease.geode-solutions.com"
 [build]
   command = "rm -rf node_modules package-lock.json && npm i && npm run generate"
