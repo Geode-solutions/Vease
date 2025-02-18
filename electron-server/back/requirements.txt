@@ -170,7 +170,7 @@ typing-extensions==4.12.2
     #   opengeodeweb-back
     #   referencing
     #   vease-back
-vease-back==1.1.4rc1
+vease-back==1.2.0rc1
     # via -r ./electron-server/back/requirements.in
 werkzeug==3.1.3
     # via
