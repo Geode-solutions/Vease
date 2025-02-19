@@ -14,6 +14,7 @@
             item-value="id"
             select-strategy="classic"
             selectable
+            @contextmenu="onRightClick"
           />
         </v-sheet>
       </div>
@@ -35,7 +36,7 @@ const idCardStore = useIdCardStore();
 
 function onRightClick(event, item) {
   event.preventDefault();
-  idCardStore.showCard(item.id);
+  return item.value;
 }
 
 function compareSelections(current, previous) {
