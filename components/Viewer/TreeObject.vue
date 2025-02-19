@@ -14,7 +14,7 @@
             item-value="id"
             select-strategy="classic"
             selectable
-            @contextmenu="onRightClick"
+            @contextmenu.stop="onRightClick"
           />
         </v-sheet>
       </div>
@@ -36,6 +36,12 @@ const idCardStore = useIdCardStore();
 
 function onRightClick(event, item) {
   event.preventDefault();
+  console.log("Right-click event triggered on:", event.target);
+  console.log("Item clicked:", item);
+  if (item) {
+    console.log("Item ID:", item.id);
+    idCardStore.showCard(item.id);
+  }
   return item.value;
 }
 
@@ -61,13 +67,17 @@ function onResizeStart(event) {
   isResizing.value = true;
   startWidth.value = panelWidth.value;
 
-  const stopResize = () => (isResizing.value = false);
+  const stopResize = () => {
+    isResizing.value = false;
+    console.log("Resize stopped");
+  };
 
   const resize = () => {
     if (isResizing.value) {
       const deltaX = mouseX.value - event.clientX;
       const newWidth = startWidth.value + deltaX;
       panelWidth.value = Math.max(150, Math.min(newWidth, window.innerWidth));
+      console.log("Resizing panel width:", panelWidth.value);
     }
   };
 

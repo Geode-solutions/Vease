@@ -14,6 +14,7 @@
 
 <script setup>
 const idCardStore = useIdCardStore();
+console.log("ID Card Store State:", idCardStore);
 </script>
 
 <style scoped>
