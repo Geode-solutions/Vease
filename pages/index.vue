@@ -15,6 +15,7 @@
           :containerWidth="containerWidth"
           :containerHeight="containerHeight"
         />
+        <IdCardDisplay />
       </template>
     </RemoteRenderingView>
   </v-card>

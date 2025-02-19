@@ -31,6 +31,12 @@ const panelWidth = ref(300);
 const isResizing = ref(false);
 const startWidth = ref(0);
 const { x: mouseX } = useMouse();
+const idCardStore = useIdCardStore();
+
+function onRightClick(event, item) {
+  event.preventDefault();
+  idCardStore.showCard(item.id);
+}
 
 function compareSelections(current, previous) {
   const added = current.filter((item) => !previous.includes(item));
