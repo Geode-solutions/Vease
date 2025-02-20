@@ -3,7 +3,8 @@ import package_json from "./package.json";
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      VERSION: package_json.version
+      VERSION: package_json.version,
+      PROJECT: process.env.PROJECT
     },
   },
 
