@@ -190,15 +190,10 @@ async function get_back_version() {
 }
 
 async function get_viewer_version() {
-  console.log(
-    "get_viewer_version",
-    vease_viewer_schemas.vease_viewer.microservice_version
-  );
   viewer_call(
     { schema: vease_viewer_schemas.vease_viewer.microservice_version },
     {
       response_function: (response) => {
-        console.log("response", response);
         viewer_version.value = response.microservice_version;
       },
     }
