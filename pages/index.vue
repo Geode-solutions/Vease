@@ -6,10 +6,7 @@
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject
-          @click.right.contextmenu.stop
-          @show-menu="handleTreeMenu"
-        />
+        <ViewerTreeObject @show-menu="handleTreeMenu" />
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"

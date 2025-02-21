@@ -17,7 +17,6 @@
           >
             <template #title="{ item }">
               <span
-                @click.left.stop="$emit('id', { event: $event, id: item.id })"
                 @click.right.stop="
                   $emit('show-menu', { event: $event, id: item.id })
                 "
@@ -36,8 +35,6 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
-
-const emit = defineEmits(["id"]);
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
