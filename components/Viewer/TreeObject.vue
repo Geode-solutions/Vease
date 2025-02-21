@@ -15,19 +15,14 @@
             select-strategy="classic"
             selectable
           >
-            <template #prepend-item="{ item }">
-              <v-checkbox
-                v-model="dataStyleStore.selectedIds"
-                :value="item.id"
-              />
-            </template>
-            <template #item="{ props: item }">
-              <v-list-item
-                v-model:selected="selection"
-                v-bind="{ ...item }"
-                @click.right="console.log('CLICKED ITEM', item)"
-                :value="item.id"
-              />
+            <template #title="{ item }">
+              <span
+                @click.left.stop="$emit('id', { event: $event, id: item.id })"
+                @click.right.stop="
+                  $emit('show-menu', { event: $event, id: item.id })
+                "
+                >{{ item.title }}</span
+              >
             </template>
           </v-treeview>
         </v-sheet>
@@ -42,22 +37,12 @@ const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
+const emit = defineEmits(["id"]);
+
 const panelWidth = ref(300);
 const isResizing = ref(false);
 const startWidth = ref(0);
 const { x: mouseX } = useMouse();
-const idCardStore = useIdCardStore();
-
-function onRightClick(event, item) {
-  event.preventDefault();
-  console.log("Right-click event triggered on:", event.target);
-  console.log("Item clicked:", item);
-  if (item) {
-    console.log("Item ID:", item.id);
-    idCardStore.showCard(item.id);
-  }
-  return item.value;
-}
 
 function compareSelections(current, previous) {
   const added = current.filter((item) => !previous.includes(item));
@@ -70,7 +55,6 @@ watch(
   (current, previous) => {
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
-    console.log("Added:", added, "Removed:", removed);
     added.forEach((item) => dataStyleStore.setVisibility(item.id, true));
     removed.forEach((item) => dataStyleStore.setVisibility(item.id, false));
   },
@@ -83,7 +67,6 @@ function onResizeStart(event) {
 
   const stopResize = () => {
     isResizing.value = false;
-    console.log("Resize stopped");
   };
 
   const resize = () => {
@@ -91,7 +74,6 @@ function onResizeStart(event) {
       const deltaX = mouseX.value - event.clientX;
       const newWidth = startWidth.value + deltaX;
       panelWidth.value = Math.max(150, Math.min(newWidth, window.innerWidth));
-      console.log("Resizing panel width:", panelWidth.value);
     }
   };
 
