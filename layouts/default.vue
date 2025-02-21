@@ -32,11 +32,7 @@
         style="border-radius: 20%"
       >
         <v-icon
-          >{{
-            UIStore.showStepper
-              ? "mdi-file-upload-outline"
-              : "mdi-file-upload-outline"
-          }}
+          >{{ UIStore.showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
         </v-icon>
       </v-btn>
 
