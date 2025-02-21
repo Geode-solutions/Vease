@@ -6,7 +6,7 @@
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject />
+        <ViewerTreeObject @click.right.contextmenu.stop />
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -15,7 +15,6 @@
           :containerWidth="containerWidth"
           :containerHeight="containerHeight"
         />
-        <IdCardDisplay />
       </template>
     </RemoteRenderingView>
   </v-card>

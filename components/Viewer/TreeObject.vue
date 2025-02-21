@@ -9,13 +9,27 @@
           <v-treeview
             v-model:selected="selection"
             :items="treeviewStore.items"
+            item-value="id"
             return-object
             class="transparent-treeview"
-            item-value="id"
             select-strategy="classic"
             selectable
-            @contextmenu.stop="onRightClick"
-          />
+          >
+            <template #prepend-item="{ item }">
+              <v-checkbox
+                v-model="dataStyleStore.selectedIds"
+                :value="item.id"
+              />
+            </template>
+            <template #item="{ props: item }">
+              <v-list-item
+                v-model:selected="selection"
+                v-bind="{ ...item }"
+                @click.right="console.log('CLICKED ITEM', item)"
+                :value="item.id"
+              />
+            </template>
+          </v-treeview>
         </v-sheet>
       </div>
       <div class="resizer" @mousedown="onResizeStart"></div>
@@ -56,7 +70,7 @@ watch(
   (current, previous) => {
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
-
+    console.log("Added:", added, "Removed:", removed);
     added.forEach((item) => dataStyleStore.setVisibility(item.id, true));
     removed.forEach((item) => dataStyleStore.setVisibility(item.id, false));
   },
