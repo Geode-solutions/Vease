@@ -9,9 +9,9 @@
           <v-treeview
             v-model:selected="selection"
             :items="treeviewStore.items"
-            item-value="id"
             return-object
             class="transparent-treeview"
+            item-value="id"
             select-strategy="classic"
             selectable
           >
