@@ -117,7 +117,6 @@ export const useDataStyleStore = defineStore("dataStyle", {
       this.setPolyhedronsActiveColoring(id, style.color.active);
     },
     setVisibility(id, visibility) {
-      console.log("setVisibility", id, visibility);
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.visibility,
