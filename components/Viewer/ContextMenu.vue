@@ -42,10 +42,7 @@ const show_menu = ref(true);
 
 watch(show_menu, (value) => {
   if (!value) {
-    console.log("Context menu closed");
     menuStore.closeMenu();
-  } else {
-    console.log("Context menu opened");
   }
 });
 
