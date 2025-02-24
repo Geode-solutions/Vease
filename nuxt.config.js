@@ -1,10 +1,13 @@
+/** @format */
+
 import package_json from "./package.json";
 
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
-      PROJECT: process.env.PROJECT
+      PROJECT: process.env.PROJECT,
+      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     },
   },
 
