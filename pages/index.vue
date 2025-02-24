@@ -1,5 +1,5 @@
 <template>
-  <Launcher v-if="!infra_store.is_running" />
+  <Launcher v-if="infra_store.is_cloud && !infra_store.is_running" />
   <v-card
     v-else
     ref="cardContainer"
