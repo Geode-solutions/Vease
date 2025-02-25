@@ -1,5 +1,7 @@
 <template>
+  <Launcher v-if="infra_store.is_cloud && !infra_store.is_running" />
   <v-card
+    v-else
     ref="cardContainer"
     style="height: 100%; width: 100%; border-radius: 10px"
     @click.right="openMenu"

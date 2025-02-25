@@ -211,5 +211,4 @@ onMounted(() => {
 td {
   text-align: left;
 }
-
 </style>
