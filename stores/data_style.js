@@ -1,3 +1,5 @@
+/** @format */
+
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import { getDefaultStyle } from "@/utils/default_styles";
 import _ from "lodash";
@@ -150,14 +152,23 @@ export const useDataStyleStore = defineStore("dataStyle", {
     setPointsActiveColoring(id, type) {
       switch (type) {
         case "constant":
-          this.setPointsConstantColor(id, this.styles[id].points.color.constant);
+          this.setPointsConstantColor(
+            id,
+            this.styles[id].points.color.constant
+          );
           break;
         case "vertex":
-          this.setPointsVertexAttributeName(id, this.styles[id].points.color.vertex.name);
+          this.setPointsVertexAttributeName(
+            id,
+            this.styles[id].points.color.vertex.name
+          );
           break;
       }
       this.styles[id].points.color.active = type;
-      console.log("setPointsActiveColoring", this.styles[id].points.color.active);
+      console.log(
+        "setPointsActiveColoring",
+        this.styles[id].points.color.active
+      );
     },
     setPointsConstantColor(id, color) {
       viewer_call(
@@ -224,9 +235,18 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setEdgesActiveColoring(id, type) {
-      if (type == "constant") this.setEdgesConstantColor(id, this.styles[id].edges.color.constant);
-      else if (type == "vertex") this.setEdgesVertexAttributeName(id, this.styles[id].edges.color.vertex.name);
-      else if (type == "edges") this.setEdgesEdgeAttributeName(id, this.styles[id].edges.color.edges.name);
+      if (type == "constant")
+        this.setEdgesConstantColor(id, this.styles[id].edges.color.constant);
+      else if (type == "vertex")
+        this.setEdgesVertexAttributeName(
+          id,
+          this.styles[id].edges.color.vertex.name
+        );
+      else if (type == "edges")
+        this.setEdgesEdgeAttributeName(
+          id,
+          this.styles[id].edges.color.edges.name
+        );
       else throw new Error("Unknown edges coloring type: " + type);
       this.styles[id].edges.color.active = type;
       console.log("setEdgesActiveColoring", this.styles[id].edges.color.active);
@@ -281,12 +301,27 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolygonsActiveColoring(id, type) {
-      if (type == "constant") this.setPolygonsConstantColor(id, this.styles[id].polygons.color.constant);
-      else if (type == "vertex") this.setPolygonsVertexAttributeName(id, this.styles[id].polygons.color.vertex.name);
-      else if (type == "polygon") this.setPolygonsPolygonAttributeName(id, this.styles[id].polygons.color.polygon.name);
+      if (type == "constant")
+        this.setPolygonsConstantColor(
+          id,
+          this.styles[id].polygons.color.constant
+        );
+      else if (type == "vertex")
+        this.setPolygonsVertexAttributeName(
+          id,
+          this.styles[id].polygons.color.vertex.name
+        );
+      else if (type == "polygon")
+        this.setPolygonsPolygonAttributeName(
+          id,
+          this.styles[id].polygons.color.polygon.name
+        );
       else throw new Error("Unknown polygons coloring type: " + type);
       this.styles[id].polygons.color.active = type;
-      console.log("setPolygonsActiveColoring", this.styles[id].polygons.color.active);
+      console.log(
+        "setPolygonsActiveColoring",
+        this.styles[id].polygons.color.active
+      );
     },
     setPolygonsConstantColor(id, color) {
       viewer_call(
@@ -361,12 +396,27 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolyhedronsActiveColoring(id, type) {
-      if (type == "constant") this.setPolyhedronsConstantColor(id, this.styles[id].polyhedrons.color.constant);
-      else if (type == "vertex") this.setPolyhedronsVertexAttributeName(id, this.styles[id].polyhedrons.color.vertex.name);
-      else if (type == "polyhedron") this.setPolyhedronsPolyhedronAttributeName(id, this.styles[id].polyhedrons.color.polyhedron.name);
+      if (type == "constant")
+        this.setPolyhedronsConstantColor(
+          id,
+          this.styles[id].polyhedrons.color.constant
+        );
+      else if (type == "vertex")
+        this.setPolyhedronsVertexAttributeName(
+          id,
+          this.styles[id].polyhedrons.color.vertex.name
+        );
+      else if (type == "polyhedron")
+        this.setPolyhedronsPolyhedronAttributeName(
+          id,
+          this.styles[id].polyhedrons.color.polyhedron.name
+        );
       else throw new Error("Unknown polyhedrons coloring type: " + type);
       this.styles[id].polyhedrons.color.active = type;
-      console.log("setPolyhedronsActiveColoring", this.styles[id].polyhedrons.color.active);
+      console.log(
+        "setPolyhedronsActiveColoring",
+        this.styles[id].polyhedrons.color.active
+      );
     },
     setPolyhedronsConstantColor(id, color) {
       viewer_call(
@@ -389,7 +439,9 @@ export const useDataStyleStore = defineStore("dataStyle", {
     setPolyhedronsVertexAttributeName(id, name) {
       viewer_call(
         {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons.vertex_attribute,
+          schema:
+            viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons
+              .vertex_attribute,
           params: { id, name },
         },
         {
@@ -407,7 +459,9 @@ export const useDataStyleStore = defineStore("dataStyle", {
     setPolyhedronsPolyhedronAttributeName(id, name) {
       viewer_call(
         {
-          schema: viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons.polyhedron_attribute,
+          schema:
+            viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons
+              .polyhedron_attribute,
           params: { id, name },
         },
         {
