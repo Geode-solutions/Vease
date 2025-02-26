@@ -9,7 +9,7 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const polyhedronAttributeName = defineModel()
+const polyhedronAttributeName = defineModel();
 
 const props = defineProps({
   id: { type: String, required: true },

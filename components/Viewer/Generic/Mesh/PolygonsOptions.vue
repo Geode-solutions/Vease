@@ -11,7 +11,11 @@
         <v-divider />
         <v-row class="pa-2" align="center">
           <v-col cols="auto" justify="center">
-            <v-icon size ="30" icon="mdi-format-color-fill" v-tooltip:left="'Filling'" />
+            <v-icon
+              size="30"
+              icon="mdi-format-color-fill"
+              v-tooltip:left="'Filling'"
+            />
           </v-col>
           <v-col justify="center">
             <v-select
@@ -28,10 +32,20 @@
 
             <template v-if="select === styles[1]">
               <v-divider />
-              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
+              <ViewerOptionsTexturesSelector
+                v-model="vertexAttributeName"
+                :id="id"
+              />
+            </template>
+            <template v-if="select === styles[2]">
+              <v-divider />
+              <ViewerOptionsVertexAttributeSelector
+                v-model="vertexAttributeName"
+                :id="id"
+              />
             </template>
 
-            <template v-if="select === styles[2]">
+            <template v-if="select === styles[3]">
               <v-divider />
               <ViewerOptionsPolygonAttributeSelector
                 v-model="polygonAttributeName"
@@ -72,8 +86,8 @@ const color = computed({
     dataStyleStore.setPolygonsConstantColor(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute"];
-const storeStyles = ["constant", "vertex"];
+const styles = ["Constant", "Texture", "From vertex attribute"];
+const storeStyles = ["constant", "textures", "vertex"];
 const select = computed({
   get() {
     const active = dataStyleStore.polygonsActiveColoring(id.value);

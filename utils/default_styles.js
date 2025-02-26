@@ -27,6 +27,7 @@ const polygonsDefaultStyle = (visibility) => {
     color: {
       active: "constant",
       constant: { r: 255, g: 255, b: 255 },
+      textures: [],
       polygon: { name: "" },
       vertex: { name: "" },
     },
@@ -45,8 +46,8 @@ const polyhedronsDefaultStyle = (visibility) => {
   };
 };
 
-const points_defaultSize = 10
-const edges_defaultSize = 5
+const points_defaultSize = 10;
+const edges_defaultSize = 5;
 
 const pointSet_defaultStyle = () => {
   return {
@@ -54,7 +55,6 @@ const pointSet_defaultStyle = () => {
     points: pointsDefaultStyle(true, points_defaultSize),
   };
 };
-
 
 const edgedCurve_defaultStyle = () => {
   return {
@@ -73,14 +73,13 @@ const surface_defaultStyle = () => {
   };
 };
 
-
 const solid_defaultStyle = () => {
   return {
     visibility: true,
     points: pointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(false, edges_defaultSize),
     polygons: polygonsDefaultStyle(true),
-    polyhedrons: polyhedronsDefaultStyle(true)
+    polyhedrons: polyhedronsDefaultStyle(true),
   };
 };
 
