@@ -1,3 +1,5 @@
+/** @format */
+
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import { getDefaultStyle } from "@/utils/default_styles";
 import _ from "lodash";
