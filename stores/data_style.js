@@ -59,6 +59,9 @@ export const useDataStyleStore = defineStore("dataStyle", {
     polygonsConstantColor() {
       return (id) => this.styles[id].polygons.color.constant;
     },
+    polygonsTextures() {
+      return (id) => this.styles[id].polygons.color.textures;
+    },
     polygonsPolygonAttributeName() {
       return (id) => this.styles[id].polygons.color.polygon.name;
     },
@@ -97,7 +100,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
         else if (key == "points") this.applyPointsStyle(id, value);
         else if (key == "edges") this.applyEdgesStyle(id, value);
         else if (key == "polygons") this.applyPolygonsStyle(id, value);
-        // else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
+        else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
       }
     },
     applyPointsStyle(id, style) {
@@ -301,24 +304,27 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolygonsActiveColoring(id, type) {
-      if (type == "constant")
+      console.log("setPolygonsActiveColoring", id, type);
+      if (type == "constant") {
         this.setPolygonsConstantColor(
           id,
           this.styles[id].polygons.color.constant
         );
-      else if (type == "textures")
+      } else if (type == "textures") {
         this.setPolygonsTextures(id, this.styles[id].polygons.color.textures);
-      else if (type == "vertex")
-        this.setPolygonsVertexAttributeName(
-          id,
-          this.styles[id].polygons.color.vertex.name
-        );
-      else if (type == "polygon")
+      } else if (type == "vertex") {
+        if (this.styles[id].polygons.color.vertex.name !== "") {
+          this.setPolygonsVertexAttributeName(
+            id,
+            this.styles[id].polygons.color.vertex.name
+          );
+        }
+      } else if (type == "polygon") {
         this.setPolygonsPolygonAttributeName(
           id,
           this.styles[id].polygons.color.polygon.name
         );
-      else throw new Error("Unknown polygons coloring type: " + type);
+      } else throw new Error("Unknown polygons coloring type: " + type);
       this.styles[id].polygons.color.active = type;
       console.log(
         "setPolygonsActiveColoring",
@@ -343,6 +349,7 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolygonsTextures(id, textures) {
+      console.log("setPolygonsTextures", id, textures);
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.apply_textures,

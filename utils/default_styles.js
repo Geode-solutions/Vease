@@ -27,7 +27,7 @@ const polygonsDefaultStyle = (visibility) => {
     color: {
       active: "constant",
       constant: { r: 255, g: 255, b: 255 },
-      textures: [],
+      textures: [{ texture_name: "", texture_file_name: "" }],
       polygon: { name: "" },
       vertex: { name: "" },
     },

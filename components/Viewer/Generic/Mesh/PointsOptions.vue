@@ -8,8 +8,8 @@
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
 
       <template v-if="visibility">
-        <v-divider />
-        <v-row class="pa-2" align="center">
+        <v-row class="pa-0" align="center">
+          <v-divider />
           <v-col cols="auto" justify="center">
             <v-icon size="30" icon="mdi-ruler" v-tooltip:left="'Size'" />
           </v-col>
@@ -26,7 +26,7 @@
           </v-col>
         </v-row>
         <v-divider />
-        <v-row class="pa-2" align="center">
+        <v-row class="pa-0" align="center">
           <v-col cols="auto" justify="center">
             <v-icon
               size="30"
@@ -43,7 +43,6 @@
             />
 
             <template v-if="select === styles[0]">
-              <v-divider />
               <ViewerOptionsConstantColorPicker
                 v-if="select === styles[0]"
                 v-model="color"

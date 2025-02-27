@@ -8,45 +8,40 @@
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
 
       <template v-if="visibility">
-        <v-divider />
-        <v-row class="pa-2" align="center">
-          <v-col cols="auto" justify="center">
+        <v-row align="center" justify="center">
+          <v-divider />
+          <v-col cols="auto">
             <v-icon
               size="30"
               icon="mdi-format-color-fill"
               v-tooltip:left="'Filling'"
             />
           </v-col>
-          <v-col justify="center">
+          <v-col>
             <v-select
               v-model="select"
               :items="styles"
               width="200"
               label="Select a color style"
+              density="compact"
             />
-
+          </v-col>
+        </v-row>
+        <v-row align="center">
+          <v-col>
             <template v-if="select === styles[0]">
-              <v-divider />
               <ViewerOptionsConstantColorPicker v-model="color" />
             </template>
-
             <template v-if="select === styles[1]">
-              <v-divider />
-              <ViewerOptionsTexturesSelector
-                v-model="vertexAttributeName"
-                :id="id"
-              />
+              <ViewerOptionsTexturesSelector v-model="textures" :id="id" />
             </template>
             <template v-if="select === styles[2]">
-              <v-divider />
               <ViewerOptionsVertexAttributeSelector
                 v-model="vertexAttributeName"
                 :id="id"
               />
             </template>
-
             <template v-if="select === styles[3]">
-              <v-divider />
               <ViewerOptionsPolygonAttributeSelector
                 v-model="polygonAttributeName"
                 :id="id"
@@ -107,12 +102,23 @@ const select = computed({
     }
   },
 });
+const textures = computed({
+  get() {
+    return dataStyleStore.polygonsTextures(id.value);
+  },
+  set(newValue) {
+    dataStyleStore.setPolygonsTextures(id.value, newValue);
+  },
+});
 const vertexAttributeName = computed({
   get() {
     return dataStyleStore.polygonsVertexAttributeName(id.value);
   },
   set(newValue) {
-    dataStyleStore.setPolygonsVertexAttributeName(id.value, newValue);
+    console.log("SET vertexAttributeName newValue", newValue);
+    if (newValue !== "") {
+      dataStyleStore.setPolygonsVertexAttributeName(id.value, newValue);
+    }
   },
 });
 

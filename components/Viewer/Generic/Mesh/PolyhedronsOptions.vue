@@ -9,9 +9,13 @@
 
       <template v-if="visibility">
         <v-divider />
-        <v-row class="pa-2" align="center">
+        <v-row class="pa-0" align="center">
           <v-col cols="auto" justify="center">
-            <v-icon size ="30" icon="mdi-format-color-fill" v-tooltip:left="'Filling'" />
+            <v-icon
+              size="30"
+              icon="mdi-format-color-fill"
+              v-tooltip:left="'Filling'"
+            />
           </v-col>
           <v-col justify="center">
             <v-select
@@ -28,7 +32,10 @@
 
             <template v-if="select === styles[1]">
               <v-divider />
-              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
+              <ViewerOptionsVertexAttributeSelector
+                v-model="vertexAttributeName"
+                :id="id"
+              />
             </template>
 
             <template v-if="select === styles[2]">
@@ -72,7 +79,11 @@ const color = computed({
     dataStyleStore.setPolyhedronsConstantColor(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute", "From polyhedron attribute"];
+const styles = [
+  "Constant",
+  "From vertex attribute",
+  "From polyhedron attribute",
+];
 const storeStyles = ["constant", "vertex", "polyhedron"];
 const select = computed({
   get() {

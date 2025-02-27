@@ -3,7 +3,8 @@
     v-model="polyhedronAttributeName"
     :items="polyhedronAttributes"
     label="Select an attribute"
-  ></v-select>
+    density="compact"
+  />
 </template>
 
 <script setup>
