@@ -102,7 +102,6 @@ async function createPoint() {
     },
     {
       response_function: async (response) => {
-        console.log("response", response);
         await viewer_call(
           {
             schema: viewer_schemas.opengeodeweb_viewer.generic.register,
