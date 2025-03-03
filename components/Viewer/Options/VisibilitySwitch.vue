@@ -1,5 +1,5 @@
 <template>
-  <v-row class="pa-2" align="center">
+  <v-row class="pa-0" align="center">
     <v-col cols="auto" justify="center">
       <v-icon size="30" icon="mdi-eye" v-tooltip:left="'Visibility'" />
     </v-col>

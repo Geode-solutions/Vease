@@ -3,13 +3,14 @@
     v-model="polyhedronAttributeName"
     :items="polyhedronAttributes"
     label="Select an attribute"
-  ></v-select>
+    density="compact"
+  />
 </template>
 
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const polyhedronAttributeName = defineModel()
+const polyhedronAttributeName = defineModel();
 
 const props = defineProps({
   id: { type: String, required: true },

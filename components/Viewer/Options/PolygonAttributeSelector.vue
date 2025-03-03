@@ -3,13 +3,13 @@
     v-model="polygonAttributeName"
     :items="polygonAttributes"
     label="Select an attribute"
-  ></v-select>
+  />
 </template>
 
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const polygonAttributeName = defineModel()
+const polygonAttributeName = defineModel();
 
 const props = defineProps({
   id: { type: String, required: true },

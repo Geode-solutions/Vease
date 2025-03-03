@@ -3,14 +3,17 @@
     v-model="vertexAttributeName"
     :items="vertexAttributes"
     label="Select an attribute"
-  ></v-select>
+  />
 </template>
 
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
+const vertexAttributeName = defineModel();
 
-const vertexAttributeName = defineModel()
+watch(vertexAttributeName, () => {
+  console.log("vertexAttributeName", vertexAttributeName.value);
+});
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -28,7 +31,7 @@ onMounted(() => {
 });
 
 function getVertexAttributeNames() {
-  console.log("getVertexAttributeNames",)
+  console.log("getVertexAttributeNames");
   api_fetch(
     {
       schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
