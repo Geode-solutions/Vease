@@ -44,7 +44,12 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" :loading="loading" @click="createPoint">
+        <v-btn
+          color="primary"
+          :loading="loading"
+          @click="createPoint"
+          :disabled="!isFormComplete"
+        >
           Create Point
           <template #loader>
             <v-progress-circular
@@ -82,6 +87,10 @@ const point = ref({
 const loading = ref(false);
 const toggleLoading = () => (loading.value = !loading.value);
 
+const isFormComplete = computed(() => {
+  return point.value.title && point.value.x && point.value.y && point.value.z;
+});
+
 const closeDrawer = () => {
   UIStore.setShowCreatePointMenu(false);
 };
@@ -89,7 +98,6 @@ const closeDrawer = () => {
 async function createPoint() {
   toggleLoading();
 
-  // try {
   await api_fetch(
     {
       schema: back_schemas.opengeodeweb_back.create_point,
