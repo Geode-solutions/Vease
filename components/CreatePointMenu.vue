@@ -43,15 +43,6 @@
           />
         </v-form>
       </v-card-text>
-      <v-alert
-        v-if="error"
-        type="error"
-        dense
-        dismissible
-        @input="error = null"
-      >
-        {{ error }}
-      </v-alert>
       <v-card-actions>
         <v-btn
           color="primary"
