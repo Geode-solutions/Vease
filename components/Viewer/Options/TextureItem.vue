@@ -1,7 +1,7 @@
 <template>
   <v-col cols="7" class="pa-1">
     <v-select
-      v-model="texture.texture_name"
+      v-model="texture_name"
       :items="texture_coordinates"
       label="Select a texture"
       density="compact"
@@ -20,7 +20,7 @@
   </v-col>
 
   <v-col
-    v-if="texture.texture_name == '' || texture.texture_file_name == ''"
+    v-if="texture_name == '' || texture_file_name == ''"
     cols="1"
     class="pa-1"
   >
@@ -37,7 +37,10 @@ import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
 const tree_view_store = use_treeview_store();
 
-const texture = defineModel();
+const emit = defineEmits(["update_texture_name", "update_texture_file_name"]);
+
+const texture_name = defineModel("texture_name");
+const texture_file_name = defineModel("texture_file_name");
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -85,17 +88,22 @@ async function files_uploaded_event(value) {
       },
       {
         response_function: async (response) => {
-          console.log("COUCOU files_uploaded_event", response);
-          texture.value.texture_file_name = response._data.viewable_file_name;
+          console.log("response_function", response);
+          texture_file_name.value = response._data.viewable_file_name;
         },
       }
     );
-    console.log("files_uploaded_event", value);
   }
 }
 
-watch(texture, (value) => {
-  console.log("texture", value);
+watch(texture_name, (value) => {
+  console.log("texture_name", value);
+  emit("update_texture_name", value);
+});
+
+watch(texture_file_name, (value) => {
+  console.log("texture_file_name", value);
+  emit("update_texture_file_name", value);
 });
 </script>
 
