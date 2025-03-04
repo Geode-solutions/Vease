@@ -47,8 +47,8 @@
         <v-btn
           color="primary"
           :loading="loading"
+          :disabled="!isFormFilled"
           @click="createPoint"
-          :disabled="!isFormComplete"
         >
           Create Point
           <template #loader>
@@ -78,16 +78,15 @@ const props = defineProps({
 });
 
 const point = ref({
-  title: null,
-  x: null,
-  y: null,
-  z: null,
+  title: "",
+  x: "",
+  y: "",
+  z: "",
 });
 
 const loading = ref(false);
-const toggleLoading = () => (loading.value = !loading.value);
 
-const isFormComplete = computed(() => {
+const isFormFilled = computed(() => {
   return point.value.title && point.value.x && point.value.y && point.value.z;
 });
 
@@ -96,47 +95,54 @@ const closeDrawer = () => {
 };
 
 async function createPoint() {
-  toggleLoading();
+  if (!isFormFilled.value) return;
 
-  await api_fetch(
-    {
-      schema: back_schemas.opengeodeweb_back.create_point,
-      params: {
-        x: parseFloat(point.value.x),
-        y: parseFloat(point.value.y),
-        z: parseFloat(point.value.z),
-        title: point.value.title,
-      },
-    },
-    {
-      response_function: async (response) => {
-        await viewer_call(
-          {
-            schema: viewer_schemas.opengeodeweb_viewer.generic.register,
-            params: {
-              id: response._data.id,
-              file_name: response._data.viewable_file_name,
-              viewer_object: response._data.object_type,
-            },
+  if (
+    validate_schema(back_schemas.opengeodeweb_back.create_point, point.value)
+  ) {
+    loading.value = true;
+    try {
+      await api_fetch(
+        {
+          schema: back_schemas.opengeodeweb_back.create_point,
+          params: {
+            x: parseFloat(point.value.x),
+            y: parseFloat(point.value.y),
+            z: parseFloat(point.value.z),
+            title: point.value.title,
           },
-          {
-            response_function: async () => {
-              await treeviewStore.addItem(
-                response._data.geode_object,
-                response._data.name,
-                response._data.id,
-                response._data.object_type,
-                response._data.native_file_name
-              );
-
-              toggleLoading();
-              closeDrawer();
-            },
-          }
-        );
-      },
+        },
+        {
+          response_function: async (response) => {
+            await viewer_call(
+              {
+                schema: viewer_schemas.opengeodeweb_viewer.generic.register,
+                params: {
+                  id: response._data.id,
+                  file_name: response._data.viewable_file_name,
+                  viewer_object: response._data.object_type,
+                },
+              },
+              {
+                response_function: async () => {
+                  await treeviewStore.addItem(
+                    response._data.geode_object,
+                    response._data.name,
+                    response._data.id,
+                    response._data.object_type,
+                    response._data.native_file_name
+                  );
+                  closeDrawer();
+                },
+              }
+            );
+          },
+        }
+      );
+    } finally {
+      loading.value = false;
     }
-  );
+  }
 }
 
 const handlePaste = (event) => {
@@ -144,18 +150,16 @@ const handlePaste = (event) => {
   const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
 
   if (coordinates && coordinates.length >= 3) {
-    point.value.x = coordinates[0];
-    point.value.y = coordinates[1];
-    point.value.z = coordinates[2];
+    [point.value.x, point.value.y, point.value.z] = coordinates.slice(0, 3);
   }
 
   event.preventDefault();
 };
 
 const sanitizeInput = (event, label) => {
-  let value = event.target.value;
-  value = value.replace(/,/g, ".");
-  value = value.replace(/[^0-9eE+\-.]/g, "");
+  let value = event.target.value
+    .replace(/,/g, ".")
+    .replace(/[^0-9eE+\-.]/g, "");
 
   if (/[eE]/.test(value)) {
     const parts = value.split(/[eE]/);
@@ -165,7 +169,7 @@ const sanitizeInput = (event, label) => {
         parts
           .slice(2)
           .join("")
-          .replace(/[^0-9\+\-\.]/g, "");
+          .replace(/[^0-9+\-.]/g, "");
     }
   }
 
