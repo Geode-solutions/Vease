@@ -85,7 +85,6 @@ const point = ref({
 });
 
 const loading = ref(false);
-const error = ref(null);
 
 const isFormFilled = computed(() => {
   return point.value.title && point.value.x && point.value.y && point.value.z;
@@ -102,7 +101,6 @@ async function createPoint() {
     validate_schema(back_schemas.opengeodeweb_back.create_point, point.value)
   ) {
     loading.value = true;
-    error.value = null;
     try {
       await api_fetch(
         {
@@ -141,13 +139,9 @@ async function createPoint() {
           },
         }
       );
-    } catch (err) {
-      error.value = "Failed to create point: " + err.message;
     } finally {
       loading.value = false;
     }
-  } else {
-    error.value = "Schema validation failed. Please check your inputs.";
   }
 }
 
