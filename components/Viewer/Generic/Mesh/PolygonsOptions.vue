@@ -4,7 +4,7 @@
     :tooltip="props.tooltip"
     :btn_image="props.btn_image"
   >
-    <template #options>
+    <template #options @click.stop>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
 
       <template v-if="visibility">
@@ -107,6 +107,7 @@ const textures = computed({
     return dataStyleStore.polygonsTextures(id.value);
   },
   set(newValue) {
+    console.log("SET TEXTURES", newValue);
     dataStyleStore.setPolygonsTextures(id.value, newValue);
   },
 });

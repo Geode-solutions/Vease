@@ -18,12 +18,14 @@
     </v-tooltip>
     <div v-if="display_options" class="menu-options pa-0" @click.stop>
       <v-card
+        @click.stop
         :title="props.tooltip"
         class="bg-primary"
         width="320"
         max-height="500"
-        v-click-outside="toggleOptions"
+        :ripple="false"
       >
+        <!-- v-click-outside="toggleOptions" -->
         <v-card-text class="bg-primary">
           <slot name="options" />
         </v-card-text>

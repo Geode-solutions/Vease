@@ -58,6 +58,8 @@
 </template>
 
 <script setup>
+const menuStore = useMenuStore();
+
 const UIStore = useUIStore();
 const feedback_store = use_feedback_store();
 
