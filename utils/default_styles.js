@@ -1,9 +1,9 @@
 const pointsDefaultStyle = (visibility, size) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 255, g: 0, b: 0 },
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 0, b: 0 },
       vertex: { name: "" },
     },
     size,
@@ -13,9 +13,9 @@ const pointsDefaultStyle = (visibility, size) => {
 const edgesDefaultStyle = (visibility, size) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 0, g: 0, b: 0 },
+    coloring: {
+      active: "color",
+      color: { r: 0, g: 0, b: 0 },
     },
     size,
   };
@@ -24,9 +24,9 @@ const edgesDefaultStyle = (visibility, size) => {
 const polygonsDefaultStyle = (visibility) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 255, g: 255, b: 255 },
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 255, b: 255 },
       textures: [{ texture_name: "", texture_file_name: "" }],
       polygon: { name: "" },
       vertex: { name: "" },
@@ -37,9 +37,9 @@ const polygonsDefaultStyle = (visibility) => {
 const polyhedronsDefaultStyle = (visibility) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 255, g: 255, b: 255 },
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 255, b: 255 },
       polyhedron: { name: "" },
       vertex: { name: "" },
     },

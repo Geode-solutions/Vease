@@ -37,14 +37,19 @@ import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
 const tree_view_store = use_treeview_store();
 
-const emit = defineEmits(["update_texture_name", "update_texture_file_name"]);
-
-const texture_name = defineModel("texture_name");
-const texture_file_name = defineModel("texture_file_name");
+const emit = defineEmits(["update_value"]);
 
 const props = defineProps({
   id: { type: String, required: true },
+  texture_name: { type: String, required: true },
+  texture_file_name: { type: String, required: true },
 });
+
+const texture_name = ref("");
+texture_name.value = props.texture_name;
+
+const texture_file_name = ref("");
+texture_file_name.value = props.texture_file_name;
 
 const texture_coordinates = ref([]);
 
@@ -97,13 +102,11 @@ async function files_uploaded_event(value) {
 }
 
 watch(texture_name, (value) => {
-  console.log("texture_name", value);
-  emit("update_texture_name", value);
+  emit("update_value", { key: "texture_name", value: value });
 });
 
 watch(texture_file_name, (value) => {
-  console.log("texture_file_name", value);
-  emit("update_texture_file_name", value);
+  emit("update_value", { key: "texture_file_name", value: value });
 });
 </script>
 

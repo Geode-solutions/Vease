@@ -6,7 +6,6 @@
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
-
       <template v-if="visibility">
         <v-row class="pa-0" align="center">
           <v-divider />
@@ -25,36 +24,11 @@
             />
           </v-col>
         </v-row>
-        <v-divider />
-        <v-row class="pa-0" align="center">
-          <v-col cols="auto" justify="center">
-            <v-icon
-              size="30"
-              icon="mdi-format-color-fill"
-              v-tooltip:left="'Filling'"
-            />
-          </v-col>
-          <v-col justify="center">
-            <v-select
-              v-model="select"
-              :items="styles"
-              width="200"
-              label="Select a color style"
-            />
-
-            <template v-if="select === styles[0]">
-              <ViewerOptionsConstantColorPicker
-                v-if="select === styles[0]"
-                v-model="color"
-              />
-            </template>
-
-            <!-- <template v-if="select === styles[1]">
-              <v-divider />
-              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
-            </template> -->
-          </v-col>
-        </v-row>
+        <ViewerOptionsColoringTypeSelector
+          :id="id"
+          :coloring_style_key="coloring_style_key"
+          bool_color
+        />
       </template>
     </template>
   </ViewerContextMenuItem>
@@ -71,56 +45,25 @@ const props = defineProps({
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({
-  get() {
-    return dataStyleStore.pointsVisibility(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPointsVisibility(id.value, newValue);
-  },
+  get: () => dataStyleStore.pointsVisibility(id.value),
+  set: (newValue) => dataStyleStore.setPointsVisibility(id.value, newValue),
 });
 const size = computed({
-  get() {
-    return dataStyleStore.pointsSize(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPointsSize(id.value, newValue);
-  },
+  get: () => dataStyleStore.pointsSize(id.value),
+  set: (newValue) => dataStyleStore.setPointsSize(id.value, newValue),
+});
+const coloring_style_key = computed({
+  get: () => dataStyleStore.pointsActiveColoring(id.value),
+  set: (newValue) =>
+    dataStyleStore.setPointsActiveColoring(id.value, storeStyles[i]),
 });
 const color = computed({
-  get() {
-    return dataStyleStore.pointsConstantColor(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPointsConstantColor(id.value, newValue);
-  },
-});
-const styles = ["Constant"]; // "From vertex attribute"
-const storeStyles = ["constant"]; // "vertex"
-const select = computed({
-  get() {
-    const active = dataStyleStore.pointsActiveColoring(id.value);
-    for (let i = 0; i < styles.length; i++) {
-      if (active === storeStyles[i]) {
-        return styles[i];
-      }
-    }
-    return "";
-  },
-  set(newValue) {
-    for (let i = 0; i < styles.length; i++) {
-      if (newValue === styles[i]) {
-        dataStyleStore.setPointsActiveColoring(id.value, storeStyles[i]);
-        return;
-      }
-    }
-  },
+  get: () => dataStyleStore.pointsConstantColor(id.value),
+  set: (newValue) => dataStyleStore.setPointsConstantColor(id.value, newValue),
 });
 const vertexAttributeName = computed({
-  get() {
-    return dataStyleStore.pointsVertexAttributeName(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPointsVertexAttributeName(id.value, newValue);
-  },
+  get: () => dataStyleStore.pointsVertexAttributeName(id.value),
+  set: (newValue) =>
+    dataStyleStore.setPointsVertexAttributeName(id.value, newValue),
 });
 </script>
