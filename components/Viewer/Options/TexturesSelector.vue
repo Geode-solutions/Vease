@@ -42,27 +42,27 @@
 <script setup>
 const textures = defineModel();
 
-const internal_textures = textures.value;
+const internal_textures = ref([]);
 
 const props = defineProps({
   id: { type: String, required: true },
 });
 
-function update_value_event($event, index) {
-  console.log("update_texture_file_name_event", $event, index);
-  console.log("textures.value", textures.value);
+onMounted(() => {
+  if (textures.value != null) {
+    internal_textures.value = textures.value;
+  } else {
+    internal_textures.value = [{ texture_name: "", texture_file_name: "" }];
+  }
+});
 
-  internal_textures[index][$event.key] = $event.value;
-  const filtered = internal_textures.filter((texture) => {
-    console.log("filter texture", texture);
+function update_value_event($event, index) {
+  internal_textures.value[index][$event.key] = $event.value;
+  const filtered = internal_textures.value.filter((texture) => {
     return texture.texture_name != "" && texture.texture_file_name != "";
   });
-  console.log("filtered", filtered.length);
-
   if (filtered.length != 0) {
     textures.value = filtered;
-    console.log("erase");
   }
-  console.log("textures.value", textures.value);
 }
 </script>

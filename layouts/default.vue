@@ -54,14 +54,14 @@
       </transition>
       <v-card class="drop-zone" />
     </v-main>
+    <v-progress-linear v-if="infra_store.is_busy" indeterminate color="white" />
   </v-app>
 </template>
 
 <script setup>
-const menuStore = useMenuStore();
-
 const UIStore = useUIStore();
 const feedback_store = use_feedback_store();
+const infra_store = use_infra_store();
 
 const onDrop = (e) => {
   e.preventDefault();

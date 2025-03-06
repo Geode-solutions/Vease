@@ -72,16 +72,13 @@ function getTextureCoordinates() {
     },
     {
       response_function: (response) => {
-        console.log("getTextureCoordinates", response._data);
-        texture_coordinates.value = ["Lambert2G"];
-        // texture_coordinates.value = response._data.texture_coordinates;
+        texture_coordinates.value = response._data.texture_coordinates;
       },
     }
   );
 }
 
 async function files_uploaded_event(value) {
-  console.log("files_uploaded_event", value);
   if (value.length) {
     await api_fetch(
       {
@@ -93,7 +90,6 @@ async function files_uploaded_event(value) {
       },
       {
         response_function: async (response) => {
-          console.log("response_function", response);
           texture_file_name.value = response._data.viewable_file_name;
         },
       }
@@ -102,11 +98,11 @@ async function files_uploaded_event(value) {
 }
 
 watch(texture_name, (value) => {
-  emit("update_value", { key: "texture_name", value: value });
+  emit("update_value", { key: "texture_name", value });
 });
 
 watch(texture_file_name, (value) => {
-  emit("update_value", { key: "texture_file_name", value: value });
+  emit("update_value", { key: "texture_file_name", value });
 });
 </script>
 
