@@ -25,7 +25,6 @@
         max-height="500"
         :ripple="false"
       >
-        <!-- v-click-outside="toggleOptions" -->
         <v-card-text class="bg-primary">
           <slot name="options" />
         </v-card-text>

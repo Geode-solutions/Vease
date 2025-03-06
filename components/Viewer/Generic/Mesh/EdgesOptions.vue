@@ -38,7 +38,6 @@ const size = computed({
 const coloring_style_key = computed({
   get: () => dataStyleStore.edgesActiveColoring(id.value),
   set: (newValue) => {
-    console.log("coloring_style_key", newValue);
     dataStyleStore.setEdgesActiveColoring(id.value, newValue);
   },
 });

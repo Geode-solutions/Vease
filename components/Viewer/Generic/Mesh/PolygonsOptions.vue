@@ -4,7 +4,7 @@
     :tooltip="props.tooltip"
     :btn_image="props.btn_image"
   >
-    <template #options @click.stop>
+    <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
         <ViewerOptionsColoringTypeSelector
