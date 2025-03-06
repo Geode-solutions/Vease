@@ -26,8 +26,8 @@
         </v-row>
         <ViewerOptionsColoringTypeSelector
           :id="id"
-          :coloring_style_key="coloring_style_key"
-          bool_color
+          v-model:coloring_style_key="coloring_style_key"
+          v-model:color="color"
         />
       </template>
     </template>
@@ -54,16 +54,15 @@ const size = computed({
 });
 const coloring_style_key = computed({
   get: () => dataStyleStore.pointsActiveColoring(id.value),
-  set: (newValue) =>
-    dataStyleStore.setPointsActiveColoring(id.value, storeStyles[i]),
+  set: (newValue) => dataStyleStore.setPointsActiveColoring(id.value, newValue),
 });
 const color = computed({
-  get: () => dataStyleStore.pointsConstantColor(id.value),
-  set: (newValue) => dataStyleStore.setPointsConstantColor(id.value, newValue),
+  get: () => dataStyleStore.pointsColor(id.value),
+  set: (newValue) => dataStyleStore.setPointsColor(id.value, newValue),
 });
-const vertexAttributeName = computed({
-  get: () => dataStyleStore.pointsVertexAttributeName(id.value),
+const vertex_attribute = computed({
+  get: () => dataStyleStore.pointsVertexAttribute(id.value),
   set: (newValue) =>
-    dataStyleStore.setPointsVertexAttributeName(id.value, newValue),
+    dataStyleStore.setPointsVertexAttribute(id.value, newValue),
 });
 </script>

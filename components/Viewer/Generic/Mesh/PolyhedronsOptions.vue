@@ -10,10 +10,10 @@
       <template v-if="visibility">
         <ViewerOptionsColoringTypeSelector
           :id="id"
-          :active_coloring="active_coloring"
-          :bool_color="true"
-          :bool_vertex="true"
-          :bool_polyhedrons="true"
+          v-model:coloring_style_key="coloring_style_key"
+          v-model:color="color"
+          v-model:vertex_attribute="vertex_attribute"
+          v-model:polyhedron_attribute="polyhedron_attribute"
         />
       </template>
     </template>
@@ -36,24 +36,23 @@ const visibility = computed({
   set: (newValue) =>
     dataStyleStore.setPolyhedronsVisibility(id.value, newValue),
 });
-const active_coloring = computed({
+const coloring_style_key = computed({
   get: () => dataStyleStore.polyhedronsActiveColoring(id.value),
   set: (newValue) =>
     dataStyleStore.setPolyhedronsActiveColoring(id.value, newValue),
 });
 const color = computed({
-  get: () => dataStyleStore.polyhedronsConstantColor(id.value),
-  set: (newValue) =>
-    dataStyleStore.setPolyhedronsConstantColor(id.value, newValue),
+  get: () => dataStyleStore.polyhedronsColor(id.value),
+  set: (newValue) => dataStyleStore.setPolyhedronsColor(id.value, newValue),
 });
-const vertexAttributeName = computed({
-  get: () => dataStyleStore.polyhedronsVertexAttributeName(id.value),
+const vertex_attribute = computed({
+  get: () => dataStyleStore.polyhedronsVertexAttribute(id.value),
   set: (newValue) =>
-    dataStyleStore.setPolyhedronsVertexAttributeName(id.value, newValue),
+    dataStyleStore.setPolyhedronsVertexAttribute(id.value, newValue),
 });
-const polyhedronAttributeName = computed({
-  get: () => dataStyleStore.polyhedronsPolyhedronAttributeName(id.value),
+const polyhedron_attribute = computed({
+  get: () => dataStyleStore.polyhedronsPolyhedronAttribute(id.value),
   set: (newValue) =>
-    dataStyleStore.setPolyhedronsPolyhedronAttributeName(id.value, newValue),
+    dataStyleStore.setPolyhedronsPolyhedronAttribute(id.value, newValue),
 });
 </script>

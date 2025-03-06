@@ -9,9 +9,8 @@
       <template v-if="visibility">
         <ViewerOptionsColoringTypeSelector
           :id="id"
-          :coloring_style_key="coloring_style_key"
-          :coloring_value="color"
-          bool_color
+          v-model:coloring_style_key="coloring_style_key"
+          v-model:color="color"
         />
       </template>
     </template>
@@ -44,7 +43,7 @@ const coloring_style_key = computed({
   },
 });
 const color = computed({
-  get: () => dataStyleStore.edgesConstantColor(id.value),
-  set: (newValue) => dataStyleStore.setEdgesConstantColor(id.value, newValue),
+  get: () => dataStyleStore.edgesColor(id.value),
+  set: (newValue) => dataStyleStore.setEdgesColor(id.value, newValue),
 });
 </script>

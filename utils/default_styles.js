@@ -4,7 +4,7 @@ const pointsDefaultStyle = (visibility, size) => {
     coloring: {
       active: "color",
       color: { r: 255, g: 0, b: 0 },
-      vertex: { name: "" },
+      vertex: null,
     },
     size,
   };
@@ -27,9 +27,9 @@ const polygonsDefaultStyle = (visibility) => {
     coloring: {
       active: "color",
       color: { r: 255, g: 255, b: 255 },
-      textures: [{ texture_name: "", texture_file_name: "" }],
-      polygon: { name: "" },
-      vertex: { name: "" },
+      textures: null,
+      polygon: null,
+      vertex: null,
     },
   };
 };
@@ -40,8 +40,8 @@ const polyhedronsDefaultStyle = (visibility) => {
     coloring: {
       active: "color",
       color: { r: 255, g: 255, b: 255 },
-      polyhedron: { name: "" },
-      vertex: { name: "" },
+      polyhedron: null,
+      vertex: null,
     },
   };
 };

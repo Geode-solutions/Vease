@@ -1,18 +1,29 @@
 <template>
   <v-select
-    v-model="vertexAttributeName"
-    :items="vertexAttributes"
+    v-model="vertex_attribute_name"
+    :items="vertex_attribute_names"
     label="Select an attribute"
+    density="compact"
   />
 </template>
 
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const vertexAttributeName = defineModel();
+const model = defineModel();
 
-watch(vertexAttributeName, () => {
-  console.log("vertexAttributeName", vertexAttributeName.value);
+const vertex_attribute_name = ref("");
+
+onMounted(() => {
+  if (model.value != null) {
+    vertex_attribute_name.value = model.value.name;
+  }
+});
+const vertex_attribute = reactive({ name: vertex_attribute_name.value });
+
+watch(vertex_attribute_name, (value) => {
+  vertex_attribute.name = value;
+  model.value = vertex_attribute;
 });
 
 const props = defineProps({
@@ -21,17 +32,16 @@ const props = defineProps({
 
 const tree_view_store = use_treeview_store();
 
-const vertexAttributes = ref([]);
+const vertex_attribute_names = ref([]);
 const meta_data = computed(() => {
   return tree_view_store.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
-  getVertexAttributeNames();
+  getVertexAttributes();
 });
 
-function getVertexAttributeNames() {
-  console.log("getVertexAttributeNames");
+function getVertexAttributes() {
   api_fetch(
     {
       schema: back_schemas.opengeodeweb_back.vertex_attribute_names,
@@ -42,7 +52,7 @@ function getVertexAttributeNames() {
     },
     {
       response_function: (response) => {
-        vertexAttributes.value = response._data.vertex_attribute_names;
+        vertex_attribute_names.value = response._data.vertex_attribute_names;
       },
     }
   );

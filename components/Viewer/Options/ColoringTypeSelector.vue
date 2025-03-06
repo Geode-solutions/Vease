@@ -13,7 +13,7 @@
         v-model="coloring_style_label"
         :items="coloring_styles.labels"
         width="200"
-        label="Select a color style"
+        label="Select a coloring style"
         density="compact"
       />
     </v-col>
@@ -21,35 +21,29 @@
   <v-row align="center">
     <v-col>
       <template v-if="coloring_style_key === color_dict['value']">
-        <ViewerOptionsConstantColorPicker v-model="coloring_value" />
+        <ViewerOptionsColorPicker v-model="color" />
       </template>
-      <template v-if="coloring_style === textures_dict['value']">
-        <ViewerOptionsTexturesSelector
-          v-model="props.coloring_value"
-          :id="id"
-        />
+      <template v-if="coloring_style_key === textures_dict['value']">
+        <ViewerOptionsTexturesSelector v-model="textures" :id="id" />
       </template>
-      <template v-if="coloring_style === vertex_dict['value']">
+      <template v-if="coloring_style_key === vertex_dict['value']">
         <ViewerOptionsVertexAttributeSelector
-          v-model="props.coloring_value"
+          v-model="vertex_attribute"
           :id="id"
         />
       </template>
-      <template v-if="coloring_style === edge_dict['value']">
-        <ViewerOptionsEdgeAttributeSelector
-          v-model="props.coloring_value"
-          :id="id"
-        />
-      </template>
-      <template v-if="coloring_style === polygon_dict['value']">
+      <!-- <template v-if="coloring_style_key === edge_dict['value']">
+        <ViewerOptionsEdgeAttributeSelector v-model="edge_attribute" :id="id" />
+      </template> -->
+      <template v-if="coloring_style_key === polygon_dict['value']">
         <ViewerOptionsPolygonAttributeSelector
-          v-model="props.coloring_value"
+          v-model="polygon_attribute"
           :id="id"
         />
       </template>
-      <template v-if="coloring_style === polyhedron_dict['value']">
+      <template v-if="coloring_style_key === polyhedron_dict['value']">
         <ViewerOptionsPolyhedronAttributeSelector
-          v-model="props.coloring_value"
+          v-model="polyhedron_attribute"
           :id="id"
         />
       </template>
@@ -59,36 +53,51 @@
 
 <script setup>
 const coloring_style_key = defineModel("coloring_style_key");
-const coloring_style_label = ref("");
-const coloring_value = defineModel("coloring_value");
+
+const color = defineModel("color");
+const textures = defineModel("textures");
+const vertex_attribute = defineModel("vertex_attribute");
+// const edge_attribute = defineModel("edge_attribute");
+const polygon_attribute = defineModel("polygon_attribute");
+const polyhedron_attribute = defineModel("polyhedron_attribute");
+
+console.log("vertex_attribute", vertex_attribute);
 
 const props = defineProps({
   id: { type: String, required: true },
-  bool_color: { type: Boolean, required: false, default: false },
-  bool_textures: { type: Boolean, required: false, default: false },
-  bool_vertex: { type: Boolean, required: false, default: false },
-  bool_edges: { type: Boolean, required: false, default: false },
-  bool_polygons: { type: Boolean, required: false, default: false },
-  bool_polyhedrons: { type: Boolean, required: false, default: false },
 });
+
+const has_color = computed(() => (color.value !== undefined ? true : false));
+const has_textures = computed(() =>
+  textures.value !== undefined ? true : false
+);
+const has_vertex = computed(() =>
+  vertex_attribute.value !== undefined ? true : false
+);
+const has_polygons = computed(() =>
+  polygon_attribute.value !== undefined ? true : false
+);
+const has_polyhedrons = computed(() =>
+  polyhedron_attribute.value !== undefined ? true : false
+);
 
 const color_dict = { name: "Color", value: "color" };
 const textures_dict = { name: "Textures", value: "textures" };
-const vertex_dict = { name: "From vertex attribute", value: "points" };
-const edge_dict = { name: "From edge attribute", value: "edges" };
-const polygon_dict = { name: "From polygon attribute", value: "polygons" };
+const vertex_dict = { name: "Vertex attribute", value: "vertex" };
+// const edge_dict = { name: "Edge attribute", value: "edge" };
+const polygon_dict = { name: "Polygon attribute", value: "polygon" };
 const polyhedron_dict = {
-  name: "From polyhedron attribute",
-  value: "polyhedrons",
+  name: "Polyhedron attribute",
+  value: "polyhedron",
 };
 const coloring_styles = computed(() => {
   let array = [];
-  if (props.bool_color) array.push(color_dict);
-  if (props.bool_texture) array.push(textures_dict);
-  if (props.bool_vertex) array.push(vertex_dict);
-  if (props.bool_edges) array.push(edge_dict);
-  if (props.bool_polygons) array.push(polygon_dict);
-  if (props.bool_polyhedrons) array.push(polyhedron_dict);
+  if (has_color.value) array.push(color_dict);
+  if (has_textures.value) array.push(textures_dict);
+  if (has_vertex.value) array.push(vertex_dict);
+  // if (has_edges.value) array.push(edge_dict);
+  if (has_polygons.value) array.push(polygon_dict);
+  if (has_polyhedrons.value) array.push(polyhedron_dict);
 
   const labels = array.map((coloring) => {
     return coloring.name;
@@ -99,11 +108,15 @@ const coloring_styles = computed(() => {
 
   return { labels, values };
 });
-console.log("coloring_styles", coloring_styles);
+
+const coloring_style_label = ref(
+  coloring_styles.value.labels[
+    coloring_styles.value.values.indexOf(coloring_style_key.value)
+  ]
+);
 
 watch(coloring_style_label, (value) => {
   coloring_style_key.value =
     coloring_styles.value.values[coloring_styles.value.labels.indexOf(value)];
-  console.log("coloring_style_key", coloring_style_key.value);
 });
 </script>
