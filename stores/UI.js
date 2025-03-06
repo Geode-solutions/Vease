@@ -4,6 +4,8 @@ export const useUIStore = defineStore("UI", {
     showStepper: false,
     droppedFiles: [],
     showButton: false,
+    showStepImportMenu: false,
+    showCreatePointMenu: false,
   }),
   actions: {
     setShowDropZone(value) {
@@ -21,6 +23,9 @@ export const useUIStore = defineStore("UI", {
     toggleDrawer() {
       this.droppedFiles = [];
       this.showStepper = !this.showStepper;
+    },
+    setShowCreatePointMenu(value) {
+      this.showCreatePointMenu = value;
     },
   },
 });

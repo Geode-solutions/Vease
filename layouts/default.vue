@@ -17,24 +17,30 @@
       <SideBar />
       <FeedBackSnackers />
 
-      <v-btn
-        class="icon-style"
-        :class="[
-          'toggle-drawer-btn',
-          {
-            'drawer-open': UIStore.showStepper,
-            show: UIStore.showButton || UIStore.showStepper,
-          },
-        ]"
-        color="white"
-        @click="UIStore.toggleDrawer"
-        icon
-        style="border-radius: 20%"
+      <div
+        class="icon-container"
+        :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
       >
-        <v-icon
-          >{{ UIStore.showStepper ? "mdi-chevron-right" : "mdi-chevron-left" }}
-        </v-icon>
-      </v-btn>
+        <v-btn
+          class="icon-style step-import-btn"
+          color="white"
+          @click="UIStore.setShowStepper(true)"
+          icon
+          style="border-radius: 20%"
+        >
+          <v-icon>mdi-file-upload-outline</v-icon>
+        </v-btn>
+
+        <v-btn
+          class="icon-style create-point-btn"
+          color="white"
+          @click="UIStore.setShowCreatePointMenu(true)"
+          icon
+          style="border-radius: 20%"
+        >
+          <v-icon>mdi-shape-plus-outline</v-icon>
+        </v-btn>
+      </div>
 
       <transition name="slide">
         <v-navigation-drawer
@@ -52,6 +58,23 @@
           />
         </v-navigation-drawer>
       </transition>
+
+      <transition name="slide">
+        <v-navigation-drawer
+          class="rounded align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showCreatePointMenu"
+        >
+          <CreatePointMenu
+            v-if="UIStore.showCreatePointMenu"
+            @close="UIStore.setShowCreatePointMenu(false)"
+          />
+        </v-navigation-drawer>
+      </transition>
+
       <v-card class="drop-zone" />
     </v-main>
     <v-progress-linear v-if="infra_store.is_busy" indeterminate color="white" />
@@ -102,7 +125,7 @@ const handleMouseMove = (e) => {
 };
 </script>
 
-<style>
+<style scoped>
 .drop-zone {
   background-color: transparent;
   border-width: 0;
@@ -117,21 +140,31 @@ const handleMouseMove = (e) => {
   justify-content: center;
 }
 
-.toggle-drawer-btn {
+.icon-container {
   position: fixed;
   top: 50%;
   right: 0;
-  z-index: 2;
+  z-index: 1000;
   transform: translateY(-50%);
-  transition: right 0.3s, opacity 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.toggle-drawer-btn.drawer-open {
-  right: 500px;
+.icon-container.show {
+  opacity: 1;
 }
 
-.toggle-drawer-btn.show {
+.step-import-btn,
+.create-point-btn {
+  margin-bottom: 20px;
+  transition: opacity 0.3s;
+}
+
+.step-import-btn.show,
+.create-point-btn.show {
   opacity: 1;
 }
 
