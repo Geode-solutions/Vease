@@ -1,52 +1,57 @@
 <template>
-  <v-row align="center" justify="center">
+  <v-row justify="center" align="center">
     <v-divider />
-    <v-col cols="auto">
-      <v-icon
-        size="30"
-        icon="mdi-format-color-fill"
-        v-tooltip:left="'Coloring'"
-      />
-    </v-col>
+
     <v-col>
-      <v-select
-        v-model="coloring_style_label"
-        :items="coloring_styles.labels"
-        width="200"
-        label="Select a coloring style"
-        density="compact"
-      />
-    </v-col>
-  </v-row>
-  <v-row align="center">
-    <v-col>
-      <template v-if="coloring_style_key === color_dict['value']">
-        <ViewerOptionsColorPicker v-model="color" />
-      </template>
-      <template v-if="coloring_style_key === textures_dict['value']">
-        <ViewerOptionsTexturesSelector v-model="textures" :id="id" />
-      </template>
-      <template v-if="coloring_style_key === vertex_dict['value']">
-        <ViewerOptionsVertexAttributeSelector
-          v-model="vertex_attribute"
-          :id="id"
-        />
-      </template>
-      <!-- <template v-if="coloring_style_key === edge_dict['value']">
+      <v-row justify="center" align="center">
+        <v-col cols="auto">
+          <v-icon
+            size="30"
+            icon="mdi-format-color-fill"
+            v-tooltip:left="'Coloring'"
+          />
+        </v-col>
+        <v-col>
+          <v-select
+            v-model="coloring_style_label"
+            :items="coloring_styles.labels"
+            label="Select a coloring style"
+            density="compact"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-spacer />
+        <v-col cols="10">
+          <template v-if="coloring_style_key === color_dict['value']">
+            <ViewerOptionsColorPicker v-model="color" />
+          </template>
+          <template v-if="coloring_style_key === textures_dict['value']">
+            <ViewerOptionsTexturesSelector v-model="textures" :id="id" />
+          </template>
+          <template v-if="coloring_style_key === vertex_dict['value']">
+            <ViewerOptionsVertexAttributeSelector
+              v-model="vertex_attribute"
+              :id="id"
+            />
+          </template>
+          <!-- <template v-if="coloring_style_key === edge_dict['value']">
         <ViewerOptionsEdgeAttributeSelector v-model="edge_attribute" :id="id" />
       </template> -->
-      <template v-if="coloring_style_key === polygon_dict['value']">
-        <ViewerOptionsPolygonAttributeSelector
-          v-model="polygon_attribute"
-          :id="id"
-        />
-      </template>
-      <template v-if="coloring_style_key === polyhedron_dict['value']">
-        <ViewerOptionsPolyhedronAttributeSelector
-          v-model="polyhedron_attribute"
-          :id="id"
-        />
-      </template>
+          <template v-if="coloring_style_key === polygon_dict['value']">
+            <ViewerOptionsPolygonAttributeSelector
+              v-model="polygon_attribute"
+              :id="id"
+            />
+          </template>
+          <template v-if="coloring_style_key === polyhedron_dict['value']">
+            <ViewerOptionsPolyhedronAttributeSelector
+              v-model="polyhedron_attribute"
+              :id="id"
+            />
+          </template>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>

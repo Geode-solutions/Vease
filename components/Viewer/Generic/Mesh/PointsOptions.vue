@@ -24,11 +24,15 @@
             />
           </v-col>
         </v-row>
-        <ViewerOptionsColoringTypeSelector
-          :id="id"
-          v-model:coloring_style_key="coloring_style_key"
-          v-model:color="color"
-        />
+        <v-row>
+          <v-col>
+            <ViewerOptionsColoringTypeSelector
+              :id="id"
+              v-model:coloring_style_key="coloring_style_key"
+              v-model:color="color"
+            />
+          </v-col>
+        </v-row>
       </template>
     </template>
   </ViewerContextMenuItem>

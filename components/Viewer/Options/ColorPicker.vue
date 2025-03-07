@@ -5,12 +5,12 @@
     flat
     canvas-height="100"
     hide-inputs
-    width="200"
+    width="100%"
   />
 </template>
 
 <script setup>
-const el = useTemplateRef("el")
+const el = useTemplateRef("el");
 const model = defineModel();
 const { pressed } = useMousePressed({ target: el });
 

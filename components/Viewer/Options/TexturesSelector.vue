@@ -2,11 +2,10 @@
   <v-row
     v-for="(texture, index) in internal_textures"
     :key="texture"
-    justify="left"
     align="center"
   >
     <br />
-    <v-spacer />
+
     <v-col cols="1" class="pa-0">
       <v-icon
         v-if="internal_textures.length > 1"

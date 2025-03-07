@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="7" class="pa-1">
+  <v-col cols="7" class="pa-1 ml-3">
     <v-select
       v-model="texture_name"
       :items="texture_coordinates"
@@ -7,23 +7,26 @@
       density="compact"
     />
   </v-col>
-  <v-col cols="1">
-    <v-badge color="white" floating dot offset-x="-8" offset-y="-8">
+  <v-badge
+    :model-value="texture_file_name != ''"
+    color="white"
+    floating
+    dot
+    offset-x="10"
+    offset-y="10"
+  >
+    <v-col cols="1" class="ma-1" justify="center" align="center">
       <FileUploader
         @files_uploaded="files_uploaded_event($event, index)"
         :accept="['image/png', 'image/jpeg', 'image/bmp']"
         :auto_upload="true"
         :multiple="true"
         :mini="true"
+        class="mt-2"
       />
-    </v-badge>
-  </v-col>
-
-  <v-col
-    v-if="texture_name == '' || texture_file_name == ''"
-    cols="1"
-    class="pa-1"
-  >
+    </v-col>
+  </v-badge>
+  <v-col v-if="texture_name == '' || texture_file_name == ''" cols="1">
     <v-icon
       size="20"
       icon="mdi-close-circle"
