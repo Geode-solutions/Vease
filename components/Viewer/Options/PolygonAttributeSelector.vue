@@ -1,15 +1,30 @@
 <template>
   <v-select
-    v-model="polygonAttributeName"
-    :items="polygonAttributes"
+    v-model="polygon_attribute_name"
+    :items="polygon_attribute_names"
     label="Select an attribute"
-  ></v-select>
+    density="compact"
+  />
 </template>
 
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const polygonAttributeName = defineModel()
+const model = defineModel();
+
+const polygon_attribute_name = ref("");
+
+onMounted(() => {
+  if (model.value != null) {
+    polygon_attribute_name.value = model.value.name;
+  }
+});
+const polygon_attribute = reactive({ name: polygon_attribute_name.value });
+
+watch(polygon_attribute_name, (value) => {
+  polygon_attribute.name = value;
+  model.value = polygon_attribute;
+});
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -17,16 +32,16 @@ const props = defineProps({
 
 const tree_view_store = use_treeview_store();
 
-const polygonAttributes = ref([]);
+const polygon_attribute_names = ref([]);
 const meta_data = computed(() => {
   return tree_view_store.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
-  getPolygonAttributeNames();
+  getVertexAttributes();
 });
 
-function getPolygonAttributeNames() {
+function getVertexAttributes() {
   api_fetch(
     {
       schema: back_schemas.opengeodeweb_back.polygon_attribute_names,
@@ -37,7 +52,7 @@ function getPolygonAttributeNames() {
     },
     {
       response_function: (response) => {
-        polygonAttributes.value = response._data.polygon_attribute_names;
+        polygon_attribute_names.value = response._data.polygon_attribute_names;
       },
     }
   );

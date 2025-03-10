@@ -6,40 +6,15 @@
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
-
       <template v-if="visibility">
-        <v-divider />
-        <v-row class="pa-2" align="center">
-          <v-col cols="auto" justify="center">
-            <v-icon size ="30" icon="mdi-format-color-fill" v-tooltip:left="'Filling'" />
-          </v-col>
-          <v-col justify="center">
-            <v-select
-              v-model="select"
-              :items="styles"
-              width="200"
-              label="Select a color style"
-            />
-
-            <template v-if="select === styles[0]">
-              <v-divider />
-              <ViewerOptionsConstantColorPicker v-model="color" />
-            </template>
-
-            <template v-if="select === styles[1]">
-              <v-divider />
-              <ViewerOptionsVertexAttributeSelector v-model="vertexAttributeName" :id="id" />
-            </template>
-
-            <template v-if="select === styles[2]">
-              <v-divider />
-              <ViewerOptionsPolygonAttributeSelector
-                v-model="polygonAttributeName"
-                :id="id"
-              />
-            </template>
-          </v-col>
-        </v-row>
+        <ViewerOptionsColoringTypeSelector
+          :id="id"
+          v-model:coloring_style_key="coloring_style_key"
+          v-model:color="color"
+          v-model:textures="textures"
+          v-model:vertex_attribute="vertex_attribute"
+          v-model:polygon_attribute="polygon_attribute"
+        />
       </template>
     </template>
   </ViewerContextMenuItem>
@@ -57,57 +32,34 @@ const props = defineProps({
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({
-  get() {
-    return dataStyleStore.polygonsVisibility(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPolygonsVisibility(id.value, newValue);
-  },
+  get: () => dataStyleStore.polygonsVisibility(id.value),
+  set: (newValue) => dataStyleStore.setPolygonsVisibility(id.value, newValue),
+});
+const coloring_style_key = computed({
+  get: () => dataStyleStore.polygonsActiveColoring(id.value),
+  set: (newValue) =>
+    dataStyleStore.setPolygonsActiveColoring(id.value, newValue),
 });
 const color = computed({
-  get() {
-    return dataStyleStore.polygonsConstantColor(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPolygonsConstantColor(id.value, newValue);
+  get: () => dataStyleStore.polygonsColor(id.value),
+  set: (newValue) => dataStyleStore.setPolygonsColor(id.value, newValue),
+});
+const textures = computed({
+  get: () => dataStyleStore.polygonsTextures(id.value),
+  set: (newValue) => dataStyleStore.setPolygonsTextures(id.value, newValue),
+});
+const vertex_attribute = computed({
+  get: () => dataStyleStore.polygonsVertexAttribute(id.value),
+  set: (newValue) => {
+    console.log("setPolygonsVertexAttribute", id.value, newValue);
+    dataStyleStore.setPolygonsVertexAttribute(id.value, newValue);
   },
 });
-const styles = ["Constant", "From vertex attribute"];
-const storeStyles = ["constant", "vertex"];
-const select = computed({
-  get() {
-    const active = dataStyleStore.polygonsActiveColoring(id.value);
-    for (let i = 0; i < styles.length; i++) {
-      if (active === storeStyles[i]) {
-        return styles[i];
-      }
-    }
-    return "";
-  },
-  set(newValue) {
-    for (let i = 0; i < styles.length; i++) {
-      if (newValue === styles[i]) {
-        dataStyleStore.setPolygonsActiveColoring(id.value, storeStyles[i]);
-        return;
-      }
-    }
-  },
-});
-const vertexAttributeName = computed({
-  get() {
-    return dataStyleStore.polygonsVertexAttributeName(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPolygonsVertexAttributeName(id.value, newValue);
-  },
-});
-
-const polygonAttributeName = computed({
-  get() {
-    return dataStyleStore.polygonsPolygonAttributeName(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setPolygonsPolygonAttributeName(id.value, newValue);
+const polygon_attribute = computed({
+  get: () => dataStyleStore.polygonsPolygonAttribute(id.value),
+  set: (newValue) => {
+    console.log("setPolygonsPolygonAttribute", id.value, newValue);
+    dataStyleStore.setPolygonsPolygonAttribute(id.value, newValue);
   },
 });
 </script>

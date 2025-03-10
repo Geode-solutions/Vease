@@ -25,13 +25,13 @@ export const useDataStyleStore = defineStore("dataStyle", {
       return (id) => this.styles[id].points.visibility;
     },
     pointsActiveColoring() {
-      return (id) => this.styles[id].points.color.active;
+      return (id) => this.styles[id].points.coloring.active;
     },
-    pointsConstantColor() {
-      return (id) => this.styles[id].points.color.constant;
+    pointsColor() {
+      return (id) => this.styles[id].points.coloring.color;
     },
-    pointsVertexAttributeName() {
-      return (id) => this.styles[id].points.color.vertex.name;
+    pointsVertexAttribute() {
+      return (id) => this.styles[id].points.coloring.vertex;
     },
     pointsSize() {
       return (id) => this.styles[id].points.size;
@@ -41,10 +41,10 @@ export const useDataStyleStore = defineStore("dataStyle", {
       return (id) => this.styles[id].edges.visibility;
     },
     edgesActiveColoring() {
-      return (id) => this.styles[id].edges.color.active;
+      return (id) => this.styles[id].edges.coloring.active;
     },
-    edgesConstantColor() {
-      return (id) => this.styles[id].edges.color.constant;
+    edgesColor() {
+      return (id) => this.styles[id].edges.coloring.color;
     },
     edgesSize() {
       return (id) => this.styles[id].edges.size;
@@ -54,35 +54,38 @@ export const useDataStyleStore = defineStore("dataStyle", {
       return (id) => this.styles[id].polygons.visibility;
     },
     polygonsActiveColoring() {
-      return (id) => this.styles[id].polygons.color.active;
+      return (id) => this.styles[id].polygons.coloring.active;
     },
-    polygonsConstantColor() {
-      return (id) => this.styles[id].polygons.color.constant;
+    polygonsColor() {
+      return (id) => this.styles[id].polygons.coloring.color;
     },
-    polygonsPolygonAttributeName() {
-      return (id) => this.styles[id].polygons.color.polygon.name;
+    polygonsTextures() {
+      return (id) => this.styles[id].polygons.coloring.textures;
     },
-    polygonsVertexAttributeName() {
-      return (id) => this.styles[id].polygons.color.vertex.name;
+    polygonsPolygonAttribute() {
+      return (id) => this.styles[id].polygons.coloring.polygon;
+    },
+    polygonsVertexAttribute() {
+      return (id) => this.styles[id].polygons.coloring.vertex;
     },
 
     polyhedronsVisibility() {
       return (id) => this.styles[id].polyhedrons.visibility;
     },
     polyhedronsActiveColoring() {
-      return (id) => this.styles[id].polyhedrons.color.active;
+      return (id) => this.styles[id].polyhedrons.coloring.active;
     },
-    polyhedronsConstantColor() {
-      return (id) => this.styles[id].polyhedrons.color.constant;
+    polyhedronsColor() {
+      return (id) => this.styles[id].polyhedrons.coloring.color;
     },
-    polyhedronsPolygonAttributeName() {
-      return (id) => this.styles[id].polyhedrons.color.polygon.name;
+    polyhedronsVertexAttribute() {
+      return (id) => this.styles[id].polyhedrons.coloring.vertex;
     },
-    polyhedronsVertexAttributeName() {
-      return (id) => this.styles[id].polyhedrons.color.vertex.name;
+    polyhedronsPolygonAttribute() {
+      return (id) => this.styles[id].polyhedrons.coloring.polygon;
     },
-    polyhedronsPolyhedronAttributeName() {
-      return (id) => this.styles[id].polyhedrons.color.polyhedron.name;
+    polyhedronsPolyhedronAttribute() {
+      return (id) => this.styles[id].polyhedrons.coloring.polyhedron;
     },
   },
   actions: {
@@ -97,26 +100,26 @@ export const useDataStyleStore = defineStore("dataStyle", {
         else if (key == "points") this.applyPointsStyle(id, value);
         else if (key == "edges") this.applyEdgesStyle(id, value);
         else if (key == "polygons") this.applyPolygonsStyle(id, value);
-        // else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
+        else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
       }
     },
     applyPointsStyle(id, style) {
       this.setPointsVisibility(id, style.visibility);
-      this.setPointsActiveColoring(id, style.color.active);
+      this.setPointsActiveColoring(id, style.coloring.active);
       this.setPointsSize(id, style.size);
     },
     applyEdgesStyle(id, style) {
       this.setEdgesVisibility(id, style.visibility);
-      this.setEdgesActiveColoring(id, style.color.active);
+      this.setEdgesActiveColoring(id, style.coloring.active);
       // this.setEdgesSize(id, style.size);
     },
     applyPolygonsStyle(id, style) {
       this.setPolygonsVisibility(id, style.visibility);
-      this.setPolygonsActiveColoring(id, style.color.active);
+      this.setPolygonsActiveColoring(id, style.coloring.active);
     },
     applyPolyhedronsStyle(id, style) {
       this.setPolyhedronsVisibility(id, style.visibility);
-      this.setPolyhedronsActiveColoring(id, style.color.active);
+      this.setPolyhedronsActiveColoring(id, style.coloring.active);
     },
     setVisibility(id, visibility) {
       viewer_call(
@@ -150,27 +153,19 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPointsActiveColoring(id, type) {
-      switch (type) {
-        case "constant":
-          this.setPointsConstantColor(
-            id,
-            this.styles[id].points.color.constant
-          );
-          break;
-        case "vertex":
-          this.setPointsVertexAttributeName(
-            id,
-            this.styles[id].points.color.vertex.name
-          );
-          break;
-      }
-      this.styles[id].points.color.active = type;
+      if (type == "color")
+        this.setPointsColor(id, this.styles[id].points.coloring.color);
+      else if (type == "vertex") {
+        const vertex = this.styles[id].points.coloring.vertex;
+        if (vertex !== null) this.setPointsVertexAttribute(id, vertex);
+      } else throw new Error("Unknown edges coloring type: " + type);
+      this.styles[id].points.coloring.active = type;
       console.log(
         "setPointsActiveColoring",
-        this.styles[id].points.color.active
+        this.styles[id].points.coloring.active
       );
     },
-    setPointsConstantColor(id, color) {
+    setPointsColor(id, color) {
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.points.color,
@@ -178,28 +173,28 @@ export const useDataStyleStore = defineStore("dataStyle", {
         },
         {
           response_function: () => {
-            this.styles[id].points.color.constant = color;
+            this.styles[id].points.coloring.color = color;
             console.log(
-              "setPointsConstantColor",
-              this.styles[id].points.color.constant
+              "setPointsColor",
+              this.styles[id].points.coloring.color
             );
           },
         }
       );
     },
-    setPointsVertexAttributeName(id, name) {
+    setPointsVertexAttribute(id, vertex_attribute) {
       viewer_call(
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.points.vertex_attribute,
-          params: { id, name },
+          params: { id, ...vertex_attribute },
         },
         {
           response_function: () => {
-            this.styles[id].points.color.vertex.name = name;
+            this.styles[id].points.coloring.vertex = vertex_attribute;
             console.log(
-              "setPointsVertexAttributeName",
-              this.styles[id].points.color.vertex.name
+              "setPointsVertexAttribute",
+              this.styles[id].points.coloring.vertex
             );
           },
         }
@@ -235,23 +230,22 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setEdgesActiveColoring(id, type) {
-      if (type == "constant")
-        this.setEdgesConstantColor(id, this.styles[id].edges.color.constant);
-      else if (type == "vertex")
-        this.setEdgesVertexAttributeName(
-          id,
-          this.styles[id].edges.color.vertex.name
-        );
-      else if (type == "edges")
-        this.setEdgesEdgeAttributeName(
-          id,
-          this.styles[id].edges.color.edges.name
-        );
-      else throw new Error("Unknown edges coloring type: " + type);
-      this.styles[id].edges.color.active = type;
-      console.log("setEdgesActiveColoring", this.styles[id].edges.color.active);
+      if (type == "color")
+        this.setEdgesColor(id, this.styles[id].edges.coloring.color);
+      else if (type == "vertex") {
+        const vertex = this.styles[id].edges.coloring.vertex;
+        if (vertex !== null) this.setEdgesVertexAttribute(id, vertex);
+      } else if (type == "edges") {
+        const edges = this.styles[id].edges.coloring.edges;
+        if (edges !== null) this.setEdgesEdgeAttribute(id, edges);
+      } else throw new Error("Unknown edges coloring type: " + type);
+      this.styles[id].edges.coloring.active = type;
+      console.log(
+        "setEdgesActiveColoring",
+        this.styles[id].edges.coloring.active
+      );
     },
-    setEdgesConstantColor(id, color) {
+    setEdgesColor(id, color) {
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.edges.color,
@@ -259,11 +253,8 @@ export const useDataStyleStore = defineStore("dataStyle", {
         },
         {
           response_function: () => {
-            this.styles[id].edges.color.constant = color;
-            console.log(
-              "setEdgesConstantColor",
-              this.styles[id].edges.color.constant
-            );
+            this.styles[id].edges.coloring.color = color;
+            console.log("setEdgesColor", this.styles[id].edges.coloring.color);
           },
         }
       );
@@ -301,29 +292,29 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolygonsActiveColoring(id, type) {
-      if (type == "constant")
-        this.setPolygonsConstantColor(
-          id,
-          this.styles[id].polygons.color.constant
-        );
-      else if (type == "vertex")
-        this.setPolygonsVertexAttributeName(
-          id,
-          this.styles[id].polygons.color.vertex.name
-        );
-      else if (type == "polygon")
-        this.setPolygonsPolygonAttributeName(
-          id,
-          this.styles[id].polygons.color.polygon.name
-        );
-      else throw new Error("Unknown polygons coloring type: " + type);
-      this.styles[id].polygons.color.active = type;
+      console.log("setPolygonsActiveColoring", id, type);
+      if (type == "color") {
+        this.setPolygonsColor(id, this.styles[id].polygons.coloring.color);
+      } else if (type == "textures") {
+        const textures = this.styles[id].polygons.coloring.textures;
+        if (textures !== null) this.setPolygonsTextures(id, textures);
+      } else if (type == "vertex") {
+        const vertex = this.styles[id].polygons.coloring.vertex;
+        if (vertex !== null) {
+          console.log("vertex", vertex);
+          this.setPolygonsVertexAttribute(id, vertex);
+        }
+      } else if (type == "polygon") {
+        const polygon = this.styles[id].polygons.coloring.polygon;
+        if (polygon !== null) this.setPolygonsPolygonAttribute(id, polygon);
+      } else throw new Error("Unknown polygons coloring type: " + type);
+      this.styles[id].polygons.coloring.active = type;
       console.log(
         "setPolygonsActiveColoring",
-        this.styles[id].polygons.color.active
+        this.styles[id].polygons.coloring.active
       );
     },
-    setPolygonsConstantColor(id, color) {
+    setPolygonsColor(id, color) {
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.polygons.color,
@@ -331,46 +322,63 @@ export const useDataStyleStore = defineStore("dataStyle", {
         },
         {
           response_function: () => {
-            this.styles[id].polygons.color.constant = color;
+            this.styles[id].polygons.coloring.color = color;
             console.log(
-              "setPolygonsConstantColor",
-              this.styles[id].polygons.color.constant
+              "setPolygonsColor",
+              this.styles[id].polygons.coloring.color
             );
           },
         }
       );
     },
-    setPolygonsVertexAttributeName(id, name) {
+    setPolygonsTextures(id, textures) {
+      viewer_call(
+        {
+          schema: viewer_schemas.opengeodeweb_viewer.mesh.apply_textures,
+          params: { id, textures },
+        },
+        {
+          response_function: () => {
+            this.styles[id].polygons.coloring.textures = textures;
+            console.log(
+              "setPolygonsTextures",
+              this.styles[id].polygons.coloring.textures
+            );
+          },
+        }
+      );
+    },
+    setPolygonsVertexAttribute(id, vertex_attribute) {
       viewer_call(
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.polygons.vertex_attribute,
-          params: { id, name },
+          params: { id, ...vertex_attribute },
         },
         {
           response_function: () => {
-            this.styles[id].polygons.color.vertex.name = name;
+            this.styles[id].polygons.coloring.vertex = vertex_attribute;
             console.log(
-              "setPolygonsVertexAttributeName",
-              this.styles[id].polygons.color.vertex.name
+              "setPolygonsVertexAttribute",
+              this.styles[id].polygons.coloring.vertex
             );
           },
         }
       );
     },
-    setPolygonsPolygonAttributeName(id, name) {
+    setPolygonsPolygonAttribute(id, polygon_attribute) {
       viewer_call(
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.polygons.polygon_attribute,
-          params: { id, size },
+          params: { id, ...polygon_attribute },
         },
         {
           response_function: () => {
-            this.styles[id].polygons.color.polygon.name = name;
+            this.styles[id].polygons.coloring.polygon = polygon_attribute;
             console.log(
-              "setPolygonsPolygonAttributeName",
-              this.styles[id].polygons.color.polygon.name
+              "setPolygonsPolygonAttribute",
+              this.styles[id].polygons.coloring.polygon
             );
           },
         }
@@ -396,29 +404,26 @@ export const useDataStyleStore = defineStore("dataStyle", {
       );
     },
     setPolyhedronsActiveColoring(id, type) {
-      if (type == "constant")
-        this.setPolyhedronsConstantColor(
+      if (type == "color")
+        this.setPolyhedronsColor(
           id,
-          this.styles[id].polyhedrons.color.constant
+          this.styles[id].polyhedrons.coloring.color
         );
-      else if (type == "vertex")
-        this.setPolyhedronsVertexAttributeName(
-          id,
-          this.styles[id].polyhedrons.color.vertex.name
-        );
-      else if (type == "polyhedron")
-        this.setPolyhedronsPolyhedronAttributeName(
-          id,
-          this.styles[id].polyhedrons.color.polyhedron.name
-        );
-      else throw new Error("Unknown polyhedrons coloring type: " + type);
-      this.styles[id].polyhedrons.color.active = type;
+      else if (type == "vertex") {
+        const vertex = this.styles[id].polyhedrons.coloring.vertex;
+        if (vertex !== null) this.setPolyhedronsVertexAttribute(id, vertex);
+      } else if (type == "polyhedron") {
+        const polyhedron = this.styles[id].polyhedrons.coloring.polyhedron;
+        if (polyhedron !== null)
+          this.setPolyhedronsPolyhedronAttribute(id, polyhedron);
+      } else throw new Error("Unknown polyhedrons coloring type: " + type);
+      this.styles[id].polyhedrons.coloring.active = type;
       console.log(
         "setPolyhedronsActiveColoring",
-        this.styles[id].polyhedrons.color.active
+        this.styles[id].polyhedrons.coloring.active
       );
     },
-    setPolyhedronsConstantColor(id, color) {
+    setPolyhedronsColor(id, color) {
       viewer_call(
         {
           schema: viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons.color,
@@ -426,50 +431,51 @@ export const useDataStyleStore = defineStore("dataStyle", {
         },
         {
           response_function: () => {
-            this.styles[id].polyhedrons.color.constant = color;
+            this.styles[id].polyhedrons.coloring.color = color;
             console.log(
-              "setPolyhedronsConstantColor",
-              this.styles[id].polyhedrons.color.constant
+              "setPolyhedronsColor",
+              this.styles[id].polyhedrons.coloring.color
             );
           },
         }
       );
     },
 
-    setPolyhedronsVertexAttributeName(id, name) {
+    setPolyhedronsVertexAttribute(id, vertex_attribute) {
       viewer_call(
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons
               .vertex_attribute,
-          params: { id, name },
+          params: { id, ...vertex_attribute },
         },
         {
           response_function: () => {
-            this.styles[id].polyhedrons.color.vertex.name = name;
+            this.styles[id].polyhedrons.coloring.vertex = vertex_attribute;
             console.log(
-              "setPolyhedronsVertexAttributeName",
-              this.styles[id].polyhedrons.color.vertex.name
+              "setPolyhedronsVertexAttribute",
+              this.styles[id].polyhedrons.coloring.vertex
             );
           },
         }
       );
     },
 
-    setPolyhedronsPolyhedronAttributeName(id, name) {
+    setPolyhedronsPolyhedronAttribute(id, polyhedron_attribute) {
       viewer_call(
         {
           schema:
             viewer_schemas.opengeodeweb_viewer.mesh.polyhedrons
               .polyhedron_attribute,
-          params: { id, name },
+          params: { id, ...polyhedron_attribute },
         },
         {
           response_function: () => {
-            this.styles[id].polyhedrons.color.polyhedron.name = name;
+            this.styles[id].polyhedrons.coloring.polyhedron =
+              polyhedron_attribute;
             console.log(
-              "setPolyhedronsPolyhedronAttributeName",
-              this.styles[id].polyhedrons.color.polyhedron.name
+              "setPolyhedronsPolyhedronAttribute",
+              this.styles[id].polyhedrons.coloring.polyhedron
             );
           },
         }
