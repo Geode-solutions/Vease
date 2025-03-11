@@ -3,30 +3,23 @@ import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
 export const usePointsStore = defineStore("points", () => {
   const dataStyleStore = useDataStyleStore();
-  const { styles } = storeToRefs(dataStyleStore);
   const mesh_points_schemas = viewer_schemas.opengeodeweb_viewer.mesh.points;
 
   /** Getters **/
   const pointsVisibility = computed((id) => {
-    console.log("pointsVisibility", styles);
-    return styles.value[id].points.visibility;
+    console.log("pointsVisibility", dataStyleStore);
+    return dataStyleStore.styles[id].points.visibility;
   });
-  const pointsSize = computed((id) => {
-    const { styles } = storeToRefs(dataStyleStore);
-    return styles.value[id].points.size;
-  });
-  const pointsActiveColoring = computed((id) => {
-    const { styles } = storeToRefs(dataStyleStore);
-    return styles.value[id].points.coloring.active;
-  });
-  const pointsColor = computed((id) => {
-    const { styles } = storeToRefs(dataStyleStore);
-    return styles.value[id].points.coloring.color;
-  });
-  const pointsVertexAttribute = computed((id) => {
-    const { styles } = storeToRefs(dataStyleStore);
-    return styles.value[id].points.coloring.vertex;
-  });
+  const pointsSize = computed((id) => dataStyleStore.styles[id].points.size);
+  const pointsActiveColoring = computed(
+    (id) => dataStyleStore.styles[id].points.coloring.active
+  );
+  const pointsColor = computed(
+    (id) => dataStyleStore.styles[id].points.coloring.color
+  );
+  const pointsVertexAttribute = computed(
+    (id) => dataStyleStore.styles[id].points.coloring.vertex
+  );
 
   /** Actions **/
   function setPointsVisibility(id, visibility) {
@@ -37,18 +30,15 @@ export const usePointsStore = defineStore("points", () => {
       },
       {
         response_function: () => {
-          styles.value[id].points.visibility = visibility;
-          console.log(
-            "setPointsVisibility",
-            styles.value[id].points.visibility
-          );
+          styles[id].points.visibility = visibility;
+          console.log("setPointsVisibility", styles[id].points.visibility);
         },
       }
     );
   }
 
   function setPointsColor(id, color) {
-    console.log("setPointsColor", styles);
+    console.log("setPointsColor", dataStyleStore);
     viewer_call(
       {
         schema: mesh_points_schemas.color,
@@ -56,8 +46,11 @@ export const usePointsStore = defineStore("points", () => {
       },
       {
         response_function: () => {
-          styles.value[id].points.coloring.color = color;
-          console.log("setPointsColor", styles.value[id].points.coloring.color);
+          dataStyleStore.styles[id].points.coloring.color = color;
+          console.log(
+            "setPointsColor",
+            dataStyleStore.styles[id].points.coloring.color
+          );
         },
       }
     );
@@ -71,10 +64,10 @@ export const usePointsStore = defineStore("points", () => {
       },
       {
         response_function: () => {
-          styles.value[id].points.coloring.vertex = vertex_attribute;
+          dataStyleStore.styles[id].points.coloring.vertex = vertex_attribute;
           console.log(
             "setPointsVertexAttribute",
-            styles.value[id].points.coloring.vertex
+            dataStyleStore.styles[id].points.coloring.vertex
           );
         },
       }
@@ -89,46 +82,48 @@ export const usePointsStore = defineStore("points", () => {
       },
       {
         response_function: () => {
-          styles.value[id].points.size = size;
-          console.log("setPointsSize", styles.value[id].points.size);
+          dataStyleStore.styles[id].points.size = size;
+          console.log("setPointsSize", dataStyleStore.styles[id].points.size);
         },
       }
     );
   }
 
   function setPointsActiveColoring(id, type) {
+    console.log("setPointsActiveColoring", dataStyleStore);
+
     if (type == "color")
-      setPointsColor(id, styles.value[id].points.coloring.color);
+      setPointsColor(id, dataStyleStore.styles[id].points.coloring.color);
 
     // else if (type == "vertex") {
-    //   const vertex = dataStyleStore.styles.value[id].points.coloring.vertex;
+    //   const vertex = dataStyleStore.styles[id].points.coloring.vertex;
     //   if (vertex !== null) setPointsVertexAttribute(id, vertex);
     // } else throw new Error("Unknown edges coloring type: " + type);
-    styles.value[id].points.coloring.active = type;
+    dataStyleStore.styles[id].points.coloring.active = type;
     console.log(
       "setPointsActiveColoring",
-      styles.value[id].points.coloring.active
+      dataStyleStore.styles[id].points.coloring.active
     );
   }
 
   function applyPointsStyle(id, style) {
     setPointsVisibility(id, style.visibility);
-    setPointsActiveColoring(id, style.coloring.active);
-    setPointsSize(id, style.size);
+    // setPointsActiveColoring(id, style.coloring.active);
+    // setPointsSize(id, style.size);
   }
 
   return {
     applyPointsStyle,
-    // pointsVisibility,
+    pointsVisibility,
     // pointsSize,
     // pointsActiveColoring,
     // pointsColor,
     // pointsVertexAttribute,
     setPointsVisibility,
-    setPointsActiveColoring,
-    setPointsColor,
-    setPointsVertexAttribute,
-    setPointsSize,
+    // setPointsActiveColoring,
+    // setPointsColor,
+    // setPointsVertexAttribute,
+    // setPointsSize,
   };
 });
 

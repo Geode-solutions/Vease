@@ -115,13 +115,13 @@ const coloring_styles = computed(() => {
 });
 
 const coloring_style_label = ref(
-  coloring_styles.value.labels[
-    coloring_styles.value.values.indexOf(coloring_style_key.value)
+  coloring_styles.labels[
+    coloring_styles.values.indexOf(coloring_style_key.value)
   ]
 );
 
 watch(coloring_style_label, (value) => {
   coloring_style_key.value =
-    coloring_styles.value.values[coloring_styles.value.labels.indexOf(value)];
+    coloring_styles.values[coloring_styles.labels.indexOf(value)];
 });
 </script>

@@ -47,14 +47,14 @@ export const use_treeview_store = defineStore("treeview", {
           this.items[i].children.push(child);
           console.log("this.items[i].children", this.items[i].children);
           this.selection.push(child);
-          styles.value[id].visibility = true;
+          styles[id].visibility = true;
           return;
         }
       }
       this.items.push({ title: geodeObject, children: [child] });
       this.selection.push(child);
       console.log("this.items", this.items);
-      styles.value[id].visibility = true;
+      styles[id].visibility = true;
     },
   },
 });

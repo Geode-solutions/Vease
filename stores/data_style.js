@@ -1,28 +1,40 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import { getDefaultStyle } from "@/utils/default_styles";
 import _ from "lodash";
-
-import usePointsStore from "./data_style/mesh/points.js";
+// import {
+//   applyPointsStyle,
+//   // pointsVisibility,
+//   // pointsSize,
+//   // pointsActiveColoring,
+//   // pointsColor,
+//   // pointsVertexAttribute,
+//   // setPointsVisibility,
+//   // setPointsActiveColoring,
+//   // setPointsColor,
+//   // setPointsVertexAttribute,
+//   // setPointsSize,
+// } from "@/utils/viewer/mesh/points";
+// import usePointsStore from "./data_style/mesh/points.js";
 
 export const useDataStyleStore = defineStore("dataStyle", () => {
-  const pointsStore = usePointsStore();
-  const {
-    applyPointsStyle,
-    pointsVisibility,
-    pointsSize,
-    pointsActiveColoring,
-    pointsColor,
-    pointsVertexAttribute,
-    setPointsVisibility,
-    setPointsActiveColoring,
-    setPointsColor,
-    setPointsVertexAttribute,
-    setPointsSize,
-  } = pointsStore;
+  // const pointsStore = usePointsStore();
+  // const {
+  //   applyPointsStyle,
+  //   pointsVisibility,
+  //   // pointsSize,
+  //   // pointsActiveColoring,
+  //   // pointsColor,
+  //   // pointsVertexAttribute,
+  //   setPointsVisibility,
+  //   // setPointsActiveColoring,
+  //   // setPointsColor,
+  //   // setPointsVertexAttribute,
+  //   // setPointsSize,
+  // } = pointsStore;
 
   const styles = ref({});
 
-  const objectVisibility = computed((id) => styles.value[id].visibility);
+  const objectVisibility = computed((id) => styles[id].visibility);
   const selectedObjects = computed(() => {
     var selection = [];
     for (const [id, value] of Object.entries(styles)) {
@@ -34,7 +46,7 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   });
 
   function addDataStyle(id, geode_object) {
-    styles.value[id] = getDefaultStyle(geode_object);
+    styles[id] = getDefaultStyle(geode_object);
     applyDefaultStyle(id);
   }
 
@@ -46,17 +58,17 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
       },
       {
         response_function: () => {
-          styles.value[id].visibility = visibility;
-          console.log("setVisibility", styles.value[id].visibility);
+          styles[id].visibility = visibility;
+          console.log("setVisibility", styles[id].visibility);
         },
       }
     );
   }
   function applyDefaultStyle(id) {
-    const style = styles.value[id];
+    const style = styles[id];
     for (const [key, value] of Object.entries(style)) {
       if (key == "visibility") setVisibility(id, value);
-      else if (key == "points") pointsStore.applyPointsStyle(id, value);
+      else if (key == "points") applyPointsStyle(id, value);
       // else if (key == "edges") this.applyEdgesStyle(id, value);
       // else if (key == "polygons") this.applyPolygonsStyle(id, value);
       // else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
@@ -70,69 +82,68 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
     addDataStyle,
     applyDefaultStyle,
     setVisibility,
-
     applyPointsStyle,
     pointsVisibility,
-    pointsSize,
-    pointsActiveColoring,
-    pointsColor,
-    pointsVertexAttribute,
-    setPointsVisibility,
-    setPointsActiveColoring,
-    setPointsColor,
-    setPointsVertexAttribute,
-    setPointsSize,
+    // pointsSize,
+    // pointsActiveColoring,
+    // pointsColor,
+    // pointsVertexAttribute,
+    setPointsVisibility: pointsStore.setPointsVisibility,
+    // setPointsActiveColoring,
+    // setPointsColor,
+    // setPointsVertexAttribute,
+    // setPointsSize,
   };
 
   // edgesVisibility() {
-  //   return (id) => this.styles.value[id].edges.visibility;
+  //   return (id) => this.styles[id].edges.visibility;
   // },
   // edgesActiveColoring() {
-  //   return (id) => this.styles.value[id].edges.coloring.active;
+  //   return (id) => this.styles[id].edges.coloring.active;
   // },
   // edgesColor() {
-  //   return (id) => this.styles.value[id].edges.coloring.color;
+  //   return (id) => this.styles[id].edges.coloring.color;
   // },
   // edgesSize() {
-  //   return (id) => this.styles.value[id].edges.size;
+  //   return (id) => this.styles[id].edges.size;
   // },
 
   // polygonsVisibility() {
-  //   return (id) => this.styles.value[id].polygons.visibility;
+  //   return (id) => this.styles[id].polygons.visibility;
   // },
   // polygonsActiveColoring() {
-  //   return (id) => this.styles.value[id].polygons.coloring.active;
+  //   return (id) => this.styles[id].polygons.coloring.active;
   // },
   // polygonsColor() {
-  //   return (id) => this.styles.value[id].polygons.coloring.color;
+  //   return (id) => this.styles[id].polygons.coloring.color;
   // },
   // polygonsTextures() {
-  //   return (id) => this.styles.value[id].polygons.coloring.textures;
+  //   return (id) => this.styles[id].polygons.coloring.textures;
   // },
   // polygonsPolygonAttribute() {
-  //   return (id) => this.styles.value[id].polygons.coloring.polygon;
+  //   return (id) => this.styles[id].polygons.coloring.polygon;
   // },
   // polygonsVertexAttribute() {
-  //   return (id) => this.styles.value[id].polygons.coloring.vertex;
+  //   return (id) => this.styles[id].polygons.coloring.vertex;
   // },
 
   // polyhedronsVisibility() {
-  //   return (id) => this.styles.value[id].polyhedrons.visibility;
+  //   return (id) => this.styles[id].polyhedrons.visibility;
   // },
   // polyhedronsActiveColoring() {
-  //   return (id) => this.styles.value[id].polyhedrons.coloring.active;
+  //   return (id) => this.styles[id].polyhedrons.coloring.active;
   // },
   // polyhedronsColor() {
-  //   return (id) => this.styles.value[id].polyhedrons.coloring.color;
+  //   return (id) => this.styles[id].polyhedrons.coloring.color;
   // },
   // polyhedronsVertexAttribute() {
-  //   return (id) => this.styles.value[id].polyhedrons.coloring.vertex;
+  //   return (id) => this.styles[id].polyhedrons.coloring.vertex;
   // },
   // polyhedronsPolygonAttribute() {
-  //   return (id) => this.styles.value[id].polyhedrons.coloring.polygon;
+  //   return (id) => this.styles[id].polyhedrons.coloring.polygon;
   // },
   // polyhedronsPolyhedronAttribute() {
-  //   return (id) => this.styles.value[id].polyhedrons.coloring.polyhedron;
+  //   return (id) => this.styles[id].polyhedrons.coloring.polyhedron;
   // },
   // },
   // actions: {
@@ -159,26 +170,26 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].edges.visibility = visibility;
-  //         console.log("setEdgesVisibility", this.styles.value[id].edges.visibility);
+  //         this.styles[id].edges.visibility = visibility;
+  //         console.log("setEdgesVisibility", this.styles[id].edges.visibility);
   //       },
   //     }
   //   );
   // },
   // setEdgesActiveColoring(id, type) {
   //   if (type == "color")
-  //     this.setEdgesColor(id, this.styles.value[id].edges.coloring.color);
+  //     this.setEdgesColor(id, this.styles[id].edges.coloring.color);
   //   else if (type == "vertex") {
-  //     const vertex = this.styles.value[id].edges.coloring.vertex;
+  //     const vertex = this.styles[id].edges.coloring.vertex;
   //     if (vertex !== null) this.setEdgesVertexAttribute(id, vertex);
   //   } else if (type == "edges") {
-  //     const edges = this.styles.value[id].edges.coloring.edges;
+  //     const edges = this.styles[id].edges.coloring.edges;
   //     if (edges !== null) this.setEdgesEdgeAttribute(id, edges);
   //   } else throw new Error("Unknown edges coloring type: " + type);
-  //   this.styles.value[id].edges.coloring.active = type;
+  //   this.styles[id].edges.coloring.active = type;
   //   console.log(
   //     "setEdgesActiveColoring",
-  //     this.styles.value[id].edges.coloring.active
+  //     this.styles[id].edges.coloring.active
   //   );
   // },
   // setEdgesColor(id, color) {
@@ -189,8 +200,8 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].edges.coloring.color = color;
-  //         console.log("setEdgesColor", this.styles.value[id].edges.coloring.color);
+  //         this.styles[id].edges.coloring.color = color;
+  //         console.log("setEdgesColor", this.styles[id].edges.coloring.color);
   //       },
   //     }
   //   );
@@ -203,8 +214,8 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].edges.size = size;
-  //         console.log("setEdgesSize", this.styles.value[id].edges.size);
+  //         this.styles[id].edges.size = size;
+  //         console.log("setEdgesSize", this.styles[id].edges.size);
   //       },
   //     }
   //   );
@@ -218,10 +229,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polygons.visibility = visibility;
+  //         this.styles[id].polygons.visibility = visibility;
   //         console.log(
   //           "setPolygonsVisibility",
-  //           this.styles.value[id].polygons.visibility
+  //           this.styles[id].polygons.visibility
   //         );
   //       },
   //     }
@@ -230,24 +241,24 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   // setPolygonsActiveColoring(id, type) {
   //   console.log("setPolygonsActiveColoring", id, type);
   //   if (type == "color") {
-  //     this.setPolygonsColor(id, this.styles.value[id].polygons.coloring.color);
+  //     this.setPolygonsColor(id, this.styles[id].polygons.coloring.color);
   //   } else if (type == "textures") {
-  //     const textures = this.styles.value[id].polygons.coloring.textures;
+  //     const textures = this.styles[id].polygons.coloring.textures;
   //     if (textures !== null) this.setPolygonsTextures(id, textures);
   //   } else if (type == "vertex") {
-  //     const vertex = this.styles.value[id].polygons.coloring.vertex;
+  //     const vertex = this.styles[id].polygons.coloring.vertex;
   //     if (vertex !== null) {
   //       console.log("vertex", vertex);
   //       this.setPolygonsVertexAttribute(id, vertex);
   //     }
   //   } else if (type == "polygon") {
-  //     const polygon = this.styles.value[id].polygons.coloring.polygon;
+  //     const polygon = this.styles[id].polygons.coloring.polygon;
   //     if (polygon !== null) this.setPolygonsPolygonAttribute(id, polygon);
   //   } else throw new Error("Unknown polygons coloring type: " + type);
-  //   this.styles.value[id].polygons.coloring.active = type;
+  //   this.styles[id].polygons.coloring.active = type;
   //   console.log(
   //     "setPolygonsActiveColoring",
-  //     this.styles.value[id].polygons.coloring.active
+  //     this.styles[id].polygons.coloring.active
   //   );
   // },
   // setPolygonsColor(id, color) {
@@ -258,10 +269,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polygons.coloring.color = color;
+  //         this.styles[id].polygons.coloring.color = color;
   //         console.log(
   //           "setPolygonsColor",
-  //           this.styles.value[id].polygons.coloring.color
+  //           this.styles[id].polygons.coloring.color
   //         );
   //       },
   //     }
@@ -275,10 +286,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polygons.coloring.textures = textures;
+  //         this.styles[id].polygons.coloring.textures = textures;
   //         console.log(
   //           "setPolygonsTextures",
-  //           this.styles.value[id].polygons.coloring.textures
+  //           this.styles[id].polygons.coloring.textures
   //         );
   //       },
   //     }
@@ -293,10 +304,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polygons.coloring.vertex = vertex_attribute;
+  //         this.styles[id].polygons.coloring.vertex = vertex_attribute;
   //         console.log(
   //           "setPolygonsVertexAttribute",
-  //           this.styles.value[id].polygons.coloring.vertex
+  //           this.styles[id].polygons.coloring.vertex
   //         );
   //       },
   //     }
@@ -311,10 +322,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polygons.coloring.polygon = polygon_attribute;
+  //         this.styles[id].polygons.coloring.polygon = polygon_attribute;
   //         console.log(
   //           "setPolygonsPolygonAttribute",
-  //           this.styles.value[id].polygons.coloring.polygon
+  //           this.styles[id].polygons.coloring.polygon
   //         );
   //       },
   //     }
@@ -330,10 +341,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polyhedrons.visibility = visibility;
+  //         this.styles[id].polyhedrons.visibility = visibility;
   //         console.log(
   //           "setPolyhedronsVisibility",
-  //           this.styles.value[id].polyhedrons.visibility
+  //           this.styles[id].polyhedrons.visibility
   //         );
   //       },
   //     }
@@ -343,20 +354,20 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //   if (type == "color")
   //     this.setPolyhedronsColor(
   //       id,
-  //       this.styles.value[id].polyhedrons.coloring.color
+  //       this.styles[id].polyhedrons.coloring.color
   //     );
   //   else if (type == "vertex") {
-  //     const vertex = this.styles.value[id].polyhedrons.coloring.vertex;
+  //     const vertex = this.styles[id].polyhedrons.coloring.vertex;
   //     if (vertex !== null) this.setPolyhedronsVertexAttribute(id, vertex);
   //   } else if (type == "polyhedron") {
-  //     const polyhedron = this.styles.value[id].polyhedrons.coloring.polyhedron;
+  //     const polyhedron = this.styles[id].polyhedrons.coloring.polyhedron;
   //     if (polyhedron !== null)
   //       this.setPolyhedronsPolyhedronAttribute(id, polyhedron);
   //   } else throw new Error("Unknown polyhedrons coloring type: " + type);
-  //   this.styles.value[id].polyhedrons.coloring.active = type;
+  //   this.styles[id].polyhedrons.coloring.active = type;
   //   console.log(
   //     "setPolyhedronsActiveColoring",
-  //     this.styles.value[id].polyhedrons.coloring.active
+  //     this.styles[id].polyhedrons.coloring.active
   //   );
   // },
   // setPolyhedronsColor(id, color) {
@@ -367,10 +378,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polyhedrons.coloring.color = color;
+  //         this.styles[id].polyhedrons.coloring.color = color;
   //         console.log(
   //           "setPolyhedronsColor",
-  //           this.styles.value[id].polyhedrons.coloring.color
+  //           this.styles[id].polyhedrons.coloring.color
   //         );
   //       },
   //     }
@@ -387,10 +398,10 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polyhedrons.coloring.vertex = vertex_attribute;
+  //         this.styles[id].polyhedrons.coloring.vertex = vertex_attribute;
   //         console.log(
   //           "setPolyhedronsVertexAttribute",
-  //           this.styles.value[id].polyhedrons.coloring.vertex
+  //           this.styles[id].polyhedrons.coloring.vertex
   //         );
   //       },
   //     }
@@ -407,11 +418,11 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   //     },
   //     {
   //       response_function: () => {
-  //         this.styles.value[id].polyhedrons.coloring.polyhedron =
+  //         this.styles[id].polyhedrons.coloring.polyhedron =
   //           polyhedron_attribute;
   //         console.log(
   //           "setPolyhedronsPolyhedronAttribute",
-  //           this.styles.value[id].polyhedrons.coloring.polyhedron
+  //           this.styles[id].polyhedrons.coloring.polyhedron
   //         );
   //       },
   //     }
