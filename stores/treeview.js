@@ -39,7 +39,6 @@ export const use_treeview_store = defineStore("treeview", {
   actions: {
     addItem(geodeObject, displayed_name, id, object_type, native_filename) {
       const dataStyleStore = useDataStyleStore();
-      const { styles } = storeToRefs(dataStyleStore);
       dataStyleStore.addDataStyle(id, geodeObject);
       const child = { title: displayed_name, id, object_type, native_filename };
       for (let i = 0; i < this.items.length; i++) {
@@ -47,14 +46,17 @@ export const use_treeview_store = defineStore("treeview", {
           this.items[i].children.push(child);
           console.log("this.items[i].children", this.items[i].children);
           this.selection.push(child);
-          styles[id].visibility = true;
+          dataStyleStore.styles.value[id].visibility = true;
+          console.log("dataStyleStore.value", dataStyleStore.value);
+
           return;
         }
       }
       this.items.push({ title: geodeObject, children: [child] });
       this.selection.push(child);
       console.log("this.items", this.items);
-      styles[id].visibility = true;
+      console.log("dataStyleStore.value", dataStyleStore.value);
+      dataStyleStore.styles.value[id].visibility = true;
     },
   },
 });

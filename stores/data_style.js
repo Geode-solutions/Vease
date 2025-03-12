@@ -1,98 +1,45 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import { getDefaultStyle } from "@/utils/default_styles";
 import _ from "lodash";
-// import {
-//   applyPointsStyle,
-//   // pointsVisibility,
-//   // pointsSize,
-//   // pointsActiveColoring,
-//   // pointsColor,
-//   // pointsVertexAttribute,
-//   // setPointsVisibility,
-//   // setPointsActiveColoring,
-//   // setPointsColor,
-//   // setPointsVertexAttribute,
-//   // setPointsSize,
-// } from "@/utils/viewer/mesh/points";
-// import usePointsStore from "./data_style/mesh/points.js";
+
+import useState from "~/internal_stores/state.js";
+import useMeshStyle from "../internal_stores/mesh/index.js";
 
 export const useDataStyleStore = defineStore("dataStyle", () => {
-  // const pointsStore = usePointsStore();
-  // const {
-  //   applyPointsStyle,
-  //   pointsVisibility,
-  //   // pointsSize,
-  //   // pointsActiveColoring,
-  //   // pointsColor,
-  //   // pointsVertexAttribute,
-  //   setPointsVisibility,
-  //   // setPointsActiveColoring,
-  //   // setPointsColor,
-  //   // setPointsVertexAttribute,
-  //   // setPointsSize,
-  // } = pointsStore;
+  // function setVisibility(id, visibility) {
+  //   viewer_call(
+  //     {
+  //       schema: viewer_schemas.opengeodeweb_viewer.mesh.visibility,
+  //       params: { id, visibility },
+  //     },
+  //     {
+  //       response_function: () => {
+  //         styles.value[id].visibility = visibility;
+  //         console.log("setVisibility", styles.value[id].visibility);
+  //       },
+  //     }
+  //   );
+  // }
+  // function applyDefaultStyle(id) {
+  //   console.log("applyDefaultStyle [id]", styles[id]);
 
-  const styles = ref({});
-
-  const objectVisibility = computed((id) => styles[id].visibility);
-  const selectedObjects = computed(() => {
-    var selection = [];
-    for (const [id, value] of Object.entries(styles)) {
-      if (value.visibility == true) {
-        selection.push(id);
-      }
-    }
-    return selection;
-  });
-
-  function addDataStyle(id, geode_object) {
-    styles[id] = getDefaultStyle(geode_object);
-    applyDefaultStyle(id);
-  }
-
-  function setVisibility(id, visibility) {
-    viewer_call(
-      {
-        schema: viewer_schemas.opengeodeweb_viewer.mesh.visibility,
-        params: { id, visibility },
-      },
-      {
-        response_function: () => {
-          styles[id].visibility = visibility;
-          console.log("setVisibility", styles[id].visibility);
-        },
-      }
-    );
-  }
-  function applyDefaultStyle(id) {
-    const style = styles[id];
-    for (const [key, value] of Object.entries(style)) {
-      if (key == "visibility") setVisibility(id, value);
-      else if (key == "points") applyPointsStyle(id, value);
-      // else if (key == "edges") this.applyEdgesStyle(id, value);
-      // else if (key == "polygons") this.applyPolygonsStyle(id, value);
-      // else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
-    }
-  }
+  //   const style = styles[id];
+  //   console.log("applyDefaultStyle", style);
+  //   for (const [key, value] of Object.entries(style)) {
+  //     if (key == "visibility") setVisibility(id, value);
+  //     else if (key == "points") usePointsStyle().applyPointsStyle(id, value);
+  //     // else if (key == "edges") this.applyEdgesStyle(id, value);
+  //     // else if (key == "polygons") this.applyPolygonsStyle(id, value);
+  //     // else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
+  //   }
+  // }
 
   return {
-    styles,
-    objectVisibility,
-    selectedObjects,
-    addDataStyle,
-    applyDefaultStyle,
-    setVisibility,
-    applyPointsStyle,
-    pointsVisibility,
-    // pointsSize,
-    // pointsActiveColoring,
-    // pointsColor,
-    // pointsVertexAttribute,
-    setPointsVisibility: pointsStore.setPointsVisibility,
-    // setPointsActiveColoring,
-    // setPointsColor,
-    // setPointsVertexAttribute,
-    // setPointsSize,
+    // objectVisibility,
+    // selectedObjects,
+    // addDataStyle,
+    ...useState(),
+    ...useMeshStyle(),
   };
 
   // edgesVisibility() {
