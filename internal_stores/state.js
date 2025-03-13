@@ -1,4 +1,4 @@
 export default function useState() {
-  const styles = ref({});
+  const styles = reactive({});
   return { styles };
 }

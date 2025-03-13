@@ -1,15 +1,26 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import useState from "~/internal_stores/state.js";
 const mesh_points_schemas = viewer_schemas.opengeodeweb_viewer.mesh.points;
 
-export function usePointsStyle() {
-  const { styles } = useState();
+export function useMeshPointsStyle() {
+  /** State **/
+  const dataStyleStore = useDataStyleStore();
 
   /** Getters **/
-  const pointsVisibility = computed((id) => {
-    console.log("pointsVisibility", dataStyleStore);
-    return styles.value[id].points.visibility;
-  });
+  function pointsVisibility(id) {
+    return dataStyleStore.styles[id].points.visibility;
+  }
+  function pointsActiveColoring(id) {
+    return dataStyleStore.styles[id].points.coloring.active;
+  }
+  function pointsColor(id) {
+    return dataStyleStore.styles[id].points.coloring.color;
+  }
+  function pointsVertexAttribute(id) {
+    return dataStyleStore.styles[id].points.coloring.vertex;
+  }
+  function pointsSize(id) {
+    return dataStyleStore.styles[id].points.size;
+  }
 
   /** Actions **/
   function setPointsVisibility(id, visibility) {
@@ -20,11 +31,60 @@ export function usePointsStyle() {
       },
       {
         response_function: () => {
-          styles.value[id].points.visibility = visibility;
+          dataStyleStore.styles[id].points.visibility = visibility;
           console.log(
             "setPointsVisibility",
-            styles.value[id].points.visibility
+            dataStyleStore.styles[id].points.visibility
           );
+        },
+      }
+    );
+  }
+
+  function setPointsColor(id, color) {
+    viewer_call(
+      {
+        schema: viewer_schemas.opengeodeweb_viewer.mesh.points.color,
+        params: { id, color },
+      },
+      {
+        response_function: () => {
+          dataStyleStore.styles[id].points.coloring.color = color;
+          console.log(
+            "setPointsColor",
+            dataStyleStore.styles[id].points.coloring.color
+          );
+        },
+      }
+    );
+  }
+  function setPointsVertexAttribute(id, vertex_attribute) {
+    viewer_call(
+      {
+        schema: viewer_schemas.opengeodeweb_viewer.mesh.points.vertex_attribute,
+        params: { id, ...vertex_attribute },
+      },
+      {
+        response_function: () => {
+          dataStyleStore.styles[id].points.coloring.vertex = vertex_attribute;
+          console.log(
+            "setPointsVertexAttribute",
+            dataStyleStore.styles[id].points.coloring.vertex
+          );
+        },
+      }
+    );
+  }
+  function setPointsSize(id, size) {
+    viewer_call(
+      {
+        schema: viewer_schemas.opengeodeweb_viewer.mesh.points.size,
+        params: { id, size },
+      },
+      {
+        response_function: () => {
+          dataStyleStore.styles[id].points.size = size;
+          console.log("setPointsSize", dataStyleStore.styles[id].points.size);
         },
       }
     );
@@ -32,24 +92,40 @@ export function usePointsStyle() {
 
   function setPointsActiveColoring(id, type) {
     if (type == "color")
-      setPointsColor(id, styles.value[id].points.coloring.color);
-    styles.value[id].points.coloring.active = type;
+      dataStyleStore.setPointsColor(
+        id,
+        dataStyleStore.styles[id].points.coloring.color
+      );
+    else if (type == "vertex") {
+      const vertex = dataStyleStore.styles[id].points.coloring.vertex;
+      if (vertex !== null) dataStyleStore.setPointsVertexAttribute(id, vertex);
+    } else throw new Error("Unknown edges coloring type: " + type);
+    dataStyleStore.styles[id].points.coloring.active = type;
     console.log(
       "setPointsActiveColoring",
-      styles.value[id].points.coloring.active
+      dataStyleStore.styles[id].points.coloring.active
     );
   }
 
   function applyPointsStyle(id, style) {
-    setPointsVisibility(id, style.visibility);
+    dataStyleStore.setPointsVisibility(id, style.visibility);
+    dataStyleStore.setPointsActiveColoring(id, style.coloring.active);
+    dataStyleStore.setPointsSize(id, style.size);
   }
 
   return {
     pointsVisibility,
+    pointsActiveColoring,
+    pointsColor,
+    pointsVertexAttribute,
+    pointsSize,
     setPointsVisibility,
     setPointsActiveColoring,
+    setPointsColor,
+    setPointsVertexAttribute,
+    setPointsSize,
     applyPointsStyle,
   };
 }
 
-export default usePointsStyle;
+export default useMeshPointsStyle;
