@@ -120,6 +120,6 @@ const coloring_style_label = ref(
 
 watch(coloring_style_label, (value) => {
   coloring_style_key.value =
-    coloring_styles.values[coloring_styles.labels.indexOf(value)];
+    coloring_styles.value.values[coloring_styles.value.labels.indexOf(value)];
 });
 </script>
