@@ -108,9 +108,9 @@ export function useMeshPointsStyle() {
   }
 
   function applyPointsStyle(id, style) {
-    dataStyleStore.setPointsVisibility(id, style.visibility);
-    dataStyleStore.setPointsActiveColoring(id, style.coloring.active);
-    dataStyleStore.setPointsSize(id, style.size);
+    setPointsVisibility(id, style.visibility);
+    setPointsActiveColoring(id, style.coloring.active);
+    setPointsSize(id, style.size);
   }
 
   return {

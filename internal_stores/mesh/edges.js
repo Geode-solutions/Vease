@@ -87,9 +87,9 @@ export function useMeshEdgesStyle() {
   }
 
   function applyEdgesStyle(id, style) {
-    this.setEdgesVisibility(id, style.visibility);
-    this.setEdgesActiveColoring(id, style.coloring.active);
-    // this.setEdgesSize(id, style.size);
+    setEdgesVisibility(id, style.visibility);
+    setEdgesActiveColoring(id, style.coloring.active);
+    // setEdgesSize(id, style.size);
   }
 
   return {

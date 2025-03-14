@@ -60,7 +60,7 @@ const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
     points: pointsDefaultStyle(true, points_defaultSize),
-    // edges: edgesDefaultStyle(true, edges_defaultSize),
+    edges: edgesDefaultStyle(true, edges_defaultSize),
   };
 };
 
@@ -68,8 +68,8 @@ const surface_defaultStyle = () => {
   return {
     visibility: true,
     points: pointsDefaultStyle(false, points_defaultSize),
-    // edges: edgesDefaultStyle(false, edges_defaultSize),
-    // polygons: polygonsDefaultStyle(true),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+    polygons: polygonsDefaultStyle(true),
   };
 };
 
@@ -77,9 +77,9 @@ const solid_defaultStyle = () => {
   return {
     visibility: true,
     points: pointsDefaultStyle(false, points_defaultSize),
-    // edges: edgesDefaultStyle(false, edges_defaultSize),
-    // polygons: polygonsDefaultStyle(true),
-    // polyhedrons: polyhedronsDefaultStyle(true),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+    polygons: polygonsDefaultStyle(true),
+    polyhedrons: polyhedronsDefaultStyle(true),
   };
 };
 

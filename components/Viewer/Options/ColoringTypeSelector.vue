@@ -36,8 +36,8 @@
             />
           </template>
           <!-- <template v-if="coloring_style_key === edge_dict['value']">
-        <ViewerOptionsEdgeAttributeSelector v-model="edge_attribute" :id="id" />
-      </template> -->
+            <ViewerOptionsEdgeAttributeSelector v-model="edge_attribute" :id="id" />
+          </template> -->
           <template v-if="coloring_style_key === polygon_dict['value']">
             <ViewerOptionsPolygonAttributeSelector
               v-model="polygon_attribute"
@@ -65,8 +65,6 @@ const vertex_attribute = defineModel("vertex_attribute");
 // const edge_attribute = defineModel("edge_attribute");
 const polygon_attribute = defineModel("polygon_attribute");
 const polyhedron_attribute = defineModel("polyhedron_attribute");
-
-console.log("vertex_attribute", vertex_attribute);
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -115,8 +113,8 @@ const coloring_styles = computed(() => {
 });
 
 const coloring_style_label = ref(
-  coloring_styles.labels[
-    coloring_styles.values.indexOf(coloring_style_key.value)
+  coloring_styles.value.labels[
+    coloring_styles.value.values.indexOf(coloring_style_key.value)
   ]
 );
 
