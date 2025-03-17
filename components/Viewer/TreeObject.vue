@@ -14,7 +14,16 @@
             item-value="id"
             select-strategy="classic"
             selectable
-          />
+          >
+            <template #title="{ item }">
+              <span
+                @click.right.stop="
+                  $emit('show-menu', { event: $event, id: item.id })
+                "
+                >{{ item.title }}</span
+              >
+            </template>
+          </v-treeview>
         </v-sheet>
       </div>
       <div class="resizer" @mousedown="onResizeStart"></div>
@@ -43,7 +52,6 @@ watch(
   (current, previous) => {
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
-
     added.forEach((item) => dataStyleStore.setVisibility(item.id, true));
     removed.forEach((item) => dataStyleStore.setVisibility(item.id, false));
   },
@@ -54,7 +62,9 @@ function onResizeStart(event) {
   isResizing.value = true;
   startWidth.value = panelWidth.value;
 
-  const stopResize = () => (isResizing.value = false);
+  const stopResize = () => {
+    isResizing.value = false;
+  };
 
   const resize = () => {
     if (isResizing.value) {

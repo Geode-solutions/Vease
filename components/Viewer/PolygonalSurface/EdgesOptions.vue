@@ -1,12 +1,12 @@
 <template>
-  <ViewerGenericMeshPointsOptions
+  <ViewerGenericMeshEdgesOptions
     :itemProps="props.itemProps"
-    :btn_image="SurfacePoints"
+    :btn_image="PolygonalSurfaceEdges"
   />
 </template>
 
 <script setup>
-import SurfacePoints from "@/assets/viewer_svgs/surface_points.svg";
+import PolygonalSurfaceEdges from "@/assets/viewer_svgs/surface_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

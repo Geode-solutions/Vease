@@ -6,4 +6,4 @@ python -m venv $venv_path
 Remove-Item -Recurse -Force "$microservice_path\requirements.txt" -ErrorAction:SilentlyContinue
 . "$venv_path\Scripts\activate"
 pip install pip-tools
-pip-compile "$microservice_path\requirements.in"
+pip-compile -U "$microservice_path\requirements.in"

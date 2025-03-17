@@ -8,4 +8,4 @@ python3 -m venv $venv_path
 rm -rf $microservice_path/requirements.txt
 source $venv_path/bin/activate
 pip install pip-tools
-pip-compile $microservice_path/requirements.in --upgrade
+pip-compile -U $microservice_path/requirements.in

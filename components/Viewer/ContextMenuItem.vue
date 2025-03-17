@@ -17,7 +17,14 @@
       <span>{{ props.tooltip }}</span>
     </v-tooltip>
     <div v-if="display_options" class="menu-options pa-0" @click.stop>
-      <v-card :title="props.tooltip" class="bg-primary" width="320" v-click-outside="toggleOptions">
+      <v-card
+        @click.stop
+        :title="props.tooltip"
+        class="bg-primary"
+        width="320"
+        max-height="500"
+        :ripple="false"
+      >
         <v-card-text class="bg-primary">
           <slot name="options" />
         </v-card-text>
@@ -53,8 +60,8 @@ function toggleOptions() {
 
 .menu-options {
   position: absolute;
-  top: 100%;
-  left: 50%;
+  top: 50%;
+  left: 430%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -64,7 +71,7 @@ function toggleOptions() {
   z-index: 10;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   min-width: 150px;
-  max-width: 300px;
+  max-width: 320px;
   padding: 8px 0;
   overflow: hidden;
 }

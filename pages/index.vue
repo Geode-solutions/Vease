@@ -1,12 +1,14 @@
 <template>
+  <Launcher v-if="infra_store.is_cloud && !infra_store.is_running" />
   <v-card
+    v-else
     ref="cardContainer"
     style="height: 100%; width: 100%; border-radius: 10px"
     @click.right="openMenu"
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject />
+        <ViewerTreeObject @show-menu="handleTreeMenu" />
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -38,7 +40,7 @@ const cardContainer = useTemplateRef("cardContainer");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function get_id(x, y) {
+async function get_viewer_id(x, y) {
   const ids = dataStyleStore.selectedObjects;
   await viewer_call(
     {
@@ -53,12 +55,17 @@ async function get_id(x, y) {
     }
   );
 }
-
-async function openMenu(event) {
+function handleTreeMenu({ event, id: itemId }) {
+  menuX.value = event.clientX;
+  menuY.value = event.clientY;
+  id.value = itemId;
+  menuStore.openMenu();
+}
+async function openMenu(event, id) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;
 
-  await get_id(event.offsetX, event.offsetY);
+  await get_viewer_id(event.offsetX, event.offsetY);
   menuStore.openMenu();
 }
 

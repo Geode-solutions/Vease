@@ -1,10 +1,10 @@
 const pointsDefaultStyle = (visibility, size) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 255, g: 0, b: 0 },
-      vertex: { name: "" },
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 0, b: 0 },
+      vertex: null,
     },
     size,
   };
@@ -13,9 +13,9 @@ const pointsDefaultStyle = (visibility, size) => {
 const edgesDefaultStyle = (visibility, size) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 0, g: 0, b: 0 },
+    coloring: {
+      active: "color",
+      color: { r: 0, g: 0, b: 0 },
     },
     size,
   };
@@ -24,36 +24,62 @@ const edgesDefaultStyle = (visibility, size) => {
 const polygonsDefaultStyle = (visibility) => {
   return {
     visibility,
-    color: {
-      active: "constant",
-      constant: { r: 255, g: 255, b: 255 },
-      polygon: { name: "" },
-      vertex: { name: "" },
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 255, b: 255 },
+      textures: null,
+      polygon: null,
+      vertex: null,
     },
   };
 };
 
+const polyhedronsDefaultStyle = (visibility) => {
+  return {
+    visibility,
+    coloring: {
+      active: "color",
+      color: { r: 255, g: 255, b: 255 },
+      polyhedron: null,
+      vertex: null,
+    },
+  };
+};
+
+const points_defaultSize = 10;
+const edges_defaultSize = 5;
+
 const pointSet_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(true, 5),
+    points: pointsDefaultStyle(true, points_defaultSize),
   };
 };
 
 const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(true, 5),
-    edges: edgesDefaultStyle(true, 5),
+    points: pointsDefaultStyle(true, points_defaultSize),
+    edges: edgesDefaultStyle(true, edges_defaultSize),
   };
 };
 
 const surface_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(false, 1),
-    edges: edgesDefaultStyle(false, 1),
+    points: pointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
     polygons: polygonsDefaultStyle(true),
+  };
+};
+
+const solid_defaultStyle = () => {
+  return {
+    visibility: true,
+    points: pointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+    polygons: polygonsDefaultStyle(true),
+    polyhedrons: polyhedronsDefaultStyle(true),
   };
 };
 
@@ -64,23 +90,23 @@ const default_styles = () => {
     EdgedCurve2D: edgedCurve_defaultStyle(),
     EdgedCurve3D: edgedCurve_defaultStyle(),
     Graph: {},
-    HybridSolid3D: {},
+    HybridSolid3D: solid_defaultStyle(),
     ImplicitCrossSection: {},
     ImplicitStructuralModel: {},
-    LightRegularGrid2D: {},
-    LightRegularGrid3D: {},
+    LightRegularGrid2D: surface_defaultStyle(),
+    LightRegularGrid3D: solid_defaultStyle(),
     PointSet2D: pointSet_defaultStyle(),
     PointSet3D: pointSet_defaultStyle(),
     PolygonalSurface2D: surface_defaultStyle(),
     PolygonalSurface3D: surface_defaultStyle(),
-    PolyhedralSolid3D: {},
+    PolyhedralSolid3D: solid_defaultStyle(),
     RasterImage2D: {},
     RasterImage3D: {},
-    RegularGrid2D: {},
-    RegularGrid3D: {},
+    RegularGrid2D: surface_defaultStyle(),
+    RegularGrid3D: solid_defaultStyle(),
     Section: {},
     StructuralModel: {},
-    TetrahedralSolid3D: {},
+    TetrahedralSolid3D: solid_defaultStyle(),
     TriangulatedSurface2D: surface_defaultStyle(),
     TriangulatedSurface3D: surface_defaultStyle(),
     VertexSet: {},

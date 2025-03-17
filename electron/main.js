@@ -132,6 +132,7 @@ app.whenReady().then(() => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+  win.setMenuBarVisibility(false);
   win.maximize();
   win.setMinimumSize(800, 600);
 
@@ -142,8 +143,8 @@ app.whenReady().then(() => {
   );
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    require('electron').shell.openExternal(url);
-    return { action: 'deny' };
+    require("electron").shell.openExternal(url);
+    return { action: "deny" };
   });
 
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {

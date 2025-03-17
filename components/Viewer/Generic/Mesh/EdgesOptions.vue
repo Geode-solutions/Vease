@@ -7,27 +7,11 @@
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
       <template v-if="visibility">
-        <v-divider />
-        <v-row class="pa-2" align="center">
-          <v-col cols="auto" justify="center">
-            <v-icon
-              size="30"
-              icon="mdi-format-color-fill"
-              v-tooltip:left="'Filling'"
-            />
-          </v-col>
-          <v-col justify="center">
-            <v-select
-              v-model="select"
-              :items="styles"
-              label="Select a color style"
-            />
-            <template v-if="select === styles[0]">
-              <v-divider />
-              <ViewerOptionsConstantColorPicker v-model="color" />
-            </template>
-          </v-col>
-        </v-row>
+        <ViewerOptionsColoringTypeSelector
+          :id="id"
+          v-model:coloring_style_key="coloring_style_key"
+          v-model:color="color"
+        />
       </template>
     </template>
   </ViewerContextMenuItem>
@@ -44,48 +28,21 @@ const id = toRef(() => props.itemProps.id);
 const dataStyleStore = useDataStyleStore();
 
 const visibility = computed({
-  get() {
-    return dataStyleStore.edgesVisibility(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setEdgesVisibility(id.value, newValue);
-  },
+  get: () => dataStyleStore.edgesVisibility(id.value),
+  set: (newValue) => dataStyleStore.setEdgesVisibility(id.value, newValue),
 });
 const size = computed({
-  get() {
-    return dataStyleStore.edgesSize(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setEdgesSize(id.value, newValue);
+  get: () => dataStyleStore.edgesSize(id.value),
+  set: (newValue) => dataStyleStore.setEdgesSize(id.value, newValue),
+});
+const coloring_style_key = computed({
+  get: () => dataStyleStore.edgesActiveColoring(id.value),
+  set: (newValue) => {
+    dataStyleStore.setEdgesActiveColoring(id.value, newValue);
   },
 });
 const color = computed({
-  get() {
-    return dataStyleStore.edgesConstantColor(id.value);
-  },
-  set(newValue) {
-    dataStyleStore.setEdgesConstantColor(id.value, newValue);
-  },
-});
-const styles = ["Constant"];
-const storeStyles = ["constant"];
-const select = computed({
-  get() {
-    const active = dataStyleStore.edgesActiveColoring(id.value);
-    for (let i = 0; i < styles.length; i++) {
-      if (active === storeStyles[i]) {
-        return styles[i];
-      }
-    }
-    return "Select a coloring";
-  },
-  set(newValue) {
-    for (let i = 0; i < styles.length; i++) {
-      if (newValue === styles[i]) {
-        dataStyleStore.setEdgesActiveColoring(id.value, storeStyles[i]);
-        return;
-      }
-    }
-  },
+  get: () => dataStyleStore.edgesColor(id.value),
+  set: (newValue) => dataStyleStore.setEdgesColor(id.value, newValue),
 });
 </script>
