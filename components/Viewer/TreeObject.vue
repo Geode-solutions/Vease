@@ -2,6 +2,12 @@
   <v-container class="treeview-container" :style="{ width: `${panelWidth}px` }">
     <v-row>
       <div class="resizable-panel" :style="{ width: `${panelWidth}px` }">
+        <ViewerBreadCrumb
+          v-if="treeviewStore.items.length > 0"
+          :selectedTree="selectedTree"
+          :treeOptions="treeOptions"
+          @update:selectedTree="selectedTree = $event"
+        />
         <v-sheet
           style="max-height: calc(80vh - 100px)"
           class="transparent-treeview scrollbar"
@@ -16,12 +22,34 @@
             selectable
           >
             <template #title="{ item }">
-              <span
-                @click.right.stop="
-                  $emit('show-menu', { event: $event, id: item.id })
-                "
-                >{{ item.title }}</span
-              >
+              <v-hover v-slot="{ hover }">
+                <div
+                  class="treeview-item-wrapper"
+                  v-bind="props"
+                  @mouseenter="item.isHovered = true"
+                  @mouseleave="item.isHovered = false"
+                  @click.right.stop="
+                    $emit('show-menu', { event: $event, id: item.id })
+                  "
+                >
+                  <span class="treeview-item">{{ item.title }}</span>
+                </div>
+              </v-hover>
+            </template>
+            <template #append="{ item }">
+              <v-btn
+                icon="mdi-magnify-expand"
+                size="medium"
+                class="ml-8"
+                variant="text"
+                style="display: none"
+                :style="{
+                  display:
+                    isGeodeObject(item) && item.isHovered ? 'block' : 'none',
+                }"
+                @click="console.log('toto')"
+                @click.left.stop
+              />
             </template>
           </v-treeview>
         </v-sheet>
@@ -35,6 +63,10 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
+
+treeviewStore.items.forEach((item) => {
+  item.isHovered = false;
+});
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
@@ -57,6 +89,18 @@ watch(
   },
   { immediate: true }
 );
+
+const treeOptions = ref([
+  { icon: "mdi-shape-outline", text: "Components Tree", value: "components" },
+  { icon: "mdi-rhombus-split", text: "Collection Tree", value: "collection" },
+]);
+
+const selectedTree = ref(treeOptions.value[0]);
+
+function isGeodeObject(item) {
+  const metadata = treeviewStore.itemMetaDatas(item.id);
+  return metadata && metadata.geode_object;
+}
 
 function onResizeStart(event) {
   isResizing.value = true;
@@ -134,5 +178,16 @@ function onResizeStart(event) {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #8d8b8b;
   border-radius: 10px;
+}
+
+.treeview-item-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+}
+
+.treeview-item {
+  flex-grow: 1;
 }
 </style>

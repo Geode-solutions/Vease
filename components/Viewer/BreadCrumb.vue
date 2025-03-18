@@ -1,35 +1,44 @@
 <template>
-  <v-breadcrumbs :items="items" class="pa-0">
-    <template v-slot:item="{ item, index }">
-      <v-icon
-        :class="{ 'grey--text text--darken-1': index !== items.length - 1 }"
-        @click="emit('click', item.value)"
-      >
-        {{ item.icon }}
-      </v-icon>
-    </template>
+  <v-breadcrumbs class="ml-4" style="margin-bottom: -40px">
+    <v-icon>mdi-file-tree</v-icon>
+    <span class="text-h4 pa-2">/</span>
+
+    <v-menu offset-y>
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props" icon variant="text">
+          <v-icon>{{ selectedTree.icon }}</v-icon>
+          <v-icon small>mdi-chevron-down</v-icon>
+        </v-btn>
+      </template>
+      <v-list class="breadcrumb-menu">
+        <v-list-item
+          v-for="option in treeOptions"
+          :key="option.value"
+          @click="$emit('update:selectedTree', option)"
+        >
+          <v-list-item-title>
+            <v-icon>{{ option.icon }}</v-icon> {{ option.text }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+    <span>{{ selectedTree.text }}</span>
   </v-breadcrumbs>
 </template>
 
 <script setup>
-defineProps({
-  modelValue: {
-    type: Array,
-    required: true,
-  },
+const props = defineProps({
+  selectedTree: Object,
+  treeOptions: Array,
 });
 
-const emit = defineEmits(["update:modelValue", "click"]);
-
-const items = ref([]);
-
-function updateItems() {
-  items.value = props.modelValue.map((item) => ({
-    value: item,
-    icon: item.icon,
-    disabled: false,
-  }));
-}
-
-watch(() => props.modelValue, updateItems, { immediate: true });
+const emit = defineEmits(["update:selectedTree"]);
 </script>
+
+<style scoped>
+.breadcrumb-menu {
+  min-width: 180px;
+  background-color: transparent;
+}
+</style>

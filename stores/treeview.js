@@ -16,13 +16,13 @@ export const use_treeview_store = defineStore("treeview", {
               const displayed_name = state.items[i].children[j].title;
               const native_filename =
                 state.items[i].children[j].native_filename;
-              console.log(
-                "itemMetaDatas",
-                geode_object,
-                object_type,
-                displayed_name,
-                native_filename
-              );
+              // console.log(
+              //   "itemMetaDatas",
+              //   geode_object,
+              //   object_type,
+              //   displayed_name,
+              //   native_filename
+              // );
               return {
                 object_type,
                 geode_object,
