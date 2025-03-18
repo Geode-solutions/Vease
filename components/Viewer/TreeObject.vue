@@ -20,35 +20,30 @@
             item-value="id"
             select-strategy="classic"
             selectable
+            @mouseover="over = true"
+            @mouseleave="over = false"
           >
-            <template #title="{ item }">
-              <v-hover v-slot="{ hover }">
-                <div
-                  class="treeview-item-wrapper"
-                  v-bind="props"
-                  @mouseenter="item.isHovered = true"
-                  @mouseleave="item.isHovered = false"
-                  @click.right.stop="
-                    $emit('show-menu', { event: $event, id: item.id })
-                  "
-                >
-                  <span class="treeview-item">{{ item.title }}</span>
-                </div>
-              </v-hover>
+            <template #title="{ item }" @mouseover="console.log('mouseenter')">
+              <div
+                class="treeview-item-wrapper"
+                v-bind="props"
+                @click.right.stop="
+                  $emit('show-menu', { event: $event, id: item.id })
+                "
+              >
+                <span class="treeview-item">{{ item.title }}</span>
+              </div>
             </template>
             <template #append="{ item }">
               <v-btn
+                v-if="over && isGeodeObject(item)"
                 icon="mdi-magnify-expand"
                 size="medium"
                 class="ml-8"
                 variant="text"
-                style="display: none"
-                :style="{
-                  display:
-                    isGeodeObject(item) && item.isHovered ? 'block' : 'none',
-                }"
                 @click="console.log('toto')"
                 @click.left.stop
+                @mouseover="console.log('mousehover btn')"
               />
             </template>
           </v-treeview>
@@ -60,6 +55,8 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
@@ -67,6 +64,8 @@ const { selection } = toRefs(treeviewStore);
 treeviewStore.items.forEach((item) => {
   item.isHovered = false;
 });
+
+const over = ref(false);
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
