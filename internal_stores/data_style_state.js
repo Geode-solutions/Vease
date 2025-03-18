@@ -1,4 +1,4 @@
-export default function useState() {
+export default function useDataStyleState() {
   const styles = reactive({});
   return { styles };
 }
