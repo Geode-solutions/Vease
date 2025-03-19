@@ -1,17 +1,23 @@
 <template>
-  <v-container class="treeview-container" :style="{ width: `${panelWidth}px` }">
+  <v-container
+    class="treeview-container"
+    :style="{ width: `${treeviewStore.panelWidth}px` }"
+  >
     <v-row>
-      <div class="resizable-panel" :style="{ width: `${panelWidth}px` }">
-        <ViewerBreadCrumb
-          v-if="treeviewStore.items.length > 0"
-          :selectedTree="selectedTree"
-          :treeOptions="treeOptions"
-          @update:selectedTree="selectedTree = $event"
-        />
+      <div
+        class="resizable-panel"
+        :style="{ width: `${treeviewStore.panelWidth}px` }"
+      >
         <v-sheet
           style="max-height: calc(80vh - 100px)"
           class="transparent-treeview scrollbar"
         >
+          <ViewerBreadCrumb
+            v-if="treeviewStore.items.length > 0"
+            :selectedTree="selectedTree"
+            :treeOptions="treeOptions"
+            @update:selectedTree="selectedTree = $event"
+          />
           <v-treeview
             v-model:selected="selection"
             :items="treeviewStore.items"
@@ -20,13 +26,11 @@
             item-value="id"
             select-strategy="classic"
             selectable
-            @mouseover="over = true"
-            @mouseleave="over = false"
+            @mouseover="isHovered = true"
+            @mouseleave="isHovered = false"
           >
-            <template #title="{ item }" @mouseover="console.log('mouseenter')">
+            <template #title="{ item }">
               <div
-                class="treeview-item-wrapper"
-                v-bind="props"
                 @click.right.stop="
                   $emit('show-menu', { event: $event, id: item.id })
                 "
@@ -36,14 +40,13 @@
             </template>
             <template #append="{ item }">
               <v-btn
-                v-if="over && isGeodeObject(item)"
+                v-if="isHovered && isModel(item)"
                 icon="mdi-magnify-expand"
                 size="medium"
                 class="ml-8"
                 variant="text"
-                @click="console.log('toto')"
+                @click="treeviewStore.displayAdditionalTree()"
                 @click.left.stop
-                @mouseover="console.log('mousehover btn')"
               />
             </template>
           </v-treeview>
@@ -55,17 +58,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
 const isHovered = ref(false);
-
-const over = ref(false);
-
-const panelWidth = ref(300);
 const isResizing = ref(false);
 const startWidth = ref(0);
 const { x: mouseX } = useMouse();
@@ -95,17 +92,15 @@ const treeOptions = ref([
 const selectedTree = ref(treeOptions.value[0]);
 
 function isModel(item) {
-  console.log("item", item);
   if (item.id) {
     const metadata = treeviewStore.itemMetaDatas(item.id);
-    console.log("metadata", metadata);
     return metadata.object_type == "model";
   }
 }
 
 function onResizeStart(event) {
   isResizing.value = true;
-  startWidth.value = panelWidth.value;
+  startWidth.value = treeviewStore.panelWidth;
 
   const stopResize = () => {
     isResizing.value = false;
@@ -115,7 +110,9 @@ function onResizeStart(event) {
     if (isResizing.value) {
       const deltaX = mouseX.value - event.clientX;
       const newWidth = startWidth.value + deltaX;
-      panelWidth.value = Math.max(150, Math.min(newWidth, window.innerWidth));
+      treeviewStore.setPanelWidth(
+        Math.max(150, Math.min(newWidth, window.innerWidth))
+      );
     }
   };
 
@@ -125,6 +122,14 @@ function onResizeStart(event) {
 </script>
 
 <style scoped>
+.treeview-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+}
+
 .treeview-container {
   position: absolute;
   z-index: 2;
@@ -179,9 +184,5 @@ function onResizeStart(event) {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #8d8b8b;
   border-radius: 10px;
-}
-
-.treeview-item {
-  flex-grow: 1;
 }
 </style>

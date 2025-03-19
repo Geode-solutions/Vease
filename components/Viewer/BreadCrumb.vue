@@ -1,5 +1,5 @@
 <template>
-  <v-breadcrumbs class="mb-n10">
+  <v-breadcrumbs class="mb-n10 breadcrumb-container">
     <div class="d-flex align-center gap-2 ml-2 mb-2">
       <div
         v-if="!treeviewStore.isAdditionnalTreeDisplayed"
@@ -7,9 +7,9 @@
       >
         <v-icon size="large">mdi-file-tree</v-icon>
         <h4>&nbsp;</h4>
-        <span class="text-subtitle-1 font-weight-regular align-center mt-1"
-          >File Tree</span
-        >
+        <span class="text-subtitle-1 font-weight-regular align-center mt-1">
+          File Tree
+        </span>
       </div>
 
       <v-menu v-else offset-y>
@@ -41,7 +41,7 @@
             <v-list-item-title class="d-flex align-center">
               <v-icon size="small">{{ option.icon }}</v-icon>
               <h4>&nbsp;</h4>
-              {{ option.text }}
+              <span>{{ option.text }}</span>
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -65,3 +65,11 @@ const props = defineProps({
 
 const treeviewStore = use_treeview_store();
 </script>
+
+<style scoped>
+.breadcrumb-container {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+</style>

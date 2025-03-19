@@ -3,6 +3,7 @@ export const use_treeview_store = defineStore("treeview", {
     items: [],
     selection: [],
     isAdditionnalTreeDisplayed: false,
+    panelWidth: 300,
   }),
   getters: {
     itemMetaDatas: (state) => (id) => {
@@ -48,9 +49,11 @@ export const use_treeview_store = defineStore("treeview", {
     displayAdditionalTree() {
       this.isAdditionnalTreeDisplayed = true;
     },
-
     disaplayFileTree() {
       this.isAdditionnalTreeDisplayed = false;
+    },
+    setPanelWidth(width) {
+      this.panelWidth = width;
     },
   },
 });
