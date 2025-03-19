@@ -20,34 +20,27 @@
             item-value="id"
             select-strategy="classic"
             selectable
+            @mouseover="isHovered = true"
+            @mouseleave="isHovered = false"
           >
-            <template #title="{ item }">
-              <v-hover v-slot="{ hover }">
-                <div
-                  class="treeview-item-wrapper"
-                  v-bind="props"
-                  @mouseenter="item.isHovered = true"
-                  @mouseleave="item.isHovered = false"
-                  @click.right.stop="
-                    $emit('show-menu', { event: $event, id: item.id })
-                  "
-                >
-                  <span class="treeview-item">{{ item.title }}</span>
-                </div>
-              </v-hover>
+            <template #title="{ item }" @mouseover="console.log('mouseenter')">
+              <div
+                v-bind="props"
+                @click.right.stop="
+                  $emit('show-menu', { event: $event, id: item.id })
+                "
+              >
+                <span class="treeview-item">{{ item.title }}</span>
+              </div>
             </template>
             <template #append="{ item }">
               <v-btn
+                v-if="isHovered && isModel(item)"
                 icon="mdi-magnify-expand"
                 size="medium"
                 class="ml-8"
                 variant="text"
-                style="display: none"
-                :style="{
-                  display:
-                    isGeodeObject(item) && item.isHovered ? 'block' : 'none',
-                }"
-                @click="console.log('toto')"
+                @click="treeviewStore.displayAdditionalTree()"
                 @click.left.stop
               />
             </template>
@@ -64,9 +57,7 @@ const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
-treeviewStore.items.forEach((item) => {
-  item.isHovered = false;
-});
+const isHovered = ref(false);
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
@@ -97,9 +88,13 @@ const treeOptions = ref([
 
 const selectedTree = ref(treeOptions.value[0]);
 
-function isGeodeObject(item) {
-  const metadata = treeviewStore.itemMetaDatas(item.id);
-  return metadata && metadata.geode_object;
+function isModel(item) {
+  console.log("item", item);
+  if (item.id) {
+    const metadata = treeviewStore.itemMetaDatas(item.id);
+    console.log("metadata", metadata);
+    return metadata.object_type == "model";
+  }
 }
 
 function onResizeStart(event) {
@@ -178,13 +173,6 @@ function onResizeStart(event) {
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: #8d8b8b;
   border-radius: 10px;
-}
-
-.treeview-item-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 40px;
 }
 
 .treeview-item {
