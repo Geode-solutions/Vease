@@ -20,11 +20,12 @@
             item-value="id"
             select-strategy="classic"
             selectable
-            @mouseover="isHovered = true"
-            @mouseleave="isHovered = false"
+            @mouseover="over = true"
+            @mouseleave="over = false"
           >
             <template #title="{ item }" @mouseover="console.log('mouseenter')">
               <div
+                class="treeview-item-wrapper"
                 v-bind="props"
                 @click.right.stop="
                   $emit('show-menu', { event: $event, id: item.id })
@@ -35,13 +36,14 @@
             </template>
             <template #append="{ item }">
               <v-btn
-                v-if="isHovered && isModel(item)"
+                v-if="over && isGeodeObject(item)"
                 icon="mdi-magnify-expand"
                 size="medium"
                 class="ml-8"
                 variant="text"
-                @click="treeviewStore.displayAdditionalTree()"
+                @click="console.log('toto')"
                 @click.left.stop
+                @mouseover="console.log('mousehover btn')"
               />
             </template>
           </v-treeview>
@@ -53,11 +55,15 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const { selection } = toRefs(treeviewStore);
 
 const isHovered = ref(false);
+
+const over = ref(false);
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
