@@ -3,14 +3,14 @@ import { getDefaultStyle } from "@/utils/default_styles";
 import { useMeshPointsStyle } from "./points.js";
 import { useMeshEdgesStyle } from "./edges.js";
 import { useMeshPolygonsStyle } from "./polygons.js";
-import { useMeshPolyhedronsStyle } from "./polyhedrons.js";
+import { useMeshPolyhedraStyle } from "./polyhedra.js";
 
 export default function useMeshStyle() {
   const dataStyleStore = useDataStyleStore();
   const pointsStyleStore = useMeshPointsStyle();
   const edgesStyleStore = useMeshEdgesStyle();
   const polygonsStyleStore = useMeshPolygonsStyle();
-  const polyhedronsStyleStore = useMeshPolyhedronsStyle();
+  const polyhedraStyleStore = useMeshPolyhedraStyle();
 
   const objectVisibility = computed(
     (id) => dataStyleStore.styles[id].visibility
@@ -52,8 +52,8 @@ export default function useMeshStyle() {
       else if (key == "edges") edgesStyleStore.applyEdgesStyle(id, value);
       else if (key == "polygons")
         polygonsStyleStore.applyPolygonsStyle(id, value);
-      else if (key == "polyhedrons")
-        polyhedronsStyleStore.applyPolyhedronsStyle(id, value);
+      else if (key == "polyhedra")
+        polyhedraStyleStore.applyPolyhedraStyle(id, value);
     }
   }
 
@@ -66,6 +66,6 @@ export default function useMeshStyle() {
     ...useMeshPointsStyle(),
     ...useMeshEdgesStyle(),
     ...useMeshPolygonsStyle(),
-    ...useMeshPolyhedronsStyle(),
+    ...useMeshPolyhedraStyle(),
   };
 }
