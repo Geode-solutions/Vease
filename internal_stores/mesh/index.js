@@ -10,6 +10,7 @@ export default function useMeshStyle() {
   const pointsStyleStore = useMeshPointsStyle();
   const edgesStyleStore = useMeshEdgesStyle();
   const polygonsStyleStore = useMeshPolygonsStyle();
+  const polyhedronsStyleStore = useMeshPolyhedronsStyle();
 
   const objectVisibility = computed(
     (id) => dataStyleStore.styles[id].visibility
@@ -51,7 +52,8 @@ export default function useMeshStyle() {
       else if (key == "edges") edgesStyleStore.applyEdgesStyle(id, value);
       else if (key == "polygons")
         polygonsStyleStore.applyPolygonsStyle(id, value);
-      else if (key == "polyhedrons") this.applyPolyhedronsStyle(id, value);
+      else if (key == "polyhedrons")
+        polyhedronsStyleStore.applyPolyhedronsStyle(id, value);
     }
   }
 
