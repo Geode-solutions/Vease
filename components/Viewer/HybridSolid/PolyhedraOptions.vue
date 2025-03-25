@@ -1,12 +1,12 @@
 <template>
-  <ViewerGenericMeshPolyhedronsOptions
+  <ViewerGenericMeshPolyhedraOptions
     :itemProps="props.itemProps"
-    :btn_image="SolidPolyhedrons"
+    :btn_image="HybridSolidPolyhedra"
   />
 </template>
 
 <script setup>
-import SolidPolyhedrons from "@/assets/viewer_svgs/solid_polyhedrons.svg";
+import HybridSolidPolyhedra from "@/assets/viewer_svgs/solid_polyhedra.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

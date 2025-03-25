@@ -34,7 +34,7 @@ const polygonsDefaultStyle = (visibility) => {
   };
 };
 
-const polyhedronsDefaultStyle = (visibility) => {
+const polyhedraDefaultStyle = (visibility) => {
   return {
     visibility,
     coloring: {
@@ -79,7 +79,7 @@ const solid_defaultStyle = () => {
     points: pointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(false, edges_defaultSize),
     polygons: polygonsDefaultStyle(true),
-    polyhedrons: polyhedronsDefaultStyle(true),
+    polyhedra: polyhedraDefaultStyle(true),
   };
 };
 
