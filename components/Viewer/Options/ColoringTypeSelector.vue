@@ -80,7 +80,7 @@ const has_vertex = computed(() =>
 const has_polygons = computed(() =>
   polygon_attribute.value !== undefined ? true : false
 );
-const has_polyhedrons = computed(() =>
+const has_polyhedra = computed(() =>
   polyhedron_attribute.value !== undefined ? true : false
 );
 
@@ -100,7 +100,7 @@ const coloring_styles = computed(() => {
   if (has_vertex.value) array.push(vertex_dict);
   // if (has_edges.value) array.push(edge_dict);
   if (has_polygons.value) array.push(polygon_dict);
-  if (has_polyhedrons.value) array.push(polyhedron_dict);
+  if (has_polyhedra.value) array.push(polyhedron_dict);
 
   const labels = array.map((coloring) => {
     return coloring.name;

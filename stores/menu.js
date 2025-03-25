@@ -30,11 +30,11 @@ import Grid3DCellsOptions from "@/components/Viewer/Grid/3D/CellsOptions.vue";
 import SolidPointsOptions from "@/components/Viewer/Solid/PointsOptions.vue";
 import SolidEdgesOptions from "@/components/Viewer/Solid/EdgesOptions.vue";
 import SolidPolygonsOptions from "@/components/Viewer/Solid/PolygonsOptions.vue";
-import SolidPolyhedronsOptions from "@/components/Viewer/Solid/PolyhedronsOptions.vue";
+import SolidPolyhedraOptions from "@/components/Viewer/Solid/PolyhedraOptions.vue";
 
 // TetrahedralSolid components
 import TetrahedralSolidTrianglesOptions from "@/components/Viewer/TetrahedralSolid/TrianglesOptions.vue";
-import TetrahedralSolidTetrahedronsOptions from "@/components/Viewer/TetrahedralSolid/TetrahedronsOptions.vue";
+import TetrahedralSolidTetrahedraOptions from "@/components/Viewer/TetrahedralSolid/TetrahedraOptions.vue";
 
 const PointSet_menu = [PointSetPointsOptions];
 
@@ -68,14 +68,14 @@ const Solid_menu = [
   SolidPointsOptions,
   SolidEdgesOptions,
   SolidPolygonsOptions,
-  SolidPolyhedronsOptions,
+  SolidPolyhedraOptions,
 ];
 
 const TetrahedralSolid_menu = [
   SolidPointsOptions,
   SolidEdgesOptions,
   TetrahedralSolidTrianglesOptions,
-  TetrahedralSolidTetrahedronsOptions,
+  TetrahedralSolidTetrahedraOptions,
 ];
 
 const menus = {

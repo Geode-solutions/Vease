@@ -1,13 +1,13 @@
 <template>
   <ViewerGenericMeshPolyhedraOptions
     :itemProps="props.itemProps"
-    :btn_image="Grid3DCells"
-    tooltip="Cells options"
+    :btn_image="TetrahedralSolidTetrahedra"
+    tooltip="Tetrahedra options"
   />
 </template>
 
 <script setup>
-import Grid3DCells from "@/assets/viewer_svgs/grid_3d_cells.svg";
+import TetrahedralSolidTetrahedra from "@/assets/viewer_svgs/solid_polyhedra.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
