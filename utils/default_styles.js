@@ -117,4 +117,4 @@ const getDefaultStyle = (type) => {
   return default_styles()[type];
 };
 
-export { getDefaultStyle };
+export default { getDefaultStyle };

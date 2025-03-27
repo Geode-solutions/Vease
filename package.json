@@ -5,7 +5,8 @@
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
   "scripts": {
-    "dev": "npx nuxi@3.11.0 dev --no-fork",
+    "dev": "nuxi dev",
+    "cleanup": "npx nuxi cleanup",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -40,12 +41,12 @@
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
     "@geode/opengeodeweb-front": "^9.5.1",
-    "electron": "^32.1.2",
-    "electron-builder": "^25.0.5",
-    "nuxt": "^3.13.2",
+    "electron": "^35.1.1",
+    "electron-builder": "^26.0.12",
+    "nuxt": "^3.16.1",
     "nuxt-electron": "^0.7.0",
-    "vuetify": "^3.7.2",
-    "vuetify-nuxt-module": "^0.18.3"
+    "vuetify": "^3.7.19",
+    "vuetify-nuxt-module": "^0.18.4"
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",
@@ -53,15 +54,15 @@
     "@geode/opengeodeweb-back": "5.6.3",
     "@geode/opengeodeweb-viewer": "^1.6.1",
     "@geode/vease-back": "^1.4.2",
-    "@geode/vease-viewer": "^2.3.0",
-    "@nuxt/kit": "^3.16.0",
-    "@pinia/nuxt": "^0.5.4",
-    "@vueuse/nuxt": "^11.1.0",
+    "@geode/vease-viewer": "^2.3.3",
+    "@nuxt/kit": "^3.16.1",
+    "@pinia/nuxt": "^0.10.1",
+    "@vueuse/nuxt": "^13.0.0",
     "draggable": "^4.2.0",
-    "electron-updater": "^6.3.4",
+    "electron-updater": "^6.6.2",
     "get-port-please": "^3.1.2",
     "h3-formidable": "^1.0.0",
     "js-file-download": "^0.4.12",
-    "pinia": "^2.2.2"
+    "pinia": "^3.0.1"
   }
 }

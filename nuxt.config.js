@@ -1,5 +1,3 @@
-/** @format */
-
 import package_json from "./package.json";
 
 export default defineNuxtConfig({
@@ -118,5 +116,5 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: "2024-06-30",
+  compatibilityDate: "2025-03-27",
 });
