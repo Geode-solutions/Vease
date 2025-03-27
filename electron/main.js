@@ -192,6 +192,11 @@ app.whenReady().then(() => {
     );
     return port;
   });
+
+  ipcMain.handle("new_window", async (event, ...args) => {
+    console.log("new_window", args);
+    window.open(process.env.VITE_DEV_SERVER_URL);
+  });
   if (app.isPackaged) {
     const app_path = path.join(
       app.getAppPath(),
