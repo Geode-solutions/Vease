@@ -28,6 +28,7 @@ import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
+const geode_store = use_geode_store();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
 
@@ -69,10 +70,31 @@ async function openMenu(event, id) {
   menuStore.openMenu();
 }
 
+watch(infra_store, () => {
+  console.log("watch infra_store", infra_store);
+  if (infra_store.is_sync) {
+    console.log("infra_store.is_sync", infra_store.is_sync);
+  }
+});
+
 onMounted(async () => {
+  console.log("onMounted");
+  // console.table(infra_store);
+  console.table(viewer_store);
+  console.log("viewer_store.is_sync", viewer_store.is_sync);
+  console.table(geode_store);
+  console.log("geode_store.is_sync", geode_store.is_sync);
+
   if (!viewer_store.is_running) {
+    console.log("CREATE BACKEND");
     await infra_store.create_backend();
     await viewer_store.ws_connect();
+
+    console.log("AFTER CREATE BACKEND");
+    console.log("viewer_store.port", viewer_store.port);
+    console.log("viewer_store.is_sync", viewer_store.is_sync);
+    console.log("geode_store.port", geode_store.port);
+    console.log("geode_store.is_sync", geode_store.is_sync);
   }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);

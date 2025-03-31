@@ -113,8 +113,8 @@ const default_styles = () => {
   };
 };
 
-const getDefaultStyle = (type) => {
+function getDefaultStyle(type) {
   return default_styles()[type];
-};
+}
 
-export default { getDefaultStyle };
+export { getDefaultStyle };

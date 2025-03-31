@@ -5,7 +5,8 @@
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
   "scripts": {
-    "dev": "npx nuxi@3.11.0 dev --no-fork",
+    "clean_cache": "npx nuxi cleanup",
+    "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -57,6 +58,7 @@
     "@nuxt/kit": "^3.16.0",
     "@pinia/nuxt": "^0.5.4",
     "@vueuse/nuxt": "^11.1.0",
+    "broadcast-channel": "^7.0.0",
     "draggable": "^4.2.0",
     "electron-updater": "^6.3.4",
     "get-port-please": "^3.1.2",

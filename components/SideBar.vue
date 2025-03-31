@@ -100,8 +100,10 @@ const items = ref([
     icon: "mdi-dock-window",
     click: () => {
       if (isElectron()) {
-        window.electronAPI.new_window(process.env.VITE_DEV_SERVER_URL);
+        window.electronAPI.new_window();
       } else {
+        console.log("notElectron");
+
         window.open("http://localhost:3000", "_blank");
       }
     },
