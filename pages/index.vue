@@ -1,5 +1,7 @@
 <template>
-  <Launcher v-if="infra_store.is_cloud && !infra_store.is_running" />
+  <Launcher
+    v-if="infra_store.is_cloud && !infra_store.microservices_connected"
+  />
   <v-card
     v-else
     ref="cardContainer"
@@ -70,31 +72,47 @@ async function openMenu(event, id) {
   menuStore.openMenu();
 }
 
-watch(infra_store, () => {
-  console.log("watch infra_store", infra_store);
-  if (infra_store.is_sync) {
-    console.log("infra_store.is_sync", infra_store.is_sync);
-  }
-});
+watch(
+  infra_store,
+  async (value, oldValue) => {
+    console.log("WATCH infra_store.is_sync value", value.is_sync);
+    console.log("WATCH infra_store.is_sync oldValue", oldValue.is_sync);
+    console.log("WATCH infra_store.status value", value.status);
+    console.log("WATCH infra_store.status oldValue", oldValue.status);
+
+    if (value.is_sync && !oldValue.is_sync) {
+      console.log("infra_store SYNCED !");
+
+      await infra_store.create_backend();
+      await viewer_store.connect();
+    }
+    // // if (oldValue.is_sync) {
+    // //   console.log("ALREADY SYNC");
+    // //   return;
+    // // }
+    // console.log("GO FOR LAUNCH");
+    // if (!value.is_connexion_launched) {
+    //   // not created
+    //   console.log("CREATE BACKEND");
+    //   await infra_store.create_backend();
+    //   viewer_store.connect();
+    // }
+    // not connected
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   console.log("onMounted");
-  // console.table(infra_store);
-  console.table(viewer_store);
+  console.log("infra_store.is_sync", infra_store.is_sync);
   console.log("viewer_store.is_sync", viewer_store.is_sync);
-  console.table(geode_store);
   console.log("geode_store.is_sync", geode_store.is_sync);
-
-  if (!viewer_store.is_running) {
+  if (infra_store.is_sync) {
+    // if (!infra_store.status ) {
     console.log("CREATE BACKEND");
     await infra_store.create_backend();
-    await viewer_store.ws_connect();
-
-    console.log("AFTER CREATE BACKEND");
-    console.log("viewer_store.port", viewer_store.port);
-    console.log("viewer_store.is_sync", viewer_store.is_sync);
-    console.log("geode_store.port", geode_store.port);
-    console.log("geode_store.is_sync", geode_store.is_sync);
+    // }
+    await viewer_store.connect();
   }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);

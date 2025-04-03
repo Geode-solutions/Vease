@@ -106,19 +106,29 @@
                       </a>
                     </td>
                     <td>
-                      <v-icon
-                        :icon="
-                          microservice.status
-                            ? 'mdi-check-circle'
-                            : 'mdi-close-circle'
-                        "
-                        :color="microservice.status ? 'white' : 'red'"
+                      <template
                         v-tooltip:right="
-                          microservice.status
-                            ? 'Microservice is running'
-                            : 'Microservice is not running'
+                          `Microservice is ${microservice.status.toLowerCase()}`
                         "
-                      />
+                      >
+                        <v-icon
+                          v-if="microservice.status == Status.CONNECTED"
+                          :icon="'mdi-check-circle'"
+                          :color="'white'"
+                        />
+                        <v-icon
+                          v-else-if="
+                            microservice.status == Status.NOT_CONNECTED
+                          "
+                          :icon="'mdi-close-circle'"
+                          :color="'red'"
+                        />
+                        <v-progress-circular
+                          v-else-if="microservice.status == Status.CONNECTING"
+                          indeterminate
+                          :width="5"
+                        />
+                      </template>
                     </td>
                   </tr>
                 </tbody>
@@ -143,6 +153,7 @@
 <script setup>
 import vease_back_schemas from "@geode/vease-back/schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
+import Status from "../utils/status";
 
 const version = useRuntimeConfig().public.VERSION;
 const geode_store = use_geode_store();
@@ -157,13 +168,13 @@ const microservices = ref([
     name: "Back",
     package: "vease-back",
     version: back_version,
-    status: geode_store.is_running,
+    status: geode_store.status,
   },
   {
     name: "Viewer",
     package: "vease-viewer",
     version: viewer_version,
-    status: viewer_store.is_running,
+    status: viewer_store.status,
   },
 ]);
 
