@@ -22,6 +22,19 @@
                 "
                 >{{ item.title }}</span
               >
+                <span class="treeview-item">{{ item.title }}</span>
+              </div>
+            </template>
+            <template #append="{ item }">
+              <v-btn
+                v-if="isHovered && isModel(item)"
+                icon="mdi-magnify-expand"
+                size="medium"
+                class="ml-8"
+                variant="text"
+                @click="treeviewStore.displayAdditionalTree(item.id)"
+                @click.left.stop
+              />
             </template>
           </v-treeview>
         </v-sheet>

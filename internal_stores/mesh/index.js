@@ -25,11 +25,7 @@ export default function useMeshStyle() {
     return selection;
   });
 
-  function addDataStyle(id, geode_object) {
-    dataStyleStore.styles[id] = getDefaultStyle(geode_object);
-    applyDefaultStyle(id);
-  }
-  function setVisibility(id, visibility) {
+  function setMeshVisibility(id, visibility) {
     viewer_call(
       {
         schema: viewer_schemas.opengeodeweb_viewer.mesh.visibility,
@@ -38,16 +34,19 @@ export default function useMeshStyle() {
       {
         response_function: () => {
           dataStyleStore.styles[id].visibility = visibility;
-          console.log("setVisibility", dataStyleStore.styles[id].visibility);
+          console.log(
+            "setMeshVisibility",
+            dataStyleStore.styles[id].visibility
+          );
         },
       }
     );
   }
 
-  function applyDefaultStyle(id) {
+  function applyMeshDefaultStyle(id) {
     const id_style = dataStyleStore.styles[id];
     for (const [key, value] of Object.entries(id_style)) {
-      if (key == "visibility") setVisibility(id, value);
+      if (key == "visibility") setMeshVisibility(id, value);
       else if (key == "points") pointsStyleStore.applyPointsStyle(id, value);
       else if (key == "edges") edgesStyleStore.applyEdgesStyle(id, value);
       else if (key == "polygons")
@@ -60,9 +59,8 @@ export default function useMeshStyle() {
   return {
     objectVisibility,
     selectedObjects,
-    addDataStyle,
-    setVisibility,
-    applyDefaultStyle,
+    // setMeshVisibility,
+    applyMeshDefaultStyle,
     ...useMeshPointsStyle(),
     ...useMeshEdgesStyle(),
     ...useMeshPolygonsStyle(),
