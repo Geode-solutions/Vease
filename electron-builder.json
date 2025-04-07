@@ -26,6 +26,7 @@
   },
   "win": {
     "artifactName": "${productName}_${platform}.${ext}",
+    "icon": "./public/256x256.png",
     "sign": "./customSign.js",
     "signingHashAlgorithms": [
       "sha256"
