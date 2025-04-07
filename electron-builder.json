@@ -14,6 +14,7 @@
   ],
   "linux": {
     "artifactName": "${productName}_${platform}.${ext}",
+    "icon": "./public/256x256.png",
     "category": "Science",
     "target": [
       "AppImage",
