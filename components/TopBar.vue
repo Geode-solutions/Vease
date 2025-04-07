@@ -9,7 +9,7 @@
         contain
       />
       <h2 style="color: white" class="ml-2 mb-1 title-text">Vease</h2>
-      <v-spacer />
+      <!-- <v-spacer />
       <v-text-field
         prepend-inner-icon="mdi-magnify"
         hide-details
@@ -19,8 +19,8 @@
         v-model="search"
         single-line
       ></v-text-field>
-      <v-spacer />
-      <v-tooltip>
+      <v-spacer /> -->
+      <!-- <v-tooltip>
         <template v-slot:activator="{ props }">
           <v-btn
             v-bind="props"
@@ -43,7 +43,7 @@
           </v-btn>
         </template>
         <span>Account</span>
-      </v-tooltip>
+      </v-tooltip> -->
     </v-row>
   </v-app-bar>
 </template>
