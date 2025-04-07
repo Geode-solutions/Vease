@@ -108,7 +108,7 @@
                     <td>
                       <template
                         v-tooltip:right="
-                          `Microservice is ${microservice.status.toLowerCase()}`
+                          `Microservice is ${microservice.status}`
                         "
                       >
                         <v-icon
@@ -120,12 +120,13 @@
                           v-else-if="
                             microservice.status == Status.NOT_CONNECTED
                           "
-                          :icon="'mdi-close-circle'"
-                          :color="'red'"
+                          icon="mdi-close-circle"
+                          color="red"
                         />
                         <v-progress-circular
                           v-else-if="microservice.status == Status.CONNECTING"
                           indeterminate
+                          color="white"
                           :width="5"
                         />
                       </template>

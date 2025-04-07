@@ -26,6 +26,7 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import Status from "@geode/opengeodeweb-front/utils/status.js";
 import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
@@ -74,46 +75,21 @@ async function openMenu(event, id) {
 
 watch(
   infra_store,
-  async (value, oldValue) => {
-    console.log("WATCH infra_store.is_sync value", value.is_sync);
-    console.log("WATCH infra_store.is_sync oldValue", oldValue.is_sync);
-    console.log("WATCH infra_store.status value", value.status);
-    console.log("WATCH infra_store.status oldValue", oldValue.status);
-
-    if (value.is_sync && !oldValue.is_sync) {
-      console.log("infra_store SYNCED !");
-
+  async (value) => {
+    if (!value.is_sync) return;
+    if (value.status != Status.CREATED) {
       await infra_store.create_backend();
-      await viewer_store.connect();
+      return;
     }
-    // // if (oldValue.is_sync) {
-    // //   console.log("ALREADY SYNC");
-    // //   return;
-    // // }
-    // console.log("GO FOR LAUNCH");
-    // if (!value.is_connexion_launched) {
-    //   // not created
-    //   console.log("CREATE BACKEND");
-    //   await infra_store.create_backend();
-    //   viewer_store.connect();
-    // }
-    // not connected
+    if (!value.microservices_connected) {
+      await infra_store.create_connection();
+    }
   },
   { deep: true }
 );
 
 onMounted(async () => {
   console.log("onMounted");
-  console.log("infra_store.is_sync", infra_store.is_sync);
-  console.log("viewer_store.is_sync", viewer_store.is_sync);
-  console.log("geode_store.is_sync", geode_store.is_sync);
-  if (infra_store.is_sync) {
-    // if (!infra_store.status ) {
-    console.log("CREATE BACKEND");
-    await infra_store.create_backend();
-    // }
-    await viewer_store.connect();
-  }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);
     containerWidth.value = width.value;
