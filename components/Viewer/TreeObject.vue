@@ -18,7 +18,7 @@
             <template #title="{ item }">
               <span
                 @click.right.stop="
-                  $emit('show-menu', { event: $event, id: item.id })
+                  emit('show-menu', { event: $event, itemId: item.id })
                 "
                 >{{ item.title }}</span
               >
@@ -34,6 +34,8 @@
 <script setup>
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
+const emit = defineEmits(["show-menu"]);
+
 const { selection } = toRefs(treeviewStore);
 
 const panelWidth = ref(300);
