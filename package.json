@@ -1,5 +1,5 @@
 {
-  "name": "vease",
+  "name": "Vease",
   "version": "0.0.0",
   "private": true,
   "description": "Desktop and cloud software for data visualization",
@@ -39,7 +39,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@geode/opengeodeweb-front": "^9.5.1",
+    "@geode/opengeodeweb-front": "^9.6.0",
     "electron": "^32.1.2",
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
@@ -49,11 +49,11 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",
-    "@geode/opengeodeweb-front": "^9.5.1",
-    "@geode/opengeodeweb-back": "5.6.3",
-    "@geode/opengeodeweb-viewer": "^1.6.1",
-    "@geode/vease-back": "^1.4.2",
-    "@geode/vease-viewer": "^2.3.0",
+    "@geode/opengeodeweb-front": "^9.6.0",
+    "@geode/opengeodeweb-back": "5.6.4",
+    "@geode/opengeodeweb-viewer": "^1.6.3",
+    "@geode/vease-back": "^1.4.3",
+    "@geode/vease-viewer": "^2.3.5",
     "@nuxt/kit": "^3.16.0",
     "@pinia/nuxt": "^0.5.4",
     "@vueuse/nuxt": "^11.1.0",
