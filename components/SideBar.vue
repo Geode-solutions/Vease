@@ -11,11 +11,8 @@
     app
     permanent
   >
-    <v-row no-gutters class="flex-column" style="height:100%">
-      <v-col cols="auto"
-        v-for="(item, index) in items"
-        :key="index"
-      >
+    <v-row no-gutters class="flex-column" style="height: 100%">
+      <v-col cols="auto" v-for="(item, index) in items" :key="index">
         <v-tooltip :text="item.title">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -86,16 +83,16 @@ const items = ref([
     icon: "mdi-home",
     click: () => navigateTo("/"),
   },
-  {
-    title: "New Project",
-    icon: "mdi-plus",
-    click: () => (newproject.value = true),
-  },
-  {
-    title: "Open Project",
-    icon: "mdi-folder-outline",
-    click: () => (openproject.value = true),
-  },
+  // {
+  //   title: "New Project",
+  //   icon: "mdi-plus",
+  //   click: () => (newproject.value = true),
+  // },
+  // {
+  //   title: "Open Project",
+  //   icon: "mdi-folder-outline",
+  //   click: () => (openproject.value = true),
+  // },
 ]);
 
 let draggedItem = null;
