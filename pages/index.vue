@@ -59,10 +59,6 @@ async function get_viewer_id(x, y) {
   );
 }
 function handleTreeMenu({ event, itemId }) {
-  console.log("event", event);
-  console.log("itemId", itemId);
-  // console.log("id", id);
-
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   id.value = itemId;

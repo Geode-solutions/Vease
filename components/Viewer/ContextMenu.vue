@@ -55,8 +55,6 @@ const menu_items = computed(() =>
   )
 );
 
-console.log("menu_items", menu_items);
-
 const menuItemCount = computed(() => menu_items.value.length);
 
 function getMenuStyle() {
