@@ -8,7 +8,10 @@
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject @show-menu="handleTreeMenu" />
+        <ViewerTreeObject
+          @click.right.contextmenu.stop
+          @show-menu="handleTreeMenu"
+        />
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -55,7 +58,11 @@ async function get_viewer_id(x, y) {
     }
   );
 }
-function handleTreeMenu({ event, id: itemId }) {
+function handleTreeMenu({ event, itemId }) {
+  console.log("event", event);
+  console.log("itemId", itemId);
+  // console.log("id", id);
+
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   id.value = itemId;
