@@ -24,16 +24,16 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
 
 ## 🪟 Windows
 
-### Using executable
+### Option 1: Using executable
 
 - Run the executable version
   ```powershell
   vease_win32.exe
   ```
 
-### Using zip archive
+### Option 2: Using zip archive
 
-1. Unzip the vease_win32.zip archive and run the app
+1. Unzip the vease_win32.zip archive
 2. Run the app
    ```powershell
    vease.exe
@@ -41,7 +41,7 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
 
 ## 🐧 Linux
 
-### Using AppImage
+### Option 1: Using AppImage
 
 1. Install <a href="https://github.com/appimage/appimagekit/wiki/fuse">fuse</a>
 2. Make the AppImage executable
@@ -53,9 +53,9 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
    ./vease_linux.AppImage --no-sandbox
    ```
 
-### Using zip archive
+### Option 2: Using zip archive
 
-1. Unzip the vease_linux.zip archive and run the app
+1. Unzip the vease_linux.zip archive
 2. Run the app
    ```shell
    ./vease
