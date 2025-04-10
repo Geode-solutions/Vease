@@ -3,7 +3,7 @@
 
 ![App Screenshot](./.github/screenshots/model_from_implicitation.png)
 
-Vease is:
+## What is Vease?
 
 - **Desktop**: Easily installable on your computer
 - **Web-native**: Built with modern web technologies for accessibility
