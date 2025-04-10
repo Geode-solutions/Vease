@@ -3,102 +3,65 @@
 
 ![App Screenshot](./.github/screenshots/model_from_implicitation.png)
 
-## Installation
+Vease is:
+
+- **Desktop**: Easily installable on your computer
+- **Web-native**: Built with modern web technologies for accessibility
+- **Simple**: Light UI focusing on usability
+- **Extensible**: Designed for easy integration and customization
+
+🔧 Vease is powered by a combination of:
+
+- [OpenGeode](https://github.com/Geode-solutions/OpenGeode): for structured geoscience data handling
+- [VTK](https://vtk.org/): for high-performance 3D rendering
+
+# <a name="license">📀 Installation</a>
 
 Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) version
 
 > [!NOTE]
 > The app comes with auto updates with the windows exe & linux AppImage versions
 
-#### Windows
+## 🪟 Windows
 
-<ul>
+### Using executable
 
-<li>
-    zip
-    <br/>
-    <ol>
-        <li>
-            Unzip the vease_win32.zip archive and run the app
-        </li>
-        <li>
-            Run the app
-        </li>
+- Run the executable version
+  ```powershell
+  vease_win32.exe
+  ```
 
-```powershell
-vease.exe
-```
+### Using zip archive
 
-</ol>
-</li>
-</ul>
+1. Unzip the vease_win32.zip archive and run the app
+2. Run the app
+   ```powershell
+   vease.exe
+   ```
 
-<ul>
-    <li>
-    exe
-    <br/>
-    Run the executable version
+## 🐧 Linux
 
-```powershell
-vease_win32.exe
-```
+### Using AppImage
 
-</li>
-</ul>
+1. Install <a href="https://github.com/appimage/appimagekit/wiki/fuse">fuse</a>
+2. Make the AppImage executable
+   ```shell
+   chmod +x vease_linux.AppImage
+   ```
+3. Run the AppImage version
+   ```shell
+   ./vease_linux.AppImage --no-sandbox
+   ```
 
-#### Linux
+### Using zip archive
 
-<ul>
-    <li>
-    zip 
-    </br>
-    <ol>
-    <li>
-        Unzip the vease_linux.zip archive and run the app
-    </li>
-    <li>
-        Run the app
-    </li>
+1. Unzip the vease_linux.zip archive and run the app
+2. Run the app
+   ```shell
+   ./vease
+   ```
 
-```shell
-./vease
-```
-
-</ol>
-
-</li>
-</ul>
-
-<ul>
-    <li>
-    AppImage
-    </br>
-    <ol>
-        <li>
-            Install <a href="https://github.com/appimage/appimagekit/wiki/fuse">fuse</a>
-        </li>
-        <li>
-            Make the AppImage executable
-
-```shell
-chmod +x vease_linux.AppImage
-```
-
-</li>
-<li>
-    Run the AppImage version
-</li>
-
-```shell
-./vease_linux.AppImage --no-sandbox
-```
-
-</ol>
-
-</li>
-</ul>
-
-## License
+# <a name="license">⚖️ License</a>
 
 [LGPL-2.1](https://opensource.org/license/lgpl-2-1)
 
