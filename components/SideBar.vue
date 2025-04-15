@@ -85,29 +85,29 @@ const items = ref([
     icon: "mdi-home",
     click: () => navigateTo("/"),
   },
-  {
-    title: "New Project",
-    icon: "mdi-plus",
-    click: () => (newproject.value = true),
-  },
-  {
-    title: "Open Project",
-    icon: "mdi-folder-outline",
-    click: () => (openproject.value = true),
-  },
-  {
-    title: "Open new window",
-    icon: "mdi-dock-window",
-    click: () => {
-      if (isElectron()) {
-        window.electronAPI.new_window();
-      } else {
-        console.log("notElectron");
+  // {
+  //   title: "New Project",
+  //   icon: "mdi-plus",
+  //   click: () => (newproject.value = true),
+  // },
+  // {
+  //   title: "Open Project",
+  //   icon: "mdi-folder-outline",
+  //   click: () => (openproject.value = true),
+  // },
+  // {
+  //   title: "Open new window",
+  //   icon: "mdi-dock-window",
+  //   click: () => {
+  //     if (isElectron()) {
+  //       window.electronAPI.new_window();
+  //     } else {
+  //       console.log("notElectron");
 
-        window.open("http://localhost:3000", "_blank");
-      }
-    },
-  },
+  //       window.open("http://localhost:3000", "_blank");
+  //     }
+  //   },
+  // },
 ]);
 
 let draggedItem = null;
