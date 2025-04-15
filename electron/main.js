@@ -5,6 +5,7 @@ import {
   executable_path,
   create_path,
   create_new_window,
+  get_available_port,
   run_script,
 } from "../utils/desktop";
 
@@ -19,12 +20,12 @@ var processes = [];
 var mainWindow = null;
 
 ipcMain.handle("run_back", async (event, ...args) => {
-  const port = await getAvailablePort(args[0]);
+  const port = await get_available_port(args[0]);
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
   console.log("command", command);
   await run_script(
-    win,
+    mainWindow,
     command,
     [
       "--port " + port,
@@ -39,12 +40,12 @@ ipcMain.handle("run_back", async (event, ...args) => {
 });
 
 ipcMain.handle("run_viewer", async (event, ...args) => {
-  const port = await getAvailablePort(args[0]);
+  const port = await get_available_port(args[0]);
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
   console.log("command", command);
   await run_script(
-    win,
+    mainWindow,
     command,
     [
       "--port " + port,

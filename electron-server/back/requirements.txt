@@ -79,7 +79,7 @@ geode-simplex==9.2.5
     #   geode-implicit
     #   opengeodeweb-back
     #   vease-back
-geode-viewables==3.0.10
+geode-viewables==3.0.12
     # via
     #   opengeodeweb-back
     #   vease-back
@@ -124,26 +124,26 @@ opengeode-core==15.17.8
     #   opengeode-io
     #   opengeodeweb-back
     #   vease-back
-opengeode-geosciences==8.4.0
+opengeode-geosciences==8.4.3
     # via
     #   geode-implicit
     #   geode-viewables
     #   opengeode-geosciencesio
     #   opengeodeweb-back
     #   vease-back
-opengeode-geosciencesio==5.3.7
+opengeode-geosciencesio==5.3.8
     # via
     #   geode-implicit
     #   opengeodeweb-back
     #   vease-back
-opengeode-inspector==6.3.10
+opengeode-inspector==6.3.11
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   opengeodeweb-back
     #   vease-back
-opengeode-io==7.1.3
+opengeode-io==7.1.5
     # via
     #   geode-implicit
     #   geode-viewables
@@ -158,7 +158,7 @@ referencing==0.36.2
     #   jsonschema-specifications
     #   opengeodeweb-back
     #   vease-back
-rpds-py==0.23.1
+rpds-py==0.24.0
     # via
     #   jsonschema
     #   opengeodeweb-back

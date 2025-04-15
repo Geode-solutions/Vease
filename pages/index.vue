@@ -71,20 +71,20 @@ async function openMenu(event, id) {
   menuStore.openMenu();
 }
 
-watch(
-  infra_store,
-  async (value) => {
-    if (!value.is_sync) return;
-    if (value.status != Status.CREATED) {
-      await infra_store.create_backend();
-      return;
-    }
-    if (!value.microservices_connected) {
-      await infra_store.create_connection();
-    }
-  },
-  { deep: true }
-);
+// watch(
+//   infra_store,
+//   async (value) => {
+//     if (!value.is_sync) return;
+//     if (value.status != Status.CREATED) {
+//       await infra_store.create_backend();
+//       return;
+//     }
+//     if (!value.microservices_connected) {
+//       await infra_store.create_connection();
+//     }
+//   },
+//   { deep: true }
+// );
 
 onMounted(async () => {
   console.log("onMounted");
