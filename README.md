@@ -60,6 +60,9 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
    ```shell
    ./vease
    ```
+# Features
+<details><summary>Import file using drag&drog or import dialog</summary>![vease-import](https://github.com/user-attachments/assets/7f02f106-1449-4c29-8333-658c16d9e01d)</details>
+
 
 # <a name="license">⚖️ License</a>
 
