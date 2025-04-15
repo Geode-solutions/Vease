@@ -61,7 +61,11 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
    ./vease
    ```
 # Features
-<details><summary>Import file using drag&drog or import dialog</summary>![vease-import](https://github.com/user-attachments/assets/7f02f106-1449-4c29-8333-658c16d9e01d)</details>
+Here is a list of what to expect inside Vease
+<details>
+  <summary>Import file using drag&drog or import dialog</summary>
+  <img src="https://github.com/user-attachments/assets/7f02f106-1449-4c29-8333-658c16d9e01d" width="500">
+</details>
 
 
 # <a name="license">⚖️ License</a>
