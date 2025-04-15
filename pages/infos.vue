@@ -106,30 +106,31 @@
                       </a>
                     </td>
                     <td>
-                      <template
-                        v-tooltip:right="
-                          `Microservice is ${microservice.status}`
-                        "
+                      <v-tooltip
+                        :text="`Microservice is ${microservice.status}`"
+                        location="right"
                       >
-                        <v-icon
-                          v-if="microservice.status == Status.CONNECTED"
-                          :icon="'mdi-check-circle'"
-                          :color="'white'"
-                        />
-                        <v-icon
-                          v-else-if="
-                            microservice.status == Status.NOT_CONNECTED
-                          "
-                          icon="mdi-close-circle"
-                          color="red"
-                        />
-                        <v-progress-circular
-                          v-else-if="microservice.status == Status.CONNECTING"
-                          indeterminate
-                          color="white"
-                          :width="5"
-                        />
-                      </template>
+                        <template v-slot:activator="{ props }">
+                          <v-icon
+                            v-if="microservice.status == Status.NOT_CONNECTED"
+                            v-bind="props"
+                            icon="mdi-close-circle"
+                            color="red"
+                          />
+                          <v-progress-circular
+                            v-else-if="microservice.status == Status.CONNECTING"
+                            v-bind="props"
+                            indeterminate
+                            color="primary"
+                          />
+                          <v-icon
+                            v-if="microservice.status == Status.CONNECTED"
+                            v-bind="props"
+                            icon="mdi-check-circle"
+                            color="white"
+                          />
+                        </template>
+                      </v-tooltip>
                     </td>
                   </tr>
                 </tbody>
@@ -154,7 +155,7 @@
 <script setup>
 import vease_back_schemas from "@geode/vease-back/schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
-import Status from "../utils/status";
+import Status from "@geode/opengeodeweb-front";
 
 const version = useRuntimeConfig().public.VERSION;
 const geode_store = use_geode_store();

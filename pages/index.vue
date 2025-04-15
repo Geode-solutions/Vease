@@ -1,7 +1,5 @@
 <template>
-  <Launcher
-    v-if="infra_store.is_cloud && !infra_store.microservices_connected"
-  />
+  <Launcher v-if="infra_store.status != Status.CREATED" />
   <v-card
     v-else
     ref="cardContainer"
@@ -30,8 +28,8 @@ import Status from "@geode/opengeodeweb-front/utils/status.js";
 import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
-const viewer_store = use_viewer_store();
-const geode_store = use_geode_store();
+// const viewer_store = use_viewer_store();
+// const geode_store = use_geode_store();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
 
@@ -90,6 +88,10 @@ watch(
 
 onMounted(async () => {
   console.log("onMounted");
+  // if (!viewer_store.is_running) {
+  //   await infra_store.create_connexion();
+  //   await viewer_store.ws_connect();
+  // }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);
     containerWidth.value = width.value;
