@@ -1,5 +1,5 @@
 <template>
-  <Launcher v-if="infra_store.is_cloud && !infra_store.is_running" />
+  <Launcher v-if="infra_store.status != Status.CREATED" />
   <v-card
     v-else
     ref="cardContainer"
@@ -27,10 +27,12 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import Status from "@geode/opengeodeweb-front/utils/status.js";
 import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
-const viewer_store = use_viewer_store();
+// const viewer_store = use_viewer_store();
+// const geode_store = use_geode_store();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
 
@@ -72,11 +74,27 @@ async function openMenu(event, id) {
   menuStore.openMenu();
 }
 
+// watch(
+//   infra_store,
+//   async (value) => {
+//     if (!value.is_sync) return;
+//     if (value.status != Status.CREATED) {
+//       await infra_store.create_backend();
+//       return;
+//     }
+//     if (!value.microservices_connected) {
+//       await infra_store.create_connection();
+//     }
+//   },
+//   { deep: true }
+// );
+
 onMounted(async () => {
-  if (!viewer_store.is_running) {
-    await infra_store.create_backend();
-    await viewer_store.ws_connect();
-  }
+  console.log("onMounted");
+  // if (!viewer_store.is_running) {
+  //   await infra_store.create_connexion();
+  //   await viewer_store.ws_connect();
+  // }
   if (cardContainer.value) {
     const { width, height } = useElementSize(cardContainer.value);
     containerWidth.value = width.value;
