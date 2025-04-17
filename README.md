@@ -15,14 +15,20 @@
 - [OpenGeode](https://github.com/Geode-solutions/OpenGeode): for structured geoscience data handling
 - [VTK](https://vtk.org/): for high-performance 3D rendering
 
-# Features
+# ⚡ Features
+
 Here is a list of what to expect inside Vease. Click on each title to see a demo.
+
 <details>
   <summary>Import file using drag&drog or import dialog</summary>
-  <img src="https://github.com/user-attachments/assets/7f02f106-1449-4c29-8333-658c16d9e01d" width="500">
+  <img src="./docs/import.gif" width="500">
+</details>
+<details>
+  <summary>Mesh graphics options with points/edges visibility, constant and variable coloring</summary>
+  <img src="./docs/mesh_graphics.gif" width="500">
 </details>
 
-# <a name="license">📀 Installation</a>
+# 📀 Installation
 
 Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) version
 
@@ -68,8 +74,7 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
    ./vease
    ```
 
-
-# <a name="license">⚖️ License</a>
+# ⚖️ License
 
 [LGPL-2.1](https://opensource.org/license/lgpl-2-1)
 
