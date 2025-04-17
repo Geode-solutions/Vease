@@ -19,7 +19,7 @@
           />
           <v-treeview
             v-model:selected="components_selection"
-            :items="mesh_components"
+            :items="mesh_components.items"
             return-object
             class="transparent-treeview"
             item-value="id"
@@ -55,6 +55,13 @@ onMounted(() => {
 
 async function fetchMeshComponents() {
   try {
+    console.log("Fetching mesh components...");
+    console.log("Meta Data:", meta_data.value);
+
+    if (!meta_data.value.native_filename || !meta_data.value.geode_object) {
+      throw new Error("Missing required meta data");
+    }
+
     await api_fetch(
       {
         schema: back_schemas.opengeodeweb_back.models.mesh_components,
@@ -65,6 +72,7 @@ async function fetchMeshComponents() {
       },
       {
         response_function: async (response) => {
+          console.log("API Response:", response);
           const categories = response._data || {};
           const formattedData = [];
 
@@ -76,6 +84,7 @@ async function fetchMeshComponents() {
             });
           }
           mesh_components.value = formattedData;
+          console.log("Mesh Components:", mesh_components.value);
         },
       }
     );
@@ -127,21 +136,34 @@ function onResizeStart(event) {
 
 async function getUuidToFlatIndexDict() {
   console.log("getUuidToFlatIndexDict", props.id);
-  await api_fetch(
-    {
-      schema: back_schemas.opengeodeweb_back.models.vtm_component_indices,
-      params: {
-        id: props.id,
+  try {
+    await api_fetch(
+      {
+        schema: back_schemas.opengeodeweb_back.models.vtm_component_indices,
+        params: {
+          id: props.id,
+        },
       },
-    },
-    {
-      response_function: async (response) => {
-        console.log("uuid_dict", response._data.uuid_dict);
-        uuid_dict.value = response._data.uuid_dict;
-      },
-    }
-  );
+      {
+        response_function: async (response) => {
+          console.log("Full API Response for UUID dict:", response);
+          if (response._data && response._data.uuid_dict) {
+            uuid_dict.value = response._data.uuid_dict;
+            console.log("UUID dict:", uuid_dict.value);
+          } else {
+            console.error(
+              "UUID dict not found in response data:",
+              response._data
+            );
+          }
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Failed to fetch UUID dict:", error);
+  }
 }
+
 onMounted(() => {
   getUuidToFlatIndexDict();
 });

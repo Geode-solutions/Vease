@@ -170,7 +170,7 @@ app.whenReady().then(() => {
       [
         "--port " + port,
         "--data_folder_path " + data_folder_path,
-        "--desktop",
+        "--timeout " + 0,
         "--allowed_origin ",
         "" * "",
       ],
