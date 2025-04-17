@@ -106,19 +106,31 @@
                       </a>
                     </td>
                     <td>
-                      <v-icon
-                        :icon="
-                          microservice.status
-                            ? 'mdi-check-circle'
-                            : 'mdi-close-circle'
-                        "
-                        :color="microservice.status ? 'white' : 'red'"
-                        v-tooltip:right="
-                          microservice.status
-                            ? 'Microservice is running'
-                            : 'Microservice is not running'
-                        "
-                      />
+                      <v-tooltip
+                        :text="`Microservice is ${microservice.status}`"
+                        location="right"
+                      >
+                        <template v-slot:activator="{ props }">
+                          <v-icon
+                            v-if="microservice.status == Status.NOT_CONNECTED"
+                            v-bind="props"
+                            icon="mdi-close-circle"
+                            color="red"
+                          />
+                          <v-progress-circular
+                            v-else-if="microservice.status == Status.CONNECTING"
+                            v-bind="props"
+                            indeterminate
+                            color="primary"
+                          />
+                          <v-icon
+                            v-if="microservice.status == Status.CONNECTED"
+                            v-bind="props"
+                            icon="mdi-check-circle"
+                            color="white"
+                          />
+                        </template>
+                      </v-tooltip>
                     </td>
                   </tr>
                 </tbody>
@@ -143,6 +155,7 @@
 <script setup>
 import vease_back_schemas from "@geode/vease-back/schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
+import Status from "@geode/opengeodeweb-front";
 
 const version = useRuntimeConfig().public.VERSION;
 const geode_store = use_geode_store();
@@ -157,13 +170,13 @@ const microservices = ref([
     name: "Back",
     package: "vease-back",
     version: back_version,
-    status: geode_store.is_running,
+    status: geode_store.status,
   },
   {
     name: "Viewer",
     package: "vease-viewer",
     version: viewer_version,
-    status: viewer_store.is_running,
+    status: viewer_store.status,
   },
 ]);
 

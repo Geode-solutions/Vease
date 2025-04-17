@@ -7,7 +7,7 @@
           class="transparent-treeview scrollbar"
         >
           <v-treeview
-            v-model:selected="selection"
+            v-model:selected="treeviewStore.selection"
             :items="treeviewStore.items"
             return-object
             class="transparent-treeview"
@@ -19,7 +19,7 @@
               <span
                 class="treeview-item"
                 @click.right.stop="
-                  $emit('show-menu', { event: $event, id: item.id })
+                  emit('show-menu', { event: $event, itemId: item.id })
                 "
               >
                 {{ item.title }}
@@ -46,7 +46,7 @@
 <script setup>
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
-const { selection } = toRefs(treeviewStore);
+const emit = defineEmits(["show-menu"]);
 
 const panelWidth = ref(300);
 const isResizing = ref(false);
@@ -60,7 +60,7 @@ function compareSelections(current, previous) {
 }
 
 watch(
-  selection,
+  () => treeviewStore.selection,
   (current, previous) => {
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);

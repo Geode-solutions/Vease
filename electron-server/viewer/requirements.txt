@@ -34,7 +34,7 @@ cycler==0.12.1
     # via
     #   matplotlib
     #   vease-viewer
-fonttools==4.56.0
+fonttools==4.57.0
     # via
     #   matplotlib
     #   vease-viewer
@@ -77,7 +77,7 @@ numpy==2.2.4
     #   contourpy
     #   matplotlib
     #   vease-viewer
-opengeodeweb-viewer[gpu]==1.6.1
+opengeodeweb-viewer[gpu]==1.6.3
     # via vease-viewer
 packaging==24.2
     # via
@@ -115,7 +115,7 @@ six==1.17.0
     # via
     #   python-dateutil
     #   vease-viewer
-vease-viewer[gpu]==2.3.3
+vease-viewer[gpu]==2.3.5
     # via -r ./electron-server/viewer/requirements.in
 vtk==9.3.1
     # via

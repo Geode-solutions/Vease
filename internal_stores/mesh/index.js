@@ -1,5 +1,5 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import { getDefaultStyle } from "@/utils/default_styles";
+import { getDefaultStyle } from "@/utils/default_styles.js";
 import { useMeshPointsStyle } from "./points.js";
 import { useMeshEdgesStyle } from "./edges.js";
 import { useMeshPolygonsStyle } from "./polygons.js";
