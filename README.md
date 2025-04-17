@@ -3,7 +3,7 @@
 
 ![App Screenshot](./.github/screenshots/model_from_implicitation.png)
 
-## What is Vease?
+# What is Vease?
 
 - **Desktop**: Easily installable on your computer
 - **Web-native**: Built with modern web technologies for accessibility
@@ -14,6 +14,13 @@
 
 - [OpenGeode](https://github.com/Geode-solutions/OpenGeode): for structured geoscience data handling
 - [VTK](https://vtk.org/): for high-performance 3D rendering
+
+# Features
+Here is a list of what to expect inside Vease. Click on each title to see a demo.
+<details>
+  <summary>Import file using drag&drog or import dialog</summary>
+  <img src="https://github.com/user-attachments/assets/7f02f106-1449-4c29-8333-658c16d9e01d" width="500">
+</details>
 
 # <a name="license">📀 Installation</a>
 
@@ -60,6 +67,7 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
    ```shell
    ./vease
    ```
+
 
 # <a name="license">⚖️ License</a>
 
