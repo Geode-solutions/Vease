@@ -23,15 +23,15 @@ ipcMain.handle("run_back", async (event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
-  const args = [
+  const back_args = [
     "--port " + port,
     "--data_folder_path " + data_folder_path,
     "--allowed_origin ",
     "" * "",
     "--timeout " + 0,
   ];
-  console.log("run_back", command, args);
-  await run_script(mainWindow, command, args, "Serving Flask app");
+  console.log("run_back", command, back_args);
+  await run_script(mainWindow, command, back_args, "Serving Flask app");
   return port;
 });
 
@@ -39,13 +39,13 @@ ipcMain.handle("run_viewer", async (event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
-  const args = [
+  const viewer_args = [
     "--port " + port,
     "--data_folder_path " + data_folder_path,
     "--timeout " + 0,
   ];
-  console.log("run_viewer", command, args);
-  await run_script(mainWindow, command, args, "Starting factory");
+  console.log("run_viewer", command, viewer_args);
+  await run_script(mainWindow, command, viewer_args, "Starting factory");
   return port;
 });
 
