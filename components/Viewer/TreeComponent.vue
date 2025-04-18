@@ -19,7 +19,7 @@
           />
           <v-treeview
             v-model:selected="components_selection"
-            :items="mesh_components.items"
+            :items="mesh_components"
             return-object
             class="transparent-treeview"
             item-value="id"
@@ -27,7 +27,7 @@
             selectable
           >
             <template #title="{ item }">
-              <span class="treeview-item">{{ item.name }}</span>
+              <span class="treeview-item">{{ item.id }}</span>
             </template>
           </v-treeview>
         </v-sheet>
@@ -41,16 +41,23 @@
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
 const treeviewStore = use_treeview_store();
+const dataStyleStore = useDataStyleStore();
 const { components_selection } = toRefs(treeviewStore);
 
 const props = defineProps({ id: { type: String, required: true } });
 
 const meta_data = computed(() => treeviewStore.itemMetaDatas(props.id));
 const mesh_components = ref([]);
-const uuid_dict = reactive({});
+const uuid_dict = ref({});
+const previousSelection = ref([]);
 
 onMounted(() => {
   fetchMeshComponents();
+  getUuidToFlatIndexDict();
+
+  if (back_schemas?.opengeodeweb_back?.models) {
+  } else {
+  }
 });
 
 async function fetchMeshComponents() {
@@ -73,18 +80,29 @@ async function fetchMeshComponents() {
       {
         response_function: async (response) => {
           console.log("API Response:", response);
-          const categories = response._data || {};
-          const formattedData = [];
+          if (response._data && response._data.uuid_dict) {
+            const categories = response._data.uuid_dict || {};
+            const formattedData = [];
 
-          for (const [category, uuids] of Object.entries(categories)) {
-            formattedData.push({
-              id: category,
-              name: category,
-              children: uuids.map((uuid) => ({ id: uuid, name: uuid })),
-            });
+            for (const [category, uuids] of Object.entries(categories)) {
+              formattedData.push({
+                id: category,
+                name: category,
+                children: uuids.map((uuid) => ({
+                  id: uuid,
+                  name: uuid,
+                  category,
+                })),
+              });
+            }
+            mesh_components.value = formattedData;
+            console.log("Mesh Components:", mesh_components.value);
+          } else {
+            console.error(
+              "UUID dict not found in response data:",
+              response._data
+            );
           }
-          mesh_components.value = formattedData;
-          console.log("Mesh Components:", mesh_components.value);
         },
       }
     );
@@ -93,25 +111,31 @@ async function fetchMeshComponents() {
   }
 }
 
-function compareSelections(current, previous) {
-  const added = current.filter((item) => !previous.includes(item));
-  const removed = previous.filter((item) => !current.includes(item));
-  return { added, removed };
-}
-
 watch(
   components_selection,
-  (current, previous) => {
-    if (!previous) previous = [];
-    const { added, removed } = compareSelections(current, previous);
-    added.forEach((item) =>
-      dataStyleStore.setMeshComponentVisibility(props.id, uuid, true)
+  (current) => {
+    const prev = previousSelection.value || [];
+    const added = current.filter((item) => !prev.some((p) => p.id === item.id));
+    const removed = prev.filter(
+      (item) => !current.some((c) => c.id === item.id)
     );
-    removed.forEach((item) =>
-      dataStyleStore.setMeshComponentVisibility(props.id, uuid, false)
-    );
+
+    added.forEach((item) => {
+      const flatIndex = uuid_dict.value[item.id];
+      if (flatIndex !== undefined) {
+        dataStyleStore.setVisibility(props.id, flatIndex, true);
+      }
+    });
+    removed.forEach((item) => {
+      const flatIndex = uuid_dict.value[item.id];
+      if (flatIndex !== undefined) {
+        dataStyleStore.setVisibility(props.id, flatIndex, false);
+      }
+    });
+
+    previousSelection.value = [...current];
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 );
 
 function onResizeStart(event) {
@@ -135,7 +159,6 @@ function onResizeStart(event) {
 }
 
 async function getUuidToFlatIndexDict() {
-  console.log("getUuidToFlatIndexDict", props.id);
   try {
     await api_fetch(
       {
@@ -146,9 +169,8 @@ async function getUuidToFlatIndexDict() {
       },
       {
         response_function: async (response) => {
-          console.log("Full API Response for UUID dict:", response);
-          if (response._data && response._data.uuid_dict) {
-            uuid_dict.value = response._data.uuid_dict;
+          if (response._data && response._data.uuid_to_flat_index) {
+            uuid_dict.value = response._data.uuid_to_flat_index;
             console.log("UUID dict:", uuid_dict.value);
           } else {
             console.error(
@@ -159,14 +181,8 @@ async function getUuidToFlatIndexDict() {
         },
       }
     );
-  } catch (error) {
-    console.error("Failed to fetch UUID dict:", error);
-  }
+  } catch (error) {}
 }
-
-onMounted(() => {
-  getUuidToFlatIndexDict();
-});
 </script>
 
 <style scoped>

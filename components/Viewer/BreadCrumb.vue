@@ -8,7 +8,7 @@
         <v-icon size="large">mdi-file-tree</v-icon>
         <h4>&nbsp;</h4>
         <span class="text-subtitle-1 font-weight-regular align-center mt-1">
-          File Tree
+          TreeComponent
         </span>
       </div>
 
@@ -23,8 +23,11 @@
             <h4>&nbsp;</h4>
             <v-btn variant="text" size="medium">
               <v-icon size="x-large">{{
-                selectedTree ? selectedTree.icon : "mdi-shape-outline"
+                selectedTree && selectedTree.icon
+                  ? selectedTree.icon
+                  : "mdi-shape-outline"
               }}</v-icon>
+
               <v-icon small>mdi-chevron-down</v-icon>
             </v-btn>
           </div>
@@ -49,12 +52,14 @@
           </v-list-item>
         </v-list>
       </v-menu>
-
+      <span class="text-subtitle-1 font-weight-regular align-center mt-1">
+        TreeComponent
+      </span>
       <span
         v-if="treeviewStore.isAdditionnalTreeDisplayed && selectedTree"
         class="text-subtitle-1 font-weight-regular align-center mt-1"
       >
-        {{ selectedTree.text }}
+        {{ selectedTree ? selectedTree.text : "No tree selected" }}
       </span>
     </div>
   </v-breadcrumbs>

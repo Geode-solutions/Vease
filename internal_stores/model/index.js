@@ -25,7 +25,6 @@ export default function useModelStyle() {
   });
 
   function setModelVisibility(id, visibility) {
-    console.log("setModelVisibility", id, visibility);
     viewer_call(
       {
         schema: viewer_schemas.opengeodeweb_viewer.model.visibility,
@@ -34,11 +33,23 @@ export default function useModelStyle() {
       {
         response_function: () => {
           dataStyleStore.styles[id].visibility = visibility;
-          console.log(
-            "setModelVisibility",
-            dataStyleStore.styles[id].visibility
-          );
         },
+      }
+    );
+  }
+
+  function setSurfaceBlockVisibility(id, flat_index, visibility) {
+    viewer_call(
+      {
+        schema: viewer_schemas.opengeodeweb_viewer.model.surfaces.visibility,
+        params: {
+          id,
+          block_ids: [flat_index],
+          visibility,
+        },
+      },
+      {
+        response_function: () => {},
       }
     );
   }
@@ -47,18 +58,21 @@ export default function useModelStyle() {
     const id_style = dataStyleStore.styles[id];
     for (const [key, value] of Object.entries(id_style)) {
       if (key == "visibility") setModelVisibility(id, value);
-      // else if (key == "surfaces")
-      //   surfacesStyleStore.applySurfacesStyle(id, value);
+      // else if (key == "surfaces") surfacesStyleStore.applySurfacesStyle(id, value);
       // else if (key == "corners") cornersStyleStore.applyCornersStyle(id, value);
       // else if (key == "blocks") blocksStyleStore.applyBlocksStyle(id, value);
       // else if (key == "lines") linesStyleStore.applyLinesStyle(id, value);
     }
   }
 
-  function setMeshComponentVisibility(id, uuid, flat_index, visibility) {
+  function setMeshComponentVisibility(
+    id,
+    mesh_component_type,
+    flat_index,
+    visibility
+  ) {
     const meta_data = treeviewStore.itemMetaDatas(id);
     const object_type = meta_data.object_type;
-    console.log("setVisibility", id, visibility, object_type);
     if (mesh_component_type == "Block") {
       blocksStyleStore.setBlocksVisibility(id, visibility);
     }
@@ -68,6 +82,7 @@ export default function useModelStyle() {
     objectVisibility,
     selectedObjects,
     setModelVisibility,
+    setSurfaceBlockVisibility,
     applyModelDefaultStyle,
     setMeshComponentVisibility,
     ...useSurfacesStyle(),
