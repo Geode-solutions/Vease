@@ -17,11 +17,23 @@
           >
             <template #title="{ item }">
               <span
+                class="treeview-item"
                 @click.right.stop="
                   emit('show-menu', { event: $event, itemId: item.id })
                 "
-                >{{ item.title }}</span
               >
+                {{ item.title }}
+              </span>
+            </template>
+            <template #append="{ item }">
+              <v-btn
+                v-if="isModel(item)"
+                icon="mdi-magnify-expand"
+                size="medium"
+                class="ml-8"
+                variant="text"
+                @click.stop="treeviewStore.displayAdditionalTree(item.id)"
+              />
             </template>
           </v-treeview>
         </v-sheet>
@@ -76,6 +88,10 @@ function onResizeStart(event) {
 
   useEventListener(document, "mousemove", resize);
   useEventListener(document, "mouseup", stopResize);
+}
+
+function isModel(item) {
+  return item.object_type === "model";
 }
 </script>
 

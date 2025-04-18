@@ -46,6 +46,19 @@ const polyhedraDefaultStyle = (visibility) => {
   };
 };
 
+const cornersDefaultStyle = () => {
+  return {};
+};
+const linesDefaultStyle = () => {
+  return {};
+};
+const surfacesDefaultStyle = () => {
+  return {};
+};
+const blocksDefaultStyle = () => {
+  return {};
+};
+
 const points_defaultSize = 10;
 const edges_defaultSize = 5;
 
@@ -83,9 +96,19 @@ const solid_defaultStyle = () => {
   };
 };
 
+const brep_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+  };
+};
+
 const default_styles = () => {
   return {
-    BRep: {},
+    BRep: brep_defaultStyle(),
     CrossSection: {},
     EdgedCurve2D: edgedCurve_defaultStyle(),
     EdgedCurve3D: edgedCurve_defaultStyle(),

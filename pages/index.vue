@@ -9,8 +9,13 @@
     <RemoteRenderingView>
       <template #ui>
         <ViewerTreeObject
-          @click.right.contextmenu.stop
+          v-if="!treeviewStore.isAdditionnalTreeDisplayed"
           @show-menu="handleTreeMenu"
+        />
+        <ViewerTreeComponent
+          v-else
+          @show-menu="handleTreeMenu"
+          :id="treeviewStore.model_id"
         />
         <ViewerContextMenu
           v-if="display_menu"
@@ -28,12 +33,12 @@
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import Status from "@geode/opengeodeweb-front/utils/status.js";
-import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
+const treeviewStore = use_treeview_store();
 
 const menuX = ref(0);
 const menuY = ref(0);
@@ -65,6 +70,7 @@ function handleTreeMenu({ event, itemId }) {
   id.value = itemId;
   menuStore.openMenu();
 }
+
 async function openMenu(event, id) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;

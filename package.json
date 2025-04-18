@@ -49,10 +49,10 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",
-    "@geode/opengeodeweb-back": "5.6.6",
+    "@geode/opengeodeweb-back": "5.7.0-rc.2",
     "@geode/opengeodeweb-front": "^9.7.0",
     "@geode/opengeodeweb-viewer": "^1.6.3",
-    "@geode/vease-back": "^1.4.5",
+    "@geode/vease-back": "^1.4.6-rc.1",
     "@geode/vease-viewer": "^2.3.5",
     "@nuxt/kit": "^3.16.0",
     "@pinia/nuxt": "^0.5.4",
