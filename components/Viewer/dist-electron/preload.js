@@ -1,1 +1,0 @@
-"use strict";const{contextBridge:t,ipcRenderer:r}=require("electron");t.exposeInMainWorld("electronAPI",{run_back:async e=>await r.invoke("run_back",e),run_viewer:async e=>await r.invoke("run_viewer",e)});
