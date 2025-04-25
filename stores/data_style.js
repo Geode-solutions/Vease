@@ -3,12 +3,15 @@ import useMeshStyle from "../internal_stores/mesh/index.js";
 import useModelStyle from "../internal_stores/model/index.js";
 
 export const useDataStyleStore = defineStore("dataStyle", () => {
+  /** States **/
   const dataStyleStore = useDataStyleStore();
   const meshStyleStore = useMeshStyle();
   const modelStyleStore = useModelStyle();
-  const treeviewStore = use_treeview_store();
+  const dataBaseStore = useDataBaseStore();
 
+  /** Actions **/
   function addDataStyle(id, geode_object, object_type) {
+    console.log("addDataStyle", id, geode_object, object_type);
     dataStyleStore.styles[id] = getDefaultStyle(geode_object);
     if (object_type == "mesh") {
       meshStyleStore.applyMeshDefaultStyle(id);
@@ -17,16 +20,12 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
     }
   }
 
-  function setVisibility(id, flat_index_or_bool, visibility_opt) {
-    const meta_data = treeviewStore.itemMetaDatas(id);
-    const object_type = meta_data.object_type;
-
+  function setVisibility(id, visibility) {
+    const object_type = dataBaseStore.itemMetaDatas(id).object_type;
     if (object_type === "mesh") {
-      meshStyleStore.setMeshVisibility(id, flat_index_or_bool); // flat_index_or_bool == visibility (bool)
+      meshStyleStore.setMeshVisibility(id, visibility);
     } else if (object_type === "model") {
-      const flat_index = flat_index_or_bool;
-      const visibility = visibility_opt;
-      modelStyleStore.setSurfaceBlockVisibility(id, flat_index, visibility);
+      modelStyleStore.setModelVisibility(id, visibility);
     }
   }
 

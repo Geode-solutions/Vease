@@ -1,5 +1,4 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import { getDefaultStyle } from "@/utils/default_styles.js";
 import { useMeshPointsStyle } from "./points.js";
 import { useMeshEdgesStyle } from "./edges.js";
 import { useMeshPolygonsStyle } from "./polygons.js";
@@ -11,19 +10,6 @@ export default function useMeshStyle() {
   const edgesStyleStore = useMeshEdgesStyle();
   const polygonsStyleStore = useMeshPolygonsStyle();
   const polyhedraStyleStore = useMeshPolyhedraStyle();
-
-  const objectVisibility = computed(
-    (id) => dataStyleStore.styles[id].visibility
-  );
-  const selectedObjects = computed(() => {
-    var selection = [];
-    for (const [id, value] of Object.entries(dataStyleStore.styles)) {
-      if (value.visibility == true) {
-        selection.push(id);
-      }
-    }
-    return selection;
-  });
 
   function setMeshVisibility(id, visibility) {
     viewer_call(
@@ -57,9 +43,7 @@ export default function useMeshStyle() {
   }
 
   return {
-    objectVisibility,
-    selectedObjects,
-    // setMeshVisibility,
+    setMeshVisibility,
     applyMeshDefaultStyle,
     ...useMeshPointsStyle(),
     ...useMeshEdgesStyle(),

@@ -8,7 +8,8 @@
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject
+        <ViewerTreeObjectTree />
+        <!-- <ViewerTreeObject
           v-if="!treeviewStore.isAdditionnalTreeDisplayed"
           @show-menu="handleTreeMenu"
         />
@@ -16,7 +17,7 @@
           v-else
           @show-menu="handleTreeMenu"
           :id="treeviewStore.model_id"
-        />
+        /> -->
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -38,7 +39,6 @@ const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
-const treeviewStore = use_treeview_store();
 
 const menuX = ref(0);
 const menuY = ref(0);
@@ -63,12 +63,6 @@ async function get_viewer_id(x, y) {
       },
     }
   );
-}
-function handleTreeMenu({ event, itemId }) {
-  menuX.value = event.clientX;
-  menuY.value = event.clientY;
-  id.value = itemId;
-  menuStore.openMenu();
 }
 
 async function openMenu(event, id) {

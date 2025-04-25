@@ -52,9 +52,9 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <span class="text-subtitle-1 font-weight-regular align-center mt-1">
+      <!-- <span class="text-subtitle-1 font-weight-regular align-center mt-1">
         TreeComponent
-      </span>
+      </span> -->
       <span
         v-if="treeviewStore.isAdditionnalTreeDisplayed && selectedTree"
         class="text-subtitle-1 font-weight-regular align-center mt-1"

@@ -4,38 +4,43 @@ const lines_schemas = viewer_schemas.opengeodeweb_viewer.model.lines;
 export function useLinesStyle() {
   /** State **/
   const dataStyleStore = useDataStyleStore();
+  const dataBaseStore = useDataBaseStore();
 
   /** Getters **/
-  function linesVisibility(id) {
-    return dataStyleStore.styles[id].lines.visibility;
+  function lineVisibility(id, line_id) {
+    return dataStyleStore.styles[id].lines[line_id].visibility;
   }
 
   /** Actions **/
-  function setLinesVisibility(id, visibility) {
+  function setLineVisibility(id, line_id, visibility) {
+    const flat_index = dataBaseStore.getFlatIndex(id, line_id);
     viewer_call(
       {
         schema: lines_schemas.visibility,
-        params: { id, visibility },
+        params: { id, block_ids: [flat_index], visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].lines.visibility = visibility;
+          dataStyleStore.styles[id].lines[line_id].visibility = visibility;
           console.log(
-            "setLinesVisibility",
-            dataStyleStore.styles[id].lines.visibility
+            "setLineVisibility",
+            dataStyleStore.styles[id].lines[line_id].visibility
           );
         },
       }
     );
   }
 
-  function applyLinesStyle(id, style) {
-    setLinesVisibility(id, style.visibility);
+  function applyLinesStyle(id) {
+    const lines = dataStyleStore.styles[id].lines;
+    for (const [line_id, style] of Object.entries(lines)) {
+      setLineVisibility(id, line_id, style.visibility);
+    }
   }
 
   return {
-    linesVisibility,
-    setLinesVisibility,
+    lineVisibility,
+    setLineVisibility,
     applyLinesStyle,
   };
 }

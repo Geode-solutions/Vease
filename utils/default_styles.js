@@ -49,14 +49,29 @@ const polyhedraDefaultStyle = (visibility) => {
 const cornersDefaultStyle = () => {
   return {};
 };
+
 const linesDefaultStyle = () => {
   return {};
 };
+
 const surfacesDefaultStyle = () => {
   return {};
 };
 const blocksDefaultStyle = () => {
   return {};
+};
+
+const cornerDefaultStyle = (visibility) => {
+  return { visibility };
+};
+const lineDefaultStyle = (visibility) => {
+  return { visibility };
+};
+const surfaceDefaultStyle = (visibility) => {
+  return { visibility };
+};
+const blockDefaultStyle = (visibility) => {
+  return { visibility };
 };
 
 const points_defaultSize = 10;
@@ -140,4 +155,10 @@ function getDefaultStyle(type) {
   return default_styles()[type];
 }
 
-export { getDefaultStyle };
+export {
+  getDefaultStyle,
+  cornerDefaultStyle,
+  lineDefaultStyle,
+  surfaceDefaultStyle,
+  blockDefaultStyle,
+};

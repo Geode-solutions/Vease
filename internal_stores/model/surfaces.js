@@ -4,38 +4,45 @@ const surfaces_schemas = viewer_schemas.opengeodeweb_viewer.model.surfaces;
 export function useSurfacesStyle() {
   /** State **/
   const dataStyleStore = useDataStyleStore();
+  const dataBaseStore = useDataBaseStore();
 
   /** Getters **/
-  function surfacesVisibility(id) {
-    return dataStyleStore.styles[id].surfaces.visibility;
+  function surfaceVisibility(id, surface_id) {
+    return dataStyleStore.styles[id].surfaces[surface_id].visibility;
   }
 
   /** Actions **/
-  function setSurfacesVisibility(id, visibility) {
+  function setSurfaceVisibility(id, surface_id, visibility) {
+    console.log("setSurfaceVisibility", id, surface_id, visibility);
+    const flat_index = dataBaseStore.getFlatIndex(id, surface_id);
     viewer_call(
       {
         schema: surfaces_schemas.visibility,
-        params: { id, visibility },
+        params: { id, block_ids: [flat_index], visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].surfaces.visibility = visibility;
+          dataStyleStore.styles[id].surfaces[surface_id].visibility =
+            visibility;
           console.log(
-            "setSurfacesVisibility",
-            dataStyleStore.styles[id].surfaces.visibility
+            "setSurfaceVisibility",
+            dataStyleStore.styles[id].surfaces[surface_id].visibility
           );
         },
       }
     );
   }
 
-  function applySurfacesStyle(id, style) {
-    setSurfacesVisibility(id, style.visibility);
+  function applySurfacesStyle(id) {
+    const surfaces = dataStyleStore.styles[id].surfaces;
+    for (const [surface_id, style] of Object.entries(surfaces)) {
+      setSurfaceVisibility(id, surface_id, style.visibility);
+    }
   }
 
   return {
-    surfacesVisibility,
-    setSurfacesVisibility,
+    surfaceVisibility,
+    setSurfaceVisibility,
     applySurfacesStyle,
   };
 }

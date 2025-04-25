@@ -1,5 +1,6 @@
 export const use_treeview_store = defineStore("treeview", () => {
   const dataStyleStore = useDataStyleStore();
+  const dataBaseStore = useDataBaseStore();
 
   /** State **/
   const items = ref([]);
@@ -7,42 +8,15 @@ export const use_treeview_store = defineStore("treeview", () => {
   const components_selection = ref([]);
   const isAdditionnalTreeDisplayed = ref(false);
   const panelWidth = ref(300);
-  const modelUuids = ref({});
   const model_id = ref("");
   const isTreeCollection = ref(false);
   const selectedTree = ref(null);
 
-  /** Get item metadata by ID **/
-  function itemMetaDatas(id) {
-    for (let i = 0; i < items.value.length; i++) {
-      for (let j = 0; j < items.value[i].children.length; j++) {
-        if (items.value[i].children[j].id === id) {
-          const geode_object = items.value[i].title;
-          const object_type = items.value[i].children[j].object_type;
-          const displayed_name = items.value[i].children[j].title;
-          const native_filename = items.value[i].children[j].native_filename;
-          return {
-            object_type,
-            geode_object,
-            displayed_name,
-            native_filename,
-          };
-        }
-      }
-    }
-    return null;
-  }
   /** Functions **/
-  function addItem(
-    geodeObject,
-    displayed_name,
-    id,
-    object_type,
-    native_filename
-  ) {
-    console.log("ADD ITEM");
+  function addItem(geodeObject, displayed_name, id, object_type) {
+    console.log("addItem", geodeObject, displayed_name, id, object_type);
     dataStyleStore.addDataStyle(id, geodeObject, object_type);
-    const child = { title: displayed_name, id, object_type, native_filename };
+    const child = { title: displayed_name, id, object_type };
     for (let i = 0; i < items.value.length; i++) {
       if (items.value[i].title === geodeObject) {
         items.value[i].children.push(child);
@@ -52,10 +26,6 @@ export const use_treeview_store = defineStore("treeview", () => {
     }
     items.value.push({ title: geodeObject, children: [child] });
     selection.value.push(child);
-  }
-
-  function setModelUuids(uuids) {
-    modelUuids.value = uuids;
   }
 
   function displayAdditionalTree(id) {
@@ -80,18 +50,22 @@ export const use_treeview_store = defineStore("treeview", () => {
     panelWidth.value = width;
   }
 
+  dataBaseStore.$subscribe((mutation, state) => {
+    console.log("dataBaseStore.$subscribe");
+    console.log("dataBaseStore mutation", mutation);
+
+    console.log("dataBaseStore state", state);
+  });
+
   return {
     items,
     selection,
     components_selection,
     isAdditionnalTreeDisplayed,
     panelWidth,
-    modelUuids,
     model_id,
     selectedTree,
-    itemMetaDatas,
     addItem,
-    setModelUuids,
     displayAdditionalTree,
     displayFileTree,
     toggleTreeView,
