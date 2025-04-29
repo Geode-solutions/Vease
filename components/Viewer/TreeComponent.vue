@@ -1,6 +1,6 @@
 <template>
   <v-treeview
-    v-model:selected="components_selection"
+    v-model:selected="treeviewStore.components_selection"
     :items="mesh_components"
     return-object
     class="transparent-treeview"
@@ -9,7 +9,7 @@
     selectable
   >
     <template #title="{ item }">
-      <span class="treeview-item">{{ item.id }}</span>
+      <span class="treeview-item">{{ item.title }}</span>
     </template>
   </v-treeview>
 </template>
@@ -18,50 +18,48 @@
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
-const { components_selection } = storeToRefs(treeviewStore);
 
 const props = defineProps({ id: { type: String, required: true } });
+const mesh_components = ref([]);
 
-const { db } = storeToRefs(dataBaseStore);
-
-console.log("db", db);
-const previousSelection = ref([]);
-
-const mesh_components = computed(() => {
-  console.log("db.value[props.id]", db.value[props.id]);
-  console.log("mesh_components", db.value[props.id].mesh_components);
-  const formated_mesh_components = [];
+function updateMeshComponents() {
   for (const [category, uuids] of Object.entries(
-    db.value[props.id].mesh_components
+    dataBaseStore.db[props.id].mesh_components
   )) {
-    formated_mesh_components.push({
+    mesh_components.value.push({
       id: category,
-      name: category,
+      title: category,
       children: uuids.map((uuid) => ({
         id: uuid,
-        name: uuid,
+        title: uuid,
         category,
       })),
     });
   }
-  return formated_mesh_components;
-});
-
-console.log("mesh_components", mesh_components);
+}
 
 watch(
-  components_selection,
-  (current) => {
-    const prev = previousSelection.value || [];
-    const added = current.filter((item) => !prev.some((p) => p.id === item.id));
-    const removed = prev.filter(
+  () => dataBaseStore.db[props.id].mesh_components,
+  () => {
+    updateMeshComponents();
+  }
+);
+
+onMounted(() => {
+  updateMeshComponents();
+});
+
+watch(
+  () => treeviewStore.components_selection,
+  (current, previous) => {
+    if (!previous) previous = [];
+    const added = current.filter(
+      (item) => !previous.some((p) => p.id === item.id)
+    );
+    const removed = previous.filter(
       (item) => !current.some((c) => c.id === item.id)
     );
-    console.log("current", current);
-    console.log("added", added);
-    console.log("removed", removed);
     added.forEach((item) => {
-      console.log("added item", item);
       dataStyleStore.setModelMeshComponentVisibility(
         props.id,
         item.category,
@@ -77,8 +75,6 @@ watch(
         false
       );
     });
-
-    previousSelection.value = [...current];
   },
   { immediate: true, deep: true }
 );

@@ -12,35 +12,49 @@ export function useCornersStyle() {
   }
 
   /** Actions **/
-  function setCornerVisibility(id, corner_id, visibility) {
-    console.log("setCornerVisibility", id, corner_id, visibility);
-    const flat_index = dataBaseStore.getFlatIndex(id, corner_id);
+  function setCornerVisibility(id, corner_ids, visibility) {
+    console.log("setCornerVisibility", id, corner_ids, visibility);
+    const corner_flat_indexes = dataBaseStore.getFlatIndexes(id, corner_ids);
     viewer_call(
       {
         schema: corners_schemas.visibility,
-        params: { id, block_ids: [flat_index], visibility },
+        params: { id, block_ids: corner_flat_indexes, visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].corners[corner_id].visibility = visibility;
-          console.log(
-            "setCornerVisibility",
-            dataStyleStore.styles[id].corners[corner_id].visibility
-          );
+          for (const corner_id of corner_ids) {
+            console.log("corner_id", corner_id);
+            dataStyleStore.styles[id].corners[corner_id].visibility =
+              visibility;
+            console.log(
+              "setCornerVisibility",
+              dataStyleStore.styles[id].corners[corner_id].visibility
+            );
+          }
         },
       }
     );
   }
 
+  function setCornersDefaultStyle(id) {
+    var corner_ids = [];
+    for (const corner_id of dataBaseStore.db[id].mesh_components["Corner"]) {
+      dataStyleStore.styles[id].corners[corner_id] = cornerDefaultStyle(true);
+      corner_ids.push(corner_id);
+    }
+    setCornerVisibility(id, corner_ids, true);
+  }
+
   function applyCornersStyle(id) {
     const corners = dataStyleStore.styles[id].corners;
     for (const [corner_id, style] of Object.entries(corners)) {
-      setCornerVisibility(id, corner_id, style.visibility);
+      setCornerVisibility(id, [corner_id], style.visibility);
     }
   }
 
   return {
     cornerVisibility,
+    setCornersDefaultStyle,
     setCornerVisibility,
     applyCornersStyle,
   };

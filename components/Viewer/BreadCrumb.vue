@@ -44,7 +44,7 @@
             </v-list-item-title>
           </v-list-item>
 
-          <v-list-item @click="switchTreeView">
+          <v-list-item @click="treeviewStore.toggleTreeView()">
             <v-list-item-title class="d-flex align-center">
               <v-icon small>mdi-rhombus-split</v-icon>
               <span>TreeCollection</span>
@@ -83,10 +83,6 @@ const goBackToFileTree = () => {
 
 const selectTree = (option) => {
   treeviewStore.selectedTree = option;
-};
-
-const switchTreeView = () => {
-  treeviewStore.toggleTreeView();
 };
 </script>
 

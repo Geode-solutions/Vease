@@ -44,8 +44,8 @@
     "electron-builder": "^25.0.5",
     "nuxt": "^3.13.2",
     "nuxt-electron": "^0.7.0",
-    "vuetify": "^3.7.2",
-    "vuetify-nuxt-module": "^0.18.3"
+    "vuetify": "^3.8.2",
+    "vuetify-nuxt-module": "^0.18.6"
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",

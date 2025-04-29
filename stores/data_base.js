@@ -34,6 +34,10 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     );
   }
 
+  function itemMetaDatas(id) {
+    return db.value[id];
+  }
+
   async function fetchMeshComponents(id) {
     await api_fetch(
       {
@@ -68,17 +72,22 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     );
   }
 
-  function getFlatIndex(id, mesh_component_id) {
-    console.log("getFlatIndex", id, db.value);
-    return db.value[id]["uuid_to_flat_index"][mesh_component_id];
+  function getFlatIndexes(id, mesh_component_ids) {
+    console.log("getFlatIndexes", id, mesh_component_ids, db.value);
+    var flat_indexes = [];
+    for (const mesh_component_id of mesh_component_ids)
+      flat_indexes.push(db.value[id]["uuid_to_flat_index"][mesh_component_id]);
+    console.log("flat_indexes", flat_indexes);
+    return flat_indexes;
   }
 
   return {
     db,
     itemMetaData,
     addItem,
+    itemMetaDatas,
     fetchUuidToFlatIndexDict,
     fetchMeshComponents,
-    getFlatIndex,
+    getFlatIndexes,
   };
 });

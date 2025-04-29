@@ -13,34 +13,51 @@ export function useBlocksStyle() {
   }
 
   /** Actions **/
-  function setBlockVisibility(id, block_id, visibility) {
-    const flat_index = dataBaseStore.getFlatIndex(id, block_id);
+  function setBlockVisibility(id, block_ids, visibility) {
+    const block_flat_indexes = dataBaseStore.getFlatIndexes(id, block_ids);
     viewer_call(
       {
         schema: blocks_schemas.visibility,
-        params: { id, block_ids: [flat_index], visibility },
+        params: { id, block_ids: block_flat_indexes, visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].blocks[block_id].visibility = visibility;
-          console.log(
-            "setBlockVisibility",
-            dataStyleStore.styles[id].blocks[block_id].visibility
-          );
+          for (const block_id of block_ids) {
+            console.log("block_id", block_id);
+            console.log(
+              "dataStyleStore.styles[id].blocks",
+              dataStyleStore.styles[id].blocks
+            );
+            dataStyleStore.styles[id].blocks[block_id].visibility = visibility;
+            console.log(
+              "setBlockVisibility",
+              dataStyleStore.styles[id].blocks[block_id].visibility
+            );
+          }
         },
       }
     );
   }
 
+  function setBlocksDefaultStyle(id) {
+    var block_ids = [];
+    for (const block_id of dataBaseStore.db[id].mesh_components["Block"]) {
+      block_ids.push(block_id);
+      dataStyleStore.styles[id].blocks[block_id] = blockDefaultStyle(true);
+    }
+    setBlockVisibility(id, block_ids, true);
+  }
+
   function applyBlocksStyle(id) {
     const blocks = dataStyleStore.styles[id].blocks;
     for (const [block_id, style] of Object.entries(blocks)) {
-      setBlockVisibility(id, block_id, style.visibility);
+      setBlockVisibility(id, [block_id], style.visibility);
     }
   }
 
   return {
     blockVisibility,
+    setBlocksDefaultStyle,
     setBlockVisibility,
     applyBlocksStyle,
   };

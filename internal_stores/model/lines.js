@@ -12,34 +12,47 @@ export function useLinesStyle() {
   }
 
   /** Actions **/
-  function setLineVisibility(id, line_id, visibility) {
-    const flat_index = dataBaseStore.getFlatIndex(id, line_id);
+  function setLineVisibility(id, line_ids, visibility) {
+    const line_flat_indexes = dataBaseStore.getFlatIndexes(id, line_ids);
     viewer_call(
       {
         schema: lines_schemas.visibility,
-        params: { id, block_ids: [flat_index], visibility },
+        params: { id, block_ids: line_flat_indexes, visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].lines[line_id].visibility = visibility;
-          console.log(
-            "setLineVisibility",
-            dataStyleStore.styles[id].lines[line_id].visibility
-          );
+          for (const line_id of line_ids) {
+            console.log("line_id", line_id);
+
+            dataStyleStore.styles[id].lines[line_id].visibility = visibility;
+            console.log(
+              "setLineVisibility",
+              dataStyleStore.styles[id].lines[line_id].visibility
+            );
+          }
         },
       }
     );
   }
 
+  function setLinesDefaultStyle(id) {
+    var line_ids = [];
+    for (const line_id of dataBaseStore.db[id].mesh_components["Line"]) {
+      line_ids.push(line_id);
+      dataStyleStore.styles[id].lines[line_id] = lineDefaultStyle(true);
+    }
+    setLineVisibility(id, line_ids, true);
+  }
   function applyLinesStyle(id) {
     const lines = dataStyleStore.styles[id].lines;
     for (const [line_id, style] of Object.entries(lines)) {
-      setLineVisibility(id, line_id, style.visibility);
+      setLineVisibility(id, [line_id], style.visibility);
     }
   }
 
   return {
     lineVisibility,
+    setLinesDefaultStyle,
     setLineVisibility,
     applyLinesStyle,
   };

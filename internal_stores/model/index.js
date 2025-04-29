@@ -7,14 +7,21 @@ import { useLinesStyle } from "./lines.js";
 export default function useModelStyle() {
   /** States **/
   const dataStyleStore = useDataStyleStore();
-  const surfacesStyleStore = useSurfacesStyle();
   const cornersStyleStore = useCornersStyle();
-  const blocksStyleStore = useBlocksStyle();
   const linesStyleStore = useLinesStyle();
+  const surfacesStyleStore = useSurfacesStyle();
+  const blocksStyleStore = useBlocksStyle();
 
   /** Getters **/
   function modelVisibility(id) {
     return dataStyleStore.styles[id].visibility;
+  }
+
+  function setMeshComponentsDefaultStyle(id) {
+    cornersStyleStore.setCornersDefaultStyle(id);
+    linesStyleStore.setLinesDefaultStyle(id);
+    surfacesStyleStore.setSurfacesDefaultStyle(id);
+    blocksStyleStore.setBlocksDefaultStyle(id);
   }
   function modelMeshComponentVisibility(id, component_type, component_id) {
     if (component_type == "Corner") {
@@ -49,13 +56,13 @@ export default function useModelStyle() {
     visibility
   ) {
     if (component_type == "Corner") {
-      cornersStyleStore.setCornerVisibility(id, component_id, visibility);
+      cornersStyleStore.setCornerVisibility(id, [component_id], visibility);
     } else if (component_type == "Line") {
-      linesStyleStore.setLineVisibility(id, component_id, visibility);
+      linesStyleStore.setLineVisibility(id, [component_id], visibility);
     } else if (component_type == "Surface") {
-      surfacesStyleStore.setSurfaceVisibility(id, component_id, visibility);
+      surfacesStyleStore.setSurfaceVisibility(id, [component_id], visibility);
     } else if (component_type == "Block") {
-      blocksStyleStore.setBlockVisibility(id, component_id, visibility);
+      blocksStyleStore.setBlockVisibility(id, [component_id], visibility);
     }
   }
 
@@ -66,15 +73,17 @@ export default function useModelStyle() {
 
     for (const [key, value] of Object.entries(id_style)) {
       if (key == "visibility") setModelVisibility(id, value);
-      else if (key == "corners") cornersStyleStore.applyCornersStyle(id);
-      else if (key == "lines") linesStyleStore.applyLinesStyle(id);
-      else if (key == "surfaces") surfacesStyleStore.applySurfacesStyle(id);
-      else if (key == "blocks") blocksStyleStore.applyBlocksStyle(id);
+      else if (key == "corners") cornersStyleStore.setCornersDefaultStyle(id);
+      else if (key == "lines") linesStyleStore.setLinesDefaultStyle(id);
+      else if (key == "surfaces")
+        surfacesStyleStore.setSurfacesDefaultStyle(id);
+      else if (key == "blocks") blocksStyleStore.setBlocksDefaultStyle(id);
     }
   }
 
   return {
     modelVisibility,
+    setMeshComponentsDefaultStyle,
     modelMeshComponentVisibility,
     setModelVisibility,
     setModelMeshComponentVisibility,

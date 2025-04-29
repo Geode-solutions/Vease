@@ -12,36 +12,49 @@ export function useSurfacesStyle() {
   }
 
   /** Actions **/
-  function setSurfaceVisibility(id, surface_id, visibility) {
-    console.log("setSurfaceVisibility", id, surface_id, visibility);
-    const flat_index = dataBaseStore.getFlatIndex(id, surface_id);
+  function setSurfaceVisibility(id, surface_ids, visibility) {
+    console.log("setSurfaceVisibility", id, surface_ids, visibility);
+    const surface_flat_indexes = dataBaseStore.getFlatIndexes(id, surface_ids);
     viewer_call(
       {
         schema: surfaces_schemas.visibility,
-        params: { id, block_ids: [flat_index], visibility },
+        params: { id, block_ids: surface_flat_indexes, visibility },
       },
       {
         response_function: () => {
-          dataStyleStore.styles[id].surfaces[surface_id].visibility =
-            visibility;
-          console.log(
-            "setSurfaceVisibility",
-            dataStyleStore.styles[id].surfaces[surface_id].visibility
-          );
+          for (const surface_id of surface_ids) {
+            console.log("surface_id", surface_id);
+            dataStyleStore.styles[id].surfaces[surface_id].visibility =
+              visibility;
+            console.log(
+              "setSurfaceVisibility",
+              dataStyleStore.styles[id].surfaces[surface_id].visibility
+            );
+          }
         },
       }
     );
   }
 
+  function setSurfacesDefaultStyle(id) {
+    var surface_ids = [];
+    for (const surface_id of dataBaseStore.db[id].mesh_components["Surface"]) {
+      dataStyleStore.styles[id].surfaces[surface_id] =
+        surfaceDefaultStyle(true);
+      surface_ids.push(surface_id);
+    }
+    setSurfaceVisibility(id, surface_ids, true);
+  }
   function applySurfacesStyle(id) {
     const surfaces = dataStyleStore.styles[id].surfaces;
     for (const [surface_id, style] of Object.entries(surfaces)) {
-      setSurfaceVisibility(id, surface_id, style.visibility);
+      setSurfaceVisibility(id, [surface_id], style.visibility);
     }
   }
 
   return {
     surfaceVisibility,
+    setSurfacesDefaultStyle,
     setSurfaceVisibility,
     applySurfacesStyle,
   };

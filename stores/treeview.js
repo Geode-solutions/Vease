@@ -1,6 +1,5 @@
 export const use_treeview_store = defineStore("treeview", () => {
   const dataStyleStore = useDataStyleStore();
-  const dataBaseStore = useDataBaseStore();
 
   /** State **/
   const items = ref([]);
@@ -14,7 +13,6 @@ export const use_treeview_store = defineStore("treeview", () => {
 
   /** Functions **/
   function addItem(geodeObject, displayed_name, id, object_type) {
-    console.log("addItem", geodeObject, displayed_name, id, object_type);
     dataStyleStore.addDataStyle(id, geodeObject, object_type);
     const child = { title: displayed_name, id, object_type };
     for (let i = 0; i < items.value.length; i++) {
@@ -49,13 +47,6 @@ export const use_treeview_store = defineStore("treeview", () => {
   function setPanelWidth(width) {
     panelWidth.value = width;
   }
-
-  dataBaseStore.$subscribe((mutation, state) => {
-    console.log("dataBaseStore.$subscribe");
-    console.log("dataBaseStore mutation", mutation);
-
-    console.log("dataBaseStore state", state);
-  });
 
   return {
     items,
