@@ -73,6 +73,8 @@
 </template>
 
 <script setup>
+import isElectron from "is-electron";
+
 const drawer = ref(true);
 const newproject = ref(false);
 const openproject = ref(false);
@@ -92,6 +94,19 @@ const items = ref([
   //   title: "Open Project",
   //   icon: "mdi-folder-outline",
   //   click: () => (openproject.value = true),
+  // },
+  // {
+  //   title: "Open new window",
+  //   icon: "mdi-dock-window",
+  //   click: () => {
+  //     if (isElectron()) {
+  //       window.electronAPI.new_window();
+  //     } else {
+  //       console.log("notElectron");
+
+  //       window.open("http://localhost:3000", "_blank");
+  //     }
+  //   },
   // },
 ]);
 

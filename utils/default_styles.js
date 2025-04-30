@@ -59,7 +59,7 @@ const pointSet_defaultStyle = () => {
 const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(true, points_defaultSize),
+    points: pointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(true, edges_defaultSize),
   };
 };
@@ -113,8 +113,8 @@ const default_styles = () => {
   };
 };
 
-const getDefaultStyle = (type) => {
+function getDefaultStyle(type) {
   return default_styles()[type];
-};
+}
 
 export { getDefaultStyle };
