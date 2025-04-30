@@ -34,14 +34,14 @@ flask-cors==5.0.1
     # via
     #   opengeodeweb-back
     #   vease-back
-geode-background==9.1.5
+geode-background==9.2.3
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   opengeodeweb-back
     #   vease-back
-geode-common==33.7.2
+geode-common==33.7.6
     # via
     #   geode-background
     #   geode-conversion
@@ -52,34 +52,34 @@ geode-common==33.7.2
     #   geode-viewables
     #   opengeodeweb-back
     #   vease-back
-geode-conversion==6.2.7
+geode-conversion==6.2.11
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   opengeodeweb-back
     #   vease-back
-geode-explicit==6.1.35
+geode-explicit==6.1.38
     # via
     #   geode-implicit
     #   opengeodeweb-back
     #   vease-back
-geode-implicit==3.7.4
+geode-implicit==3.7.8
     # via
     #   opengeodeweb-back
     #   vease-back
-geode-numerics==6.0.3
+geode-numerics==6.0.6
     # via
     #   geode-implicit
     #   geode-simplex
     #   opengeodeweb-back
     #   vease-back
-geode-simplex==9.2.5
+geode-simplex==9.2.8
     # via
     #   geode-implicit
     #   opengeodeweb-back
     #   vease-back
-geode-viewables==3.0.12
+geode-viewables==3.1.1
     # via
     #   opengeodeweb-back
     #   vease-back
@@ -97,7 +97,7 @@ jsonschema==4.23.0
     # via
     #   opengeodeweb-back
     #   vease-back
-jsonschema-specifications==2024.10.1
+jsonschema-specifications==2025.4.1
     # via
     #   jsonschema
     #   opengeodeweb-back
@@ -108,7 +108,7 @@ markupsafe==3.0.2
     #   opengeodeweb-back
     #   vease-back
     #   werkzeug
-opengeode-core==15.17.8
+opengeode-core==15.17.14
     # via
     #   geode-background
     #   geode-common
@@ -124,33 +124,33 @@ opengeode-core==15.17.8
     #   opengeode-io
     #   opengeodeweb-back
     #   vease-back
-opengeode-geosciences==8.4.3
+opengeode-geosciences==8.4.6
     # via
     #   geode-implicit
     #   geode-viewables
     #   opengeode-geosciencesio
     #   opengeodeweb-back
     #   vease-back
-opengeode-geosciencesio==5.3.8
+opengeode-geosciencesio==5.3.9
     # via
     #   geode-implicit
     #   opengeodeweb-back
     #   vease-back
-opengeode-inspector==6.3.11
+opengeode-inspector==6.4.0
     # via
     #   geode-explicit
     #   geode-implicit
     #   geode-simplex
     #   opengeodeweb-back
     #   vease-back
-opengeode-io==7.1.5
+opengeode-io==7.2.0
     # via
     #   geode-implicit
     #   geode-viewables
     #   opengeode-geosciencesio
     #   opengeodeweb-back
     #   vease-back
-opengeodeweb-back==5.6.6
+opengeodeweb-back==5.7.0
     # via vease-back
 referencing==0.36.2
     # via
@@ -170,7 +170,7 @@ typing-extensions==4.13.2
     #   opengeodeweb-back
     #   referencing
     #   vease-back
-vease-back==1.4.5
+vease-back==1.4.6
     # via -r ./electron-server/back/requirements.in
 werkzeug==3.1.3
     # via
