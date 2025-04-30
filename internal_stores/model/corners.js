@@ -13,7 +13,6 @@ export function useCornersStyle() {
 
   /** Actions **/
   function setCornerVisibility(id, corner_ids, visibility) {
-    console.log("setCornerVisibility", id, corner_ids, visibility);
     const corner_flat_indexes = dataBaseStore.getFlatIndexes(id, corner_ids);
     viewer_call(
       {
@@ -22,15 +21,10 @@ export function useCornersStyle() {
       },
       {
         response_function: () => {
-          for (const corner_id of corner_ids) {
-            console.log("corner_id", corner_id);
+          for (const corner_id of corner_ids)
             dataStyleStore.styles[id].corners[corner_id].visibility =
               visibility;
-            console.log(
-              "setCornerVisibility",
-              dataStyleStore.styles[id].corners[corner_id].visibility
-            );
-          }
+          console.log("setCornerVisibility", corner_ids, visibility);
         },
       }
     );

@@ -21,15 +21,9 @@ export function useLinesStyle() {
       },
       {
         response_function: () => {
-          for (const line_id of line_ids) {
-            console.log("line_id", line_id);
-
+          for (const line_id of line_ids)
             dataStyleStore.styles[id].lines[line_id].visibility = visibility;
-            console.log(
-              "setLineVisibility",
-              dataStyleStore.styles[id].lines[line_id].visibility
-            );
-          }
+          console.log("setLineVisibility", line_ids, visibility);
         },
       }
     );

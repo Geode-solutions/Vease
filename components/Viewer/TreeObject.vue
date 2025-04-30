@@ -25,7 +25,7 @@
         size="medium"
         class="ml-8"
         variant="text"
-        v-tooltip="'Show model mesh components'"
+        v-tooltip="'Model\'s mesh components'"
         @click.stop="treeviewStore.displayAdditionalTree(item.id)"
       />
     </template>

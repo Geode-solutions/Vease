@@ -10,6 +10,37 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   function itemMetaData(id) {
     return db.value[id];
   }
+
+  function formatedMeshComponents(id) {
+    console.log("formatedMeshComponents id", id);
+    var formated_mesh_components = ref([]);
+    console.log("formatedMeshComponents db.value[id]", db.value[id]);
+    for (const [category, uuids] of Object.entries(
+      db.value[id].mesh_components
+    )) {
+      formated_mesh_components.value.push({
+        id: category,
+        title: category,
+        children: uuids.map((uuid) => ({
+          id: uuid,
+          title: uuid,
+          category,
+        })),
+      });
+    }
+    return formated_mesh_components.value;
+  }
+
+  function meshComponentsSelection(id) {
+    var mesh_components_selection = ref([]);
+    for (const [category, uuids] of Object.entries(
+      db.value[id].mesh_components
+    )) {
+      mesh_components_selection.value.push(...uuids);
+    }
+    return mesh_components_selection.value;
+  }
+
   /** Actions **/
   async function addItem(
     id,
@@ -49,7 +80,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       },
       {
         response_function: async (response) => {
-          db.value[id]["mesh_components"] = response._data.uuid_dict;
+          db.value[id].mesh_components = response._data.uuid_dict;
         },
       }
     );
@@ -84,8 +115,10 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   return {
     db,
     itemMetaData,
+    formatedMeshComponents,
     addItem,
     itemMetaDatas,
+    isModel,
     fetchUuidToFlatIndexDict,
     fetchMeshComponents,
     getFlatIndexes,

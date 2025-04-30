@@ -1,7 +1,7 @@
 <template>
   <v-treeview
     v-model:selected="treeviewStore.components_selection"
-    :items="mesh_components"
+    :items="dataBaseStore.formatedMeshComponents(props.id)"
     return-object
     class="transparent-treeview"
     item-value="id"
@@ -20,35 +20,20 @@ const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({ id: { type: String, required: true } });
-const mesh_components = ref([]);
 
-function updateMeshComponents() {
-  for (const [category, uuids] of Object.entries(
-    dataBaseStore.db[props.id].mesh_components
-  )) {
-    mesh_components.value.push({
-      id: category,
-      title: category,
-      children: uuids.map((uuid) => ({
-        id: uuid,
-        title: uuid,
-        category,
-      })),
-    });
+function sortMeshComponents(items) {
+  var corner_ids = [],
+    line_ids = [],
+    surface_ids = [],
+    block_ids = [];
+  for (const item of items) {
+    if (item.category === "Corner") corner_ids.push(item.id);
+    if (item.category === "Line") line_ids.push(item.id);
+    if (item.category === "Surface") surface_ids.push(item.id);
+    if (item.category === "Block") block_ids.push(item.id);
   }
+  return [corner_ids, line_ids, surface_ids, block_ids];
 }
-
-watch(
-  () => dataBaseStore.db[props.id].mesh_components,
-  () => {
-    updateMeshComponents();
-  }
-);
-
-onMounted(() => {
-  updateMeshComponents();
-});
-
 watch(
   () => treeviewStore.components_selection,
   (current, previous) => {
@@ -59,22 +44,30 @@ watch(
     const removed = previous.filter(
       (item) => !current.some((c) => c.id === item.id)
     );
-    added.forEach((item) => {
-      dataStyleStore.setModelMeshComponentVisibility(
-        props.id,
-        item.category,
-        item.id,
-        true
-      );
-    });
-    removed.forEach((item) => {
-      dataStyleStore.setModelMeshComponentVisibility(
-        props.id,
-        item.category,
-        item.id,
-        false
-      );
-    });
+
+    const [added_corners, added_lines, added_surfaces, added_blocks] =
+      sortMeshComponents(added);
+
+    if (added_corners.length > 0)
+      dataStyleStore.setCornerVisibility(props.id, added_corners, true);
+    if (added_lines.length > 0)
+      dataStyleStore.setLineVisibility(props.id, added_lines, true);
+    if (added_surfaces.length > 0)
+      dataStyleStore.setSurfaceVisibility(props.id, added_surfaces, true);
+    if (added_blocks.length > 0)
+      dataStyleStore.setBlockVisibility(props.id, added_blocks, true);
+
+    const [removed_corners, removed_lines, removed_surfaces, removed_blocks] =
+      sortMeshComponents(removed);
+
+    if (removed_corners.length > 0)
+      dataStyleStore.setCornerVisibility(props.id, removed_corners, false);
+    if (removed_lines.length > 0)
+      dataStyleStore.setLineVisibility(props.id, removed_lines, false);
+    if (removed_surfaces.length > 0)
+      dataStyleStore.setSurfaceVisibility(props.id, removed_surfaces, false);
+    if (removed_blocks.length > 0)
+      dataStyleStore.setBlockVisibility(props.id, removed_blocks, false);
   },
   { immediate: true, deep: true }
 );

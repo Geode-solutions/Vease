@@ -13,7 +13,6 @@ export function useSurfacesStyle() {
 
   /** Actions **/
   function setSurfaceVisibility(id, surface_ids, visibility) {
-    console.log("setSurfaceVisibility", id, surface_ids, visibility);
     const surface_flat_indexes = dataBaseStore.getFlatIndexes(id, surface_ids);
     viewer_call(
       {
@@ -22,15 +21,10 @@ export function useSurfacesStyle() {
       },
       {
         response_function: () => {
-          for (const surface_id of surface_ids) {
-            console.log("surface_id", surface_id);
+          for (const surface_id of surface_ids)
             dataStyleStore.styles[id].surfaces[surface_id].visibility =
               visibility;
-            console.log(
-              "setSurfaceVisibility",
-              dataStyleStore.styles[id].surfaces[surface_id].visibility
-            );
-          }
+          console.log("setSurfaceVisibility", surface_ids, visibility);
         },
       }
     );

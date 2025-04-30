@@ -22,18 +22,9 @@ export function useBlocksStyle() {
       },
       {
         response_function: () => {
-          for (const block_id of block_ids) {
-            console.log("block_id", block_id);
-            console.log(
-              "dataStyleStore.styles[id].blocks",
-              dataStyleStore.styles[id].blocks
-            );
+          for (const block_id of block_ids)
             dataStyleStore.styles[id].blocks[block_id].visibility = visibility;
-            console.log(
-              "setBlockVisibility",
-              dataStyleStore.styles[id].blocks[block_id].visibility
-            );
-          }
+          console.log("setBlockVisibility", block_ids, visibility);
         },
       }
     );
