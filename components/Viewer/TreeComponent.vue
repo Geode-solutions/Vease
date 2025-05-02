@@ -1,6 +1,6 @@
 <template>
   <v-treeview
-    v-model:selected="treeviewStore.components_selection"
+    v-model:selected="dataBaseStore.db[props.id].mesh_components_selection"
     :items="dataBaseStore.formatedMeshComponents(props.id)"
     return-object
     class="transparent-treeview"
@@ -35,7 +35,7 @@ function sortMeshComponents(items) {
   return [corner_ids, line_ids, surface_ids, block_ids];
 }
 watch(
-  () => treeviewStore.components_selection,
+  () => dataBaseStore.db[props.id].mesh_components_selection,
   (current, previous) => {
     if (!previous) previous = [];
     const added = current.filter(
@@ -71,6 +71,13 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
+onMounted(() => {
+  console.log(
+    "onMounted dataBaseStore.db[props.id].mesh_components_selection",
+    dataBaseStore.db[props.id].mesh_components_selection
+  );
+});
 </script>
 
 <style scoped>
