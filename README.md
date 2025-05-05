@@ -27,6 +27,10 @@ Here is a list of what to expect inside Vease. Click on each title to see a demo
   <summary>Mesh graphics options with points/edges visibility, constant and variable coloring</summary>
   <img src="./docs/mesh_graphics.gif" width="500">
 </details>
+<details>
+  <summary>Smart 3D Grid for Spatial Awareness</summary>
+  <img src="./docs/grid.gif" width="500">
+</details>
 
 # 📀 Installation
 
