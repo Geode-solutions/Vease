@@ -1,7 +1,7 @@
 <template>
   <v-treeview
     v-model:selected="dataBaseStore.db[props.id].mesh_components_selection"
-    :items="dataBaseStore.formatedMeshComponents(props.id)"
+    :items="items"
     return-object
     class="transparent-treeview"
     item-value="id"
@@ -20,6 +20,7 @@ const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({ id: { type: String, required: true } });
+const items = dataBaseStore.formatedMeshComponents(props.id);
 
 function sortMeshComponents(items) {
   var corner_ids = [],
@@ -37,6 +38,7 @@ function sortMeshComponents(items) {
 watch(
   () => dataBaseStore.db[props.id].mesh_components_selection,
   (current, previous) => {
+    console.log("watch", current, previous);
     if (!previous) previous = [];
     const added = current.filter(
       (item) => !previous.some((p) => p.id === item.id)
@@ -47,6 +49,14 @@ watch(
 
     const [added_corners, added_lines, added_surfaces, added_blocks] =
       sortMeshComponents(added);
+
+    console.log(
+      "added",
+      added_corners,
+      added_lines,
+      added_surfaces,
+      added_blocks
+    );
 
     if (added_corners.length > 0)
       dataStyleStore.setCornerVisibility(props.id, added_corners, true);
@@ -59,6 +69,13 @@ watch(
 
     const [removed_corners, removed_lines, removed_surfaces, removed_blocks] =
       sortMeshComponents(removed);
+    console.log(
+      "removed",
+      removed_corners,
+      removed_lines,
+      removed_surfaces,
+      removed_blocks
+    );
 
     if (removed_corners.length > 0)
       dataStyleStore.setCornerVisibility(props.id, removed_corners, false);

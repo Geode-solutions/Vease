@@ -26,7 +26,6 @@
               v-if="!treeviewStore.isAdditionnalTreeDisplayed"
               @show-menu="handleTreeMenu"
             />
-
             <ViewerTreeComponent
               v-else
               @show-menu="handleTreeMenu"
@@ -56,14 +55,18 @@ function onResizeStart(event) {
 
   const resize = (e) => {
     const deltaX = e.clientX - startX;
-    treeviewStore.setPanelWidth(
-      Math.max(150, Math.min(startWidth + deltaX, window.innerWidth))
+    const newWidth = Math.max(
+      150,
+      Math.min(startWidth + deltaX, window.innerWidth)
     );
+    treeviewStore.setPanelWidth(newWidth);
+    document.body.style.userSelect = "none";
   };
 
   const stopResize = () => {
     document.removeEventListener("mousemove", resize);
     document.removeEventListener("mouseup", stopResize);
+    document.body.style.userSelect = "";
   };
 
   document.addEventListener("mousemove", resize);
@@ -72,14 +75,6 @@ function onResizeStart(event) {
 </script>
 
 <style scoped>
-.treeview-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  display: inline-block;
-}
-
 .treeview-container {
   position: absolute;
   z-index: 2;
@@ -96,13 +91,18 @@ function onResizeStart(event) {
   display: inline-block;
   height: 100%;
   overflow-y: auto;
+  position: relative;
 }
 
 .resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 5px;
   cursor: ew-resize;
   height: 100%;
   background-color: transparent;
+  z-index: 10;
 }
 
 .resizer:hover {
@@ -128,7 +128,7 @@ function onResizeStart(event) {
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background-color: #8d8b8b;
+  background-color: transparent;
   border-radius: 10px;
 }
 </style>
