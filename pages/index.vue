@@ -8,10 +8,16 @@
   >
     <RemoteRenderingView>
       <template #ui>
-        <ViewerTreeObject
-          @click.right.contextmenu.stop
+        <ViewerTreeObjectTree />
+        <!-- <ViewerTreeObject
+          v-if="!treeviewStore.isAdditionnalTreeDisplayed"
           @show-menu="handleTreeMenu"
         />
+        <ViewerTreeComponent
+          v-else
+          @show-menu="handleTreeMenu"
+          :id="treeviewStore.model_id"
+        /> -->
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -28,7 +34,6 @@
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import Status from "@geode/opengeodeweb-front/utils/status.js";
-import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
@@ -59,12 +64,7 @@ async function get_viewer_id(x, y) {
     }
   );
 }
-function handleTreeMenu({ event, itemId }) {
-  menuX.value = event.clientX;
-  menuY.value = event.clientY;
-  id.value = itemId;
-  menuStore.openMenu();
-}
+
 async function openMenu(event, id) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;

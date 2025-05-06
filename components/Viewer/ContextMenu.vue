@@ -26,9 +26,7 @@
 
 <script setup>
 const menuStore = useMenuStore();
-const treeViewStore = use_treeview_store();
-
-const radius = 80;
+const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -38,6 +36,8 @@ const props = defineProps({
   containerHeight: { type: Number, required: true },
 });
 
+const meta_data = computed(() => dataBaseStore.itemMetaDatas(props.id));
+const radius = 80;
 const show_menu = ref(true);
 
 watch(show_menu, (value) => {
@@ -45,8 +45,6 @@ watch(show_menu, (value) => {
     menuStore.closeMenu();
   }
 });
-
-const meta_data = computed(() => treeViewStore.itemMetaDatas(props.id));
 
 const menu_items = computed(() =>
   menuStore.getMenuItems(

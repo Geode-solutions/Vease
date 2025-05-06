@@ -10,31 +10,30 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const model = defineModel();
+const dataBaseStore = useDataBaseStore();
 
+const props = defineProps({
+  id: { type: String, required: true },
+});
+
+const model = defineModel();
 const polygon_attribute_name = ref("");
+const polygon_attribute_names = ref([]);
+const polygon_attribute = reactive({ name: polygon_attribute_name.value });
+
+const meta_data = computed(() => {
+  return dataBaseStore.itemMetaDatas(props.id);
+});
 
 onMounted(() => {
   if (model.value != null) {
     polygon_attribute_name.value = model.value.name;
   }
 });
-const polygon_attribute = reactive({ name: polygon_attribute_name.value });
 
 watch(polygon_attribute_name, (value) => {
   polygon_attribute.name = value;
   model.value = polygon_attribute;
-});
-
-const props = defineProps({
-  id: { type: String, required: true },
-});
-
-const tree_view_store = use_treeview_store();
-
-const polygon_attribute_names = ref([]);
-const meta_data = computed(() => {
-  return tree_view_store.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
