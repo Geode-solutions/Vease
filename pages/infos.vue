@@ -155,7 +155,7 @@
 <script setup>
 import vease_back_schemas from "@geode/vease-back/schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
-import Status from "@geode/opengeodeweb-front";
+import Status from "@ogw_f/utils/status.js";
 
 const version = useRuntimeConfig().public.VERSION;
 const geode_store = use_geode_store();
