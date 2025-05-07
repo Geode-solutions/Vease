@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import SurfaceEdges from "@/assets/viewer_svgs/surface_edges.svg";
+import SurfaceEdges from "@vease/assets/viewer_svgs/surface_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

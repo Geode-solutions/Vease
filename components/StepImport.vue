@@ -4,10 +4,10 @@
 
 <script setup>
 import _ from "lodash";
-import FileSelector from "@geode/opengeodeweb-front/components/FileSelector.vue";
-import MissingFilesSelector from "@geode/opengeodeweb-front/components/MissingFilesSelector.vue";
-import ObjectSelector from "@geode/opengeodeweb-front/components/ObjectSelector.vue";
-import ImportFile from "@/components/ImportFile.vue";
+import FileSelector from "@ogw_f/components/FileSelector.vue";
+import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue";
+import ObjectSelector from "@ogw_f/components/ObjectSelector.vue";
+import ImportFile from "@vease/components/ImportFile.vue";
 
 const files = ref([]);
 const auto_upload = ref(true);

@@ -27,7 +27,7 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-import Status from "@geode/opengeodeweb-front/utils/status.js";
+import Status from "@ogw_f/utils/status.js";
 import { useTemplateRef } from "vue";
 
 const infra_store = use_infra_store();

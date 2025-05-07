@@ -8,8 +8,11 @@ export default defineNuxtConfig({
       RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     },
   },
-
   extends: ["@geode/opengeodeweb-front"],
+
+  alias: {
+    "@vease": __dirname,
+  },
 
   modules: [
     "nuxt-electron",
@@ -84,11 +87,6 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores", "@geode/opengeodeweb-front/stores"],
   },
-  router: {
-    options: {
-      hashMode: true,
-    },
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
@@ -99,7 +97,7 @@ export default defineNuxtConfig({
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
 
-  css: ["assets/css/main.css"],
+  css: ["@vease/assets/css/main.css"],
 
   vite: {
     optimizeDeps: {

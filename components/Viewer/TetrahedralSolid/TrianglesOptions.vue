@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import TetrahedralSolidTriangles from "@/assets/viewer_svgs/solid_facets.svg";
+import TetrahedralSolidTriangles from "@vease/assets/viewer_svgs/solid_facets.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
