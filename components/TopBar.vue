@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import logo from "@/assets/img/logo.png";
+import logo from "@vease/assets/img/logo.png";
 
 const search = ref("");
 const userStore = useUserStore();

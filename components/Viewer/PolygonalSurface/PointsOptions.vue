@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import PolygonalSurfacePoints from "@/assets/viewer_svgs/surface_points.svg";
+import PolygonalSurfacePoints from "@vease/assets/viewer_svgs/surface_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

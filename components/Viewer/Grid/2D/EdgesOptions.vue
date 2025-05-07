@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import Grid2D_Edges from "@/assets/viewer_svgs/grid_2d_edges.svg";
+import Grid2D_Edges from "@vease/assets/viewer_svgs/grid_2d_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

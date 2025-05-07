@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import SolidFacets from "@/assets/viewer_svgs/solid_facets.svg";
+import SolidFacets from "@vease/assets/viewer_svgs/solid_facets.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
