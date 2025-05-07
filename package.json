@@ -47,8 +47,8 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",
-    "@geode/opengeodeweb-back": "5.6.6",
-    "@geode/opengeodeweb-front": "^9.7.1-rc.3",
+    "@geode/opengeodeweb-back": "5.7.1",
+    "@geode/opengeodeweb-front": "^9.7.1",
     "@geode/opengeodeweb-viewer": "^1.6.3",
     "@geode/vease-back": "^1.4.5",
     "@geode/vease-viewer": "^2.3.5",
