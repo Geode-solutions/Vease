@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import TriangulatedSurfaceEdgesPoints from "@/assets/viewer_svgs/surface_points.svg";
+import TriangulatedSurfaceEdgesPoints from "@vease/assets/viewer_svgs/surface_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

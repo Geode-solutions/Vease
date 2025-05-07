@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import HybridSolidPolygons from "@/assets/viewer_svgs/solid_facets.svg";
+import HybridSolidPolygons from "@vease/assets/viewer_svgs/solid_facets.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
