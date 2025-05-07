@@ -15,6 +15,11 @@
 </template>
 
 <script setup>
+import { onMounted, watch } from "vue";
+import { use_treeview_store } from "@/stores/treeview";
+import { useDataStyleStore } from "@/stores/data_style";
+import { useDataBaseStore } from "@/stores/data_base";
+
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
@@ -22,19 +27,26 @@ const dataBaseStore = useDataBaseStore();
 const props = defineProps({ id: { type: String, required: true } });
 const items = dataBaseStore.formatedMeshComponents(props.id);
 
-function sortMeshComponents(items) {
-  var corner_ids = [],
-    line_ids = [],
-    surface_ids = [],
-    block_ids = [];
-  for (const item of items) {
-    if (item.category === "Corner") corner_ids.push(item.id);
-    if (item.category === "Line") line_ids.push(item.id);
-    if (item.category === "Surface") surface_ids.push(item.id);
-    if (item.category === "Block") block_ids.push(item.id);
-  }
-  return [corner_ids, line_ids, surface_ids, block_ids];
+// Function to select all visible components by default
+function selectAllVisibleComponents() {
+  const visibleComponents = [];
+  items.forEach((category) => {
+    category.children.forEach((component) => {
+      // Assuming all components are visible by default
+      visibleComponents.push(component);
+    });
+  });
+  dataBaseStore.db[props.id].mesh_components_selection = visibleComponents;
 }
+
+onMounted(() => {
+  selectAllVisibleComponents();
+  console.log(
+    "onMounted dataBaseStore.db[props.id].mesh_components_selection",
+    dataBaseStore.db[props.id].mesh_components_selection
+  );
+});
+
 watch(
   () => dataBaseStore.db[props.id].mesh_components_selection,
   (current, previous) => {
@@ -89,12 +101,19 @@ watch(
   { immediate: true, deep: true }
 );
 
-onMounted(() => {
-  console.log(
-    "onMounted dataBaseStore.db[props.id].mesh_components_selection",
-    dataBaseStore.db[props.id].mesh_components_selection
-  );
-});
+function sortMeshComponents(items) {
+  var corner_ids = [],
+    line_ids = [],
+    surface_ids = [],
+    block_ids = [];
+  for (const item of items) {
+    if (item.category === "Corner") corner_ids.push(item.id);
+    if (item.category === "Line") line_ids.push(item.id);
+    if (item.category === "Surface") surface_ids.push(item.id);
+    if (item.category === "Block") block_ids.push(item.id);
+  }
+  return [corner_ids, line_ids, surface_ids, block_ids];
+}
 </script>
 
 <style scoped>

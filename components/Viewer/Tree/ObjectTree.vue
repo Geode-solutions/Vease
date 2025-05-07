@@ -7,33 +7,35 @@
       class="resizable-panel"
       :style="{ width: `${treeviewStore.panelWidth}px` }"
     >
-      <v-sheet
-        style="max-height: calc(80vh - 100px)"
-        class="transparent-treeview scrollbar"
-      >
-        <v-row>
-          <v-col>
-            <ViewerBreadCrumb
-              :selectedTree="selectedTree"
-              :treeOptions="treeOptions"
-              @update:selectedTree="selectedTree = $event"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <ViewerTreeObject
-              v-if="!treeviewStore.isAdditionnalTreeDisplayed"
-              @show-menu="handleTreeMenu"
-            />
-            <ViewerTreeComponent
-              v-else
-              @show-menu="handleTreeMenu"
-              :id="treeviewStore.model_id"
-            />
-          </v-col>
-        </v-row>
-      </v-sheet>
+      <div class="scrollable-wrapper">
+        <v-sheet
+          style="max-height: calc(80vh - 100px)"
+          class="transparent-treeview scrollbar-hover"
+        >
+          <v-row v-if="treeviewStore.items.length > 0">
+            <v-col>
+              <ViewerBreadCrumb
+                :selectedTree="selectedTree"
+                :treeOptions="treeOptions"
+                @update:selectedTree="selectedTree = $event"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <ViewerTreeObject
+                v-if="!treeviewStore.isAdditionnalTreeDisplayed"
+                @show-menu="handleTreeMenu"
+              />
+              <ViewerTreeComponent
+                v-else
+                @show-menu="handleTreeMenu"
+                :id="treeviewStore.model_id"
+              />
+            </v-col>
+          </v-row>
+        </v-sheet>
+      </div>
       <div class="resizer" @mousedown="onResizeStart"></div>
     </v-row>
   </v-container>
@@ -88,25 +90,35 @@ function onResizeStart(event) {
 }
 
 .resizable-panel {
-  display: inline-block;
+  display: flex;
   height: 100%;
-  overflow-y: auto;
   position: relative;
+  box-sizing: border-box;
+}
+
+.scrollable-wrapper {
+  overflow-y: auto;
+  padding-right: 6px;
+  flex: 1;
 }
 
 .resizer {
   position: absolute;
   top: 0;
   right: 0;
-  width: 5px;
-  cursor: ew-resize;
+  width: 6px;
   height: 100%;
+  cursor: ew-resize;
   background-color: transparent;
-  z-index: 10;
+  z-index: 15;
 }
 
 .resizer:hover {
-  background-color: #e7e7e7;
+  background-color: #999;
+}
+
+.resizer:active {
+  background-color: #666;
 }
 
 .transparent-treeview {
@@ -114,21 +126,20 @@ function onResizeStart(event) {
   margin: 4px 0;
 }
 
-.scrollbar {
+.scrollbar-hover {
   overflow-x: hidden;
 }
 
-:hover.scrollbar {
-  overflow-y: auto;
-}
-
-.scrollbar::-webkit-scrollbar {
+.scrollbar-hover::-webkit-scrollbar {
   width: 5px;
+}
+
+.scrollbar-hover::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
 
-.scrollbar::-webkit-scrollbar-thumb {
-  background-color: transparent;
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
 </style>
