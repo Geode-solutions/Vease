@@ -17,6 +17,41 @@ export default function useModelStyle() {
     return dataStyleStore.styles[id].visibility;
   }
 
+  function visibleMeshComponents(id) {
+    console.log("visibleMeshComponents", id);
+    console.log("dataStyleStore.styles[id]", dataStyleStore.styles[id]);
+
+    const visible_mesh_components = ref([]);
+    for (const [corner_id, style] of Object.entries(
+      dataStyleStore.styles[id].corners
+    )) {
+      console.log("style", style);
+      if (style.visibility == true) {
+        visible_mesh_components.value.push(corner_id);
+      }
+    }
+    for (const [line_id, style] of Object.entries(
+      dataStyleStore.styles[id].lines
+    )) {
+      if (style.visibility == true) {
+        visible_mesh_components.value.push(line_id);
+      }
+    }
+    for (const [surface_id, style] of Object.entries(
+      dataStyleStore.styles[id].surfaces
+    ))
+      if (style.visibility == true)
+        visible_mesh_components.value.push(surface_id);
+    for (const [block_id, style] of Object.entries(
+      dataStyleStore.styles[id].blocks
+    ))
+      if (style.visibility == true)
+        visible_mesh_components.value.push(block_id);
+
+    console.log("visible_mesh_components", visible_mesh_components);
+    return visible_mesh_components;
+  }
+
   function setMeshComponentsDefaultStyle(id) {
     cornersStyleStore.setCornersDefaultStyle(id);
     linesStyleStore.setLinesDefaultStyle(id);
@@ -83,6 +118,7 @@ export default function useModelStyle() {
 
   return {
     modelVisibility,
+    visibleMeshComponents,
     setMeshComponentsDefaultStyle,
     modelMeshComponentVisibility,
     setModelVisibility,

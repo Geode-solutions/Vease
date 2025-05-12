@@ -9,8 +9,6 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
   const modelStyleStore = useModelStyle();
   const dataBaseStore = useDataBaseStore();
 
-  const visibleMeshComponentIds = ref({});
-
   /** Actions **/
   function addDataStyle(id, geode_object, object_type) {
     console.log("addDataStyle", id, geode_object, object_type);
@@ -39,28 +37,12 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
     }
   }
 
-  function setInitialVisibleMeshComponents(meshId, components) {
-    visibleMeshComponentIds.value[meshId] = components.map((c) => c.id);
-  }
-
-  function getVisibleMeshComponents(meshId) {
-    return visibleMeshComponentIds.value[meshId] || [];
-  }
-
-  function updateVisibleMeshComponents(meshId, componentIds) {
-    visibleMeshComponentIds.value[meshId] = componentIds;
-  }
-
   return {
     ...dataStyleState,
     addDataStyle,
     setVisibility,
     ...meshStyleStore,
     ...modelStyleStore,
-    visibleMeshComponentIds,
-    setInitialVisibleMeshComponents,
-    getVisibleMeshComponents,
-    updateVisibleMeshComponents,
   };
 });
 

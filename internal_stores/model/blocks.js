@@ -35,7 +35,6 @@ export function useBlocksStyle() {
     for (const block_id of dataBaseStore.db[id].mesh_components["Block"]) {
       block_ids.push(block_id);
       dataStyleStore.styles[id].blocks[block_id] = blockDefaultStyle(true);
-      dataBaseStore.db[id].mesh_components_selection.push(block_id);
     }
     setBlockVisibility(id, block_ids, true);
   }

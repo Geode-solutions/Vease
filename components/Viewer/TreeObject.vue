@@ -48,6 +48,7 @@ function compareSelections(current, previous) {
 watch(
   () => treeviewStore.selection,
   (current, previous) => {
+    console.log("selection changed", current, previous);
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
 

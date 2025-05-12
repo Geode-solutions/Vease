@@ -31,6 +31,16 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     return formated_mesh_components.value;
   }
 
+  function meshComponentType(id, uuid) {
+    console.log("meshComponentType", id, uuid, db.value[id].mesh_components);
+    if (db.value[id].mesh_components["Corner"].includes(uuid)) return "corner";
+    else if (db.value[id].mesh_components["Line"].includes(uuid)) return "line";
+    else if (db.value[id].mesh_components["Surface"].includes(uuid))
+      return "surface";
+    else if (db.value[id].mesh_components["Block"].includes(uuid))
+      return "block";
+  }
+
   /** Actions **/
   async function addItem(
     id,
@@ -46,7 +56,6 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     if (value.object_type == "model") {
       await fetchMeshComponents(id);
       await fetchUuidToFlatIndexDict(id);
-      db.value[id].mesh_components_selection = [];
     }
     treeview_store.addItem(
       value.geode_object,
@@ -107,6 +116,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   return {
     db,
     itemMetaData,
+    meshComponentType,
     formatedMeshComponents,
     addItem,
     itemMetaDatas,
