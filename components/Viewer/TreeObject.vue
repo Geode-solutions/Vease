@@ -39,16 +39,9 @@ const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 const emit = defineEmits(["show-menu"]);
 
-function compareSelections(current, previous) {
-  const added = current.filter((item) => !previous.includes(item));
-  const removed = previous.filter((item) => !current.includes(item));
-  return { added, removed };
-}
-
 watch(
   () => treeviewStore.selection,
   (current, previous) => {
-    console.log("selection changed", current, previous);
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
 
