@@ -16,41 +16,37 @@
 
 <script setup>
 import { onMounted, watch } from "vue";
-import { use_treeview_store } from "@/stores/treeview";
-import { useDataStyleStore } from "@/stores/data_style";
-import { useDataBaseStore } from "@/stores/data_base";
 
 const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({ id: { type: String, required: true } });
+
 const items = dataBaseStore.formatedMeshComponents(props.id);
 
-// Function to select all visible components by default
-function selectAllVisibleComponents() {
-  const visibleComponents = [];
+function updateSelectionFromVisibleComponents() {
+  const visibleIds = dataStyleStore.visibleMeshComponentIds?.[props.id] || [];
+  const visibleItems = [];
+
   items.forEach((category) => {
     category.children.forEach((component) => {
-      // Assuming all components are visible by default
-      visibleComponents.push(component);
+      if (visibleIds.includes(component.id)) {
+        visibleItems.push(component);
+      }
     });
   });
-  dataBaseStore.db[props.id].mesh_components_selection = visibleComponents;
+
+  dataBaseStore.db[props.id].mesh_components_selection = visibleItems;
 }
 
 onMounted(() => {
-  selectAllVisibleComponents();
-  console.log(
-    "onMounted dataBaseStore.db[props.id].mesh_components_selection",
-    dataBaseStore.db[props.id].mesh_components_selection
-  );
+  updateSelectionFromVisibleComponents();
 });
 
 watch(
   () => dataBaseStore.db[props.id].mesh_components_selection,
   (current, previous) => {
-    console.log("watch", current, previous);
     if (!previous) previous = [];
     const added = current.filter(
       (item) => !previous.some((p) => p.id === item.id)
@@ -61,14 +57,8 @@ watch(
 
     const [added_corners, added_lines, added_surfaces, added_blocks] =
       sortMeshComponents(added);
-
-    console.log(
-      "added",
-      added_corners,
-      added_lines,
-      added_surfaces,
-      added_blocks
-    );
+    const [removed_corners, removed_lines, removed_surfaces, removed_blocks] =
+      sortMeshComponents(removed);
 
     if (added_corners.length > 0)
       dataStyleStore.setCornerVisibility(props.id, added_corners, true);
@@ -79,16 +69,6 @@ watch(
     if (added_blocks.length > 0)
       dataStyleStore.setBlockVisibility(props.id, added_blocks, true);
 
-    const [removed_corners, removed_lines, removed_surfaces, removed_blocks] =
-      sortMeshComponents(removed);
-    console.log(
-      "removed",
-      removed_corners,
-      removed_lines,
-      removed_surfaces,
-      removed_blocks
-    );
-
     if (removed_corners.length > 0)
       dataStyleStore.setCornerVisibility(props.id, removed_corners, false);
     if (removed_lines.length > 0)
@@ -97,12 +77,26 @@ watch(
       dataStyleStore.setSurfaceVisibility(props.id, removed_surfaces, false);
     if (removed_blocks.length > 0)
       dataStyleStore.setBlockVisibility(props.id, removed_blocks, false);
+
+    const newVisibleIds = current.map((item) => item.id);
+    dataStyleStore.updateVisibleMeshComponents(props.id, newVisibleIds);
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+  () => treeviewStore.selection,
+  (current) => {
+    const stillSelected = current.some((item) => item.id === props.id);
+    if (!stillSelected) {
+      dataBaseStore.db[props.id].mesh_components_selection = [];
+    }
   },
   { immediate: true, deep: true }
 );
 
 function sortMeshComponents(items) {
-  var corner_ids = [],
+  const corner_ids = [],
     line_ids = [],
     surface_ids = [],
     block_ids = [];

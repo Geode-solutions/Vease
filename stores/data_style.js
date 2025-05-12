@@ -4,18 +4,27 @@ import useModelStyle from "../internal_stores/model/index.js";
 
 export const useDataStyleStore = defineStore("dataStyle", () => {
   /** States **/
-  const dataStyleStore = useDataStyleStore();
+  const dataStyleState = useDataStyleState();
   const meshStyleStore = useMeshStyle();
   const modelStyleStore = useModelStyle();
   const dataBaseStore = useDataBaseStore();
 
+  const visibleMeshComponentIds = ref({});
+
   /** Actions **/
   function addDataStyle(id, geode_object, object_type) {
     console.log("addDataStyle", id, geode_object, object_type);
-    dataStyleStore.styles[id] = getDefaultStyle(geode_object);
-    if (object_type == "mesh") {
+    dataStyleState.styles[id] = getDefaultStyle(geode_object);
+
+    if (object_type === "mesh") {
       meshStyleStore.applyMeshDefaultStyle(id);
-    } else if (object_type == "model") {
+
+      const meshComponents = dataBaseStore.formatedMeshComponents(id);
+      const allComponentIds = meshComponents.flatMap((category) =>
+        category.children.map((child) => child.id)
+      );
+      visibleMeshComponentIds.value[id] = allComponentIds;
+    } else if (object_type === "model") {
       modelStyleStore.setMeshComponentsDefaultStyle(id);
       modelStyleStore.applyModelDefaultStyle(id);
     }
@@ -30,12 +39,28 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
     }
   }
 
+  function setInitialVisibleMeshComponents(meshId, components) {
+    visibleMeshComponentIds.value[meshId] = components.map((c) => c.id);
+  }
+
+  function getVisibleMeshComponents(meshId) {
+    return visibleMeshComponentIds.value[meshId] || [];
+  }
+
+  function updateVisibleMeshComponents(meshId, componentIds) {
+    visibleMeshComponentIds.value[meshId] = componentIds;
+  }
+
   return {
-    ...useDataStyleState(),
+    ...dataStyleState,
     addDataStyle,
     setVisibility,
-    ...useMeshStyle(),
-    ...useModelStyle(),
+    ...meshStyleStore,
+    ...modelStyleStore,
+    visibleMeshComponentIds,
+    setInitialVisibleMeshComponents,
+    getVisibleMeshComponents,
+    updateVisibleMeshComponents,
   };
 });
 
