@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import TetrahedralSolidTetrahedra from "@/assets/viewer_svgs/solid_polyhedra.svg";
+import TetrahedralSolidTetrahedra from "@vease/assets/viewer_svgs/solid_polyhedra.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

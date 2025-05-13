@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import Grid2D_Cells from "@/assets/viewer_svgs/grid_2d_cells.svg";
+import Grid2D_Cells from "@vease/assets/viewer_svgs/grid_2d_cells.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

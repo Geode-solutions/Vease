@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import HybridSolidEdges from "@/assets/viewer_svgs/solid_edges.svg";
+import HybridSolidEdges from "@vease/assets/viewer_svgs/solid_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

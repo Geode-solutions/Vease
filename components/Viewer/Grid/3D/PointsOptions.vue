@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import Grid3D_Points from "@/assets/viewer_svgs/grid_3d_points.svg";
+import Grid3D_Points from "@vease/assets/viewer_svgs/grid_3d_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

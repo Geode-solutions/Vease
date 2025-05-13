@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import SolidPoints from "@/assets/viewer_svgs/solid_points.svg";
+import SolidPoints from "@vease/assets/viewer_svgs/solid_points.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },
