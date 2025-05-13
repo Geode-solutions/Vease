@@ -16,12 +16,6 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
 
     if (object_type === "mesh") {
       meshStyleStore.applyMeshDefaultStyle(id);
-
-      const meshComponents = dataBaseStore.formatedMeshComponents(id);
-      const allComponentIds = meshComponents.flatMap((category) =>
-        category.children.map((child) => child.id)
-      );
-      visibleMeshComponentIds.value[id] = allComponentIds;
     } else if (object_type === "model") {
       modelStyleStore.setMeshComponentsDefaultStyle(id);
       modelStyleStore.applyModelDefaultStyle(id);

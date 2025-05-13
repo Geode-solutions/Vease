@@ -30,13 +30,27 @@ export function useLinesStyle() {
   }
 
   function setLinesDefaultStyle(id) {
-    var line_ids = [];
-    for (const line_id of dataBaseStore.db[id].mesh_components["Line"]) {
-      line_ids.push(line_id);
-      dataStyleStore.styles[id].lines[line_id] = lineDefaultStyle(true);
+    const lines = dataBaseStore.db[id]?.mesh_components?.["Line"];
+    if (!lines || lines.length === 0) return;
+
+    if (!dataStyleStore.styles[id]) {
+      dataStyleStore.styles[id] = {};
     }
+
+    if (!dataStyleStore.styles[id].lines) {
+      dataStyleStore.styles[id].lines = {};
+    }
+
+    const line_ids = [];
+
+    for (const line_id of lines) {
+      dataStyleStore.styles[id].lines[line_id] = lineDefaultStyle(true);
+      line_ids.push(line_id);
+    }
+
     setLineVisibility(id, line_ids, true);
   }
+
   function applyLinesStyle(id) {
     const lines = dataStyleStore.styles[id].lines;
     for (const [line_id, style] of Object.entries(lines)) {

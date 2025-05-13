@@ -31,14 +31,28 @@ export function useSurfacesStyle() {
   }
 
   function setSurfacesDefaultStyle(id) {
-    var surface_ids = [];
-    for (const surface_id of dataBaseStore.db[id].mesh_components["Surface"]) {
+    const surfaces = dataBaseStore.db[id]?.mesh_components?.["Surface"];
+    if (!surfaces || surfaces.length === 0) return;
+
+    if (!dataStyleStore.styles[id]) {
+      dataStyleStore.styles[id] = {};
+    }
+
+    if (!dataStyleStore.styles[id].surfaces) {
+      dataStyleStore.styles[id].surfaces = {};
+    }
+
+    const surface_ids = [];
+
+    for (const surface_id of surfaces) {
       dataStyleStore.styles[id].surfaces[surface_id] =
         surfaceDefaultStyle(true);
       surface_ids.push(surface_id);
     }
+
     setSurfaceVisibility(id, surface_ids, true);
   }
+
   function applySurfacesStyle(id) {
     const surfaces = dataStyleStore.styles[id].surfaces;
     for (const [surface_id, style] of Object.entries(surfaces)) {
