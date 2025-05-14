@@ -27,6 +27,7 @@
           @click="UIStore.setShowStepper(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Import'"
         >
           <v-icon>mdi-file-upload-outline</v-icon>
         </v-btn>
@@ -37,6 +38,7 @@
           @click="UIStore.setShowCreatePointMenu(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Create'"
         >
           <v-icon>mdi-shape-plus-outline</v-icon>
         </v-btn>
