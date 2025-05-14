@@ -36,7 +36,10 @@ const props = defineProps({
   containerHeight: { type: Number, required: true },
 });
 
-const meta_data = computed(() => dataBaseStore.itemMetaDatas(props.id));
+const meta_data = computed(() => {
+  const itemId = props.id || menuStore.current_id;
+  return itemId ? dataBaseStore.itemMetaDatas(itemId) : {};
+});
 const radius = 80;
 const show_menu = ref(true);
 

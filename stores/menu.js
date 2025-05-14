@@ -110,19 +110,26 @@ export const useMenuStore = defineStore("menu", {
   state: () => ({
     menus,
     display_menu: false,
+    current_id: null,
   }),
   getters: {
     getMenuItems: (state) => {
-      return (object_type, geode_object) =>
-        state.menus[object_type][geode_object];
+      return (object_type, geode_object) => {
+        if (!object_type || !geode_object || !state.menus[object_type]) {
+          return [];
+        }
+        return state.menus[object_type][geode_object] || [];
+      };
     },
   },
   actions: {
     closeMenu() {
       this.display_menu = false;
+      this.current_id = null;
     },
-    async openMenu() {
+    async openMenu(id) {
       await this.closeMenu();
+      this.current_id = id;
       this.display_menu = true;
     },
     showItemsWithDelay() {

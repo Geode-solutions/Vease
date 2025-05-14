@@ -53,7 +53,7 @@ function handleTreeMenu({ event, itemId }) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   id.value = itemId;
-  menuStore.openMenu();
+  menuStore.openMenu(itemId);
 }
 
 function onResizeStart(event) {
