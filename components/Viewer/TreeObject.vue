@@ -41,7 +41,6 @@ const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 const emit = defineEmits(["show-menu"]);
 
-// Fonction pour déterminer si un élément est un nœud feuille (sans enfants)
 function isLeafNode(item) {
   return !item.children || item.children.length === 0;
 }
