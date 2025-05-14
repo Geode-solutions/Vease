@@ -108,13 +108,16 @@ const items = ref([
   //     }
   //   },
   // },
-  /*************  ✨ Windsurf Command ⭐  *************/
   {
     title: "Test",
     icon: "mdi-test-tube",
     click: () => navigateTo("/test"),
   },
-  /*******  0a306974-bde0-4b28-962b-176de8980b40  *******/
+  {
+    title: "Test",
+    icon: "mdi-test-tube",
+    click: () => navigateTo("/test_2"),
+  },
 ]);
 
 let draggedItem = null;
