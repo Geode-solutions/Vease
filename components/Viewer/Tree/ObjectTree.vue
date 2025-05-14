@@ -43,6 +43,11 @@
 
 <script setup>
 const treeviewStore = use_treeview_store();
+const menuStore = useMenuStore();
+
+const menuX = ref(0);
+const menuY = ref(0);
+const id = ref(null);
 
 function handleTreeMenu({ event, itemId }) {
   menuX.value = event.clientX;

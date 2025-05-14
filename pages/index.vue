@@ -9,15 +9,6 @@
     <RemoteRenderingView>
       <template #ui>
         <ViewerTreeObjectTree />
-        <!-- <ViewerTreeObject
-          v-if="!treeviewStore.isAdditionnalTreeDisplayed"
-          @show-menu="handleTreeMenu"
-        />
-        <ViewerTreeComponent
-          v-else
-          @show-menu="handleTreeMenu"
-          :id="treeviewStore.model_id"
-        /> -->
         <ViewerContextMenu
           v-if="display_menu"
           :id="id"
@@ -33,6 +24,7 @@
 
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import Status from "@ogw_f/utils/status.js";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
