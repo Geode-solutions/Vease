@@ -12,7 +12,6 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   }
 
   function formatedMeshComponents(id) {
-    console.log("formatedMeshComponents id", id);
     const formated_mesh_components = ref([]);
 
     if (!db.value[id] || !db.value[id].mesh_components) {
@@ -40,7 +39,6 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       return null;
     }
 
-    console.log("meshComponentType", id, uuid, db.value[id].mesh_components);
     if (db.value[id].mesh_components["Corner"]?.includes(uuid)) return "corner";
     else if (db.value[id].mesh_components["Line"]?.includes(uuid))
       return "line";
@@ -92,7 +90,6 @@ export const useDataBaseStore = defineStore("dataBase", () => {
         response_function: async (response) => {
           if (response._data?.uuid_dict) {
             db.value[id].mesh_components = response._data.uuid_dict;
-            console.log("fetchMeshComponents", db.value[id].mesh_components);
           }
         },
       }
