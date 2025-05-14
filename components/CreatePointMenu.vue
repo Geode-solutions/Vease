@@ -71,7 +71,7 @@ import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
 const UIStore = useUIStore();
-const treeviewStore = use_treeview_store();
+const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -125,13 +125,13 @@ async function createPoint() {
               },
               {
                 response_function: async () => {
-                  await treeviewStore.addItem(
-                    response._data.geode_object,
-                    response._data.name,
-                    response._data.id,
-                    response._data.object_type,
-                    response._data.native_file_name
-                  );
+                  await dataBaseStore.addItem(response._data.id, {
+                    object_type: response._data.object_type,
+                    geode_object: response._data.geode_object,
+                    native_filename: response._data.native_file_name,
+                    viewable_filename: response._data.viewable_file_name,
+                    name: response._data.name,
+                  });
                   closeDrawer();
                 },
               }
