@@ -12,7 +12,9 @@
       <span
         class="treeview-item"
         @click.right.stop="
-          emit('show-menu', { event: $event, itemId: item.id })
+          isLeafNode(item)
+            ? emit('show-menu', { event: $event, itemId: item.id })
+            : null
         "
       >
         {{ item.title }}
@@ -38,6 +40,11 @@ const treeviewStore = use_treeview_store();
 const dataStyleStore = useDataStyleStore();
 const dataBaseStore = useDataBaseStore();
 const emit = defineEmits(["show-menu"]);
+
+// Fonction pour déterminer si un élément est un nœud feuille (sans enfants)
+function isLeafNode(item) {
+  return !item.children || item.children.length === 0;
+}
 
 watch(
   () => treeviewStore.selection,

@@ -44,16 +44,22 @@
 <script setup>
 const treeviewStore = use_treeview_store();
 const menuStore = useMenuStore();
+const cardContainer = useTemplateRef("cardContainer");
+const containerWidth = ref(window.innerWidth);
+const containerHeight = ref(window.innerHeight);
 
 const menuX = ref(0);
 const menuY = ref(0);
 const id = ref(null);
 
+const emit = defineEmits(["show-menu", "position-menu"]);
+
 function handleTreeMenu({ event, itemId }) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   id.value = itemId;
-  menuStore.openMenu(itemId);
+
+  menuStore.openMenu(itemId, event.clientX, event.clientY);
 }
 
 function onResizeStart(event) {
@@ -79,6 +85,20 @@ function onResizeStart(event) {
   document.addEventListener("mousemove", resize);
   document.addEventListener("mouseup", stopResize);
 }
+
+onMounted(() => {
+  containerWidth.value = window.innerWidth;
+  containerHeight.value = window.innerHeight;
+
+  window.addEventListener("resize", () => {
+    containerWidth.value = window.innerWidth;
+    containerHeight.value = window.innerHeight;
+  });
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", () => {});
+});
 </script>
 
 <style scoped>

@@ -59,14 +59,13 @@ const menu_items = computed(() =>
 const menuItemCount = computed(() => menu_items.value.length);
 
 function getMenuStyle() {
-  const adjustedX = Math.min(
-    Math.max(props.x, radius),
-    props.containerWidth - radius
-  );
-  const adjustedY = Math.min(
-    Math.max(props.y, radius),
-    props.containerHeight - radius
-  );
+  const x = props.x || menuStore.menuX;
+  const y = props.y || menuStore.menuY;
+  const width = props.containerWidth || menuStore.containerWidth;
+  const height = props.containerHeight || menuStore.containerHeight;
+
+  const adjustedX = Math.min(Math.max(x, radius), width - radius);
+  const adjustedY = Math.min(Math.max(y, radius), height - radius);
 
   return {
     left: `${adjustedX - radius}px`,

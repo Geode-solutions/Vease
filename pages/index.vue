@@ -11,9 +11,9 @@
         <ViewerTreeObjectTree />
         <ViewerContextMenu
           v-if="display_menu"
-          :id="id"
-          :x="menuX"
-          :y="menuY"
+          :id="menuStore.current_id || id"
+          :x="menuStore.menuX"
+          :y="menuStore.menuY"
           :containerWidth="containerWidth"
           :containerHeight="containerHeight"
         />
@@ -56,12 +56,18 @@ async function get_viewer_id(x, y) {
   );
 }
 
-async function openMenu(event, id) {
+async function openMenu(event) {
   menuX.value = event.clientX;
   menuY.value = event.clientY;
 
   await get_viewer_id(event.offsetX, event.offsetY);
-  menuStore.openMenu();
+  menuStore.openMenu(
+    id.value,
+    event.clientX,
+    event.clientY,
+    containerWidth.value,
+    containerHeight.value
+  );
 }
 
 function resize() {
