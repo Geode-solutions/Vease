@@ -144,7 +144,7 @@ const handleMouseMove = (e) => {
 
 .icon-container {
   position: fixed;
-  top: 50%;
+  top: 53%;
   right: 0;
   z-index: 1000;
   transform: translateY(-50%);
