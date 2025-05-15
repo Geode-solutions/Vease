@@ -21,12 +21,16 @@ const renderWindow = fullScreenRenderer.getRenderWindow();
 // Create a reader to load the VTP file
 const reader = vtkXMLPolyDataReader.newInstance();
 
+// reader.setFileName("./polygon_attribute.vtp");
+
 // Fetch and parse the VTP file
 fetch("./polygon_attribute.vtp")
   .then((response) => response.arrayBuffer())
   .then((arrayBuffer) => {
     console.log("arrayBuffer", arrayBuffer);
-    reader.parseAsArrayBuffer(arrayBuffer);
+    const textEncoder = new TextEncoder();
+    reader.parseAsArrayBuffer(textEncoder.encode(arrayBuffer));
+    // reader.parseAsArrayBuffer(arrayBuffer);
     console.log("out");
 
     // Get the output data and set up the mapper and actor
