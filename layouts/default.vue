@@ -13,8 +13,8 @@
         </v-col>
       </v-row>
 
-      <LayoutTopBar />
-      <LayoutSideBar />
+      <TopBar />
+      <SideBar />
       <FeedBackSnackers />
 
       <div
