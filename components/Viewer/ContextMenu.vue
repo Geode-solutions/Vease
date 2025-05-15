@@ -26,9 +26,7 @@
 
 <script setup>
 const menuStore = useMenuStore();
-const treeViewStore = use_treeview_store();
-
-const radius = 80;
+const dataBaseStore = useDataBaseStore();
 
 const props = defineProps({
   id: { type: String, required: true },
@@ -38,6 +36,11 @@ const props = defineProps({
   containerHeight: { type: Number, required: true },
 });
 
+const meta_data = computed(() => {
+  const itemId = props.id || menuStore.current_id;
+  return itemId ? dataBaseStore.itemMetaDatas(itemId) : {};
+});
+const radius = 80;
 const show_menu = ref(true);
 
 watch(show_menu, (value) => {
@@ -45,8 +48,6 @@ watch(show_menu, (value) => {
     menuStore.closeMenu();
   }
 });
-
-const meta_data = computed(() => treeViewStore.itemMetaDatas(props.id));
 
 const menu_items = computed(() =>
   menuStore.getMenuItems(
@@ -58,14 +59,13 @@ const menu_items = computed(() =>
 const menuItemCount = computed(() => menu_items.value.length);
 
 function getMenuStyle() {
-  const adjustedX = Math.min(
-    Math.max(props.x, radius),
-    props.containerWidth - radius
-  );
-  const adjustedY = Math.min(
-    Math.max(props.y, radius),
-    props.containerHeight - radius
-  );
+  const x = props.x || menuStore.menuX;
+  const y = props.y || menuStore.menuY;
+  const width = props.containerWidth || menuStore.containerWidth;
+  const height = props.containerHeight || menuStore.containerHeight;
+
+  const adjustedX = Math.min(Math.max(x, radius), width - radius);
+  const adjustedY = Math.min(Math.max(y, radius), height - radius);
 
   return {
     left: `${adjustedX - radius}px`,

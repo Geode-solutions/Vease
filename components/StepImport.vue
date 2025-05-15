@@ -8,7 +8,6 @@ import FileSelector from "@ogw_f/components/FileSelector.vue";
 import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue";
 import ObjectSelector from "@ogw_f/components/ObjectSelector.vue";
 import ImportFile from "@vease/components/ImportFile.vue";
-
 const files = ref([]);
 const auto_upload = ref(true);
 const input_geode_object = ref("");
