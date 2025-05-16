@@ -6,6 +6,7 @@
 import "@kitware/vtk.js/Rendering/Profiles/Geometry";
 import vtkFullScreenRenderWindow from "@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow";
 import vtkXMLPolyDataReader from "@kitware/vtk.js/IO/XML/XMLPolyDataReader";
+
 import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
 import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
 
@@ -21,31 +22,18 @@ const renderWindow = fullScreenRenderer.getRenderWindow();
 // Create a reader to load the VTP file
 const reader = vtkXMLPolyDataReader.newInstance();
 
-// reader.setFileName("./polygon_attribute.vtp");
+await reader.setUrl("/pages/polygon_attribute.vtp");
+const polydata = reader.getOutputData(0);
+console.log("polydata", polydata);
 
-// Fetch and parse the VTP file
-fetch("./polygon_attribute.vtp")
-  .then((response) => response.arrayBuffer())
-  .then((arrayBuffer) => {
-    console.log("arrayBuffer", arrayBuffer);
-    const textEncoder = new TextEncoder();
-    reader.parseAsArrayBuffer(textEncoder.encode(arrayBuffer));
-    // reader.parseAsArrayBuffer(arrayBuffer);
-    console.log("out");
+const mapper = vtkMapper.newInstance();
+mapper.setInputData(polydata);
 
-    // Get the output data and set up the mapper and actor
-    const polydata = reader.getOutputData(0);
-    console.log("polydata", polydata);
+const actor = vtkActor.newInstance();
+actor.setMapper(mapper);
 
-    const mapper = vtkMapper.newInstance();
-    mapper.setInputData(polydata);
-
-    const actor = vtkActor.newInstance();
-    actor.setMapper(mapper);
-
-    // Add the actor to the renderer and render the scene
-    renderer.addActor(actor);
-    renderer.resetCamera();
-    renderWindow.render();
-  });
+// Add the actor to the renderer and render the scene
+renderer.addActor(actor);
+renderer.resetCamera();
+renderWindow.render();
 </script>
