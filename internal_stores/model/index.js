@@ -58,13 +58,6 @@ export default function useModelStyle() {
     return visible_mesh_components;
   }
 
-  function setMeshComponentsDefaultStyle(id) {
-    cornersStyleStore.setCornersDefaultStyle(id);
-    linesStyleStore.setLinesDefaultStyle(id);
-    surfacesStyleStore.setSurfacesDefaultStyle(id);
-    blocksStyleStore.setBlocksDefaultStyle(id);
-  }
-
   function modelMeshComponentVisibility(id, component_type, component_id) {
     if (component_type === "Corner") {
       return cornersStyleStore.cornerVisibility(id, component_id);
@@ -87,6 +80,22 @@ export default function useModelStyle() {
       {
         response_function: () => {
           dataStyleStore.styles[id].visibility = visibility;
+          console.log("setModelVisibility", dataStyleStore.styles[id].visibility);
+        },
+      }
+    );
+  }
+
+  function setModelColor(id, color) {
+    viewer_call(
+      {
+        schema: viewer_schemas.opengeodeweb_viewer.model.color,
+        params: { id, color },
+      },
+      {
+        response_function: () => {
+          dataStyleStore.styles[id].color = color;
+          console.log("setModelColor", dataStyleStore.styles[id].color);
         },
       }
     );
@@ -111,23 +120,28 @@ export default function useModelStyle() {
 
   function applyModelDefaultStyle(id) {
     const id_style = dataStyleStore.styles[id];
-    if (!id_style) return;
+    for (const [key, value] of Object.entries(id_style)) {
+      if (key == "visibility") setModelVisibility(id, value);
+      else if (key == "color") setModelColor(id, value);
+    }
+  }
 
-    if ("visibility" in id_style) setModelVisibility(id, id_style.visibility);
-    if ("corners" in id_style) cornersStyleStore.setCornersDefaultStyle(id);
-    if ("lines" in id_style) linesStyleStore.setLinesDefaultStyle(id);
-    if ("surfaces" in id_style) surfacesStyleStore.setSurfacesDefaultStyle(id);
-    if ("blocks" in id_style) blocksStyleStore.setBlocksDefaultStyle(id);
+  function setMeshComponentsDefaultStyle(id) {
+    cornersStyleStore.setCornersDefaultStyle(id);
+    linesStyleStore.setLinesDefaultStyle(id);
+    surfacesStyleStore.setSurfacesDefaultStyle(id);
+    blocksStyleStore.setBlocksDefaultStyle(id);
   }
 
   return {
     modelVisibility,
     visibleMeshComponents,
-    setMeshComponentsDefaultStyle,
     modelMeshComponentVisibility,
     setModelVisibility,
+    setModelColor,
     setModelMeshComponentVisibility,
     applyModelDefaultStyle,
+    setMeshComponentsDefaultStyle,
     ...useSurfacesStyle(),
     ...useCornersStyle(),
     ...useBlocksStyle(),
