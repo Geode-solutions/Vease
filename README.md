@@ -31,6 +31,10 @@ Here is a list of what to expect inside Vease. Click on each title to see a demo
   <summary>Smart 3D Grid for Spatial Awareness</summary>
   <img src="./docs/grid.gif" width="500">
 </details>
+<details>
+  <summary>Adding Texture to Your Meshes</summary>
+  <img src="./docs/textures.gif" width="500">
+</details>
 
 # 📀 Installation
 
