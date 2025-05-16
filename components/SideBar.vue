@@ -113,11 +113,6 @@ const items = ref([
     icon: "mdi-test-tube",
     click: () => navigateTo("/test"),
   },
-  {
-    title: "Test",
-    icon: "mdi-test-tube",
-    click: () => navigateTo("/test_2"),
-  },
 ]);
 
 let draggedItem = null;
