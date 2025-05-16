@@ -38,7 +38,7 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
-const tree_view_store = use_treeview_store();
+const dataBaseStore = useDataBaseStore();
 
 const emit = defineEmits(["update_value"]);
 
@@ -57,7 +57,7 @@ texture_file_name.value = props.texture_file_name;
 const texture_coordinates = ref([]);
 
 const meta_data = computed(() => {
-  return tree_view_store.itemMetaDatas(props.id);
+  return dataBaseStore.itemMetaDatas(props.id);
 });
 
 onMounted(() => {

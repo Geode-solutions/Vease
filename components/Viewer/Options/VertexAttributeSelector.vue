@@ -30,11 +30,11 @@ const props = defineProps({
   id: { type: String, required: true },
 });
 
-const tree_view_store = use_treeview_store();
+const dataBaseStore = useDataBaseStore();
 
 const vertex_attribute_names = ref([]);
 const meta_data = computed(() => {
-  return tree_view_store.itemMetaDatas(props.id);
+  return dataBaseStore.itemMetaDatas(props.id);
 });
 
 onMounted(() => {
