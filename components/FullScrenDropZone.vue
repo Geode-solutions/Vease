@@ -1,8 +1,8 @@
 <template>
   <v-overlay
     v-model="UIStore.showDropZone"
-    @keyup.esc="UIStore.setShowDropZone(false)"
-    @click:outside="UIStore.setShowDropZone(false)"
+    @keyup.esc="UIStore.disableDropZone()"
+    @click:outside="UIStore.disableDropZone()"
     height="100%"
     width="100%"
     @dragover.prevent
@@ -20,7 +20,6 @@
           width="100%"
           color="transparent"
           class="pa-5 justify-center align-center d-flex"
-          elevation="0"
           @drop="onDrop"
         >
           <v-card
@@ -58,9 +57,7 @@ const onDrop = (e) => {
       "No file dropped."
     );
   } else {
-    for (const file of files) {
-      feedback_store.add_success(`File(s) dropped : ${file.name} ${file.type}`);
-    }
+    feedback_store.add_success(`${files.length} file(s) dropped`);
     UIStore.setDroppedFiles(Array.from(files));
     UIStore.setShowStepper(true);
   }
@@ -68,19 +65,3 @@ const onDrop = (e) => {
   UIStore.setShowDropZone(false);
 };
 </script>
-
-<style scoped>
-.drop-zone {
-  background-color: transparent;
-  border-width: 0;
-  border: solid 0px transparent;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
