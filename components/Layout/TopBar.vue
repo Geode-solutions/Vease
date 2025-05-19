@@ -7,6 +7,7 @@
         max-width="50"
         class="ml-3 mr-0"
         contain
+        draggable="false"
       />
       <h2 style="color: white" class="ml-2 mb-1 title-text">Vease</h2>
       <!-- <v-spacer />
