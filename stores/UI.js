@@ -8,6 +8,9 @@ export const useUIStore = defineStore("UI", {
     showCreatePointMenu: false,
   }),
   actions: {
+    disableDropZone() {
+      this.showDropZone = false;
+    },
     setShowDropZone(value) {
       this.showDropZone = value;
     },

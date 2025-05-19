@@ -15,6 +15,7 @@ const props = defineProps({
     default: [],
   },
 });
+
 const files = ref(props.files);
 const auto_upload = ref(true);
 const input_geode_object = ref("");

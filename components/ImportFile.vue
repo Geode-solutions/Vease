@@ -24,7 +24,7 @@ const props = defineProps({
   input_geode_object: { type: String, required: true },
 });
 
-const treeviewStore = use_treeview_store();
+const dataBaseStore = useDataBaseStore();
 const UIStore = useUIStore();
 
 const import_button = useTemplateRef("import_button");
@@ -57,13 +57,15 @@ async function import_files() {
             },
             {
               response_function: async () => {
-                await treeviewStore.addItem(
-                  props.input_geode_object,
-                  response._data.name,
-                  response._data.id,
-                  response._data.object_type,
-                  response._data.native_file_name
-                );
+                console.log("response", response);
+                await dataBaseStore.addItem(response._data.id, {
+                  object_type: response._data.object_type,
+                  geode_object: props.input_geode_object,
+                  native_filename: response._data.native_file_name,
+                  viewable_filename: response._data.viewable_file_name,
+                  displayed_name: response._data.name,
+                });
+
                 emit("update_values", {
                   current_step_index: 0,
                   files: [],
