@@ -65,15 +65,6 @@ async function import_files() {
                   viewable_filename: response._data.viewable_file_name,
                   displayed_name: response._data.name,
                 });
-
-                emit("update_values", {
-                  current_step_index: 0,
-                  files: [],
-                  auto_upload: true,
-                  input_geode_object: "",
-                  additional_files: [],
-                  supported_feature: "",
-                });
               },
             }
           );
