@@ -3,7 +3,7 @@
   <v-card
     v-else
     ref="cardContainer"
-    style="height: 100%; width: 100%; border-radius: 10px"
+    style="height: 100%; width: 100%; border-radius: 15px"
     @click.right="openMenu"
   >
     <RemoteRenderingView>
