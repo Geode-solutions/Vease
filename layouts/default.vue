@@ -25,6 +25,7 @@
           @click="UIStore.setShowStepper(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Import'"
         >
           <v-icon>mdi-file-upload-outline</v-icon>
         </v-btn>
@@ -35,6 +36,7 @@
           @click="UIStore.setShowCreatePointMenu(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Create'"
         >
           <v-icon>mdi-shape-plus-outline</v-icon>
         </v-btn>
@@ -109,7 +111,7 @@ const handleMouseMove = (e) => {
 }
 .icon-container {
   position: fixed;
-  top: 50%;
+  top: 53%;
   right: 0;
   z-index: 1000;
   transform: translateY(-50%);

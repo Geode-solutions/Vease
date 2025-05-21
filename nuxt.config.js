@@ -93,6 +93,10 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    appManifest: false,
+  },
+
   devtools: {
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
