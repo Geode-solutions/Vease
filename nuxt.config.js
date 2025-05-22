@@ -97,6 +97,9 @@ export default defineNuxtConfig({
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
 
+  experimental: {
+    appManifest: false,
+  },
   css: ["@vease/assets/css/main.css"],
 
   vite: {
