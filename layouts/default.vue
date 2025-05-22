@@ -2,9 +2,7 @@
   <v-app>
     <v-main
       class="custom-background drop-zone"
-      @dragover.prevent="UIStore.setShowDropZone(true)"
-      @dragleave.prevent="UIStore.setShowDropZone(false)"
-      @drop="onDrop"
+      @dragover="UIStore.setShowDropZone(true)"
       @mousemove="handleMouseMove"
     >
       <v-row class="fill-height pa-2 mr-1">
@@ -13,8 +11,8 @@
         </v-col>
       </v-row>
 
-      <TopBar />
-      <SideBar />
+      <LayoutTopBar />
+      <LayoutSideBar />
       <FeedBackSnackers />
 
       <div
@@ -27,6 +25,7 @@
           @click="UIStore.setShowStepper(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Import'"
         >
           <v-icon>mdi-file-upload-outline</v-icon>
         </v-btn>
@@ -37,6 +36,7 @@
           @click="UIStore.setShowCreatePointMenu(true)"
           icon
           style="border-radius: 20%"
+          v-tooltip.left="'Create'"
         >
           <v-icon>mdi-shape-plus-outline</v-icon>
         </v-btn>
@@ -74,8 +74,7 @@
           />
         </v-navigation-drawer>
       </transition>
-
-      <v-card class="drop-zone" />
+      <FullScrenDropZone />
     </v-main>
     <v-progress-linear v-if="infra_store.is_busy" indeterminate color="white" />
   </v-app>
@@ -83,36 +82,7 @@
 
 <script setup>
 const UIStore = useUIStore();
-const feedback_store = use_feedback_store();
 const infra_store = use_infra_store();
-
-const onDrop = (e) => {
-  e.preventDefault();
-
-  const files = e.dataTransfer.files;
-  const isSidebarIcon = e.dataTransfer.getData("text/plain") === "sidebar-icon";
-
-  if (isSidebarIcon) {
-    return;
-  }
-
-  if (files.length === 0) {
-    feedback_store.add_error(
-      500,
-      "/internal",
-      "Internal error",
-      "No file dropped."
-    );
-  } else {
-    feedback_store.add_success(
-      `File(s) dropped : ${files[0].name} ${files[0].type}`
-    );
-    UIStore.setDroppedFiles(Array.from(files));
-    UIStore.setShowStepper(true);
-  }
-
-  UIStore.setShowDropZone(false);
-};
 
 const handleMouseMove = (e) => {
   const screenWidth = window.innerWidth;
@@ -139,10 +109,9 @@ const handleMouseMove = (e) => {
   align-items: center;
   justify-content: center;
 }
-
 .icon-container {
   position: fixed;
-  top: 50%;
+  top: 53%;
   right: 0;
   z-index: 1000;
   transform: translateY(-50%);
