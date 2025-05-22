@@ -11,7 +11,6 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
 
   /** Actions **/
   function addDataStyle(id, geode_object, object_type) {
-    console.log("addDataStyle", id, geode_object, object_type);
     dataStyleState.styles[id] = getDefaultStyle(geode_object);
 
     if (object_type === "mesh") {

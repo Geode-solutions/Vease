@@ -29,7 +29,6 @@ export const use_treeview_store = defineStore("treeview", () => {
   function displayAdditionalTree(id) {
     isAdditionnalTreeDisplayed.value = true;
     model_id.value = id;
-    console.log("model_id.value", model_id.value);
   }
 
   function displayFileTree() {

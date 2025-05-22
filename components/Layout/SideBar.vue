@@ -23,7 +23,7 @@
               style="border-radius: 20%"
               :icon="item.icon"
               class="mb-1"
-              draggable="true"
+              draggable="false"
               @dragstart="startDrag($event, item)"
               @drop="onDrop($event, index)"
               @dragover.prevent
