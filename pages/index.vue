@@ -26,6 +26,14 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
+import "@kitware/vtk.js/Rendering/Profiles/Geometry";
+import vtkFullScreenRenderWindow from "@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow";
+import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow.js";
+import vtkXMLPolyDataReader from "@kitware/vtk.js/IO/XML/XMLPolyDataReader";
+
+import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
+import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
+
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
 const menuStore = useMenuStore();

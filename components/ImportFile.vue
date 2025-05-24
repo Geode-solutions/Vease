@@ -57,12 +57,16 @@ async function import_files() {
             },
             {
               response_function: async () => {
+                console.log("response", response);
                 await dataBaseStore.addItem(response._data.id, {
                   object_type: response._data.object_type,
                   geode_object: props.input_geode_object,
                   native_filename: response._data.native_file_name,
                   viewable_filename: response._data.viewable_file_name,
                   displayed_name: response._data.name,
+                  vtk_js: {
+                    binary_light_viewable: response._data.binary_light_viewable,
+                  },
                 });
               },
             }

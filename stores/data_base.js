@@ -1,10 +1,14 @@
 import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
+import vtkXMLPolyDataReader from "@kitware/vtk.js/IO/XML/XMLPolyDataReader";
+import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
+import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
+
 export const useDataBaseStore = defineStore("dataBase", () => {
   const treeview_store = use_treeview_store();
 
   /** State **/
-  const db = ref({});
+  const db = reactive({});
 
   /** Getters **/
   function itemMetaData(id) {
@@ -58,9 +62,14 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       native_filename,
       viewable_filename,
       displayed_name,
+      vtk_js: { binary_light_viewable },
     }
   ) {
-    db.value[id] = value;
+    console.log("dataBase addItem value", value);
+    console.log("db.value before", db);
+    db[id] = value;
+    console.log("db.value after", db);
+
     if (value.object_type === "model") {
       await fetchMeshComponents(id);
       await fetchUuidToFlatIndexDict(id);
@@ -71,6 +80,23 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       id,
       value.object_type
     );
+
+    const reader = vtkXMLPolyDataReader.newInstance();
+    const textEncoder = new TextEncoder();
+    await reader.parseAsArrayBuffer(
+      textEncoder.encode(value.vtk_js.binary_light_viewable)
+    );
+    const polydata = reader.getOutputData(0);
+    console.log("polydata", polydata);
+    const mapper = vtkMapper.newInstance();
+    mapper.setInputData(polydata);
+    const actor = vtkActor.newInstance();
+    console.log("actor", actor);
+    actor.setMapper(mapper);
+
+    db[id].vtk_js.actor = actor;
+    db[id].vtk_js.mapper = mapper;
+    db[id].vtk_js.polydata = polydata;
   }
 
   function itemMetaDatas(id) {
