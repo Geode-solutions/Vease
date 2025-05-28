@@ -43,6 +43,11 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
+    defaults: {
+      VImg: {
+        draggable: false,
+      },
+    },
     moduleOptions: {},
     vuetifyOptions: {
       labComponents: true,
