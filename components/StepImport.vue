@@ -8,18 +8,19 @@ import FileSelector from "@ogw_f/components/FileSelector.vue";
 import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue";
 import ObjectSelector from "@ogw_f/components/ObjectSelector.vue";
 import ImportFile from "@vease/components/ImportFile.vue";
-const files = ref([]);
-const auto_upload = ref(true);
-const input_geode_object = ref("");
-const additional_files = ref([]);
-const supported_feature = "";
+
 const props = defineProps({
   files: {
     type: Array,
     default: [],
   },
 });
-files.value = props.files;
+
+const files = ref(props.files);
+const auto_upload = ref(true);
+const input_geode_object = ref("");
+const additional_files = ref([]);
+const supported_feature = "";
 
 const stepper_tree = reactive({
   current_step_index: ref(0),
