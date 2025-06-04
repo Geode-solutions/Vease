@@ -15,13 +15,13 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
   const status = ref(Status.NOT_CREATED);
   const camera_options = reactive({});
   const genericRenderWindow = reactive({});
+  const is_moving = ref(false);
   let viewStream;
 
   /** Actions **/
   async function initHybridViewer() {
-    if (status.value == Status.CONNECTED) {
-      return restoreHybridViewer();
-    }
+    if (status.value != Status.NOT_CREATED) return;
+
     status.value = Status.CREATING;
     genericRenderWindow.value = vtkGenericRenderWindow.newInstance({
       background: [180 / 255, 180 / 255, 180 / 255],
@@ -38,6 +38,7 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     await viewer_store.ws_connect();
     viewStream = viewer_store.client.getImageStream().createViewStream("-1");
     viewStream.onImageReady((e) => {
+      if (is_moving.value) return;
       const webGLRenderWindow =
         genericRenderWindow.value.getApiSpecificRenderWindow();
       const imageStyle = webGLRenderWindow.getReferenceByName("bgImage").style;
@@ -65,6 +66,7 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     renderer.addActor(actor);
     renderer.resetCamera();
     renderWindow.render();
+
     db[id] = { actor, polydata, mapper };
   }
   function syncRemoteCamera() {
@@ -108,29 +110,36 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
       genericRenderWindow.value.getApiSpecificRenderWindow();
     webGLRenderWindow.setUseBackgroundImage(true);
     const imageStyle = webGLRenderWindow.getReferenceByName("bgImage").style;
+
+    imageStyle.transition = "opacity 0.1s ease-in";
+    imageStyle.zIndex = 1;
     resize(container.value.$el.offsetWidth, container.value.$el.offsetHeight);
     useMousePressed({
       target: container,
       onPressed: (event) => {
         if (event.button == 0) {
           // left click
+          is_moving.value = true;
+          event.stopPropagation(); // Prevents toggle for menu click
           imageStyle.opacity = 0;
         }
       },
       onReleased: () => {
+        is_moving.value = false;
         syncRemoteCamera();
       },
     });
+    let wheelEventEndTimeout = null;
+    useEventListener(container, "wheel", (event) => {
+      is_moving.value = true;
+      console.log("wheel", event);
+      imageStyle.opacity = 0;
 
-    const { isScrolling } = useScroll(container);
-
-    watch(isScrolling, (value) => {
-      console.log("isScrolling", value);
-      if (value) {
-        imageStyle.opacity = 0;
-      } else {
+      clearTimeout(wheelEventEndTimeout);
+      wheelEventEndTimeout = setTimeout(() => {
+        is_moving.value = false;
         syncRemoteCamera();
-      }
+      }, 600);
     });
   }
 
@@ -144,8 +153,9 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     const webGLRenderWindow =
       genericRenderWindow.value.getApiSpecificRenderWindow();
     const canvas = webGLRenderWindow.getCanvas();
-    canvas.width = 0;
-    canvas.height = 0;
+
+    canvas.width = width;
+    canvas.height = height;
 
     await nextTick();
     webGLRenderWindow.setSize(width, height);
@@ -155,32 +165,6 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     remoteRender();
   }
 
-  function restoreHybridViewer() {
-    console.log("hydridViewer.restoreHybridViewer");
-
-    const renderWindow = genericRenderWindow.value.getRenderWindow();
-    const renderer = genericRenderWindow.value.getRenderer();
-
-    for (const id in db.value) {
-      console.log("id", id);
-      const actor = db.value[id].actor;
-      const mapper = db.value[id].mapper;
-      const polydata = db.value[id].polydata;
-      console.log("actor", actor);
-      console.log("mapper", mapper);
-      console.log("polydata", polydata);
-
-      renderer.addActor(actor);
-    }
-    resize(
-      genericRenderWindow.value.getContainer().offsetWidth,
-      genericRenderWindow.value.getContainer().offsetHeight
-    );
-
-    renderer.resetCamera();
-    renderWindow.render();
-  }
-
   return {
     db,
     genericRenderWindow,
@@ -188,6 +172,5 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     initHybridViewer,
     resize,
     setContainer,
-    restoreHybridViewer,
   };
 });

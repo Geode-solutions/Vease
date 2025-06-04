@@ -57,7 +57,6 @@ async function import_files() {
             },
             {
               response_function: async () => {
-                console.log("response", response);
                 await dataBaseStore.addItem(response._data.id, {
                   object_type: response._data.object_type,
                   geode_object: props.input_geode_object,

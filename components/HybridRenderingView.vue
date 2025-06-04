@@ -1,9 +1,6 @@
 <template>
   <ClientOnly>
-    <div
-      ref="toto"
-      style="position: relative; width: 100%; height: calc(100vh - 75px)"
-    >
+    <div style="position: relative; width: 100%; height: calc(100vh - 75px)">
       <VeaseViewToolbar />
       <slot name="ui"></slot>
       <v-col
@@ -24,7 +21,6 @@
 </template>
 
 <script setup>
-const toto = useTemplateRef("toto");
 const container = useTemplateRef("viewer");
 const hybridViewerStore = useHybridViewerStore();
 
@@ -32,7 +28,6 @@ const { windowWidth, windowHeight } = useWindowSize();
 const { width, height } = useElementSize(container);
 
 watch([windowWidth, windowHeight, height, width], () => {
-  console.log("watch resize", width.value, height.value);
   hybridViewerStore.resize(width.value, height.value);
 });
 
@@ -42,19 +37,5 @@ onMounted(async () => {
     await nextTick();
     await hybridViewerStore.setContainer(container);
   }
-});
-
-const { isScrolling } = useScroll(toto);
-
-// addEventListener("scroll", (event) => {
-//   console.log("scroll", event);
-// });
-watch(isScrolling, (value) => {
-  console.log("isScrolling", value);
-  // if (!value) {
-  //   imageStyle.opacity = 0;
-  // } else {
-  //   syncRemoteCamera();
-  // }
 });
 </script>
