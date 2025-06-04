@@ -63,10 +63,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       vtk_js: { binary_light_viewable },
     }
   ) {
-    console.log("dataBase addItem value", value);
-    console.log("db.value before", db);
     db[id] = value;
-    console.log("db.value after", db);
 
     if (value.object_type === "model") {
       await fetchMeshComponents(id);
