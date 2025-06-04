@@ -6,7 +6,7 @@
     style="height: 100%; width: 100%; border-radius: 15px"
     @click.right="openMenu"
   >
-    <RemoteRenderingView>
+    <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree />
         <ViewerContextMenu
@@ -18,7 +18,7 @@
           :containerHeight="containerHeight"
         />
       </template>
-    </RemoteRenderingView>
+    </HybridRenderingView>
   </v-card>
 </template>
 

@@ -10,7 +10,9 @@
 body {
   overflow: hidden;
 }
-
+img {
+  pointer-events: none;
+}
 p {
   color: rgb(60, 153, 131)
 }
