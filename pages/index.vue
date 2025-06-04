@@ -25,7 +25,6 @@
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import Status from "@ogw_f/utils/status.js";
-import HybridRenderingView from "../components/HybridRenderingView.vue";
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
@@ -39,16 +38,6 @@ const containerHeight = ref(0);
 const id = ref("");
 const cardContainer = useTemplateRef("cardContainer");
 
-const { isScrolling } = useScroll(cardContainer);
-
-watch(isScrolling, (value) => {
-  console.log("isScrolling", value);
-  // if (!value) {
-  //   imageStyle.opacity = 0;
-  // } else {
-  //   syncRemoteCamera();
-  // }
-});
 const { display_menu } = storeToRefs(menuStore);
 
 async function get_viewer_id(x, y) {

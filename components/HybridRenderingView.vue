@@ -35,7 +35,7 @@ onMounted(async () => {
   if (import.meta.client) {
     await hybridViewerStore.initHybridViewer();
     await nextTick();
-    await hybridViewerStore.setContainer(container);
+    hybridViewerStore.setContainer(container);
   }
 });
 </script>
