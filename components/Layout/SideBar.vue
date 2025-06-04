@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import isElectron from "is-electron";
+// import isElectron from "is-electron";
 
 const drawer = ref(true);
 const newproject = ref(false);
