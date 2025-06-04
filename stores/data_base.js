@@ -2,14 +2,15 @@ import back_schemas from "@geode/opengeodeweb-back/schemas.json";
 
 export const useDataBaseStore = defineStore("dataBase", () => {
   const treeview_store = use_treeview_store();
-  const frontViewer_store = useFrontViewerStore();
+  const hybridViewerStore = useHybridViewerStore();
 
   /** State **/
   const db = reactive({});
 
   /** Getters **/
-  function itemMetaData(id) {
-    return db.value[id] || {};
+  function itemMetaDatas(id) {
+    console.log("dataBaseStore.itemMetaData", db[id], id);
+    return db[id];
   }
 
   function formatedMeshComponents(id) {
@@ -78,11 +79,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       value.object_type
     );
 
-    frontViewer_store.addItem(id, value.vtk_js);
-  }
-
-  function itemMetaDatas(id) {
-    return db.value[id] || {};
+    hybridViewerStore.addItem(id, value.vtk_js);
   }
 
   async function fetchMeshComponents(id) {
@@ -135,11 +132,10 @@ export const useDataBaseStore = defineStore("dataBase", () => {
 
   return {
     db,
-    itemMetaData,
+    itemMetaDatas,
     meshComponentType,
     formatedMeshComponents,
     addItem,
-    itemMetaDatas,
     fetchUuidToFlatIndexDict,
     fetchMeshComponents,
     getFlatIndexes,

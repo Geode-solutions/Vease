@@ -1,7 +1,10 @@
 <template>
   <ClientOnly>
-    <div style="position: relative; width: 100%; height: calc(100vh - 75px)">
-      <view-toolbar />
+    <div
+      ref="toto"
+      style="position: relative; width: 100%; height: calc(100vh - 75px)"
+    >
+      <VeaseViewToolbar />
       <slot name="ui"></slot>
       <v-col
         ref="viewer"
@@ -21,23 +24,37 @@
 </template>
 
 <script setup>
+const toto = useTemplateRef("toto");
 const container = useTemplateRef("viewer");
-const frontViewerStore = useFrontViewerStore();
+const hybridViewerStore = useHybridViewerStore();
 
 const { windowWidth, windowHeight } = useWindowSize();
 const { width, height } = useElementSize(container);
 
 watch([windowWidth, windowHeight, height, width], () => {
-  frontViewerStore.resize(width.value, height.value);
+  console.log("watch resize", width.value, height.value);
+  hybridViewerStore.resize(width.value, height.value);
 });
 
 onMounted(async () => {
   if (import.meta.client) {
-    console.log("mounted test");
-    await frontViewerStore.initFrontViewer();
+    await hybridViewerStore.initHybridViewer();
     await nextTick();
-    await frontViewerStore.setContainer(container);
-    frontViewerStore.resize(width.value, height.value);
+    await hybridViewerStore.setContainer(container);
   }
+});
+
+const { isScrolling } = useScroll(toto);
+
+// addEventListener("scroll", (event) => {
+//   console.log("scroll", event);
+// });
+watch(isScrolling, (value) => {
+  console.log("isScrolling", value);
+  // if (!value) {
+  //   imageStyle.opacity = 0;
+  // } else {
+  //   syncRemoteCamera();
+  // }
 });
 </script>

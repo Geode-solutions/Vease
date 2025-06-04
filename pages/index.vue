@@ -39,6 +39,16 @@ const containerHeight = ref(0);
 const id = ref("");
 const cardContainer = useTemplateRef("cardContainer");
 
+const { isScrolling } = useScroll(cardContainer);
+
+watch(isScrolling, (value) => {
+  console.log("isScrolling", value);
+  // if (!value) {
+  //   imageStyle.opacity = 0;
+  // } else {
+  //   syncRemoteCamera();
+  // }
+});
 const { display_menu } = storeToRefs(menuStore);
 
 async function get_viewer_id(x, y) {
