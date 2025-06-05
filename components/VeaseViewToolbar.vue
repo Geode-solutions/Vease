@@ -38,9 +38,7 @@ const camera_options = [
       const renderer = renderWindow.getRenderers()[0];
       renderer.resetCamera();
       renderWindow.render();
-      viewer_call({
-        schema: schemas.opengeodeweb_viewer.viewer.reset_camera,
-      });
+      hybridViewer_store.syncRemoteCamera();
     },
   },
   {
