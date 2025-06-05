@@ -37,10 +37,8 @@ import TetrahedralSolidTrianglesOptions from "@vease/components/Viewer/Tetrahedr
 import TetrahedralSolidTetrahedraOptions from "@vease/components/Viewer/TetrahedralSolid/TetrahedraOptions.vue";
 
 // BRep components
-import ModelBlocksOptions from "@vease/components/Viewer/Generic/Model/BlocksOptions.vue";
-import ModelCornersOptions from "@vease/components/Viewer/Generic/Model/CornersOptions.vue";
-import ModelLinesOptions from "@vease/components/Viewer/Generic/Model/LinesOptions.vue";
-import ModelSurfacesOptions from "@vease/components/Viewer/Generic/Model/SurfacesOptions.vue";
+import BrepEdgesOptions from "@vease/components/Viewer/BRep/EdgesOptions.vue";
+import BRepPointsOptions from "@vease/components/Viewer/BRep/PointsOptions.vue";
 
 const PointSet_menu = [PointSetPointsOptions];
 
@@ -84,12 +82,7 @@ const TetrahedralSolid_menu = [
   TetrahedralSolidTetrahedraOptions,
 ];
 
-const BRep_menu = [
-  ModelBlocksOptions,
-  ModelCornersOptions,
-  ModelLinesOptions,
-  ModelSurfacesOptions,
-];
+const BRep_menu = [BrepEdgesOptions, BRepPointsOptions];
 
 const menus = {
   mesh: {

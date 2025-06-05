@@ -30,10 +30,25 @@ export const useDataStyleStore = defineStore("dataStyle", () => {
     }
   }
 
+  function setModelEdgesVisibility(id, visibility) {
+    modelStyleStore.setModelMeshComponentVisibility(
+      id,
+      "Edge",
+      null,
+      visibility
+    );
+  }
+
+  function modelEdgesVisibility(id) {
+    return modelStyleStore.modelMeshComponentVisibility(id, "Edge", null);
+  }
+
   return {
     ...dataStyleState,
     addDataStyle,
     setVisibility,
+    setModelEdgesVisibility,
+    modelEdgesVisibility,
     ...meshStyleStore,
     ...modelStyleStore,
   };

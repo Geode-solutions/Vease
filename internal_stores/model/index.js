@@ -3,6 +3,8 @@ import { useSurfacesStyle } from "./surfaces.js";
 import { useCornersStyle } from "./corners.js";
 import { useBlocksStyle } from "./blocks.js";
 import { useLinesStyle } from "./lines.js";
+import { useModelEdgesStyle } from "./edges.js";
+import { useModelPointsStyle } from "./points.js";
 
 export default function useModelStyle() {
   /** States **/
@@ -11,6 +13,8 @@ export default function useModelStyle() {
   const linesStyleStore = useLinesStyle();
   const surfacesStyleStore = useSurfacesStyle();
   const blocksStyleStore = useBlocksStyle();
+  const modelEdgesStore = useModelEdgesStyle();
+  const modelPointsStore = useModelPointsStyle();
 
   /** Getters **/
   function modelVisibility(id) {
@@ -19,58 +23,45 @@ export default function useModelStyle() {
 
   function visibleMeshComponents(id) {
     const visible_mesh_components = ref([]);
-
     const styles = dataStyleStore.styles[id];
     if (!styles) return visible_mesh_components;
 
-    if (styles.corners) {
-      for (const [corner_id, style] of Object.entries(styles.corners)) {
-        if (style.visibility === true) {
-          visible_mesh_components.value.push(corner_id);
-        }
-      }
-    }
+    Object.entries(styles.corners || {}).forEach(([corner_id, style]) => {
+      if (style.visibility) visible_mesh_components.value.push(corner_id);
+    });
 
-    if (styles.lines) {
-      for (const [line_id, style] of Object.entries(styles.lines)) {
-        if (style.visibility === true) {
-          visible_mesh_components.value.push(line_id);
-        }
-      }
-    }
+    Object.entries(styles.lines || {}).forEach(([line_id, style]) => {
+      if (style.visibility) visible_mesh_components.value.push(line_id);
+    });
 
-    if (styles.surfaces) {
-      for (const [surface_id, style] of Object.entries(styles.surfaces)) {
-        if (style.visibility === true) {
-          visible_mesh_components.value.push(surface_id);
-        }
-      }
-    }
+    Object.entries(styles.surfaces || {}).forEach(([surface_id, style]) => {
+      if (style.visibility) visible_mesh_components.value.push(surface_id);
+    });
 
-    if (styles.blocks) {
-      for (const [block_id, style] of Object.entries(styles.blocks)) {
-        if (style.visibility === true) {
-          visible_mesh_components.value.push(block_id);
-        }
-      }
-    }
+    Object.entries(styles.blocks || {}).forEach(([block_id, style]) => {
+      if (style.visibility) visible_mesh_components.value.push(block_id);
+    });
 
     return visible_mesh_components;
   }
 
   function modelMeshComponentVisibility(id, component_type, component_id) {
-    if (component_type === "Corner") {
-      return cornersStyleStore.cornerVisibility(id, component_id);
-    } else if (component_type === "Line") {
-      return linesStyleStore.lineVisibility(id, component_id);
-    } else if (component_type === "Surface") {
-      return surfacesStyleStore.surfaceVisibility(id, component_id);
-    } else if (component_type === "Block") {
-      return blocksStyleStore.blockVisibility(id, component_id);
+    switch (component_type) {
+      case "Corner":
+        return cornersStyleStore.cornerVisibility(id, component_id);
+      case "Line":
+        return linesStyleStore.lineVisibility(id, component_id);
+      case "Surface":
+        return surfacesStyleStore.surfaceVisibility(id, component_id);
+      case "Block":
+        return blocksStyleStore.blockVisibility(id, component_id);
+      case "Edge":
+        return modelEdgesStore.ModelEdgesVisibility(id);
+      default:
+        return false;
     }
   }
 
-  /** Actions **/
   function setModelVisibility(id, visibility) {
     viewer_call(
       {
@@ -80,7 +71,7 @@ export default function useModelStyle() {
       {
         response_function: () => {
           dataStyleStore.styles[id].visibility = visibility;
-          console.log("setModelVisibility", dataStyleStore.styles[id].visibility);
+          console.log("setModelVisibility", visibility);
         },
       }
     );
@@ -95,7 +86,7 @@ export default function useModelStyle() {
       {
         response_function: () => {
           dataStyleStore.styles[id].color = color;
-          console.log("setModelColor", dataStyleStore.styles[id].color);
+          console.log("setModelColor", color);
         },
       }
     );
@@ -107,22 +98,30 @@ export default function useModelStyle() {
     component_id,
     visibility
   ) {
-    if (component_type === "Corner") {
-      cornersStyleStore.setCornerVisibility(id, [component_id], visibility);
-    } else if (component_type === "Line") {
-      linesStyleStore.setLineVisibility(id, [component_id], visibility);
-    } else if (component_type === "Surface") {
-      surfacesStyleStore.setSurfaceVisibility(id, [component_id], visibility);
-    } else if (component_type === "Block") {
-      blocksStyleStore.setBlockVisibility(id, [component_id], visibility);
+    switch (component_type) {
+      case "Corner":
+        cornersStyleStore.setCornerVisibility(id, [component_id], visibility);
+        break;
+      case "Line":
+        linesStyleStore.setLineVisibility(id, [component_id], visibility);
+        break;
+      case "Surface":
+        surfacesStyleStore.setSurfaceVisibility(id, [component_id], visibility);
+        break;
+      case "Block":
+        blocksStyleStore.setBlockVisibility(id, [component_id], visibility);
+        break;
+      case "Edge":
+        modelEdgesStore.setModelEdgesVisibility(id, visibility);
+        break;
     }
   }
 
   function applyModelDefaultStyle(id) {
     const id_style = dataStyleStore.styles[id];
     for (const [key, value] of Object.entries(id_style)) {
-      if (key == "visibility") setModelVisibility(id, value);
-      else if (key == "color") setModelColor(id, value);
+      if (key === "visibility") setModelVisibility(id, value);
+      else if (key === "color") setModelColor(id, value);
     }
   }
 
@@ -131,6 +130,7 @@ export default function useModelStyle() {
     linesStyleStore.setLinesDefaultStyle(id);
     surfacesStyleStore.setSurfacesDefaultStyle(id);
     blocksStyleStore.setBlocksDefaultStyle(id);
+    modelEdgesStore.setModelEdgesDefaultStyle(id);
   }
 
   return {
@@ -146,5 +146,7 @@ export default function useModelStyle() {
     ...useCornersStyle(),
     ...useBlocksStyle(),
     ...useLinesStyle(),
+    ...useModelEdgesStyle(),
+    ...useModelPointsStyle(),
   };
 }
