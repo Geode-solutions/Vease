@@ -130,9 +130,8 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
       },
     });
     let wheelEventEndTimeout = null;
-    useEventListener(container, "wheel", (event) => {
+    useEventListener(container, "wheel", () => {
       is_moving.value = true;
-      console.log("wheel", event);
       imageStyle.opacity = 0;
 
       clearTimeout(wheelEventEndTimeout);
@@ -169,6 +168,7 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     db,
     genericRenderWindow,
     addItem,
+    syncRemoteCamera,
     initHybridViewer,
     resize,
     setContainer,
