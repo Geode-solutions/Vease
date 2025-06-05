@@ -9,20 +9,14 @@ export const useDataBaseStore = defineStore("dataBase", () => {
 
   /** Getters **/
   function itemMetaDatas(id) {
-    console.log("dataBaseStore.itemMetaData", db[id], id);
     return db[id];
   }
 
   function formatedMeshComponents(id) {
+    const { mesh_components } = itemMetaDatas(id);
     const formated_mesh_components = ref([]);
 
-    if (!db.value[id] || !db.value[id].mesh_components) {
-      return formated_mesh_components.value;
-    }
-
-    for (const [category, uuids] of Object.entries(
-      db.value[id].mesh_components
-    )) {
+    for (const [category, uuids] of Object.entries(mesh_components)) {
       formated_mesh_components.value.push({
         id: category,
         title: category,
@@ -37,17 +31,12 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   }
 
   function meshComponentType(id, uuid) {
-    if (!db.value[id] || !db.value[id].mesh_components) {
-      return null;
-    }
+    const { mesh_components } = itemMetaDatas(id);
 
-    if (db.value[id].mesh_components["Corner"]?.includes(uuid)) return "corner";
-    else if (db.value[id].mesh_components["Line"]?.includes(uuid))
-      return "line";
-    else if (db.value[id].mesh_components["Surface"]?.includes(uuid))
-      return "surface";
-    else if (db.value[id].mesh_components["Block"]?.includes(uuid))
-      return "block";
+    if (mesh_components["Corner"]?.includes(uuid)) return "corner";
+    else if (mesh_components["Line"]?.includes(uuid)) return "line";
+    else if (mesh_components["Surface"]?.includes(uuid)) return "surface";
+    else if (mesh_components["Block"]?.includes(uuid)) return "block";
     return null;
   }
 
@@ -80,18 +69,19 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   }
 
   async function fetchMeshComponents(id) {
+    const { native_filename, geode_object } = itemMetaDatas(id);
     await api_fetch(
       {
         schema: back_schemas.opengeodeweb_back.models.mesh_components,
         params: {
-          filename: db.value[id]?.native_filename,
-          geode_object: db.value[id]?.geode_object,
+          filename: native_filename,
+          geode_object,
         },
       },
       {
         response_function: async (response) => {
           if (response._data?.uuid_dict) {
-            db.value[id].mesh_components = response._data.uuid_dict;
+            db[id].mesh_components = response._data.uuid_dict;
           }
         },
       }
@@ -107,8 +97,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
       {
         response_function: async (response) => {
           if (response._data?.uuid_to_flat_index) {
-            db.value[id]["uuid_to_flat_index"] =
-              response._data.uuid_to_flat_index;
+            db[id]["uuid_to_flat_index"] = response._data.uuid_to_flat_index;
           }
         },
       }
@@ -116,13 +105,10 @@ export const useDataBaseStore = defineStore("dataBase", () => {
   }
 
   function getFlatIndexes(id, mesh_component_ids) {
-    if (!db.value[id] || !db.value[id]["uuid_to_flat_index"]) {
-      return [];
-    }
+    const { uuid_to_flat_index } = itemMetaDatas(id);
 
     const flat_indexes = mesh_component_ids.map(
-      (mesh_component_id) =>
-        db.value[id]["uuid_to_flat_index"][mesh_component_id] || null
+      (mesh_component_id) => uuid_to_flat_index[mesh_component_id] || null
     );
     return flat_indexes.filter((index) => index !== null);
   }
