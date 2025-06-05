@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "electron": "^32.1.2",
+    "electron": "^36.4.0",
     "electron-builder": "^25.0.5",
     "nuxt-electron": "^0.7.0",
     "vuetify-nuxt-module": "^0.18.3"
