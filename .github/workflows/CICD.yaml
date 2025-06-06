@@ -45,6 +45,7 @@ jobs:
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
+          npm run install_microservices
           npm run build_microservices
           npm run package
         shell: bash
