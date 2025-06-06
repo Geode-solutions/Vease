@@ -19,8 +19,7 @@
     "build_microservices": "npm run build_back && npm run build_viewer",
     "build": "nuxi build --prerender",
     "test": "vitest",
-    "package": "npm run build && electron-builder build --publish=never",
-    "postinstall": "npm run install_microservices"
+    "package": "npm run build && electron-builder build --publish=never"
   },
   "repository": {
     "type": "git",
