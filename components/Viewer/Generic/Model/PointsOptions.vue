@@ -42,12 +42,12 @@ const props = defineProps({
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({
-  get: () => dataStyleStore.ModelPointsVisibility(id.value),
+  get: () => dataStyleStore.modelPointsVisibility(id.value),
   set: (newValue) =>
     dataStyleStore.setModelPointsVisibility(id.value, newValue),
 });
 const size = computed({
-  get: () => dataStyleStore.ModelPointsSize(id.value),
+  get: () => dataStyleStore.modelPointsSize(id.value),
   set: (newValue) => dataStyleStore.setModelPointsSize(id.value, newValue),
 });
 </script>
