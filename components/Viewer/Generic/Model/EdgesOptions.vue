@@ -2,7 +2,7 @@
   <ViewerContextMenuItem
     :itemProps="itemProps"
     tooltip="Edges options"
-    :btn_image="SurfaceEdgesOptions"
+    :btn_image="SurfaceEdges"
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import SurfaceEdgesOptions from "@vease/assets/viewer_svgs/surface_edges.svg";
+import SurfaceEdges from "@vease/assets/viewer_svgs/surface_edges.svg";
 
 const props = defineProps({
   itemProps: { type: Object, required: true },

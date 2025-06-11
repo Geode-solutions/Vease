@@ -2,7 +2,7 @@
   <ViewerContextMenuItem
     :itemProps="props.itemProps"
     tooltip="Points options"
-    :btn_image="SurfacePoint"
+    :btn_image="SurfacePoints"
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import SurfacePoint from "@vease/assets/viewer_svgs/surface_points.svg";
+import SurfacePoints from "@vease/assets/viewer_svgs/surface_points.svg";
 
 const dataStyleStore = useDataStyleStore();
 
