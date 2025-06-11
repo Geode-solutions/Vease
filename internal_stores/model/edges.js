@@ -5,7 +5,7 @@ export function useModelEdgesStyle() {
   const dataStyleStore = useDataStyleStore();
 
   function modelEdgesVisibility(id) {
-    return dataStyleStore.styles[id]?.edges?.visibility ?? false;
+    return dataStyleStore.styles[id].edges.visibility;
   }
 
   function setModelEdgesVisibility(id, visibility) {
@@ -30,7 +30,7 @@ export function useModelEdgesStyle() {
     );
   }
 
-  function applyEdgesStyle(id, style) {
+  function applyModelEdgesStyle(id, style) {
     setModelEdgesVisibility(id, style.visibility);
   }
 
@@ -41,7 +41,7 @@ export function useModelEdgesStyle() {
   return {
     modelEdgesVisibility,
     setModelEdgesVisibility,
-    applyEdgesStyle,
+    applyModelEdgesStyle,
     setModelEdgesDefaultStyle,
   };
 }

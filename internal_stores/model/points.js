@@ -4,25 +4,14 @@ const model_points_schemas = viewer_schemas.opengeodeweb_viewer.model.points;
 export function useModelPointsStyle() {
   const dataStyleStore = useDataStyleStore();
 
-  function modelPointsVisibility(id, type) {
-    return (
-      dataStyleStore.styles[id]?.points?.visibility ??
-      getDefaultStyle(type)?.points?.visibility ??
-      false
-    );
+  function modelPointsVisibility(id) {
+    return dataStyleStore.styles[id].points.visibility;
   }
   function modelPointsSize(id) {
-    return dataStyleStore.styles[id]?.points?.size;
+    return dataStyleStore.styles[id].points.size;
   }
 
   function setModelPointsVisibility(id, visibility) {
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-    if (!dataStyleStore.styles[id].points) {
-      dataStyleStore.styles[id].points = {};
-    }
-
     viewer_call(
       {
         schema: model_points_schemas.visibility,
@@ -38,13 +27,6 @@ export function useModelPointsStyle() {
   }
 
   function setModelPointsSize(id, size) {
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-    if (!dataStyleStore.styles[id].points) {
-      dataStyleStore.styles[id].points = {};
-    }
-
     viewer_call(
       {
         schema: model_points_schemas.size,
@@ -59,7 +41,7 @@ export function useModelPointsStyle() {
     );
   }
 
-  function applyPointsStyle(id, style) {
+  function applyModelPointsStyle(id, style) {
     setModelPointsVisibility(id, style.visibility);
     setModelPointsSize(id, style.size);
   }
@@ -73,7 +55,7 @@ export function useModelPointsStyle() {
     modelPointsSize,
     setModelPointsVisibility,
     setModelPointsSize,
-    applyPointsStyle,
+    applyModelPointsStyle,
     setModelPointsDefaultStyle,
   };
 }

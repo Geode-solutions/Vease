@@ -116,7 +116,9 @@ export default function useModelStyle() {
     const id_style = dataStyleStore.styles[id];
     for (const [key, value] of Object.entries(id_style)) {
       if (key === "visibility") setModelVisibility(id, value);
-      else if (key === "color") setModelColor(id, value);
+      else if (key === "edges") modelEdgesStore.applyModelEdgesStyle(id, value);
+      else if (key === "points")
+        modelPointsStore.applyModelPointsStyle(id, value);
     }
   }
 
