@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js, NPM
         uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22
       - name: Package
         run: |
           dotnet tool install --global AzureSignTool --version 4.0.1
@@ -45,6 +45,7 @@ jobs:
           cat package.json
           rm -rf node_modules package-lock.json
           npm install
+          npm run install_microservices
           npm run build_microservices
           npm run package
         shell: bash
