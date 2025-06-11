@@ -2,7 +2,7 @@
   <ViewerContextMenuItem
     :itemProps="props.itemProps"
     tooltip="Points options"
-    :btn_image="EdgedCurvePoints"
+    :btn_image="SurfacePointEdges"
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import EdgedCurvePoints from "@vease/assets/viewer_svgs/edged_curve_points.svg";
+import SurfacePointEdges from "@vease/assets/viewer_svgs/surface_points.svg";
 
 const dataStyleStore = useDataStyleStore();
 
