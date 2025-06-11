@@ -36,29 +36,9 @@ import SolidPolyhedraOptions from "@vease/components/Viewer/Solid/PolyhedraOptio
 import TetrahedralSolidTrianglesOptions from "@vease/components/Viewer/TetrahedralSolid/TrianglesOptions.vue";
 import TetrahedralSolidTetrahedraOptions from "@vease/components/Viewer/TetrahedralSolid/TetrahedraOptions.vue";
 
-// BRep components
-import BrepEdgesOptions from "@vease/components/Viewer/BRep/EdgesOptions.vue";
-import BRepPointsOptions from "@vease/components/Viewer/BRep/PointsOptions.vue";
-
-// CrossSection components
-import CrossSectionEdgesOptions from "@vease/components/Viewer/CrossSection/EdgesOptions.vue";
-import CrossSectionPointsOptions from "@vease/components/Viewer/CrossSection/PointsOptions.vue";
-
-// ImplicitCrossSection components
-import ImplicitCrossSectionEdgesOptions from "@vease/components/Viewer/ImplicitCrossSection/EdgesOptions.vue";
-import ImplicitCrossSectionPointsOptions from "@vease/components/Viewer/ImplicitCrossSection/PointsOptions.vue";
-
-// Section components
-import SectionEdgesOptions from "@vease/components/Viewer/Section/EdgesOptions.vue";
-import SectionPointsOptions from "@vease/components/Viewer/Section/PointsOptions.vue";
-
-// StructuralModel components
-import StructuralModelEdgesOptions from "@vease/components/Viewer/StructuralModel/EdgesOptions.vue";
-import StructuralModelPointsOptions from "@vease/components/Viewer/StructuralModel/PointsOptions.vue";
-
-// ImplicitStructuralModel components
-import ImplicitStructuralModelEdgesOptions from "@vease/components/Viewer/ImplicitStructuralModel/EdgesOptions.vue";
-import ImplicitStructuralModelPointsOptions from "@vease/components/Viewer/ImplicitStructuralModel/PointsOptions.vue";
+// Model components
+import ModelEdgesOptions from "@vease/components/Viewer/Generic/Model/EdgesOptions.vue";
+import ModelPointsOptions from "@vease/components/Viewer/Generic/Model/PointsOptions.vue";
 
 const PointSet_menu = [PointSetPointsOptions];
 
@@ -102,25 +82,16 @@ const TetrahedralSolid_menu = [
   TetrahedralSolidTetrahedraOptions,
 ];
 
-const BRep_menu = [BrepEdgesOptions, BRepPointsOptions];
+const BRep_menu = [ModelEdgesOptions, ModelPointsOptions];
 
-const CrossSection_menu = [CrossSectionEdgesOptions, CrossSectionPointsOptions];
+const CrossSection_menu = [ModelEdgesOptions, ModelPointsOptions];
 
-const ImplicitCrossSection_menu = [
-  ImplicitCrossSectionEdgesOptions,
-  ImplicitCrossSectionPointsOptions,
-];
-const ImplicitStructuralModel_menu = [
-  ImplicitStructuralModelEdgesOptions,
-  ImplicitStructuralModelPointsOptions,
-];
+const ImplicitCrossSection_menu = [ModelEdgesOptions, ModelPointsOptions];
+const ImplicitStructuralModel_menu = [ModelEdgesOptions, ModelPointsOptions];
 
-const Section_menu = [SectionEdgesOptions, SectionPointsOptions];
+const Section_menu = [ModelEdgesOptions, ModelPointsOptions];
 
-const StructuralModel_menu = [
-  StructuralModelEdgesOptions,
-  StructuralModelPointsOptions,
-];
+const StructuralModel_menu = [ModelEdgesOptions, ModelPointsOptions];
 
 const menus = {
   mesh: {

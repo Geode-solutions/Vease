@@ -2,7 +2,7 @@
   <ViewerContextMenuItem
     :itemProps="props.itemProps"
     tooltip="Points options"
-    :btn_image="props.btn_image"
+    :btn_image="EdgedCurvePoints"
   >
     <template #options>
       <ViewerOptionsVisibilitySwitch v-model="visibility" />
@@ -30,6 +30,8 @@
 </template>
 
 <script setup>
+import EdgedCurvePoints from "@vease/assets/viewer_svgs/edged_curve_points.svg";
+
 const dataStyleStore = useDataStyleStore();
 
 const props = defineProps({
