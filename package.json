@@ -40,14 +40,14 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "electron": "^32.1.2",
-    "electron-builder": "^25.0.5",
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12",
     "nuxt-electron": "^0.7.0",
     "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.5",
-    "@geode/opengeodeweb-back": "5.7.3",
+    "@geode/opengeodeweb-back": "5.8.0",
     "@geode/opengeodeweb-front": "^9.7.2",
     "@geode/opengeodeweb-viewer": "^1.8.1",
     "@geode/vease-back": "^1.4.11",
