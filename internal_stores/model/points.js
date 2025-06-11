@@ -1,59 +1,76 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-const model_points_schemas =
-  viewer_schemas.opengeodeweb_viewer.model["points.visibility"];
+const model_points_schemas = viewer_schemas.opengeodeweb_viewer.model.points;
 
 export function useModelPointsStyle() {
   const dataStyleStore = useDataStyleStore();
 
-  function pointsVisibility(id) {
+  function ModelPointsVisibility(id) {
     return dataStyleStore.styles[id]?.points?.visibility ?? false;
   }
-  function pointsSize(id) {
-    return dataStyleStore.styles[id].points.size;
+
+  function ModelPointsSize(id) {
+    return dataStyleStore.styles[id]?.points?.size;
   }
 
-  function setPointsVisibility(id, visibility) {
+  function setModelPointsVisibility(id, visibility) {
+    if (!dataStyleStore.styles[id]) {
+      dataStyleStore.styles[id] = {};
+    }
+    if (!dataStyleStore.styles[id].points) {
+      dataStyleStore.styles[id].points = {};
+    }
+
     viewer_call(
       {
-        schema: model_points_schemas,
+        schema: model_points_schemas.visibility,
         params: { id, visibility },
       },
       {
         response_function: () => {
           dataStyleStore.styles[id].points.visibility = visibility;
-          console.log(
-            "setPointsVisibility",
-            dataStyleStore.styles[id].points.visibility
-          );
+          console.log("setModelPointsVisibility", visibility);
         },
       }
     );
   }
-  function setPointsSize(id, size) {
+
+  function setModelPointsSize(id, size) {
+    if (!dataStyleStore.styles[id]) {
+      dataStyleStore.styles[id] = {};
+    }
+    if (!dataStyleStore.styles[id].points) {
+      dataStyleStore.styles[id].points = {};
+    }
+
     viewer_call(
       {
-        schema: viewer_schemas.opengeodeweb_viewer.model.points.size,
+        schema: model_points_schemas.size,
         params: { id, size },
       },
       {
         response_function: () => {
           dataStyleStore.styles[id].points.size = size;
-          console.log("setPointsSize", dataStyleStore.styles[id].points.size);
+          console.log("setModelPointsSize", size);
         },
       }
     );
   }
 
   function applyPointsStyle(id, style) {
-    setPointsVisibility(id, false);
-    setPointsSize(id, style.size);
+    setModelPointsVisibility(id, style.visibility);
+    setModelPointsSize(id, style.size);
+  }
+
+  function setModelPointsDefaultStyle(id) {
+    setModelPointsVisibility(id, false);
   }
 
   return {
-    pointsVisibility,
-    pointsSize,
-    setPointsVisibility,
-    setPointsSize,
+    ModelPointsVisibility,
+    ModelPointsSize,
+    setModelPointsVisibility,
+    setModelPointsSize,
     applyPointsStyle,
+    setModelPointsDefaultStyle,
   };
 }

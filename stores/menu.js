@@ -40,6 +40,26 @@ import TetrahedralSolidTetrahedraOptions from "@vease/components/Viewer/Tetrahed
 import BrepEdgesOptions from "@vease/components/Viewer/BRep/EdgesOptions.vue";
 import BRepPointsOptions from "@vease/components/Viewer/BRep/PointsOptions.vue";
 
+// CrossSection components
+import CrossSectionEdgesOptions from "@vease/components/Viewer/CrossSection/EdgesOptions.vue";
+import CrossSectionPointsOptions from "@vease/components/Viewer/CrossSection/PointsOptions.vue";
+
+// ImplicitCrossSection components
+import ImplicitCrossSectionEdgesOptions from "@vease/components/Viewer/ImplicitCrossSection/EdgesOptions.vue";
+import ImplicitCrossSectionPointsOptions from "@vease/components/Viewer/ImplicitCrossSection/PointsOptions.vue";
+
+// Section components
+import SectionEdgesOptions from "@vease/components/Viewer/Section/EdgesOptions.vue";
+import SectionPointsOptions from "@vease/components/Viewer/Section/PointsOptions.vue";
+
+// StructuralModel components
+import StructuralModelEdgesOptions from "@vease/components/Viewer/StructuralModel/EdgesOptions.vue";
+import StructuralModelPointsOptions from "@vease/components/Viewer/StructuralModel/PointsOptions.vue";
+
+// ImplicitStructuralModel components
+import ImplicitStructuralModelEdgesOptions from "@vease/components/Viewer/ImplicitStructuralModel/EdgesOptions.vue";
+import ImplicitStructuralModelPointsOptions from "@vease/components/Viewer/ImplicitStructuralModel/PointsOptions.vue";
+
 const PointSet_menu = [PointSetPointsOptions];
 
 const EdgedCurve_menu = [EdgedCurvePointsOptions, EdgedCurveEdgesOptions];
@@ -84,6 +104,24 @@ const TetrahedralSolid_menu = [
 
 const BRep_menu = [BrepEdgesOptions, BRepPointsOptions];
 
+const CrossSection_menu = [CrossSectionEdgesOptions, CrossSectionPointsOptions];
+
+const ImplicitCrossSection_menu = [
+  ImplicitCrossSectionEdgesOptions,
+  ImplicitCrossSectionPointsOptions,
+];
+const ImplicitStructuralModel_menu = [
+  ImplicitStructuralModelEdgesOptions,
+  ImplicitStructuralModelPointsOptions,
+];
+
+const Section_menu = [SectionEdgesOptions, SectionPointsOptions];
+
+const StructuralModel_menu = [
+  StructuralModelEdgesOptions,
+  StructuralModelPointsOptions,
+];
+
 const menus = {
   mesh: {
     EdgedCurve2D: EdgedCurve_menu,
@@ -104,11 +142,11 @@ const menus = {
   },
   model: {
     BRep: BRep_menu,
-    CrossSection: [],
-    ImplicitCrossSection: [],
-    ImplicitStructuralModel: [],
-    Section: [],
-    StructuralModel: [],
+    CrossSection: CrossSection_menu,
+    ImplicitCrossSection: ImplicitCrossSection_menu,
+    ImplicitStructuralModel: ImplicitStructuralModel_menu,
+    Section: Section_menu,
+    StructuralModel: StructuralModel_menu,
   },
 };
 

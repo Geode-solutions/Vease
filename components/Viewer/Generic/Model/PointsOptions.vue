@@ -24,15 +24,6 @@
             />
           </v-col>
         </v-row>
-        <v-row>
-          <v-col>
-            <ViewerOptionsColoringTypeSelector
-              :id="id"
-              v-model:coloring_style_key="coloring_style_key"
-              v-model:color="color"
-            />
-          </v-col>
-        </v-row>
       </template>
     </template>
   </ViewerContextMenuItem>
@@ -49,11 +40,12 @@ const props = defineProps({
 const id = toRef(() => props.itemProps.id);
 
 const visibility = computed({
-  get: () => dataStyleStore.pointsVisibility(id.value),
-  set: (newValue) => dataStyleStore.setPointsVisibility(id.value, newValue),
+  get: () => dataStyleStore.ModelPointsVisibility(id.value),
+  set: (newValue) =>
+    dataStyleStore.setModelPointsVisibility(id.value, newValue),
 });
 const size = computed({
-  get: () => dataStyleStore.pointsSize(id.value),
-  set: (newValue) => dataStyleStore.setPointsSize(id.value, newValue),
+  get: () => dataStyleStore.ModelPointsSize(id.value),
+  set: (newValue) => dataStyleStore.setModelPointsSize(id.value, newValue),
 });
 </script>

@@ -1,6 +1,5 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
-const model_edges_schemas =
-  viewer_schemas.opengeodeweb_viewer.model["edges.visibility"];
+const model_edges_schemas = viewer_schemas.opengeodeweb_viewer.model.edges;
 
 export function useModelEdgesStyle() {
   const dataStyleStore = useDataStyleStore();
@@ -19,7 +18,7 @@ export function useModelEdgesStyle() {
 
     viewer_call(
       {
-        schema: model_edges_schemas,
+        schema: model_edges_schemas.visibility,
         params: { id, visibility },
       },
       {
