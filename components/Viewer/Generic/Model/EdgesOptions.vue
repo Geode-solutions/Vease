@@ -25,4 +25,8 @@ const visibility = computed({
   get: () => dataStyleStore.modelEdgesVisibility(id.value),
   set: (newValue) => dataStyleStore.setModelEdgesVisibility(id.value, newValue),
 });
+
+watch(visibility, (value) => {
+  console.log("visibility changed to " + value);
+});
 </script>

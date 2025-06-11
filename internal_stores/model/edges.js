@@ -4,7 +4,7 @@ const model_edges_schemas = viewer_schemas.opengeodeweb_viewer.model.edges;
 export function useModelEdgesStyle() {
   const dataStyleStore = useDataStyleStore();
 
-  function ModelEdgesVisibility(id) {
+  function modelEdgesVisibility(id) {
     return dataStyleStore.styles[id]?.edges?.visibility ?? false;
   }
 
@@ -39,7 +39,7 @@ export function useModelEdgesStyle() {
   }
 
   return {
-    ModelEdgesVisibility,
+    modelEdgesVisibility,
     setModelEdgesVisibility,
     applyEdgesStyle,
     setModelEdgesDefaultStyle,

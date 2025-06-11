@@ -4,11 +4,14 @@ const model_points_schemas = viewer_schemas.opengeodeweb_viewer.model.points;
 export function useModelPointsStyle() {
   const dataStyleStore = useDataStyleStore();
 
-  function ModelPointsVisibility(id) {
-    return dataStyleStore.styles[id]?.points?.visibility ?? false;
+  function modelPointsVisibility(id, type) {
+    return (
+      dataStyleStore.styles[id]?.points?.visibility ??
+      getDefaultStyle(type)?.points?.visibility ??
+      false
+    );
   }
-
-  function ModelPointsSize(id) {
+  function modelPointsSize(id) {
     return dataStyleStore.styles[id]?.points?.size;
   }
 
@@ -66,8 +69,8 @@ export function useModelPointsStyle() {
   }
 
   return {
-    ModelPointsVisibility,
-    ModelPointsSize,
+    modelPointsVisibility,
+    modelPointsSize,
     setModelPointsVisibility,
     setModelPointsSize,
     applyPointsStyle,

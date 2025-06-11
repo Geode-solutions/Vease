@@ -55,8 +55,6 @@ export default function useModelStyle() {
         return surfacesStyleStore.surfaceVisibility(id, component_id);
       case "Block":
         return blocksStyleStore.blockVisibility(id, component_id);
-      case "Edge":
-        return modelEdgesStore.ModelEdgesVisibility(id);
       default:
         return false;
     }
@@ -111,9 +109,6 @@ export default function useModelStyle() {
       case "Block":
         blocksStyleStore.setBlockVisibility(id, [component_id], visibility);
         break;
-      case "Edge":
-        modelEdgesStore.setModelEdgesVisibility(id, visibility);
-        break;
     }
   }
 
@@ -131,6 +126,7 @@ export default function useModelStyle() {
     surfacesStyleStore.setSurfacesDefaultStyle(id);
     blocksStyleStore.setBlocksDefaultStyle(id);
     modelEdgesStore.setModelEdgesDefaultStyle(id);
+    modelPointsStore.setModelPointsDefaultStyle(id);
   }
 
   return {
