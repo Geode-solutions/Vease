@@ -36,6 +36,10 @@ import SolidPolyhedraOptions from "@vease/components/Viewer/Solid/PolyhedraOptio
 import TetrahedralSolidTrianglesOptions from "@vease/components/Viewer/TetrahedralSolid/TrianglesOptions.vue";
 import TetrahedralSolidTetrahedraOptions from "@vease/components/Viewer/TetrahedralSolid/TetrahedraOptions.vue";
 
+// Model components
+import ModelEdgesOptions from "@vease/components/Viewer/Generic/Model/EdgesOptions.vue";
+import ModelPointsOptions from "@vease/components/Viewer/Generic/Model/PointsOptions.vue";
+
 const PointSet_menu = [PointSetPointsOptions];
 
 const EdgedCurve_menu = [EdgedCurvePointsOptions, EdgedCurveEdgesOptions];
@@ -78,6 +82,17 @@ const TetrahedralSolid_menu = [
   TetrahedralSolidTetrahedraOptions,
 ];
 
+const BRep_menu = [ModelEdgesOptions, ModelPointsOptions];
+
+const CrossSection_menu = [ModelEdgesOptions, ModelPointsOptions];
+
+const ImplicitCrossSection_menu = [ModelEdgesOptions, ModelPointsOptions];
+const ImplicitStructuralModel_menu = [ModelEdgesOptions, ModelPointsOptions];
+
+const Section_menu = [ModelEdgesOptions, ModelPointsOptions];
+
+const StructuralModel_menu = [ModelEdgesOptions, ModelPointsOptions];
+
 const menus = {
   mesh: {
     EdgedCurve2D: EdgedCurve_menu,
@@ -97,12 +112,12 @@ const menus = {
     TriangulatedSurface3D: TriangulatedSurface_menu,
   },
   model: {
-    BRep: [],
-    CrossSection: [],
-    ImplicitCrossSection: [],
-    ImplicitStructuralModel: [],
-    Section: [],
-    StructuralModel: [],
+    BRep: BRep_menu,
+    CrossSection: CrossSection_menu,
+    ImplicitCrossSection: ImplicitCrossSection_menu,
+    ImplicitStructuralModel: ImplicitStructuralModel_menu,
+    Section: Section_menu,
+    StructuralModel: StructuralModel_menu,
   },
 };
 

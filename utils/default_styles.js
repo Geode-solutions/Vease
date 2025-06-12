@@ -1,4 +1,4 @@
-const pointsDefaultStyle = (visibility, size) => {
+const meshPointsDefaultStyle = (visibility, size) => {
   return {
     visibility,
     coloring: {
@@ -6,6 +6,13 @@ const pointsDefaultStyle = (visibility, size) => {
       color: { r: 255, g: 0, b: 0 },
       vertex: null,
     },
+    size,
+  };
+};
+
+const modelPointsDefaultStyle = (visibility, size) => {
+  return {
+    visibility,
     size,
   };
 };
@@ -80,14 +87,14 @@ const edges_defaultSize = 5;
 const pointSet_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(true, points_defaultSize),
+    points: meshPointsDefaultStyle(true, points_defaultSize),
   };
 };
 
 const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(false, points_defaultSize),
+    points: meshPointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(true, edges_defaultSize),
   };
 };
@@ -95,7 +102,7 @@ const edgedCurve_defaultStyle = () => {
 const surface_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(false, points_defaultSize),
+    points: meshPointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(false, edges_defaultSize),
     polygons: polygonsDefaultStyle(true),
   };
@@ -104,7 +111,7 @@ const surface_defaultStyle = () => {
 const solid_defaultStyle = () => {
   return {
     visibility: true,
-    points: pointsDefaultStyle(false, points_defaultSize),
+    points: meshPointsDefaultStyle(false, points_defaultSize),
     edges: edgesDefaultStyle(false, edges_defaultSize),
     polygons: polygonsDefaultStyle(true),
     polyhedra: polyhedraDefaultStyle(true),
@@ -118,19 +125,81 @@ const brep_defaultStyle = () => {
     lines: linesDefaultStyle(),
     surfaces: surfacesDefaultStyle(),
     blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+  };
+};
+
+const crossSection_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+  };
+};
+
+const structuralModel_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+  };
+};
+
+const section_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+  };
+};
+
+const implicitCrossSection_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
+  };
+};
+
+const implicitStructuralModel_defaultStyle = () => {
+  return {
+    visibility: true,
+    corners: cornersDefaultStyle(),
+    lines: linesDefaultStyle(),
+    surfaces: surfacesDefaultStyle(),
+    blocks: blocksDefaultStyle(),
+    points: modelPointsDefaultStyle(false, points_defaultSize),
+    edges: edgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
 const default_styles = () => {
   return {
     BRep: brep_defaultStyle(),
-    CrossSection: {},
+    CrossSection: crossSection_defaultStyle(),
     EdgedCurve2D: edgedCurve_defaultStyle(),
     EdgedCurve3D: edgedCurve_defaultStyle(),
     Graph: {},
     HybridSolid3D: solid_defaultStyle(),
-    ImplicitCrossSection: {},
-    ImplicitStructuralModel: {},
+    ImplicitCrossSection: implicitCrossSection_defaultStyle(),
+    ImplicitStructuralModel: implicitStructuralModel_defaultStyle(),
     LightRegularGrid2D: surface_defaultStyle(),
     LightRegularGrid3D: solid_defaultStyle(),
     PointSet2D: pointSet_defaultStyle(),
@@ -142,8 +211,8 @@ const default_styles = () => {
     RasterImage3D: {},
     RegularGrid2D: surface_defaultStyle(),
     RegularGrid3D: solid_defaultStyle(),
-    Section: {},
-    StructuralModel: {},
+    Section: section_defaultStyle(),
+    StructuralModel: structuralModel_defaultStyle(),
     TetrahedralSolid3D: solid_defaultStyle(),
     TriangulatedSurface2D: surface_defaultStyle(),
     TriangulatedSurface3D: surface_defaultStyle(),
