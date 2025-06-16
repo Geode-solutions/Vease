@@ -17,12 +17,12 @@ const modelPointsDefaultStyle = (visibility, size) => {
   };
 };
 
-const edgesDefaultStyle = (visibility, size) => {
+const edgesDefaultStyle = (visibility, size, color = { r: 0, g: 0, b: 0 }) => {
   return {
     visibility,
     coloring: {
       active: "color",
-      color: { r: 0, g: 0, b: 0 },
+      color,
     },
     size,
   };
@@ -83,6 +83,7 @@ const blockDefaultStyle = (visibility) => {
 
 const points_defaultSize = 10;
 const edges_defaultSize = 5;
+const edges_defaultColor = { r: 20, g: 20, b: 20 };
 
 const pointSet_defaultStyle = () => {
   return {
@@ -95,7 +96,7 @@ const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
     points: meshPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(true, edges_defaultSize),
+    edges: edgesDefaultStyle(true, edges_defaultSize, edges_defaultColor),
   };
 };
 
@@ -126,7 +127,7 @@ const brep_defaultStyle = () => {
     surfaces: surfacesDefaultStyle(),
     blocks: blocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: edgesDefaultStyle(true, edges_defaultSize),
   };
 };
 
