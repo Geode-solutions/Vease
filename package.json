@@ -39,24 +39,23 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "electron": "^36.4.0",
-    "electron-builder": "^26.0.12",
-    "nuxt-electron": "^0.7.0",
-    "vuetify-nuxt-module": "^0.18.6"
+    "electron": "36.4.0",
+    "electron-builder": "26.0.12",
+    "nuxt-electron": "0.7.0",
+    "vuetify-nuxt-module": "0.18.7"
   },
   "dependencies": {
-    "@fontsource/michroma": "^5.2.5",
-    "@geode/opengeodeweb-back": "5.8.0",
-    "@geode/opengeodeweb-front": "^9.7.3",
-    "@geode/opengeodeweb-viewer": "^1.8.1",
-    "@geode/vease-back": "^1.4.11",
-    "@geode/vease-viewer": "^2.3.9",
-    "broadcast-channel": "^7.1.0",
-    "draggable": "^4.2.0",
-    "electron-updater": "^6.6.2",
-    "get-port-please": "^3.1.2",
-    "h3-formidable": "^1.0.0",
-    "nuxt": "^3.13.2",
-    "vtk.js": "^33.1.0"
+    "@fontsource/michroma": "5.2.6",
+    "@geode/opengeodeweb-back": "5.8.1",
+    "@geode/opengeodeweb-front": "9.7.5",
+    "@geode/opengeodeweb-viewer": "1.9.1",
+    "@geode/vease-back": "1.4.12",
+    "@geode/vease-viewer": "2.3.11",
+    "broadcast-channel": "7.1.0",
+    "draggable": "4.2.0",
+    "electron-updater": "6.6.2",
+    "get-port-please": "3.1.2",
+    "h3-formidable": "1.0.0",
+    "nuxt": "3.13.2"
   }
 }

@@ -22,8 +22,11 @@ export function useBlocksStyle() {
       },
       {
         response_function: () => {
-          for (const block_id of block_ids)
+          for (const block_id of block_ids) {
+            if (!dataStyleStore.styles[id].blocks[block_id])
+              dataStyleStore.styles[id].blocks[block_id] = {};
             dataStyleStore.styles[id].blocks[block_id].visibility = visibility;
+          }
           console.log("setBlockVisibility", block_ids, visibility);
         },
       }
@@ -31,25 +34,12 @@ export function useBlocksStyle() {
   }
 
   function setBlocksDefaultStyle(id) {
-    const blocks = dataBaseStore.db[id]?.mesh_components?.["Block"];
-    if (!blocks || blocks.length === 0) return;
-
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-
-    if (!dataStyleStore.styles[id].blocks) {
-      dataStyleStore.styles[id].blocks = {};
-    }
-
-    const block_ids = [];
-
-    for (const block_id of blocks) {
-      dataStyleStore.styles[id].blocks[block_id] = blockDefaultStyle(true);
-      block_ids.push(block_id);
-    }
-
-    setBlockVisibility(id, block_ids, true);
+    const block_ids = dataBaseStore.getLinesUuids(id);
+    setBlockVisibility(
+      id,
+      block_ids,
+      dataStyleStore.styles[id].blocks.visibility
+    );
   }
 
   function applyBlocksStyle(id) {
