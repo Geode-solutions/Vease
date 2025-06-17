@@ -104,6 +104,24 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     );
   }
 
+  function getCornersUuids(id) {
+    const { mesh_components } = itemMetaDatas(id);
+    return Object.values(mesh_components["Corner"]);
+  }
+
+  function getLinesUuids(id) {
+    const { mesh_components } = itemMetaDatas(id);
+    return Object.values(mesh_components["Line"]);
+  }
+  function getSurfacesUuids(id) {
+    const { mesh_components } = itemMetaDatas(id);
+    return Object.values(mesh_components["Surface"]);
+  }
+  function getBlocksUuids(id) {
+    const { mesh_components } = itemMetaDatas(id);
+    return Object.values(mesh_components["Block"]);
+  }
+
   function getFlatIndexes(id, mesh_component_ids) {
     const { uuid_to_flat_index } = itemMetaDatas(id);
 
@@ -121,6 +139,10 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     addItem,
     fetchUuidToFlatIndexDict,
     fetchMeshComponents,
+    getCornersUuids,
+    getLinesUuids,
+    getSurfacesUuids,
+    getBlocksUuids,
     getFlatIndexes,
   };
 });

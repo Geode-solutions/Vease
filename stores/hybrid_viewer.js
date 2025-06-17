@@ -58,6 +58,7 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     const mapper = vtkMapper.newInstance();
     mapper.setInputData(polydata);
     const actor = vtkActor.newInstance();
+    actor.getProperty().setColor(20 / 255, 20 / 255, 20 / 255);
     actor.setMapper(mapper);
 
     const renderer = genericRenderWindow.value.getRenderer();

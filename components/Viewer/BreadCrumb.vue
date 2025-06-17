@@ -21,7 +21,7 @@
             }}
           </v-icon>
           <span class="text-subtitle-1 font-weight-regular align-center mt-1">
-            MeshComponentTree
+            Model Explorer ({{ metaDatas.displayed_name }})
           </span>
         </template>
       </v-menu>
@@ -29,7 +29,7 @@
       <div v-else class="d-flex align-center gap-2">
         <v-icon size="large">mdi-file-tree</v-icon>
         <span class="text-subtitle-1 font-weight-regular align-center mt-1">
-          FileTree
+          Objects
         </span>
       </div>
     </div>
@@ -44,6 +44,12 @@ const selectedTree = computed(() => treeviewStore.selectedTree);
 const goBackToFileTree = () => {
   treeviewStore.displayFileTree();
 };
+
+const model_id = computed(() => treeviewStore.model_id);
+
+const metaDatas = computed(() =>
+  useDataBaseStore().itemMetaDatas(model_id.value)
+);
 </script>
 
 <style scoped>
