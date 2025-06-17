@@ -125,10 +125,10 @@ export default function useModelStyle() {
   function setMeshComponentsDefaultStyle(id) {
     cornersStyleStore.setCornersDefaultStyle(id);
     linesStyleStore.setLinesDefaultStyle(id);
-    // surfacesStyleStore.setSurfacesDefaultStyle(id);
-    // blocksStyleStore.setBlocksDefaultStyle(id);
-    // modelEdgesStore.setModelEdgesDefaultStyle(id);
-    // modelPointsStore.setModelPointsDefaultStyle(id);
+    surfacesStyleStore.setSurfacesDefaultStyle(id);
+    blocksStyleStore.setBlocksDefaultStyle(id);
+    modelEdgesStore.setModelEdgesDefaultStyle(id);
+    modelPointsStore.setModelPointsDefaultStyle(id);
   }
 
   return {
