@@ -1,5 +1,5 @@
 <template>
-  <ViewerGenericMeshPointsOptions
+  <ViewerPointSetSpecificPointsOptions
     :itemProps="props.itemProps"
     :btn_image="PointSetPoints"
   />
