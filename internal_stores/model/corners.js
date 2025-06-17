@@ -31,24 +31,7 @@ export function useCornersStyle() {
   }
 
   function setCornersDefaultStyle(id) {
-    const corners = dataBaseStore.db[id]?.mesh_components?.["Corner"];
-    if (!corners || corners.length === 0) return;
-
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-
-    if (!dataStyleStore.styles[id].corners) {
-      dataStyleStore.styles[id].corners = {};
-    }
-
-    const corner_ids = [];
-
-    for (const corner_id of corners) {
-      dataStyleStore.styles[id].corners[corner_id] = cornerDefaultStyle(true);
-      corner_ids.push(corner_id);
-    }
-
+    const corner_ids = dataBaseStore.getCornersUuids(id);
     setCornerVisibility(id, corner_ids, true);
   }
 

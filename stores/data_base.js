@@ -104,6 +104,11 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     );
   }
 
+  function getCornersUuids(id) {
+    const { mesh_components } = itemMetaDatas(id);
+    return Object.values(mesh_components["Corner"]);
+  }
+
   function getFlatIndexes(id, mesh_component_ids) {
     const { uuid_to_flat_index } = itemMetaDatas(id);
 
@@ -121,6 +126,7 @@ export const useDataBaseStore = defineStore("dataBase", () => {
     addItem,
     fetchUuidToFlatIndexDict,
     fetchMeshComponents,
+    getCornersUuids,
     getFlatIndexes,
   };
 });

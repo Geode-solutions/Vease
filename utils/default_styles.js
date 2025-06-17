@@ -1,23 +1,47 @@
-const meshPointsDefaultStyle = (visibility, size) => {
+// Global variables
+
+const points_defaultVisibility = true;
+const edges_defaultVisibility = true;
+const polygons_defaultVisibility = true;
+const polyhedra_defaultVisibility = true;
+const points_defaultSize = 10;
+const points_defaultColor = { r: 20, g: 20, b: 20 };
+const edges_defaultSize = 5;
+const edges_defaultColor = { r: 20, g: 20, b: 20 };
+const polygons_defaultColor = { r: 255, g: 255, b: 255 };
+const polyhedra_defaultColor = { r: 255, g: 255, b: 255 };
+
+const corners_defaultVisibility = true;
+const lines_defaultVisibility = true;
+const surfaces_defaultVisibility = true;
+const blocks_defaultVisibility = true;
+const corners_defaultColor = { r: 20, g: 20, b: 20 };
+const lines_defaultColor = { r: 20, g: 20, b: 20 };
+const blocks_defaultColor = { r: 255, g: 255, b: 255 };
+const surfaces_defaultColor = { r: 255, g: 255, b: 255 };
+
+// Mesh functions
+const meshPointsDefaultStyle = (
+  visibility = points_defaultVisibility,
+  size = points_defaultSize,
+  color = points_defaultColor
+) => {
   return {
     visibility,
     coloring: {
       active: "color",
-      color: { r: 255, g: 0, b: 0 },
+      color,
       vertex: null,
     },
     size,
   };
 };
 
-const modelPointsDefaultStyle = (visibility, size) => {
-  return {
-    visibility,
-    size,
-  };
-};
-
-const edgesDefaultStyle = (visibility, size, color = { r: 0, g: 0, b: 0 }) => {
+const meshEdgesDefaultStyle = (
+  visibility = edges_defaultVisibility,
+  size = edges_defaultSize,
+  color = edges_defaultColor
+) => {
   return {
     visibility,
     coloring: {
@@ -28,12 +52,15 @@ const edgesDefaultStyle = (visibility, size, color = { r: 0, g: 0, b: 0 }) => {
   };
 };
 
-const polygonsDefaultStyle = (visibility) => {
+const meshPolygonsDefaultStyle = (
+  visibility = polygons_defaultVisibility,
+  color = polygons_defaultColor
+) => {
   return {
     visibility,
     coloring: {
       active: "color",
-      color: { r: 255, g: 255, b: 255 },
+      color,
       textures: null,
       polygon: null,
       vertex: null,
@@ -41,153 +68,150 @@ const polygonsDefaultStyle = (visibility) => {
   };
 };
 
-const polyhedraDefaultStyle = (visibility) => {
+const meshPolyhedraDefaultStyle = (
+  visibility = polyhedra_defaultVisibility,
+  color = polyhedra_defaultColor
+) => {
   return {
     visibility,
     coloring: {
       active: "color",
-      color: { r: 255, g: 255, b: 255 },
+      color,
       polyhedron: null,
       vertex: null,
     },
   };
 };
 
-const cornersDefaultStyle = () => {
-  return {};
-};
-
-const linesDefaultStyle = () => {
-  return {};
-};
-
-const surfacesDefaultStyle = () => {
-  return {};
-};
-const blocksDefaultStyle = () => {
-  return {};
-};
-
-const cornerDefaultStyle = (visibility) => {
-  return { visibility };
-};
-const lineDefaultStyle = (visibility) => {
-  return { visibility };
-};
-const surfaceDefaultStyle = (visibility) => {
-  return { visibility };
-};
-const blockDefaultStyle = (visibility) => {
-  return { visibility };
-};
-
-const points_defaultSize = 10;
-const edges_defaultSize = 5;
-const edges_defaultColor = { r: 20, g: 20, b: 20 };
-
 const pointSet_defaultStyle = () => {
   return {
     visibility: true,
-    points: meshPointsDefaultStyle(true, points_defaultSize),
+    points: meshPointsDefaultStyle(),
   };
 };
 
 const edgedCurve_defaultStyle = () => {
   return {
     visibility: true,
-    points: meshPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(true, edges_defaultSize, edges_defaultColor),
+    points: meshPointsDefaultStyle(false),
+    edges: meshEdgesDefaultStyle(),
   };
 };
 
-const surface_defaultStyle = () => {
+const surface_defaultStyle = (visibility = true) => {
   return {
-    visibility: true,
-    points: meshPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
-    polygons: polygonsDefaultStyle(true),
+    visibility,
+    points: meshPointsDefaultStyle(false),
+    edges: meshEdgesDefaultStyle(false),
+    polygons: meshPolygonsDefaultStyle(),
   };
 };
 
 const solid_defaultStyle = () => {
   return {
     visibility: true,
-    points: meshPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
-    polygons: polygonsDefaultStyle(true),
-    polyhedra: polyhedraDefaultStyle(true),
+    points: meshPointsDefaultStyle(false),
+    edges: meshEdgesDefaultStyle(false),
+    polygons: meshPolygonsDefaultStyle(),
+    polyhedra: meshPolyhedraDefaultStyle(),
   };
+};
+
+// Model functions
+const modelCornersDefaultStyle = (visibility = corners_defaultVisibility) => {
+  return { visibility };
+};
+const modelLinesDefaultStyle = (
+  visibility = lines_defaultVisibility,
+  color = lines_defaultColor
+) => {
+  return { visibility, color };
+};
+const modelSurfacesDefaultStyle = (visibility = surfaces_defaultVisibility) => {
+  return { visibility };
+};
+const modelBlocksDefaultStyle = (visibility = blocks_defaultVisibility) => {
+  return { visibility };
+};
+const modelPointsDefaultStyle = (
+  visibility = points_defaultVisibility,
+  size
+) => {
+  return { visibility, size };
+};
+const modelEdgesDefaultStyle = (visibility = edges_defaultVisibility) => {
+  return { visibility };
 };
 
 const brep_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(true, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(true, edges_defaultSize),
   };
 };
 
 const crossSection_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
 const structuralModel_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
 const section_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
 const implicitCrossSection_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
 const implicitStructuralModel_defaultStyle = () => {
   return {
     visibility: true,
-    corners: cornersDefaultStyle(),
-    lines: linesDefaultStyle(),
-    surfaces: surfacesDefaultStyle(),
-    blocks: blocksDefaultStyle(),
+    corners: modelCornersDefaultStyle(),
+    lines: modelLinesDefaultStyle(),
+    surfaces: modelSurfacesDefaultStyle(),
+    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: edgesDefaultStyle(false, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 
@@ -225,10 +249,4 @@ function getDefaultStyle(type) {
   return default_styles()[type];
 }
 
-export {
-  getDefaultStyle,
-  cornerDefaultStyle,
-  lineDefaultStyle,
-  surfaceDefaultStyle,
-  blockDefaultStyle,
-};
+export { getDefaultStyle };
