@@ -25,8 +25,11 @@ export function useLinesStyle() {
       },
       {
         response_function: () => {
-          for (const line_id of line_ids)
+          for (const line_id of line_ids) {
+            if (!dataStyleStore.styles[id].lines[line_id])
+              dataStyleStore.styles[id].lines[line_id] = {};
             dataStyleStore.styles[id].lines[line_id].visibility = visibility;
+          }
           console.log("setLineVisibility", line_ids, visibility);
         },
       }
@@ -42,8 +45,11 @@ export function useLinesStyle() {
       },
       {
         response_function: () => {
-          for (const line_id of line_ids)
+          for (const line_id of line_ids) {
+            if (!dataStyleStore.styles[id].lines[line_id])
+              dataStyleStore.styles[id].lines[line_id] = {};
             dataStyleStore.styles[id].lines[line_id].color = color;
+          }
           console.log("setLineColor", line_ids, color);
         },
       }

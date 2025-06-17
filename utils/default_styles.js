@@ -15,10 +15,7 @@ const corners_defaultVisibility = true;
 const lines_defaultVisibility = true;
 const surfaces_defaultVisibility = true;
 const blocks_defaultVisibility = true;
-const corners_defaultColor = { r: 20, g: 20, b: 20 };
 const lines_defaultColor = { r: 20, g: 20, b: 20 };
-const blocks_defaultColor = { r: 255, g: 255, b: 255 };
-const surfaces_defaultColor = { r: 255, g: 255, b: 255 };
 
 // Mesh functions
 const meshPointsDefaultStyle = (
@@ -151,7 +148,7 @@ const brep_defaultStyle = () => {
     surfaces: modelSurfacesDefaultStyle(),
     blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
-    edges: modelEdgesDefaultStyle(true, edges_defaultSize),
+    edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
 };
 

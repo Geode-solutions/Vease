@@ -21,9 +21,12 @@ export function useCornersStyle() {
       },
       {
         response_function: () => {
-          for (const corner_id of corner_ids)
+          for (const corner_id of corner_ids) {
+            if (!dataStyleStore.styles[id].corners[corner_id])
+              dataStyleStore.styles[id].corners[corner_id] = {};
             dataStyleStore.styles[id].corners[corner_id].visibility =
               visibility;
+          }
           console.log("setCornerVisibility", corner_ids, visibility);
         },
       }
@@ -32,7 +35,15 @@ export function useCornersStyle() {
 
   function setCornersDefaultStyle(id) {
     const corner_ids = dataBaseStore.getCornersUuids(id);
-    setCornerVisibility(id, corner_ids, true);
+    console.log(
+      "dataStyleStore.styles[id].corners.visibility",
+      dataStyleStore.styles[id].corners.visibility
+    );
+    setCornerVisibility(
+      id,
+      corner_ids,
+      dataStyleStore.styles[id].corners.visibility
+    );
   }
 
   function applyCornersStyle(id) {
