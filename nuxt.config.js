@@ -1,6 +1,10 @@
 import package_json from "./package.json";
 
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
+
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
@@ -11,7 +15,7 @@ export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": __dirname,
+    "@vease": __dirname + "/app/",
   },
 
   modules: [
