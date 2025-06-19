@@ -4,12 +4,13 @@ import vue from "@vitejs/plugin-vue";
 export default defineConfig({
   plugins: [vue()],
   test: {
-    environment: "nuxt",
-    name: "e2e",
     browser: {
       enabled: true,
       provider: "playwright",
-      instances: [{ browser: "chromium" }],
+      instances: [
+        { browser: "chromium", launch: { headless: false, devtools: true } },
+        { browser: "firefox" },
+      ],
     },
   },
 });

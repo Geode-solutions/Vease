@@ -118,6 +118,7 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: ["@geode/opengeodeweb-front"],
+      exclude: ["chromium-bidi"],
     },
     watch: {
       ignored: ["**"],
