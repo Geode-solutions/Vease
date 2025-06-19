@@ -20,6 +20,7 @@
     "build": "nuxi build --prerender",
     "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
+    "test:e2e": "npx playwright test",
     "test:browser": "vitest --config=vitest.browser.config.js"
   },
   "repository": {
