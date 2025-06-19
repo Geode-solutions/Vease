@@ -156,7 +156,7 @@ async function run_script(
       console.log(data);
     });
 
-    child.on("close", (code) => {
+    child.on("close", (_code) => {
       //Here you can get the exit code of the script
     });
     child.name = command.replace(/^.*[\\/]/, "");

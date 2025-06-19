@@ -11,7 +11,7 @@ export function useLinesStyle() {
     return dataStyleStore.styles[id].lines[line_id].visibility;
   }
 
-  function linesColor(id) {
+  function _linesColor(id) {
     return dataStyleStore.styles[id].lines.color;
   }
 

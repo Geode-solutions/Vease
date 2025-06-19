@@ -19,7 +19,7 @@ create_path(data_folder_path);
 var processes = [];
 var mainWindow = null;
 
-ipcMain.handle("run_back", async (event, ...args) => {
+ipcMain.handle("run_back", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
@@ -35,7 +35,7 @@ ipcMain.handle("run_back", async (event, ...args) => {
   return port;
 });
 
-ipcMain.handle("run_viewer", async (event, ...args) => {
+ipcMain.handle("run_viewer", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
@@ -49,8 +49,8 @@ ipcMain.handle("run_viewer", async (event, ...args) => {
   return port;
 });
 
-ipcMain.handle("new_window", async (event, ...args) => {
-  const new_window = create_new_window();
+ipcMain.handle("new_window", async (_event) => {
+  const _new_window = create_new_window();
 });
 
 app.whenReady().then(() => {
