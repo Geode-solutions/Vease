@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euxo pipefail
 microservice_name=$1
 echo "Installing $microservice_name requirements"
 microservice_path="./electron-server/$microservice_name"
