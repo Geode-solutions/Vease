@@ -7,7 +7,7 @@ import {
   create_new_window,
   get_available_port,
   run_script,
-} from "/app/utils/desktop";
+} from "../app/utils/desktop";
 
 const os = require("os");
 
