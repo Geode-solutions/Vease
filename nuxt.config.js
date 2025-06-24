@@ -1,5 +1,4 @@
 import package_json from "./package.json";
-
 export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
@@ -19,9 +18,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.NODE_ENV === "production" || process.env.ELECTRON
-      ? "./modules/nuxt-electron"
-      : null,
+    process.env.ELECTRON == "true" ? "nuxt-electron" : null,
 
     "vuetify-nuxt-module",
     [
