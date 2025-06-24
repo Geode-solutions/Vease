@@ -6,7 +6,10 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
-    "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
+    "dev": "npm run clean_cache & npx nuxi dev",
+    "dev:browser": "ELECTRON=false NODE_ENV=development concurrently --kill-others \"npm run run_microservices\" \"npm run dev\"",
+    "dev:desktop": "ELECTRON=true NODE_ENV=development npm run dev",
+    "build": "nuxi build --prerender",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -16,10 +19,7 @@
     "install_microservices": "npm run install_back && npm run install_viewer",
     "build_back": "node node_scripts/run_script_file.js back/build",
     "build_viewer": "node node_scripts/run_script_file.js viewer/build",
-    "build_microservices": "npm run build_back && npm run build_viewer",
-    "build": "nuxi build --prerender",
-    "test": "vitest",
-    "package": "npm run build && electron-builder build --publish=never"
+    "build_microservices": "npm run build_back && npm run build_viewer"
   },
   "repository": {
     "type": "git",
