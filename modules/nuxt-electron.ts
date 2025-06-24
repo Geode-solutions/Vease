@@ -1,13 +1,7 @@
 import { type AddressInfo } from 'net'
 import { defineNuxtModule } from '@nuxt/kit'
-import type {
-  ResolvedConfig,
-  ViteDevServer,
-} from 'vite'
-import {
-  build,
-  startup,
-} from 'vite-plugin-electron'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
+import { build, startup } from 'vite-plugin-electron'
 
 // Fix tsc build error
 import { Nuxt } from '@nuxt/schema'
@@ -170,17 +164,16 @@ function adaptElectronConfig(options: ElectronOptions, nuxt: Nuxt) {
 
     // Fix path to make it works with Electron protocol `file://`
     nuxt.options.app.baseURL = './' // '/'
-    nuxt.options.app.buildAssetsDir = '/' // '/_nuxt/' - #16
+    // nuxt.options.app.buildAssetsDir = '/' // '/_nuxt/' - #16
 
-    nuxt.options.runtimeConfig.app.baseURL = './' // '/'
-    nuxt.options.runtimeConfig.app.buildAssetsDir = '/' // '/_nuxt/'
+    // nuxt.options.runtimeConfig.app.baseURL = './' // '/'
+    // nuxt.options.runtimeConfig.app.buildAssetsDir = '/' // '/_nuxt/'
     nuxt.options.router.options.hashMode = true // Avoid 404 errors
 
-    // Only apply on build
     if (!nuxt.options.dev) {
       nuxt.options.nitro.runtimeConfig ??= {}
       nuxt.options.nitro.runtimeConfig.app ??= {}
-      nuxt.options.nitro.runtimeConfig.app.baseURL = './'
+      // nuxt.options.nitro.runtimeConfig.app.baseURL = './'
     }
 
   }

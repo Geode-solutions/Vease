@@ -19,7 +19,10 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "nuxt-electron",
+    process.env.NODE_ENV === "production" || process.env.ELECTRON
+      ? "./modules/nuxt-electron"
+      : null,
+
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -29,8 +32,9 @@ export default defineNuxtConfig({
     ],
     "@nuxt/devtools",
     "@vueuse/nuxt",
-  ],
+  ].filter(Boolean),
 
+  ssr: false,
   electron: {
     build: [
       {
@@ -44,6 +48,7 @@ export default defineNuxtConfig({
         },
       },
     ],
+    disableDefaultOptions: true,
   },
 
   vuetify: {
@@ -75,8 +80,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
-
   app: {
     head: {
       titleTemplate: "Vease",
@@ -91,6 +94,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+    baseURL: process.env.ELECTRON ? "./" : "/", // Use relative paths for Electron
   },
 
   imports: {
@@ -124,6 +128,10 @@ export default defineNuxtConfig({
     options: {
       hashMode: true,
     },
+  },
+
+  nitro: {
+    preset: "node-server",
   },
 
   compatibilityDate: "2025-03-27",
