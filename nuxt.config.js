@@ -1,5 +1,4 @@
 import package_json from "./package.json";
-
 export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
@@ -19,7 +18,8 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "nuxt-electron",
+    process.env.ELECTRON == "true" ? "nuxt-electron" : null,
+
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -29,8 +29,9 @@ export default defineNuxtConfig({
     ],
     "@nuxt/devtools",
     "@vueuse/nuxt",
-  ],
+  ].filter(Boolean),
 
+  ssr: false,
   electron: {
     build: [
       {
@@ -44,6 +45,7 @@ export default defineNuxtConfig({
         },
       },
     ],
+    disableDefaultOptions: true,
   },
 
   vuetify: {
@@ -75,8 +77,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
-
   app: {
     head: {
       titleTemplate: "Vease",
@@ -91,6 +91,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+    baseURL: process.env.ELECTRON ? "./" : "/", // Use relative paths for Electron
   },
 
   imports: {
@@ -100,10 +101,6 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
-  },
-
-  experimental: {
-    appManifest: false,
   },
 
   devtools: {
@@ -128,6 +125,10 @@ export default defineNuxtConfig({
     options: {
       hashMode: true,
     },
+  },
+
+  nitro: {
+    preset: "node-server",
   },
 
   compatibilityDate: "2025-03-27",
