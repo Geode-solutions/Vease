@@ -1,5 +1,7 @@
 import package_json from "./package.json";
-export default defineNuxtConfig({
+
+console.log("process.env", process.env);
+const nuxtConfig = defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
@@ -18,9 +20,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.NODE_ENV === "production" || process.env.ELECTRON == "true"
-      ? "nuxt-electron"
-      : null,
+    process.env.BROWSER && process.env.BROWSER == "true"
+      ? null
+      : "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -130,3 +132,7 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2025-03-27",
 });
+
+console.log("nuxtConfig", nuxtConfig);
+
+export default nuxtConfig;

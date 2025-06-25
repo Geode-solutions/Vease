@@ -7,8 +7,8 @@
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run clean_cache & npx nuxi dev",
-    "dev:browser": "ELECTRON=false NODE_ENV=development concurrently --kill-others \"npm run run_microservices\" \"npm run dev\"",
-    "dev:desktop": "ELECTRON=true NODE_ENV=development npm run dev",
+    "dev:browser": "BROWSER=true npm run dev",
+    "dev:desktop": "npm run dev",
     "build": "nuxi build --prerender",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
