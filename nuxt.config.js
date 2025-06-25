@@ -18,8 +18,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.ELECTRON == "true" ? "nuxt-electron" : null,
-
+    process.env.NODE_ENV === "production" || process.env.ELECTRON == "true"
+      ? "nuxt-electron"
+      : null,
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -125,10 +126,6 @@ export default defineNuxtConfig({
     options: {
       hashMode: true,
     },
-  },
-
-  nitro: {
-    preset: "node-server",
   },
 
   compatibilityDate: "2025-03-27",

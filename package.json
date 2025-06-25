@@ -65,6 +65,7 @@
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
     "get-port-please": "3.1.2",
-    "h3-formidable": "1.0.0"
+    "h3-formidable": "1.0.0",
+    "nuxt": "3.13.2"
   }
 }
