@@ -23,9 +23,15 @@ export function useBlocksStyle() {
       {
         response_function: () => {
           for (const block_id of block_ids) {
-            if (!dataStyleStore.styles[id].blocks[block_id])
+            if (!dataStyleStore.styles[id].blocks[block_id]) {
               dataStyleStore.styles[id].blocks[block_id] = {};
+            }
             dataStyleStore.styles[id].blocks[block_id].visibility = visibility;
+            console.log(
+              "DataStyleStore block_id",
+              block_id,
+              dataStyleStore.styles[id].blocks[block_id].visibility
+            );
           }
           console.log("setBlockVisibility", block_ids, visibility);
         },
@@ -34,7 +40,7 @@ export function useBlocksStyle() {
   }
 
   function setBlocksDefaultStyle(id) {
-    const block_ids = dataBaseStore.getLinesUuids(id);
+    const block_ids = dataBaseStore.getBlocksUuids(id);
     setBlockVisibility(
       id,
       block_ids,

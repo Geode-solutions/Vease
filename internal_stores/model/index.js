@@ -24,21 +24,48 @@ export default function useModelStyle() {
   function visibleMeshComponents(id) {
     const visible_mesh_components = ref([]);
     const styles = dataStyleStore.styles[id];
+    console.log("visibleMeshComponents styles", styles);
     if (!styles) return visible_mesh_components;
 
     Object.entries(styles.corners || {}).forEach(([corner_id, style]) => {
+      console.log(
+        "visibleMeshComponents corner_id",
+        corner_id,
+        "visibility",
+        style.visibility
+      );
       if (style.visibility) visible_mesh_components.value.push(corner_id);
     });
 
     Object.entries(styles.lines || {}).forEach(([line_id, style]) => {
+      console.log(
+        "visibleMeshComponents line_id",
+        line_id,
+        "visibility",
+        style.visibility
+      );
+
       if (style.visibility) visible_mesh_components.value.push(line_id);
     });
 
     Object.entries(styles.surfaces || {}).forEach(([surface_id, style]) => {
+      console.log(
+        "visibleMeshComponents surface_id",
+        surface_id,
+        "visibility",
+        style.visibility
+      );
+
       if (style.visibility) visible_mesh_components.value.push(surface_id);
     });
 
     Object.entries(styles.blocks || {}).forEach(([block_id, style]) => {
+      console.log(
+        "visibleMeshComponents block_id",
+        block_id,
+        "visibility",
+        style.visibility
+      );
       if (style.visibility) visible_mesh_components.value.push(block_id);
     });
 

@@ -7,9 +7,9 @@
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run clean_cache & npx nuxi dev",
-    "dev:browser": "ELECTRON=false NODE_ENV=development concurrently --kill-others \"npm run run_microservices\" \"npm run dev\"",
+    "dev:browser": "ELECTRON=false NODE_ENV=development npm run dev",
     "dev:desktop": "ELECTRON=true NODE_ENV=development npm run dev",
-    "build": "nuxi build --prerender",
+    "build": "npx nuxi build --prerender",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -17,9 +17,13 @@
     "install_back": "node node_scripts/run_script_file.js install back",
     "install_viewer": "node node_scripts/run_script_file.js install viewer",
     "install_microservices": "npm run install_back && npm run install_viewer",
+    "run_back": "node node_scripts/run_script_file.js back/run",
+    "run_viewer": "node node_scripts/run_script_file.js viewer/run",
+    "run_microservices": "npm run run_back && npm run run_viewer",
     "build_back": "node node_scripts/run_script_file.js back/build",
     "build_viewer": "node node_scripts/run_script_file.js viewer/build",
-    "build_microservices": "npm run build_back && npm run build_viewer"
+    "build_microservices": "npm run build_back && npm run build_viewer",
+    "package": "npm run build && npx electron-builder build --publish=never"
   },
   "repository": {
     "type": "git",
@@ -39,6 +43,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
     "nuxt-electron": "0.7.0",

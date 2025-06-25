@@ -22,8 +22,9 @@ export function useCornersStyle() {
       {
         response_function: () => {
           for (const corner_id of corner_ids) {
-            if (!dataStyleStore.styles[id].corners[corner_id])
+            if (!dataStyleStore.styles[id].corners[corner_id]) {
               dataStyleStore.styles[id].corners[corner_id] = {};
+            }
             dataStyleStore.styles[id].corners[corner_id].visibility =
               visibility;
           }

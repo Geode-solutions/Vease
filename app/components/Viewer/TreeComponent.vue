@@ -23,6 +23,10 @@ const items = dataBaseStore.formatedMeshComponents(props.id);
 const mesh_components_selection = ref(
   dataStyleStore.visibleMeshComponents(props.id)
 );
+console.log(
+  "TreeComponent mesh_components_selection",
+  mesh_components_selection
+);
 
 watch(
   mesh_components_selection,

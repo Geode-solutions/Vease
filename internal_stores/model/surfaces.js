@@ -22,8 +22,9 @@ export function useSurfacesStyle() {
       {
         response_function: () => {
           for (const surface_id of surface_ids) {
-            if (!dataStyleStore.styles[id].surfaces[surface_id])
+            if (!dataStyleStore.styles[id].surfaces[surface_id]) {
               dataStyleStore.styles[id].surfaces[surface_id] = {};
+            }
             dataStyleStore.styles[id].surfaces[surface_id].visibility =
               visibility;
           }
