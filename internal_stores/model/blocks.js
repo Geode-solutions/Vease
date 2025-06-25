@@ -34,7 +34,7 @@ export function useBlocksStyle() {
   }
 
   function setBlocksDefaultStyle(id) {
-    const block_ids = dataBaseStore.getLinesUuids(id);
+    const block_ids = dataBaseStore.getBlocksUuids(id);
     setBlockVisibility(
       id,
       block_ids,
