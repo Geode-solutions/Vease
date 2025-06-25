@@ -77,7 +77,7 @@
       <FullScrenDropZone />
     </v-main>
     <v-progress-linear
-      v-if="infra_store.microservices_buzy"
+      v-if="infra_store.microservices_busy"
       indeterminate
       color="white"
     />
