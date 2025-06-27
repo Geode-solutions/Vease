@@ -12,6 +12,10 @@ const nuxtConfig = defineNuxtConfig({
       PROJECT: process.env.PROJECT,
       RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     },
+    // app: {
+    //   baseURL: "./",
+    //   buildAssetsDir: "./",
+    // },
   },
   extends: ["@geode/opengeodeweb-front"],
 
@@ -48,7 +52,6 @@ const nuxtConfig = defineNuxtConfig({
         },
       },
     ],
-    disableDefaultOptions: true,
   },
 
   vuetify: {
@@ -94,7 +97,6 @@ const nuxtConfig = defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
-    baseURL: process.env.ELECTRON ? "./" : "/", // Use relative paths for Electron
   },
 
   imports: {
