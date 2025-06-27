@@ -119,7 +119,7 @@ const nuxtConfig = defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "chromium-bidi"],
+      include: ["@geode/opengeodeweb-front"],
     },
     watch: {
       ignored: ["**"],

@@ -22,10 +22,8 @@
     "build_microservices": "npm run build_back && npm run build_viewer",
     "run_back": "/home/julien/Code/Vease/electron-server/back/venv/bin/vease-back --port 5000 --data_folder_path /tmp/vease --allowed_origin [*] --timeout 0",
     "run_viewer": "/home/julien/Code/Vease/electron-server/viewer/venv/bin/vease-viewer --port 1234 --data_folder_path /tmp/vease --timeout 0",
-    "test": "vitest",
     "package": "npm run build && electron-builder build --publish=never",
-    "test:e2e": "npx playwright test",
-    "test:browser": "vitest --config=vitest.browser.config.js"
+    "test:e2e": "npx playwright test"
   },
   "repository": {
     "type": "git",
@@ -48,6 +46,7 @@
     "@playwright/test": "1.53.1",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
+    "electron-playwright-helpers": "^1.7.1",
     "nuxt-electron": "0.7.0",
     "playwright": "1.53.1",
     "vuetify-nuxt-module": "0.18.7"
