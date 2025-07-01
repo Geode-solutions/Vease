@@ -1,13 +1,14 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master, fix/*, feature/* ]
+    branches: [ fix/*, feature/* ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ master, next ]
+
 jobs:
-  test:
+  test-e2e:
     timeout-minutes: 20
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ ubuntu-latest, windows-latest ]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
@@ -17,9 +18,8 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-
     - name: Package the project
-      run: npm run package
+      run: npm run build_microservices && npm run package
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
@@ -27,4 +27,4 @@ jobs:
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
+        retention-days: 5

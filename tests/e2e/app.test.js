@@ -5,13 +5,12 @@ import {
   expect,
   test,
 } from "@playwright/test";
-
 import { ElectronApplication, Page, _electron as electron } from "playwright";
-
-const {
+import {
+  electronWaitForFunction,
   findLatestBuild,
   parseElectronApp,
-} = require("electron-playwright-helpers");
+} from "electron-playwright-helpers";
 
 let electronApp = ElectronApplication;
 test.beforeAll(async () => {
@@ -43,17 +42,36 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
   await electronApp.close();
 });
+
 test("Window title", async () => {
   const firstWindow = await electronApp.firstWindow();
   const title = await firstWindow.title();
   expect(title).toBe("Vease");
 });
 
-// test("Microservices running", async () => {
-//   const firstWindow = await electronApp.firstWindow();
-//   // await firstWindow.waitFor(10000); // hard wait for 5000ms
-//   await firstWindow.waitForTimeout(10000); // wait for 10 seconds
+test("App packaged", async () => {
+  const isPackaged = await electronApp.evaluate(async ({ app }) => {
+    return app.isPackaged;
+  });
+  expect(isPackaged).toBe(true); // App should be tested as packaged
+});
 
-//   // await firstWindow.screenshot({ path: "./screenshot.png" });
-//   await expect(firstWindow).toHaveScreenshot("./tests/e2e/screenshot.png");
+// test("Microservices running", async () => {
+//   console.log("TOTO");
+
+//   const app = await electronApp.evaluate(async ({ app }) => {
+//     console.log("test app", app);
+
+//     return app;
+//   });
+//   await app.waitFor();
+
+//   const result = await electronApp.evaluate(async ({ ipcRenderer }) => {
+//     return ipcRenderer.send("microservices_connected");
+//   });
+//   console.log("test app result", result);
+
+//   console.log("test app electronApp", electronApp);
+
+//   expect(result).toBe(true);
 // });

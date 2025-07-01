@@ -1,4 +1,4 @@
-import { app, ipcMain } from "electron";
+import { app, ipcMain, ipcRenderer } from "electron";
 // import { autoUpdater } from "electron-updater";
 import path from "path";
 import {
@@ -51,6 +51,19 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
 
 ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window();
+});
+
+ipcMain.handle("microservices_connected", async () => {
+  console.log("microservices_connected from main");
+  const result = await ipcRenderer.send("microservices_connected");
+  console.log("microservices_connected", result);
+});
+
+ipcMain.handle("microservices_running", async () => {
+  console.log("microservices_running from main");
+  // Check if microservices are running
+  const microservicesRunning = await checkMicroservicesStatus();
+  return microservicesRunning;
 });
 
 app.whenReady().then(() => {
