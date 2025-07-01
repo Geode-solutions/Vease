@@ -80,3 +80,9 @@ app.on("before-quit", function () {
 app.on("window-all-closed", () => {
   app.quit();
 });
+
+function sendToRenderer(message) {
+  mainWindow.webContents.send("main-to-renderer", message);
+}
+
+export default sendToRenderer;

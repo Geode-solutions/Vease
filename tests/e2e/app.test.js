@@ -66,12 +66,14 @@ test("App packaged", async () => {
 //   });
 //   await app.waitFor();
 
-//   const result = await electronApp.evaluate(async ({ ipcRenderer }) => {
-//     return ipcRenderer.send("microservices_connected");
-//   });
+//   const sendToRenderer = await electronApp.evaluate(
+//     async ({ sendToRenderer }) => {
+//       console.log("test app sendToRenderer", sendToRenderer);
+//       return ipcRenderer.send("microservices_connected");
+//     }
+//   );
+//   const result = await sendToRenderer("microservices_connected");
 //   console.log("test app result", result);
-
-//   console.log("test app electronApp", electronApp);
 
 //   expect(result).toBe(true);
 // });

@@ -21,7 +21,7 @@ jobs:
     - name: Package the project
       run: npm run build_microservices && npm run package
     - name: Run Playwright tests
-      run: npx playwright test
+      run: npm run test:e2e
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
