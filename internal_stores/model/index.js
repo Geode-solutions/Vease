@@ -8,6 +8,7 @@ import { useModelPointsStyle } from "./points.js";
 
 export default function useModelStyle() {
   /** States **/
+  const dataBaseStore = useDataBaseStore();
   const dataStyleStore = useDataStyleStore();
   const cornersStyleStore = useCornersStyle();
   const linesStyleStore = useLinesStyle();
@@ -123,10 +124,13 @@ export default function useModelStyle() {
   }
 
   function setMeshComponentsDefaultStyle(id) {
-    cornersStyleStore.setCornersDefaultStyle(id);
-    linesStyleStore.setLinesDefaultStyle(id);
-    surfacesStyleStore.setSurfacesDefaultStyle(id);
-    blocksStyleStore.setBlocksDefaultStyle(id);
+    const { mesh_components } = dataBaseStore.itemMetaDatas(id);
+    if ("Corner" in mesh_components)
+      cornersStyleStore.setCornersDefaultStyle(id);
+    if ("Line" in mesh_components) linesStyleStore.setLinesDefaultStyle(id);
+    if ("Surface" in mesh_components)
+      surfacesStyleStore.setSurfacesDefaultStyle(id);
+    if ("Block" in mesh_components) blocksStyleStore.setBlocksDefaultStyle(id);
     modelEdgesStore.setModelEdgesDefaultStyle(id);
     modelPointsStore.setModelPointsDefaultStyle(id);
   }
