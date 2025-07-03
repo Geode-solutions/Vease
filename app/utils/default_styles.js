@@ -158,7 +158,6 @@ const crossSection_defaultStyle = () => {
     corners: modelCornersDefaultStyle(),
     lines: modelLinesDefaultStyle(),
     surfaces: modelSurfacesDefaultStyle(),
-    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
     edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
@@ -182,7 +181,6 @@ const section_defaultStyle = () => {
     corners: modelCornersDefaultStyle(),
     lines: modelLinesDefaultStyle(),
     surfaces: modelSurfacesDefaultStyle(),
-    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
     edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
@@ -194,7 +192,6 @@ const implicitCrossSection_defaultStyle = () => {
     corners: modelCornersDefaultStyle(),
     lines: modelLinesDefaultStyle(),
     surfaces: modelSurfacesDefaultStyle(),
-    blocks: modelBlocksDefaultStyle(),
     points: modelPointsDefaultStyle(false, points_defaultSize),
     edges: modelEdgesDefaultStyle(false, edges_defaultSize),
   };
