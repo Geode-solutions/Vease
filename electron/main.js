@@ -81,8 +81,8 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-function sendToRenderer(message) {
-  mainWindow.webContents.send("main-to-renderer", message);
-}
+// function sendToRenderer(message) {
+//   mainWindow.webContents.send("main-to-renderer", message);
+// }
 
-export default sendToRenderer;
+// export default sendToRenderer;
