@@ -16,6 +16,7 @@ let electronApp;
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild("./release/0.0.0/");
+  console.log("latestBuild", latestBuild);
   // parse the directory and find paths and other info
   const appInfo = parseElectronApp(latestBuild);
   // set the CI environment variable to true
@@ -24,7 +25,7 @@ test.beforeAll(async () => {
     args: [appInfo.main],
     executablePath: appInfo.executable,
     timeout: 20000,
-    headless: true,
+    headless: false,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,
