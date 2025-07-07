@@ -1,9 +1,12 @@
+// Node.js imports
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
-import { app, BrowserWindow, dialog } from "electron";
 
-const { getPort } = require("get-port-please");
+// Third party imports
+import { app, BrowserWindow, dialog } from "electron";
+import { getPort } from "get-port-please";
+import pidtree from "pidtree";
 
 function executable_path(app_name, microservice_name) {
   const executable = executable_name(app_name + "-" + microservice_name);
@@ -56,6 +59,25 @@ async function get_available_port(port) {
   const available_port = await getPort({ port, host: "localhost" });
   console.log("available_port", available_port);
   return available_port;
+}
+
+async function killProcesses(processes) {
+  await processes.forEach(async function (proc) {
+    console.log(`Process ${proc} will be killed!`);
+    try {
+      process.kill(proc);
+    } catch (error) {
+      console.log(`Process ${proc} could not be killed!`);
+    }
+  });
+}
+
+function registerChildProcesses(proc, processes) {
+  pidtree(proc.pid, { root: true }, function (err, pids) {
+    if (err) console.log("err", err);
+    processes.push(...pids);
+  });
+  return processes;
 }
 
 function create_new_window() {
@@ -174,6 +196,8 @@ export {
   get_available_port,
   executable_name,
   create_path,
+  killProcesses,
+  registerChildProcesses,
   create_new_window,
   run_script,
 };

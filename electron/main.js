@@ -5,11 +5,11 @@ import {
   executable_path,
   create_path,
   create_new_window,
+  registerChildProcesses,
+  killProcesses,
   get_available_port,
   run_script,
 } from "/app/utils/desktop";
-
-var pidtree = require("pidtree");
 
 const os = require("os");
 
@@ -39,7 +39,7 @@ ipcMain.handle("run_back", async (_event, ...args) => {
     back_args,
     "Serving Flask app"
   );
-  registerChildProcesses(microservice);
+  registerChildProcesses(microservice, processes);
   return port;
 });
 
@@ -59,7 +59,7 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     viewer_args,
     "Starting factory"
   );
-  registerChildProcesses(microservice);
+  registerChildProcesses(microservice, processes);
   return port;
 });
 
@@ -73,7 +73,6 @@ ipcMain.handle("microservices_connected", async () => {
   console.log("microservices_connected", result);
 });
 
-
 app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
@@ -82,7 +81,6 @@ app.on("before-quit", async function () {
   console.log("ELECTRON before-quit");
   await killProcesses();
   console.log("ELECTRON before-quit end");
-
 });
 
 app.on("window-all-closed", async () => {
@@ -90,25 +88,6 @@ app.on("window-all-closed", async () => {
   await app.quit();
   console.log("ELECTRON window-all-closed end");
 });
-
-
-async function killProcesses(){
-  await processes.forEach(async function (proc) {
-    console.log(`Process ${proc} will be killed!`);
-    try {
-      process.kill(proc);
-    } catch (error) {
-      console.log(`Process ${proc} could not be killed!`);
-    }
-  });
-}
-
-function registerChildProcesses(proc) {
-    pidtree(proc.pid, { root: true }, function (err, pids) {
-      if (err) console.log("err", err);
-      processes.push(...pids);
-    });
-}
 
 app.on("quit", () => {
   console.log("ELECTRON quit");
