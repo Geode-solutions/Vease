@@ -47,28 +47,28 @@ test.beforeAll(async () => {
     // console.log("window loaded", Date.now());
   });
 
-  await electronApp.evaluate(({ app }) => {
-    app.on("window-all-closed", () => {
-      console.log("ELECTRON window-all-closed");
-      app.quit();
-    });
+  // await electronApp.evaluate(({ app }) => {
+  //   app.on("window-all-closed", () => {
+  //     console.log("ELECTRON window-all-closed");
+  //     app.quit();
+  //   });
 
-    app.on("will-quit", () => {
-      console.log("ELECTRON will-quit");
-      app.quit();
-    });
-    app.on("console", (msg) => {
-      console.log(msg.text());
-    });
+  //   app.on("will-quit", () => {
+  //     console.log("ELECTRON will-quit");
+  //     app.quit();
+  //   });
+  //   app.on("console", (msg) => {
+  //     console.log(msg.text());
+  //   });
 
-    app.on("quit", () => {
-      console.log("ELECTRON quit");
-      app.quit();
-    });
-    app.whenReady().then(() => {
-      console.log("ELECTRON whenReady");
-    });
-  });
+  //   app.on("quit", () => {
+  //     console.log("ELECTRON quit");
+  //     app.quit();
+  //   });
+  //   app.whenReady().then(() => {
+  //     console.log("ELECTRON whenReady");
+  //   });
+  // });
 });
 
 test.afterAll(async () => {
@@ -142,8 +142,8 @@ test("Microservices running", async () => {
   // await expect(firstWindow).toHaveScreenshot({
   //   path: "microservices-running-linux.png",
   // });
-  await electronApp.evaluate(({ app }) => {
-    app.exit(0);
-  });
+  // await electronApp.evaluate(({ app }) => {
+  //   app.exit(0);
+  // });
   console.log("toHaveScreenshot", Date.now());
 });
