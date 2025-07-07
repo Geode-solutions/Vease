@@ -10,8 +10,10 @@ import pidtree from "pidtree";
 
 function executable_path(app_name, microservice_name) {
   const executable = executable_name(app_name + "-" + microservice_name);
-  let command;
-  if (process.env.NODE_ENV === "development") {
+  var command;
+  if (app.isPackaged) {
+    command = path.join(resource_path(), executable);
+  } else {
     command = path.join(
       app.getAppPath(),
       "electron-server",
@@ -24,8 +26,6 @@ function executable_path(app_name, microservice_name) {
       command = path.join(command, "bin");
     }
     command = path.join(command, executable);
-  } else {
-    command = path.join(resource_path(), executable);
   }
   return command;
 }

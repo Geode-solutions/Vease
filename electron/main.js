@@ -13,10 +13,7 @@ import {
 
 const os = require("os");
 
-if (!"ELECTRON_DISABLE_UPDATE" in process.env) {
-  autoUpdater.checkForUpdatesAndNotify();
-}
-
+autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const data_folder_path = path.join(os.tmpdir(), "vease");
 create_path(data_folder_path);
