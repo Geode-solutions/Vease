@@ -25,7 +25,11 @@ test.beforeAll(async () => {
     executablePath: appInfo.executable,
     timeout: 20000,
     headless: false,
-    env: { ...process.env, ELECTRON_ENABLE_LOGGING: true },
+    env: {
+      ...process.env,
+      ELECTRON_ENABLE_LOGGING: true,
+      ELECTRON_DISABLE_UPDATE: true,
+    },
   });
   await electronApp.on("window", async (page) => {
     const filename = page.url()?.split("/").pop();
@@ -55,27 +59,27 @@ test.afterAll(async () => {
   console.log("afterAll end", Date.now());
 });
 
-// test("Window title", async () => {
-//   const firstWindow = await electronApp.firstWindow();
-//   const title = await firstWindow.title();
-//   expect(title).toBe("Vease");
-// });
-
-// test("App packaged", async () => {
-//   const isPackaged = await electronApp.evaluate(async ({ app }) => {
-//     return app.isPackaged;
-//   });
-//   expect(isPackaged).toBe(true); // App should be tested as packaged
-// });
-
-test("Microservices running", async () => {
-  console.log("START TEST", Date.now());
-
+test("Window title", async () => {
   const firstWindow = await electronApp.firstWindow();
-  console.log("firstWindow", Date.now());
-  await firstWindow.waitForTimeout(10 * 1000);
-  // await expect(firstWindow).toHaveScreenshot({
-  //   path: "microservices-running-linux.png",
-  // });
-  console.log("toHaveScreenshot", Date.now());
+  const title = await firstWindow.title();
+  expect(title).toBe("Vease");
 });
+
+test("App packaged", async () => {
+  const isPackaged = await electronApp.evaluate(async ({ app }) => {
+    return app.isPackaged;
+  });
+  expect(isPackaged).toBe(true); // App should be tested as packaged
+});
+
+// test("Microservices running", async () => {
+//   console.log("START TEST", Date.now());
+
+//   const firstWindow = await electronApp.firstWindow();
+//   console.log("firstWindow", Date.now());
+//   await firstWindow.waitForTimeout(10 * 1000);
+//   // await expect(firstWindow).toHaveScreenshot({
+//   //   path: "microservices-running-linux.png",
+//   // });
+//   console.log("toHaveScreenshot", Date.now());
+// });
