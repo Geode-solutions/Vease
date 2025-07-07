@@ -94,6 +94,7 @@ app.on("before-quit", async function () {
   await processes.forEach(async function (proc) {
     console.log(`Process ${proc.name} and its children will be killed!`);
     pidtree(proc.pid, { root: true }, function (err, pids) {
+      console.log("pids", pids);
       if (err) throw console.log("err", err);
       console.log(`Processes ${pids} will be killed!`);
       fkill(pids);
