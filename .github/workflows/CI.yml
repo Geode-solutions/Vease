@@ -27,7 +27,7 @@ jobs:
       run: 
         npm ls playwright
         ls tests/e2e
-        npm run test:e2e --verbose
+        npm run test_e2e --verbose
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
