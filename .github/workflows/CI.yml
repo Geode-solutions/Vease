@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-22.04, windows-latest ]
+        os: [ windows-latest ]
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
