@@ -8,7 +8,6 @@ import {
   get_available_port,
   run_script,
 } from "/app/utils/desktop";
-import fkill from "fkill";
 
 var pidtree = require("pidtree");
 
@@ -24,7 +23,6 @@ var mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
-  // return port;
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
   const back_args = [
@@ -41,14 +39,12 @@ ipcMain.handle("run_back", async (_event, ...args) => {
     back_args,
     "Serving Flask app"
   );
-  processes.push(microservice);
-  console.log("processes.length", processes.length);
+  registerChildProcesses(microservice);
   return port;
 });
 
 ipcMain.handle("run_viewer", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
-  // return port;
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
   const viewer_args = [
@@ -63,8 +59,7 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     viewer_args,
     "Starting factory"
   );
-  processes.push(microservice);
-  console.log("processes.length", processes.length);
+  registerChildProcesses(microservice);
   return port;
 });
 
@@ -78,12 +73,6 @@ ipcMain.handle("microservices_connected", async () => {
   console.log("microservices_connected", result);
 });
 
-ipcMain.handle("microservices_running", async () => {
-  console.log("microservices_running from main");
-  // Check if microservices are running
-  const microservicesRunning = await checkMicroservicesStatus();
-  return microservicesRunning;
-});
 
 app.whenReady().then(() => {
   mainWindow = create_new_window();
@@ -91,18 +80,9 @@ app.whenReady().then(() => {
 
 app.on("before-quit", async function () {
   console.log("ELECTRON before-quit");
-  await processes.forEach(async function (proc) {
-    console.log(`Process ${proc.name} and its children will be killed!`);
-    pidtree(proc.pid, { root: true }, function (err, pids) {
-      if (err) throw console.log("err", err);
-      console.log(`Processes ${pids} will be killed!`);
-      pids.forEach((pid) => {
-        console.log(`Process ${pid} will be killed!`);
-        process.kill(pid);
-        console.log(`Process ${pid} has been killed!`);
-      });
-    });
-  });
+  await killProcesses();
+  console.log("ELECTRON before-quit end");
+
 });
 
 app.on("window-all-closed", async () => {
@@ -111,10 +91,24 @@ app.on("window-all-closed", async () => {
   console.log("ELECTRON window-all-closed end");
 });
 
-// app.on("will-quit", () => {
-//   console.log("ELECTRON will-quit");
-//   app.quit();
-// });
+
+async function killProcesses(){
+  await processes.forEach(async function (proc) {
+    console.log(`Process ${proc} will be killed!`);
+    try {
+      process.kill(proc);
+    } catch (error) {
+      console.log(`Process ${proc} could not be killed!`);
+    }
+  });
+}
+
+function registerChildProcesses(proc) {
+    pidtree(proc.pid, { root: true }, function (err, pids) {
+      if (err) console.log("err", err);
+      processes.push(...pids);
+    });
+}
 
 app.on("quit", () => {
   console.log("ELECTRON quit");
