@@ -29,6 +29,7 @@ test.beforeAll(async () => {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,
       ELECTRON_DISABLE_UPDATE: true,
+      NODE_ENV: "development",
     },
   });
   await electronApp.on("window", async (page) => {
