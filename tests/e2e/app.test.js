@@ -24,11 +24,10 @@ test.beforeAll(async () => {
     args: [appInfo.main],
     executablePath: appInfo.executable,
     timeout: 20000,
-    headless: false,
+    headless: true,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,
-      ELECTRON_DISABLE_UPDATE: true,
       NODE_ENV: "development",
     },
   });
