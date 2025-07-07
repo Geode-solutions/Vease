@@ -5,6 +5,9 @@ on:
   pull_request:
     branches: [ master, next ]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
 jobs:
   test-e2e:
     runs-on: ${{ matrix.os }}
