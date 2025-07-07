@@ -27,7 +27,6 @@ test.beforeAll(async () => {
     headless: false,
     env: { ...process.env, ELECTRON_ENABLE_LOGGING: true },
   });
-  // console.log("electronApp", electronApp);
   await electronApp.on("window", async (page) => {
     const filename = page.url()?.split("/").pop();
     console.log(`Window opened: ${filename}`);
@@ -40,35 +39,7 @@ test.beforeAll(async () => {
     page.on("console", (msg) => {
       console.log(msg.text());
     });
-
-    // const selector = await page.waitForSelector("#Microservices are starting");
-    // console.log("selector", selector);
-
-    // console.log("window loaded", Date.now());
   });
-
-  // await electronApp.evaluate(({ app }) => {
-  //   app.on("window-all-closed", () => {
-  //     console.log("ELECTRON window-all-closed");
-  //     app.quit();
-  //   });
-
-  //   app.on("will-quit", () => {
-  //     console.log("ELECTRON will-quit");
-  //     app.quit();
-  //   });
-  //   app.on("console", (msg) => {
-  //     console.log(msg.text());
-  //   });
-
-  //   app.on("quit", () => {
-  //     console.log("ELECTRON quit");
-  //     app.quit();
-  //   });
-  //   app.whenReady().then(() => {
-  //     console.log("ELECTRON whenReady");
-  //   });
-  // });
 });
 
 test.afterAll(async () => {
@@ -102,48 +73,9 @@ test("Microservices running", async () => {
 
   const firstWindow = await electronApp.firstWindow();
   console.log("firstWindow", Date.now());
-  // await firstWindow.waitForTimeout(10 * 1000);
-  // const microservices = [
-  //   "http://localhost:5000/vease_back/healthcheck",
-  //   "http://localhost:1234/vease_viewer/healthcheck",
-  //   // Add more services as needed
-  // ];
-  // for (const service of microservices) {
-  //   for (let i = 0; i < 10000; i++) {
-  //     console.log("for", i);
-  //     var response;
-  //     try {
-  //       response = await fetch(service);
-  //       console.log("response", response);
-  //     } catch (error) {
-  //       console.log("error", error);
-  //       continue;
-  //     }
-  //     if ("status" in response) {
-  //       console.log(`Service ${service} is running`);
-  //       expect(response.status).toBe(200);
-  //       const data = await response.json();
-  //       expect(data.message).toBe("healthy");
-  //       break;
-  //     }
-  //   }
-  //   console.log("waitForTimeout", Date.now());
-  //   break;
-  // }
-  // console.log("before toHaveScreenshot", Date.now());
-  await firstWindow.waitForTimeout(5 * 1000);
-  // const viewer = firstWindow.getByTestId("hybrid_viewer");
-  // console.log("viewer", viewer);
-  // const canvas = viewer.locator("canvas");
-  // console.log("canvas", canvas);
-  // expecy
-  // await firstWindow.waitForSelector("selector", { visible: true });
-  // console.log("before toHaveScreenshot", Date.now());
+  await firstWindow.waitForTimeout(10 * 1000);
   // await expect(firstWindow).toHaveScreenshot({
   //   path: "microservices-running-linux.png",
-  // });
-  // await electronApp.evaluate(({ app }) => {
-  //   app.exit(0);
   // });
   console.log("toHaveScreenshot", Date.now());
 });

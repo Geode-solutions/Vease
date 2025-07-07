@@ -62,6 +62,7 @@ async function get_available_port(port) {
 }
 
 async function killProcesses(processes) {
+  console.log("killProcesses", processes);
   await processes.forEach(async function (proc) {
     console.log(`Process ${proc} will be killed!`);
     try {

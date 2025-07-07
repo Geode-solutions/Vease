@@ -39,7 +39,9 @@ ipcMain.handle("run_back", async (_event, ...args) => {
     back_args,
     "Serving Flask app"
   );
-  registerChildProcesses(microservice, processes);
+  processes = registerChildProcesses(microservice, processes);
+  console.log("registerChildProcesses processes", processes);
+
   return port;
 });
 
@@ -59,7 +61,8 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     viewer_args,
     "Starting factory"
   );
-  registerChildProcesses(microservice, processes);
+  processes = registerChildProcesses(microservice, processes);
+  console.log("registerChildProcesses processes", processes);
   return port;
 });
 
@@ -79,7 +82,7 @@ app.whenReady().then(() => {
 
 app.on("before-quit", async function () {
   console.log("ELECTRON before-quit");
-  await killProcesses();
+  await killProcesses(processes);
   console.log("ELECTRON before-quit end");
 });
 
