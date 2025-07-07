@@ -25,7 +25,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Package the project
-      run: 
+      run: |
         dotnet tool install --global AzureSignTool
         npm run build_microservices && npm run package
     - name: Run Playwright tests
