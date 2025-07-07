@@ -27,7 +27,9 @@ jobs:
     - name: Package the project
       run: |
         dotnet tool install --global AzureSignTool
-        npm run build_microservices && npm run package
+        npm run install_microservices
+        npm run build_microservices
+        npm run package
     - name: Run Playwright tests
       run: DISPLAY=:0 DEBUG=pw:browser npm run test_e2e
     - uses: actions/upload-artifact@v4
