@@ -34,8 +34,9 @@ console.log("script_name", script_name);
 
 var command;
 if (process.platform === "win32") {
-  command = `powershell.exe ./electron-server/${script_name}.ps1 ` + process.argv[3];
+  command =
+    `powershell.exe ./electron-server/${script_name}.ps1 ` + process.argv[3];
 } else if (process.platform === "linux") {
-  command = `./electron-server/${script_name}.sh ` + process.argv[3];
+  command = `bash ./electron-server/${script_name}.sh ` + process.argv[3];
 }
 execRun(command);
