@@ -26,7 +26,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: Package the project
       run: |
-        dotnet tool install --global AzureSignTool
+        dotnet tool install --global AzureSignTool --version 4.0.1
         npm run install_microservices
         npm run build_microservices
         npm run package
