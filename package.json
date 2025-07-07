@@ -61,8 +61,11 @@
     "broadcast-channel": "7.1.0",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
+    "fkill": "^9.0.0",
     "get-port-please": "3.1.2",
     "h3-formidable": "1.0.0",
-    "nuxt": "3.13.2"
+    "nuxt": "3.13.2",
+    "pidtree": "^0.6.0",
+    "tree-kill": "^1.2.2"
   }
 }

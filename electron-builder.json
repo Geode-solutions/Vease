@@ -17,8 +17,7 @@
     "icon": "./public/256x256.png",
     "category": "Science",
     "target": [
-      "AppImage",
-      "zip"
+      "AppImage"
     ],
     "publish": [
       "github"

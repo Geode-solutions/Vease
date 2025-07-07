@@ -1,6 +1,5 @@
 import package_json from "./package.json";
 
-console.log("process.env", process.env);
 const nuxtConfig = defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
@@ -134,7 +133,5 @@ const nuxtConfig = defineNuxtConfig({
 
   compatibilityDate: "2025-03-27",
 });
-
-console.log("nuxtConfig", nuxtConfig);
 
 export default nuxtConfig;

@@ -125,7 +125,7 @@ async function run_script(
     setTimeout(() => {
       reject("Timed out after " + timeout_seconds + " seconds");
     }, timeout_seconds * 1000);
-    var child = child_process.spawn(command, args, {
+    const child = child_process.spawn(command, args, {
       encoding: "utf8",
       shell: true,
     });
@@ -144,7 +144,7 @@ async function run_script(
       //Here is the output
       data = data.toString();
       if (data.includes(expected_response)) {
-        resolve();
+        resolve(child);
       }
       console.log(data);
     });
@@ -158,9 +158,13 @@ async function run_script(
 
     child.on("close", (_code) => {
       //Here you can get the exit code of the script
+      console.log("Child Process exited with code " + _code);
+    });
+    child.on("kill", () => {
+      console.log("Child Process killed");
     });
     child.name = command.replace(/^.*[\\/]/, "");
-    return child;
+    // return child;
   });
 }
 

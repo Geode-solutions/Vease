@@ -8,6 +8,9 @@ import {
   get_available_port,
   run_script,
 } from "/app/utils/desktop";
+import fkill from "fkill";
+
+var pidtree = require("pidtree");
 
 const os = require("os");
 
@@ -21,6 +24,7 @@ var mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
+  // return port;
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
   const back_args = [
@@ -31,12 +35,20 @@ ipcMain.handle("run_back", async (_event, ...args) => {
     "--timeout " + 0,
   ];
   console.log("run_back", command, back_args);
-  await run_script(mainWindow, command, back_args, "Serving Flask app");
+  const microservice = await run_script(
+    mainWindow,
+    command,
+    back_args,
+    "Serving Flask app"
+  );
+  processes.push(microservice);
+  console.log("processes.length", processes.length);
   return port;
 });
 
 ipcMain.handle("run_viewer", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
+  // return port;
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
   const viewer_args = [
@@ -45,7 +57,14 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     "--timeout " + 0,
   ];
   console.log("run_viewer", command, viewer_args);
-  await run_script(mainWindow, command, viewer_args, "Starting factory");
+  const microservice = await run_script(
+    mainWindow,
+    command,
+    viewer_args,
+    "Starting factory"
+  );
+  processes.push(microservice);
+  console.log("processes.length", processes.length);
   return port;
 });
 
@@ -70,19 +89,31 @@ app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
 
-app.on("before-quit", function () {
-  processes.forEach(function (proc) {
-    console.log("Process %s has been killed!", proc.name);
-    proc.kill();
+app.on("before-quit", async function () {
+  console.log("ELECTRON before-quit");
+  await processes.forEach(async function (proc) {
+    console.log(`Process ${proc.name} and its children will be killed!`);
+    pidtree(proc.pid, { root: true }, function (err, pids) {
+      if (err) throw console.log("err", err);
+      console.log(`Processes ${pids} will be killed!`);
+      fkill(pids);
+      console.log(`Processes ${pids} have been killed!`);
+    });
   });
 });
 
-app.on("window-all-closed", () => {
-  app.quit();
+app.on("window-all-closed", async () => {
+  console.log("ELECTRON window-all-closed");
+  await app.quit();
+  console.log("ELECTRON window-all-closed end");
 });
 
-// function sendToRenderer(message) {
-//   mainWindow.webContents.send("main-to-renderer", message);
-// }
+// app.on("will-quit", () => {
+//   console.log("ELECTRON will-quit");
+//   app.quit();
+// });
 
-// export default sendToRenderer;
+app.on("quit", () => {
+  console.log("ELECTRON quit");
+  // app.quit();
+});
