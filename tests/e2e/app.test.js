@@ -33,6 +33,7 @@ test.beforeAll(async () => {
     },
   });
   await electronApp.on("window", async (page) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
     const filename = page.url()?.split("/").pop();
     console.log(`Window opened: ${filename}`);
 
