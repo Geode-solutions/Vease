@@ -15,7 +15,7 @@ import {
 let electronApp;
 test.beforeAll(async () => {
   // find the latest build in the out directory
-  const latestBuild = findLatestBuild("./release/0.0.0/");
+  const latestBuild = findLatestBuild(".\\release\\0.0.0\\");
   console.log("latestBuild", latestBuild);
   // parse the directory and find paths and other info
   const appInfo = parseElectronApp(latestBuild);
@@ -78,9 +78,9 @@ test("Microservices running", async () => {
 
   const firstWindow = await electronApp.firstWindow();
   console.log("firstWindow", Date.now());
-  await firstWindow.waitForTimeout(10 * 1000);
+  await firstWindow.waitForTimeout(15 * 1000);
   await expect(firstWindow).toHaveScreenshot({
-    path: "microservices-running-linux.png",
+    path: "microservices-running-win32.png",
   });
   console.log("toHaveScreenshot", Date.now());
 });
