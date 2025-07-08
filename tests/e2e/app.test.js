@@ -47,6 +47,10 @@ test.beforeAll(async () => {
   });
 });
 
+
+test.use({
+  viewport: { width: 1920, height: 1009 },
+});
 test.afterAll(async () => {
   console.log("afterAll");
   const windows = await electronApp.windows();
