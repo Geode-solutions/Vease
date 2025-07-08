@@ -96,7 +96,7 @@ function create_new_window() {
   });
   win.setMenuBarVisibility(false);
   win.maximize();
-  win.setMinimumSize(800, 600);
+  win.setMinimumSize(1000, 700);
 
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {

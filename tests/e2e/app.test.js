@@ -32,8 +32,15 @@ test.beforeAll(async () => {
       NODE_ENV: "development",
     },
   });
+
+
+  const firstWindow = await electronApp.firstWindow();
+  const browserWindow = await electronApp.browserWindow(firstWindow);
+  await browserWindow.evaluate(async (window)=>{
+    await window.unmaximize();
+  })
+
   await electronApp.on("window", async (page) => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
     const filename = page.url()?.split("/").pop();
     console.log(`Window opened: ${filename}`);
 
@@ -82,6 +89,16 @@ test("Microservices running", async () => {
   console.log("START TEST", Date.now());
 
   const firstWindow = await electronApp.firstWindow();
+
+  const browserWindow = await electronApp.browserWindow(firstWindow);
+  // const test = await browserWindow.setBounds("setBounds");
+  // console.log("browserWindow",  test);
+  await browserWindow.evaluate((window) => {
+    console.log("TEST minimize");
+    window.setBounds()
+  });
+  console.log("AFTER TEST minimize");
+
   console.log("firstWindow", Date.now());
   await firstWindow.waitForTimeout(15 * 1000);
   await expect(firstWindow).toHaveScreenshot({
