@@ -73,14 +73,14 @@ test("App packaged", async () => {
   expect(isPackaged).toBe(true); // App should be tested as packaged
 });
 
-// test("Microservices running", async () => {
-//   console.log("START TEST", Date.now());
+test("Microservices running", async () => {
+  console.log("START TEST", Date.now());
 
-//   const firstWindow = await electronApp.firstWindow();
-//   console.log("firstWindow", Date.now());
-//   await firstWindow.waitForTimeout(10 * 1000);
-//   // await expect(firstWindow).toHaveScreenshot({
-//   //   path: "microservices-running-linux.png",
-//   // });
-//   console.log("toHaveScreenshot", Date.now());
-// });
+  const firstWindow = await electronApp.firstWindow();
+  console.log("firstWindow", Date.now());
+  await firstWindow.waitForTimeout(10 * 1000);
+  await expect(firstWindow).toHaveScreenshot({
+    path: "microservices-running-linux.png",
+  });
+  console.log("toHaveScreenshot", Date.now());
+});
