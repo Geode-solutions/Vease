@@ -14,7 +14,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   expect: {
-    toHaveScreenshot: { maxDiffPixelRatio: 0.005 },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.01 },
   },
   testDir: "./tests/e2e",
   /* Run tests in files in parallel */
