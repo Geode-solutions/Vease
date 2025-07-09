@@ -39,6 +39,9 @@ jobs:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
+    - name: Linux set screen resolution
+      if: matrix.os == 'ubuntu-latest'
+      run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"
     - name: Run Playwright tests
       run: npm run test_e2e
     - uses: actions/upload-artifact@v4
