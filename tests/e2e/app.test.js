@@ -12,10 +12,14 @@ import {
   parseElectronApp,
 } from "electron-playwright-helpers";
 
+import path from "path";
+
 let electronApp;
 test.beforeAll(async () => {
   // find the latest build in the out directory
-  const latestBuild = findLatestBuild(".\\release\\0.0.0\\");
+  const latestBuild = findLatestBuild(
+    path.join(process.cwd(), "release", "0.0.0")
+  );
   console.log("latestBuild", latestBuild);
   // parse the directory and find paths and other info
   const appInfo = parseElectronApp(latestBuild);
@@ -33,12 +37,11 @@ test.beforeAll(async () => {
     },
   });
 
-
   const firstWindow = await electronApp.firstWindow();
   const browserWindow = await electronApp.browserWindow(firstWindow);
-  await browserWindow.evaluate(async (window)=>{
+  await browserWindow.evaluate(async (window) => {
     await window.unmaximize();
-  })
+  });
 
   await electronApp.on("window", async (page) => {
     const filename = page.url()?.split("/").pop();
@@ -55,10 +58,6 @@ test.beforeAll(async () => {
   });
 });
 
-
-test.use({
-  viewport: { width: 1920, height: 1009 },
-});
 test.afterAll(async () => {
   console.log("afterAll");
   const windows = await electronApp.windows();
@@ -90,19 +89,18 @@ test("Microservices running", async () => {
 
   const firstWindow = await electronApp.firstWindow();
 
-  const browserWindow = await electronApp.browserWindow(firstWindow);
-  // const test = await browserWindow.setBounds("setBounds");
-  // console.log("browserWindow",  test);
-  await browserWindow.evaluate((window) => {
-    console.log("TEST minimize");
-    window.setBounds()
-  });
-  console.log("AFTER TEST minimize");
+  // const browserWindow = await electronApp.browserWindow(firstWindow);
+  // await browserWindow.evaluate((window) => {
+  //   console.log("TEST minimize");
+  //   window.setBounds();
+  // });
+  // console.log("AFTER TEST minimize");
 
   console.log("firstWindow", Date.now());
   await firstWindow.waitForTimeout(15 * 1000);
+  console.log("process.platform", process.platform);
   await expect(firstWindow).toHaveScreenshot({
-    path: "microservices-running-win32.png",
+    path: `microservices-running-${process.platform}.png`,
   });
   console.log("toHaveScreenshot", Date.now());
 });
