@@ -26,7 +26,7 @@ test.beforeAll(async () => {
   // set the CI environment variable to true
   process.env.CI = "e2e";
   electronApp = await electron.launch({
-    args: [appInfo.main],
+    args: [appInfo.main, "--no-sandbox"],
     executablePath: appInfo.executable,
     timeout: 20000,
     headless: false,
