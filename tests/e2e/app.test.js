@@ -41,6 +41,7 @@ test.beforeAll(async () => {
   const browserWindow = await electronApp.browserWindow(firstWindow);
   await browserWindow.evaluate(async (window) => {
     await window.unmaximize();
+    await window.setSize(1200, 800);
   });
 
   await electronApp.on("window", async (page) => {
@@ -86,15 +87,7 @@ test("App packaged", async () => {
 
 test("Microservices running", async () => {
   console.log("START TEST", Date.now());
-
   const firstWindow = await electronApp.firstWindow();
-
-  // const browserWindow = await electronApp.browserWindow(firstWindow);
-  // await browserWindow.evaluate((window) => {
-  //   console.log("TEST minimize");
-  //   window.setBounds();
-  // });
-  // console.log("AFTER TEST minimize");
 
   console.log("firstWindow", Date.now());
   await firstWindow.waitForTimeout(15 * 1000);

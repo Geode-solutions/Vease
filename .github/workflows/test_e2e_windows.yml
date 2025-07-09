@@ -9,7 +9,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
-  test-e2e:
+  test-e2e-windows:
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
