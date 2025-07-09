@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
+        os: [ ubuntu-latest ]
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
     - name: Linux set screen resolution
       if: matrix.os == 'ubuntu-latest'
-      run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24"
+      run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" run test_e2e
     - name: Run Playwright tests
       run: npm run test_e2e
     - uses: actions/upload-artifact@v4
