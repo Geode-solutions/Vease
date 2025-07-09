@@ -10,10 +10,7 @@ env:
 
 jobs:
   test-e2e:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ ubuntu-latest ]
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -29,21 +26,15 @@ jobs:
       run: npx playwright install --with-deps
     - name: Package the project
       run: |
-        dotnet tool install --global AzureSignTool --version 4.0.1
         npm run install_microservices
         npm run build_microservices
         npm run package
+    - name: Set screen resolution & run e2e tests
+      run: |
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e
       env:
-        AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
-    - name: Linux set screen resolution
-      if: matrix.os == 'ubuntu-latest'
-      run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" npm run test_e2e
-    - name: Run Playwright tests
-      run: npm run test_e2e
+        DISPLAY: ":99"
+        DEBUG: "pw:browser"
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
