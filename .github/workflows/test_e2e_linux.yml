@@ -31,8 +31,8 @@ jobs:
         npm run package
     - name: Set screen resolution & run e2e tests
       run: |
-        chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
-        chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
+        sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
+        sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
         xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e
       env:
         DISPLAY: ":99"
