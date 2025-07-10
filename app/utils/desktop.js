@@ -68,7 +68,7 @@ async function killProcesses(processes) {
     try {
       process.kill(proc);
     } catch (error) {
-      console.log(`Process ${proc} could not be killed!`);
+      console.log(`${error} Process ${proc} could not be killed!`);
     }
   });
 }
@@ -187,7 +187,7 @@ async function run_script(
       console.log("Child Process killed");
     });
     child.name = command.replace(/^.*[\\/]/, "");
-    // return child;
+    return child;
   });
 }
 

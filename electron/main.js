@@ -75,8 +75,8 @@ app.on("before-quit", async function () {
   await killProcesses(processes);
 });
 
-app.on("window-all-closed", async () => {
-  await app.quit();
+app.on("window-all-closed", () => {
+  app.quit();
 });
 
 app.on("quit", () => {

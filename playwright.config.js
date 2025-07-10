@@ -1,13 +1,5 @@
 // @ts-check
-import { defineConfig, devices } from "@playwright/test";
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import { defineConfig } from "@playwright/test";
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -35,16 +27,4 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
-
-  /* Configure projects for major browsers */
-
-  /* Run your local dev server before starting the tests */
-  // webServer: [
-  //   {
-  //     command: "npm run start",
-  //     url: "http://localhost:3000/",
-  //     reuseExistingServer: !process.env.CI,
-  //   },
-  // ],
-  // command: "./release/0.0.0/vease_linux.AppImage --inspect",
 });

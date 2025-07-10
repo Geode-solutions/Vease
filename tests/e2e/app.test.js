@@ -49,10 +49,6 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  const windows = await electronApp.windows();
-  for (const window of windows) {
-    await window.close();
-  }
   await electronApp.close();
 });
 

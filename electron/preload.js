@@ -9,11 +9,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     const result = await ipcRenderer.invoke("run_viewer", port);
     return result;
   },
-  microservices_connected: async () => {
-    console.log("PRELOAD microservices_running");
-    const result = await ipcRenderer.invoke("microservices_running");
-    return result;
-  },
   new_window: async (args) => {
     console.log("PRELOAD new_window", args);
     ipcRenderer.invoke("new_window", args);
