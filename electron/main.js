@@ -80,5 +80,5 @@ app.on("window-all-closed", async () => {
 });
 
 app.on("quit", () => {
-  app.quit();
+  console.log("Quitting Vease...");
 });

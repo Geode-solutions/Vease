@@ -1,6 +1,6 @@
 import package_json from "./package.json";
 
-const nuxtConfig = defineNuxtConfig({
+export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
@@ -11,10 +11,6 @@ const nuxtConfig = defineNuxtConfig({
       PROJECT: process.env.PROJECT,
       RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     },
-    // app: {
-    //   baseURL: "./",
-    //   buildAssetsDir: "./",
-    // },
   },
   extends: ["@geode/opengeodeweb-front"],
 
@@ -133,5 +129,3 @@ const nuxtConfig = defineNuxtConfig({
 
   compatibilityDate: "2025-03-27",
 });
-
-export default nuxtConfig;
