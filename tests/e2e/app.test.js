@@ -19,7 +19,6 @@ test.beforeAll(async () => {
     args: [appInfo.main, "--no-sandbox"],
     executablePath: appInfo.executable,
     timeout: 20000,
-    headless: false,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,
@@ -32,19 +31,6 @@ test.beforeAll(async () => {
   await browserWindow.evaluate(async (window) => {
     await window.unmaximize();
     await window.setSize(1200, 800);
-  });
-
-  await electronApp.on("window", async (page) => {
-    const filename = page.url()?.split("/").pop();
-    console.log(`Window opened: ${filename}`);
-    // capture errors
-    page.on("pageerror", (error) => {
-      console.error(error);
-    });
-    // capture console messages
-    page.on("console", (msg) => {
-      console.log(msg.text());
-    });
   });
 });
 
