@@ -3,10 +3,8 @@
     <div style="position: relative; width: 100%; height: calc(100vh - 75px)">
       <VeaseViewToolbar />
       <slot name="ui"></slot>
-      <!-- Used in tests -->
       <v-col
         ref="viewer"
-        data-testid="hybrid_viewer"
         style="
           overflow: hidden;
           position: relative;
