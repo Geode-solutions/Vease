@@ -1,16 +1,6 @@
-import {
-  beforeEach,
-  afterEach,
-  describe,
-  expect,
-  test,
-} from "@playwright/test";
-import { ElectronApplication, Page, _electron as electron } from "playwright";
-import {
-  electronWaitForFunction,
-  findLatestBuild,
-  parseElectronApp,
-} from "electron-playwright-helpers";
+import { expect, test } from "@playwright/test";
+import { _electron as electron } from "playwright";
+import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 
 import path from "path";
 
@@ -47,7 +37,6 @@ test.beforeAll(async () => {
   await electronApp.on("window", async (page) => {
     const filename = page.url()?.split("/").pop();
     console.log(`Window opened: ${filename}`);
-
     // capture errors
     page.on("pageerror", (error) => {
       console.error(error);
@@ -60,16 +49,11 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  console.log("afterAll");
   const windows = await electronApp.windows();
   for (const window of windows) {
-    console.log("window");
     await window.close();
-    console.log("window end");
   }
-  console.log("end");
   await electronApp.close();
-  console.log("afterAll end", Date.now());
 });
 
 test("Window title", async () => {
@@ -86,14 +70,9 @@ test("App packaged", async () => {
 });
 
 test("Microservices running", async () => {
-  console.log("START TEST", Date.now());
   const firstWindow = await electronApp.firstWindow();
-
-  console.log("firstWindow", Date.now());
   await firstWindow.waitForTimeout(15 * 1000);
-  console.log("process.platform", process.platform);
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   });
-  console.log("toHaveScreenshot", Date.now());
 });

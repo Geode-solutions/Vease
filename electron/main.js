@@ -1,5 +1,5 @@
-import { app, ipcMain, ipcRenderer } from "electron";
-// import { autoUpdater } from "electron-updater";
+import { app, ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
 import path from "path";
 import {
   executable_path,
@@ -13,7 +13,7 @@ import {
 
 const os = require("os");
 
-// autoUpdater.checkForUpdatesAndNotify();
+autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const data_folder_path = path.join(os.tmpdir(), "vease");
 create_path(data_folder_path);
@@ -40,8 +40,6 @@ ipcMain.handle("run_back", async (_event, ...args) => {
     "Serving Flask app"
   );
   processes = registerChildProcesses(microservice, processes);
-  console.log("registerChildProcesses processes", processes);
-
   return port;
 });
 
@@ -62,7 +60,6 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     "Starting factory"
   );
   processes = registerChildProcesses(microservice, processes);
-  console.log("registerChildProcesses processes", processes);
   return port;
 });
 
@@ -70,29 +67,18 @@ ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window();
 });
 
-ipcMain.handle("microservices_connected", async () => {
-  console.log("microservices_connected from main");
-  const result = await ipcRenderer.send("microservices_connected");
-  console.log("microservices_connected", result);
-});
-
 app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
 
 app.on("before-quit", async function () {
-  console.log("ELECTRON before-quit");
   await killProcesses(processes);
-  console.log("ELECTRON before-quit end");
 });
 
 app.on("window-all-closed", async () => {
-  console.log("ELECTRON window-all-closed");
   await app.quit();
-  console.log("ELECTRON window-all-closed end");
 });
 
 app.on("quit", () => {
-  console.log("ELECTRON quit");
-  // app.quit();
+  app.quit();
 });
