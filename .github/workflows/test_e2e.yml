@@ -9,6 +9,41 @@ env:
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
+  test-e2e-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install dependencies
+      run: npm i
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Package the project
+      run: |
+        npm run install_microservices
+        npm run build_microservices
+        npm run unpacked
+    - name: Set screen resolution & run e2e tests
+      run: |
+        sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
+        sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e
+      env:
+        DISPLAY: ":99"
+        DEBUG: "pw:browser"
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 5
+
   test-e2e-windows:
     runs-on: windows-latest
     timeout-minutes: 20
@@ -29,7 +64,7 @@ jobs:
         dotnet tool install --global AzureSignTool --version 4.0.1
         npm run install_microservices
         npm run build_microservices
-        npm run package
+        npm run unpacked
       env:
         AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

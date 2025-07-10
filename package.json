@@ -22,6 +22,7 @@
     "build_microservices": "npm run build_back && npm run build_viewer",
     "run_back": "/home/julien/Code/Vease/electron-server/back/venv/bin/vease-back --port 5000 --data_folder_path /tmp/vease --allowed_origin [*] --timeout 0",
     "run_viewer": "/home/julien/Code/Vease/electron-server/viewer/venv/bin/vease-viewer --port 1234 --data_folder_path /tmp/vease --timeout 0",
+    "unpacked": "npm run build && electron-builder --dir",
     "package": "npm run build && electron-builder build --publish=never",
     "test_e2e": "npx playwright test"
   },
