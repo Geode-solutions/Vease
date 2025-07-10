@@ -40,7 +40,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report
+        name: playwright-report-linux
         path: playwright-report/
         retention-days: 5
 
@@ -76,6 +76,6 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report
+        name: playwright-report-windows
         path: playwright-report/
         retention-days: 5
