@@ -2,7 +2,7 @@ name: CICD
 
 on:
   push:
-
+    branches: [ master, next ]
 env:
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
