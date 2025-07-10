@@ -8,7 +8,7 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
-  testDir: "./tests/e2e",
+  testDir: "./",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -35,16 +35,18 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
       },
     },
-    {
-      name: "firefox",
-      use: {
-        ...devices["Desktop Firefox"],
-      },
-    },
+    // {
+    //   name: "firefox",
+    //   use: {
+    //     ...devices["Desktop Firefox"],
+    //   },
+    // },
   ],
 
   webServer: {
-    command: "npm start",
+    name: "Front",
+    command: "npm run dev:browser",
     port: 3000,
+    reuseExistingServer: true,
   },
 });

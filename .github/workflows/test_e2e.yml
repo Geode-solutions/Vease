@@ -70,7 +70,9 @@ jobs:
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
     - name: Run e2e tests
-      run: npm run test_e2e
+      run: |
+        npm run test_e2e_desktop
+        npm run test_e2e_browser
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

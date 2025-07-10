@@ -1,0 +1,25 @@
+services:
+  vease-back:
+    image: veaseback:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/data
+
+  vease-viewer:
+    image: ghcr.io/geode-solutions/vease-viewer:next
+    ports:
+      - "1234:1234"
+    volumes:
+      - ./data:/data
+
+  opengeodeweb-router:
+    image: ghcr.io/geode-solutions/opengeodeweb-router:next
+    ports:
+      - "443:443"
+    volumes:
+      - ./data:/data
+
+volumes:
+  data:
+    driver: local
