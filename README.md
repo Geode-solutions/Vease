@@ -1,7 +1,7 @@
 <h1 align="center">Vease<sup><i>by Geode-solutions</i></sup></h1>
 <h3 align="center">Open-source geoscience viewer built to ease subsurface data visualization.</h3>
 
-![App Screenshot](./.github/screenshots/model_from_implicitation.png)
+![App Screenshot](./docs/model_from_implicitation.png)
 
 # What is Vease?
 

@@ -71,6 +71,7 @@ export function useLinesStyle() {
 
   return {
     lineVisibility,
+    linesColor,
     setLinesDefaultStyle,
     setLineVisibility,
     applyLinesStyle,

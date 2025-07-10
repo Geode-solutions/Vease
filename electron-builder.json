@@ -28,7 +28,7 @@
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",
     "signtoolOptions": {
-      "sign": "./customSign.js"
+      "sign": "./node_scripts/customSign.js"
     },
     "target": [
       "nsis",
