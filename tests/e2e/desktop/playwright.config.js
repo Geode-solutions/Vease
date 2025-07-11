@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
 /**
  * @see https://playwright.dev/docs/test-configuration

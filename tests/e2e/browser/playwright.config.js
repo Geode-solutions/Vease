@@ -1,5 +1,13 @@
 // @ts-check
+import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
+import path from "path";
+
+const __dirname = path.resolve();
+
+// Read from ".env" file.
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -23,6 +31,10 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000',
+    nuxt: {
+      rootDir: fileURLToPath(new URL(".", import.meta.url)),
+      dev: true,
+    },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -45,7 +57,7 @@ export default defineConfig({
 
   webServer: {
     name: "Front",
-    command: "npm run dev:browser",
+    command: "npx serve ../../../.output/public",
     port: 3000,
     reuseExistingServer: true,
   },

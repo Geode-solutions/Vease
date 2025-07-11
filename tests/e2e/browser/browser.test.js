@@ -1,26 +1,27 @@
-import { beforeAll, afterAll, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { execSync } from "child_process";
 
-beforeAll(async () => {
-  await execSync(
-    "docker compose -f 'docker-compose.yml' up -d --build --remove-orphans",
-    {
-      cwd: __dirname,
-    }
-  );
+test.beforeAll(async () => {
+  //   await execSync(
+  //     "docker compose -f 'docker-compose.yml' up -d --build --remove-orphans",
+  //     {
+  //       cwd: "./",
+  //     }
+  //   );
+  process.env.NODE_ENV = "development";
 });
 
-afterAll(async () => {
-  await execSync(
-    "docker compose --file 'docker-compose.yml' --project-name 'browser' down",
-    { cwd: __dirname }
-  );
-});
-
-// test("Window title", async ({ page }) => {
-//   await page.goto("/");
-//   await expect(page).toHaveTitle("Vease");
+// test.afterAll(async () => {
+//   await execSync(
+//     "docker compose --file 'docker-compose.yml' --project-name 'browser' down",
+//     { cwd: "./" }
+//   );
 // });
+
+test("Window title", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle("Vease");
+});
 
 test("Microservices running", async ({ page }) => {
   await page.goto("/");

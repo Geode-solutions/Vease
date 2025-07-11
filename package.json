@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "description": "Desktop and cloud software for data visualization",
+  "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
@@ -43,12 +44,13 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@playwright/test": "1.53.1",
+    "@nuxt/test-utils": "3.19.2",
+    "@playwright/test": "1.54.0",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "^1.7.1",
     "nuxt-electron": "0.7.0",
-    "playwright": "1.53.1",
+    "playwright": "1.54.0",
     "vuetify-nuxt-module": "0.18.7"
   },
   "dependencies": {
@@ -61,7 +63,7 @@
     "broadcast-channel": "7.1.0",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
-    "get-port-please": "3.1.2",
+    "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
     "nuxt": "3.13.2",
     "pidtree": "^0.6.0"
