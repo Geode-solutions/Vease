@@ -130,7 +130,10 @@ async function createPoint() {
                     geode_object: response._data.geode_object,
                     native_filename: response._data.native_file_name,
                     viewable_filename: response._data.viewable_file_name,
-                    name: response._data.name,
+                    displayed_name: response._data.name,
+                    vtk_js: {
+                      binary_light_viewable: response._data.binary_light_viewable,
+                    },
                   });
                   closeDrawer();
                 },
