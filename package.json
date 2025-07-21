@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "description": "Desktop and cloud software for data visualization",
-  "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
@@ -57,7 +56,7 @@
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-back": "5.8.3",
-    "@geode/opengeodeweb-front": "9.7.5",
+    "@geode/opengeodeweb-front": "9.8.0",
     "@geode/opengeodeweb-viewer": "1.9.1",
     "@geode/vease-back": "1.4.13",
     "@geode/vease-viewer": "2.3.11",
