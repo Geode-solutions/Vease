@@ -1,27 +1,24 @@
 import "@kitware/vtk.js/Rendering/Profiles/Geometry";
-import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow.js";
+import vtkGenericRenderWindow from "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow";
 import vtkXMLPolyDataReader from "@kitware/vtk.js/IO/XML/XMLPolyDataReader";
 import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
 import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
-
 import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
-export const useHybridViewerStore = defineStore("hydridViewer", () => {
+export const useHybridViewerStore = defineStore("hybridViewer", () => {
   const viewer_store = use_viewer_store();
-
-  /** State **/
   const db = reactive({});
   const status = ref(Status.NOT_CREATED);
   const camera_options = reactive({});
   const genericRenderWindow = reactive({});
   const is_moving = ref(false);
+  const zScale = ref(1.0);
   let viewStream;
+  let gridActor = null;
 
-  /** Actions **/
   async function initHybridViewer() {
-    if (status.value != Status.NOT_CREATED) return;
-
+    if (status.value !== Status.NOT_CREATED) return;
     status.value = Status.CREATING;
     genericRenderWindow.value = vtkGenericRenderWindow.newInstance({
       background: [180 / 255, 180 / 255, 180 / 255],
@@ -30,7 +27,6 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
 
     const webGLRenderWindow =
       genericRenderWindow.value.getApiSpecificRenderWindow();
-
     const imageStyle = webGLRenderWindow.getReferenceByName("bgImage").style;
     imageStyle.transition = "opacity 0.1s ease-in";
     imageStyle.zIndex = 1;
@@ -45,6 +41,7 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
       webGLRenderWindow.setBackgroundImage(e.image);
       imageStyle.opacity = 1;
     });
+
     status.value = Status.CREATED;
   }
 
@@ -59,16 +56,36 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     mapper.setInputData(polydata);
     const actor = vtkActor.newInstance();
     actor.setMapper(mapper);
-
     const renderer = genericRenderWindow.value.getRenderer();
     const renderWindow = genericRenderWindow.value.getRenderWindow();
-
     renderer.addActor(actor);
     renderer.resetCamera();
     renderWindow.render();
-
     db[id] = { actor, polydata, mapper };
   }
+
+  async function setZScaling(z_scale) {
+    zScale.value = z_scale;
+    const renderer = genericRenderWindow.value.getRenderer();
+    const actors = renderer.getActors();
+    actors.forEach((actor) => {
+      if (actor !== gridActor) {
+        const scale = actor.getScale();
+        actor.setScale(scale[0], scale[1], z_scale);
+      }
+    });
+    renderer.resetCamera();
+    genericRenderWindow.value.getRenderWindow().render();
+    const schema = viewer_schemas?.opengeodeweb_viewer?.viewer?.set_z_scaling;
+    if (!schema) return;
+    await viewer_call({
+      schema,
+      params: {
+        z_scale: z_scale,
+      },
+    });
+  }
+
   function syncRemoteCamera() {
     const renderer = genericRenderWindow.value.getRenderer();
     const camera = renderer.getActiveCamera();
@@ -92,7 +109,6 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
           for (const key in params.camera_options) {
             camera_options[key] = params.camera_options[key];
           }
-          console.log("camera_options", camera_options);
         },
       }
     );
@@ -110,17 +126,16 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
       genericRenderWindow.value.getApiSpecificRenderWindow();
     webGLRenderWindow.setUseBackgroundImage(true);
     const imageStyle = webGLRenderWindow.getReferenceByName("bgImage").style;
-
     imageStyle.transition = "opacity 0.1s ease-in";
     imageStyle.zIndex = 1;
     resize(container.value.$el.offsetWidth, container.value.$el.offsetHeight);
+
     useMousePressed({
       target: container,
       onPressed: (event) => {
         if (event.button == 0) {
-          // left click
           is_moving.value = true;
-          event.stopPropagation(); // Prevents toggle for menu click
+          event.stopPropagation();
           imageStyle.opacity = 0;
         }
       },
@@ -129,11 +144,11 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
         syncRemoteCamera();
       },
     });
+
     let wheelEventEndTimeout = null;
     useEventListener(container, "wheel", () => {
       is_moving.value = true;
       imageStyle.opacity = 0;
-
       clearTimeout(wheelEventEndTimeout);
       wheelEventEndTimeout = setTimeout(() => {
         is_moving.value = false;
@@ -144,18 +159,16 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
 
   async function resize(width, height) {
     if (
-      viewer_store.status != Status.CONNECTED ||
-      status.value != Status.CREATED
+      viewer_store.status !== Status.CONNECTED ||
+      status.value !== Status.CREATED
     ) {
       return;
     }
     const webGLRenderWindow =
       genericRenderWindow.value.getApiSpecificRenderWindow();
     const canvas = webGLRenderWindow.getCanvas();
-
     canvas.width = width;
     canvas.height = height;
-
     await nextTick();
     webGLRenderWindow.setSize(width, height);
     viewStream.setSize(width, height);
@@ -168,9 +181,11 @@ export const useHybridViewerStore = defineStore("hydridViewer", () => {
     db,
     genericRenderWindow,
     addItem,
+    setZScaling,
     syncRemoteCamera,
     initHybridViewer,
     resize,
     setContainer,
+    zScale,
   };
 });

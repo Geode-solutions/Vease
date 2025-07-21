@@ -18,27 +18,46 @@
     </v-row>
   </v-container>
   <Screenshot :show_dialog="take_screenshot" @close="take_screenshot = false" />
+  <ZScaling
+    v-if="showZScaling"
+    v-model="zScale"
+    :width="400"
+    @close="handleZScalingClose"
+  />
 </template>
 
 <script setup>
 import schemas from "@geode/opengeodeweb-viewer/schemas.json";
 
+const hybridViewerStore = useHybridViewerStore();
 const take_screenshot = ref(false);
+const showZScaling = ref(false);
 const grid_scale = ref(false);
+const zScale = ref(hybridViewerStore.zScale);
 
-const hybridViewer_store = useHybridViewerStore();
+watch(
+  () => hybridViewerStore.zScale,
+  (newVal) => {
+    zScale.value = newVal;
+  }
+);
+
+const handleZScalingClose = async () => {
+  await hybridViewerStore.setZScaling(zScale.value);
+  showZScaling.value = false;
+};
 
 const camera_options = [
   {
     tooltip: "Reset camera",
     icon: "mdi-cube-scan",
     action: () => {
-      const { genericRenderWindow } = storeToRefs(hybridViewer_store);
+      const { genericRenderWindow } = storeToRefs(hybridViewerStore);
       const renderWindow = genericRenderWindow.value.value.getRenderWindow();
       const renderer = renderWindow.getRenderers()[0];
       renderer.resetCamera();
       renderWindow.render();
-      hybridViewer_store.syncRemoteCamera();
+      hybridViewerStore.syncRemoteCamera();
     },
   },
   {
@@ -65,6 +84,13 @@ const camera_options = [
           },
         }
       );
+    },
+  },
+  {
+    tooltip: "Z Scaling Control",
+    icon: "mdi-sort",
+    action: () => {
+      showZScaling.value = !showZScaling.value;
     },
   },
 ];
