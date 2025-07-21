@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
-    "@geode/opengeodeweb-back": "5.8.3",
+    "@geode/opengeodeweb-back": "^5.8.4",
     "@geode/opengeodeweb-front": "9.7.5",
     "@geode/opengeodeweb-viewer": "1.9.1",
     "@geode/vease-back": "1.4.14",
