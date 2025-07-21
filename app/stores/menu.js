@@ -168,7 +168,6 @@ export const useMenuStore = defineStore("menu", () => {
   }
 
   return {
-    menus,
     display_menu,
     current_id,
     menuX,
