@@ -130,7 +130,7 @@ export const useMenuStore = defineStore("menu", () => {
   const containerWidth = ref(window.innerWidth);
   const containerHeight = ref(window.innerHeight);
 
-  const getMenuItems = (objectType, geodeObject) => {
+  function getMenuItems(objectType, geodeObject) {
     if (!objectType || !geodeObject || !menus.value[objectType]) {
       return [];
     }
