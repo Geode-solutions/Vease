@@ -6,11 +6,9 @@ export const useUserStore = defineStore('user', () => {
   const image = ref('')
 
   const fetchUserData = async () => {
-    // code pour récupérer les données de l'utilisateur
   }
 
   const updateProfile = async () => {
-    // code pour mettre à jour le profil de l'utilisateur
   }
 
   return { 
