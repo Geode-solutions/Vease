@@ -1,4 +1,4 @@
-export const useUIStore = define("UI", () => {
+export const useUIStore = defineStore("UI", () => {
   const showDropZone = ref(false);
   const showStepper = ref(false);
   const droppedFiles = ref([]);
