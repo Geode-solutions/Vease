@@ -93,7 +93,7 @@ const Section_menu = [ModelEdgesOptions, ModelPointsOptions];
 
 const StructuralModel_menu = [ModelEdgesOptions, ModelPointsOptions];
 
-const menus = {
+const menusData = {
   mesh: {
     EdgedCurve2D: EdgedCurve_menu,
     EdgedCurve3D: EdgedCurve_menu,
@@ -121,52 +121,63 @@ const menus = {
   },
 };
 
-export const useMenuStore = defineStore("menu", {
-  state: () => ({
+export const useMenuStore = defineStore("menu", () => {
+  const menus = ref(menusData);
+  const display_menu = ref(false);
+  const current_id = ref(null);
+  const menuX = ref(0);
+  const menuY = ref(0);
+  const containerWidth = ref(window.innerWidth);
+  const containerHeight = ref(window.innerHeight);
+
+  const getMenuItems = (objectType, geodeObject) => {
+    if (!objectType || !geodeObject || !menus.value[objectType]) {
+      return [];
+    }
+    return menus.value[objectType][geodeObject] || [];
+  };
+
+  function closeMenu() {
+    display_menu.value = false;
+    current_id.value = null;
+  }
+
+  async function openMenu(id, x, y, containerWidth, containerHeight) {
+    await closeMenu();
+    current_id.value = id;
+
+    if (x !== undefined && y !== undefined) {
+      menuX.value = x;
+      menuY.value = y;
+    }
+
+    if (containerWidth) containerWidth.value = containerWidth;
+    if (containerHeight) containerHeight.value = containerHeight;
+
+    display_menu.value = true;
+  }
+
+  function showItemsWithDelay() {
+    const DELAY = 50;
+    const items = getMenuItems();
+    items.forEach((item, index) => {
+      setTimeout(() => {
+        item.visible = true;
+      }, index * DELAY);
+    });
+  }
+
+  return {
     menus,
-    display_menu: false,
-    current_id: null,
-    menuX: 0,
-    menuY: 0,
-    containerWidth: window.innerWidth,
-    containerHeight: window.innerHeight,
-  }),
-  getters: {
-    getMenuItems: (state) => {
-      return (object_type, geode_object) => {
-        if (!object_type || !geode_object || !state.menus[object_type]) {
-          return [];
-        }
-        return state.menus[object_type][geode_object] || [];
-      };
-    },
-  },
-  actions: {
-    closeMenu() {
-      this.display_menu = false;
-      this.current_id = null;
-    },
-    async openMenu(id, x, y, containerWidth, containerHeight) {
-      await this.closeMenu();
-      this.current_id = id;
-
-      if (x !== undefined && y !== undefined) {
-        this.menuX = x;
-        this.menuY = y;
-      }
-
-      if (containerWidth) this.containerWidth = containerWidth;
-      if (containerHeight) this.containerHeight = containerHeight;
-
-      this.display_menu = true;
-    },
-    showItemsWithDelay() {
-      const DELAY = 50;
-      this.items.forEach((item, index) => {
-        setTimeout(() => {
-          item.visible = true;
-        }, index * DELAY);
-      });
-    },
-  },
+    display_menu,
+    current_id,
+    menuX,
+    menuY,
+    containerWidth,
+    containerHeight,
+    getMenuItems,
+    closeMenu,
+    openMenu,
+    showItemsWithDelay,
+  };
 });

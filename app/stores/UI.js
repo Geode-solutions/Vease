@@ -9,19 +9,15 @@ export const useUIStore = define("UI", () => {
   function disableDropZone() {
     showDropZone.value = false;
   }
-
   function setShowDropZone(value) {
     showDropZone.value = value;
   }
-
   function setShowStepper(value) {
     showStepper.value = value;
   }
-
   function setDroppedFiles(files) {
     droppedFiles.value = files;
   }
-
   function setShowButton(value) {
     showButton.value = value;
   }
