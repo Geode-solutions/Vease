@@ -1,25 +1,40 @@
+
 services:
-  vease-back:
+  geode:
     image: veaseback:latest
     ports:
-      - "5000:5000"
+      - "5000"
     volumes:
       - ./data:/data
+    networks:
+      - custom_network
 
-  vease-viewer:
+  viewer:
     image: ghcr.io/geode-solutions/vease-viewer:next
     ports:
-      - "1234:1234"
+      - "1234"
+    networks:
+      - custom_network
     volumes:
       - ./data:/data
-
-  opengeodeweb-router:
-    image: ghcr.io/geode-solutions/opengeodeweb-router:next
+  
+  router:
+    image: opengeodewebrouter:latest
     ports:
-      - "443:443"
+      - "99:99"
     volumes:
       - ./data:/data
+    restart: on-failure
+    depends_on:
+      - geode
+      - viewer
+    networks:
+      - custom_network
+
 
 volumes:
   data:
     driver: local
+networks:
+  custom_network:
+    driver: bridge

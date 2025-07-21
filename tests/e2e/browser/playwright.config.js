@@ -57,7 +57,7 @@ export default defineConfig({
 
   webServer: {
     name: "Front",
-    command: "npx serve ../../../.output/public",
+    command: "NODE_ENV=test npx nuxt preview ../../..",
     port: 3000,
     reuseExistingServer: true,
   },
