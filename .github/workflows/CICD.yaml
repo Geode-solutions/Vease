@@ -2,7 +2,7 @@ name: CICD
 
 on:
   push:
-
+    branches: [ master, next ]
 env:
     branches: [ master, next ]
 

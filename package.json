@@ -6,7 +6,10 @@
   "main": "dist-electron/main.js",
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
-    "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
+    "dev": "npm run clean_cache & npx nuxi dev",
+    "dev:browser": "BROWSER=true npm run dev",
+    "dev:desktop": "npm run dev",
+    "build": "nuxi build --prerender",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -17,9 +20,9 @@
     "build_back": "node node_scripts/run_script_file.js back/build",
     "build_viewer": "node node_scripts/run_script_file.js viewer/build",
     "build_microservices": "npm run build_back && npm run build_viewer",
-    "build": "nuxi build --prerender",
-    "test": "vitest",
-    "package": "npm run build && electron-builder build --publish=never"
+    "unpacked": "npm run build && electron-builder --dir",
+    "package": "npm run build && electron-builder build --publish=never",
+    "test_e2e": "npx playwright test"
   },
   "repository": {
     "type": "git",
@@ -39,9 +42,12 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
+    "@playwright/test": "1.53.1",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
+    "electron-playwright-helpers": "^1.7.1",
     "nuxt-electron": "0.7.0",
+    "playwright": "1.53.1",
     "vuetify-nuxt-module": "0.18.7"
   },
   "dependencies": {

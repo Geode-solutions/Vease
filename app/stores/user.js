@@ -20,4 +20,4 @@ export const useUserStore = defineStore('user', () => {
     fetchUserData, 
     updateProfile 
   }
-});
+})

@@ -53,7 +53,7 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
     "--timeout " + 0,
   ];
   console.log("run_viewer", command, viewer_args);
-const microservice = await run_script(
+  const microservice = await run_script(
     mainWindow,
     command,
     viewer_args,
