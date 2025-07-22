@@ -1,4 +1,4 @@
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import { useSurfacesStyle } from "./surfaces.js";
 import { useCornersStyle } from "./corners.js";
 import { useBlocksStyle } from "./blocks.js";

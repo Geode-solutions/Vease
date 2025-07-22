@@ -4,7 +4,7 @@ import vtkXMLPolyDataReader from "@kitware/vtk.js/IO/XML/XMLPolyDataReader";
 import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
 import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
 
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
 export const useHybridViewerStore = defineStore("hydridViewer", () => {

@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 
 const dataBaseStore = useDataBaseStore();
 
