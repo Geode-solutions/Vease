@@ -9,7 +9,7 @@
     >
       <div class="scrollable-wrapper">
         <v-sheet
-          style="max-height: calc(80vh - 100px)"
+          style="max-height: calc(90vh)"
           class="transparent-treeview scrollbar-hover"
         >
           <v-row v-if="treeviewStore.items.length > 0">
@@ -97,7 +97,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {});
+  window.removeEventListener("resize");
 });
 </script>
 
