@@ -1,14 +1,19 @@
+//Node.js imports
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
-import { app, BrowserWindow, dialog } from "electron";
 
-const { getPort } = require("get-port-please");
+// Third party imports
+import { app, BrowserWindow, dialog } from "electron";
+import { getPort } from "get-port-please";
+import pidtree from "pidtree";
 
 function executable_path(app_name, microservice_name) {
   const executable = executable_name(app_name + "-" + microservice_name);
-  let command;
-  if (process.env.NODE_ENV === "development") {
+  var command;
+  if (app.isPackaged) {
+    command = path.join(resource_path(), executable);
+  } else {
     command = path.join(
       app.getAppPath(),
       "electron-server",
@@ -21,8 +26,6 @@ function executable_path(app_name, microservice_name) {
       command = path.join(command, "bin");
     }
     command = path.join(command, executable);
-  } else {
-    command = path.join(resource_path(), executable);
   }
   return command;
 }
@@ -58,6 +61,26 @@ async function get_available_port(port) {
   return available_port;
 }
 
+async function killProcesses(processes) {
+  console.log("killProcesses", processes);
+  await processes.forEach(async function (proc) {
+    console.log(`Process ${proc} will be killed!`);
+    try {
+      process.kill(proc);
+    } catch (error) {
+      console.log(`${error} Process ${proc} could not be killed!`);
+    }
+  });
+}
+
+function registerChildProcesses(proc, processes) {
+  pidtree(proc.pid, { root: true }, function (err, pids) {
+    if (err) console.log("err", err);
+    processes.push(...pids);
+  });
+  return processes;
+}
+
 function create_new_window() {
   const win = new BrowserWindow({
     title: "Vease - New project",
@@ -73,7 +96,7 @@ function create_new_window() {
   });
   win.setMenuBarVisibility(false);
   win.maximize();
-  win.setMinimumSize(800, 600);
+  win.setMinimumSize(1000, 700);
 
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
@@ -125,7 +148,7 @@ async function run_script(
     setTimeout(() => {
       reject("Timed out after " + timeout_seconds + " seconds");
     }, timeout_seconds * 1000);
-    var child = child_process.spawn(command, args, {
+    const child = child_process.spawn(command, args, {
       encoding: "utf8",
       shell: true,
     });
@@ -144,7 +167,7 @@ async function run_script(
       //Here is the output
       data = data.toString();
       if (data.includes(expected_response)) {
-        resolve();
+        resolve(child);
       }
       console.log(data);
     });
@@ -156,8 +179,12 @@ async function run_script(
       console.log(data);
     });
 
-    child.on("close", (code) => {
+    child.on("close", (_code) => {
       //Here you can get the exit code of the script
+      console.log("Child Process exited with code " + _code);
+    });
+    child.on("kill", () => {
+      console.log("Child Process killed");
     });
     child.name = command.replace(/^.*[\\/]/, "");
     return child;
@@ -170,6 +197,8 @@ export {
   get_available_port,
   executable_name,
   create_path,
+  killProcesses,
+  registerChildProcesses,
   create_new_window,
   run_script,
 };
