@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master, next ]
 env:
-  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+    GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 jobs:
   semantic:

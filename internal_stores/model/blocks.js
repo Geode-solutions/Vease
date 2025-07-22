@@ -1,4 +1,4 @@
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import _ from "lodash";
 const blocks_schemas = viewer_schemas.opengeodeweb_viewer.model.blocks;
 

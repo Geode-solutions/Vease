@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 const take_screenshot = ref(false);
 const grid_scale = ref(false);

@@ -1,4 +1,4 @@
-import back_schemas from "@geode/opengeodeweb-back/schemas.json";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 
 export const useDataBaseStore = defineStore("dataBase", () => {
   const treeview_store = use_treeview_store();
