@@ -19,7 +19,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "nuxt-electron",
+    process.env.BROWSER && process.env.BROWSER == "true"
+      ? null
+      : "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -29,8 +31,9 @@ export default defineNuxtConfig({
     ],
     "@nuxt/devtools",
     "@vueuse/nuxt",
-  ],
+  ].filter(Boolean),
 
+  ssr: false,
   electron: {
     build: [
       {
@@ -75,8 +78,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
-
   app: {
     head: {
       titleTemplate: "Vease",
@@ -100,10 +101,6 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
-  },
-
-  experimental: {
-    appManifest: false,
   },
 
   devtools: {
