@@ -52,9 +52,9 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
-    "@geode/opengeodeweb-back": "^5.8.4",
-    "@geode/opengeodeweb-front": "9.7.5",
-    "@geode/opengeodeweb-viewer": "1.9.1",
+    "@geode/opengeodeweb-back": "^5.8.7",
+    "@geode/opengeodeweb-front": "9.8.2",
+    "@geode/opengeodeweb-viewer": "1.10.1",
     "@geode/vease-back": "1.4.14",
     "@geode/vease-viewer": "2.3.11",
     "broadcast-channel": "7.1.0",
