@@ -67,8 +67,8 @@
 </template>
 
 <script setup>
-import back_schemas from "@geode/opengeodeweb-back/schemas.json";
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 const UIStore = useUIStore();
 const dataBaseStore = useDataBaseStore();

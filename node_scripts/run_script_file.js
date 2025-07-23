@@ -2,7 +2,7 @@ const { exec } = require("child_process");
 
 function execRun(cmd) {
   return new Promise((resolve, reject) => {
-    const child = exec(cmd, (error, stdout, stderr) => {
+    const child = exec(cmd, (error, stdout) => {
       if (error) {
         if (error.code === 1) {
           resolve(stdout);
