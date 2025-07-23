@@ -1,5 +1,6 @@
 {
-  "name": "vease",
+  "name": "@geode/vease",
+  "productName": "vease",
   "version": "0.0.0",
   "private": true,
   "description": "Desktop and cloud software for data visualization",

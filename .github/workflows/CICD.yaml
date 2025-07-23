@@ -38,6 +38,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Upload NPM
+        run: |
+          npm i
+          jq '.version="${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
+          cat package.json
+          npm publish
       - name: Package
         run: |
           dotnet tool install --global AzureSignTool --version 4.0.1
