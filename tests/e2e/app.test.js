@@ -66,7 +66,7 @@ test("Devtools", async () => {
     await window.webContents.openDevTools();
   });
 
-  await firstWindow.waitForTimeout(15 * 1000);
+  await firstWindow.waitForTimeout(20 * 1000);
   await expect(firstWindow).toHaveScreenshot({
     path: `devtools-${process.platform}.png`,
   });
