@@ -40,8 +40,6 @@ jobs:
           node-version: 22
       - name: Upload NPM
         run: |
-          pwd
-          cd ${{ github.workspace }}
           npm i
           jq '.version="${{ needs.semantic.outputs.version }}"' package.json > temp && mv temp package.json
           cat package.json
