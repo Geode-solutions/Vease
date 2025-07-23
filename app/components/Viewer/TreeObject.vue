@@ -48,22 +48,18 @@ function isLeafNode(item) {
 watch(
   () => treeviewStore.selection,
   (current, previous) => {
-    console.log("watch selection", current, previous);
     if (!previous) previous = [];
     const { added, removed } = compareSelections(current, previous);
 
     added.forEach((item) => {
-      console.log("added", item);
       dataStyleStore.setVisibility(item.id, true);
     });
 
     removed.forEach((item) => {
-      console.log("removed", item);
       dataStyleStore.setVisibility(item.id, false);
 
       const objectMeta = dataBaseStore.itemMetaDatas(item.id);
       if (objectMeta.object_type === "mesh") {
-        console.log("mesh");
         if (dataBaseStore.db[item.id]?.mesh_components_selection) {
           dataBaseStore.db[item.id].mesh_components_selection = [];
         }
@@ -77,15 +73,12 @@ watch(
 );
 
 function isModel(item) {
-  console.log("isModel", item);
   return item.object_type === "model";
 }
 
 onMounted(() => {
-  console.log("onMounted");
   const savedSelection = treeviewStore.selection;
   if (savedSelection && savedSelection.length > 0) {
-    console.log("saved selection", savedSelection);
     treeviewStore.selection = savedSelection;
   }
 });
