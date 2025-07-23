@@ -4,9 +4,10 @@
   "private": true,
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
+  "type": "module",
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
-    "dev": "npm run clean_cache & npx nuxi dev",
+    "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
     "dev:browser": "DYNAMIC_PORT=9999 BROWSER=true npm run dev",
     "dev:desktop": "npm run dev",
     "build": "nuxi build --prerender",
@@ -65,7 +66,6 @@
     "electron-updater": "6.6.2",
     "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
-    "nuxi": "^3.26.2",
     "nuxt": "3.13.2",
     "pidtree": "^0.6.0"
   }

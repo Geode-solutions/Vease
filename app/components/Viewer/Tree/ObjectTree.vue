@@ -76,11 +76,11 @@ function onResizeStart(event) {
     document.body.style.userSelect = "none";
   };
 
-  const stopResize = () => {
-    document.removeEventListener("mousemove", resize);
-    document.removeEventListener("mouseup", stopResize);
-    document.body.style.userSelect = "";
-  };
+  // const stopResize = () => {
+  //   document.removeEventListener("mousemove", resize);
+  //   document.removeEventListener("mouseup", stopResize);
+  //   document.body.style.userSelect = "";
+  // };
 
   document.addEventListener("mousemove", resize);
   document.addEventListener("mouseup", stopResize);
@@ -97,7 +97,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize");
+  // window.removeEventListener("resize");
 });
 </script>
 

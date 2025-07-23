@@ -132,8 +132,24 @@ function create_new_window() {
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    win.webContents.openDevTools();
+    win.on("ready-to-show", () => {
+      win.webContents.openDevTools();
+      // win.webContents.openDevTools({ mode: "detach" });
+    });
   }
+
+  win.webContents.on(
+    "console-message",
+    (event, level, message, line, sourceId) => {
+      // Map log levels to readable names
+      const logLevels = ["VERBOSE", "INFO", "WARNING", "ERROR"];
+      const logLevel = logLevels[level] || "UNKNOWN";
+      // Print the console message to the terminal
+      console.log(
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`
+      );
+    }
+  );
   return win;
 }
 
