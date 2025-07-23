@@ -1,4 +1,4 @@
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 const corners_schemas = viewer_schemas.opengeodeweb_viewer.model.corners;
 
 export function useCornersStyle() {
@@ -21,9 +21,12 @@ export function useCornersStyle() {
       },
       {
         response_function: () => {
-          for (const corner_id of corner_ids)
+          for (const corner_id of corner_ids) {
+            if (!dataStyleStore.styles[id].corners[corner_id])
+              dataStyleStore.styles[id].corners[corner_id] = {};
             dataStyleStore.styles[id].corners[corner_id].visibility =
               visibility;
+          }
           console.log("setCornerVisibility", corner_ids, visibility);
         },
       }
@@ -31,25 +34,16 @@ export function useCornersStyle() {
   }
 
   function setCornersDefaultStyle(id) {
-    const corners = dataBaseStore.db[id]?.mesh_components?.["Corner"];
-    if (!corners || corners.length === 0) return;
-
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-
-    if (!dataStyleStore.styles[id].corners) {
-      dataStyleStore.styles[id].corners = {};
-    }
-
-    const corner_ids = [];
-
-    for (const corner_id of corners) {
-      dataStyleStore.styles[id].corners[corner_id] = cornerDefaultStyle(true);
-      corner_ids.push(corner_id);
-    }
-
-    setCornerVisibility(id, corner_ids, true);
+    const corner_ids = dataBaseStore.getCornersUuids(id);
+    console.log(
+      "dataStyleStore.styles[id].corners.visibility",
+      dataStyleStore.styles[id].corners.visibility
+    );
+    setCornerVisibility(
+      id,
+      corner_ids,
+      dataStyleStore.styles[id].corners.visibility
+    );
   }
 
   function applyCornersStyle(id) {

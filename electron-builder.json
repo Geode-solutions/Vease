@@ -27,10 +27,9 @@
   "win": {
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",
-    "sign": "./customSign.js",
-    "signingHashAlgorithms": [
-      "sha256"
-    ],
+    "signtoolOptions": {
+      "sign": "./node_scripts/customSign.js"
+    },
     "target": [
       "nsis",
       "zip"

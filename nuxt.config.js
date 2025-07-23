@@ -1,6 +1,10 @@
 import package_json from "./package.json";
 
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
+
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
@@ -11,11 +15,13 @@ export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": __dirname,
+    "@vease": __dirname + "/app/",
   },
 
   modules: [
-    "nuxt-electron",
+    process.env.BROWSER && process.env.BROWSER == "true"
+      ? null
+      : "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -25,8 +31,9 @@ export default defineNuxtConfig({
     ],
     "@nuxt/devtools",
     "@vueuse/nuxt",
-  ],
+  ].filter(Boolean),
 
+  ssr: false,
   electron: {
     build: [
       {
@@ -71,8 +78,6 @@ export default defineNuxtConfig({
     },
   },
 
-  ssr: false,
-
   app: {
     head: {
       titleTemplate: "Vease",
@@ -96,10 +101,6 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
-  },
-
-  experimental: {
-    appManifest: false,
   },
 
   devtools: {

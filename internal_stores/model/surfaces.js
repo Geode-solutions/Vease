@@ -1,4 +1,4 @@
-import viewer_schemas from "@geode/opengeodeweb-viewer/schemas.json";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 const surfaces_schemas = viewer_schemas.opengeodeweb_viewer.model.surfaces;
 
 export function useSurfacesStyle() {
@@ -21,9 +21,12 @@ export function useSurfacesStyle() {
       },
       {
         response_function: () => {
-          for (const surface_id of surface_ids)
+          for (const surface_id of surface_ids) {
+            if (!dataStyleStore.styles[id].surfaces[surface_id])
+              dataStyleStore.styles[id].surfaces[surface_id] = {};
             dataStyleStore.styles[id].surfaces[surface_id].visibility =
               visibility;
+          }
           console.log("setSurfaceVisibility", surface_ids, visibility);
         },
       }
@@ -31,26 +34,12 @@ export function useSurfacesStyle() {
   }
 
   function setSurfacesDefaultStyle(id) {
-    const surfaces = dataBaseStore.db[id]?.mesh_components?.["Surface"];
-    if (!surfaces || surfaces.length === 0) return;
-
-    if (!dataStyleStore.styles[id]) {
-      dataStyleStore.styles[id] = {};
-    }
-
-    if (!dataStyleStore.styles[id].surfaces) {
-      dataStyleStore.styles[id].surfaces = {};
-    }
-
-    const surface_ids = [];
-
-    for (const surface_id of surfaces) {
-      dataStyleStore.styles[id].surfaces[surface_id] =
-        surfaceDefaultStyle(true);
-      surface_ids.push(surface_id);
-    }
-
-    setSurfaceVisibility(id, surface_ids, true);
+    const surface_ids = dataBaseStore.getSurfacesUuids(id);
+    setSurfaceVisibility(
+      id,
+      surface_ids,
+      dataStyleStore.styles[id].surfaces.visibility
+    );
   }
 
   function applySurfacesStyle(id) {

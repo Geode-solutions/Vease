@@ -5,9 +5,11 @@ import {
   executable_path,
   create_path,
   create_new_window,
+  registerChildProcesses,
+  killProcesses,
   get_available_port,
   run_script,
-} from "../utils/desktop";
+} from "/app/utils/desktop";
 
 const os = require("os");
 
@@ -19,7 +21,7 @@ create_path(data_folder_path);
 var processes = [];
 var mainWindow = null;
 
-ipcMain.handle("run_back", async (event, ...args) => {
+ipcMain.handle("run_back", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("BACK PORT", port);
   const command = executable_path("vease", "back");
@@ -31,11 +33,17 @@ ipcMain.handle("run_back", async (event, ...args) => {
     "--timeout " + 0,
   ];
   console.log("run_back", command, back_args);
-  await run_script(mainWindow, command, back_args, "Serving Flask app");
+  const microservice = await run_script(
+    mainWindow,
+    command,
+    back_args,
+    "Serving Flask app"
+  );
+  processes = registerChildProcesses(microservice, processes);
   return port;
 });
 
-ipcMain.handle("run_viewer", async (event, ...args) => {
+ipcMain.handle("run_viewer", async (_event, ...args) => {
   const port = await get_available_port(args[0]);
   console.log("VIEWER PORT", port);
   const command = executable_path("vease", "viewer");
@@ -45,25 +53,43 @@ ipcMain.handle("run_viewer", async (event, ...args) => {
     "--timeout " + 0,
   ];
   console.log("run_viewer", command, viewer_args);
-  await run_script(mainWindow, command, viewer_args, "Starting factory");
+  const microservice = await run_script(
+    mainWindow,
+    command,
+    viewer_args,
+    "Starting factory"
+  );
+  processes = registerChildProcesses(microservice, processes);
   return port;
 });
 
-ipcMain.handle("new_window", async (event, ...args) => {
-  const new_window = create_new_window();
+ipcMain.handle("new_window", async (_event) => {
+  const _new_window = create_new_window();
 });
 
 app.whenReady().then(() => {
   mainWindow = create_new_window();
+  mainWindow.webContents.on(
+    "console-message",
+    (event, level, message, line, sourceId) => {
+      if (level === 2) return;
+      const logLevels = ["VERBOSE", "INFO", "WARNING", "ERROR"];
+      const logLevel = logLevels[level] || "UNKNOWN";
+      console.log(
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`
+      );
+    }
+  );
 });
 
-app.on("before-quit", function () {
-  processes.forEach(function (proc) {
-    console.log("Process %s has been killed!", proc.name);
-    proc.kill();
-  });
+app.on("before-quit", async function () {
+  await killProcesses(processes);
 });
 
 app.on("window-all-closed", () => {
   app.quit();
+});
+
+app.on("quit", () => {
+  console.log("Quitting Vease...");
 });
