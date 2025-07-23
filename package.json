@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run clean_cache & npx nuxi dev",
