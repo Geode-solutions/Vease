@@ -5,73 +5,71 @@ import fs from "fs";
 import os from "os";
 
 export default defineEventHandler(async (event) => {
-  const maxFiles = 1;
-  const fileSize = 1024 * 1024 * 5; // 5MB
+  const maxVeaseFiles = 1;
+  const veaseFileSize = 1024 * 1024 * 50; // 50MB
 
   try {
-    // Créer le chemin vers le dossier uploads
-    const veaseDir = path.join(os.tmpdir(), "vease");
-    let uploadsFolder;
+    const veaseProjectsDir = path.join(os.tmpdir(), "vease");
+    let veaseUploadsFolder;
     
-    if (fs.existsSync(veaseDir)) {
-      // Trouver le dossier de projet le plus récent
-      const projectDirs = fs.readdirSync(veaseDir)
-        .filter(dir => fs.statSync(path.join(veaseDir, dir)).isDirectory())
-        .map(dir => ({
-          name: dir,
-          path: path.join(veaseDir, dir),
-          mtime: fs.statSync(path.join(veaseDir, dir)).mtime
+    if (fs.existsSync(veaseProjectsDir)) {
+      const veaseProjectDirectories = fs.readdirSync(veaseProjectsDir)
+        .filter(projectDir => fs.statSync(path.join(veaseProjectsDir, projectDir)).isDirectory())
+        .map(projectDir => ({
+          projectName: projectDir,
+          projectPath: path.join(veaseProjectsDir, projectDir),
+          lastModified: fs.statSync(path.join(veaseProjectsDir, projectDir)).mtime
         }))
-        .sort((a, b) => b.mtime - a.mtime);
+        .sort((a, b) => b.lastModified - a.lastModified);
       
-      if (projectDirs.length > 0) {
-        uploadsFolder = path.join(projectDirs[0].path, "uploads");
+      if (veaseProjectDirectories.length > 0) {
+        veaseUploadsFolder = path.join(veaseProjectDirectories[0].projectPath, "uploads");
       } else {
-        throw new Error("Aucun dossier de projet trouvé");
+        throw new Error("No Vease project directory found");
       }
     } else {
-      throw new Error("Dossier vease non trouvé");
+      throw new Error("Vease projects directory not found");
     }
     
-    // Créer le dossier uploads s'il n'existe pas
-    if (!fs.existsSync(uploadsFolder)) {
-      fs.mkdirSync(uploadsFolder, { recursive: true });
+    if (!fs.existsSync(veaseUploadsFolder)) {
+      fs.mkdirSync(veaseUploadsFolder, { recursive: true });
     }
 
-    const { files } = await readFiles(event, {
-      maxFiles: maxFiles,
-      maxFileSize: fileSize,
+    const { files: uploadedFiles } = await readFiles(event, {
+      maxFiles: maxVeaseFiles,
+      maxFileSize: veaseFileSize,
     });
 
-    if (!Object.keys(files).length) {
+    if (!Object.keys(uploadedFiles).length) {
       throw createError({
         statusMessage: "2001",
         statusCode: 400,
       }); 
     }
     
-    for (let index = 0; index < Object.keys(files).length; index++) {
-      const filepath = files[index][0].filepath;
-      const mimetype = files[index][0].mimetype;
+    for (let fileIndex = 0; fileIndex < Object.keys(uploadedFiles).length; fileIndex++) {
+      const veaseFilePath = uploadedFiles[fileIndex][0].filepath;
+      const originalFileName = uploadedFiles[fileIndex][0].originalFilename || 'unknown';
+      const fileExtension = path.extname(originalFileName).toLowerCase();
 
-      if (!mimetype.startsWith("image")) {
+      if (!allowedExtensions.includes(fileExtension.replace('.', ''))) {
         throw createError({
-          statusMessage: "2002",
+          statusMessage: "Invalid file type. Allowed extensions: " + allowedExtensions.map(ext => '.' + ext).join(', '),
           statusCode: 400,
-        }); 
+        });
       }
-      
-      let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
-      let newPath = path.join(uploadsFolder, imageName);
-      fs.copyFileSync(filepath, newPath);
-      
-      console.log(`Fichier sauvegardé dans: ${newPath}`);
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const uniqueFileName = `${timestamp}_${originalFileName}`;
+      const veaseNewPath = path.join(veaseUploadsFolder, uniqueFileName);
+
+      fs.copyFileSync(veaseFilePath, veaseNewPath);
     }
 
     return {
-      status: 200,
-      message: "Upload image successfully.",
-    }
+      uploadPath: veaseUploadsFolder
+    };
+
   } catch (error) {
     console.error("Erreur upload:", error);
     
