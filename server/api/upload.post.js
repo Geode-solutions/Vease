@@ -2,18 +2,41 @@ import { readFiles } from "h3-formidable";
 import { errors as formidableErrors } from "formidable";
 import path from "path";
 import fs from "fs";
+import os from "os";
 
 export default defineEventHandler(async (event) => {
   const maxFiles = 1;
   const fileSize = 1024 * 1024 * 5; // 5MB
 
   try {
-    // Utiliser la variable d'environnement définie par Electron
-    const uploads_folder = process.env.VEASE_UPLOADS_FOLDER || path.join(process.cwd(), "uploads");
+    const tmpDir = os.tmpdir();
+    const veaseDir = path.join(tmpDir, "vease");
     
-    // Créer le dossier si il n'existe pas (fallback)
+    let uploads_folder;
+    
+    if (fs.existsSync(veaseDir)) {
+      const projectDirs = fs.readdirSync(veaseDir)
+        .map(dir => {
+          const fullPath = path.join(veaseDir, dir);
+          const stats = fs.statSync(fullPath);
+          return { path: fullPath, mtime: stats.mtime, name: dir };
+        })
+        .filter(item => fs.statSync(item.path).isDirectory())
+        .sort((a, b) => b.mtime - a.mtime); 
+      
+      if (projectDirs.length > 0) {
+        uploads_folder = path.join(projectDirs[0].path, "uploads");
+        console.log("Using uploads folder:", uploads_folder);
+      } else {
+        throw new Error("No project directory found in vease folder");
+      }
+    } else {
+      throw new Error("Vease directory not found in temp");
+    }
+    
     if (!fs.existsSync(uploads_folder)) {
       fs.mkdirSync(uploads_folder, { recursive: true });
+      console.log("Created uploads folder:", uploads_folder);
     }
 
     const { files } = await readFiles(event, {
@@ -41,14 +64,18 @@ export default defineEventHandler(async (event) => {
       
       let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
       let newPath = path.join(uploads_folder, imageName);
+      console.log("Copying file to:", newPath);
       fs.copyFileSync(filepath, newPath);
     }
 
     return {
       status: 200,
       message: "Upload image successfully.",
+      uploads_folder: uploads_folder // Pour debug
     }
   } catch (error) {
+    console.error("Upload error:", error);
+    
     if (error.message === "2001") {
       throw createError({
         statusMessage: "File is required.",
