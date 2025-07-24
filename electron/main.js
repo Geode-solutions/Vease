@@ -69,6 +69,17 @@ ipcMain.handle("new_window", async (_event) => {
 
 app.whenReady().then(() => {
   mainWindow = create_new_window();
+  mainWindow.webContents.on(
+    "console-message",
+    (event, level, message, line, sourceId) => {
+      if (level === 2) return;
+      const logLevels = ["VERBOSE", "INFO", "WARNING", "ERROR"];
+      const logLevel = logLevels[level] || "UNKNOWN";
+      console.log(
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`
+      );
+    }
+  );
 });
 
 app.on("before-quit", async function () {

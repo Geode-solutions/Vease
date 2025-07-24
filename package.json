@@ -58,14 +58,15 @@
     "@geode/opengeodeweb-back": "^5.8.7",
     "@geode/opengeodeweb-front": "9.8.2",
     "@geode/opengeodeweb-viewer": "1.10.1",
-    "@geode/vease-back": "1.4.14",
-    "@geode/vease-viewer": "2.3.11",
+    "@geode/vease-back": "1.4.15",
+    "@geode/vease-viewer": "2.3.13",
     "broadcast-channel": "7.1.0",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
     "get-port-please": "3.1.2",
     "h3-formidable": "1.0.0",
     "nuxt": "3.13.2",
-    "pidtree": "^0.6.0"
+    "pidtree": "^0.6.0",
+    "vtk.js": "33.1.0"
   }
 }
