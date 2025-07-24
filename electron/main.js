@@ -22,6 +22,16 @@ const uuid_project = uuidv4();
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project);
 create_path(project_folder_path);
 
+// Créer les sous-dossiers et définir les variables d'environnement
+const uploads_folder = path.join(project_folder_path, "uploads");
+const uuid_data_folder = path.join(project_folder_path, "uuid_data");
+create_path(uploads_folder);
+create_path(uuid_data_folder);
+
+// Définir les variables d'environnement pour que Nuxt puisse les utiliser
+process.env.VEASE_UPLOADS_FOLDER = uploads_folder;
+process.env.VEASE_UUID_DATA_FOLDER = uuid_data_folder;
+process.env.VEASE_PROJECT_UUID = uuid_project;
 
 var processes = [];
 var mainWindow = null;

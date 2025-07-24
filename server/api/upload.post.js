@@ -8,6 +8,14 @@ export default defineEventHandler(async (event) => {
   const fileSize = 1024 * 1024 * 5; // 5MB
 
   try {
+    // Utiliser la variable d'environnement définie par Electron
+    const uploads_folder = process.env.VEASE_UPLOADS_FOLDER || path.join(process.cwd(), "uploads");
+    
+    // Créer le dossier si il n'existe pas (fallback)
+    if (!fs.existsSync(uploads_folder)) {
+      fs.mkdirSync(uploads_folder, { recursive: true });
+    }
+
     const { files } = await readFiles(event, {
       maxFiles: maxFiles,
       maxFileSize: fileSize,
@@ -32,7 +40,7 @@ export default defineEventHandler(async (event) => {
       }
       
       let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
-      let newPath = path.join(upload, imageName);
+      let newPath = path.join(uploads_folder, imageName);
       fs.copyFileSync(filepath, newPath);
     }
 
