@@ -49,12 +49,12 @@
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
     "@nuxt/test-utils": "3.19.2",
-    "@playwright/test": "1.54.0",
+    "@playwright/test": "1.54.1",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "^1.7.1",
     "nuxt-electron": "0.7.0",
-    "playwright": "1.54.0",
+    "playwright": "1.54.1",
     "vuetify-nuxt-module": "0.18.7"
   },
   "dependencies": {
