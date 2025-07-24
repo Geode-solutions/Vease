@@ -4,16 +4,44 @@ import path from "path";
 import fs from "fs";
 import os from "os";
 
+// Fonction pour récupérer les extensions autorisées depuis l'API
+async function getAllowedExtensions() {
+  try {
+    // URL du backend OpenGeodeWeb (port par défaut 5000)
+    const backendUrl = 'http://localhost:5000';
+    
+    const response = await $fetch('/opengeodeweb_back/allowed_files', {
+      baseURL: backendUrl,
+      method: 'POST',
+      body: {
+        supported_feature: null
+      }
+    });
+    
+    return response.extensions || [];
+  } catch (error) {
+    console.warn('Erreur lors de la récupération des extensions autorisées:', error);
+    // Fallback vers une liste statique en cas d'erreur
+    return [
+      'brep', 'og_brep', 'msh', 'vtu', 'vtp', 'vtm', 'obj', 'ply', 'stl',
+      'ts', 'vs', 'so', 'smesh', 'mesh', 'geode', 'ml', 'inp', 'nas', 'bdf'
+    ];
+  }
+}
+
 export default defineEventHandler(async (event) => {
-  const maxVeaseFiles = 1;
-  const veaseFileSize = 1024 * 1024 * 50; // 50MB
+  const maxFiles = 1;
+  const maxFileSize = 1024 * 1024 * 50; // 50MB
 
   try {
+    // Récupérer les extensions autorisées depuis l'API
+    const allowedExtensions = await getAllowedExtensions();
+    
     const veaseProjectsDir = path.join(os.tmpdir(), "vease");
-    let veaseUploadsFolder;
+    let uploadsFolder;
     
     if (fs.existsSync(veaseProjectsDir)) {
-      const veaseProjectDirectories = fs.readdirSync(veaseProjectsDir)
+      const projectDirectories = fs.readdirSync(veaseProjectsDir)
         .filter(projectDir => fs.statSync(path.join(veaseProjectsDir, projectDir)).isDirectory())
         .map(projectDir => ({
           projectName: projectDir,
@@ -22,8 +50,8 @@ export default defineEventHandler(async (event) => {
         }))
         .sort((a, b) => b.lastModified - a.lastModified);
       
-      if (veaseProjectDirectories.length > 0) {
-        veaseUploadsFolder = path.join(veaseProjectDirectories[0].projectPath, "uploads");
+      if (projectDirectories.length > 0) {
+        uploadsFolder = path.join(projectDirectories[0].projectPath, "uploads");
       } else {
         throw new Error("No Vease project directory found");
       }
@@ -31,79 +59,70 @@ export default defineEventHandler(async (event) => {
       throw new Error("Vease projects directory not found");
     }
     
-    if (!fs.existsSync(veaseUploadsFolder)) {
-      fs.mkdirSync(veaseUploadsFolder, { recursive: true });
+    if (!fs.existsSync(uploadsFolder)) {
+      fs.mkdirSync(uploadsFolder, { recursive: true });
     }
 
     const { files: uploadedFiles } = await readFiles(event, {
-      maxFiles: maxVeaseFiles,
-      maxFileSize: veaseFileSize,
+      maxFiles: maxFiles,
+      maxFileSize: maxFileSize,
     });
 
     if (!Object.keys(uploadedFiles).length) {
       throw createError({
-        statusMessage: "2001",
+        statusMessage: "Aucun fichier téléchargé",
         statusCode: 400,
       }); 
     }
     
     for (let fileIndex = 0; fileIndex < Object.keys(uploadedFiles).length; fileIndex++) {
-      const veaseFilePath = uploadedFiles[fileIndex][0].filepath;
+      const filePath = uploadedFiles[fileIndex][0].filepath;
       const originalFileName = uploadedFiles[fileIndex][0].originalFilename || 'unknown';
-      const fileExtension = path.extname(originalFileName).toLowerCase();
+      const fileExtension = path.extname(originalFileName).toLowerCase().replace('.', '');
 
-      if (!allowedExtensions.includes(fileExtension.replace('.', ''))) {
+      if (!allowedExtensions.includes(fileExtension)) {
         throw createError({
-          statusMessage: "Invalid file type. Allowed extensions: " + allowedExtensions.map(ext => '.' + ext).join(', '),
+          statusMessage: `Type de fichier invalide. Extensions autorisées: ${allowedExtensions.map(ext => '.' + ext).join(', ')}`,
           statusCode: 400,
         });
       }
 
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const uniqueFileName = `${timestamp}_${originalFileName}`;
-      const veaseNewPath = path.join(veaseUploadsFolder, uniqueFileName);
+      const newPath = path.join(uploadsFolder, uniqueFileName);
 
-      fs.copyFileSync(veaseFilePath, veaseNewPath);
+      fs.copyFileSync(filePath, newPath);
     }
 
     return {
-      uploadPath: veaseUploadsFolder
+      uploadPath: uploadsFolder,
+      allowedExtensions: allowedExtensions
     };
 
   } catch (error) {
-    console.error("Erreur upload:", error);
+    if (error.statusCode) {
+      throw error;
+    }
     
-    if (error.message === "2001") {
-      throw createError({
-        statusMessage: "File is required.",
-        statusCode: 400,
-      });
+    if (error instanceof formidableErrors.FormidableError) {
+      if (error.code === 1009) {
+        throw createError({
+          statusMessage: "Fichier trop volumineux (maximum 50MB)",
+          statusCode: 413,
+        });
+      }
+      if (error.code === 1001) {
+        throw createError({
+          statusMessage: "Trop de fichiers (maximum 1 fichier)",
+          statusCode: 400,
+        });
+      }
     }
-
-    if (error.message === "2002") {
-      throw createError({
-        statusMessage: "Only image allowed.",
-        statusCode: 400,
-      });
-    }
-
-    if (error.code === formidableErrors.maxFilesExceeded) {
-      throw createError({
-        statusMessage: `Can't upload more than ${maxFiles} image.`,
-        statusCode: 400,
-      });
-    }
-
-    if (error.code === formidableErrors.biggerThanTotalMaxFileSize) {
-      throw createError({
-        statusMessage: `File is larger than ${(fileSize / (1024 * 1024))} MB.`,
-        statusCode: 400,
-      });
-    }
-
+    
+    console.error('Erreur lors de l\'upload:', error);
     throw createError({
-      statusMessage: "An unknown error occurred",
-      statusCode: 500
+      statusMessage: "Erreur interne du serveur lors de l'upload",
+      statusCode: 500,
     });
   }
 });
