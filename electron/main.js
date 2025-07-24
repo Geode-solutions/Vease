@@ -72,24 +72,18 @@ ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window();
 });
 
-ipcMain.handle("delete_project", async (_event) => {
-  try {
-    await killProcesses(processes);
-    fs.rmSync(project_folder_path, { recursive: true, force: true });
-    console.log("[delete_project] Deleted project folder:", project_folder_path);
-    return { success: true };
-  } catch (err) {
-    console.error("[delete_project] Failed to delete project folder:", err);
-    return { success: false, error: err.message };
-  }
-});
-
 app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
 
-app.on("before-quit", async function () {
-  await killProcesses(processes);
+app.on("before-quit", async () => {
+  try {
+    await killProcesses(processes);
+    fs.rmSync(project_folder_path, { recursive: true, force: true });
+    console.log("[before-quit] Deleted project folder:", project_folder_path);
+  } catch (err) {
+    console.error("[before-quit] Failed to delete project folder:", err);
+  }
 });
 
 app.on("window-all-closed", () => {

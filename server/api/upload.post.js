@@ -2,7 +2,6 @@ import { readFiles } from "h3-formidable";
 import { errors as formidableErrors } from "formidable";
 import path from "path";
 import fs from "fs";
-import { v4 as uuidv4 } from 'uuid';
 
 export default defineEventHandler(async (event) => {
   const maxFiles = 1;
@@ -21,13 +20,6 @@ export default defineEventHandler(async (event) => {
       }); 
     }
     
-    const projectUuid = uuidv4();
-    const uploadDir = path.join("tmp", "vease", projectUuid, "upload");
-    
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    
     for (let index = 0; index < Object.keys(files).length; index++) {
       const filepath = files[index][0].filepath;
       const mimetype = files[index][0].mimetype;
@@ -40,14 +32,13 @@ export default defineEventHandler(async (event) => {
       }
       
       let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
-      let newPath = path.join(uploadDir, imageName);
+      let newPath = path.join(upload, imageName);
       fs.copyFileSync(filepath, newPath);
     }
 
     return {
       status: 200,
       message: "Upload image successfully.",
-      projectUuid: projectUuid
     }
   } catch (error) {
     if (error.message === "2001") {
