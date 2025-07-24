@@ -3,11 +3,39 @@ import { errors as formidableErrors } from "formidable";
 import path from "path";
 import fs from "fs";
 
+const os = require("os");
+
 export default defineEventHandler(async (event) => {
   const maxFiles = 1;
   const fileSize = 1024 * 1024 * 5; // 5MB
 
   try {
+    const veaseDir = path.join(os.tmpdir(), "vease");
+    let uploadsFolder;
+    
+    if (fs.existsSync(veaseDir)) {
+      const projectDirs = fs.readdirSync(veaseDir)
+        .filter(dir => fs.statSync(path.join(veaseDir, dir)).isDirectory())
+        .map(dir => ({
+          name: dir,
+          path: path.join(veaseDir, dir),
+          mtime: fs.statSync(path.join(veaseDir, dir)).mtime
+        }))
+        .sort((a, b) => b.mtime - a.mtime);
+      
+      if (projectDirs.length > 0) {
+        uploadsFolder = path.join(projectDirs[0].path, "uploads");
+      } else {
+        throw new Error("Aucun dossier de projet trouvé");
+      }
+    } else {
+      throw new Error("Dossier vease non trouvé");
+    }
+    
+    if (!fs.existsSync(uploadsFolder)) {
+      fs.mkdirSync(uploadsFolder, { recursive: true });
+    }
+
     const { files } = await readFiles(event, {
       maxFiles: maxFiles,
       maxFileSize: fileSize,
@@ -32,8 +60,10 @@ export default defineEventHandler(async (event) => {
       }
       
       let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
-      let newPath = path.join(upload, imageName);
+      let newPath = path.join(uploadsFolder, imageName);
       fs.copyFileSync(filepath, newPath);
+      
+      console.log(`Fichier sauvegardé dans: ${newPath}`);
     }
 
     return {
@@ -41,6 +71,8 @@ export default defineEventHandler(async (event) => {
       message: "Upload image successfully.",
     }
   } catch (error) {
+    console.error("Erreur upload:", error);
+    
     if (error.message === "2001") {
       throw createError({
         statusMessage: "File is required.",
