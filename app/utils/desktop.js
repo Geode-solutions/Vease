@@ -151,7 +151,7 @@ function create_new_window() {
     }
   );
   return win;
-}
+} 
 
 async function run_script(
   win,
