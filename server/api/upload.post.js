@@ -2,18 +2,19 @@ import { readFiles } from "h3-formidable";
 import { errors as formidableErrors } from "formidable";
 import path from "path";
 import fs from "fs";
-
-const os = require("os");
+import os from "os";
 
 export default defineEventHandler(async (event) => {
   const maxFiles = 1;
   const fileSize = 1024 * 1024 * 5; // 5MB
 
   try {
+    // Créer le chemin vers le dossier uploads
     const veaseDir = path.join(os.tmpdir(), "vease");
     let uploadsFolder;
     
     if (fs.existsSync(veaseDir)) {
+      // Trouver le dossier de projet le plus récent
       const projectDirs = fs.readdirSync(veaseDir)
         .filter(dir => fs.statSync(path.join(veaseDir, dir)).isDirectory())
         .map(dir => ({
@@ -32,6 +33,7 @@ export default defineEventHandler(async (event) => {
       throw new Error("Dossier vease non trouvé");
     }
     
+    // Créer le dossier uploads s'il n'existe pas
     if (!fs.existsSync(uploadsFolder)) {
       fs.mkdirSync(uploadsFolder, { recursive: true });
     }
@@ -102,8 +104,8 @@ export default defineEventHandler(async (event) => {
     }
 
     throw createError({
-	statusMessage: "An unknown error occurred",
-	statusCode: 500
+      statusMessage: "An unknown error occurred",
+      statusCode: 500
     });
   }
 });
