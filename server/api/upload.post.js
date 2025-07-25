@@ -2,127 +2,76 @@ import { readFiles } from "h3-formidable";
 import { errors as formidableErrors } from "formidable";
 import path from "path";
 import fs from "fs";
-import os from "os";
-
-// Fonction pour récupérer les extensions autorisées depuis l'API
-async function getAllowedExtensions() {
-  try {
-    // URL du backend OpenGeodeWeb (port par défaut 5000)
-    const backendUrl = 'http://localhost:5000';
-    
-    const response = await $fetch('/opengeodeweb_back/allowed_files', {
-      baseURL: backendUrl,
-      method: 'POST',
-      body: {
-        supported_feature: null
-      }
-    });
-    
-    return response.extensions || [];
-  } catch (error) {
-    console.warn('Erreur lors de la récupération des extensions autorisées:', error);
-    // Fallback vers une liste statique en cas d'erreur
-    return [
-      'brep', 'og_brep', 'msh', 'vtu', 'vtp', 'vtm', 'obj', 'ply', 'stl',
-      'ts', 'vs', 'so', 'smesh', 'mesh', 'geode', 'ml', 'inp', 'nas', 'bdf'
-    ];
-  }
-}
 
 export default defineEventHandler(async (event) => {
   const maxFiles = 1;
-  const maxFileSize = 1024 * 1024 * 50; // 50MB
+  const fileSize = 1024 * 1024 * 5; // 5MB
 
   try {
-    // Récupérer les extensions autorisées depuis l'API
-    const allowedExtensions = await getAllowedExtensions();
-    
-    const veaseProjectsDir = path.join(os.tmpdir(), "vease");
-    let uploadsFolder;
-    
-    if (fs.existsSync(veaseProjectsDir)) {
-      const projectDirectories = fs.readdirSync(veaseProjectsDir)
-        .filter(projectDir => fs.statSync(path.join(veaseProjectsDir, projectDir)).isDirectory())
-        .map(projectDir => ({
-          projectName: projectDir,
-          projectPath: path.join(veaseProjectsDir, projectDir),
-          lastModified: fs.statSync(path.join(veaseProjectsDir, projectDir)).mtime
-        }))
-        .sort((a, b) => b.lastModified - a.lastModified);
-      
-      if (projectDirectories.length > 0) {
-        uploadsFolder = path.join(projectDirectories[0].projectPath, "uploads");
-      } else {
-        throw new Error("No Vease project directory found");
-      }
-    } else {
-      throw new Error("Vease projects directory not found");
-    }
-    
-    if (!fs.existsSync(uploadsFolder)) {
-      fs.mkdirSync(uploadsFolder, { recursive: true });
-    }
-
-    const { files: uploadedFiles } = await readFiles(event, {
+    const { files } = await readFiles(event, {
       maxFiles: maxFiles,
-      maxFileSize: maxFileSize,
+      maxFileSize: fileSize,
     });
 
-    if (!Object.keys(uploadedFiles).length) {
+    if (!Object.keys(files).length) {
       throw createError({
-        statusMessage: "Aucun fichier téléchargé",
+        statusMessage: "2001",
         statusCode: 400,
       }); 
     }
     
-    for (let fileIndex = 0; fileIndex < Object.keys(uploadedFiles).length; fileIndex++) {
-      const filePath = uploadedFiles[fileIndex][0].filepath;
-      const originalFileName = uploadedFiles[fileIndex][0].originalFilename || 'unknown';
-      const fileExtension = path.extname(originalFileName).toLowerCase().replace('.', '');
+    for (let index = 0; index < Object.keys(files).length; index++) {
+      const filepath = files[index][0].filepath;
+      const mimetype = files[index][0].mimetype;
 
-      if (!allowedExtensions.includes(fileExtension)) {
+      if (!mimetype.startsWith("image")) {
         throw createError({
-          statusMessage: `Type de fichier invalide. Extensions autorisées: ${allowedExtensions.map(ext => '.' + ext).join(', ')}`,
+          statusMessage: "2002",
           statusCode: 400,
-        });
+        }); 
       }
-
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const uniqueFileName = `${timestamp}_${originalFileName}`;
-      const newPath = path.join(uploadsFolder, uniqueFileName);
-
-      fs.copyFileSync(filePath, newPath);
+      
+      let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`;
+      let newPath = path.join("upload", imageName);
+      fs.copyFileSync(filepath, newPath);
     }
 
     return {
-      uploadPath: uploadsFolder,
-      allowedExtensions: allowedExtensions
-    };
-
+      status: 200,
+      message: "Upload image successfully."
+    }
   } catch (error) {
-    if (error.statusCode) {
-      throw error;
+    if (error.message === "2001") {
+      throw createError({
+        statusMessage: "File is required.",
+        statusCode: 400,
+      });
     }
-    
-    if (error instanceof formidableErrors.FormidableError) {
-      if (error.code === 1009) {
-        throw createError({
-          statusMessage: "Fichier trop volumineux (maximum 50MB)",
-          statusCode: 413,
-        });
-      }
-      if (error.code === 1001) {
-        throw createError({
-          statusMessage: "Trop de fichiers (maximum 1 fichier)",
-          statusCode: 400,
-        });
-      }
+
+    if (error.message === "2002") {
+      throw createError({
+        statusMessage: "Only image allowed.",
+        statusCode: 400,
+      });
     }
-    
-    console.error('Erreur lors de l\'upload:', error);
+
+    if (error.code === formidableErrors.maxFilesExceeded) {
+      throw createError({
+        statusMessage: `Can't upload more than ${maxFiles} image.`,
+        statusCode: 400,
+      });
+    }
+
+    if (error.code === formidableErrors.biggerThanTotalMaxFileSize) {
+      throw createError({
+        statusMessage: `File is larger than ${(fileSize / (1024 * 1024))} MB.`,
+        statusCode: 400,
+      });
+    }
+
     throw createError({
-      statusMessage: "Erreur interne du serveur lors de l'upload",
-      statusCode: 500,
+	statusMessage: "An unknown error occurred",
+	statusCode: 500
     });
   }
 });
