@@ -2,7 +2,7 @@
 set -euxo pipefail
 microservice_name=$1
 echo "Compiling $microservice_name requirements"
-microservice_path="./electron-server/$microservice_name"
+microservice_path="./microservices/$microservice_name"
 venv_path=$microservice_path/venv
 python3 -m venv $venv_path
 rm -rf $microservice_path/requirements.txt

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
-back_path=./electron-server/back
+back_path=./microservices/back
 dist_path=$back_path/dist
 venv_path=$back_path/venv
 source $venv_path/bin/activate

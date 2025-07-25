@@ -1,6 +1,6 @@
 $microservice_name=$args[0]
 echo "Installing $args requirements"
-$microservice_path=".\electron-server\$microservice_name"
+$microservice_path=".\microservices\$microservice_name"
 $venv_path="$microservice_path\venv"
 echo "Installing in $venv_path"
 Remove-Item -Recurse -Force $venv_path -ErrorAction:SilentlyContinue

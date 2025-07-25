@@ -1,5 +1,5 @@
 #!/bin/bash
-viewer_path=./electron-server/viewer
+viewer_path=./microservices/viewer
 dist_path=$viewer_path/dist
 venv_path=$viewer_path/venv
 source $venv_path/bin/activate

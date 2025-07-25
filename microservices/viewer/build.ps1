@@ -1,5 +1,5 @@
 echo "Building viewer microservice"
-$viewer_path=".\electron-server\viewer"
+$viewer_path=".\microservices\viewer"
 $dist_path="$viewer_path\dist"
 $venv_path="$viewer_path\venv"
 . "$venv_path\Scripts\activate"
