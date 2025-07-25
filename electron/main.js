@@ -33,6 +33,7 @@ ipcMain.handle("run_back", async (_event, ...args) => {
   const back_args = [
     "--port " + port,
     "--data_folder_path " + project_folder_path,
+    "--upload_folder_path " + project_folder_path + "/uploads",
     "--allowed_origin ",
     "" * "",
     "--timeout " + 0,
