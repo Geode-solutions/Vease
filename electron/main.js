@@ -1,5 +1,7 @@
 import { app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
 import path from "path";
 import {
   executable_path,
@@ -15,8 +17,11 @@ const os = require("os");
 
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-const data_folder_path = path.join(os.tmpdir(), "vease");
-create_path(data_folder_path);
+
+const uuid_project = uuidv4();
+const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project);
+create_path(project_folder_path);
+
 
 var processes = [];
 var mainWindow = null;
@@ -27,7 +32,8 @@ ipcMain.handle("run_back", async (_event, ...args) => {
   const command = executable_path("vease", "back");
   const back_args = [
     "--port " + port,
-    "--data_folder_path " + data_folder_path,
+    "--data_folder_path " + project_folder_path,
+    "--upload_folder_path " + project_folder_path + "/uploads",
     "--allowed_origin ",
     "" * "",
     "--timeout " + 0,
@@ -49,7 +55,7 @@ ipcMain.handle("run_viewer", async (_event, ...args) => {
   const command = executable_path("vease", "viewer");
   const viewer_args = [
     "--port " + port,
-    "--data_folder_path " + data_folder_path,
+    "--data_folder_path " + project_folder_path,
     "--timeout " + 0,
   ];
   console.log("run_viewer", command, viewer_args);
@@ -71,8 +77,14 @@ app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
 
-app.on("before-quit", async function () {
-  await killProcesses(processes);
+app.on("before-quit", async () => {
+  try {
+    await killProcesses(processes);
+    fs.rmSync(project_folder_path, { recursive: true, force: true });
+    console.log("[before-quit] Deleted project folder:", project_folder_path);
+  } catch (err) {
+    console.error("[before-quit] Failed to delete project folder:", err);
+  }
 });
 
 app.on("window-all-closed", () => {
