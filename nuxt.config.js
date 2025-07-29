@@ -95,7 +95,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
+    dirs: ["app/stores", "@geode/opengeodeweb-front/stores"],
   },
   vue: {
     compilerOptions: {
@@ -103,9 +103,9 @@ export default defineNuxtConfig({
     },
   },
 
-  devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
-  },
+  // devtools: {
+  //   enabled: process.env.NODE_ENV === "production" ? false : true,
+  // },
 
   experimental: {
     appManifest: false,

@@ -10,7 +10,7 @@ services:
       - custom_network
 
   viewer:
-    image: ghcr.io/geode-solutions/vease-viewer:next
+    image: veaseviewer:latest
     ports:
       - "1234"
     networks:

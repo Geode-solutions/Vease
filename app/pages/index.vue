@@ -26,8 +26,6 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
-const APP_ENV = useRuntimeConfig().public.APP_ENV;
-
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
 const menuStore = useMenuStore();

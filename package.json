@@ -1,5 +1,5 @@
 {
-  "name": "@geode/vease",
+  "name": "vease",
   "productName": "vease",
   "version": "0.0.0",
   "description": "Desktop and cloud software for data visualization",
@@ -11,7 +11,7 @@
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
-    "dev:browser": "DYNAMIC_PORT=9999 BROWSER=true npm run dev",
+    "dev:browser": "node node_scripts/browser.js",
     "dev:desktop": "npm run dev",
     "build": "nuxi build --prerender",
     "build_dev": "APP_ENV=development npm run build",
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@nuxt/test-utils": "3.19.2",
     "@playwright/test": "1.54.1",
-    "electron": "36.4.0",
+    "electron": "^36.4.0",
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "^1.7.1",
     "nuxt-electron": "0.7.0",
@@ -70,6 +70,6 @@
     "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
     "nuxt": "3.13.2",
-    "pidtree": "^0.6.0"
+    "pidtree": "0.6.0"
   }
 }
