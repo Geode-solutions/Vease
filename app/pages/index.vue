@@ -38,7 +38,7 @@ const containerHeight = ref(0);
 const id = ref("");
 const cardContainer = useTemplateRef("cardContainer");
 
-const { display_menu } = menuStore;
+const { display_menu } = storeToRefs(menuStore);
 
 async function get_viewer_id(x, y) {
   const ids = dataStyleStore.selectedObjects;
