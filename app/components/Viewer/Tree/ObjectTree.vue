@@ -97,7 +97,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  // window.removeEventListener("resize");
+  window.removeEventListener("resize");
 });
 </script>
 
