@@ -58,6 +58,7 @@ function create_path(path) {
       console.log(`${path} directory created successfully!`);
     });
   }
+  return path;
 }
 
 async function get_available_port(port) {
@@ -99,6 +100,7 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     });
+
     register_children_processes(child);
 
     // You can also use a variable to save the output for when the script closes later
@@ -136,29 +138,28 @@ async function run_script(
   });
 }
 
-async function run_back(data_folder_path) {
+async function run_back(port, data_folder_path) {
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
     executable_name("vease-back")
   );
-  const back_port = await get_available_port(5000);
+  const back_port = await get_available_port(port);
   const back_args = [
     "--port " + back_port,
     "--data_folder_path " + data_folder_path,
-    "--allowed_origin ",
-    "" * "",
+    "--allowed_origin http://localhost:*",
     "--timeout " + 0,
   ];
   await run_script(back_command, back_args, "Serving Flask app");
   return back_port;
 }
 
-async function run_viewer(data_folder_path) {
+async function run_viewer(port, data_folder_path) {
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
     executable_name("vease-viewer")
   );
-  const viewer_port = await get_available_port(1234);
+  const viewer_port = await get_available_port(port);
   const viewer_args = [
     "--port " + viewer_port,
     "--data_folder_path " + data_folder_path,

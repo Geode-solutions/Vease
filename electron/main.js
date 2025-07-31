@@ -13,8 +13,7 @@ import os from "os";
 
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-const data_folder_path = path.join(os.tmpdir(), "vease");
-create_path(data_folder_path);
+const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
 var mainWindow = null;
 
