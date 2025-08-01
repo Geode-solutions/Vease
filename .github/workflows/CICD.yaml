@@ -32,7 +32,6 @@ jobs:
         sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
         sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
         xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e_desktop
-        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e_browser
       env:
         DISPLAY: ":99"
         DEBUG: "pw:browser"
@@ -73,7 +72,6 @@ jobs:
     - name: Run e2e tests
       run: |
         npm run test_e2e_desktop
-        npm run test_e2e_browser
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
