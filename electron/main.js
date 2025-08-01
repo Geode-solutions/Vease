@@ -15,7 +15,7 @@ autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
-var mainWindow = null;
+let mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
   return await run_back(args[0], data_folder_path);
@@ -28,7 +28,7 @@ ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window();
 });
 
-app.whenReady().then(async () => {
+app.whenReady().then(() => {
   mainWindow = create_new_window();
 });
 

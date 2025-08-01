@@ -11,8 +11,12 @@ import os from "os";
 const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
 async function run_microservices() {
-  const back_port = await run_back(5000, data_folder_path);
-  const viewer_port = await run_viewer(1234, data_folder_path);
+  const back_promise = run_back(5000, data_folder_path);
+  const viewer_promise = run_viewer(1234, data_folder_path);
+  const [back_port, viewer_port] = await Promise.all([
+    back_promise,
+    viewer_promise,
+  ]);
   process.env.GEODE_PORT = back_port;
   process.env.VIEWER_PORT = viewer_port;
 }

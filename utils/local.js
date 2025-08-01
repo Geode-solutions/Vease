@@ -139,34 +139,38 @@ async function run_script(
 }
 
 async function run_back(port, data_folder_path) {
-  const back_command = path.join(
-    executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
-  );
-  const back_port = await get_available_port(port);
-  const back_args = [
-    "--port " + back_port,
-    "--data_folder_path " + data_folder_path,
-    "--allowed_origin http://localhost:*",
-    "--timeout " + 0,
-  ];
-  await run_script(back_command, back_args, "Serving Flask app");
-  return back_port;
+  return new Promise(async (resolve, reject) => {
+    const back_command = path.join(
+      executable_path(path.join("microservices", "back")),
+      executable_name("vease-back")
+    );
+    const back_port = await get_available_port(port);
+    const back_args = [
+      "--port " + back_port,
+      "--data_folder_path " + data_folder_path,
+      "--allowed_origin http://localhost:*",
+      "--timeout " + 0,
+    ];
+    await run_script(back_command, back_args, "Serving Flask app");
+    resolve(back_port);
+  });
 }
 
 async function run_viewer(port, data_folder_path) {
-  const viewer_command = path.join(
-    executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
-  );
-  const viewer_port = await get_available_port(port);
-  const viewer_args = [
-    "--port " + viewer_port,
-    "--data_folder_path " + data_folder_path,
-    "--timeout " + 0,
-  ];
-  await run_script(viewer_command, viewer_args, "Starting factory");
-  return viewer_port;
+  return new Promise(async (resolve, reject) => {
+    const viewer_command = path.join(
+      executable_path(path.join("microservices", "viewer")),
+      executable_name("vease-viewer")
+    );
+    const viewer_port = await get_available_port(port);
+    const viewer_args = [
+      "--port " + viewer_port,
+      "--data_folder_path " + data_folder_path,
+      "--timeout " + 0,
+    ];
+    await run_script(viewer_command, viewer_args, "Starting factory");
+    resolve(viewer_port);
+  });
 }
 
 export {
