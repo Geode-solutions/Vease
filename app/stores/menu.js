@@ -135,7 +135,7 @@ export const useMenuStore = defineStore("menu", () => {
       return [];
     }
     return menus.value[objectType][geodeObject] || [];
-  };
+  }
 
   function closeMenu() {
     display_menu.value = false;

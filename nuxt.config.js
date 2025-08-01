@@ -95,7 +95,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
+    dirs: ["app/stores", "@geode/opengeodeweb-front/stores"],
   },
   vue: {
     compilerOptions: {

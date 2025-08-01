@@ -42,7 +42,7 @@
         </v-btn>
       </div>
 
-      <transition name="slide">
+      <transition name="slide" v-if="UIStore.showStepper">
         <v-navigation-drawer
           class="rounded align-start"
           radius="10px"
@@ -52,14 +52,13 @@
           v-model="UIStore.showStepper"
         >
           <StepImport
-            v-if="UIStore.showStepper"
             :files="UIStore.droppedFiles"
             @close="UIStore.setShowStepper(false)"
           />
         </v-navigation-drawer>
       </transition>
 
-      <transition name="slide">
+      <transition name="slide" v-if="UIStore.showCreatePointMenu">
         <v-navigation-drawer
           class="rounded align-start"
           radius="10px"
@@ -68,10 +67,7 @@
           temporary
           v-model="UIStore.showCreatePointMenu"
         >
-          <CreatePointMenu
-            v-if="UIStore.showCreatePointMenu"
-            @close="UIStore.setShowCreatePointMenu(false)"
-          />
+          <CreatePointMenu @close="UIStore.setShowCreatePointMenu(false)" />
         </v-navigation-drawer>
       </transition>
       <FullScrenDropZone />

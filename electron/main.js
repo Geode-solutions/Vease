@@ -2,65 +2,26 @@ import { app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import path from "path";
 import {
-  executable_path,
   create_path,
-  create_new_window,
-  registerChildProcesses,
-  killProcesses,
-  get_available_port,
-  run_script,
-} from "/app/utils/desktop";
+  kill_processes,
+  run_back,
+  run_viewer,
+} from "/utils/local";
+import { create_new_window } from "/utils/desktop";
 
-const os = require("os");
+import os from "os";
 
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-const data_folder_path = path.join(os.tmpdir(), "vease");
-create_path(data_folder_path);
+const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
-var processes = [];
-var mainWindow = null;
+let mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
-  const port = await get_available_port(args[0]);
-  console.log("BACK PORT", port);
-  const command = executable_path("vease", "back");
-  const back_args = [
-    "--port " + port,
-    "--data_folder_path " + data_folder_path,
-    "--allowed_origin ",
-    "" * "",
-    "--timeout " + 0,
-  ];
-  console.log("run_back", command, back_args);
-  const microservice = await run_script(
-    mainWindow,
-    command,
-    back_args,
-    "Serving Flask app"
-  );
-  processes = registerChildProcesses(microservice, processes);
-  return port;
+  return await run_back(args[0], data_folder_path);
 });
-
 ipcMain.handle("run_viewer", async (_event, ...args) => {
-  const port = await get_available_port(args[0]);
-  console.log("VIEWER PORT", port);
-  const command = executable_path("vease", "viewer");
-  const viewer_args = [
-    "--port " + port,
-    "--data_folder_path " + data_folder_path,
-    "--timeout " + 0,
-  ];
-  console.log("run_viewer", command, viewer_args);
-  const microservice = await run_script(
-    mainWindow,
-    command,
-    viewer_args,
-    "Starting factory"
-  );
-  processes = registerChildProcesses(microservice, processes);
-  return port;
+  return await run_viewer(args[0], data_folder_path);
 });
 
 ipcMain.handle("new_window", async (_event) => {
@@ -72,7 +33,7 @@ app.whenReady().then(() => {
 });
 
 app.on("before-quit", async function () {
-  await killProcesses(processes);
+  await kill_processes();
 });
 
 app.on("window-all-closed", () => {
