@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "@playwright/test";
+import { isWindows } from 'std-env'
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -9,6 +10,7 @@ export default defineConfig({
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
   testDir: "./tests/e2e",
+  timeout: (isWindows ? 60 : 30) * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

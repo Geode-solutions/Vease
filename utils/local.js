@@ -100,7 +100,6 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     });
-
     register_children_processes(child);
 
     // You can also use a variable to save the output for when the script closes later
@@ -117,6 +116,7 @@ async function run_script(
       //Here is the output
       data = data.toString();
       if (data.includes(expected_response)) {
+        register_children_processes(child);
         resolve(child);
       }
       console.log(data);

@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { _electron as electron } from "playwright";
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
+import { isWindows } from 'std-env'
 
 import path from "path";
 
@@ -53,7 +54,7 @@ test("App packaged", async () => {
 
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow();
-  await firstWindow.waitForTimeout(25 * 1000);
+  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000);
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   });
@@ -66,7 +67,7 @@ test("Devtools", async () => {
     await window.webContents.openDevTools();
   });
 
-  await firstWindow.waitForTimeout(25 * 1000);
+  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000);
   await expect(firstWindow).toHaveScreenshot({
     path: `devtools-${process.platform}.png`,
   });
