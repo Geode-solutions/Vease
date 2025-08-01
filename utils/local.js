@@ -145,7 +145,6 @@ async function run_back(port, data_folder_path) {
       executable_name("vease-back")
     );
     const back_port = await get_available_port(port);
-    console.log("back_port", back_port);
     const back_args = [
       "--port " + back_port,
       "--data_folder_path " + data_folder_path,
@@ -164,7 +163,6 @@ async function run_viewer(port, data_folder_path) {
       executable_name("vease-viewer")
     );
     const viewer_port = await get_available_port(port);
-    console.log("viewer_port", viewer_port);
     const viewer_args = [
       "--port " + viewer_port,
       "--data_folder_path " + data_folder_path,
