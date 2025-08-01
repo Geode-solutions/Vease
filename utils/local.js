@@ -100,7 +100,6 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     });
-
     register_children_processes(child);
 
     // You can also use a variable to save the output for when the script closes later
@@ -117,6 +116,7 @@ async function run_script(
       //Here is the output
       data = data.toString();
       if (data.includes(expected_response)) {
+        register_children_processes(child);
         resolve(child);
       }
       console.log(data);
@@ -145,6 +145,7 @@ async function run_back(port, data_folder_path) {
       executable_name("vease-back")
     );
     const back_port = await get_available_port(port);
+    console.log("back_port", back_port);
     const back_args = [
       "--port " + back_port,
       "--data_folder_path " + data_folder_path,
@@ -163,6 +164,7 @@ async function run_viewer(port, data_folder_path) {
       executable_name("vease-viewer")
     );
     const viewer_port = await get_available_port(port);
+    console.log("viewer_port", viewer_port);
     const viewer_args = [
       "--port " + viewer_port,
       "--data_folder_path " + data_folder_path,
