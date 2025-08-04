@@ -3,16 +3,19 @@
   "version": "0.0.0",
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
-    "dev:browser": "node node_scripts/browser.js",
+    "dev:browser": "node node_scripts/browser.js dev",
     "dev:desktop": "npm run dev",
     "build": "nuxi build --prerender",
-    "build_dev": "APP_ENV=development npm run build",
+    "build:browser": "BROWSER=true npm run build",
+    "preview:browser": "nuxi preview",
+    "test:browser": "node node_scripts/browser.js preview:browser",
     "generate": "nuxt generate",
     "compile_back": "node node_scripts/run_script_file.js compile back",
     "compile_viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -25,8 +28,8 @@
     "build_microservices": "npm run build_back && npm run build_viewer",
     "unpacked": "npm run build && electron-builder --dir",
     "package": "npm run build && electron-builder build --publish=never",
-    "test_e2e_browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
-    "test_e2e_desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
+    "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
+    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
   },
   "repository": {
     "type": "git",
