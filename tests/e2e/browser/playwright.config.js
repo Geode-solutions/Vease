@@ -40,17 +40,17 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
       },
     },
-    // {
-    //   name: "firefox",
-    //   use: {
-    //     ...devices["Desktop Firefox"],
-    //   },
-    // },
+    {
+      name: "firefox",
+      use: {
+        ...devices["Desktop Firefox"],
+      },
+    },
   ],
 
   webServer: {
     name: "Front",
-    command: "NODE_ENV=test npx nuxt preview ../../..",
+    command: "npm run test:browser",
     port: 3000,
     reuseExistingServer: true,
   },
