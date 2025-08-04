@@ -32,8 +32,8 @@ jobs:
       run: |
         sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
         sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
-        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e_browser
-        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e_desktop
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:browser
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:desktop
       env:
         DISPLAY: ":99"
         DEBUG: "pw:browser"
@@ -74,8 +74,8 @@ jobs:
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
     - name: Run e2e tests
       run: |
-        npm run test_e2e_browser
-        npm run test_e2e_desktop
+        npm run test:e2e:browser
+        npm run test:e2e:desktop
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
