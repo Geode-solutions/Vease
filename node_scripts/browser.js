@@ -24,7 +24,7 @@ await run_microservices();
 process.env.BROWSER = true;
 
 console.log("process.argv", process.argv);
-const nuxt_process = spawn('npm', ["run", process.argv[2]], {
+const nuxt_process = spawn("npm", ["run", process.argv[2]], {
   stdio: "inherit",
   shell: true,
 });
