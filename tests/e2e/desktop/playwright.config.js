@@ -9,7 +9,7 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
-  testDir: "./tests/e2e",
+  testDir: "./tests/e2e/desktop",
   timeout: (isWindows ? 60 : 30) * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
