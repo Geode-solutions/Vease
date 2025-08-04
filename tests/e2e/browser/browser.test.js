@@ -9,7 +9,7 @@ test("Window title", async ({ page }) => {
 test("Microservices running", async ({ page }) => {
   await page.goto("/");
   await page.setViewportSize({ width: 1200, height: 800 });
-  await page.waitForTimeout(5 * 1000);
+  await page.waitForTimeout(10 * 1000);
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   });
