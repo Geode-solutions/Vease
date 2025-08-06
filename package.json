@@ -13,7 +13,7 @@
     "dev:browser": "node node_scripts/browser.js dev",
     "dev:desktop": "npm run dev",
     "build": "nuxi build --prerender",
-    "build:browser": "export BROWSER=true && npm run build",
+    "build:browser": "BROWSER=true npm run build",
     "preview:browser": "nuxi preview",
     "test:browser": "node node_scripts/browser.js preview:browser",
     "generate": "nuxt generate",
