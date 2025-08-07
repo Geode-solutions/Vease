@@ -6,8 +6,8 @@ import {
   kill_processes,
   run_back,
   run_viewer,
-} from "/utils/local";
-import { create_new_window } from "/utils/desktop";
+} from "/utils/local.js";
+import { create_new_window } from "/utils/desktop.js";
 
 import os from "os";
 
