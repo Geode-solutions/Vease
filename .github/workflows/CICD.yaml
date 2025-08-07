@@ -22,17 +22,26 @@ jobs:
       run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Package the project
+    - name: Package the project (mode BROWSER)
+      run: |
+        npm run install_microservices
+        npm run build:browser
+    - name: Set screen resolution & run e2e tests (mode BROWSER)
+      run: |
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:browser
+      env:
+        DISPLAY: ":99"
+        DEBUG: "pw:browser"
+
+    - name: Package the project (mode DESKTOP)
       run: |
         npm run install_microservices
         npm run build_microservices
-        npm run build:browser
         npm run unpacked
-    - name: Set screen resolution & run e2e tests
+    - name: Set screen resolution & run e2e tests (mode DESKTOP)
       run: |
         sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
         sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
-        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:browser
         xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:desktop
       env:
         DISPLAY: ":99"
