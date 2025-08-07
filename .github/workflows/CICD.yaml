@@ -32,7 +32,6 @@ jobs:
       env:
         DISPLAY: ":99"
         DEBUG: "pw:browser"
-
     - name: Package the project (mode DESKTOP)
       run: |
         npm run install_microservices
