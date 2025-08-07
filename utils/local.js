@@ -9,7 +9,6 @@ const { app, dialog } = pkg;
 import { getPort } from "get-port-please";
 import pidtree from "pidtree";
 import isElectron from "is-electron";
-
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
