@@ -1,4 +1,7 @@
 <template>
+  <h1>
+    {{ useRuntimeConfig().public.BROWSER }}
+  </h1>
   <Launcher v-if="infra_store.status != Status.CREATED" />
   <v-card
     v-else
@@ -25,6 +28,11 @@
 <script setup>
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import Status from "@ogw_f/utils/status.js";
+
+console.log(
+  "useRuntimeConfig().public.BROWSER",
+  useRuntimeConfig().public.BROWSER
+);
 
 const infra_store = use_infra_store();
 const viewer_store = use_viewer_store();
