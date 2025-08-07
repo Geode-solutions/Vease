@@ -70,12 +70,18 @@ jobs:
       run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Package the project
+    - name: Package the project (mode BROWSER)
+      run: |
+        npm run install_microservices
+        npm run build:browser
+    - name: Run e2e tests (mode BROWSER)
+      run: |
+        npm run test:e2e:browser
+    - name: Package the project (mode DESKTOP)
       run: |
         dotnet tool install --global AzureSignTool --version 4.0.1
         npm run install_microservices
         npm run build_microservices
-        npm run build:browser
         npm run unpacked
       env:
         AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
@@ -83,9 +89,8 @@ jobs:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
-    - name: Run e2e tests
+    - name: Run e2e tests (mode DESKTOP)
       run: |
-        npm run test:e2e:browser
         npm run test:e2e:desktop
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
