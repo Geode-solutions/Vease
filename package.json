@@ -27,8 +27,8 @@
     "build_microservices": "npm run build_back && npm run build_viewer",
     "unpacked": "npm run build && electron-builder --dir",
     "package": "npm run build && electron-builder build --publish=never",
-    "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
-    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
+    "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.mjs",
+    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.mjs"
   },
   "repository": {
     "type": "git",
