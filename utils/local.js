@@ -171,15 +171,15 @@ async function run_viewer(port, data_folder_path) {
 }
 
 function delete_folder_recursive(data_folder_path) {
-  if (fs.existsSync(data_folder_path)) {
-    try {
-      fs.rmSync(data_folder_path, { recursive: true, force: true });
-      console.log(`Deleted folder: ${data_folder_path}`);
-    } catch (err) {
-      console.error(` Error deleting folder ${data_folder_path}:`, err);
-    }
-  } else {
+  if (!fs.existsSync(data_folder_path)) {
     console.log(` Folder ${data_folder_path} does not exist.`);
+    return;
+  }
+  try {
+    fs.rmSync(data_folder_path, { recursive: true, force: true });
+    console.log(`Deleted folder: ${data_folder_path}`);
+  } catch (err) {
+    console.error(` Error deleting folder ${data_folder_path}:`, err);
   }
 }
 
