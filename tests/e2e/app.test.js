@@ -1,9 +1,15 @@
 import { expect, test } from "@playwright/test";
 import { _electron as electron } from "playwright";
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
-import { isWindows } from 'std-env'
+import { isWindows } from "std-env";
 
 import path from "path";
+
+function getLogs(page) {
+  page.on("console", (msg) => {
+    console.log(`TEST LOG: "${msg.text()}"`);
+  });
+}
 
 let electronApp;
 test.beforeAll(async () => {
@@ -33,6 +39,11 @@ test.beforeAll(async () => {
     await window.unmaximize();
     await window.setSize(1200, 800);
   });
+});
+
+test.beforeEach(async () => {
+  const firstWindow = await electronApp.firstWindow();
+  getLogs(firstWindow);
 });
 
 test.afterAll(async () => {
