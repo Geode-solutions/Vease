@@ -2,6 +2,9 @@
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
+import { spawn } from "child_process";
+import os from "os";
+
 
 // Third party imports
 import pkg from "electron";
@@ -61,7 +64,7 @@ function create_path(path) {
 }
 
 async function get_available_port(port) {
-  const available_port = await getPort({ port, host: "localhost" });
+  const available_port = await getPort({ random: true, port, host: "localhost" });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -172,6 +175,56 @@ async function run_viewer(port, data_folder_path) {
   });
 }
 
+async function run_browser(script_name) {
+  console.log("3", script_name);
+
+  const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
+
+  async function run_microservices() {
+    const back_promise = run_back(5000, data_folder_path);
+    const viewer_promise = run_viewer(1234, data_folder_path);
+    const [back_port, viewer_port] = await Promise.all([
+      back_promise,
+      viewer_promise,
+    ]);
+    process.env.GEODE_PORT = back_port;
+    process.env.VIEWER_PORT = viewer_port;
+  }
+  await run_microservices();
+  process.env.BROWSER = true;
+  process.on("SIGINT", async () => {
+    await kill_processes();
+    console.log("Quitting Vease...");
+    process.exit(0);
+  });
+
+  console.log("process.argv", process.argv);
+
+  const nuxt_port = await get_available_port()
+  // const nuxt_port = 3210
+  console.log("nuxt_port", nuxt_port);
+  return new Promise((resolve, reject) => {
+
+    process.env.NUXT_PORT = nuxt_port
+    const nuxt_process = spawn("npm", ["run", script_name], {
+      // stdio: "pipe",
+      shell: true
+    });
+    nuxt_process.stdout.on("data", function (data) {
+      const output = data.toString();
+      console.log("NUXT OUTPUT", output);
+      const portMatch = output.match(/Accepting\ connections\ at\ http:\/\/localhost:(\d+)/);
+      if (portMatch) {
+
+        // nuxt_port = portMatch[1];
+        console.log("####################NUXT PORT", portMatch[1]);
+        resolve(portMatch[1]);
+        return;
+      }
+    })
+  })
+}
+
 export {
   create_path,
   executable_name,
@@ -182,4 +235,5 @@ export {
   run_script,
   run_back,
   run_viewer,
+  run_browser,
 };
