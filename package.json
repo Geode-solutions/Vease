@@ -30,7 +30,7 @@
     "test:windows": "npm run test:prepare && npm run test:e2e:desktop",
     "test:linux": "npm run test:prepare && sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox && sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox && DISPLAY=:99 xvfb-run -n 99 --server-args='-screen 0 1280x960x24' npm run test:e2e:desktop",
     "test:e2e:desktop": "npx playwright test",
-    "test": "cross-env-shell \"if [ $PLATFORM = win32 ]; then npm run test:windows; else npm run test:linux; fi\""
+    "test": "cross-env-shell \"if [ $PLATFORM == win32 ]; then npm run test:windows; else npm run test:linux; fi\""
   },
   "repository": {
     "type": "git",
