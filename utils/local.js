@@ -178,8 +178,8 @@ async function run_browser(script_name) {
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
   async function run_microservices() {
-    const back_promise = run_back(5000, data_folder_path);
-    const viewer_promise = run_viewer(1234, data_folder_path);
+    const back_promise = run_back(data_folder_path);
+    const viewer_promise = run_viewer(data_folder_path);
     const [back_port, viewer_port] = await Promise.all([
       back_promise,
       viewer_promise,
