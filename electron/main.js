@@ -47,5 +47,4 @@ app.on("window-all-closed", () => {
 
 app.on("quit", () => {
   console.log("Quitting Vease...");
-  delete_folder_recursive(project_folder_path);
 });
