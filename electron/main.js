@@ -18,10 +18,10 @@ const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 let mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
-  return await run_back(args[0], data_folder_path);
+  return await run_back(data_folder_path);
 });
 ipcMain.handle("run_viewer", async (_event, ...args) => {
-  return await run_viewer(args[0], data_folder_path);
+  return await run_viewer(data_folder_path);
 });
 
 ipcMain.handle("new_window", async (_event) => {
