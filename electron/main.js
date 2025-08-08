@@ -1,8 +1,10 @@
 import { app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 import {
   create_path,
+  delete_folder_recursive,
   kill_processes,
   run_back,
   run_viewer,
@@ -13,7 +15,9 @@ import os from "os";
 
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
+const uuid_project_folder = uuidv4();
+const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder);
+create_path(project_folder_path);
 
 let mainWindow = null;
 
@@ -34,6 +38,7 @@ app.whenReady().then(() => {
 
 app.on("before-quit", async function () {
   await kill_processes();
+  delete_folder_recursive(project_folder_path);
 });
 
 app.on("window-all-closed", () => {

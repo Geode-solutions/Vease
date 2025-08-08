@@ -52,12 +52,8 @@ function executable_name(name) {
 
 function create_path(path) {
   if (!fs.existsSync(path)) {
-    fs.mkdir(path, (err) => {
-      if (err) {
-        return console.error(err);
-      }
-      console.log(`${path} directory created successfully!`);
-    });
+    fs.mkdirSync(path, { recursive: true });
+    console.log(`${path} directory created successfully!`);
   }
   return path;
 }
@@ -139,7 +135,7 @@ async function run_script(
   });
 }
 
-async function run_back(data_folder_path) {
+async function run_back(project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
@@ -148,7 +144,8 @@ async function run_back(data_folder_path) {
     const back_port = await get_available_port();
     const back_args = [
       "--port " + back_port,
-      "--data_folder_path " + data_folder_path,
+      "--data_folder_path " + project_folder_path,
+      "--upload_folder_path " + path.join(project_folder_path, "uploads"),
       "--allowed_origin http://localhost:*",
       "--timeout " + 0,
     ];
@@ -199,7 +196,6 @@ async function run_browser(script_name) {
   return new Promise((resolve, reject) => {
     process.env.NUXT_PORT = nuxt_port;
     const nuxt_process = spawn("npm", ["run", script_name], {
-      // stdio: "pipe",
       shell: true,
     });
     nuxt_process.stdout.on("data", function (data) {
@@ -214,6 +210,18 @@ async function run_browser(script_name) {
     });
   });
 }
+function delete_folder_recursive(data_folder_path) {
+  if (!fs.existsSync(data_folder_path)) {
+    console.log(` Folder ${data_folder_path} does not exist.`);
+    return;
+  }
+  try {
+    fs.rmSync(data_folder_path, { recursive: true, force: true });
+    console.log(`Deleted folder: ${data_folder_path}`);
+  } catch (err) {
+    console.error(` Error deleting folder ${data_folder_path}:`, err);
+  }
+}
 
 export {
   create_path,
@@ -226,4 +234,5 @@ export {
   run_back,
   run_viewer,
   run_browser,
-};
+  delete_folder_recursive,
+}

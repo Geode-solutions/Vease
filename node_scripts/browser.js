@@ -3,8 +3,6 @@
 // Third party imports
 
 // Local imports
-import {
-  run_browser,
-} from "../utils/local.js";
+import { run_browser } from "../utils/local.js";
 
 await run_browser(process.argv[2]);
