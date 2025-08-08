@@ -77,6 +77,8 @@ jobs:
     - name: Run e2e tests (mode BROWSER)
       run: |
         npm run test:e2e:browser
+      env: 
+        DEBUG: "pw:browser"
     - name: Package the project (mode DESKTOP)
       run: |
         dotnet tool install --global AzureSignTool --version 4.0.1
