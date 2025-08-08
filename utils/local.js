@@ -2,6 +2,8 @@
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
+import { spawn } from "child_process";
+import os from "os";
 
 // Third party imports
 import pkg from "electron";
@@ -9,7 +11,6 @@ const { app, dialog } = pkg;
 import { getPort } from "get-port-please";
 import pidtree from "pidtree";
 import isElectron from "is-electron";
-
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
@@ -51,14 +52,18 @@ function executable_name(name) {
 
 function create_path(path) {
   if (!fs.existsSync(path)) {
-    fs.mkdirSync(path, { recursive: true });
-    console.log(`${path} directory created successfully!`);
+    fs.mkdir(path, (err) => {
+      if (err) {
+        return console.error(err);
+      }
+      console.log(`${path} directory created successfully!`);
+    });
   }
   return path;
 }
 
-async function get_available_port(port) {
-  const available_port = await getPort({ port, host: "localhost" });
+async function get_available_port() {
+  const available_port = await getPort({ random: true, host: "localhost" });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -134,17 +139,16 @@ async function run_script(
   });
 }
 
-async function run_back(port, project_folder_path) {
+async function run_back(data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
       executable_name("vease-back")
     );
-    const back_port = await get_available_port(port);
+    const back_port = await get_available_port();
     const back_args = [
       "--port " + back_port,
-      "--data_folder_path " + project_folder_path,
-      "--upload_folder_path " + path.join(project_folder_path, "uploads"),
+      "--data_folder_path " + data_folder_path,
       "--allowed_origin http://localhost:*",
       "--timeout " + 0,
     ];
@@ -153,13 +157,13 @@ async function run_back(port, project_folder_path) {
   });
 }
 
-async function run_viewer(port, data_folder_path) {
+async function run_viewer(data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
       executable_name("vease-viewer")
     );
-    const viewer_port = await get_available_port(port);
+    const viewer_port = await get_available_port();
     const viewer_args = [
       "--port " + viewer_port,
       "--data_folder_path " + data_folder_path,
@@ -170,6 +174,45 @@ async function run_viewer(port, data_folder_path) {
   });
 }
 
+async function run_browser(script_name) {
+  const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
+
+  async function run_microservices() {
+    const back_promise = run_back(data_folder_path);
+    const viewer_promise = run_viewer(data_folder_path);
+    const [back_port, viewer_port] = await Promise.all([
+      back_promise,
+      viewer_promise,
+    ]);
+    process.env.GEODE_PORT = back_port;
+    process.env.VIEWER_PORT = viewer_port;
+  }
+  await run_microservices();
+  process.env.BROWSER = true;
+  process.on("SIGINT", async () => {
+    await kill_processes();
+    console.log("Quitting Vease...");
+    process.exit(0);
+  });
+
+  const nuxt_port = await get_available_port();
+  return new Promise((resolve, reject) => {
+    process.env.NUXT_PORT = nuxt_port;
+    const nuxt_process = spawn("npm", ["run", script_name], {
+      shell: true,
+    });
+    nuxt_process.stdout.on("data", function (data) {
+      const output = data.toString();
+      const portMatch = output.match(
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
+      );
+      if (portMatch) {
+        resolve(portMatch[1]);
+        return;
+      }
+    });
+  });
+}
 function delete_folder_recursive(data_folder_path) {
   if (!fs.existsSync(data_folder_path)) {
     console.log(` Folder ${data_folder_path} does not exist.`);
@@ -193,5 +236,6 @@ export {
   run_script,
   run_back,
   run_viewer,
+  run_browser,
   delete_folder_recursive,
 };
