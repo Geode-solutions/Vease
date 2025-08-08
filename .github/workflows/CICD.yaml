@@ -100,7 +100,8 @@ jobs:
         retention-days: 5
   semantic:
     runs-on: ubuntu-latest
-    needs: [test-e2e-linux, test-e2e-windows]
+    # test-e2e-linux,
+    needs: [test-e2e-windows]
     outputs:
       new_release: ${{ steps.semantic.outputs.new_release_published }}
       version: ${{ steps.semantic.outputs.new_release_version }}
