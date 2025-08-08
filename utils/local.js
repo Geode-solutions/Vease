@@ -5,7 +5,6 @@ import child_process from "child_process";
 import { spawn } from "child_process";
 import os from "os";
 
-
 // Third party imports
 import pkg from "electron";
 const { app, dialog } = pkg;
@@ -63,8 +62,8 @@ function create_path(path) {
   return path;
 }
 
-async function get_available_port(port) {
-  const available_port = await getPort({ random: true, port, host: "localhost" });
+async function get_available_port() {
+  const available_port = await getPort({ random: true, host: "localhost" });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -140,13 +139,13 @@ async function run_script(
   });
 }
 
-async function run_back(port, data_folder_path) {
+async function run_back(data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
       executable_name("vease-back")
     );
-    const back_port = await get_available_port(port);
+    const back_port = await get_available_port();
     const back_args = [
       "--port " + back_port,
       "--data_folder_path " + data_folder_path,
@@ -158,13 +157,13 @@ async function run_back(port, data_folder_path) {
   });
 }
 
-async function run_viewer(port, data_folder_path) {
+async function run_viewer(data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
       executable_name("vease-viewer")
     );
-    const viewer_port = await get_available_port(port);
+    const viewer_port = await get_available_port();
     const viewer_args = [
       "--port " + viewer_port,
       "--data_folder_path " + data_folder_path,
@@ -176,13 +175,11 @@ async function run_viewer(port, data_folder_path) {
 }
 
 async function run_browser(script_name) {
-  console.log("3", script_name);
-
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
   async function run_microservices() {
-    const back_promise = run_back(5000, data_folder_path);
-    const viewer_promise = run_viewer(1234, data_folder_path);
+    const back_promise = run_back(data_folder_path);
+    const viewer_promise = run_viewer(data_folder_path);
     const [back_port, viewer_port] = await Promise.all([
       back_promise,
       viewer_promise,
@@ -198,31 +195,35 @@ async function run_browser(script_name) {
     process.exit(0);
   });
 
-  console.log("process.argv", process.argv);
-
-  const nuxt_port = await get_available_port()
-  // const nuxt_port = 3210
-  console.log("nuxt_port", nuxt_port);
+  const nuxt_port = await get_available_port();
   return new Promise((resolve, reject) => {
-
-    process.env.NUXT_PORT = nuxt_port
+    process.env.NUXT_PORT = nuxt_port;
     const nuxt_process = spawn("npm", ["run", script_name], {
-      // stdio: "pipe",
-      shell: true
+      shell: true,
     });
     nuxt_process.stdout.on("data", function (data) {
       const output = data.toString();
-      console.log("NUXT OUTPUT", output);
-      const portMatch = output.match(/Accepting\ connections\ at\ http:\/\/localhost:(\d+)/);
+      const portMatch = output.match(
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
+      );
       if (portMatch) {
-
-        // nuxt_port = portMatch[1];
-        console.log("####################NUXT PORT", portMatch[1]);
         resolve(portMatch[1]);
         return;
       }
-    })
-  })
+    });
+  });
+}
+function delete_folder_recursive(data_folder_path) {
+  if (!fs.existsSync(data_folder_path)) {
+    console.log(` Folder ${data_folder_path} does not exist.`);
+    return;
+  }
+  try {
+    fs.rmSync(data_folder_path, { recursive: true, force: true });
+    console.log(`Deleted folder: ${data_folder_path}`);
+  } catch (err) {
+    console.error(` Error deleting folder ${data_folder_path}:`, err);
+  }
 }
 
 export {
@@ -236,4 +237,5 @@ export {
   run_back,
   run_viewer,
   run_browser,
+  delete_folder_recursive,
 };
