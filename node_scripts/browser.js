@@ -23,7 +23,7 @@ async function run_microservices() {
 await run_microservices();
 process.env.BROWSER = true;
 
-const nuxt_process = spawn("npm", ["run", "dev"], {
+const nuxt_process = spawn("npm", ["run", "dev:nuxt"], {
   stdio: "inherit",
 });
 
