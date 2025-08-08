@@ -55,5 +55,7 @@ export default defineConfig({
     command: "npm run test:browser",
     port: 3000,
     reuseExistingServer: true,
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });
