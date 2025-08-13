@@ -16,16 +16,20 @@ import os from "os";
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const uuid_project_folder = uuidv4();
-const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder);
+const project_folder_path = path.join(
+  os.tmpdir(),
+  "vease",
+  uuid_project_folder
+);
 create_path(project_folder_path);
 
 let mainWindow = null;
 
 ipcMain.handle("run_back", async (_event, ...args) => {
-  return await run_back(data_folder_path);
+  return await run_back(project_folder_path);
 });
 ipcMain.handle("run_viewer", async (_event, ...args) => {
-  return await run_viewer(data_folder_path);
+  return await run_viewer(project_folder_path);
 });
 
 ipcMain.handle("new_window", async (_event) => {

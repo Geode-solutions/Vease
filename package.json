@@ -10,9 +10,9 @@
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run dev:browser",
-    "dev:browser": "node node_scripts/browser.js dev:nuxt",
-    "dev:desktop": "npm run dev:nuxt",
-    "dev:nuxt": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
+    "dev:browser": "node node_scripts/browser.js dev_nuxt",
+    "dev:desktop": "npm run dev_nuxt",
+    "dev_nuxt": "npm run clean_cache & npx nuxi@3.11.0 dev --no-fork",
     "build": "nuxi build --prerender",
     "build:browser": "cross-env BROWSER=true npm run build",
     "preview:browser": "nuxi preview",
@@ -64,6 +64,8 @@
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-front": "9.11.0-rc.3",
+    "@geode/opengeodeweb-back": "5.10.0-rc.1",
+    "@geode/opengeodeweb-viewer": "1.10.1-rc.1",
     "@geode/vease-back": "1.4.15",
     "@geode/vease-viewer": "2.3.13",
     "broadcast-channel": "7.1.0",
