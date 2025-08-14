@@ -22,16 +22,26 @@ jobs:
       run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Package the project
+    - name: Package the project (mode BROWSER)
+      run: |
+        npm run install_microservices
+        npm run build:browser
+    - name: Set screen resolution & run e2e tests (mode BROWSER)
+      run: |
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:browser
+      env:
+        DISPLAY: ":99"
+        DEBUG: "pw:browser"
+    - name: Package the project (mode DESKTOP)
       run: |
         npm run install_microservices
         npm run build_microservices
         npm run unpacked
-    - name: Set screen resolution & run e2e tests
+    - name: Set screen resolution & run e2e tests (mode DESKTOP)
       run: |
         sudo chown root:root ./release/0.0.0/linux-unpacked/chrome-sandbox
         sudo chmod 4755 ./release/0.0.0/linux-unpacked/chrome-sandbox
-        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test_e2e_desktop
+        xvfb-run -n 99 --server-args="-screen 0 1280x960x24" npm run test:e2e:desktop
       env:
         DISPLAY: ":99"
         DEBUG: "pw:browser"
@@ -42,8 +52,11 @@ jobs:
         path: playwright-report/
         retention-days: 5
 
-  test-e2e-windows:
+  test-e2e-browser-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
@@ -57,7 +70,41 @@ jobs:
       run: npm i
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Package the project
+    - name: Package the project (mode BROWSER)
+      run: |
+        npm run install_microservices
+        npm run build:browser
+    - name: Run e2e tests (mode BROWSER)
+      run: |
+        npm run test:e2e:browser
+      env: 
+        DEBUG: "pw:browser"
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report-windows-browser
+        path: playwright-report/
+        retention-days: 5
+
+  test-e2e-desktop-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install dependencies
+      run: npm i
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Package the project (mode DESKTOP)
       run: |
         dotnet tool install --global AzureSignTool --version 4.0.1
         npm run install_microservices
@@ -69,18 +116,18 @@ jobs:
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         AZURE_CERT_NAME: ${{ secrets.AZURE_CERT_NAME }}
-    - name: Run e2e tests
+    - name: Run e2e tests (mode DESKTOP)
       run: |
-        npm run test_e2e_desktop
+        npm run test:e2e:desktop
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report-windows
+        name: playwright-report-windows-desktop
         path: playwright-report/
         retention-days: 5
   semantic:
     runs-on: ubuntu-latest
-    needs: [test-e2e-linux, test-e2e-windows]
+    needs: [test-e2e-linux,test-e2e-browser-windows,test-e2e-desktop-windows]
     outputs:
       new_release: ${{ steps.semantic.outputs.new_release_published }}
       version: ${{ steps.semantic.outputs.new_release_version }}
@@ -95,6 +142,9 @@ jobs:
 
   release:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     needs: [semantic]
     if: needs.semantic.outputs.new_release == 'true'
     strategy:
@@ -116,7 +166,6 @@ jobs:
           npm run install_microservices
           npm run build_microservices
           npm run package
-        shell: bash
         env:
           AZURE_KEY_VAULT_URI: ${{ secrets.AZURE_KEY_VAULT_URI }}
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -127,7 +176,6 @@ jobs:
         run: |
           cd release/${{ needs.semantic.outputs.version }}
           gh release upload v${{ needs.semantic.outputs.version }} vease* latest* --clobber
-        shell: bash
 
   merge:
     runs-on: ubuntu-latest

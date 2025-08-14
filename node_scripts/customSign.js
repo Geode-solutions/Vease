@@ -1,4 +1,4 @@
-const child_process = require("child_process");
+import child_process from "child_process";
 
 exports.default = async function (configuration) {
   console.log("customSign", configuration);

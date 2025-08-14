@@ -1,4 +1,5 @@
-const axios = require("axios")
+import axios from "axios"
+
 exports.handler = async function (event) {
   try {
     const response = await axios
