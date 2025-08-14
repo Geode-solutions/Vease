@@ -5,7 +5,6 @@ import child_process from "child_process";
 import { spawn } from "child_process";
 import os from "os";
 
-
 // Third party imports
 import pkg from "electron";
 const { app, dialog } = pkg;
@@ -64,7 +63,11 @@ function create_path(path) {
 }
 
 async function get_available_port(port) {
-  const available_port = await getPort({ random: true, port, host: "localhost" });
+  const available_port = await getPort({
+    random: true,
+    port,
+    host: "localhost",
+  });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -200,29 +203,25 @@ async function run_browser(script_name) {
 
   console.log("process.argv", process.argv);
 
-  const nuxt_port = await get_available_port()
-  // const nuxt_port = 3210
+  const nuxt_port = await get_available_port();
   console.log("nuxt_port", nuxt_port);
   return new Promise((resolve, reject) => {
-
-    process.env.NUXT_PORT = nuxt_port
+    process.env.NUXT_PORT = nuxt_port;
     const nuxt_process = spawn("npm", ["run", script_name], {
-      // stdio: "pipe",
-      shell: true
+      shell: true,
     });
     nuxt_process.stdout.on("data", function (data) {
       const output = data.toString();
       console.log("NUXT OUTPUT", output);
-      const portMatch = output.match(/Accepting\ connections\ at\ http:\/\/localhost:(\d+)/);
+      const portMatch = output.match(
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
+      );
       if (portMatch) {
-
-        // nuxt_port = portMatch[1];
-        console.log("####################NUXT PORT", portMatch[1]);
         resolve(portMatch[1]);
         return;
       }
-    })
-  })
+    });
+  });
 }
 
 export {
