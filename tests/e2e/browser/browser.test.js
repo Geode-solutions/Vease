@@ -8,14 +8,14 @@ import { isWindows } from "std-env";
 import { run_browser } from "../../../utils/local.js";
 var NUXT_PORT;
 function getLogs(page) {
-  page.on("console", (msg) => {
+  page.on('console', msg => {
     console.log(`PAGE LOG: "${msg.text()}"`);
   });
 }
 
 test.beforeAll(async () => {
   NUXT_PORT = await run_browser(`test:browser`);
-  console.log("NUXT_PORT", NUXT_PORT);
+  console.log("TEST NUXT_PORT", NUXT_PORT);
 });
 
 test.beforeEach(async ({ page }) => {
