@@ -229,7 +229,6 @@ async function run_browser(script_name) {
       );
       if (portMatch) {
         resolve(portMatch[1]);
-        return;
       }
     });
   });
