@@ -15,7 +15,6 @@ function getLogs(page) {
 
 test.beforeAll(async () => {
   NUXT_PORT = await run_browser(`test:browser`);
-  console.log("TEST NUXT_PORT", NUXT_PORT);
 });
 
 test.beforeEach(async ({ page }) => {

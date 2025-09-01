@@ -30,8 +30,6 @@ function execRun(cmd) {
 console.log("process.argv", process.argv);
 
 var script_name = process.argv[2];
-console.log("script_name", script_name);
-
 var command;
 if (process.platform === "win32") {
   command =

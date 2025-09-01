@@ -1,7 +1,5 @@
 import package_json from "./package.json";
 
-console.log("process.env.BROWSER", process.env.BROWSER);
-
 export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,

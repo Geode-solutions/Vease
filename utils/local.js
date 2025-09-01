@@ -15,7 +15,6 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
-console.log("__dirname", __dirname);
 
 // Global variables
 var processes = [];
@@ -83,7 +82,6 @@ async function kill_processes() {
 function register_children_processes(proc) {
   pidtree(proc.pid, { root: true }, function (err, pids) {
     if (err) console.log("err", err);
-    console.log("pids", pids);
     processes.push(...pids);
   });
 }
@@ -178,20 +176,18 @@ async function run_viewer(port, data_folder_path) {
 
 function delete_folder_recursive(data_folder_path) {
   if (!fs.existsSync(data_folder_path)) {
-    console.log(` Folder ${data_folder_path} does not exist.`);
+    console.log(`Folder ${data_folder_path} does not exist.`);
     return;
   }
   try {
     fs.rmSync(data_folder_path, { recursive: true, force: true });
     console.log(`Deleted folder: ${data_folder_path}`);
   } catch (err) {
-    console.error(` Error deleting folder ${data_folder_path}:`, err);
+    console.error(`Error deleting folder ${data_folder_path}:`, err);
   }
 }
 
 async function run_browser(script_name) {
-  console.log("script_name", script_name);
-
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
   async function run_microservices() {
