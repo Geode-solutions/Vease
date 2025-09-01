@@ -8,7 +8,7 @@ import { isWindows } from "std-env";
 import { run_browser } from "../../../utils/local.js";
 var NUXT_PORT;
 function getLogs(page) {
-  page.on('console', msg => {
+  page.on("console", (msg) => {
     console.log(`PAGE LOG: "${msg.text()}"`);
   });
 }
@@ -29,7 +29,7 @@ test("Window title", async ({ page }) => {
 });
 
 test("Microservices running", async ({ page }) => {
-  await page.waitForTimeout((isWindows ? 15 : 10) * 1000);
+  await page.waitForTimeout((isWindows ? 30 : 15) * 1000);
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   });
