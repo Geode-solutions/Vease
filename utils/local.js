@@ -52,12 +52,8 @@ function executable_name(name) {
 
 function create_path(path) {
   if (!fs.existsSync(path)) {
-    fs.mkdir(path, (err) => {
-      if (err) {
-        return console.error(err);
-      }
-      console.log(`${path} directory created successfully!`);
-    });
+    fs.mkdirSync(path, { recursive: true });
+    console.log(`${path} directory created successfully!`);
   }
   return path;
 }
@@ -87,6 +83,7 @@ async function kill_processes() {
 function register_children_processes(proc) {
   pidtree(proc.pid, { root: true }, function (err, pids) {
     if (err) console.log("err", err);
+    console.log("pids", pids);
     processes.push(...pids);
   });
 }
@@ -143,7 +140,7 @@ async function run_script(
   });
 }
 
-async function run_back(port, data_folder_path) {
+async function run_back(port, project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
@@ -152,7 +149,8 @@ async function run_back(port, data_folder_path) {
     const back_port = await get_available_port(port);
     const back_args = [
       "--port " + back_port,
-      "--data_folder_path " + data_folder_path,
+      "--data_folder_path " + project_folder_path,
+      "--upload_folder_path " + path.join(project_folder_path, "uploads"),
       "--allowed_origin http://localhost:*",
       "--timeout " + 0,
     ];
@@ -178,8 +176,21 @@ async function run_viewer(port, data_folder_path) {
   });
 }
 
+function delete_folder_recursive(data_folder_path) {
+  if (!fs.existsSync(data_folder_path)) {
+    console.log(` Folder ${data_folder_path} does not exist.`);
+    return;
+  }
+  try {
+    fs.rmSync(data_folder_path, { recursive: true, force: true });
+    console.log(`Deleted folder: ${data_folder_path}`);
+  } catch (err) {
+    console.error(` Error deleting folder ${data_folder_path}:`, err);
+  }
+}
+
 async function run_browser(script_name) {
-  console.log("3", script_name);
+  console.log("script_name", script_name);
 
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
 
@@ -226,6 +237,7 @@ async function run_browser(script_name) {
 
 export {
   create_path,
+  delete_folder_recursive,
   executable_name,
   executable_path,
   get_available_port,
