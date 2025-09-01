@@ -2,6 +2,8 @@
 import fs from "fs";
 import path from "path";
 import child_process from "child_process";
+import { spawn } from "child_process";
+import os from "os";
 
 // Third party imports
 import pkg from "electron";
@@ -9,7 +11,6 @@ const { app, dialog } = pkg;
 import { getPort } from "get-port-please";
 import pidtree from "pidtree";
 import isElectron from "is-electron";
-
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
@@ -58,7 +59,11 @@ function create_path(path) {
 }
 
 async function get_available_port(port) {
-  const available_port = await getPort({ port, host: "localhost" });
+  const available_port = await getPort({
+    random: true,
+    port,
+    host: "localhost",
+  });
   console.log("available_port", available_port);
   return available_port;
 }
@@ -78,6 +83,7 @@ async function kill_processes() {
 function register_children_processes(proc) {
   pidtree(proc.pid, { root: true }, function (err, pids) {
     if (err) console.log("err", err);
+    console.log("pids", pids);
     processes.push(...pids);
   });
 }
@@ -183,8 +189,54 @@ function delete_folder_recursive(data_folder_path) {
   }
 }
 
+async function run_browser(script_name) {
+  console.log("script_name", script_name);
+
+  const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
+
+  async function run_microservices() {
+    const back_promise = run_back(5000, data_folder_path);
+    const viewer_promise = run_viewer(1234, data_folder_path);
+    const [back_port, viewer_port] = await Promise.all([
+      back_promise,
+      viewer_promise,
+    ]);
+    process.env.GEODE_PORT = back_port;
+    process.env.VIEWER_PORT = viewer_port;
+  }
+  await run_microservices();
+  process.env.BROWSER = true;
+  process.on("SIGINT", async () => {
+    await kill_processes();
+    console.log("Quitting Vease...");
+    process.exit(0);
+  });
+
+  console.log("process.argv", process.argv);
+
+  const nuxt_port = await get_available_port();
+  console.log("nuxt_port", nuxt_port);
+  return new Promise((resolve, reject) => {
+    process.env.NUXT_PORT = nuxt_port;
+    const nuxt_process = spawn("npm", ["run", script_name], {
+      shell: true,
+    });
+    nuxt_process.stdout.on("data", function (data) {
+      const output = data.toString();
+      console.log("NUXT OUTPUT", output);
+      const portMatch = output.match(
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
+      );
+      if (portMatch) {
+        resolve(portMatch[1]);
+      }
+    });
+  });
+}
+
 export {
   create_path,
+  delete_folder_recursive,
   executable_name,
   executable_path,
   get_available_port,
@@ -193,5 +245,5 @@ export {
   run_script,
   run_back,
   run_viewer,
-  delete_folder_recursive,
+  run_browser,
 };

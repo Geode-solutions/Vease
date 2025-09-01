@@ -89,7 +89,7 @@ opengeode-io==7.3.2
     #   vease-back
 opengeodeweb-back==5.10.0rc5
     # via vease-back
-vease-back==1.6.0rc2
+vease-back==1.6.0rc3
     # via -r microservices/back/requirements.in
 werkzeug==3.0.3
     # via

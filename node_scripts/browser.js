@@ -1,34 +1,10 @@
+// Standard library imports
+
+// Third party imports
+
+// Local imports
 import {
-  create_path,
-  kill_processes,
-  run_back,
-  run_viewer,
+  run_browser,
 } from "../utils/local.js";
-import { spawn } from "child_process";
-import path from "path";
-import os from "os";
 
-const data_folder_path = create_path(path.join(os.tmpdir(), "vease"));
-
-async function run_microservices() {
-  const back_promise = run_back(5000, data_folder_path);
-  const viewer_promise = run_viewer(1234, data_folder_path);
-  const [back_port, viewer_port] = await Promise.all([
-    back_promise,
-    viewer_promise,
-  ]);
-  process.env.GEODE_PORT = back_port;
-  process.env.VIEWER_PORT = viewer_port;
-}
-await run_microservices();
-process.env.BROWSER = true;
-
-const nuxt_process = spawn("npm", ["run", "dev:nuxt"], {
-  stdio: "inherit",
-});
-
-process.on("SIGINT", async () => {
-  await kill_processes();
-  console.log("Quitting Vease...");
-  process.exit(0);
-});
+await run_browser(process.argv[2]);

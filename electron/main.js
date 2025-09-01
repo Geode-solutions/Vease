@@ -8,15 +8,19 @@ import {
   run_back,
   run_viewer,
   delete_folder_recursive,
-} from "/utils/local";
-import { create_new_window } from "/utils/desktop";
+} from "/utils/local.js";
+import { create_new_window } from "/utils/desktop.js";
 
 import os from "os";
 
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 const uuid_project_folder = uuidv4();
-const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder);
+const project_folder_path = path.join(
+  os.tmpdir(),
+  "vease",
+  uuid_project_folder
+);
 create_path(project_folder_path);
 
 let mainWindow = null;

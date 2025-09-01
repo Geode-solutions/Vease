@@ -1,22 +1,11 @@
 <template>
   <Launcher v-if="infra_store.status != Status.CREATED" />
-  <v-card
-    v-else
-    ref="cardContainer"
-    style="height: 100%; width: 100%; border-radius: 15px"
-    @click.right="openMenu"
-  >
+  <v-card v-else ref="cardContainer" style="height: 100%; width: 100%; border-radius: 15px" @click.right="openMenu">
     <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree />
-        <ViewerContextMenu
-          v-if="display_menu"
-          :id="menuStore.current_id || id"
-          :x="menuStore.menuX"
-          :y="menuStore.menuY"
-          :containerWidth="containerWidth"
-          :containerHeight="containerHeight"
-        />
+        <ContextMenu v-if="display_menu" :id="menuStore.current_id || id" :x="menuStore.menuX" :y="menuStore.menuY"
+          :containerWidth="containerWidth" :containerHeight="containerHeight" />
       </template>
     </HybridRenderingView>
   </v-card>
