@@ -1,6 +1,6 @@
-const child_process = require("child_process");
+import child_process from "child_process";
 
-exports.default = async function (configuration) {
+export default async function (configuration) {
   console.log("customSign", configuration);
 
   child_process.execSync(
@@ -14,4 +14,4 @@ exports.default = async function (configuration) {
     -v ${configuration.path}`,
     { stdio: "inherit" }
   );
-};
+}

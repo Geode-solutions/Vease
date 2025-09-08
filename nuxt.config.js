@@ -102,7 +102,6 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
-
   devtools: {
     enabled: process.env.NODE_ENV === "production" ? false : true,
   },
@@ -114,7 +113,12 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front"],
+      include: [
+        "@geode/opengeodeweb-front",
+        "@kitware/vtk.js",
+        "xmlbuilder2",
+        "spark-md5",
+      ],
     },
     watch: {
       ignored: ["**"],

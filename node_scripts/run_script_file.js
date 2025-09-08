@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+import { exec } from "child_process";
 
 function execRun(cmd) {
   return new Promise((resolve, reject) => {
@@ -30,13 +30,11 @@ function execRun(cmd) {
 console.log("process.argv", process.argv);
 
 var script_name = process.argv[2];
-console.log("script_name", script_name);
-
 var command;
 if (process.platform === "win32") {
   command =
-    `powershell.exe ./electron-server/${script_name}.ps1 ` + process.argv[3];
+    `powershell.exe ./microservices/${script_name}.ps1 ` + process.argv[3];
 } else if (process.platform === "linux") {
-  command = `bash ./electron-server/${script_name}.sh ` + process.argv[3];
+  command = `bash ./microservices/${script_name}.sh ` + process.argv[3];
 }
 execRun(command);
