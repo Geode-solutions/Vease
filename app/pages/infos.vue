@@ -158,8 +158,8 @@ import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
 import Status from "@ogw_f/utils/status.js";
 
 const version = useRuntimeConfig().public.VERSION;
-const geode_store = use_geode_store();
-const viewer_store = use_viewer_store();
+const geode_store = useGeodeStore();
+const viewer_store = useViewerStore();
 
 const packages_versions = ref([]);
 const back_version = ref("");
