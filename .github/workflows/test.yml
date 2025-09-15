@@ -13,4 +13,5 @@ jobs:
       repos: ${{ vars.REPOS }}
       node: false
       browser: true
+      desktop: true
     secrets: inherit
