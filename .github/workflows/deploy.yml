@@ -1,0 +1,11 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: Geode-solutions/actions/.github/workflows/js-deploy.yml@master
+    with:
+      repos: ${{ vars.REPOS }}
+    secrets: inherit
