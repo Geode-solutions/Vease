@@ -1,11 +1,22 @@
 <template>
   <Launcher v-if="infra_store.status != Status.CREATED" />
-  <v-card v-else ref="cardContainer" style="height: 100%; width: 100%; border-radius: 15px" @click.right="openMenu">
+  <v-card
+    v-else
+    ref="cardContainer"
+    style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
+    @click.right="openMenu"
+  >
     <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree />
-        <ContextMenu v-if="display_menu" :id="menuStore.current_id || id" :x="menuStore.menuX" :y="menuStore.menuY"
-          :containerWidth="containerWidth" :containerHeight="containerHeight" />
+        <ViewerContextMenu
+          v-if="display_menu"
+          :id="menuStore.current_id || id"
+          :x="menuStore.menuX"
+          :y="menuStore.menuY"
+          :containerWidth="containerWidth"
+          :containerHeight="containerHeight"
+        />
       </template>
     </HybridRenderingView>
   </v-card>
@@ -15,8 +26,8 @@
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
-const infra_store = use_infra_store();
-const viewer_store = use_viewer_store();
+const infra_store = useInfraStore();
+const viewer_store = useViewerStore();
 const menuStore = useMenuStore();
 const dataStyleStore = useDataStyleStore();
 
@@ -46,6 +57,7 @@ async function get_viewer_id(x, y) {
 }
 
 async function openMenu(event) {
+  event.preventDefault();
   menuX.value = event.clientX;
   menuY.value = event.clientY;
 

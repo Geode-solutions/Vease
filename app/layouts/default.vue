@@ -82,7 +82,7 @@
 
 <script setup>
 const UIStore = useUIStore();
-const infra_store = use_infra_store();
+const infra_store = useInfraStore();
 
 const handleMouseMove = (e) => {
   const screenWidth = window.innerWidth;

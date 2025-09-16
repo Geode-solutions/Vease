@@ -52,7 +52,7 @@
 
 <script setup>
 const UIStore = useUIStore();
-const feedback_store = use_feedback_store();
+const feedback_store = useFeedbackStore();
 
 const isDragging = ref(false);
 let dragLeaveTimeout = null;
