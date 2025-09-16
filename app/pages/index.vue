@@ -3,7 +3,7 @@
   <v-card
     v-else
     ref="cardContainer"
-    style="height: 100%; width: 100%; border-radius: 15px"
+    style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
     @click.right="openMenu"
   >
     <HybridRenderingView>
