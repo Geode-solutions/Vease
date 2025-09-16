@@ -50,16 +50,16 @@
 </template>
 
 <script setup>
-import logo from "@vease/assets/img/logo.png";
+  import logo from "@vease/assets/img/logo.png"
 
-const search = ref("");
-const userStore = useUserStore();
-const { profileImagePath } = storeToRefs(userStore);
+  const search = ref("")
+  const userStore = useUserStore()
+  const { profileImagePath } = storeToRefs(userStore)
 
-const getProfileImage = (path) => {
-  if (path) {
-    return URL.createObjectURL(path);
+  const getProfileImage = (path) => {
+    if (path) {
+      return URL.createObjectURL(path)
+    }
+    return ""
   }
-  return "";
-};
 </script>

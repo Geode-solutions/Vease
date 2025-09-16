@@ -1,7 +1,7 @@
 // @ts-check
-import { fileURLToPath } from "node:url";
-import { defineConfig, devices } from "@playwright/test";
-import { isWindows } from "std-env";
+import { fileURLToPath } from "node:url"
+import { defineConfig, devices } from "@playwright/test"
+import { isWindows } from "std-env"
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -49,4 +49,4 @@ export default defineConfig({
     //   },
     // },
   ],
-});
+})
