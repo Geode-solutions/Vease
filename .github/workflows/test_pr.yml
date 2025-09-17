@@ -9,7 +9,4 @@ jobs:
     uses: Geode-solutions/actions/.github/workflows/js-test-pr.yml@master
     with:
       repos: ${{ vars.REPOS }}
-      node: false
-      browser: true
-      desktop: true
     secrets: inherit
