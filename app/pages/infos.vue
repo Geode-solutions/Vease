@@ -1,6 +1,12 @@
 <template>
   <v-card
-    style="height: 100%; width: 100%; overflow-y: auto; border-radius: 10px"
+    style="
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      max-height: calc(100vh - 75px);
+      border-radius: 10px;
+    "
     class="bg-primary"
   >
     <v-container>
@@ -158,8 +164,8 @@ import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
 import Status from "@ogw_f/utils/status.js";
 
 const version = useRuntimeConfig().public.VERSION;
-const geode_store = use_geode_store();
-const viewer_store = use_viewer_store();
+const geode_store = useGeodeStore();
+const viewer_store = useViewerStore();
 
 const packages_versions = ref([]);
 const back_version = ref("");
