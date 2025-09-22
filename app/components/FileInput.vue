@@ -12,32 +12,32 @@
 </template>
 
 <script>
-export default {
-  props: {
-    value: {
-      type: File,
-      required: true,
+  export default {
+    props: {
+      value: {
+        type: File,
+        required: true,
+      },
+      rules: {
+        type: Array,
+        default: () => [],
+      },
+      label: {
+        type: String,
+        required: true,
+      },
+      required: {
+        type: Boolean,
+        default: false,
+      },
+      prependIcon: {
+        type: String,
+        default: null,
+      },
+      accept: {
+        type: String,
+        default: null,
+      },
     },
-    rules: {
-      type: Array,
-      default: () => [],
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-      default: false,
-    },
-    prependIcon: {
-      type: String,
-      default: null,
-    },
-    accept: {
-      type: String,
-      default: null,
-    },
-  },
-};
+  }
 </script>

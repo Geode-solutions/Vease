@@ -1,0 +1,14 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - next
+
+jobs:
+  test:
+    uses: Geode-solutions/actions/.github/workflows/js-test.yml@master
+    with:
+      repos: ${{ vars.REPOS }}
+    secrets: inherit

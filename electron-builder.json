@@ -4,25 +4,14 @@
   "directories": {
     "output": "release/${version}"
   },
-  "files": [
-    ".output/**/*",
-    "dist-electron"
-  ],
-  "extraResources": [
-    "./vease-back*",
-    "./vease-viewer*"
-  ],
+  "files": [".output/**/*", "dist-electron"],
+  "extraResources": ["./vease-back*", "./vease-viewer*"],
   "linux": {
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",
     "category": "Science",
-    "target": [
-      "AppImage",
-      "zip"
-    ],
-    "publish": [
-      "github"
-    ]
+    "target": ["AppImage", "zip"],
+    "publish": ["github"]
   },
   "win": {
     "artifactName": "${productName}_${platform}.${ext}",
@@ -30,13 +19,8 @@
     "signtoolOptions": {
       "sign": "./node_scripts/customSign.js"
     },
-    "target": [
-      "nsis",
-      "zip"
-    ],
-    "publish": [
-      "github"
-    ]
+    "target": ["nsis", "zip"],
+    "publish": ["github"]
   },
   "publish": [
     {

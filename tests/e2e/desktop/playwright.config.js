@@ -1,6 +1,6 @@
 // @ts-check
-import { defineConfig } from "@playwright/test";
-import { isWindows } from "std-env";
+import { defineConfig } from "@playwright/test"
+import { isWindows } from "std-env"
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -29,4 +29,4 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
-});
+})
