@@ -12,33 +12,33 @@
 </template>
 
 <script>
-export default {
-  props: {
-    value: {
-      type: String,
-      required: true,
+  export default {
+    props: {
+      value: {
+        type: String,
+        required: true,
+      },
+      rules: {
+        type: Array,
+        default: () => [],
+      },
+      label: {
+        type: String,
+        required: true,
+      },
+      required: {
+        type: Boolean,
+        default: false,
+      },
+      toggleVisibility: {
+        type: Function,
+        required: true,
+      },
     },
-    rules: {
-      type: Array,
-      default: () => [],
+    data() {
+      return {
+        showPassword: false,
+      }
     },
-    label: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-      default: false,
-    },
-    toggleVisibility: {
-      type: Function,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      showPassword: false,
-    };
-  },
-};
+  }
 </script>

@@ -1,34 +1,34 @@
 export const useUIStore = defineStore("UI", () => {
-  const showDropZone = ref(false);
-  const showStepper = ref(false);
-  const droppedFiles = ref([]);
-  const showButton = ref(false);
-  const showStepImportMenu = ref(false);
-  const showCreatePointMenu = ref(false);
+  const showDropZone = ref(false)
+  const showStepper = ref(false)
+  const droppedFiles = ref([])
+  const showButton = ref(false)
+  const showStepImportMenu = ref(false)
+  const showCreatePointMenu = ref(false)
 
   function disableDropZone() {
-    showDropZone.value = false;
+    showDropZone.value = false
   }
   function setShowDropZone(value) {
-    showDropZone.value = value;
+    showDropZone.value = value
   }
   function setShowStepper(value) {
-    showStepper.value = value;
+    showStepper.value = value
   }
   function setDroppedFiles(files) {
-    droppedFiles.value = files;
+    droppedFiles.value = files
   }
   function setShowButton(value) {
-    showButton.value = value;
+    showButton.value = value
   }
 
   function toggleDrawer() {
-    droppedFiles.value = [];
-    showStepper.value = !showStepper.value;
+    droppedFiles.value = []
+    showStepper.value = !showStepper.value
   }
 
   function setShowCreatePointMenu(value) {
-    showCreatePointMenu.value = value;
+    showCreatePointMenu.value = value
   }
 
   return {
@@ -45,5 +45,5 @@ export const useUIStore = defineStore("UI", () => {
     setShowButton,
     toggleDrawer,
     setShowCreatePointMenu,
-  };
-});
+  }
+})

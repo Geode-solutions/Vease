@@ -67,112 +67,112 @@
 </template>
 
 <script setup>
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
+  import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
+  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
 
-const UIStore = useUIStore();
-const dataBaseStore = useDataBaseStore();
+  const UIStore = useUIStore()
+  const dataBaseStore = useDataBaseStore()
 
-const props = defineProps({
-  id: { type: String, required: true },
-});
+  const props = defineProps({
+    id: { type: String, required: true },
+  })
 
-const point = ref({
-  title: "",
-  x: "",
-  y: "",
-  z: "",
-});
+  const point = ref({
+    title: "",
+    x: "",
+    y: "",
+    z: "",
+  })
 
-const loading = ref(false);
+  const loading = ref(false)
 
-const isFormFilled = computed(() => {
-  return point.value.title && point.value.x && point.value.y && point.value.z;
-});
+  const isFormFilled = computed(() => {
+    return point.value.title && point.value.x && point.value.y && point.value.z
+  })
 
-const closeDrawer = () => {
-  UIStore.setShowCreatePointMenu(false);
-};
-
-async function createPoint() {
-  if (!isFormFilled.value) return;
-
-  if (
-    validate_schema(back_schemas.opengeodeweb_back.create_point, point.value)
-  ) {
-    loading.value = true;
-    try {
-      await api_fetch(
-        {
-          schema: back_schemas.opengeodeweb_back.create_point,
-          params: {
-            x: parseFloat(point.value.x),
-            y: parseFloat(point.value.y),
-            z: parseFloat(point.value.z),
-            title: point.value.title,
-          },
-        },
-        {
-          response_function: async (response) => {
-            await viewer_call(
-              {
-                schema: viewer_schemas.opengeodeweb_viewer.generic.register,
-                params: {
-                  id: response._data.id,
-                  file_name: response._data.viewable_file_name,
-                  viewer_object: response._data.object_type,
-                },
-              },
-              {
-                response_function: async () => {
-                  await dataBaseStore.addItem(response._data.id, {
-                    object_type: response._data.object_type,
-                    geode_object: response._data.geode_object,
-                    native_filename: response._data.native_file_name,
-                    viewable_filename: response._data.viewable_file_name,
-                    name: response._data.name,
-                  });
-                  closeDrawer();
-                },
-              }
-            );
-          },
-        }
-      );
-    } finally {
-      loading.value = false;
-    }
-  }
-}
-
-const handlePaste = (event) => {
-  const pastedText = event.clipboardData.getData("text");
-  const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
-
-  if (coordinates && coordinates.length >= 3) {
-    [point.value.x, point.value.y, point.value.z] = coordinates.slice(0, 3);
+  const closeDrawer = () => {
+    UIStore.setShowCreatePointMenu(false)
   }
 
-  event.preventDefault();
-};
+  async function createPoint() {
+    if (!isFormFilled.value) return
 
-const sanitizeInput = (event, label) => {
-  let value = event.target.value
-    .replace(/,/g, ".")
-    .replace(/[^0-9eE+\-.]/g, "");
-
-  if (/[eE]/.test(value)) {
-    const parts = value.split(/[eE]/);
-    if (parts.length > 2) {
-      value =
-        parts.slice(0, 2).join("e") +
-        parts
-          .slice(2)
-          .join("")
-          .replace(/[^0-9+\-.]/g, "");
+    if (
+      validate_schema(back_schemas.opengeodeweb_back.create_point, point.value)
+    ) {
+      loading.value = true
+      try {
+        await api_fetch(
+          {
+            schema: back_schemas.opengeodeweb_back.create_point,
+            params: {
+              x: parseFloat(point.value.x),
+              y: parseFloat(point.value.y),
+              z: parseFloat(point.value.z),
+              title: point.value.title,
+            },
+          },
+          {
+            response_function: async (response) => {
+              await viewer_call(
+                {
+                  schema: viewer_schemas.opengeodeweb_viewer.generic.register,
+                  params: {
+                    id: response._data.id,
+                    file_name: response._data.viewable_file_name,
+                    viewer_object: response._data.object_type,
+                  },
+                },
+                {
+                  response_function: async () => {
+                    await dataBaseStore.addItem(response._data.id, {
+                      object_type: response._data.object_type,
+                      geode_object: response._data.geode_object,
+                      native_filename: response._data.native_file_name,
+                      viewable_filename: response._data.viewable_file_name,
+                      name: response._data.name,
+                    })
+                    closeDrawer()
+                  },
+                },
+              )
+            },
+          },
+        )
+      } finally {
+        loading.value = false
+      }
     }
   }
 
-  point.value[label] = value;
-};
+  const handlePaste = (event) => {
+    const pastedText = event.clipboardData.getData("text")
+    const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
+
+    if (coordinates && coordinates.length >= 3) {
+      ;[point.value.x, point.value.y, point.value.z] = coordinates.slice(0, 3)
+    }
+
+    event.preventDefault()
+  }
+
+  const sanitizeInput = (event, label) => {
+    let value = event.target.value
+      .replace(/,/g, ".")
+      .replace(/[^0-9eE+\-.]/g, "")
+
+    if (/[eE]/.test(value)) {
+      const parts = value.split(/[eE]/)
+      if (parts.length > 2) {
+        value =
+          parts.slice(0, 2).join("e") +
+          parts
+            .slice(2)
+            .join("")
+            .replace(/[^0-9+\-.]/g, "")
+      }
+    }
+
+    point.value[label] = value
+  }
 </script>

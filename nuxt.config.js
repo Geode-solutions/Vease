@@ -1,4 +1,4 @@
-import package_json from "./package.json";
+import package_json from "./package.json"
 
 export default defineNuxtConfig({
   future: {
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
       {
         entry: "electron/preload.js",
         onstart(args) {
-          args.reload();
+          args.reload()
         },
       },
     ],
@@ -132,4 +132,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-03-27",
-});
+})
