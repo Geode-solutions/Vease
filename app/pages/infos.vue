@@ -1,6 +1,12 @@
 <template>
   <v-card
-    style="height: 100%; width: 100%; overflow-y: auto; border-radius: 10px"
+    style="
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      max-height: calc(100vh - 75px);
+      border-radius: 10px;
+    "
     class="bg-primary"
   >
     <v-container>

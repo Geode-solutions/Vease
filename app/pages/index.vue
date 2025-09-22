@@ -9,7 +9,7 @@
     <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree />
-        <ContextMenu
+        <ViewerContextMenu
           v-if="display_menu"
           :id="menuStore.current_id || id"
           :x="menuStore.menuX"
