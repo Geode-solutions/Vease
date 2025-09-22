@@ -22,24 +22,24 @@
             v-model="point.x"
             type="text"
             :rules="[(v) => !!v || 'X is required']"
-            @paste="handlePaste"
-            @input="sanitizeInput($event, 'x')"
+            @paste="handlePaste($event, 'x')"
+            @update:modelValue="(val) => sanitizeInput(val, 'x')"
           />
           <v-text-field
             label="Y"
             v-model="point.y"
             type="text"
             :rules="[(v) => !!v || 'Y is required']"
-            @paste="handlePaste"
-            @input="sanitizeInput($event, 'y')"
+            @paste="handlePaste($event, 'y')"
+            @update:modelValue="(val) => sanitizeInput(val, 'y')"
           />
           <v-text-field
             label="Z"
             v-model="point.z"
             type="text"
             :rules="[(v) => !!v || 'Z is required']"
-            @paste="handlePaste"
-            @input="sanitizeInput($event, 'z')"
+            @paste="handlePaste($event, 'z')"
+            @update:modelValue="(val) => sanitizeInput(val, 'z')"
           />
         </v-form>
       </v-card-text>
@@ -87,7 +87,12 @@
   const loading = ref(false)
 
   const isFormFilled = computed(() => {
-    return point.value.title && point.value.x && point.value.y && point.value.z
+    return (
+      point.value.title !== "" &&
+      point.value.x !== "" &&
+      point.value.y !== "" &&
+      point.value.z !== ""
+    )
   })
 
   const closeDrawer = () => {
@@ -145,22 +150,11 @@
     }
   }
 
-  const handlePaste = (event) => {
-    const pastedText = event.clipboardData.getData("text")
-    const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
-
-    if (coordinates && coordinates.length >= 3) {
-      ;[point.value.x, point.value.y, point.value.z] = coordinates.slice(0, 3)
-    }
-
-    event.preventDefault()
-  }
-
-  const sanitizeInput = (event, label) => {
-    let value = event.target.value
+  const sanitizeNumberString = (str) => {
+    if (str == null) return ""
+    let value = String(str)
       .replace(/,/g, ".")
       .replace(/[^0-9eE+\-.]/g, "")
-
     if (/[eE]/.test(value)) {
       const parts = value.split(/[eE]/)
       if (parts.length > 2) {
@@ -172,7 +166,40 @@
             .replace(/[^0-9+\-.]/g, "")
       }
     }
+    return value
+  }
 
-    point.value[label] = value
+  const handlePaste = (event, field) => {
+    const pastedText =
+      (event && event.clipboardData && event.clipboardData.getData("text")) ||
+      ""
+
+    if (!pastedText) return
+
+    const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
+    if (!coordinates || coordinates.length === 0) return
+
+    const sanitized = coordinates.map((c) => sanitizeNumberString(c))
+
+    if (sanitized.length >= 3) {
+      point.value.x = sanitized[0]
+      point.value.y = sanitized[1]
+      point.value.z = sanitized[2]
+      event.preventDefault()
+    } else if (sanitized.length === 2) {
+      point.value.x = sanitized[0]
+      point.value.y = sanitized[1]
+      point.value.z = "0"
+      event.preventDefault()
+    } else if (sanitized.length === 1) {
+      if (["x", "y", "z"].includes(field)) {
+        point.value[field] = sanitized[0]
+        event.preventDefault()
+      }
+    }
+  }
+
+  const sanitizeInput = (value, label) => {
+    point.value[label] = sanitizeNumberString(value)
   }
 </script>
