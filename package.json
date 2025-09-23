@@ -63,9 +63,9 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
-    "@geode/opengeodeweb-front": ">=0.0.0-0",
-    "@geode/vease-back": ">=0.0.0-0",
-    "@geode/vease-viewer": ">=0.0.0-0",
+    "@geode/opengeodeweb-front": "latest",
+    "@geode/vease-back": "latest",
+    "@geode/vease-viewer": "latest",
     "broadcast-channel": "7.1.0",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
