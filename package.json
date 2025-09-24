@@ -64,6 +64,8 @@
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-front": "latest",
+    "@geode/opengeodeweb-back": "latest",
+    "@geode/opengeodeweb-viewer": "latest",
     "@geode/vease-back": "latest",
     "@geode/vease-viewer": "latest",
     "broadcast-channel": "7.1.0",
