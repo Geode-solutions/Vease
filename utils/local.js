@@ -81,7 +81,7 @@ async function kill_processes() {
 
 function register_children_processes(proc) {
   pidtree(proc.pid, { root: true }, function (err, pids) {
-    if (err) console.log("err", err)
+    if (err) {console.log("err", err); return;}
     processes.push(...pids)
   })
 }
