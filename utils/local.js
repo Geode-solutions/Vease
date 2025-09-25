@@ -9,7 +9,7 @@ import os from "os"
 import pkg from "electron"
 const { app, dialog } = pkg
 import { getPort } from "get-port-please"
-import pidtree from "pidtree"
+import kill from "tree-kill"
 import isElectron from "is-electron"
 import { fileURLToPath } from "url"
 
@@ -72,28 +72,24 @@ async function kill_processes() {
   await processes.forEach(async function (proc) {
     console.log(`Process ${proc} will be killed!`)
     try {
-      process.kill(proc)
+      kill(proc)
     } catch (error) {
       console.log(`${error} Process ${proc} could not be killed!`)
     }
   })
 }
 
-function register_children_processes(proc) {
-  pidtree(proc.pid, { root: true }, function (err, pids) {
-    if (err) {
-      console.log("err", err)
-      return
-    }
-    processes.push(...pids)
-  })
+function register_process(proc) {
+  if (!processes.includes(proc.pid)) {
+    processes.push(proc.pid)
+  }
 }
 
 async function run_script(
   command,
   args,
   expected_response,
-  timeout_seconds = 30,
+  timeout_seconds = 30
 ) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -103,7 +99,7 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     })
-    register_children_processes(child)
+    register_process(child)
 
     // You can also use a variable to save the output for when the script closes later
     child.stderr.setEncoding("utf8")
@@ -119,7 +115,6 @@ async function run_script(
       //Here is the output
       data = data.toString()
       if (data.includes(expected_response)) {
-        register_children_processes(child)
         resolve(child)
       }
       console.log(data)
@@ -145,7 +140,7 @@ async function run_back(port, project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
-      executable_name("vease-back"),
+      executable_name("vease-back")
     )
     const back_port = await get_available_port(port)
     const back_args = [
@@ -164,7 +159,7 @@ async function run_viewer(port, data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
-      executable_name("vease-viewer"),
+      executable_name("vease-viewer")
     )
     const viewer_port = await get_available_port(port)
     const viewer_args = [
@@ -224,7 +219,7 @@ async function run_browser(script_name) {
       const output = data.toString()
       console.log("NUXT OUTPUT", output)
       const portMatch = output.match(
-        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/,
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
       )
       if (portMatch) {
         resolve(portMatch[1])
@@ -240,7 +235,7 @@ export {
   executable_path,
   get_available_port,
   kill_processes,
-  register_children_processes,
+  register_process,
   run_script,
   run_back,
   run_viewer,

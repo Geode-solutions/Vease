@@ -63,8 +63,8 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
-    "@geode/opengeodeweb-front": "latest",
     "@geode/opengeodeweb-back": "latest",
+    "@geode/opengeodeweb-front": "latest",
     "@geode/opengeodeweb-viewer": "latest",
     "@geode/vease-back": "latest",
     "@geode/vease-viewer": "latest",
@@ -74,7 +74,7 @@
     "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
     "nuxt": "3.13.2",
-    "pidtree": "0.6.0",
+    "tree-kill": "1.2.2",
     "vuetify": "3.8.12"
   }
 }
