@@ -9,6 +9,7 @@ import os from "os"
 import pkg from "electron"
 const { app, dialog } = pkg
 import { getPort } from "get-port-please"
+import kill from "tree-kill"
 import pidtree from "pidtree"
 import isElectron from "is-electron"
 import { fileURLToPath } from "url"
@@ -72,18 +73,34 @@ async function kill_processes() {
   await processes.forEach(async function (proc) {
     console.log(`Process ${proc} will be killed!`)
     try {
-      process.kill(proc)
+      if (process.platform === "win32") {
+        kill(proc)
+      } else {
+        process.kill(proc)
+      }
     } catch (error) {
       console.log(`${error} Process ${proc} could not be killed!`)
     }
   })
 }
 
-function register_children_processes(proc) {
-  pidtree(proc.pid, { root: true }, function (err, pids) {
-    if (err) console.log("err", err)
-    processes.push(...pids)
-  })
+function register_process(proc) {
+  if (!processes.includes(proc.pid)) {
+    processes.push(proc.pid)
+  }
+  if (process.platform !== "win32") {
+    pidtree(proc.pid, { root: false }, function (err, pids) {
+      if (err) {
+        console.log("err", err)
+        return
+      }
+      pids.forEach((pid) => {
+        if (!processes.includes(pid)) {
+          processes.push(pid)
+        }
+      })
+    })
+  }
 }
 
 async function run_script(
@@ -100,7 +117,7 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     })
-    register_children_processes(child)
+    register_process(child)
 
     // You can also use a variable to save the output for when the script closes later
     child.stderr.setEncoding("utf8")
@@ -116,7 +133,7 @@ async function run_script(
       //Here is the output
       data = data.toString()
       if (data.includes(expected_response)) {
-        register_children_processes(child)
+        register_process(child)
         resolve(child)
       }
       console.log(data)
@@ -237,7 +254,7 @@ export {
   executable_path,
   get_available_port,
   kill_processes,
-  register_children_processes,
+  register_process,
   run_script,
   run_back,
   run_viewer,
