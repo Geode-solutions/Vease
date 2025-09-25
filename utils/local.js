@@ -103,7 +103,7 @@ async function run_script(
   command,
   args,
   expected_response,
-  timeout_seconds = 30,
+  timeout_seconds = 30
 ) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -129,6 +129,7 @@ async function run_script(
       //Here is the output
       data = data.toString()
       if (data.includes(expected_response)) {
+        register_process(child)
         resolve(child)
       }
       console.log(data)
@@ -154,7 +155,7 @@ async function run_back(port, project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
-      executable_name("vease-back"),
+      executable_name("vease-back")
     )
     const back_port = await get_available_port(port)
     const back_args = [
@@ -173,7 +174,7 @@ async function run_viewer(port, data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
-      executable_name("vease-viewer"),
+      executable_name("vease-viewer")
     )
     const viewer_port = await get_available_port(port)
     const viewer_args = [
@@ -233,7 +234,7 @@ async function run_browser(script_name) {
       const output = data.toString()
       console.log("NUXT OUTPUT", output)
       const portMatch = output.match(
-        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/,
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
       )
       if (portMatch) {
         resolve(portMatch[1])
