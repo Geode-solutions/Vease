@@ -216,6 +216,7 @@ async function run_browser(script_name) {
     process.env.NUXT_PORT = nuxt_port;
     const nuxt_process = spawn("npm", ["run", script_name], {
       shell: true,
+      stdio: "inherit",
     });
     nuxt_process.stdout.on("data", function (data) {
       const output = data.toString();
