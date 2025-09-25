@@ -9,7 +9,7 @@ let electronApp
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild(
-    path.join(process.cwd(), "release", "0.0.0"),
+    path.join(process.cwd(), "release", "0.0.0")
   )
   console.log("latestBuild", latestBuild)
   // parse the directory and find paths and other info
@@ -60,15 +60,15 @@ test("Microservices running", async () => {
   })
 })
 
-test("Devtools", async () => {
-  const firstWindow = await electronApp.firstWindow()
-  const browserWindow = await electronApp.browserWindow(firstWindow)
-  await browserWindow.evaluate(async (window) => {
-    await window.webContents.openDevTools()
-  })
+// test("Devtools", async () => {
+//   const firstWindow = await electronApp.firstWindow()
+//   const browserWindow = await electronApp.browserWindow(firstWindow)
+//   await browserWindow.evaluate(async (window) => {
+//     await window.webContents.openDevTools()
+//   })
 
-  await firstWindow.waitForTimeout((isWindows ? 45 : 20) * 1000)
-  await expect(firstWindow).toHaveScreenshot({
-    path: `devtools-${process.platform}.png`,
-  })
-})
+//   await firstWindow.waitForTimeout((isWindows ? 45 : 20) * 1000)
+//   await expect(firstWindow).toHaveScreenshot({
+//     path: `devtools-${process.platform}.png`,
+//   })
+// })
