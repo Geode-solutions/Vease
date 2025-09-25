@@ -82,7 +82,7 @@ typing-extensions==4.14.1
     #   aiosignal
     #   opengeodeweb-viewer
     #   vease-viewer
-vease-viewer[gpu]==2.3.14rc5
+vease-viewer==2.3.14rc5
     # via -r microservices/viewer/requirements.in
 vtk==9.3.1
     # via vease-viewer
