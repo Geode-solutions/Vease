@@ -94,7 +94,11 @@ function register_process(proc) {
         console.log("err", err)
         return
       }
-      processes.push(...pids)
+      pids.forEach((pid) => {
+        if (!processes.includes(pid)) {
+          processes.push(pid)
+        }
+      })
     })
   }
 }
