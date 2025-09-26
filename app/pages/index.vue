@@ -1,6 +1,5 @@
 <template>
-  <TestRecaptcha />
-  <!-- <Launcher v-if="infra_store.status != Status.CREATED" />
+  <Launcher v-if="infra_store.status != Status.CREATED" />
   <v-card
     v-else
     ref="cardContainer"
@@ -20,7 +19,7 @@
         />
       </template>
     </HybridRenderingView>
-  </v-card> -->
+  </v-card>
 </template>
 
 <script setup>
