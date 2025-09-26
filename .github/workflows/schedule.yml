@@ -15,6 +15,4 @@ jobs:
     with:
       repos: ${{ vars.REPOS }}
       branch: ${{ inputs.branch || 'next' }}
-    secrets:
-      TOKEN: ${{ secrets.TOKEN }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    secrets: inherit
