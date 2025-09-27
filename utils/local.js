@@ -101,7 +101,7 @@ function register_process(proc) {
         return
       }
       pids.forEach((pid) => {
-        if (!processes.includpid)) {
+        if (!processes.includpid) {
           processes.push(pid)
         }
       })
