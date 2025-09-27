@@ -74,7 +74,13 @@ async function kill_processes() {
     console.log(`Process ${proc} will be killed!`)
     try {
       if (process.platform === "win32") {
-        kill(proc)
+        kill(proc, 'SIGTERM', (err) => {
+      if (err) {
+        console.error('Error terminating process tree:', err);
+        // Option 2: Force kill if SIGTERM fails
+        kill(proc, 'SIGKILL');
+      }
+    });
       } else {
         process.kill(proc)
       }
@@ -95,7 +101,7 @@ function register_process(proc) {
         return
       }
       pids.forEach((pid) => {
-        if (!processes.includes(pid)) {
+        if (!processes.includpid)) {
           processes.push(pid)
         }
       })
