@@ -4,17 +4,13 @@ import path from "path"
 import child_process from "child_process"
 import { spawn } from "child_process"
 import os from "os"
+import WebSocket from "ws"
 
 // Third party imports
 import pkg from "electron"
 const { app, dialog } = pkg
 import { getPort } from "get-port-please"
-import kill from "tree-kill"
-import pidtree from "pidtree"
 import isElectron from "is-electron"
-
-// Global variables
-var processes = []
 
 function venv_script_path(root_path, microservice_path) {
   const venv_path = path.join(root_path, microservice_path, "venv")
@@ -64,52 +60,11 @@ async function get_available_port(port) {
   return available_port
 }
 
-async function kill_processes() {
-  console.log("kill_processes", processes)
-  await processes.forEach(async function (proc) {
-    console.log(`Process ${proc} will be killed!`)
-    try {
-      if (process.platform === "win32") {
-        kill(proc, "SIGTERM", (err) => {
-          if (err) {
-            console.error("Error terminating process tree:", err)
-            // Option 2: Force kill if SIGTERM fails
-            kill(proc, "SIGKILL")
-          }
-        })
-      } else {
-        process.kill(proc)
-      }
-    } catch (error) {
-      console.log(`${error} Process ${proc} could not be killed!`)
-    }
-  })
-}
-
-function register_process(proc) {
-  if (!processes.includes(proc.pid)) {
-    processes.push(proc.pid)
-  }
-  if (process.platform !== "win32") {
-    pidtree(proc.pid, { root: false }, function (err, pids) {
-      if (err) {
-        console.log("err", err)
-        return
-      }
-      pids.forEach((pid) => {
-        if (!processes.includpid) {
-          processes.push(pid)
-        }
-      })
-    })
-  }
-}
-
 async function run_script(
   command,
   args,
   expected_response,
-  timeout_seconds = 30,
+  timeout_seconds = 30
 ) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -119,7 +74,6 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     })
-    register_process(child)
 
     // You can also use a variable to save the output for when the script closes later
     child.stderr.setEncoding("utf8")
@@ -135,7 +89,6 @@ async function run_script(
       //Here is the output
       data = data.toString()
       if (data.includes(expected_response)) {
-        register_process(child)
         resolve(child)
       }
       console.log(data)
@@ -161,7 +114,7 @@ async function run_back(port, project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
-      executable_name("vease-back"),
+      executable_name("vease-back")
     )
     const back_port = await get_available_port(port)
     const back_args = [
@@ -180,7 +133,7 @@ async function run_viewer(port, data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
-      executable_name("vease-viewer"),
+      executable_name("vease-viewer")
     )
     const viewer_port = await get_available_port(port)
     const viewer_args = [
@@ -206,6 +159,49 @@ function delete_folder_recursive(data_folder_path) {
   }
 }
 
+function kill_back(back_port) {
+  fetch("http://localhost:" + back_port + "/kill", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  }).catch(() => console.log("Back closed"))
+}
+
+function kill_viewer(viewer_port) {
+  return new Promise((resolve, reject) => {
+    const socket = new WebSocket("ws://localhost:" + viewer_port + "/ws")
+    socket.on("open", () => {
+      console.log("Connected to WebSocket server")
+      socket.send(
+        JSON.stringify({
+          id: "system:hello",
+          method: "wslink.hello",
+          args: [{ secret: "wslink-secret" }],
+        })
+      )
+    })
+    socket.on("message", (data) => {
+      const message = data.toString()
+      console.log("Received from server:", message)
+      if (message.includes("hello")) {
+        socket.send(
+          JSON.stringify({
+            id: "rpc:kill",
+            method: "kill",
+          })
+        )
+      }
+    })
+    socket.on("close", () => {
+      console.log("Disconnected from WebSocket server")
+      resolve()
+    })
+    socket.on("error", (error) => {
+      console.error("WebSocket error:", error)
+      reject()
+    })
+  })
+}
+
 async function run_browser(script_name) {
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
 
@@ -222,7 +218,9 @@ async function run_browser(script_name) {
   await run_microservices()
   process.env.BROWSER = true
   process.on("SIGINT", async () => {
-    await kill_processes()
+    console.log("Shutting down microservices")
+    kill_back(process.env.GEODE_PORT)
+    await kill_viewer(process.env.VIEWER_PORT)
     console.log("Quitting Vease...")
     process.exit(0)
   })
@@ -240,7 +238,7 @@ async function run_browser(script_name) {
       const output = data.toString()
       console.log("NUXT OUTPUT", output)
       const portMatch = output.match(
-        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/,
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
       )
       if (portMatch) {
         resolve(portMatch[1])
@@ -255,6 +253,8 @@ export {
   executable_name,
   executable_path,
   get_available_port,
+  kill_back,
+  kill_viewer,
   run_script,
   run_back,
   run_viewer,
