@@ -45,10 +45,7 @@ let cleaned = false
 async function clean_up() {
   console.log("Shutting down microservices")
   kill_back(back_port)
-  console.log("back gone")
   await kill_viewer(viewer_port)
-  console.log("viewer gone")
-  // await kill_processes()
   delete_folder_recursive(project_folder_path)
   cleaned = true
   console.log("end clean")
