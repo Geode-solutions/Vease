@@ -1,7 +1,7 @@
-import child_process from "child_process";
+import child_process from "child_process"
 
 export default async function (configuration) {
-  console.log("customSign", configuration);
+  console.log("customSign", configuration)
 
   child_process.execSync(
     `AzureSignTool sign \
@@ -12,6 +12,6 @@ export default async function (configuration) {
     --azure-key-vault-certificate ${process.env.AZURE_CERT_NAME} \
     --timestamp-rfc3161 http://timestamp.digicert.com \
     -v ${configuration.path}`,
-    { stdio: "inherit" }
-  );
+    { stdio: "inherit" },
+  )
 }

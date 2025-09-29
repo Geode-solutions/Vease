@@ -81,69 +81,69 @@
 </template>
 
 <script setup>
-const UIStore = useUIStore();
-const infra_store = useInfraStore();
+  const UIStore = useUIStore()
+  const infra_store = useInfraStore()
 
-const handleMouseMove = (e) => {
-  const screenWidth = window.innerWidth;
-  const threshold = 75;
-  if (e.clientX > screenWidth - threshold) {
-    UIStore.setShowButton(true);
-  } else {
-    UIStore.setShowButton(false);
+  const handleMouseMove = (e) => {
+    const screenWidth = window.innerWidth
+    const threshold = 75
+    if (e.clientX > screenWidth - threshold) {
+      UIStore.setShowButton(true)
+    } else {
+      UIStore.setShowButton(false)
+    }
   }
-};
 </script>
 
 <style scoped>
-.drop-zone {
-  background-color: transparent;
-  border-width: 0;
-  border: solid 0px transparent;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.icon-container {
-  position: fixed;
-  top: 53%;
-  right: 0;
-  z-index: 1000;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
+  .drop-zone {
+    background-color: transparent;
+    border-width: 0;
+    border: solid 0px transparent;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-container {
+    position: fixed;
+    top: 53%;
+    right: 0;
+    z-index: 1000;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
-.icon-container.show {
-  opacity: 1;
-}
+  .icon-container.show {
+    opacity: 1;
+  }
 
-.step-import-btn,
-.create-point-btn {
-  margin-bottom: 20px;
-  transition: opacity 0.3s;
-}
+  .step-import-btn,
+  .create-point-btn {
+    margin-bottom: 20px;
+    transition: opacity 0.3s;
+  }
 
-.step-import-btn.show,
-.create-point-btn.show {
-  opacity: 1;
-}
+  .step-import-btn.show,
+  .create-point-btn.show {
+    opacity: 1;
+  }
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.5s ease;
-}
+  .slide-enter-active,
+  .slide-leave-active {
+    transition: transform 0.5s ease;
+  }
 
-.slide-enter,
-.slide-leave-to {
-  transform: translateX(100%);
-}
+  .slide-enter,
+  .slide-leave-to {
+    transform: translateX(100%);
+  }
 </style>

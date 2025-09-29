@@ -1,6 +1,12 @@
 <template>
   <v-card
-    style="height: 100%; width: 100%; overflow-y: auto; border-radius: 10px"
+    style="
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      max-height: calc(100vh - 75px);
+      border-radius: 10px;
+    "
     class="bg-primary"
   >
     <v-container>
@@ -153,75 +159,75 @@
 </template>
 
 <script setup>
-import vease_back_schemas from "@geode/vease-back/schemas.json";
-import vease_viewer_schemas from "@geode/vease-viewer/schemas.json";
-import Status from "@ogw_f/utils/status.js";
+  import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
+  import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
+  import Status from "@ogw_f/utils/status.js"
 
-const version = useRuntimeConfig().public.VERSION;
-const geode_store = use_geode_store();
-const viewer_store = useViewerStore();
+  const version = useRuntimeConfig().public.VERSION
+  const geode_store = useGeodeStore()
+  const viewer_store = useViewerStore()
 
-const packages_versions = ref([]);
-const back_version = ref("");
-const viewer_version = ref("");
+  const packages_versions = ref([])
+  const back_version = ref("")
+  const viewer_version = ref("")
 
-const microservices = ref([
-  {
-    name: "Back",
-    package: "vease-back",
-    version: back_version,
-    status: geode_store.status,
-  },
-  {
-    name: "Viewer",
-    package: "vease-viewer",
-    version: viewer_version,
-    status: viewer_store.status,
-  },
-]);
-
-async function get_packages_versions() {
-  api_fetch(
-    { schema: vease_back_schemas.vease_back.packages_versions },
+  const microservices = ref([
     {
-      response_function: (response) => {
-        packages_versions.value = response._data.packages_versions;
-      },
-    }
-  );
-}
-
-async function get_back_version() {
-  api_fetch(
-    { schema: vease_back_schemas.vease_back.microservice_version },
+      name: "Back",
+      package: "vease-back",
+      version: back_version,
+      status: geode_store.status,
+    },
     {
-      response_function: (response) => {
-        back_version.value = response._data.microservice_version;
-      },
-    }
-  );
-}
+      name: "Viewer",
+      package: "vease-viewer",
+      version: viewer_version,
+      status: viewer_store.status,
+    },
+  ])
 
-async function get_viewer_version() {
-  viewer_call(
-    { schema: vease_viewer_schemas.vease_viewer.microservice_version },
-    {
-      response_function: (response) => {
-        viewer_version.value = response.microservice_version;
+  async function get_packages_versions() {
+    api_fetch(
+      { schema: vease_back_schemas.vease_back.packages_versions },
+      {
+        response_function: (response) => {
+          packages_versions.value = response._data.packages_versions
+        },
       },
-    }
-  );
-}
+    )
+  }
 
-onMounted(() => {
-  get_packages_versions();
-  get_back_version();
-  get_viewer_version();
-});
+  async function get_back_version() {
+    api_fetch(
+      { schema: vease_back_schemas.vease_back.microservice_version },
+      {
+        response_function: (response) => {
+          back_version.value = response._data.microservice_version
+        },
+      },
+    )
+  }
+
+  async function get_viewer_version() {
+    viewer_call(
+      { schema: vease_viewer_schemas.vease_viewer.microservice_version },
+      {
+        response_function: (response) => {
+          viewer_version.value = response.microservice_version
+        },
+      },
+    )
+  }
+
+  onMounted(() => {
+    get_packages_versions()
+    get_back_version()
+    get_viewer_version()
+  })
 </script>
 
 <style scoped>
-td {
-  text-align: left;
-}
+  td {
+    text-align: left;
+  }
 </style>
