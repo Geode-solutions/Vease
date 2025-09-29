@@ -10,10 +10,6 @@ import pkg from "electron"
 const { app, dialog } = pkg
 import { getPort } from "get-port-please"
 import isElectron from "is-electron"
-import { fileURLToPath } from "url"
-import { inherits } from "util"
-
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
 
 function venv_script_path(root_path, microservice_path) {
   const venv_path = path.join(root_path, microservice_path, "venv")
@@ -67,7 +63,7 @@ async function run_script(
   command,
   args,
   expected_response,
-  timeout_seconds = 30,
+  timeout_seconds = 30
 ) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -117,7 +113,7 @@ async function run_back(port, project_folder_path) {
   return new Promise(async (resolve, reject) => {
     const back_command = path.join(
       executable_path(path.join("microservices", "back")),
-      executable_name("vease-back"),
+      executable_name("vease-back")
     )
     const back_port = await get_available_port(port)
     const back_args = [
@@ -136,7 +132,7 @@ async function run_viewer(port, data_folder_path) {
   return new Promise(async (resolve, reject) => {
     const viewer_command = path.join(
       executable_path(path.join("microservices", "viewer")),
-      executable_name("vease-viewer"),
+      executable_name("vease-viewer")
     )
     const viewer_port = await get_available_port(port)
     const viewer_args = [
@@ -190,12 +186,12 @@ async function run_browser(script_name) {
     process.env.NUXT_PORT = nuxt_port
     const nuxt_process = spawn("npm", ["run", script_name], {
       shell: true,
-      stdio: "inherit",
     })
     nuxt_process.stdout.on("data", function (data) {
       const output = data.toString()
+      console.log("NUXT OUTPUT", output)
       const portMatch = output.match(
-        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/,
+        /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
       )
       if (portMatch) {
         resolve(portMatch[1])
