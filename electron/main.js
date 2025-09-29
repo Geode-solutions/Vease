@@ -4,12 +4,11 @@ import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
-  kill_processes,
   run_back,
   run_viewer,
   delete_folder_recursive,
 } from "/utils/local.js"
-import { create_new_window } from "/utils/desktop.js"
+import { create_new_window, kill_back, kill_viewer } from "/utils/desktop.js"
 
 import os from "os"
 
@@ -21,11 +20,16 @@ create_path(project_folder_path)
 
 let mainWindow = null
 
+let back_port = 0
+let viewer_port = 0
+
 ipcMain.handle("run_back", async (_event, ...args) => {
-  return await run_back(args[0], project_folder_path)
+  back_port = await run_back(args[0], project_folder_path)
+  return back_port
 })
 ipcMain.handle("run_viewer", async (_event, ...args) => {
-  return await run_viewer(args[0], project_folder_path)
+  viewer_port = await run_viewer(args[0], project_folder_path)
+  return viewer_port
 })
 
 ipcMain.handle("new_window", async (_event) => {
@@ -36,12 +40,29 @@ app.whenReady().then(() => {
   mainWindow = create_new_window()
 })
 
-app.on("before-quit", async function () {
-  await kill_processes()
+let cleaned = false
+
+async function clean_up() {
+  console.log("Shutting down microservices")
+  kill_back(back_port)
+  console.log("back gone")
+  await kill_viewer(viewer_port)
+  console.log("viewer gone")
+  // await kill_processes()
   delete_folder_recursive(project_folder_path)
+  cleaned = true
+  console.log("end clean")
+}
+
+app.on("before-quit", async function (event) {
+  if (!cleaned) {
+    event.preventDefault()
+    clean_up().then(() => app.quit())
+  }
 })
 
 app.on("window-all-closed", () => {
+  console.log("All windows are closed")
   app.quit()
 })
 

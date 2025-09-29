@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from "electron"
+import WebSocket from "ws"
 import path from "path"
 
 import { fileURLToPath } from "url"
@@ -26,7 +27,7 @@ function create_new_window() {
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
       callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } })
-    },
+    }
   )
 
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -50,7 +51,7 @@ function create_new_window() {
       app.getAppPath(),
       ".output",
       "public",
-      "index.html",
+      "index.html"
     )
     console.log("APP_PATH", app_path)
     win.loadFile(app_path)
@@ -77,11 +78,54 @@ function create_new_window() {
       const logLevel = logLevels[level] || "UNKNOWN"
       // Print the console message to the terminal
       console.log(
-        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`,
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`
       )
-    },
+    }
   )
   return win
 }
 
-export { create_new_window }
+function kill_back(back_port) {
+  fetch("http://localhost:" + back_port + "/kill", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  }).catch(() => console.log("Back closed"))
+}
+
+function kill_viewer(viewer_port) {
+  return new Promise((resolve, reject) => {
+    const socket = new WebSocket("ws://localhost:" + viewer_port + "/ws")
+    socket.on("open", () => {
+      console.log("Connected to WebSocket server")
+      socket.send(
+        JSON.stringify({
+          id: "system:hello",
+          method: "wslink.hello",
+          args: [{ secret: "wslink-secret" }],
+        })
+      )
+    })
+    socket.on("message", (data) => {
+      const message = data.toString()
+      console.log("Received from server:", message)
+      if (message.includes("hello")) {
+        socket.send(
+          JSON.stringify({
+            id: "rpc:kill",
+            method: "kill",
+          })
+        )
+      }
+    })
+    socket.on("close", () => {
+      console.log("Disconnected from WebSocket server")
+      resolve()
+    })
+    socket.on("error", (error) => {
+      console.error("WebSocket error:", error)
+      reject()
+    })
+  })
+}
+
+export { create_new_window, kill_back, kill_viewer }
