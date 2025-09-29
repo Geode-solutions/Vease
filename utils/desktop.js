@@ -26,7 +26,7 @@ function create_new_window() {
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
       callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } })
-    }
+    },
   )
 
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -50,7 +50,7 @@ function create_new_window() {
       app.getAppPath(),
       ".output",
       "public",
-      "index.html"
+      "index.html",
     )
     console.log("APP_PATH", app_path)
     win.loadFile(app_path)
@@ -77,9 +77,9 @@ function create_new_window() {
       const logLevel = logLevels[level] || "UNKNOWN"
       // Print the console message to the terminal
       console.log(
-        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`,
       )
-    }
+    },
   )
   return win
 }
