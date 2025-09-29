@@ -11,6 +11,7 @@ const { app, dialog } = pkg
 import { getPort } from "get-port-please"
 import isElectron from "is-electron"
 import { fileURLToPath } from "url"
+import { inherits } from "util"
 
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
 
@@ -189,10 +190,10 @@ async function run_browser(script_name) {
     process.env.NUXT_PORT = nuxt_port
     const nuxt_process = spawn("npm", ["run", script_name], {
       shell: true,
+      stdio: "inherit",
     })
     nuxt_process.stdout.on("data", function (data) {
       const output = data.toString()
-      console.log("NUXT OUTPUT", output)
       const portMatch = output.match(
         /Accepting\ connections\ at\ http:\/\/localhost:(\d+)/
       )
