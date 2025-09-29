@@ -74,13 +74,13 @@ async function kill_processes() {
     console.log(`Process ${proc} will be killed!`)
     try {
       if (process.platform === "win32") {
-        kill(proc, 'SIGTERM', (err) => {
-      if (err) {
-        console.error('Error terminating process tree:', err);
-        // Option 2: Force kill if SIGTERM fails
-        kill(proc, 'SIGKILL');
-      }
-    });
+        kill(proc, "SIGTERM", (err) => {
+          if (err) {
+            console.error("Error terminating process tree:", err)
+            // Option 2: Force kill if SIGTERM fails
+            kill(proc, "SIGKILL")
+          }
+        })
       } else {
         process.kill(proc)
       }
