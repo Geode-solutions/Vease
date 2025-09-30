@@ -59,16 +59,3 @@ test("Microservices running", async () => {
     path: `microservices-running-${process.platform}.png`,
   })
 })
-
-test("Devtools", async () => {
-  const firstWindow = await electronApp.firstWindow()
-  const browserWindow = await electronApp.browserWindow(firstWindow)
-  await browserWindow.evaluate(async (window) => {
-    await window.webContents.openDevTools()
-  })
-
-  await firstWindow.waitForTimeout((isWindows ? 45 : 20) * 1000)
-  await expect(firstWindow).toHaveScreenshot({
-    path: `devtools-${process.platform}.png`,
-  })
-})

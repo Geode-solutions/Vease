@@ -4,20 +4,13 @@ import path from "path"
 import child_process from "child_process"
 import { spawn } from "child_process"
 import os from "os"
+import WebSocket from "ws"
 
 // Third party imports
 import pkg from "electron"
 const { app, dialog } = pkg
 import { getPort } from "get-port-please"
-import pidtree from "pidtree"
 import isElectron from "is-electron"
-import { fileURLToPath } from "url"
-
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
-const __dirname = path.dirname(__filename) // get the name of the directory
-
-// Global variables
-var processes = []
 
 function venv_script_path(root_path, microservice_path) {
   const venv_path = path.join(root_path, microservice_path, "venv")
@@ -67,25 +60,6 @@ async function get_available_port(port) {
   return available_port
 }
 
-async function kill_processes() {
-  console.log("kill_processes", processes)
-  await processes.forEach(async function (proc) {
-    console.log(`Process ${proc} will be killed!`)
-    try {
-      process.kill(proc)
-    } catch (error) {
-      console.log(`${error} Process ${proc} could not be killed!`)
-    }
-  })
-}
-
-function register_children_processes(proc) {
-  pidtree(proc.pid, { root: true }, function (err, pids) {
-    if (err) console.log("err", err)
-    processes.push(...pids)
-  })
-}
-
 async function run_script(
   command,
   args,
@@ -100,7 +74,6 @@ async function run_script(
       encoding: "utf8",
       shell: true,
     })
-    register_children_processes(child)
 
     // You can also use a variable to save the output for when the script closes later
     child.stderr.setEncoding("utf8")
@@ -116,7 +89,6 @@ async function run_script(
       //Here is the output
       data = data.toString()
       if (data.includes(expected_response)) {
-        register_children_processes(child)
         resolve(child)
       }
       console.log(data)
@@ -187,6 +159,59 @@ function delete_folder_recursive(data_folder_path) {
   }
 }
 
+function kill_back(back_port) {
+  return new Promise((resolve, reject) => {
+    fetch("http://localhost:" + back_port + "/kill", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(() => {
+        console.log("Back not killed")
+        reject()
+      })
+      .catch(() => {
+        console.log("Back closed")
+        resolve()
+      })
+  })
+}
+
+function kill_viewer(viewer_port) {
+  return new Promise((resolve, reject) => {
+    const socket = new WebSocket("ws://localhost:" + viewer_port + "/ws")
+    socket.on("open", () => {
+      console.log("Connected to WebSocket server")
+      socket.send(
+        JSON.stringify({
+          id: "system:hello",
+          method: "wslink.hello",
+          args: [{ secret: "wslink-secret" }],
+        }),
+      )
+    })
+    socket.on("message", (data) => {
+      const message = data.toString()
+      console.log("Received from server:", message)
+      if (message.includes("hello")) {
+        socket.send(
+          JSON.stringify({
+            id: "rpc:kill",
+            method: "kill",
+          }),
+        )
+      }
+    })
+    socket.on("close", () => {
+      console.log("Disconnected from WebSocket server")
+      resolve()
+    })
+    socket.on("error", (error) => {
+      console.error("WebSocket error:", error)
+      reject()
+    })
+  })
+}
+
 async function run_browser(script_name) {
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
 
@@ -203,7 +228,9 @@ async function run_browser(script_name) {
   await run_microservices()
   process.env.BROWSER = true
   process.on("SIGINT", async () => {
-    await kill_processes()
+    console.log("Shutting down microservices")
+    kill_back(process.env.GEODE_PORT)
+    await kill_viewer(process.env.VIEWER_PORT)
     console.log("Quitting Vease...")
     process.exit(0)
   })
@@ -236,8 +263,8 @@ export {
   executable_name,
   executable_path,
   get_available_port,
-  kill_processes,
-  register_children_processes,
+  kill_back,
+  kill_viewer,
   run_script,
   run_back,
   run_viewer,
