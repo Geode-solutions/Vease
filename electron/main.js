@@ -45,15 +45,18 @@ app.whenReady().then(() => {
 let cleaned = false
 
 async function clean_up() {
-  console.log("Shutting down microservices")
-  kill_back(back_port)
-  await kill_viewer(viewer_port)
-  delete_folder_recursive(project_folder_path)
-  cleaned = true
-  console.log("end clean")
+  return new Promise((resolve) => {
+    console.log("Shutting down microservices")
+    Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
+      delete_folder_recursive(project_folder_path)
+      cleaned = true
+      console.log("end clean")
+      resolve()
+    })
+  })
 }
 
-app.on("before-quit", async function (event) {
+app.on("before-quit", function (event) {
   if (!cleaned) {
     event.preventDefault()
     clean_up().then(() => app.quit())
