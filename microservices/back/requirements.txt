@@ -4,22 +4,22 @@
 #
 #    pip-compile --output-file=microservices/back/requirements.txt --pre microservices/back/requirements-internal.in microservices/back/requirements.in
 #
-asgiref==3.9.2
+asgiref==3.*,>=3.9.2
     # via
     #   flask
     #   opengeodeweb-back
     #   vease-back
-blinker==1.9.0
+blinker==1.*,>=1.9.0
     # via
     #   flask
     #   opengeodeweb-back
     #   vease-back
-click==8.3.0
+click==8.*,>=8.3.0
     # via
     #   flask
     #   opengeodeweb-back
     #   vease-back
-fastjsonschema==2.21.1
+fastjsonschema==2.*,>=2.21.1
     # via
     #   opengeodeweb-back
     #   opengeodeweb-microservice
@@ -30,11 +30,11 @@ flask[async]==3.0.3
     #   flask-sqlalchemy
     #   opengeodeweb-back
     #   vease-back
-flask-cors==6.0.1
+flask-cors==6.*,>=6.0.1
     # via
     #   opengeodeweb-back
     #   vease-back
-flask-sqlalchemy==3.1.1
+flask-sqlalchemy==3.*,>=3.1.1
     # via
     #   opengeodeweb-back
     #   opengeodeweb-microservice
@@ -48,28 +48,28 @@ geode-viewables==3.*,>=3.3.0
     # via
     #   opengeodeweb-back
     #   vease-back
-greenlet==3.2.4
+greenlet==3.*,>=3.2.4
     # via
     #   opengeodeweb-back
     #   sqlalchemy
     #   vease-back
-itsdangerous==2.2.0
+itsdangerous==2.*,>=2.2.0
     # via
     #   flask
     #   opengeodeweb-back
     #   vease-back
-jinja2==3.1.6
+jinja2==3.*,>=3.1.6
     # via
     #   flask
     #   opengeodeweb-back
     #   vease-back
-markupsafe==3.0.2
+markupsafe==3.*,>=3.0.3
     # via
     #   jinja2
     #   opengeodeweb-back
     #   vease-back
     #   werkzeug
-opengeode-core==15.*,>=15.27.6
+opengeode-core==15.*,>=15.27.4
     # via
     #   geode-common
     #   geode-viewables
@@ -99,26 +99,26 @@ opengeode-io==7.*,>=7.4.0
     #   opengeode-geosciencesio
     #   opengeodeweb-back
     #   vease-back
-opengeodeweb-back==5.*,>=5.10.0rc15
+opengeodeweb-back==5.*,>=5.10.0rc16
     # via vease-back
 opengeodeweb-microservice==1.*,>=1.0.0
     # via
     #   opengeodeweb-back
     #   vease-back
-sqlalchemy==2.0.43
+sqlalchemy==2.*,>=2.0.43
     # via
     #   flask-sqlalchemy
     #   opengeodeweb-back
     #   opengeodeweb-microservice
     #   vease-back
-typing-extensions==4.15.0
+typing-extensions==4.*,>=4.15.0
     # via
     #   opengeodeweb-back
     #   sqlalchemy
     #   vease-back
-vease-back==1.*,>=1.6.0rc10
+vease-back==1.*,>=1.6.0rc12
     # via -r microservices/back/requirements-internal.in
-werkzeug==3.0.3
+werkzeug==3.*,>=3.0.3
     # via
     #   flask
     #   flask-cors
