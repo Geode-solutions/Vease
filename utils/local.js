@@ -207,7 +207,7 @@ function kill_viewer(viewer_port) {
     })
     socket.on("error", (error) => {
       console.error("WebSocket error:", error)
-      reject()
+      resolve()
     })
   })
 }
