@@ -14,7 +14,21 @@ function getLogs(page) {
 }
 
 test.beforeAll(async () => {
-  NUXT_PORT = await run_browser(`test:browser`)
+  const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
+
+  const back_command = path.join(
+    executable_path(path.join("microservices", "back")),
+    executable_name("vease-back")
+  )
+
+  const viewer_command = path.join(
+    executable_path(path.join("microservices", "viewer")),
+    executable_name("vease-viewer")
+  )
+  NUXT_PORT = await run_browser(`test:browser`, {
+    back: { command: back_command, args: { port: 5000, data_folder_path } },
+    viewer: { command: viewer_command, args: { port: 1234, data_folder_path } },
+  })
 })
 
 test.beforeEach(async ({ page }) => {
