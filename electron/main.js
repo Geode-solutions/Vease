@@ -9,7 +9,7 @@ import {
   run_back,
   run_viewer,
   delete_folder_recursive,
-} from "@ogw_f/utils/local.js"
+} from "@geode/opengeodeweb-front/utils/local.js"
 import { create_new_window } from "/utils/desktop.js"
 
 import os from "os"
@@ -28,7 +28,7 @@ let viewer_port = 0
 ipcMain.handle("run_back", async (_event, ...args) => {
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back"),
+    executable_name("vease-back")
   )
   back_port = await run_back(back_command, {
     port: args[0],
