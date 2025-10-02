@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
 
 // Local imports
-import { run_browser } from "@ogw_f/utils/local.js"
+import { run_browser } from "@opengeodeweb-front/utils/local.js"
 var NUXT_PORT
 function getLogs(page) {
   page.on("console", (msg) => {
@@ -18,12 +18,12 @@ test.beforeAll(async () => {
 
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back"),
+    executable_name("vease-back")
   )
 
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer"),
+    executable_name("vease-viewer")
   )
   NUXT_PORT = await run_browser(`test:browser`, {
     back: { command: back_command, args: { port: 5000, data_folder_path } },
