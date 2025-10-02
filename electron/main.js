@@ -9,7 +9,7 @@ import {
   run_back,
   run_viewer,
   delete_folder_recursive,
-} from "/utils/local.js"
+} from "@ogw_f/utils/local.js"
 import { create_new_window } from "/utils/desktop.js"
 
 import os from "os"

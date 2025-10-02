@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
 
 // Local imports
-import { run_browser } from "../../../utils/local.js"
+import { run_browser } from "@ogw_f/utils/local.js"
 var NUXT_PORT
 function getLogs(page) {
   page.on("console", (msg) => {
