@@ -5,7 +5,7 @@ import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
 
 // Local imports
-import { run_browser } from "@opengeodeweb-front/utils/local.js"
+import { run_browser } from "@geode/opengeodeweb-front/utils/local.js"
 var NUXT_PORT
 function getLogs(page) {
   page.on("console", (msg) => {
