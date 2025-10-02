@@ -26,11 +26,22 @@ let back_port = 0
 let viewer_port = 0
 
 ipcMain.handle("run_back", async (_event, ...args) => {
-  back_port = await run_back(args[0], project_folder_path)
+  const back_command = path.join(
+    executable_path(path.join("microservices", "back")),
+    executable_name("vease-back")
+  )
+  back_port = await run_back(back_command, {
+    port: args[0],
+    data_folder_path: project_folder_path,
+  })
   return back_port
 })
 ipcMain.handle("run_viewer", async (_event, ...args) => {
-  viewer_port = await run_viewer(args[0], project_folder_path)
+  const viewer_path = path.join(__dirname, "..", "viewer", "dist")
+  viewer_port = await run_viewer(viewer_path, {
+    port: args[0],
+    data_folder_path: project_folder_path,
+  })
   return viewer_port
 })
 

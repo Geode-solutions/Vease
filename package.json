@@ -64,7 +64,7 @@
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-back": "next",
-    "@geode/opengeodeweb-front": "next",
+    "@geode/opengeodeweb-front": "file:../OpenGeodeWeb-Front",
     "@geode/opengeodeweb-viewer": "next",
     "@geode/vease-back": "next",
     "@geode/vease-viewer": "next",
