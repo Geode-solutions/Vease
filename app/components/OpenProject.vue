@@ -43,8 +43,8 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["close"]);
-const props = defineProps({
-  show_dialog: { type: Boolean, required: true },
-});
+  const emit = defineEmits(["close"])
+  const props = defineProps({
+    show_dialog: { type: Boolean, required: true },
+  })
 </script>

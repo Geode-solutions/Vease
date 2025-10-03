@@ -51,114 +51,118 @@
 </template>
 
 <script setup>
-const UIStore = useUIStore();
-const feedback_store = use_feedback_store();
+  const UIStore = useUIStore()
+  const feedback_store = useFeedbackStore()
 
-const isDragging = ref(false);
-let dragLeaveTimeout = null;
+  const isDragging = ref(false)
+  let dragLeaveTimeout = null
 
-const onDragOver = (e) => {
-  e.preventDefault();
-  isDragging.value = true;
-  clearTimeout(dragLeaveTimeout);
-};
+  const onDragOver = (e) => {
+    e.preventDefault()
+    isDragging.value = true
+    clearTimeout(dragLeaveTimeout)
+  }
 
-const onDragLeave = (e) => {
-  e.preventDefault();
-  isDragging.value = false;
+  const onDragLeave = (e) => {
+    e.preventDefault()
+    isDragging.value = false
 
-  dragLeaveTimeout = setTimeout(() => {
-    if (!isDragging.value) {
-      UIStore.setShowDropZone(false);
+    dragLeaveTimeout = setTimeout(() => {
+      if (!isDragging.value) {
+        UIStore.setShowDropZone(false)
+      }
+    }, 300)
+  }
+
+  const onDrop = (e) => {
+    e.preventDefault()
+    isDragging.value = false
+    clearTimeout(dragLeaveTimeout)
+
+    if (!e.dataTransfer) {
+      feedback_store.add_error(
+        500,
+        "/internal",
+        "Internal error",
+        "No file dropped.",
+      )
+      UIStore.setShowDropZone(false)
+      return
     }
-  }, 300);
-};
 
-const onDrop = (e) => {
-  e.preventDefault();
-  isDragging.value = false;
-  clearTimeout(dragLeaveTimeout);
+    const files = e.dataTransfer.files
 
-  if (!e.dataTransfer) {
-    feedback_store.add_error(
-      500,
-      "/internal",
-      "Internal error",
-      "No file dropped."
-    );
-    UIStore.setShowDropZone(false);
-    return;
+    if (files.length === 0) {
+      feedback_store.add_error(
+        500,
+        "/internal",
+        "Internal error",
+        "No file dropped.",
+      )
+    } else {
+      feedback_store.add_success(`${files.length} file(s) dropped`)
+      UIStore.setDroppedFiles(Array.from(files))
+      UIStore.setShowStepper(true)
+    }
+
+    UIStore.setShowDropZone(false)
   }
-
-  const files = e.dataTransfer.files;
-
-  if (files.length === 0) {
-    feedback_store.add_error(
-      500,
-      "/internal",
-      "Internal error",
-      "No file dropped."
-    );
-  } else {
-    feedback_store.add_success(`${files.length} file(s) dropped`);
-    UIStore.setDroppedFiles(Array.from(files));
-    UIStore.setShowStepper(true);
-  }
-
-  UIStore.setShowDropZone(false);
-};
 </script>
 
 <style scoped>
-.dropzone-overlay {
-  backdrop-filter: blur(8px);
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.dropzone-card {
-  border: 2px dashed var(--v-primary-base);
-  border-radius: 16px;
-  background-color: #ffffff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.dropzone-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-}
-
-.dropzone-card.dragging {
-  border-color: var(--v-success-base);
-  background-color: rgba(46, 125, 50, 0.05);
-  transform: scale(1.02);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.dropzone-transition-enter-active,
-.dropzone-transition-leave-active {
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dropzone-transition-enter-from,
-.dropzone-transition-leave-to {
-  opacity: 0;
-  transform: scale(0.98);
-}
-
-.pulse-animation {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+  .dropzone-overlay {
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.5);
   }
-  50% {
-    transform: scale(1.1);
+
+  .dropzone-card {
+    border: 2px dashed var(--v-primary-base);
+    border-radius: 16px;
+    background-color: #ffffff;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   }
-  100% {
-    transform: scale(1);
+
+  .dropzone-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
   }
-}
+
+  .dropzone-card.dragging {
+    border-color: var(--v-success-base);
+    background-color: rgba(46, 125, 50, 0.05);
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  .dropzone-transition-enter-active,
+  .dropzone-transition-leave-active {
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .dropzone-transition-enter-from,
+  .dropzone-transition-leave-to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 </style>

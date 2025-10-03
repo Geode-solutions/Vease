@@ -73,56 +73,56 @@
 </template>
 
 <script setup>
-// import isElectron from "is-electron";
+  // import isElectron from "is-electron";
 
-const drawer = ref(true);
-const newproject = ref(false);
-const openproject = ref(false);
+  const drawer = ref(true)
+  const newproject = ref(false)
+  const openproject = ref(false)
 
-const items = ref([
-  {
-    title: "Home",
-    icon: "mdi-home",
-    click: () => navigateTo("/"),
-  },
-  // {
-  //   title: "New Project",
-  //   icon: "mdi-plus",
-  //   click: () => (newproject.value = true),
-  // },
-  // {
-  //   title: "Open Project",
-  //   icon: "mdi-folder-outline",
-  //   click: () => (openproject.value = true),
-  // },
-  // {
-  //   title: "Open new window",
-  //   icon: "mdi-dock-window",
-  //   click: () => {
-  //     if (isElectron()) {
-  //       window.electronAPI.new_window();
-  //     } else {
-  //       console.log("notElectron");
+  const items = ref([
+    {
+      title: "Home",
+      icon: "mdi-home",
+      click: () => navigateTo("/"),
+    },
+    // {
+    //   title: "New Project",
+    //   icon: "mdi-plus",
+    //   click: () => (newproject.value = true),
+    // },
+    // {
+    //   title: "Open Project",
+    //   icon: "mdi-folder-outline",
+    //   click: () => (openproject.value = true),
+    // },
+    // {
+    //   title: "Open new window",
+    //   icon: "mdi-dock-window",
+    //   click: () => {
+    //     if (isElectron()) {
+    //       window.electronAPI.new_window();
+    //     } else {
+    //       console.log("notElectron");
 
-  //       window.open("http://localhost:3000", "_blank");
-  //     }
-  //   },
-  // },
-]);
+    //       window.open("http://localhost:3000", "_blank");
+    //     }
+    //   },
+    // },
+  ])
 
-let draggedItem = null;
+  let draggedItem = null
 
-const startDrag = (event, item) => {
-  draggedItem = item;
-  event.dataTransfer.setData("text/plain", "sidebar-icon");
-};
+  const startDrag = (event, item) => {
+    draggedItem = item
+    event.dataTransfer.setData("text/plain", "sidebar-icon")
+  }
 
-const onDrop = (event, dropIndex) => {
-  const dragIndex = items.value.findIndex((item) => item === draggedItem);
-  if (dragIndex === dropIndex) return;
+  const onDrop = (event, dropIndex) => {
+    const dragIndex = items.value.findIndex((item) => item === draggedItem)
+    if (dragIndex === dropIndex) return
 
-  items.value.splice(dragIndex, 1);
-  items.value.splice(dropIndex, 0, draggedItem);
-  draggedItem = null;
-};
+    items.value.splice(dragIndex, 1)
+    items.value.splice(dropIndex, 0, draggedItem)
+    draggedItem = null
+  }
 </script>
