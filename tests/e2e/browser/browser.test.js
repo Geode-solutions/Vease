@@ -1,4 +1,6 @@
 // Standard imports
+import path from "path"
+import os from "os"
 
 // Third party imports
 import { expect, test } from "@playwright/test"
