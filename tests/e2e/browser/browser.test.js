@@ -9,6 +9,8 @@ import { isWindows } from "std-env"
 // Local imports
 import {
   create_path,
+  executable_name,
+  executable_path,
   run_browser,
 } from "@geode/opengeodeweb-front/utils/local.js"
 var NUXT_PORT
@@ -23,12 +25,12 @@ test.beforeAll(async () => {
 
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back"),
+    executable_name("vease-back")
   )
 
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer"),
+    executable_name("vease-viewer")
   )
   NUXT_PORT = await run_browser(`test:browser`, {
     back: { command: back_command, args: { port: 5000, data_folder_path } },
