@@ -14,12 +14,12 @@ import {
 const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
 const back_command = path.join(
   executable_path(path.join("microservices", "back")),
-  executable_name("vease-back")
+  executable_name("vease-back"),
 )
 
 const viewer_command = path.join(
   executable_path(path.join("microservices", "viewer")),
-  executable_name("vease-viewer")
+  executable_name("vease-viewer"),
 )
 await run_browser(process.argv[2], {
   back: { command: back_command, args: { port: 5000, data_folder_path } },
