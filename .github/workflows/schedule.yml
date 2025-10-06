@@ -1,0 +1,18 @@
+name: Schedule
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        type: string
+        default: "next"
+  schedule:
+    - cron: 0 23 * * *
+
+jobs:
+  schedule:
+    uses: Geode-solutions/actions/.github/workflows/js-schedule.yml@master
+    with:
+      repos: ${{ vars.REPOS }}
+      branch: ${{ inputs.branch || 'next' }}
+    secrets: inherit
