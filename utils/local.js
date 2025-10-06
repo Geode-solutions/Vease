@@ -15,11 +15,11 @@ function run_browser_wrapper(script_name) {
   const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
+    executable_name("vease-back"),
   )
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
+    executable_name("vease-viewer"),
   )
   return new Promise(async (resolve, reject) => {
     const NUXT_PORT = await run_browser(script_name, {
