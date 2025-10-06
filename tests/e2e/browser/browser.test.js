@@ -1,55 +1,14 @@
 // Standard imports
-import path from "path"
-import os from "os"
 
 // Third party imports
 import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
 
 // Local imports
-import {
-  create_path,
-  executable_name,
-  executable_path,
-  run_browser,
-} from "@geode/opengeodeweb-front/utils/local.js"
-var NUXT_PORT
-function getLogs(page) {
-  page.on("console", (msg) => {
-    console.log(`PAGE LOG: "${msg.text()}"`)
-  })
-}
-
-test.beforeAll(async () => {
-  const data_folder_path = create_path(path.join(os.tmpdir(), "vease"))
-  console.log("data_folder_path", data_folder_path)
-
-  const back_command = path.join(
-    executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
-  )
-  console.log("back_command", back_command)
-
-  const viewer_command = path.join(
-    executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
-  )
-
-  console.log("viewer_command", viewer_command)
-  NUXT_PORT = await run_browser(`test:browser`, {
-    back: {
-      command: back_command,
-      args: { port: 5000, data_folder_path: data_folder_path },
-    },
-    viewer: {
-      command: viewer_command,
-      args: { port: 1234, data_folder_path: data_folder_path },
-    },
-  })
-})
+import { run_browser_wrapper } from "../../../utils/local"
 
 test.beforeEach(async ({ page }) => {
-  getLogs(page)
+  const NUXT_PORT = await run_browser_wrapper(`internal:browser`)
   await page.goto(`http://localhost:${NUXT_PORT}/`)
   await page.setViewportSize({ width: 1200, height: 800 })
 })
