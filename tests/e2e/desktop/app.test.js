@@ -9,7 +9,7 @@ let electronApp
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild(
-    path.join(process.cwd(), "release", "0.0.0")
+    path.join(process.cwd(), "release", "0.0.0"),
   )
   console.log("latestBuild", latestBuild)
   // parse the directory and find paths and other info
