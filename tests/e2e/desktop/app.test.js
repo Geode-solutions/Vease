@@ -9,7 +9,7 @@ let electronApp
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild(
-    path.join(process.cwd(), "release", "0.0.0"),
+    path.join(process.cwd(), "release", "0.0.0")
   )
   console.log("latestBuild", latestBuild)
   // parse the directory and find paths and other info
@@ -27,6 +27,16 @@ test.beforeAll(async () => {
     },
   })
 
+  electronApp
+    .process()
+    .stdout.on("data", (data) => console.log(`stdout: ${data}`))
+  electronApp
+    .process()
+    .stderr.on("data", (error) => console.log(`stderr: ${error}`))
+
+  electronApp.on("close", (data) => {
+    console.log("electronApp close", data)
+  })
   const firstWindow = await electronApp.firstWindow()
   const browserWindow = await electronApp.browserWindow(firstWindow)
   await browserWindow.evaluate(async (window) => {
@@ -54,7 +64,7 @@ test("App packaged", async () => {
 
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout((isWindows ? 45 : 20) * 1000)
+  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000)
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })
