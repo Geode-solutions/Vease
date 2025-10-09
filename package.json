@@ -28,7 +28,7 @@
     "build:viewer": "node node_scripts/run_script_file.js viewer/build",
     "build:microservices": "npm run build:back && npm run build:viewer",
     "package": "npm run build && electron-builder build --publish=never",
-    "test:browser": "node node_scripts/browser.js preview:browser",
+    "internal:browser": "node node_scripts/browser.js preview:browser",
     "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
     "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
   },
@@ -76,7 +76,6 @@
     "h3-formidable": "1.0.0",
     "nuxt": "3.13.2",
     "utf-8-validate": "^6.0.5",
-    "vuetify": "3.8.12",
-    "ws": "^8.18.3"
+    "vuetify": "3.8.12"
   }
 }
