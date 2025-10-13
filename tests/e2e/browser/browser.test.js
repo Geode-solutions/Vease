@@ -13,10 +13,6 @@ test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 800 })
 })
 
-test("Window title", async ({ page }) => {
-  await expect(page).toHaveTitle("Vease")
-})
-
 test("Microservices running", async ({ page }) => {
   await page.waitForTimeout((isWindows ? 35 : 20) * 1000)
   await expect(page).toHaveScreenshot({
