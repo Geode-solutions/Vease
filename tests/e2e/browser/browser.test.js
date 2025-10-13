@@ -9,7 +9,9 @@ import { run_browser_wrapper } from "../../../utils/local"
 
 test.beforeEach(async ({ page }) => {
   const NUXT_PORT = await run_browser_wrapper(`internal:browser`)
+  console.log("NUXT_PORT", NUXT_PORT)
   await page.goto(`http://localhost:${NUXT_PORT}/`)
+  console.log("setViewportSize")
   await page.setViewportSize({ width: 1200, height: 800 })
 })
 
