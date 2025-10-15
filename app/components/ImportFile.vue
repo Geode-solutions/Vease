@@ -66,7 +66,6 @@
                     native_filename: response._data.native_file_name,
                     viewable_filename: response._data.viewable_file_name,
                     displayed_name: response._data.input_files,
-                    input_files: response._data.input_files,
                     vtk_js: {
                       binary_light_viewable:
                         response._data.binary_light_viewable,
