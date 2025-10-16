@@ -137,10 +137,10 @@
                     })
                     closeDrawer()
                   },
-                }
+                },
               )
             },
-          }
+          },
         )
       } finally {
         loading.value = false
