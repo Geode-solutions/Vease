@@ -10,13 +10,13 @@
           height="48"
           color="grey-darken-2"
         />
-        Create Area ofInterest
+        Create Area of Interest (Bounding Box)
       </h2>
     </v-card-title>
 
     <v-card-subtitle>
       <p class="ma-0 text-medium-emphasis">
-        Enter the title and coordinates to define your AOI.
+        Enter the title and Min/Max coordinates to define your rectangular AOI.
       </p>
     </v-card-subtitle>
 
@@ -36,37 +36,75 @@
 
         <div class="mb-4">
           <p class="text-subtitle-1 font-weight-medium mb-2">
-            Boundary Points (X, Y)
+            Minimum Coordinates (Min X, Min Y)
           </p>
-          <v-row v-for="(p, index) in aoi.points" :key="index" dense>
+          <v-row dense>
             <v-col cols="6">
               <v-text-field
-                :label="`Point ${index + 1} - X`"
-                v-model="p.x"
+                label="Min X"
+                v-model="aoi.min_x"
                 prepend-inner-icon="mdi-axis-x-arrow"
                 type="text"
                 inputmode="decimal"
                 variant="outlined"
                 color="secondary"
                 density="comfortable"
-                :rules="[(v) => !!v || 'X is required']"
-                @paste="handlePasteAOI($event, index, 'x')"
-                @update:modelValue="(val) => sanitizeInputAOI(val, index, 'x')"
+                :rules="[(v) => !!v || 'Min X is required']"
+                @paste="handlePasteAOI($event, 'min', 'x')"
+                @update:modelValue="(val) => sanitizeInputAOI(val, 'min_x')"
               />
             </v-col>
             <v-col cols="6">
               <v-text-field
-                :label="`Point ${index + 1} - Y`"
-                v-model="p.y"
+                label="Min Y"
+                v-model="aoi.min_y"
                 prepend-inner-icon="mdi-axis-y-arrow"
                 type="text"
                 inputmode="decimal"
                 variant="outlined"
                 color="secondary"
                 density="comfortable"
-                :rules="[(v) => !!v || 'Y is required']"
-                @paste="handlePasteAOI($event, index, 'y')"
-                @update:modelValue="(val) => sanitizeInputAOI(val, index, 'y')"
+                :rules="[(v) => !!v || 'Min Y is required']"
+                @paste="handlePasteAOI($event, 'min', 'y')"
+                @update:modelValue="(val) => sanitizeInputAOI(val, 'min_y')"
+              />
+            </v-col>
+          </v-row>
+        </div>
+
+        <div class="mb-4">
+          <p class="text-subtitle-1 font-weight-medium mb-2">
+            Maximum Coordinates (Max X, Max Y)
+          </p>
+          <v-row dense>
+            <v-col cols="6">
+              <v-text-field
+                label="Max X"
+                v-model="aoi.max_x"
+                prepend-inner-icon="mdi-axis-x-arrow"
+                type="text"
+                inputmode="decimal"
+                variant="outlined"
+                color="secondary"
+                density="comfortable"
+                :rules="[(v) => !!v || 'Max X is required']"
+                @paste="handlePasteAOI($event, 'max', 'x')"
+                @update:modelValue="(val) => sanitizeInputAOI(val, 'max_x')"
+              />
+            </v-col>
+            <v-col cols="6">
+              <v-text-field
+                label="Max Y"
+                v-model="aoi.max_y"
+                prepend-inner-icon="mdi-axis-y-arrow"
+                type="text"
+                inputmode="decimal"
+                variant="outlined"
+                color="secondary"
+                density="comfortable"
+                :rules="[(v) => !!v || 'Max Y is required']"
+                @paste="handlePasteAOI($event, 'max', 'y')"
+                @update:modelValue="(val) => sanitizeInputAOI(val, 'max_y')"
               />
             </v-col>
           </v-row>
@@ -81,8 +119,8 @@
           variant="outlined"
           color="secondary"
           :rules="[(v) => !!v || 'Z is required']"
-          @paste="handlePasteZAOI($event, 'z')"
-          @update:modelValue="(val) => sanitizeInputZAOI(val, 'z')"
+          @paste="handlePasteZAOI($event)"
+          @update:modelValue="(val) => sanitizeInputZAOI(val)"
         />
       </v-form>
     </v-card-text>
@@ -127,6 +165,7 @@
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
@@ -136,24 +175,26 @@
   const UIStore = useUIStore()
   const dataBaseStore = useDataBaseStore()
 
+  // Structure d'état pour capturer les coordonnées Min/Max
   const aoi = ref({
     title: "",
-    points: [
-      { x: "", y: "" },
-      { x: "", y: "" },
-      { x: "", y: "" },
-      { x: "", y: "" },
-    ],
+    min_x: "",
+    min_y: "",
+    max_x: "",
+    max_y: "",
     z: "",
   })
 
   const loading = ref(false)
 
+  // Vérification que tous les champs sont remplis
   const isFormFilled = computed(() => {
-    const allPointsFilled = aoi.value.points.every(
-      (p) => p.x !== "" && p.y !== ""
-    )
-    return aoi.value.title !== "" && allPointsFilled && aoi.value.z !== ""
+    const coordsFilled =
+      aoi.value.min_x !== "" &&
+      aoi.value.min_y !== "" &&
+      aoi.value.max_x !== "" &&
+      aoi.value.max_y !== ""
+    return aoi.value.title !== "" && coordsFilled && aoi.value.z !== ""
   })
 
   const closeDrawer = () => {
@@ -172,8 +213,6 @@
         schema: viewer_schemas.opengeodeweb_viewer.generic.register,
         params: {
           id: data.id,
-          file_name: data.viewable_file_name,
-          viewer_object: data.object_type,
         },
       },
       {
@@ -192,13 +231,48 @@
   }
 
   async function createAOI() {
+    // 1. Conversion des champs de l'UI en nombres
+    const min_x = safeParseFloat(aoi.value.min_x)
+    const min_y = safeParseFloat(aoi.value.min_y)
+    const max_x = safeParseFloat(aoi.value.max_x)
+    const max_y = safeParseFloat(aoi.value.max_y)
+    const z = safeParseFloat(aoi.value.z)
+
+    // Vérification NaN
+    const hasNaN =
+      isNaN(min_x) || isNaN(min_y) || isNaN(max_x) || isNaN(max_y) || isNaN(z)
+
+    if (hasNaN) {
+      console.error(
+        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format."
+      )
+      loading.value = false
+      return
+    }
+
+    // 2. Vérification que Min < Max pour chaque axe
+    if (min_x >= max_x || min_y >= max_y) {
+      console.error(
+        "AOI creation failed: Min coordinates must be less than Max coordinates"
+      )
+      loading.value = false
+      return
+    }
+
+    // 3. Génération des 4 points pour respecter le schéma existant
+    // Ordre des points pour le rectangle (MinX, MinY), (MaxX, MinY), (MaxX, MaxY), (MinX, MaxY)
+    const aoiPoints = [
+      { x: min_x, y: min_y },
+      { x: max_x, y: min_y },
+      { x: max_x, y: max_y },
+      { x: min_x, y: max_y },
+    ]
+
+    // 4. Construction du payload final CONFORME au schéma du backend
     const aoiData = {
       name: aoi.value.title,
-      points: aoi.value.points.map((p) => ({
-        x: safeParseFloat(p.x),
-        y: safeParseFloat(p.y),
-      })),
-      z: safeParseFloat(aoi.value.z),
+      points: aoiPoints, // <- Le champ POINTS est généré ici
+      z: z,
     }
 
     const aoiSchema = back_schemas.opengeodeweb_back.create.create_aoi
@@ -211,17 +285,7 @@
       return
     }
 
-    const hasNaN =
-      aoiData.points.some((p) => isNaN(p.x) || isNaN(p.y)) || isNaN(aoiData.z)
-
-    if (hasNaN) {
-      console.error(
-        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format."
-      )
-      loading.value = false
-      return
-    }
-
+    // 5. Validation et appel API
     if (validate_schema(aoiSchema, aoiData)) {
       loading.value = true
       try {
@@ -236,6 +300,8 @@
             },
           }
         )
+      } catch (error) {
+        console.error("API call failed during createAOI:", error)
       } finally {
         loading.value = false
       }
@@ -246,6 +312,7 @@
     }
   }
 
+  // Fonctions de sanitization et de gestion du collage
   const sanitizeNumberString = (str) => {
     if (str == null) return ""
     let value = String(str)
@@ -265,7 +332,7 @@
     return value
   }
 
-  const handlePasteAOI = (event, index, field) => {
+  const handlePasteAOI = (event, type, field) => {
     const pastedText =
       (event && event.clipboardData && event.clipboardData.getData("text")) ||
       ""
@@ -277,12 +344,20 @@
 
     const sanitized = coordinates.map((c) => sanitizeNumberString(c))
 
+    const targetBase = aoi.value
+    const xKey = `${type}_x`
+    const yKey = `${type}_y`
+
     if (sanitized.length >= 2) {
-      aoi.value.points[index].x = sanitized[0]
-      aoi.value.points[index].y = sanitized[1]
+      targetBase[xKey] = sanitized[0]
+      targetBase[yKey] = sanitized[1]
       event.preventDefault()
     } else if (sanitized.length === 1) {
-      aoi.value.points[index][field] = sanitized[0]
+      if (field === "x") {
+        targetBase[xKey] = sanitized[0]
+      } else {
+        targetBase[yKey] = sanitized[0]
+      }
       event.preventDefault()
     }
   }
@@ -299,8 +374,8 @@
     }
   }
 
-  const sanitizeInputAOI = (value, index, field) => {
-    aoi.value.points[index][field] = sanitizeNumberString(value)
+  const sanitizeInputAOI = (value, field) => {
+    aoi.value[field] = sanitizeNumberString(value)
   }
 
   const sanitizeInputZAOI = (value) => {

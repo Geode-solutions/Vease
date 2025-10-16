@@ -165,8 +165,6 @@
         schema: viewer_schemas.opengeodeweb_viewer.generic.register,
         params: {
           id: data.id,
-          file_name: data.viewable_file_name,
-          viewer_object: data.object_type,
         },
       },
       {
