@@ -124,7 +124,6 @@
                   schema: viewer_schemas.opengeodeweb_viewer.generic.register,
                   params: {
                     id: response._data.id,
-                    viewer_object: response._data.object_type,
                   },
                 },
                 {
