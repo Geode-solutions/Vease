@@ -233,7 +233,7 @@
       if (newVal) {
         initializeAOICoordinates()
       }
-    }
+    },
   )
 
   async function registerObject(data) {
@@ -258,7 +258,7 @@
           })
           closeDrawer()
         },
-      }
+      },
     )
   }
 
@@ -278,7 +278,7 @@
 
     if (hasNaN) {
       console.error(
-        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format."
+        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format.",
       )
       loading.value = false
       return
@@ -286,7 +286,7 @@
 
     if (min_x_val >= max_x_val || min_y_val >= max_y_val) {
       console.error(
-        "AOI creation failed: Min coordinates must be less than Max coordinates"
+        "AOI creation failed: Min coordinates must be less than Max coordinates",
       )
       loading.value = false
       return
@@ -309,7 +309,7 @@
 
     if (!aoiSchema || typeof aoiSchema !== "object") {
       console.error(
-        "FATAL ERROR: The AOI schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_aoi"
+        "FATAL ERROR: The AOI schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_aoi",
       )
       loading.value = false
       return
@@ -325,7 +325,7 @@
           response_function: async (response) => {
             await registerObject(response._data)
           },
-        }
+        },
       )
     } catch (error) {
       console.error("API call failed during createAOI:", error)
