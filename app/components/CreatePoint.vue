@@ -1,20 +1,18 @@
 <template>
-  <v-card :width="500" elevation="10" rounded="xl" class="pa-4">
-    <v-card-title class="pb-2">
-      <h2 class="text-h5 text-primary font-weight-bold d-flex align-center">
-        <v-icon
-          icon="mdi-circle-medium"
-          class="mr-3 text-h4"
-          color="grey-darken-2"
-        ></v-icon>
-        Create Precise Point
-      </h2>
+  <v-card :width="500" elevation="0" class="pa-4">
+    <v-card-title
+      class="pb-2 text-h5 text-primary font-weight-bold d-flex align-center"
+    >
+      <v-icon
+        icon="mdi-circle-medium"
+        class="mr-3 text-h4"
+        color="grey-darken-2"
+      ></v-icon>
+      Create Specific Point
     </v-card-title>
 
-    <v-card-subtitle>
-      <p class="ma-0 text-medium-emphasis">
-        Enter the coordinates and a title for your new point object.
-      </p>
+    <v-card-subtitle class="ma-0 text-medium-emphasis">
+      Enter the coordinates and a title for your new point object.
     </v-card-subtitle>
 
     <v-card-text>
@@ -174,7 +172,10 @@
             geode_object: data.geode_object,
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
-            name: data.name,
+            displayed_name: data.name,
+            vtk_js: {
+              binary_light_viewable: data.binary_light_viewable,
+            },
           })
           closeDrawer()
         },

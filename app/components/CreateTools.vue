@@ -1,16 +1,14 @@
 <template>
-  <v-card :width="500" elevation="12" rounded="xl" class="pa-4">
-    <v-card-title class="pb-2">
-      <h2 class="text-h4 text-primary font-weight-bold d-flex align-center">
-        <v-icon icon="mdi-creation" class="mr-3"></v-icon>
-        Create New Object
-      </h2>
+  <v-card :width="500" elevation="0" class="pa-4">
+    <v-card-title
+      class="pb-2 text-h4 text-primary font-weight-bold d-flex align-center"
+    >
+      <v-icon icon="mdi-creation" class="mr-3"></v-icon>
+      Create New Object
     </v-card-title>
 
-    <v-card-subtitle>
-      <p class="ma-0 text-medium-emphasis">
-        Choose a drawing tool to get started.
-      </p>
+    <v-card-subtitle class="ma-0 text-medium-emphasis">
+      Choose a drawing tool to get started.
     </v-card-subtitle>
 
     <v-card-text class="pt-6">
@@ -21,62 +19,51 @@
               v-bind="props"
               class="text-center pa-4 cursor-pointer transition-swing flex-grow-1 d-flex flex-column"
               :class="{
-                'bg-blue-lighten-5': isSelected(tool.id),
+                'bg-blue-lighten-5': isHovering,
                 'scale-103': isHovering,
               }"
-              :elevation="isSelected(tool.id) || isHovering ? 6 : 2"
+              :elevation="isHovering ? 6 : 2"
               rounded="xl"
               @click="selectTool(tool.id)"
-              :style="
-                isSelected(tool.id)
-                  ? 'border: 2px solid var(--v-theme-primary); min-height: 280px;'
-                  : 'border: 2px solid transparent; min-height: 280px;'
-              "
             >
               <v-card-text class="pa-4 d-flex flex-column flex-grow-1">
                 <div
                   class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
-                  :class="
-                    isSelected(tool.id) ? 'bg-primary' : 'bg-grey-lighten-3'
-                  "
+                  :class="isHovering ? 'bg-primary' : 'bg-grey-lighten-3'"
                   style="width: 80px; height: 80px"
                 >
-                  <template v-if="tool.iconType === 'mdi'">
-                    <v-icon
-                      :icon="tool.iconSource"
-                      size="48"
-                      :color="isSelected(tool.id) ? 'white' : 'grey-darken-2'"
-                    />
-                  </template>
+                  <v-icon
+                    v-if="tool.iconType === 'mdi'"
+                    :icon="tool.iconSource"
+                    size="48"
+                    :color="isHovering ? 'white' : 'grey-darken-2'"
+                  />
 
-                  <template v-else-if="tool.iconType === 'svg'">
-                    <v-img
-                      :src="tool.iconSource"
-                      :alt="tool.title + ' icon'"
-                      height="48"
-                      width="48"
-                      contain
-                      :class="{
-                        'svg-white-filter': isSelected(tool.id),
-                      }"
-                    />
-                  </template>
+                  <v-img
+                    v-else-if="tool.iconType === 'svg'"
+                    :src="tool.iconSource"
+                    :alt="tool.title + ' icon'"
+                    height="48"
+                    width="48"
+                    contain
+                    :class="{
+                      'svg-white-filter': isHovering,
+                    }"
+                  />
                 </div>
 
-                <div
-                  class="text-h6 font-weight-bold mb-1 tool-title"
-                  :class="
-                    isSelected(tool.id)
-                      ? 'text-primary'
-                      : 'text-medium-emphasis'
-                  "
+                <v-card-title
+                  class="text-h5 font-weight-bold mb-1 text-wrap tool-title"
+                  :class="isHovering ? 'text-primary' : 'text-medium-emphasis'"
                 >
                   {{ tool.title }}
-                </div>
+                </v-card-title>
 
-                <p class="text-caption text-wrap ma-0 text-grey-darken-1">
+                <v-card-subtitle
+                  class="text-caption text-wrap text-grey-darken-4"
+                >
                   {{ tool.description }}
-                </p>
+                </v-card-subtitle>
               </v-card-text>
             </v-card>
           </v-hover>
@@ -90,7 +77,7 @@
   const tools = [
     {
       id: "Point",
-      title: "Precise Point",
+      title: "Specific Point",
       description:
         "Create a point object with exact coordinates on the viewer.",
       iconType: "mdi",

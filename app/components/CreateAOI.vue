@@ -1,30 +1,28 @@
 <template>
-  <v-card :width="500" elevation="10" rounded="xl" class="pa-4">
-    <v-card-title class="pb-2">
-      <h2 class="text-h5 text-primary font-weight-bold d-flex align-center">
-        <img
-          src="/aoi.svg"
-          alt="AOI icon"
-          class="mr-3"
-          width="48"
-          height="48"
-          color="grey-darken-2"
-        />
-        Create Area of Interest (Bounding Box)
-      </h2>
+  <v-card :width="500" elevation="0" class="pa-4">
+    <v-card-title
+      class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
+    >
+      <img
+        src="/aoi.svg"
+        alt="AOI icon"
+        class="mr-3"
+        width="48"
+        height="48"
+        color="grey-darken-2"
+      />
+      Create Area of Interest (Bounding Box)
     </v-card-title>
 
-    <v-card-subtitle>
-      <p class="ma-0 text-medium-emphasis">
-        Enter the title and Min/Max coordinates to define your rectangular AOI.
-      </p>
+    <v-card-subtitle class="ma-0 text-medium-emphasis text-wrap">
+      Enter the title and Min/Max coordinates to define your rectangular AOI.
     </v-card-subtitle>
 
     <v-card-text>
       <v-form ref="form">
         <v-text-field
           label="AOI Title"
-          v-model="aoi.title"
+          v-model="title"
           prepend-inner-icon="mdi-format-title"
           type="text"
           variant="outlined"
@@ -42,7 +40,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Min X"
-                v-model="aoi.min_x"
+                v-model="min_x"
                 prepend-inner-icon="mdi-axis-x-arrow"
                 type="text"
                 inputmode="decimal"
@@ -57,7 +55,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Min Y"
-                v-model="aoi.min_y"
+                v-model="min_y"
                 prepend-inner-icon="mdi-axis-y-arrow"
                 type="text"
                 inputmode="decimal"
@@ -80,7 +78,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Max X"
-                v-model="aoi.max_x"
+                v-model="max_x"
                 prepend-inner-icon="mdi-axis-x-arrow"
                 type="text"
                 inputmode="decimal"
@@ -95,7 +93,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Max Y"
-                v-model="aoi.max_y"
+                v-model="max_y"
                 prepend-inner-icon="mdi-axis-y-arrow"
                 type="text"
                 inputmode="decimal"
@@ -109,19 +107,6 @@
             </v-col>
           </v-row>
         </div>
-
-        <v-text-field
-          label="Z (Common for all points)"
-          v-model="aoi.z"
-          prepend-inner-icon="mdi-axis-z-arrow"
-          type="text"
-          inputmode="decimal"
-          variant="outlined"
-          color="secondary"
-          :rules="[(v) => !!v || 'Z is required']"
-          @paste="handlePasteZAOI($event)"
-          @update:modelValue="(val) => sanitizeInputZAOI(val)"
-        />
       </v-form>
     </v-card-text>
 
@@ -147,7 +132,7 @@
         @click="createAOI"
         class="text-none ml-4"
       >
-        <v-icon start>mdi-send</v-icon>
+        <v-icon start class="ml-1">mdi-send</v-icon>
         Create AOI
         <template #loader>
           <v-progress-circular
@@ -174,27 +159,24 @@
 
   const UIStore = useUIStore()
   const dataBaseStore = useDataBaseStore()
+  const hybridViewerStore = useHybridViewerStore()
 
-  // Structure d'état pour capturer les coordonnées Min/Max
-  const aoi = ref({
-    title: "",
-    min_x: "",
-    min_y: "",
-    max_x: "",
-    max_y: "",
-    z: "",
-  })
+  const title = ref("")
+  const min_x = ref("")
+  const min_y = ref("")
+  const max_x = ref("")
+  const max_y = ref("")
+  const z = ref("")
 
   const loading = ref(false)
 
-  // Vérification que tous les champs sont remplis
   const isFormFilled = computed(() => {
     const coordsFilled =
-      aoi.value.min_x !== "" &&
-      aoi.value.min_y !== "" &&
-      aoi.value.max_x !== "" &&
-      aoi.value.max_y !== ""
-    return aoi.value.title !== "" && coordsFilled && aoi.value.z !== ""
+      min_x.value !== "" &&
+      min_y.value !== "" &&
+      max_x.value !== "" &&
+      max_y.value !== ""
+    return title.value !== "" && coordsFilled
   })
 
   const closeDrawer = () => {
@@ -206,6 +188,53 @@
     const result = parseFloat(sanitizedValue)
     return isNaN(result) && sanitizedValue === "" ? NaN : result
   }
+
+  function visibleBoundingBox() {
+    console.log("visibleBoundingBox", hybridViewerStore.genericRenderWindow)
+    if (!hybridViewerStore.genericRenderWindow.value)
+      return [-1, 1, -1, 1, -1, 1]
+    const renderer = hybridViewerStore.genericRenderWindow.value.getRenderer()
+    return renderer.computeVisiblePropBounds()
+  }
+
+  const initializeAOICoordinates = () => {
+    const bounds = visibleBoundingBox()
+    const boundsMinX = bounds[0]
+    const boundsMaxX = bounds[1]
+    const boundsMinY = bounds[2]
+    const boundsMaxY = bounds[3]
+
+    const extentX = boundsMaxX - boundsMinX
+    const extentY = boundsMaxY - boundsMinY
+
+    const paddingX = extentX * 0.1
+    const paddingY = extentY * 0.1
+
+    const newMinX = boundsMinX - paddingX
+    const newMaxX = boundsMaxX + paddingX
+    const newMinY = boundsMinY - paddingY
+    const newMaxY = boundsMaxY + paddingY
+
+    min_x.value = newMinX
+    max_x.value = newMaxX
+    min_y.value = newMinY
+    max_y.value = newMaxY
+    z.value = (bounds[4] + bounds[5]) / 2
+  }
+
+  onMounted(() => {
+    console.log("CreateAOI mounted")
+    initializeAOICoordinates()
+  })
+
+  watch(
+    () => UIStore.showCreateAOI,
+    (newVal) => {
+      if (newVal) {
+        initializeAOICoordinates()
+      }
+    }
+  )
 
   async function registerObject(data) {
     await viewer_call(
@@ -222,7 +251,10 @@
             geode_object: data.geode_object,
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
-            name: data.name,
+            displayed_name: data.name,
+            vtk_js: {
+              binary_light_viewable: data.binary_light_viewable,
+            },
           })
           closeDrawer()
         },
@@ -231,16 +263,18 @@
   }
 
   async function createAOI() {
-    // 1. Conversion des champs de l'UI en nombres
-    const min_x = safeParseFloat(aoi.value.min_x)
-    const min_y = safeParseFloat(aoi.value.min_y)
-    const max_x = safeParseFloat(aoi.value.max_x)
-    const max_y = safeParseFloat(aoi.value.max_y)
-    const z = safeParseFloat(aoi.value.z)
+    const min_x_val = safeParseFloat(min_x.value)
+    const min_y_val = safeParseFloat(min_y.value)
+    const max_x_val = safeParseFloat(max_x.value)
+    const max_y_val = safeParseFloat(max_y.value)
+    const z_val = safeParseFloat(z.value)
 
-    // Vérification NaN
     const hasNaN =
-      isNaN(min_x) || isNaN(min_y) || isNaN(max_x) || isNaN(max_y) || isNaN(z)
+      isNaN(min_x_val) ||
+      isNaN(min_y_val) ||
+      isNaN(max_x_val) ||
+      isNaN(max_y_val) ||
+      isNaN(z_val)
 
     if (hasNaN) {
       console.error(
@@ -250,8 +284,7 @@
       return
     }
 
-    // 2. Vérification que Min < Max pour chaque axe
-    if (min_x >= max_x || min_y >= max_y) {
+    if (min_x_val >= max_x_val || min_y_val >= max_y_val) {
       console.error(
         "AOI creation failed: Min coordinates must be less than Max coordinates"
       )
@@ -259,20 +292,17 @@
       return
     }
 
-    // 3. Génération des 4 points pour respecter le schéma existant
-    // Ordre des points pour le rectangle (MinX, MinY), (MaxX, MinY), (MaxX, MaxY), (MinX, MaxY)
     const aoiPoints = [
-      { x: min_x, y: min_y },
-      { x: max_x, y: min_y },
-      { x: max_x, y: max_y },
-      { x: min_x, y: max_y },
+      { x: min_x_val, y: min_y_val },
+      { x: max_x_val, y: min_y_val },
+      { x: max_x_val, y: max_y_val },
+      { x: min_x_val, y: max_y_val },
     ]
 
-    // 4. Construction du payload final CONFORME au schéma du backend
     const aoiData = {
-      name: aoi.value.title,
-      points: aoiPoints, // <- Le champ POINTS est généré ici
-      z: z,
+      name: title.value,
+      points: aoiPoints,
+      z: z_val,
     }
 
     const aoiSchema = back_schemas.opengeodeweb_back.create.create_aoi
@@ -284,8 +314,6 @@
       loading.value = false
       return
     }
-
-    // 5. Validation et appel API
     if (validate_schema(aoiSchema, aoiData)) {
       loading.value = true
       try {
@@ -312,7 +340,6 @@
     }
   }
 
-  // Fonctions de sanitization et de gestion du collage
   const sanitizeNumberString = (str) => {
     if (str == null) return ""
     let value = String(str)
@@ -344,41 +371,43 @@
 
     const sanitized = coordinates.map((c) => sanitizeNumberString(c))
 
-    const targetBase = aoi.value
     const xKey = `${type}_x`
     const yKey = `${type}_y`
 
     if (sanitized.length >= 2) {
-      targetBase[xKey] = sanitized[0]
-      targetBase[yKey] = sanitized[1]
+      if (field === "x" || type === "min") {
+        min_x.value = sanitized[0]
+      } else {
+        max_x.value = sanitized[0]
+      }
+      if (field === "y" || type === "min") {
+        min_y.value = sanitized[1]
+      } else {
+        max_y.value = sanitized[1]
+      }
       event.preventDefault()
     } else if (sanitized.length === 1) {
       if (field === "x") {
-        targetBase[xKey] = sanitized[0]
+        if (type === "min") {
+          min_x.value = sanitized[0]
+        } else {
+          max_x.value = sanitized[0]
+        }
       } else {
-        targetBase[yKey] = sanitized[0]
+        if (type === "min") {
+          min_y.value = sanitized[0]
+        } else {
+          max_y.value = sanitized[0]
+        }
       }
       event.preventDefault()
     }
   }
 
-  const handlePasteZAOI = (event) => {
-    const pastedText =
-      (event && event.clipboardData && event.clipboardData.getData("text")) ||
-      ""
-    const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
-
-    if (coordinates && coordinates.length > 0) {
-      aoi.value.z = sanitizeNumberString(coordinates[0])
-      event.preventDefault()
-    }
-  }
-
   const sanitizeInputAOI = (value, field) => {
-    aoi.value[field] = sanitizeNumberString(value)
-  }
-
-  const sanitizeInputZAOI = (value) => {
-    aoi.value.z = sanitizeNumberString(value)
+    if (field === "min_x") min_x.value = sanitizeNumberString(value)
+    else if (field === "min_y") min_y.value = sanitizeNumberString(value)
+    else if (field === "max_x") max_x.value = sanitizeNumberString(value)
+    else if (field === "max_y") max_y.value = sanitizeNumberString(value)
   }
 </script>

@@ -57,7 +57,7 @@
       </v-navigation-drawer>
 
       <v-navigation-drawer
-        class="rounded align-start"
+        class="align-start"
         radius="10px"
         :width="500"
         location="right"
