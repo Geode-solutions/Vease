@@ -179,7 +179,7 @@
           })
           closeDrawer()
         },
-      }
+      },
     )
   }
 
@@ -197,7 +197,7 @@
 
     if (!pointSchema || typeof pointSchema !== "object") {
       console.error(
-        "FATAL ERROR: The Point schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_point"
+        "FATAL ERROR: The Point schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_point",
       )
       loading.value = false
       return
@@ -215,14 +215,14 @@
             response_function: async (response) => {
               await registerObject(response._data)
             },
-          }
+          },
         )
       } finally {
         loading.value = false
       }
     } else {
       console.error(
-        "Schema validation FAILED for Point. Check console for AJV errors."
+        "Schema validation FAILED for Point. Check console for AJV errors.",
       )
     }
   }
