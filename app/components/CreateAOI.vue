@@ -15,7 +15,7 @@
     </v-card-title>
 
     <v-card-subtitle class="ma-0 text-medium-emphasis text-wrap">
-      Enter the title and Min/Max coordinates to define your rectangular AOI.
+      Enter the name and Min/Max coordinates to define your rectangular AOI.
     </v-card-subtitle>
 
     <v-card-text>
@@ -314,29 +314,23 @@
       loading.value = false
       return
     }
-    if (validate_schema(aoiSchema, aoiData)) {
-      loading.value = true
-      try {
-        await api_fetch(
-          {
-            schema: aoiSchema,
-            params: aoiData,
+    loading.value = true
+    try {
+      await api_fetch(
+        {
+          schema: aoiSchema,
+          params: aoiData,
+        },
+        {
+          response_function: async (response) => {
+            await registerObject(response._data)
           },
-          {
-            response_function: async (response) => {
-              await registerObject(response._data)
-            },
-          }
-        )
-      } catch (error) {
-        console.error("API call failed during createAOI:", error)
-      } finally {
-        loading.value = false
-      }
-    } else {
-      console.error(
-        "Schema validation FAILED for AOI. Check console for AJV errors."
+        }
       )
+    } catch (error) {
+      console.error("API call failed during createAOI:", error)
+    } finally {
+      loading.value = false
     }
   }
 

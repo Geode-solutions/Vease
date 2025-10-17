@@ -14,17 +14,16 @@
     <v-card-subtitle class="ma-0 text-medium-emphasis">
       Enter the coordinates and a title for your new point object.
     </v-card-subtitle>
-
     <v-card-text>
       <v-form ref="form">
         <v-text-field
-          label="Object Title"
-          v-model="point.title"
+          label="Object Name"
+          v-model="name"
           prepend-inner-icon="mdi-format-title"
           type="text"
           variant="outlined"
           color="primary"
-          :rules="[(v) => !!v || 'Title is required']"
+          :rules="[(v) => !!v || 'Name is required']"
           required
           class="mb-4"
         />
@@ -33,7 +32,7 @@
           <v-col cols="4">
             <v-text-field
               label="X Coordinate"
-              v-model="point.x"
+              v-model="x"
               prepend-inner-icon="mdi-axis-x-arrow"
               type="text"
               inputmode="decimal"
@@ -49,7 +48,7 @@
           <v-col cols="4">
             <v-text-field
               label="Y Coordinate"
-              v-model="point.y"
+              v-model="y"
               prepend-inner-icon="mdi-axis-y-arrow"
               type="text"
               inputmode="decimal"
@@ -65,7 +64,7 @@
           <v-col cols="4">
             <v-text-field
               label="Z Coordinate"
-              v-model="point.z"
+              v-model="z"
               prepend-inner-icon="mdi-axis-z-arrow"
               type="text"
               inputmode="decimal"
@@ -80,7 +79,6 @@
         </v-row>
       </v-form>
     </v-card-text>
-
     <v-card-actions class="px-4 pb-4">
       <v-btn
         variant="text"
@@ -129,21 +127,16 @@
   const UIStore = useUIStore()
   const dataBaseStore = useDataBaseStore()
 
-  const point = ref({
-    title: "",
-    x: "",
-    y: "",
-    z: "",
-  })
+  const name = ref("")
+  const x = ref("")
+  const y = ref("")
+  const z = ref("")
 
   const loading = ref(false)
 
   const isFormFilled = computed(() => {
     return (
-      point.value.title !== "" &&
-      point.value.x !== "" &&
-      point.value.y !== "" &&
-      point.value.z !== ""
+      name.value !== "" && x.value !== "" && y.value !== "" && z.value !== ""
     )
   })
 
@@ -187,10 +180,10 @@
     if (!isFormFilled.value) return
 
     const pointData = {
-      x: safeParseFloat(point.value.x),
-      y: safeParseFloat(point.value.y),
-      z: safeParseFloat(point.value.z),
-      name: point.value.title,
+      x: safeParseFloat(x.value),
+      y: safeParseFloat(y.value),
+      z: safeParseFloat(z.value),
+      name: name.value,
     }
 
     const pointSchema = back_schemas.opengeodeweb_back.create.create_point
@@ -203,27 +196,21 @@
       return
     }
 
-    if (validate_schema(pointSchema, pointData)) {
-      loading.value = true
-      try {
-        await api_fetch(
-          {
-            schema: pointSchema,
-            params: pointData,
+    loading.value = true
+    try {
+      await api_fetch(
+        {
+          schema: pointSchema,
+          params: pointData,
+        },
+        {
+          response_function: async (response) => {
+            await registerObject(response._data)
           },
-          {
-            response_function: async (response) => {
-              await registerObject(response._data)
-            },
-          }
-        )
-      } finally {
-        loading.value = false
-      }
-    } else {
-      console.error(
-        "Schema validation FAILED for Point. Check console for AJV errors."
+        }
       )
+    } finally {
+      loading.value = false
     }
   }
 
@@ -259,24 +246,27 @@
     const sanitized = coordinates.map((c) => sanitizeNumberString(c))
 
     if (sanitized.length >= 3) {
-      point.value.x = sanitized[0]
-      point.value.y = sanitized[1]
-      point.value.z = sanitized[2]
+      x.value = sanitized[0]
+      y.value = sanitized[1]
+      z.value = sanitized[2]
       event.preventDefault()
     } else if (sanitized.length === 2) {
-      point.value.x = sanitized[0]
-      point.value.y = sanitized[1]
-      point.value.z = "0"
+      x.value = sanitized[0]
+      y.value = sanitized[1]
+      z.value = "0"
       event.preventDefault()
     } else if (sanitized.length === 1) {
       if (["x", "y", "z"].includes(field)) {
-        point.value[field] = sanitized[0]
+        eval(`${field}.value = sanitized[0]`)
         event.preventDefault()
       }
     }
   }
 
   const sanitizeInput = (value, label) => {
-    point.value[label] = sanitizeNumberString(value)
+    if (label === "x") x.value = sanitizeNumberString(value)
+    else if (label === "y") y.value = sanitizeNumberString(value)
+    else if (label === "z") z.value = sanitizeNumberString(value)
+    else if (label === "name") name.value = value
   }
 </script>

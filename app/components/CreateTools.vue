@@ -1,5 +1,5 @@
 <template>
-  <v-card :width="500" elevation="0" class="pa-4">
+  <v-card :width="500" flat class="pa-4">
     <v-card-title
       class="pb-2 text-h4 text-primary font-weight-bold d-flex align-center"
     >
