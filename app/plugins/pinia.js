@@ -2,7 +2,7 @@ import { BroadcastChannel, createLeaderElection } from "broadcast-channel"
 
 function serialize(obj, keysToUpdate) {
   obj = Object.fromEntries(
-    Object.entries(obj).filter(([key]) => keysToUpdate.includes(key))
+    Object.entries(obj).filter(([key]) => keysToUpdate.includes(key)),
   )
   return JSON.parse(JSON.stringify(obj))
 }
@@ -20,7 +20,7 @@ function PiniaSharedState() {
     let timestamp = 0
     let externalUpdate = false
     const keysToUpdate = Object.keys(store.$state).filter(
-      (key) => !omittedKeys.includes(key) && stateHasKey(key, store.$state)
+      (key) => !omittedKeys.includes(key) && stateHasKey(key, store.$state),
     )
     channel.onmessage = (newState) => {
       if (newState === void 0) {
