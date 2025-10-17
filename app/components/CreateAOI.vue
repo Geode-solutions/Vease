@@ -27,7 +27,7 @@
           type="text"
           variant="outlined"
           color="primary"
-          :rules="[(v) => !!v || 'Title is required']"
+          :rules="[(v) => !!v || 'Name is required']"
           required
           class="mb-4"
         />
@@ -161,7 +161,7 @@
   const dataBaseStore = useDataBaseStore()
   const hybridViewerStore = useHybridViewerStore()
 
-  const title = ref("")
+  const name = ref("")
   const min_x = ref("")
   const min_y = ref("")
   const max_x = ref("")
@@ -176,7 +176,7 @@
       min_y.value !== "" &&
       max_x.value !== "" &&
       max_y.value !== ""
-    return title.value !== "" && coordsFilled
+    return name.value !== "" && coordsFilled
   })
 
   const closeDrawer = () => {
@@ -300,7 +300,7 @@
     ]
 
     const aoiData = {
-      name: title.value,
+      name: name.value,
       points: aoiPoints,
       z: z_val,
     }
