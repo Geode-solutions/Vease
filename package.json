@@ -65,7 +65,7 @@
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-back": "next",
     "@geode/opengeodeweb-front": "next",
-    "@geode/opengeodeweb-viewer": "next",
+    "@geode/opengeodeweb-viewer": "^1.11.4-rc.1",
     "@geode/vease-back": "next",
     "@geode/vease-viewer": "next",
     "broadcast-channel": "7.1.0",

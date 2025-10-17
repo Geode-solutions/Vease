@@ -33,7 +33,7 @@
         <v-btn
           class="icon-style create-point-btn"
           color="white"
-          @click="UIStore.setShowCreatePointMenu(true)"
+          @click="openCreateTools"
           icon
           style="border-radius: 20%"
           v-tooltip.left="'Create'"
@@ -42,34 +42,53 @@
         </v-btn>
       </div>
 
-      <transition name="slide" v-if="UIStore.showStepper">
-        <v-navigation-drawer
-          class="rounded align-start"
-          radius="10px"
-          :width="500"
-          location="right"
-          temporary
-          v-model="UIStore.showStepper"
-        >
-          <StepImport
-            :files="UIStore.droppedFiles"
-            @close="UIStore.setShowStepper(false)"
-          />
-        </v-navigation-drawer>
-      </transition>
+      <v-navigation-drawer
+        class="rounded align-start"
+        radius="10px"
+        :width="500"
+        location="right"
+        temporary
+        v-model="UIStore.showStepper"
+      >
+        <StepImport
+          :files="UIStore.droppedFiles"
+          @close="UIStore.setShowStepper(false)"
+        />
+      </v-navigation-drawer>
 
-      <transition name="slide" v-if="UIStore.showCreatePointMenu">
-        <v-navigation-drawer
-          class="rounded align-start"
-          radius="10px"
-          :width="500"
-          location="right"
-          temporary
-          v-model="UIStore.showCreatePointMenu"
-        >
-          <CreatePointMenu @close="UIStore.setShowCreatePointMenu(false)" />
-        </v-navigation-drawer>
-      </transition>
+      <v-navigation-drawer
+        class="align-start"
+        radius="10px"
+        :width="500"
+        location="right"
+        temporary
+        v-model="UIStore.showCreateTools"
+      >
+        <CreateTools @select-tool="handleSelectTool" />
+      </v-navigation-drawer>
+
+      <v-navigation-drawer
+        class="rounded align-start"
+        radius="10px"
+        :width="500"
+        location="right"
+        temporary
+        v-model="UIStore.showCreatePoint"
+      >
+        <CreatePoint />
+      </v-navigation-drawer>
+
+      <v-navigation-drawer
+        class="rounded align-start"
+        radius="10px"
+        :width="500"
+        location="right"
+        temporary
+        v-model="UIStore.showCreateAOI"
+      >
+        <CreateAOI />
+      </v-navigation-drawer>
+
       <FullScrenDropZone />
     </v-main>
     <v-progress-linear
@@ -91,6 +110,22 @@
       UIStore.setShowButton(true)
     } else {
       UIStore.setShowButton(false)
+    }
+  }
+
+  const openCreateTools = () => {
+    UIStore.setShowCreateTools(true)
+    UIStore.setShowCreatePoint(false)
+    UIStore.setShowCreateAOI(false)
+  }
+
+  const handleSelectTool = (tool) => {
+    UIStore.setShowCreateTools(false)
+
+    if (tool === "Point") {
+      UIStore.setShowCreatePoint(true)
+    } else if (tool === "AOI") {
+      UIStore.setShowCreateAOI(true)
     }
   }
 </script>
