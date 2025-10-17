@@ -15,7 +15,7 @@
     </v-card-title>
 
     <v-card-subtitle class="ma-0 text-medium-emphasis text-wrap">
-      Enter the title and Min/Max coordinates to define your rectangular AOI.
+      Enter the name and Min/Max coordinates to define your rectangular AOI.
     </v-card-subtitle>
 
     <v-card-text>
