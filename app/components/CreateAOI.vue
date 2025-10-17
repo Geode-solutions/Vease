@@ -22,7 +22,7 @@
       <v-form ref="form">
         <v-text-field
           label="AOI Title"
-          v-model="title"
+          v-model="name"
           prepend-inner-icon="mdi-format-title"
           type="text"
           variant="outlined"
