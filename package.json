@@ -52,7 +52,7 @@
   "devDependencies": {
     "@nuxt/test-utils": "3.19.2",
     "@playwright/test": "1.54.1",
-    "concurrently": "^9.2.1",
+    "concurrently": "9.2.1",
     "cross-env": "10.0.0",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
