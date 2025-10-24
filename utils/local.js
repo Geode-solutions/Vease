@@ -16,12 +16,12 @@ function run_browser_wrapper(script_name) {
   console.log("project_folder_path", project_folder_path)
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
+    executable_name("vease-back"),
   )
   console.log("back_command", back_command)
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
+    executable_name("vease-viewer"),
   )
   console.log("viewer_command", viewer_command)
   return new Promise(async (resolve, reject) => {
