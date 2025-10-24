@@ -14,7 +14,7 @@ import {
 
 function run_browser_wrapper(script_name) {
   const project_folder_path = create_path(
-    path.join(os.tmpdir(), "vease", uuidv4())
+    path.join(os.tmpdir(), "vease", uuidv4()),
   )
   console.log("project_folder_path", project_folder_path)
   const back_command = path.join(
