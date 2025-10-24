@@ -1,6 +1,7 @@
 // Standard library imports
 import os from "os"
 import path from "path"
+import { v4 as uuidv4 } from "uuid"
 // Third party imports
 
 // Local imports
@@ -12,7 +13,9 @@ import {
 } from "@geode/opengeodeweb-front/utils/local.js"
 
 function run_browser_wrapper(script_name) {
-  const project_folder_path = create_path(path.join(os.tmpdir(), "vease"))
+  const project_folder_path = create_path(
+    path.join(os.tmpdir(), "vease", uuidv4())
+  )
   console.log("project_folder_path", project_folder_path)
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
