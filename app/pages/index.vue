@@ -31,6 +31,12 @@
   const menuStore = useMenuStore()
   const dataStyleStore = useDataStyleStore()
 
+  const geodeStore = useGeodeStore()
+  const viewerStore = useViewerStore()
+
+  console.log("geodeStore.base_url", geodeStore.base_url)
+  console.log("viewerStore.base_url", viewerStore.base_url)
+
   const menuX = ref(0)
   const menuY = ref(0)
   const containerWidth = ref(0)
@@ -52,7 +58,7 @@
           const array_ids = response.array_ids
           id.value = array_ids[0]
         },
-      },
+      }
     )
   }
 
@@ -66,7 +72,7 @@
       event.clientX,
       event.clientY,
       containerWidth.value,
-      containerHeight.value,
+      containerHeight.value
     )
   }
 
@@ -84,7 +90,7 @@
       if (value === Status.CONNECTED) {
         resize()
       }
-    },
+    }
   )
 
   onMounted(async () => {
