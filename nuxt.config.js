@@ -127,7 +127,8 @@ export default defineNuxtConfig({
 
   router: {
     options: {
-      hashMode: true,
+      hashMode:
+        process.env.BROWSER && process.env.BROWSER == "true" ? false : true,
     },
   },
 
