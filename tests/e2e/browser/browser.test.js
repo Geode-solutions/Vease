@@ -13,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   const { geode_port, viewer_port, nuxt_port } = ports
   page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
   await page.goto(
-    `http://localhost:${nuxt_port}?geode_port=${geode_port}&viewer_port=${viewer_port}`
+    `http://localhost:${nuxt_port}?geode_port=${geode_port}&viewer_port=${viewer_port}`,
   )
   console.log("Navigated to", page.url())
   await page.setViewportSize({ width: 1200, height: 800 })

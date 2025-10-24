@@ -30,7 +30,7 @@
   if (query.geode_port) {
     console.log(
       "Modifying geode port from query parameters to",
-      query.geode_port
+      query.geode_port,
     )
     const geodeStore = useGeodeStore()
     geodeStore.$patch({ default_local_port: query.geode_port })
@@ -38,7 +38,7 @@
   if (query.viewer_port) {
     console.log(
       "Modifying viewer port from query parameters to",
-      query.viewer_port
+      query.viewer_port,
     )
     const viewerStore = useViewerStore()
     viewerStore.$patch({ default_local_port: query.viewer_port })
@@ -70,7 +70,7 @@
           const array_ids = response.array_ids
           id.value = array_ids[0]
         },
-      }
+      },
     )
   }
 
@@ -84,7 +84,7 @@
       event.clientX,
       event.clientY,
       containerWidth.value,
-      containerHeight.value
+      containerHeight.value,
     )
   }
 
@@ -102,7 +102,7 @@
       if (value === Status.CONNECTED) {
         resize()
       }
-    }
+    },
   )
 
   onMounted(async () => {

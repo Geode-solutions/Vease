@@ -14,17 +14,17 @@ import {
 
 function run_browser_wrapper(script_name) {
   const project_folder_path = create_path(
-    path.join(os.tmpdir(), "vease", uuidv4())
+    path.join(os.tmpdir(), "vease", uuidv4()),
   )
   console.log("project_folder_path", project_folder_path)
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
+    executable_name("vease-back"),
   )
   console.log("back_command", back_command)
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
+    executable_name("vease-viewer"),
   )
   console.log("viewer_command", viewer_command)
   return run_browser(script_name, {
