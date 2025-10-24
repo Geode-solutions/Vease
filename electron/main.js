@@ -31,7 +31,7 @@ let viewer_port = 0
 ipcMain.handle("run_back", async (_event) => {
   const back_command = path.join(
     executable_path(path.join("microservices", "back")),
-    executable_name("vease-back")
+    executable_name("vease-back"),
   )
   back_port = await run_back(back_command, {
     project_folder_path: project_folder_path,
@@ -41,7 +41,7 @@ ipcMain.handle("run_back", async (_event) => {
 ipcMain.handle("run_viewer", async (_event) => {
   const viewer_command = path.join(
     executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer")
+    executable_name("vease-viewer"),
   )
   viewer_port = await run_viewer(viewer_command, {
     project_folder_path: project_folder_path,
