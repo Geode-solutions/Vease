@@ -58,7 +58,7 @@
           const array_ids = response.array_ids
           id.value = array_ids[0]
         },
-      }
+      },
     )
   }
 
@@ -72,7 +72,7 @@
       event.clientX,
       event.clientY,
       containerWidth.value,
-      containerHeight.value
+      containerHeight.value,
     )
   }
 
@@ -90,7 +90,7 @@
       if (value === Status.CONNECTED) {
         resize()
       }
-    }
+    },
   )
 
   onMounted(async () => {
