@@ -8,10 +8,14 @@ import { isWindows } from "std-env"
 import { run_browser_wrapper } from "../../../utils/local"
 
 test.beforeEach(async ({ page }) => {
-  const NUXT_PORT = await run_browser_wrapper(`internal:browser`)
-  console.log("NUXT_PORT", NUXT_PORT)
-  await page.goto(`http://localhost:${NUXT_PORT}/`)
-  console.log("setViewportSize")
+  const ports = await run_browser_wrapper(`preview:browser`)
+  console.log("ports", ports)
+  const { geode_port, viewer_port, nuxt_port } = ports
+  page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
+  await page.goto(
+    `http://localhost:${nuxt_port}?geode_port=${geode_port}&viewer_port=${viewer_port}`,
+  )
+  console.log("Navigated to", page.url())
   await page.setViewportSize({ width: 1200, height: 800 })
 })
 

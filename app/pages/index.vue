@@ -26,6 +26,24 @@
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
   import Status from "@ogw_f/utils/status.js"
 
+  const query = useRoute().query
+  if (query.geode_port) {
+    console.log(
+      "Modifying geode port from query parameters to",
+      query.geode_port,
+    )
+    const geodeStore = useGeodeStore()
+    geodeStore.$patch({ default_local_port: query.geode_port })
+  }
+  if (query.viewer_port) {
+    console.log(
+      "Modifying viewer port from query parameters to",
+      query.viewer_port,
+    )
+    const viewerStore = useViewerStore()
+    viewerStore.$patch({ default_local_port: query.viewer_port })
+  }
+
   const infra_store = useInfraStore()
   const viewer_store = useViewerStore()
   const menuStore = useMenuStore()

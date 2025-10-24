@@ -28,7 +28,6 @@
     "build:viewer": "node node_scripts/run_script_file.js viewer/build",
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "package": "npm run build && electron-builder build --publish=never",
-    "internal:browser": "node node_scripts/browser.js preview:browser",
     "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
     "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
   },
