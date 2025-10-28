@@ -6,7 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return result
   },
   run_viewer: async () => {
-    const result = await ipcRenderer.invoke("run_viewer") 
+    const result = await ipcRenderer.invoke("run_viewer")
     return result
   },
   new_window: async (args) => {

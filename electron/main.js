@@ -34,8 +34,7 @@ ipcMain.handle("run_back", async (_event) => {
     executable_name("vease-back"),
   )
   back_port = await run_back(back_command, {
-    port: args?.port,
-    data_folder_path: project_folder_path,
+    project_folder_path: project_folder_path,
   })
   return back_port
 })
