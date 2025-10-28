@@ -46,32 +46,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
-  function save() {
-    return {
-      showDropZone: showDropZone.value,
-      showStepper: showStepper.value,
-      droppedFiles: droppedFiles.value,
-      showButton: showButton.value,
-      showStepImportMenu: showStepImportMenu.value,
-      showCreateTools: showCreateTools.value,
-      showCreatePoint: showCreatePoint.value,
-      showCreateAOI: showCreateAOI.value,
-    }
-  }
-
-  async function load(snapshot) {
-    if (!snapshot) return
-    showDropZone.value = snapshot.showDropZone ?? showDropZone.value
-    showStepper.value = snapshot.showStepper ?? showStepper.value
-    droppedFiles.value = snapshot.droppedFiles ?? droppedFiles.value
-    showButton.value = snapshot.showButton ?? showButton.value
-    showStepImportMenu.value =
-      snapshot.showStepImportMenu ?? showStepImportMenu.value
-    showCreateTools.value = snapshot.showCreateTools ?? showCreateTools.value
-    showCreatePoint.value = snapshot.showCreatePoint ?? showCreatePoint.value
-    showCreateAOI.value = snapshot.showCreateAOI ?? showCreateAOI.value
-  }
-
   return {
     showDropZone,
     showStepper,
@@ -90,7 +64,5 @@ export const useUIStore = defineStore("UI", () => {
     setShowCreateTools,
     setShowCreatePoint,
     setShowCreateAOI,
-    save,
-    load,
   }
 })

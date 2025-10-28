@@ -62,13 +62,6 @@ function PiniaSharedState() {
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   nuxtApp.$pinia.use(PiniaSharedState())
-
-  const { useAppStore } = await import("@ogw_f/stores/app_store.js")
-  const { useUIStore } = await import("../stores/UI")
-  const { useUserStore } = await import("../stores/user")
-
-  const appStore = useAppStore()
-  appStore.registerStore(useUIStore())
 })
 
 console.log("PINIA PLUGIN")

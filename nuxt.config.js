@@ -114,13 +114,10 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
+        "@geode/opengeodeweb-front",
         "@kitware/vtk.js",
         "xmlbuilder2",
         "spark-md5",
-      ],
-      exclude: [
-        "@geode/opengeodeweb-front",
-        "@ogw_f",
       ],
     },
     watch: {
