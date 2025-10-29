@@ -19,7 +19,7 @@ import os from "os"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
-const uuid_project_folder = uuidv4()
+const uuid_project_folder = uuidv4().replace(/-/g, "")
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
 create_path(project_folder_path)
 
@@ -63,10 +63,12 @@ async function clean_up() {
   return new Promise((resolve) => {
     console.log("Shutting down microservices")
     Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
-      delete_folder_recursive(project_folder_path)
-      cleaned = true
-      console.log("end clean")
-      resolve()
+      setTimeout(() => {
+        delete_folder_recursive(project_folder_path)
+        cleaned = true
+        console.log("end clean")
+        resolve()
+      }, 200)
     })
   })
 }
