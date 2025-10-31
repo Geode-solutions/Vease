@@ -292,7 +292,7 @@
         selectedAOICoordinates.value = null
         selectedAOI.value = null
       }
-    }
+    },
   )
 
   async function registerObject(data) {
@@ -318,7 +318,7 @@
           })
           closeDrawer()
         },
-      }
+      },
     )
   }
 
@@ -354,7 +354,7 @@
           response_function: async (response) => {
             await registerObject(response._data)
           },
-        }
+        },
       )
     } catch (error) {
     } finally {
