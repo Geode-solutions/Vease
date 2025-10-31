@@ -3,13 +3,12 @@
     <v-card-title
       class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
     >
-      <img
+      <v-img
         src="/aoi.svg"
         alt="AOI icon"
         class="mr-3"
         width="48"
         height="48"
-        color="grey-darken-2"
       />
       Create Area of Interest (Bounding Box)
     </v-card-title>
@@ -190,7 +189,6 @@
   }
 
   function visibleBoundingBox() {
-    console.log("visibleBoundingBox", hybridViewerStore.genericRenderWindow)
     if (!hybridViewerStore.genericRenderWindow.value)
       return [-1, 1, -1, 1, -1, 1]
     const renderer = hybridViewerStore.genericRenderWindow.value.getRenderer()
@@ -223,7 +221,6 @@
   }
 
   onMounted(() => {
-    console.log("CreateAOI mounted")
     initializeAOICoordinates()
   })
 
@@ -237,9 +234,6 @@
   )
 
   async function registerObject(data) {
-    console.log("🟢 === AOI CREATION DEBUG ===")
-    console.log("📦 Data reçue de l'API:", data)
-
     await viewer_call(
       {
         schema: viewer_schemas.opengeodeweb_viewer.generic.register,
@@ -268,7 +262,6 @@
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
             displayed_name: data.name,
-            // AJOUT: Sauvegarder les coordonnées de l'AOI
             geode_object_data: {
               points: aoiPoints,
               z: z_val,
@@ -278,11 +271,7 @@
             },
           }
 
-          console.log("💾 Item ajouté à la DB avec points:", itemToAdd)
           await dataBaseStore.addItem(data.id, itemToAdd)
-
-          console.log("✅ DB après ajout:", dataBaseStore.db)
-          console.log("🟢 === FIN DEBUG ===")
 
           closeDrawer()
         },
@@ -304,17 +293,11 @@
       isNaN(z_val)
 
     if (hasNaN) {
-      console.error(
-        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format."
-      )
       loading.value = false
       return
     }
 
     if (min_x_val >= max_x_val || min_y_val >= max_y_val) {
-      console.error(
-        "AOI creation failed: Min coordinates must be less than Max coordinates"
-      )
       loading.value = false
       return
     }
@@ -335,9 +318,6 @@
     const aoiSchema = back_schemas.opengeodeweb_back.create.create_aoi
 
     if (!aoiSchema || typeof aoiSchema !== "object") {
-      console.error(
-        "FATAL ERROR: The AOI schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_aoi"
-      )
       loading.value = false
       return
     }
@@ -355,7 +335,6 @@
         }
       )
     } catch (error) {
-      console.error("API call failed during createAOI:", error)
     } finally {
       loading.value = false
     }
@@ -391,9 +370,6 @@
     if (!coordinates || coordinates.length === 0) return
 
     const sanitized = coordinates.map((c) => sanitizeNumberString(c))
-
-    const xKey = `${type}_x`
-    const yKey = `${type}_y`
 
     if (sanitized.length >= 2) {
       if (field === "x" || type === "min") {

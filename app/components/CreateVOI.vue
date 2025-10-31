@@ -3,13 +3,12 @@
     <v-card-title
       class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
     >
-      <img
+      <v-img
         src="/aoi.svg"
         alt="AOI icon"
         class="mr-3"
         width="48"
         height="48"
-        color="primary"
       />
       Create Volume of Interest (Bounding Box)
     </v-card-title>
@@ -229,12 +228,6 @@
     UIStore.setShowCreateVOI(false)
   }
 
-  const safeParseFloat = (value) => {
-    const sanitizedValue = String(value).trim().replace(",", ".")
-    const result = parseFloat(sanitizedValue)
-    return isNaN(result) && sanitizedValue === "" ? NaN : result
-  }
-
   function visibleBoundingBox() {
     if (!hybridViewerStore.genericRenderWindow.value)
       return [-1, 1, -1, 1, -1, 1]
@@ -260,8 +253,6 @@
   const extractAOICoordinates = (aoiItem) => {
     if (!aoiItem) return null
 
-    console.log("🔍 Analyse de l'AOI:", aoiItem)
-
     if (aoiItem.geode_object_data && aoiItem.geode_object_data.points) {
       const points = aoiItem.geode_object_data.points
       if (points.length >= 4) {
@@ -275,9 +266,6 @@
       }
     }
 
-    console.warn(
-      "⚠️ AOI coordinates not found in local storage, will use API call only"
-    )
     return null
   }
 
@@ -290,14 +278,9 @@
     if (aoiItem) {
       selectedAOICoordinates.value = extractAOICoordinates(aoiItem)
     }
-
-    if (!selectedAOICoordinates.value) {
-      console.warn("⚠️ AOI coordinates not available locally, will rely on API")
-    }
   }
 
   onMounted(() => {
-    console.log("CreateVOI mounted")
     initializeVOICoordinates()
   })
 
@@ -328,7 +311,7 @@
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
             displayed_name: data.name,
-            aoi_id: data.aoi_id, // ✅ Stocker l'aoi_id si présent
+            aoi_id: data.aoi_id,
             vtk_js: {
               binary_light_viewable: data.binary_light_viewable,
             },
@@ -341,7 +324,6 @@
 
   const createVOI = async () => {
     if (!name.value || !selectedAOI.value || !selectedAOICoordinates.value) {
-      console.error("❌ Données manquantes")
       return
     }
 
@@ -359,7 +341,6 @@
       z_max: z_max_val,
     }
 
-    console.log("🚀 Données envoyées à l'API:", voiData)
     const voiSchema = back_schemas.opengeodeweb_back.create.create_voi
 
     loading.value = true
@@ -371,13 +352,11 @@
         },
         {
           response_function: async (response) => {
-            console.log("✅ VOI créé - Réponse complète:", response._data)
             await registerObject(response._data)
           },
         }
       )
     } catch (error) {
-      console.error("❌ Erreur lors de la création du VOI:", error)
     } finally {
       loading.value = false
     }
