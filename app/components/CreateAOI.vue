@@ -233,10 +233,13 @@
       if (newVal) {
         initializeAOICoordinates()
       }
-    },
+    }
   )
 
   async function registerObject(data) {
+    console.log("🟢 === AOI CREATION DEBUG ===")
+    console.log("📦 Data reçue de l'API:", data)
+
     await viewer_call(
       {
         schema: viewer_schemas.opengeodeweb_viewer.generic.register,
@@ -246,22 +249,46 @@
       },
       {
         response_function: async () => {
-          await dataBaseStore.addItem(data.id, {
+          const min_x_val = safeParseFloat(min_x.value)
+          const min_y_val = safeParseFloat(min_y.value)
+          const max_x_val = safeParseFloat(max_x.value)
+          const max_y_val = safeParseFloat(max_y.value)
+          const z_val = safeParseFloat(z.value)
+
+          const aoiPoints = [
+            { x: min_x_val, y: min_y_val },
+            { x: max_x_val, y: min_y_val },
+            { x: max_x_val, y: max_y_val },
+            { x: min_x_val, y: max_y_val },
+          ]
+
+          const itemToAdd = {
             object_type: data.object_type,
             geode_object: data.geode_object,
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
             displayed_name: data.name,
+            // AJOUT: Sauvegarder les coordonnées de l'AOI
+            geode_object_data: {
+              points: aoiPoints,
+              z: z_val,
+            },
             vtk_js: {
               binary_light_viewable: data.binary_light_viewable,
             },
-          })
+          }
+
+          console.log("💾 Item ajouté à la DB avec points:", itemToAdd)
+          await dataBaseStore.addItem(data.id, itemToAdd)
+
+          console.log("✅ DB après ajout:", dataBaseStore.db)
+          console.log("🟢 === FIN DEBUG ===")
+
           closeDrawer()
         },
-      },
+      }
     )
   }
-
   async function createAOI() {
     const min_x_val = safeParseFloat(min_x.value)
     const min_y_val = safeParseFloat(min_y.value)
@@ -278,7 +305,7 @@
 
     if (hasNaN) {
       console.error(
-        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format.",
+        "AOI creation failed: One or more coordinate values resulted in NaN after parsing. Check the input format."
       )
       loading.value = false
       return
@@ -286,7 +313,7 @@
 
     if (min_x_val >= max_x_val || min_y_val >= max_y_val) {
       console.error(
-        "AOI creation failed: Min coordinates must be less than Max coordinates",
+        "AOI creation failed: Min coordinates must be less than Max coordinates"
       )
       loading.value = false
       return
@@ -309,7 +336,7 @@
 
     if (!aoiSchema || typeof aoiSchema !== "object") {
       console.error(
-        "FATAL ERROR: The AOI schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_aoi",
+        "FATAL ERROR: The AOI schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_aoi"
       )
       loading.value = false
       return
@@ -325,7 +352,7 @@
           response_function: async (response) => {
             await registerObject(response._data)
           },
-        },
+        }
       )
     } catch (error) {
       console.error("API call failed during createAOI:", error)

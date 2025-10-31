@@ -89,6 +89,17 @@
         <CreateAOI />
       </v-navigation-drawer>
 
+      <v-navigation-drawer
+        class="rounded align-start"
+        radius="10px"
+        :width="500"
+        location="right"
+        temporary
+        v-model="UIStore.showCreateVOI"
+      >
+        <CreateVOI />
+      </v-navigation-drawer>
+
       <FullScrenDropZone />
     </v-main>
     <v-progress-linear
@@ -117,6 +128,7 @@
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)
+    UIStore.setShowCreateVOI(false)
   }
 
   const handleSelectTool = (tool) => {
@@ -126,6 +138,8 @@
       UIStore.setShowCreatePoint(true)
     } else if (tool === "AOI") {
       UIStore.setShowCreateAOI(true)
+    } else if (tool === "VOI") {
+      UIStore.setShowCreateVOI(true)
     }
   }
 </script>
