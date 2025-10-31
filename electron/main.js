@@ -19,7 +19,7 @@ import os from "os"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
-const uuid_project_folder = uuidv4().replace(/-/g, "")
+const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
 create_path(project_folder_path)
 
@@ -34,7 +34,8 @@ ipcMain.handle("run_back", async (_event) => {
     executable_name("vease-back"),
   )
   back_port = await run_back(back_command, {
-    project_folder_path: project_folder_path,
+    data_folder_path: project_folder_path,
+    port: 5000,
   })
   return back_port
 })
@@ -44,7 +45,8 @@ ipcMain.handle("run_viewer", async (_event) => {
     executable_name("vease-viewer"),
   )
   viewer_port = await run_viewer(viewer_command, {
-    project_folder_path: project_folder_path,
+    data_folder_path: project_folder_path,
+    port: 1234,
   })
   return viewer_port
 })
