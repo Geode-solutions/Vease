@@ -64,7 +64,7 @@
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
     "@geode/opengeodeweb-back": "next",
-    "@geode/opengeodeweb-front": "next",
+    "@geode/opengeodeweb-front": "^9.12.0-rc.1",
     "@geode/opengeodeweb-viewer": "^1.11.4-rc.1",
     "@geode/vease-back": "next",
     "@geode/vease-viewer": "next",
@@ -74,6 +74,7 @@
     "electron-updater": "6.6.2",
     "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
+    "jszip": "^3.10.1",
     "nuxt": "3.13.2",
     "utf-8-validate": "^6.0.5",
     "vuetify": "3.8.12"

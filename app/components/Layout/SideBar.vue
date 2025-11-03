@@ -80,14 +80,12 @@
 </template>
 
 <script setup>
-  // import isElectron from "is-electron";
+  import { useProjectManager } from "@ogw_f/composables/project_manager"
 
   const drawer = ref(true)
   const newproject = ref(false)
   const openproject = ref(false)
-  const importFileInput = ref(null)
-
-  import { useProjectManager } from "@geode/opengeodeweb-front/composables/project_manager"
+  const importFileInput = templateRef('importFileInput')
 
   const items = ref([
     {

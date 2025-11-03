@@ -34,8 +34,7 @@ ipcMain.handle("run_back", async (_event) => {
     executable_name("vease-back"),
   )
   back_port = await run_back(back_command, {
-    data_folder_path: project_folder_path,
-    port: 5000,
+    project_folder_path: project_folder_path,
   })
   return back_port
 })
@@ -45,8 +44,7 @@ ipcMain.handle("run_viewer", async (_event) => {
     executable_name("vease-viewer"),
   )
   viewer_port = await run_viewer(viewer_command, {
-    data_folder_path: project_folder_path,
-    port: 1234,
+    project_folder_path: project_folder_path,
   })
   return viewer_port
 })
@@ -65,12 +63,10 @@ async function clean_up() {
   return new Promise((resolve) => {
     console.log("Shutting down microservices")
     Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
-      setTimeout(() => {
-        delete_folder_recursive(project_folder_path)
-        cleaned = true
-        console.log("end clean")
-        resolve()
-      }, 200)
+      delete_folder_recursive(project_folder_path)
+      cleaned = true
+      console.log("end clean")
+      resolve()
     })
   })
 }
