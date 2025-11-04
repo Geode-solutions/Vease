@@ -323,7 +323,7 @@
   }
 
   const createVOI = async () => {
-    if (!name.value || !selectedAOI.value || !selectedAOICoordinates.value) {
+    if (!name.value || !selectedAOI.value) {
       return
     }
 
@@ -333,10 +333,6 @@
     const voiData = {
       name: name.value,
       aoi_id: selectedAOI.value,
-      min_x: selectedAOICoordinates.value.min_x,
-      min_y: selectedAOICoordinates.value.min_y,
-      max_x: selectedAOICoordinates.value.max_x,
-      max_y: selectedAOICoordinates.value.max_y,
       z_min: z_min_val,
       z_max: z_max_val,
     }
@@ -345,7 +341,7 @@
 
     loading.value = true
     try {
-      await api_fetch(
+      const response = await api_fetch(
         {
           schema: voiSchema,
           params: voiData,
@@ -361,7 +357,6 @@
       loading.value = false
     }
   }
-
   const sanitizeNumberString = (str) => {
     if (str == null) return ""
     let value = String(str)
