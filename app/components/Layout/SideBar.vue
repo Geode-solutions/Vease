@@ -85,7 +85,7 @@
   const drawer = ref(true)
   const newproject = ref(false)
   const openproject = ref(false)
-  const importFileInput = templateRef('importFileInput')
+  const importFileInput = templateRef("importFileInput")
 
   const items = ref([
     {
