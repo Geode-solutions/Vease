@@ -1,4 +1,8 @@
 import package_json from "./package.json"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   future: {
@@ -108,6 +112,14 @@ export default defineNuxtConfig({
   css: ["@vease/assets/css/main.css"],
 
   vite: {
+    server: {
+      fs: {
+        allow: [
+          path.resolve(__dirname, "../../node_modules/@fontsource"),
+          path.resolve(__dirname, "../../node_modules/@mdi/font"),
+        ],
+      },
+    },
     optimizeDeps: {
       include: [
         "@geode/opengeodeweb-front",

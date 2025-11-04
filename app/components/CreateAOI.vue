@@ -213,10 +213,10 @@
     const newMinY = boundsMinY - paddingY
     const newMaxY = boundsMaxY + paddingY
 
-    min_x.value = newMinX
-    max_x.value = newMaxX
-    min_y.value = newMinY
-    max_y.value = newMaxY
+    min_x.value = newMinX.toFixed(2)
+    max_x.value = newMaxX.toFixed(2)
+    min_y.value = newMinY.toFixed(2)
+    max_y.value = newMaxY.toFixed(2)
     z.value = (bounds[4] + bounds[5]) / 2
   }
 
@@ -262,10 +262,8 @@
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
             displayed_name: data.name,
-            geode_object_data: {
-              points: aoiPoints,
-              z: z_val,
-            },
+            points: aoiPoints,
+            z: z_val,
             vtk_js: {
               binary_light_viewable: data.binary_light_viewable,
             },
@@ -316,12 +314,6 @@
     }
 
     const aoiSchema = back_schemas.opengeodeweb_back.create.create_aoi
-
-    if (!aoiSchema || typeof aoiSchema !== "object") {
-      loading.value = false
-      return
-    }
-    loading.value = true
     try {
       await api_fetch(
         {

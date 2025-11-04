@@ -181,11 +181,9 @@
         item.object_type === "mesh" &&
         item.displayed_name &&
         !item.aoi_id &&
-        item.geode_object_data &&
-        ((item.geode_object_data.min_x != null &&
-          item.geode_object_data.max_x != null) ||
-          (item.geode_object_data.points &&
-            item.geode_object_data.points.length >= 2))
+        item &&
+        ((item.min_x != null && item.max_x != null) ||
+          (item.points && item.points.length >= 2))
       ) {
         items.push({
           id: id,
@@ -234,14 +232,14 @@
   const extractAOICoordinates = (aoiItem) => {
     if (!aoiItem) return null
 
-    if (aoiItem.geode_object_data && aoiItem.geode_object_data.points) {
-      const points = aoiItem.geode_object_data.points
+    if (aoiItem && aoiItem.points) {
+      const points = aoiItem.points
       if (points.length >= 4) {
         const min_x = Math.min(...points.map((p) => p.x))
         const min_y = Math.min(...points.map((p) => p.y))
         const max_x = Math.max(...points.map((p) => p.x))
         const max_y = Math.max(...points.map((p) => p.y))
-        const z = aoiItem.geode_object_data.z || 0
+        const z = aoiItem.z || 0
 
         return { min_x, min_y, max_x, max_y, z, points }
       }
