@@ -230,7 +230,7 @@
       if (newVal) {
         initializeAOICoordinates()
       }
-    }
+    },
   )
 
   async function registerObject(data) {
@@ -275,7 +275,7 @@
 
           closeDrawer()
         },
-      }
+      },
     )
   }
   async function createAOI() {
@@ -332,7 +332,7 @@
           response_function: async (response) => {
             await registerObject(response._data)
           },
-        }
+        },
       )
     } catch (error) {
     } finally {
