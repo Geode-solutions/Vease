@@ -5,3 +5,7 @@
 #    pip-compile --output-file=microservices/back/requirements.txt microservices/back/requirements.in
 #
 
+<<<<<<< HEAD
+=======
+vease-back==1.*,>=1.6.5
+>>>>>>> 9b770f8290d4dd9654b0ec0852603f3e8f5889ce
