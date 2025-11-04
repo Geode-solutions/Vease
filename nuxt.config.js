@@ -29,7 +29,6 @@ export default defineNuxtConfig({
         autoImports: ["storeToRefs", "defineStore"],
       },
     ],
-    "@nuxt/devtools",
     "@vueuse/nuxt",
   ].filter(Boolean),
 
@@ -101,9 +100,6 @@ export default defineNuxtConfig({
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
-  },
-  devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
   },
 
   experimental: {
