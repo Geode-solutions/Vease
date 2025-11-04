@@ -132,7 +132,7 @@
         size="large"
         variant="flat"
         :loading="loading"
-        :disabled="!isFormFilled || !selectedAOICoordinates"
+        :disabled="!isFormFilled"
         @click="createVOI"
         class="text-none ml-4"
       >
@@ -168,7 +168,6 @@
 
   const name = ref("")
   const selectedAOI = ref(null)
-  const selectedAOICoordinates = ref(null)
   const z_min = ref("")
   const z_max = ref("")
   const loading = ref(false)
@@ -176,15 +175,7 @@
   const aoiList = computed(() => {
     const items = []
     for (const [id, item] of Object.entries(dataBaseStore.db)) {
-      if (
-        item.geode_object === "EdgedCurve3D" &&
-        item.object_type === "mesh" &&
-        item.displayed_name &&
-        !item.aoi_id &&
-        item &&
-        ((item.min_x != null && item.max_x != null) ||
-          (item.points && item.points.length >= 2))
-      ) {
+      if (item.is_aoi === true && item.displayed_name) {
         items.push({
           id: id,
           name: item.displayed_name || item.native_filename || id,
@@ -229,35 +220,7 @@
     z_max.value = newMaxZ.toFixed(2)
   }
 
-  const extractAOICoordinates = (aoiItem) => {
-    if (!aoiItem) return null
-
-    if (aoiItem && aoiItem.points) {
-      const points = aoiItem.points
-      if (points.length >= 4) {
-        const min_x = Math.min(...points.map((p) => p.x))
-        const min_y = Math.min(...points.map((p) => p.y))
-        const max_x = Math.max(...points.map((p) => p.x))
-        const max_y = Math.max(...points.map((p) => p.y))
-        const z = aoiItem.z || 0
-
-        return { min_x, min_y, max_x, max_y, z, points }
-      }
-    }
-
-    return null
-  }
-
-  const onAOISelected = (aoiId) => {
-    selectedAOICoordinates.value = null
-
-    if (!aoiId) return
-
-    const aoiItem = dataBaseStore.db[aoiId]
-    if (aoiItem) {
-      selectedAOICoordinates.value = extractAOICoordinates(aoiItem)
-    }
-  }
+  const onAOISelected = (aoiId) => {}
 
   onMounted(() => {
     initializeVOICoordinates()
@@ -268,7 +231,6 @@
     (newVal) => {
       if (newVal) {
         initializeVOICoordinates()
-        selectedAOICoordinates.value = null
         selectedAOI.value = null
       }
     },
@@ -290,7 +252,6 @@
             native_filename: data.native_file_name,
             viewable_filename: data.viewable_file_name,
             displayed_name: data.name,
-            aoi_id: data.aoi_id,
             vtk_js: {
               binary_light_viewable: data.binary_light_viewable,
             },
@@ -302,7 +263,7 @@
   }
 
   const createVOI = async () => {
-    if (!name.value || !selectedAOI.value) {
+    if (!isFormFilled.value) {
       return
     }
 
