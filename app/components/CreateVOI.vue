@@ -62,25 +62,6 @@
           </template>
         </v-select>
 
-        <v-card
-          v-if="selectedAOICoordinates"
-          variant="outlined"
-          class="mb-4 pa-3"
-        >
-          <v-card-title class="text-subtitle-2 font-weight-medium">
-            Selected AOI Coordinates
-          </v-card-title>
-          <v-card-text class="text-caption">
-            <div>Min X: {{ selectedAOICoordinates.min_x }}</div>
-            <div>Min Y: {{ selectedAOICoordinates.min_y }}</div>
-            <div>Max X: {{ selectedAOICoordinates.max_x }}</div>
-            <div>Max Y: {{ selectedAOICoordinates.max_y }}</div>
-            <div v-if="selectedAOICoordinates.z">
-              Z: {{ selectedAOICoordinates.z }}
-            </div>
-          </v-card-text>
-        </v-card>
-
         <div class="mb-4">
           <p class="text-subtitle-1 font-weight-medium mb-2">
             Z Coordinates (Min / Max)
