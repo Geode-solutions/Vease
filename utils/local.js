@@ -47,4 +47,4 @@ function run_browser_wrapper(script_name) {
   })
 }
 
-export { run_browser_wrapper }
+export { run_browser_wrapper, back_microservice, viewer_microservice }
