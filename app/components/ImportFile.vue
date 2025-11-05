@@ -14,8 +14,7 @@
 </template>
 
 <script setup>
-  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
-  import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
+  import { importWorkflow } from "@geode/opengeodeweb-front/utils/file_import_workflow.js"
 
   const emit = defineEmits([
     "update_values",
@@ -28,7 +27,6 @@
     input_geode_object: { type: String, required: true },
   })
 
-  const dataBaseStore = useDataBaseStore()
   const UIStore = useUIStore()
 
   const import_button = useTemplateRef("import_button")
@@ -39,45 +37,11 @@
 
   async function import_files() {
     toggle_loading()
-
-    for (const filename of props.filenames) {
-      const params = {
-        input_geode_object: props.input_geode_object,
-        filename,
-      }
-
-      await api_fetch(
-        { schema: back_schemas.opengeodeweb_back.save_viewable_file, params },
-        {
-          response_function: async (response) => {
-            await viewer_call(
-              {
-                schema: viewer_schemas.opengeodeweb_viewer.generic.register,
-                params: {
-                  id: response._data.id,
-                },
-              },
-              {
-                response_function: async () => {
-                  await dataBaseStore.addItem(response._data.id, {
-                    object_type: response._data.object_type,
-                    geode_object: props.input_geode_object,
-                    native_filename: response._data.native_file_name,
-                    viewable_filename: response._data.viewable_file_name,
-                    displayed_name: response._data.name,
-                    vtk_js: {
-                      binary_light_viewable:
-                        response._data.binary_light_viewable,
-                    },
-                  })
-                },
-              },
-            )
-          },
-        },
-      )
-    }
-
+    const files_array = props.filenames.map((filename) => ({
+      filename,
+      geode_object: props.input_geode_object,
+    }))
+    await importWorkflow(files_array)
     UIStore.setShowStepper(false)
     toggle_loading()
   }
