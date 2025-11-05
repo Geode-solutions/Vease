@@ -28,7 +28,13 @@ function run_browser_wrapper(script_name) {
   )
   console.log("viewer_command", viewer_command)
   return run_browser(script_name, {
-    back: { command: back_command, args: { project_folder_path } },
+    back: {
+      command: back_command,
+      args: {
+        project_folder_path,
+        upload_folder_path: path.join(project_folder_path, "upload"),
+      },
+    },
     viewer: {
       command: viewer_command,
       args: { project_folder_path },
