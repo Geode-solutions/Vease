@@ -1,23 +1,28 @@
 <template>
-  <v-card :width="500" flat class="pa-4">
+  <v-card :width="500" flat>
     <v-card-title
-      class="pb-2 text-h4 text-primary font-weight-bold d-flex align-center"
+      class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
     >
       <v-icon icon="mdi-creation" class="mr-3"></v-icon>
       Create New Object
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 text-medium-emphasis">
+    <v-card-subtitle class="ma-0 text-medium">
       Choose a drawing tool to get started.
     </v-card-subtitle>
 
     <v-card-text class="pt-6">
       <v-row>
-        <v-col v-for="tool in tools" :key="tool.id" cols="6" class="d-flex">
+        <v-col
+          v-for="tool in tools"
+          :key="tool.id"
+          cols="6"
+          class="d-flex pa-2"
+        >
           <v-hover v-slot="{ isHovering, props }">
             <v-card
               v-bind="props"
-              class="text-center pa-4 cursor-pointer transition-swing flex-grow-1 d-flex flex-column"
+              class="text-center cursor-pointer transition-swing flex-grow-1 d-flex flex-column"
               :class="{
                 'bg-blue-lighten-5': isHovering,
                 'scale-103': isHovering,
@@ -89,6 +94,14 @@
       description: "Define an area of interest on the viewer with 4 points.",
       iconType: "svg",
       iconSource: "aoi.svg",
+    },
+    {
+      id: "VOI",
+      title: "Volume of Interest",
+      description:
+        "Create a 3D bounding box from an existing AOI with Z bounds.",
+      iconType: "svg",
+      iconSource: "voi.svg",
     },
   ]
 

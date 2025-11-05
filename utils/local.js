@@ -37,7 +37,10 @@ function run_browser_wrapper(script_name) {
     back: {
       executable_name: back_name,
       executable_path: back_path,
-      args: { project_folder_path },
+      args: {
+        project_folder_path,
+        upload_folder_path: path.join(project_folder_path, "upload"),
+      },
     },
     viewer: {
       executable_name: viewer_name,
