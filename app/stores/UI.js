@@ -8,6 +8,7 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateTools = ref(false)
   const showCreatePoint = ref(false)
   const showCreateAOI = ref(false)
+  const showCreateVOI = ref(false)
 
   function disableDropZone() {
     showDropZone.value = false
@@ -46,6 +47,10 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
+  function setShowCreateVOI(value) {
+    showCreateVOI.value = value
+  }
+
   return {
     showDropZone,
     showStepper,
@@ -55,6 +60,7 @@ export const useUIStore = defineStore("UI", () => {
     showCreateTools,
     showCreatePoint,
     showCreateAOI,
+    showCreateVOI,
     disableDropZone,
     setShowDropZone,
     setShowStepper,
@@ -64,5 +70,6 @@ export const useUIStore = defineStore("UI", () => {
     setShowCreateTools,
     setShowCreatePoint,
     setShowCreateAOI,
+    setShowCreateVOI,
   }
 })
