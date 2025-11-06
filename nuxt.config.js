@@ -1,4 +1,8 @@
 import package_json from "./package.json"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   future: {
@@ -30,7 +34,6 @@ export default defineNuxtConfig({
         autoImports: ["storeToRefs", "defineStore"],
       },
     ],
-    "@nuxt/devtools",
     "@vueuse/nuxt",
   ].filter(Boolean),
 
@@ -103,9 +106,6 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),
     },
   },
-  devtools: {
-    enabled: process.env.NODE_ENV === "production" ? false : true,
-  },
 
   experimental: {
     appManifest: false,
@@ -113,6 +113,14 @@ export default defineNuxtConfig({
   css: ["@vease/assets/css/main.css"],
 
   vite: {
+    server: {
+      fs: {
+        allow: [
+          path.resolve(__dirname, "../../node_modules/@fontsource"),
+          path.resolve(__dirname, "../../node_modules/@mdi/font"),
+        ],
+      },
+    },
     optimizeDeps: {
       include: [
         "@geode/opengeodeweb-front",

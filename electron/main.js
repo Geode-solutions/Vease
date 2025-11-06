@@ -8,12 +8,12 @@ import {
   executable_name,
   kill_back,
   kill_viewer,
-  get_available_port,
   run_back,
   run_viewer,
   delete_folder_recursive,
 } from "@geode/opengeodeweb-front/utils/local.js"
 import { create_new_window } from "/utils/desktop.js"
+import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 import os from "os"
 
@@ -29,21 +29,15 @@ let back_port = 0
 let viewer_port = 0
 
 ipcMain.handle("run_back", async (_event) => {
-  const back_command = path.join(
-    executable_path(path.join("microservices", "back")),
-    executable_name("vease-back"),
-  )
-  back_port = await run_back(back_command, {
+  const { back_name, back_path } = back_microservice()
+  back_port = await run_back(back_name, back_path, {
     project_folder_path: project_folder_path,
   })
   return back_port
 })
 ipcMain.handle("run_viewer", async (_event) => {
-  const viewer_command = path.join(
-    executable_path(path.join("microservices", "viewer")),
-    executable_name("vease-viewer"),
-  )
-  viewer_port = await run_viewer(viewer_command, {
+  const { viewer_name, viewer_path } = viewer_microservice()
+  viewer_port = await run_viewer(viewer_name, viewer_path, {
     project_folder_path: project_folder_path,
   })
   return viewer_port
