@@ -4,12 +4,16 @@ import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
-  kill_processes,
+  executable_path,
+  executable_name,
+  kill_back,
+  kill_viewer,
   run_back,
   run_viewer,
   delete_folder_recursive,
-} from "/utils/local.js"
+} from "@geode/opengeodeweb-front/utils/local.js"
 import { create_new_window } from "/utils/desktop.js"
+import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 import os from "os"
 
@@ -21,11 +25,22 @@ create_path(project_folder_path)
 
 let mainWindow = null
 
-ipcMain.handle("run_back", async (_event, ...args) => {
-  return await run_back(args[0], project_folder_path)
+let back_port = 0
+let viewer_port = 0
+
+ipcMain.handle("run_back", async (_event) => {
+  const { back_name, back_path } = back_microservice()
+  back_port = await run_back(back_name, back_path, {
+    project_folder_path: project_folder_path,
+  })
+  return back_port
 })
-ipcMain.handle("run_viewer", async (_event, ...args) => {
-  return await run_viewer(args[0], project_folder_path)
+ipcMain.handle("run_viewer", async (_event) => {
+  const { viewer_name, viewer_path } = viewer_microservice()
+  viewer_port = await run_viewer(viewer_name, viewer_path, {
+    project_folder_path: project_folder_path,
+  })
+  return viewer_port
 })
 
 ipcMain.handle("new_window", async (_event) => {
@@ -36,12 +51,29 @@ app.whenReady().then(() => {
   mainWindow = create_new_window()
 })
 
-app.on("before-quit", async function () {
-  await kill_processes()
-  delete_folder_recursive(project_folder_path)
+let cleaned = false
+
+async function clean_up() {
+  return new Promise((resolve) => {
+    console.log("Shutting down microservices")
+    Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
+      delete_folder_recursive(project_folder_path)
+      cleaned = true
+      console.log("end clean")
+      resolve()
+    })
+  })
+}
+
+app.on("before-quit", function (event) {
+  if (!cleaned) {
+    event.preventDefault()
+    clean_up().then(() => app.quit())
+  }
 })
 
 app.on("window-all-closed", () => {
+  console.log("All windows are closed")
   app.quit()
 })
 

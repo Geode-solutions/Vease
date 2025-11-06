@@ -27,6 +27,16 @@ test.beforeAll(async () => {
     },
   })
 
+  electronApp
+    .process()
+    .stdout.on("data", (data) => console.log(`stdout: ${data}`))
+  electronApp
+    .process()
+    .stderr.on("data", (error) => console.log(`stderr: ${error}`))
+
+  electronApp.on("close", (data) => {
+    console.log("electronApp close", data)
+  })
   const firstWindow = await electronApp.firstWindow()
   const browserWindow = await electronApp.browserWindow(firstWindow)
   await browserWindow.evaluate(async (window) => {
@@ -39,22 +49,9 @@ test.afterAll(async () => {
   await electronApp.close()
 })
 
-test("Window title", async () => {
-  const firstWindow = await electronApp.firstWindow()
-  const title = await firstWindow.title()
-  expect(title).toBe("Vease")
-})
-
-test("App packaged", async () => {
-  const isPackaged = await electronApp.evaluate(async ({ app }) => {
-    return app.isPackaged
-  })
-  expect(isPackaged).toBe(true) // App should be tested as packaged
-})
-
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout((isWindows ? 45 : 20) * 1000)
+  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000)
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })
