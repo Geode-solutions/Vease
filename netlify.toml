@@ -18,6 +18,4 @@ SITE_BRANCH = "/test"
 RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
 SITE_URL = "https://next.vease.geode-solutions.com"
 [build]
-base = "app/"
-ignore = "exit 1"
-command = "cd ../ && npm run update_version && npm i && npm run generate"
+command = "npm i && npm run generate"

@@ -29,8 +29,7 @@
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "package": "npm run build && electron-builder build --publish=never",
     "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
-    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js",
-    "update_version": "node ./node_scripts/update_version.js"
+    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
   },
   "repository": {
     "type": "git",
