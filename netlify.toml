@@ -12,7 +12,7 @@ PROJECT = "/vease"
 SITE_BRANCH = ""
 RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
 SITE_URL = "https://vease.geode-solutions.com"
-[context.next.environment]
+[context.branch-deploy.environment]
 PROJECT = "/vease"
 SITE_BRANCH = "/test"
 RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
