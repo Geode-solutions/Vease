@@ -4,8 +4,24 @@ import { readFile, writeFile } from "fs/promises"
 import { execSync } from "child_process"
 
 async function main() {
-  const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim()
+  let branch = execSync("git rev-parse --abbrev-ref HEAD", { stdio: "inherit" })
+    .toString()
+    .trim()
   console.log(`Current branch: ${branch}`)
+  if (branch === "HEAD") {
+    let branches
+    try {
+      branches = execSync("git branch --contains HEAD", { stdio: "inherit" })
+        .toString()
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line && !line.includes("(HEAD detached")) // skip detached line
+        .map((line) => line.replace(/^[* ]+\s*/, "")) // remove * and spaces
+    } catch (err) {
+      throw new Error("Failed to find branches containing current commit")
+    }
+    console.log(`Branches containing current commit: ${branches.join(", ")}`)
+  }
 
   const packageJsonPath = "package.json"
 
