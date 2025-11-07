@@ -4,14 +4,13 @@ import { readFile, writeFile } from "fs/promises"
 import { execSync } from "child_process"
 
 async function main() {
-  let branch = execSync("git rev-parse --abbrev-ref HEAD", { stdio: "inherit" })
-    .toString()
-    .trim()
+  let branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim()
   console.log(`Current branch: ${branch}`)
   if (branch === "HEAD") {
     let branches
+    execSync("git branch --contains HEAD", { stdio: "inherit" })
     try {
-      branches = execSync("git branch --contains HEAD", { stdio: "inherit" })
+      branches = execSync("git branch --contains HEAD")
         .toString()
         .split("\n")
         .map((line) => line.trim())
