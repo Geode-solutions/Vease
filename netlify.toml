@@ -1,21 +1,21 @@
 [[redirects]]
-  from = "https://vease.geode-solutions.netlify.com/*"
-  to = "https://vease.geode-solutions.com/:splat"
-  status = 301
-  force = true
+from = "https://vease.geode-solutions.netlify.com/*"
+to = "https://vease.geode-solutions.com/:splat"
+status = 301
+force = true
 
 [[plugins]]
-  package = "@netlify/plugin-functions-install-core"
+package = "@netlify/plugin-functions-install-core"
 
 [context.production.environment]
-  PROJECT = "/vease"
-  SITE_BRANCH = ""
-  RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
-  SITE_URL = "https://vease.geode-solutions.com"
+PROJECT = "/vease"
+SITE_BRANCH = ""
+RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
+SITE_URL = "https://vease.geode-solutions.com"
 [context.branch-deploy.environment]
-  PROJECT = "/vease"
-  SITE_BRANCH = "/test"
-  RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
-  SITE_URL = "https://next.vease.geode-solutions.com"
+PROJECT = "/vease"
+SITE_BRANCH = "/test"
+RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
+SITE_URL = "https://next.vease.geode-solutions.com"
 [build]
-  command = "npm i && npm run generate"
+command = "npm run update_version && npm i && npm run generate"
