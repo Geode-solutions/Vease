@@ -18,4 +18,6 @@ SITE_BRANCH = "/test"
 RECAPTCHA_SITE_KEY = "6Lce72wgAAAAAOXrHyDxRQBhk6NDTD80MrXOlgbC"
 SITE_URL = "https://next.vease.geode-solutions.com"
 [build]
-command = "npm run update_version && npm i && npm run generate"
+base = "trick-netlify/"
+ignore = "exit 1"
+command = "cd ../ && npm run update_version && npm i && npm run generate"
