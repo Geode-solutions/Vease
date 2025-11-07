@@ -35,6 +35,7 @@ logs
 /uploads
 vease-back*
 vease-viewer*
+VTK.txt
 
 # Playwright
 node_modules/
