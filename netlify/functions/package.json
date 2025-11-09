@@ -6,8 +6,5 @@
   "license": "MIT",
   "dependencies": {
     "@geode/opengeodeweb-front": "next"
-  },
-  "overrides": {
-    "rollup": "4.52.5"
   }
 }

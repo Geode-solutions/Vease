@@ -77,8 +77,5 @@
     "nuxt": "3.13.2",
     "utf-8-validate": "^6.0.5",
     "vuetify": "3.8.12"
-  },
-  "overrides": {
-    "rollup": "4.52.5"
   }
 }
