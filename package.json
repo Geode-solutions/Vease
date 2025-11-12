@@ -12,7 +12,7 @@
     "dev": "npm run dev:browser",
     "dev:browser": "node node_scripts/browser.js dev:nuxt",
     "dev:desktop": "npm run dev:nuxt",
-    "dev:nuxt": "npm run clean_cache && npx nuxi@3.11.0 dev --no-fork",
+    "dev:nuxt": "npm run clean_cache && npx nuxi dev --no-fork",
     "build": "nuxi build --prerender",
     "build:browser": "cross-env BROWSER=true npm run build",
     "build:desktop": "npm run build && electron-builder --dir",
@@ -49,7 +49,7 @@
   },
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
-    "@nuxt/test-utils": "3.19.2",
+    "@nuxt/test-utils": "3.20.1",
     "@playwright/test": "1.54.1",
     "concurrently": "9.2.1",
     "cross-env": "10.0.0",
@@ -74,7 +74,6 @@
     "electron-updater": "6.6.2",
     "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
-    "nuxt": "3.13.2",
     "utf-8-validate": "^6.0.5",
     "vuetify": "3.8.12"
   }
