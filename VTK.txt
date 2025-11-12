@@ -1,0 +1,30 @@
+Warning: In vtkInteractorStyleTrackball.cxx, line 16
+vtkInteractorStyleTrackball (0x57b2556d47e0): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+
+Warning: In vtkInteractorStyleTrackball.cxx, line 16
+vtkInteractorStyleTrackball (0x57b2556d47e0): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+
+Warning: In vtkInteractorStyleTrackball.cxx, line 16
+vtkInteractorStyleTrackball (0x57b2556d47e0): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+
+Warning: In vtkInteractorStyleTrackball.cxx, line 16
+vtkInteractorStyleTrackball (0x57b2556d47e0): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+
+Warning: In vtkInteractorStyleTrackball.cxx, line 16
+vtkInteractorStyleTrackball (0x57b2556d47e0): vtkInteractorStyleTrackball will be deprecated in
+the next release after VTK 4.0. Please use
+vtkInteractorStyleSwitch instead.
+
+

@@ -114,7 +114,7 @@
         variant="text"
         color="grey-darken-1"
         size="large"
-        @click="openCreateTools"
+        @click="showCreateTools"
         :disabled="loading"
         class="text-none"
       >
@@ -150,11 +150,8 @@
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
 
-  const openCreateTools = () => {
+  const showCreateTools = () => {
     UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
-    UIStore.setShowCreateVOI(false)
   }
 
   const UIStore = useUIStore()

@@ -1,0 +1,41 @@
+import AOIicon from "../assets/img/aoi.svg"
+import VOIicon from "../assets/img/voi.svg"
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const UIStore = useUIStore()
+
+  UIStore.initializeDefaultTools()
+
+  UIStore.registerToolComponent({
+    id: "Point",
+    title: "Specific Point",
+    description: "Create a point object with exact coordinates on the viewer.",
+    iconType: "mdi",
+    iconSource: "mdi-circle-medium",
+    component: defineAsyncComponent(
+      () => import("../components/tools/CreatePoint.vue"),
+    ),
+  })
+
+  UIStore.registerToolComponent({
+    id: "AOI",
+    title: "Area of Interest",
+    description: "Define an area of interest on the viewer with 4 points.",
+    iconType: "svg",
+    iconSource: AOIicon,
+    component: defineAsyncComponent(
+      () => import("../components/tools/CreateAOI.vue"),
+    ),
+  })
+
+  UIStore.registerToolComponent({
+    id: "VOI",
+    title: "Volume of Interest",
+    description: "Create a 3D bounding box from an existing AOI with Z bounds.",
+    iconType: "svg",
+    iconSource: VOIicon,
+    component: defineAsyncComponent(
+      () => import("../components/tools/CreateVOI.vue"),
+    ),
+  })
+})
