@@ -5,6 +5,6 @@
   "author": "Geode-solutions",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.4.0"
+    "@geode/opengeodeweb-front": "next"
   }
 }

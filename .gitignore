@@ -35,6 +35,7 @@ logs
 /uploads
 vease-back*
 vease-viewer*
+VTK.txt
 
 # Playwright
 node_modules/
@@ -43,3 +44,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 package-lock.json
+# Local Netlify folder
+.netlify

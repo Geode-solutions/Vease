@@ -5,4 +5,4 @@
 #    pip-compile --output-file=microservices/viewer/requirements.txt microservices/viewer/requirements.in
 #
 
-vease-viewer==2.*,>=2.3.18
+vease-viewer==2.*,>=2.3.19

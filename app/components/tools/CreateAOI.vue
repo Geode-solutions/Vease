@@ -4,7 +4,7 @@
       class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
     >
       <v-img
-        src="/aoi.svg"
+        src="../../assets/img/aoi.svg"
         alt="AOI icon"
         class="mr-3"
         width="48"
