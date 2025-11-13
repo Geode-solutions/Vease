@@ -1,6 +1,5 @@
 {
   "node": false,
   "browser": true,
-  "desktop": true,
-  "cloud": true
+  "desktop": true
 }
