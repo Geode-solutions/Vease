@@ -16,7 +16,7 @@
     "build": "nuxi build --prerender",
     "build:browser": "cross-env BROWSER=true npm run build",
     "build:desktop": "npm run build && electron-builder --dir",
-    "preview:browser": "nuxi preview",
+    "preview:browser": "npx serve .output/public",
     "generate": "nuxt generate",
     "compile:back": "node node_scripts/run_script_file.js compile back",
     "compile:viewer": "node node_scripts/run_script_file.js compile viewer",
@@ -29,6 +29,7 @@
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "package": "npm run build && electron-builder build --publish=never",
     "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
+    "test:e2e:cloud": "npx playwright test --config ./tests/e2e/cloud/playwright.config.js",
     "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
   },
   "repository": {

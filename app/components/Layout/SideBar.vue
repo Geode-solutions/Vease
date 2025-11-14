@@ -3,7 +3,6 @@
     fixed
     v-model="drawer"
     width="80"
-    align="center"
     color="#FFFFFF00"
     class="py-4"
     elevation="0"
@@ -11,7 +10,13 @@
     app
     permanent
   >
-    <v-row no-gutters class="flex-column" style="height: 100%">
+    <v-row
+      no-gutters
+      class="flex-column"
+      style="height: 100%"
+      align="center"
+      justify="center"
+    >
       <v-col cols="auto" v-for="(item, index) in items" :key="index">
         <v-tooltip :text="item.title">
           <template v-slot:activator="{ props }">
