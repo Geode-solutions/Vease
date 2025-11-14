@@ -118,14 +118,17 @@
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+
+  const UIStore = useUIStore()
+  const dataBaseStore = useDataBaseStore()
+  const hybridViewerStore = useHybridViewerStore()
+  const treeviewStore = useTreeviewStore()
+  const dataStyleStore = useDataStyleStore()
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)
   }
-
-  const UIStore = useUIStore()
-  const dataBaseStore = useDataBaseStore()
 
   const name = ref("")
   const x = ref("")
@@ -170,6 +173,20 @@
               binary_light_viewable: data.binary_light_viewable,
             },
           })
+          await treeviewStore.addItem(
+            data.geode_object,
+            data.name,
+            data.id,
+            data.object_type,
+          )
+
+          await hybridViewerStore.addItem(data.id)
+
+          await dataStyleStore.addDataStyle(data.id, data.geode_object)
+          await dataStyleStore.applyDefaultStyle(data.id)
+
+          hybridViewerStore.remoteRender()
+
           closeDrawer()
         },
       },
