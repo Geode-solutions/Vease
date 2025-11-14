@@ -9,7 +9,7 @@ package = "@netlify/plugin-functions-install-core"
 
 [build]
 base = "app"
-publish = "../.output/public"
+publish = "../dist"
 
 [functions]
 directory = "../netlify/functions"
