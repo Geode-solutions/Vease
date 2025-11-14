@@ -72,7 +72,7 @@
     <input
       ref="importFileInput"
       type="file"
-      accept=".zip"
+      accept=".vease"
       style="display: none"
       @change="onImportFileSelected"
     />
@@ -153,6 +153,10 @@
   function onImportFileSelected(event) {
     const file = event.target.files?.[0]
     if (!file) return
+    if (!file.name.toLowerCase().endsWith(".vease")) {
+      event.target.value = ""
+      return
+    }
     importProjectFile(file)
     event.target.value = ""
   }
