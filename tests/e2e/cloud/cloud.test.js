@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto(`http://localhost:8888`)
 
   await page.getByRole("button", { name: "Launch the app" }).click()
-  // await page.waitForTimeout(90 * 1000)
+  await page.waitForTimeout(90 * 1000)
   console.log("Navigated to", page.url())
   await page.setViewportSize({ width: 1200, height: 800 })
 })

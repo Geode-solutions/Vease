@@ -4,6 +4,8 @@
 import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
 
+console.log("Test process env", process.env)
+
 // Local imports
 import { run_browser_wrapper } from "../../../utils/local"
 
