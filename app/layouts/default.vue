@@ -10,7 +10,6 @@
           <NuxtPage style="z-index: 1" />
         </v-col>
       </v-row>
-
       <LayoutTopBar />
       <LayoutSideBar />
       <FeedBackSnackers />
@@ -29,7 +28,6 @@
         >
           <v-icon>mdi-file-upload-outline</v-icon>
         </v-btn>
-
         <v-btn
           class="icon-style create-point-btn"
           color="white"
@@ -64,44 +62,12 @@
         temporary
         v-model="UIStore.showCreateTools"
       >
-        <CreateTools @select-tool="handleSelectTool" />
-      </v-navigation-drawer>
-
-      <v-navigation-drawer
-        class="rounded align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showCreatePoint"
-      >
-        <CreatePoint />
-      </v-navigation-drawer>
-
-      <v-navigation-drawer
-        class="rounded align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showCreateAOI"
-      >
-        <CreateAOI />
-      </v-navigation-drawer>
-
-      <v-navigation-drawer
-        class="rounded align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showCreateVOI"
-      >
-        <CreateVOI />
+        <CreateTools />
       </v-navigation-drawer>
 
       <FullScrenDropZone />
     </v-main>
+
     <v-progress-linear
       v-if="infra_store.microservices_busy"
       indeterminate
@@ -126,21 +92,6 @@
 
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
-    UIStore.setShowCreateVOI(false)
-  }
-
-  const handleSelectTool = (tool) => {
-    UIStore.setShowCreateTools(false)
-
-    if (tool === "Point") {
-      UIStore.setShowCreatePoint(true)
-    } else if (tool === "AOI") {
-      UIStore.setShowCreateAOI(true)
-    } else if (tool === "VOI") {
-      UIStore.setShowCreateVOI(true)
-    }
   }
 </script>
 
@@ -158,6 +109,7 @@
     align-items: center;
     justify-content: center;
   }
+
   .icon-container {
     position: fixed;
     top: 53%;

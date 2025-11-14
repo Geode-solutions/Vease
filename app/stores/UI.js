@@ -4,15 +4,44 @@ export const useUIStore = defineStore("UI", () => {
   const droppedFiles = ref([])
   const showButton = ref(false)
   const showStepImportMenu = ref(false)
-
   const showCreateTools = ref(false)
   const showCreatePoint = ref(false)
   const showCreateAOI = ref(false)
   const showCreateVOI = ref(false)
+  const toolsDefinitions = ref([])
 
-  function disableDropZone() {
-    showDropZone.value = false
+  const initializeDefaultTools = () => {
+    const defaultTools = [
+      {
+        id: "Point",
+        title: "Specific Point",
+        description:
+          "Create a point object with exact coordinates on the viewer.",
+        iconType: "mdi",
+        iconSource: "mdi-circle-medium",
+        component: null,
+      },
+    ]
+    toolsDefinitions.value = defaultTools
   }
+
+  const registerToolComponent = (toolDefinition) => {
+    const { id, component, ...rest } = toolDefinition
+    const existingIndex = toolsDefinitions.value.findIndex(
+      (tool) => tool.id === id,
+    )
+    const newDefinition = { id, component, ...rest }
+    if (existingIndex !== -1) {
+      toolsDefinitions.value[existingIndex] = {
+        ...toolsDefinitions.value[existingIndex],
+        ...newDefinition,
+      }
+    } else {
+      toolsDefinitions.value.push(newDefinition)
+    }
+  }
+
+  const activeTools = computed(() => toolsDefinitions.value)
 
   function setShowDropZone(value) {
     showDropZone.value = value
@@ -52,6 +81,10 @@ export const useUIStore = defineStore("UI", () => {
   }
 
   return {
+    toolsDefinitions,
+    activeTools,
+    initializeDefaultTools,
+    registerToolComponent,
     showDropZone,
     showStepper,
     droppedFiles,
@@ -61,7 +94,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreatePoint,
     showCreateAOI,
     showCreateVOI,
-    disableDropZone,
     setShowDropZone,
     setShowStepper,
     setDroppedFiles,
