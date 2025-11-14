@@ -44,3 +44,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 package-lock.json
+# Local Netlify folder
+.netlify
