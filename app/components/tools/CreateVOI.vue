@@ -51,7 +51,7 @@
             <v-list-item v-bind="props" :title="item.raw.name">
               <template #prepend>
                 <v-img
-                  src="../../assets/img/aoi.svg"
+                  src="@/assets/img/aoi.svg"
                   alt="AOI"
                   width="24"
                   height="24"
