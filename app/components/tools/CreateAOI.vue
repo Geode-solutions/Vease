@@ -4,7 +4,7 @@
       class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
     >
       <v-img
-        src="/aoi.svg"
+        src="@/assets/img/aoi.svg"
         alt="AOI icon"
         class="mr-3"
         width="48"
@@ -114,7 +114,7 @@
         variant="text"
         color="grey-darken-1"
         size="large"
-        @click="openCreateTools"
+        @click="showCreateTools"
         :disabled="loading"
         class="text-none"
       >
@@ -148,18 +148,13 @@
 
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
-  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
-
-  const openCreateTools = () => {
-    UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
-    UIStore.setShowCreateVOI(false)
-  }
+  import { importItem } from "@geode/opengeodeweb-front/utils/file_import_workflow.js"
 
   const UIStore = useUIStore()
-  const dataBaseStore = useDataBaseStore()
   const hybridViewerStore = useHybridViewerStore()
+  const showCreateTools = () => {
+    UIStore.setShowCreateTools(true)
+  }
 
   const name = ref("")
   const min_x = ref("")
@@ -287,33 +282,6 @@
     return isNaN(result) && sanitizedValue === "" ? NaN : result
   }
 
-  async function registerObject(data) {
-    await viewer_call(
-      {
-        schema: viewer_schemas.opengeodeweb_viewer.generic.register,
-        params: {
-          id: data.id,
-        },
-      },
-      {
-        response_function: async () => {
-          await dataBaseStore.addItem(data.id, {
-            object_type: data.object_type,
-            geode_object: data.geode_object,
-            native_filename: data.native_file_name,
-            viewable_filename: data.viewable_file_name,
-            displayed_name: data.name,
-            is_aoi: true,
-            vtk_js: {
-              binary_light_viewable: data.binary_light_viewable,
-            },
-          })
-          closeDrawer()
-        },
-      },
-    )
-  }
-
   const createAOI = async () => {
     const min_x_val = safeParseFloat(min_x.value)
     const min_y_val = safeParseFloat(min_y.value)
@@ -361,12 +329,20 @@
         },
         {
           response_function: async (response) => {
-            const dataToRegister = {
-              ...response._data,
-              points: aoiPoints,
-              z: z_val,
+            const dataToImport = {
+              id: response._data.id,
+              object_type: response._data.object_type,
+              geode_object: response._data.geode_object,
+              native_filename: response._data.native_file_name,
+              viewable_filename: response._data.viewable_file_name,
+              displayed_name: name.value,
+              is_aoi: true,
+              vtk_js: {
+                binary_light_viewable: response._data.binary_light_viewable,
+              },
             }
-            await registerObject(dataToRegister)
+            await importItem(dataToImport)
+            closeDrawer()
           },
         },
       )

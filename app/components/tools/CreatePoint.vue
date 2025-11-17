@@ -117,15 +117,14 @@
 </template>
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
-  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+  import { importItem } from "@geode/opengeodeweb-front/utils/file_import_workflow.js"
+
+  const UIStore = useUIStore()
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)
   }
-
-  const UIStore = useUIStore()
-  const dataBaseStore = useDataBaseStore()
 
   const name = ref("")
   const x = ref("")
@@ -148,32 +147,6 @@
     const sanitizedValue = String(value).trim().replace(",", ".")
     const result = parseFloat(sanitizedValue)
     return isNaN(result) && sanitizedValue === "" ? NaN : result
-  }
-
-  async function registerObject(data) {
-    await viewer_call(
-      {
-        schema: viewer_schemas.opengeodeweb_viewer.generic.register,
-        params: {
-          id: data.id,
-        },
-      },
-      {
-        response_function: async () => {
-          await dataBaseStore.addItem(data.id, {
-            object_type: data.object_type,
-            geode_object: data.geode_object,
-            native_filename: data.native_file_name,
-            viewable_filename: data.viewable_file_name,
-            displayed_name: data.name,
-            vtk_js: {
-              binary_light_viewable: data.binary_light_viewable,
-            },
-          })
-          closeDrawer()
-        },
-      },
-    )
   }
 
   async function createPoint() {
@@ -205,7 +178,19 @@
         },
         {
           response_function: async (response) => {
-            await registerObject(response._data)
+            const dataToImport = {
+              id: response._data.id,
+              object_type: response._data.object_type,
+              geode_object: response._data.geode_object,
+              native_filename: response._data.native_file_name,
+              viewable_filename: response._data.viewable_file_name,
+              displayed_name: name.value,
+              vtk_js: {
+                binary_light_viewable: response._data.binary_light_viewable,
+              },
+            }
+            await importItem(dataToImport)
+            closeDrawer()
           },
         },
       )

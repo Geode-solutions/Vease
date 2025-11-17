@@ -74,15 +74,23 @@
 
     <NewProject :show_dialog="newproject" @close="newproject = false" />
     <OpenProject :show_dialog="openproject" @close="openproject = false" />
+    <input
+      ref="importFileInput"
+      type="file"
+      accept=".vease"
+      style="display: none"
+      @change="onImportFileSelected"
+    />
   </v-navigation-drawer>
 </template>
 
 <script setup>
-  // import isElectron from "is-electron";
+  import { useProjectManager } from "@ogw_f/composables/project_manager"
 
   const drawer = ref(true)
   const newproject = ref(false)
   const openproject = ref(false)
+  const importFileInput = templateRef("importFileInput")
 
   const items = ref([
     {
@@ -100,6 +108,16 @@
     //   icon: "mdi-folder-outline",
     //   click: () => (openproject.value = true),
     // },
+    {
+      title: "Import Project",
+      icon: "mdi-download",
+      click: () => triggerImport(),
+    },
+    {
+      title: "Export Project",
+      icon: "mdi-upload",
+      click: () => triggerExport(),
+    },
     // {
     //   title: "Open new window",
     //   icon: "mdi-dock-window",
@@ -129,5 +147,26 @@
     items.value.splice(dragIndex, 1)
     items.value.splice(dropIndex, 0, draggedItem)
     draggedItem = null
+  }
+
+  const { importProjectFile, exportProject } = useProjectManager()
+
+  function triggerImport() {
+    importFileInput.value?.click()
+  }
+
+  function onImportFileSelected(event) {
+    const file = event.target.files?.[0]
+    if (!file) return
+    if (!file.name.toLowerCase().endsWith(".vease")) {
+      event.target.value = ""
+      return
+    }
+    importProjectFile(file)
+    event.target.value = ""
+  }
+
+  function triggerExport() {
+    exportProject()
   }
 </script>
