@@ -16,7 +16,7 @@
     },
   })
 
-  const files = ref(props.files)
+  const files = computed(() => props.files)
   const auto_upload = ref(true)
   const input_geode_object = ref("")
   const additional_files = ref([])
