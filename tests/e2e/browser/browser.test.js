@@ -1,5 +1,3 @@
-// Standard imports
-
 // Third party imports
 import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
