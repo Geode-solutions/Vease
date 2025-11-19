@@ -14,31 +14,33 @@
       <LayoutSideBar />
       <FeedBackSnackers />
 
-      <div
-        class="icon-container"
-        :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
-      >
-        <v-btn
-          class="icon-style step-import-btn"
-          color="white"
-          @click="UIStore.setShowStepper(true)"
-          icon
-          style="border-radius: 20%"
-          v-tooltip.left="'Import'"
+      <InfraConnected>
+        <div
+          class="icon-container"
+          :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
         >
-          <v-icon>mdi-file-upload-outline</v-icon>
-        </v-btn>
-        <v-btn
-          class="icon-style create-point-btn"
-          color="white"
-          @click="openCreateTools"
-          icon
-          style="border-radius: 20%"
-          v-tooltip.left="'Create'"
-        >
-          <v-icon>mdi-shape-plus-outline</v-icon>
-        </v-btn>
-      </div>
+          <v-btn
+            class="icon-style step-import-btn"
+            color="white"
+            @click="UIStore.setShowStepper(true)"
+            icon
+            style="border-radius: 20%"
+            v-tooltip.left="'Import'"
+          >
+            <v-icon>mdi-file-upload-outline</v-icon>
+          </v-btn>
+          <v-btn
+            class="icon-style create-point-btn"
+            color="white"
+            @click="openCreateTools"
+            icon
+            style="border-radius: 20%"
+            v-tooltip.left="'Create'"
+          >
+            <v-icon>mdi-shape-plus-outline</v-icon>
+          </v-btn>
+        </div>
+      </InfraConnected>
 
       <v-navigation-drawer
         class="rounded align-start"
