@@ -10,8 +10,8 @@
           <NuxtPage style="z-index: 1" />
         </v-col>
       </v-row>
-      <LayoutTopBar />
-      <LayoutSideBar />
+      <TopBar />
+      <SideBar />
       <FeedBackSnackers />
 
       <div
@@ -77,6 +77,13 @@
 </template>
 
 <script setup>
+  import FeedBackSnackers from "@ogw_f/components/FeedBack/Snackers.vue"
+
+  import CreateTools from "@/components/CreateTools.vue"
+  import FullScrenDropZone from "@/components/FullScrenDropZone.vue"
+  import StepImport from "@/components/StepImport.vue"
+  import TopBar from "@/components/Layout/TopBar.vue"
+  import SideBar from "@/components/Layout/SideBar.vue"
   const UIStore = useUIStore()
   const infra_store = useInfraStore()
 

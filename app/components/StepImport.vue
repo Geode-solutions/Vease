@@ -4,6 +4,8 @@
 
 <script setup>
   import _ from "lodash"
+
+  import Stepper from "@ogw_f/components/Stepper.vue"
   import FileSelector from "@ogw_f/components/FileSelector.vue"
   import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue"
   import ObjectSelector from "@ogw_f/components/ObjectSelector.vue"

@@ -24,6 +24,10 @@
 
 <script setup>
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+  import HybridRenderingView from "@ogw_f/components/HybridRenderingView.vue"
+  import Launcher from "@ogw_f/components/Launcher.vue"
+  import ViewerTreeObjectTree from "@ogw_f/components/Viewer/Tree/ObjectTree.vue"
+  import ViewerContextMenu from "@ogw_f/components/Viewer/ContextMenu.vue"
   import Status from "@ogw_f/utils/status.js"
 
   const query = useRoute().query

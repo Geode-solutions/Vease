@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-  import { importWorkflow } from "@geode/opengeodeweb-front/utils/file_import_workflow.js"
+  import { importWorkflow } from "@ogw_f/utils/file_import_workflow.js"
 
   const emit = defineEmits([
     "update_values",
