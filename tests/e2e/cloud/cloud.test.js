@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
   }
   await page.goto(`https://${prefix}vease.geode-solutions.com`)
   console.log("Navigated to", page.url())
-  const button = await page.getByRole("button", { name: "Launch the app" })
+  const button = await page.getByRole("button", { name: "LAUNCH THE APP" })
   console.log({ button })
   await button.click()
   await page.waitForTimeout(100 * 1000)
