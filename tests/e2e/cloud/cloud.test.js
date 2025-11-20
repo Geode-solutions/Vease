@@ -8,14 +8,17 @@ test.beforeEach(async ({ page }) => {
     prefix = "next."
   }
   await page.goto(`https://${prefix}vease.geode-solutions.com`)
-  await page.getByRole("button", { name: "Launch the app" }).click()
-  await page.waitForTimeout(100 * 1000)
   console.log("Navigated to", page.url())
+  const button = await page.getByRole("button", { name: "Launch the app" })
+  console.log({ button })
+  await button.click()
+  await page.waitForTimeout(100 * 1000)
   await page.setViewportSize({ width: 1200, height: 800 })
-})
+}, 150 * 1000)
 
 test("Microservices running", async ({ page }) => {
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })
+  page.close()
 })
