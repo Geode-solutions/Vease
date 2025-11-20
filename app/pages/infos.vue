@@ -164,8 +164,9 @@
   import Status from "@ogw_f/utils/status.js"
 
   const version = useRuntimeConfig().public.VERSION
-  const geode_store = useGeodeStore()
-  const viewer_store = useViewerStore()
+  const infraStore = useInfraStore()
+  const geodeStore = useGeodeStore()
+  const viewerStore = useViewerStore()
 
   const packages_versions = ref([])
   const back_version = ref("")
@@ -176,13 +177,13 @@
       name: "Back",
       package: "vease-back",
       version: back_version,
-      status: geode_store.status,
+      status: geodeStore.status,
     },
     {
       name: "Viewer",
       package: "vease-viewer",
       version: viewer_version,
-      status: viewer_store.status,
+      status: viewerStore.status,
     },
   ])
 
@@ -218,8 +219,7 @@
       },
     )
   }
-
-  onMounted(() => {
+  run_function_when_microservices_connected(() => {
     get_packages_versions()
     get_back_version()
     get_viewer_version()
