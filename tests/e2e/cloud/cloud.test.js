@@ -20,4 +20,5 @@ test("Microservices running", async ({ page }) => {
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })
+  page.close()
 })
