@@ -5,10 +5,10 @@
 <script setup>
   import _ from "lodash"
 
-  import Stepper from "@ogw_f/components/Stepper.vue"
-  import FileSelector from "@ogw_f/components/FileSelector.vue"
-  import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue"
-  import ObjectSelector from "@ogw_f/components/ObjectSelector.vue"
+  import Stepper from "@ogw_front/components/Stepper.vue"
+  import FileSelector from "@ogw_front/components/FileSelector.vue"
+  import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue"
+  import ObjectSelector from "@ogw_front/components/ObjectSelector.vue"
   import ImportFile from "@vease/components/ImportFile.vue"
 
   const props = defineProps({

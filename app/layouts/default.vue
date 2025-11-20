@@ -79,7 +79,7 @@
 </template>
 
 <script setup>
-  import FeedBackSnackers from "@ogw_f/components/FeedBack/Snackers.vue"
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
 
   import CreateTools from "@/components/CreateTools.vue"
   import FullScrenDropZone from "@/components/FullScrenDropZone.vue"
