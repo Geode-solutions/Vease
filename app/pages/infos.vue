@@ -219,13 +219,10 @@
       },
     )
   }
-
-  onMounted(() => {
-    if (infraStore.microservices_connected) {
-      get_packages_versions()
-      get_back_version()
-      get_viewer_version()
-    }
+  run_function_when_microservices_connected(() => {
+    get_packages_versions()
+    get_back_version()
+    get_viewer_version()
   })
 </script>
 

@@ -10,9 +10,6 @@
         draggable="false"
       />
       <h2 style="color: white" class="ml-2 mb-1 title-text">Vease</h2>
-      <p class="text-h2 text-white">
-        {{ infraStore.microservices_connected }}
-      </p>
       <!-- <v-spacer />
       <v-text-field
         prepend-inner-icon="mdi-magnify"

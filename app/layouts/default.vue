@@ -40,34 +40,34 @@
             <v-icon>mdi-shape-plus-outline</v-icon>
           </v-btn>
         </div>
+
+        <v-navigation-drawer
+          class="rounded align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showStepper"
+        >
+          <StepImport
+            :files="UIStore.droppedFiles"
+            @close="UIStore.setShowStepper(false)"
+          />
+        </v-navigation-drawer>
+
+        <v-navigation-drawer
+          class="align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showCreateTools"
+        >
+          <CreateTools />
+        </v-navigation-drawer>
+
+        <FullScrenDropZone />
       </InfraConnected>
-
-      <v-navigation-drawer
-        class="rounded align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showStepper"
-      >
-        <StepImport
-          :files="UIStore.droppedFiles"
-          @close="UIStore.setShowStepper(false)"
-        />
-      </v-navigation-drawer>
-
-      <v-navigation-drawer
-        class="align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showCreateTools"
-      >
-        <CreateTools />
-      </v-navigation-drawer>
-
-      <FullScrenDropZone />
     </v-main>
 
     <v-progress-linear
