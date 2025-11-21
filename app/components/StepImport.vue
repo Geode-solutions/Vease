@@ -12,13 +12,11 @@
   import ImportFile from "@vease/components/ImportFile.vue"
 
   const props = defineProps({
-    files: {
-      type: Array,
-      default: [],
-    },
+    files: { type: Array, default: [] },
   })
 
-  const files = computed(() => props.files)
+  const files = toRef(() => props.files)
+
   const auto_upload = ref(true)
   const input_geode_object = ref("")
   const additional_files = ref([])
