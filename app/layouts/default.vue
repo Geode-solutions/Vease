@@ -66,6 +66,19 @@
           <CreateTools />
         </v-navigation-drawer>
 
+        <v-navigation-drawer
+          class="align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showExtensions"
+        >
+          <Extension />
+        </v-navigation-drawer>
+
+
+
         <FullScrenDropZone />
       </InfraConnected>
     </v-main>

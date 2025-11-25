@@ -86,6 +86,7 @@
 
 <script setup>
   import { useProjectManager } from "@ogw_f/composables/project_manager"
+  const UIStore = useUIStore()
 
   const drawer = ref(true)
   const newproject = ref(false)
@@ -97,6 +98,11 @@
       title: "Home",
       icon: "mdi-home",
       click: () => navigateTo("/"),
+    },
+    {
+      title: "Extensions",
+      icon: "mdi-puzzle",
+      click: () => UIStore.setShowExtensions(true),
     },
     // {
     //   title: "New Project",

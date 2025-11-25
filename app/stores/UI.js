@@ -80,6 +80,11 @@ export const useUIStore = defineStore("UI", () => {
     showCreateVOI.value = value
   }
 
+  const showExtensions = ref(false)
+  function setShowExtensions(value) {
+    showExtensions.value = value
+  }
+
   return {
     toolsDefinitions,
     activeTools,
@@ -103,5 +108,7 @@ export const useUIStore = defineStore("UI", () => {
     setShowCreatePoint,
     setShowCreateAOI,
     setShowCreateVOI,
+    showExtensions,
+    setShowExtensions,
   }
 })
