@@ -20,7 +20,7 @@ export default defineNuxtConfig({
 
   alias: {
     "@vease": __dirname + "/app/",
-    "@ogw_f": "@geode/opengeodeweb-front",
+    "@ogw_front": "@geode/opengeodeweb-front/app/",
   },
 
   modules: [
@@ -99,7 +99,7 @@ export default defineNuxtConfig({
   },
 
   imports: {
-    dirs: ["stores", "@geode/opengeodeweb-front/stores"],
+    dirs: ["stores", "@geode/opengeodeweb-front/app/stores"],
   },
   vue: {
     compilerOptions: {

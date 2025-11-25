@@ -153,7 +153,7 @@
 
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
-  import { importItem } from "@geode/opengeodeweb-front/utils/file_import_workflow.js"
+  import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 
   const UIStore = useUIStore()
   const dataBaseStore = useDataBaseStore()
