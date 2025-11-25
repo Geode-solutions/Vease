@@ -1,10 +1,13 @@
 import { expect, test } from "@playwright/test"
+import { execSync } from 'child_process';
 
 test.beforeEach(async ({ page }) => {
   page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
 
   let prefix = ""
-  if (process.env.GITHUB_REF_NAME === "next") {
+  const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+  console.log("Current branch:", branch)
+  if (branch === "next") {
     prefix = "next."
   }
   await page.goto(`https://${prefix}vease.geode-solutions.com`)
