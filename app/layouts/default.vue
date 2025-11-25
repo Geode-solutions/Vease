@@ -66,19 +66,6 @@
           <CreateTools />
         </v-navigation-drawer>
 
-        <v-navigation-drawer
-          class="align-start"
-          radius="10px"
-          :width="500"
-          location="right"
-          temporary
-          v-model="UIStore.showExtensions"
-        >
-          <Extension />
-        </v-navigation-drawer>
-
-
-
         <FullScrenDropZone />
       </InfraConnected>
     </v-main>
@@ -88,6 +75,22 @@
       indeterminate
       color="white"
     />
+<Transition name="slide-left">
+  <v-navigation-drawer
+    v-if="UIStore.showExtensions"
+    class="align-start"
+    radius="10px"
+    :width="500"
+    location="left"
+    temporary
+    app
+    :model-value="true"
+    style="z-index: 1005;"
+    @update:model-value="UIStore.setShowExtensions($event)"
+  >
+    <Extension />
+  </v-navigation-drawer>
+</Transition>
   </v-app>
 </template>
 
@@ -162,4 +165,25 @@
   .slide-leave-to {
     transform: translateX(100%);
   }
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-left-enter-from {
+  transform: translateX(-100%);
+}
+
+.slide-left-enter-to {
+  transform: translateX(0);
+}
+
+.slide-left-leave-from {
+  transform: translateX(0);
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+}
+
 </style>

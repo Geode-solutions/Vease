@@ -93,6 +93,10 @@
   const openproject = ref(false)
   const importFileInput = templateRef("importFileInput")
 
+  const toggleExtensions = () => {
+    UIStore.setShowExtensions(!UIStore.showExtensions)
+  }
+
   const items = ref([
     {
       title: "Home",
@@ -102,7 +106,7 @@
     {
       title: "Extensions",
       icon: "mdi-puzzle",
-      click: () => UIStore.setShowExtensions(true),
+      click: () => toggleExtensions(),
     },
     // {
     //   title: "New Project",
