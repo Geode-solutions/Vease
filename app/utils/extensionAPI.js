@@ -10,6 +10,7 @@ export class VeaseExtensionAPI {
     this._hybridViewerStore = null
     this._appStore = null
     this._dataBaseStore = null
+    this._infraStore = null
     this._importItem = null
   }
 
@@ -51,6 +52,38 @@ export class VeaseExtensionAPI {
       this._dataBaseStore = useDataBaseStore()
     }
     return this._dataBaseStore
+  }
+
+  /**
+   * Get the Infra Store (from OpenGeodeWeb-Front)
+   */
+  get InfraStore() {
+    if (!this._infraStore) {
+      this._infraStore = useInfraStore()
+    }
+    return this._infraStore
+  }
+
+  /**
+   * Register a microservice
+   * @param {Object} config - Microservice configuration object
+   * @param {string} config.name - Unique microservice identifier
+   * @param {Function} config.useStore - Function that returns the microservice store
+   * @param {Function} config.connect - Function to connect to the microservice
+   * @param {string} config.electron_runner - Electron API method name to run the microservice
+   */
+  registerMicroservice(config) {
+    if (!config.name) {
+      throw new Error('Microservice configuration must have a name')
+    }
+    if (!config.useStore) {
+      throw new Error('Microservice configuration must have a useStore function')
+    }
+    if (!config.connect) {
+      throw new Error('Microservice configuration must have a connect function')
+    }
+
+    this.InfraStore.register_microservice(config)
   }
 
   /**
