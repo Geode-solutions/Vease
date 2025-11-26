@@ -50,8 +50,9 @@ export class VeaseExtensionAPI {
    * @param {string} toolDefinition.iconType - Icon type ('mdi' or 'svg')
    * @param {string} toolDefinition.iconSource - Icon source (mdi icon name or svg path)
    * @param {Component} toolDefinition.component - Vue component (must be markRaw)
+   * @param {string} extensionPath - Optional path of the extension registering this tool
    */
-  registerTool(toolDefinition) {
+  registerTool(toolDefinition, extensionPath = null) {
     if (!toolDefinition.id) {
       throw new Error('Tool definition must have an id')
     }
@@ -59,7 +60,23 @@ export class VeaseExtensionAPI {
       throw new Error('Tool definition must have a component')
     }
 
-    this.UIStore.registerToolComponent(toolDefinition)
+    this.UIStore.registerToolComponent(toolDefinition, extensionPath)
+  }
+
+  /**
+   * Unregister a specific tool by ID
+   * @param {string} toolId - ID of the tool to unregister
+   */
+  unregisterTool(toolId) {
+    this.UIStore.unregisterTool(toolId)
+  }
+
+  /**
+   * Unregister all tools registered by a specific extension
+   * @param {string} extensionPath - Path of the extension whose tools should be removed
+   */
+  unregisterToolsByExtension(extensionPath) {
+    this.UIStore.unregisterToolsByExtension(extensionPath)
   }
 
   /**

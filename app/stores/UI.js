@@ -25,12 +25,12 @@ export const useUIStore = defineStore("UI", () => {
     toolsDefinitions.value = defaultTools
   }
 
-  const registerToolComponent = (toolDefinition) => {
+  const registerToolComponent = (toolDefinition, extensionPath = null) => {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
       (tool) => tool.id === id,
     )
-    const newDefinition = { id, component, ...rest }
+    const newDefinition = { id, component, extensionPath, ...rest }
     if (existingIndex !== -1) {
       toolsDefinitions.value[existingIndex] = {
         ...toolsDefinitions.value[existingIndex],
@@ -39,6 +39,23 @@ export const useUIStore = defineStore("UI", () => {
     } else {
       toolsDefinitions.value.push(newDefinition)
     }
+  }
+
+  const unregisterTool = (toolId) => {
+    const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId)
+    if (index !== -1) {
+      toolsDefinitions.value.splice(index, 1)
+      console.log(`[UIStore] Tool unregistered: ${toolId}`)
+    }
+  }
+
+  const unregisterToolsByExtension = (extensionPath) => {
+    const beforeCount = toolsDefinitions.value.length
+    toolsDefinitions.value = toolsDefinitions.value.filter(
+      (tool) => tool.extensionPath !== extensionPath
+    )
+    const removedCount = beforeCount - toolsDefinitions.value.length
+    console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`)
   }
 
   const activeTools = computed(() => toolsDefinitions.value)
@@ -90,6 +107,8 @@ export const useUIStore = defineStore("UI", () => {
     activeTools,
     initializeDefaultTools,
     registerToolComponent,
+    unregisterTool,
+    unregisterToolsByExtension,
     showDropZone,
     showStepper,
     droppedFiles,
