@@ -161,7 +161,7 @@
 <script setup>
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
-  import Status from "@ogw_f/utils/status.js"
+  import Status from "@ogw_front/utils/status.js"
 
   const version = useRuntimeConfig().public.VERSION
   const infraStore = useInfraStore()
