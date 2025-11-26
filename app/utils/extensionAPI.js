@@ -10,6 +10,7 @@ export class VeaseExtensionAPI {
     this._hybridViewerStore = null
     this._appStore = null
     this._dataBaseStore = null
+    this._importItem = null
   }
 
   /**
@@ -111,5 +112,16 @@ export class VeaseExtensionAPI {
    */
   get api_fetch() {
     return api_fetch
+  }
+
+  /**
+   * Access to importItem utility (lazy loaded)
+   */
+  async importItem(data) {
+    if (!this._importItem) {
+      const module = await import('@ogw_front/utils/file_import_workflow.js')
+      this._importItem = module.importItem
+    }
+    return this._importItem(data)
   }
 }
