@@ -735,6 +735,14 @@ const getExtensionToolsCount = (extension) => {
   color: white;
 }
 
+.tool-icon-wrapper .v-img {
+  transition: filter 0.2s ease;
+}
+
+.tool-item:hover .tool-icon-wrapper .v-img {
+  filter: brightness(0) invert(1);
+}
+
 .tool-content {
   flex: 1;
   min-width: 0;

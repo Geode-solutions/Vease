@@ -9,6 +9,7 @@ export class VeaseExtensionAPI {
     this._uiStore = null
     this._hybridViewerStore = null
     this._appStore = null
+    this._dataBaseStore = null
   }
 
   /**
@@ -39,6 +40,16 @@ export class VeaseExtensionAPI {
       this._appStore = useAppStore()
     }
     return this._appStore
+  }
+
+  /**
+   * Get the DataBase Store
+   */
+  get DataBaseStore() {
+    if (!this._dataBaseStore) {
+      this._dataBaseStore = useDataBaseStore()
+    }
+    return this._dataBaseStore
   }
 
   /**
@@ -91,6 +102,14 @@ export class VeaseExtensionAPI {
       watch,
       onMounted,
       onUnmounted,
+      inject,
     }
+  }
+
+  /**
+   * Access to api_fetch utility
+   */
+  get api_fetch() {
+    return api_fetch
   }
 }
