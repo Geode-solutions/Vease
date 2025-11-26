@@ -24,7 +24,7 @@
 
   const props = defineProps({
     filenames: { type: Array, required: true },
-    input_geode_object: { type: String, required: true },
+    geode_object_type: { type: String, required: true },
   })
 
   const UIStore = useUIStore()
@@ -39,7 +39,7 @@
     toggle_loading()
     const files_array = props.filenames.map((filename) => ({
       filename,
-      geode_object: props.input_geode_object,
+      geode_object_type: props.geode_object_type,
     }))
     await importWorkflow(files_array)
     UIStore.setShowStepper(false)
