@@ -1,217 +1,310 @@
 <template>
-  <v-card flat rounded="xl" elevation="2" class="pa-6">
+  <v-card flat rounded="xl" elevation="0" class="extension-container">
     <v-card-title
-      class="text-h4 text-primary pa-0 font-weight-bold d-flex align-center"
+      class="text-h4 text-primary pa-6 font-weight-bold d-flex align-center"
     >
-      <v-icon icon="mdi-puzzle" class="mr-3"></v-icon>
+      <v-icon icon="mdi-puzzle" class="mr-3 title-icon"></v-icon>
       Extensions
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 text-medium">
+    <v-card-subtitle class="px-6 pb-4 text-medium-emphasis">
       Enhance your application with additional features and tools.
     </v-card-subtitle>
 
-    <v-card-text class="pt-6">
+    <v-card-text class="px-6 pb-6">
       <!-- Drag & Drop Zone -->
       <v-hover v-slot="{ isHovering, props }">
         <v-card
           v-bind="props"
-          class="text-center cursor-pointer d-flex flex-column align-center justify-center custom-tool-card"
+          class="text-center cursor-pointer drop-zone-card"
           :class="{
-            'bg-blue-lighten-5': isHovering || isDragging,
-            'elevation-6': isHovering || isDragging,
-            'opacity-50 pointer-events-none': loading
+            'drop-zone-hover': isHovering || isDragging,
+            'drop-zone-loading': loading
           }"
           rounded="xl"
-          :elevation="isHovering || isDragging ? 6 : 2"
+          :elevation="isHovering || isDragging ? 8 : 2"
           @click="triggerFileDialog"
           @dragover.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @drop.prevent="handleDrop"
         >
-          <v-sheet
-            class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
-            :class="isHovering || isDragging ? 'bg-primary' : 'bg-grey-lighten-3'"
-            :width="90"
-            :height="90"
-          >
-            <v-icon
-              :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
-              size="48"
-              :class="{ rotating: loading, 'text-white': isHovering || isDragging }"
-              :color="isHovering || isDragging ? 'white' : 'grey-darken-2'"
-            />
-          </v-sheet>
+          <v-card-text class="pa-8">
+            <div class="drop-zone-content">
+              <v-sheet
+                class="icon-wrapper mx-auto mb-6"
+                :class="{ 'icon-loading': loading, 'icon-active': isHovering || isDragging }"
+                rounded="circle"
+              >
+                <v-icon
+                  :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
+                  size="56"
+                  :class="{ 'rotating': loading }"
+                />
+              </v-sheet>
 
-          <v-card-title
-            class="text-h5 font-weight-bold mb-1 text-wrap"
-            :class="isHovering || isDragging ? 'text-primary' : 'text-medium-emphasis'"
-          >
-            {{ loading ? 'Loading Extension...' : isDragging ? 'Drop to Install' : 'Click or Drag & Drop Extension' }}
-          </v-card-title>
+              <div class="drop-zone-title mb-2">
+                {{ loading ? 'Loading Extension...' : isDragging ? 'Drop to Install' : 'Click or Drag & Drop Extension' }}
+              </div>
 
-          <v-card-subtitle class="text-caption text-grey-darken-4">
-            (.es.js files only)
-          </v-card-subtitle>
+              <div class="drop-zone-subtitle">
+                (.es.js files only)
+              </div>
+            </div>
+          </v-card-text>
 
-          <v-file-input
+          <input
             ref="hiddenFileInput"
-            v-model="files"
+            type="file"
             accept=".es.js"
             multiple
-            hide-details
             class="file-input-hidden"
-            @update:model-value="handleFileChange"
+            @change="handleFileChange"
           />
         </v-card>
       </v-hover>
 
-      <!-- Success -->
-      <v-expand-transition>
+      <!-- Messages -->
+      <v-slide-y-transition>
         <v-alert
           v-if="successMessage"
           type="success"
           rounded="xl"
-          class="mt-4"
+          class="mt-4 alert-animated"
           closable
           @click:close="successMessage = ''"
         >
-          <v-icon start>mdi-check-circle</v-icon>
+          <template #prepend>
+            <v-icon class="success-icon">mdi-check-circle</v-icon>
+          </template>
           {{ successMessage }}
         </v-alert>
-      </v-expand-transition>
+      </v-slide-y-transition>
 
-      <!-- Error -->
-      <v-expand-transition>
+      <v-slide-y-transition>
         <v-alert
           v-if="errorMessage"
           type="error"
           rounded="xl"
-          class="mt-4"
+          class="mt-4 alert-animated"
           closable
           @click:close="errorMessage = ''"
         >
-          <v-icon start>mdi-alert-circle</v-icon>
+          <template #prepend>
+            <v-icon class="error-icon">mdi-alert-circle</v-icon>
+          </template>
           {{ errorMessage }}
         </v-alert>
-      </v-expand-transition>
+      </v-slide-y-transition>
 
       <!-- Loaded Extensions -->
-      <div v-if="loadedExtensions.length" class="mt-6">
-        <div class="d-flex align-center font-weight-bold mb-3 text-primary">
-          <v-icon icon="mdi-puzzle-check" class="mr-2" />
-          Active Extensions
-          <v-chip size="small" class="ml-2" color="primary" variant="tonal">
-            {{ loadedExtensions.length }}
-          </v-chip>
+      <v-fade-transition>
+        <div v-if="loadedExtensions.length" class="mt-8">
+          <div class="section-header mb-4">
+            <v-icon icon="mdi-puzzle-check" class="mr-2" />
+            Active Extensions
+            <v-chip size="small" class="ml-3 count-chip" color="primary" variant="flat">
+              {{ loadedExtensions.length }}
+            </v-chip>
+          </div>
+
+          <v-row>
+            <v-col
+              v-for="(extension, index) in loadedExtensions"
+              :key="index"
+              cols="12"
+            >
+              <v-scale-transition :delay="index * 50">
+                <v-expansion-panels variant="accordion" class="extension-panels">
+                  <v-expansion-panel rounded="xl" class="extension-panel">
+                    <v-expansion-panel-title class="extension-panel-title">
+                      <template v-slot:default="{ expanded }">
+                        <v-hover v-slot="{ isHovering, props: hoverProps }">
+                          <div v-bind="hoverProps" class="extension-header" :class="{ 'extension-header-expanded': expanded }">
+                            <v-sheet
+                              class="extension-icon"
+                              :class="{ 'extension-icon-active': isHovering || expanded }"
+                              rounded="circle"
+                            >
+                              <v-icon icon="mdi-puzzle" size="32" />
+                            </v-sheet>
+
+                            <div class="extension-info">
+                              <div class="extension-name">
+                                {{ getExtensionName(extension) }}
+                              </div>
+
+                              <div class="extension-description">
+                                {{ getExtensionDescription(extension) }}
+                              </div>
+
+                              <div class="extension-badges">
+                                <v-chip
+                                  size="x-small"
+                                  color="success"
+                                  variant="flat"
+                                  class="status-chip"
+                                >
+                                  <v-icon start size="12">mdi-check-circle</v-icon>
+                                  Active
+                                </v-chip>
+
+                                <v-chip
+                                  v-if="getExtensionVersion(extension)"
+                                  size="x-small"
+                                  class="ml-2"
+                                  variant="tonal"
+                                  color="primary"
+                                >
+                                  v{{ getExtensionVersion(extension) }}
+                                </v-chip>
+
+                                <v-chip
+                                  size="x-small"
+                                  class="ml-2 tools-chip"
+                                  color="primary"
+                                  variant="flat"
+                                >
+                                  <v-icon start size="12">mdi-tools</v-icon>
+                                  {{ getExtensionToolsCount(extension) }}
+                                </v-chip>
+
+                                <v-spacer />
+
+                                <span class="extension-date">
+                                  {{ formatDate(extension.loadedAt) }}
+                                </span>
+                              </div>
+                            </div>
+
+                            <v-btn
+                              icon="mdi-close"
+                              size="small"
+                              variant="text"
+                              color="error"
+                              class="remove-btn"
+                              @click.stop="confirmRemove(extension)"
+                            />
+                          </div>
+                        </v-hover>
+                      </template>
+                    </v-expansion-panel-title>
+
+                    <v-expansion-panel-text class="extension-panel-content">
+                      <v-divider class="mb-6 divider-gradient" />
+                      
+                      <div class="tools-section-header">
+                        <v-icon icon="mdi-tools" size="20" class="mr-2" />
+                        Tools Added by This Extension
+                      </div>
+
+                      <div v-if="getExtensionTools(extension).length" class="tools-list">
+                        <v-fade-transition group>
+                          <div
+                            v-for="(tool, toolIndex) in getExtensionTools(extension)"
+                            :key="tool.id"
+                            class="tool-item"
+                            :style="{ transitionDelay: `${toolIndex * 30}ms` }"
+                          >
+                            <v-sheet
+                              class="tool-icon-wrapper"
+                              rounded="circle"
+                            >
+                              <v-icon
+                                v-if="tool.iconType === 'mdi'"
+                                :icon="tool.iconSource"
+                                size="20"
+                              />
+                              <v-img
+                                v-else-if="tool.iconType === 'svg'"
+                                :src="tool.iconSource"
+                                width="20"
+                                height="20"
+                                contain
+                              />
+                            </v-sheet>
+
+                            <div class="tool-content">
+                              <div class="tool-title">
+                                {{ tool.title }}
+                              </div>
+
+                              <div class="tool-description">
+                                {{ tool.description }}
+                              </div>
+                            </div>
+                          </div>
+                        </v-fade-transition>
+                      </div>
+
+                      <v-alert
+                        v-else
+                        type="info"
+                        variant="tonal"
+                        rounded="lg"
+                        class="empty-tools-alert"
+                      >
+                        <template #prepend>
+                          <v-icon>mdi-information</v-icon>
+                        </template>
+                        No tools registered by this extension
+                      </v-alert>
+                    </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+              </v-scale-transition>
+            </v-col>
+          </v-row>
         </div>
+      </v-fade-transition>
 
-        <v-row>
-          <v-col
-            v-for="(extension, index) in loadedExtensions"
-            :key="index"
-            cols="12"
-          >
-            <v-hover v-slot="{ isHovering, props }">
-              <v-card
-                v-bind="props"
-                :elevation="isHovering ? 4 : 1"
-                rounded="xl"
-                class="pa-4 d-flex align-center custom-tool-card"
-              >
-                <v-sheet
-                  class="d-flex align-center justify-center pa-2 rounded-circle mr-3"
-                  :width="56"
-                  :height="56"
-                  :class="isHovering ? 'bg-primary' : 'bg-grey-lighten-3'"
-                >
-                  <v-icon icon="mdi-puzzle" size="32" :color="isHovering ? 'white' : 'grey-darken-2'" />
-                </v-sheet>
-
-                <div class="flex-grow-1">
-                  <div class="font-weight-bold">
-                    {{ getExtensionName(extension) }}
-                  </div>
-
-                  <div class="text-medium-emphasis text-caption mb-2">
-                    {{ getExtensionDescription(extension) }}
-                  </div>
-
-                  <div class="d-flex align-center">
-                    <v-chip
-                      size="x-small"
-                      color="success"
-                      variant="tonal"
-                      prepend-icon="mdi-check-circle"
-                    >
-                      Active
-                    </v-chip>
-
-                    <v-chip
-                      v-if="getExtensionVersion(extension)"
-                      size="x-small"
-                      class="ml-2"
-                      variant="tonal"
-                    >
-                      v{{ getExtensionVersion(extension) }}
-                    </v-chip>
-
-                    <v-spacer />
-
-                    <span class="text-disabled text-caption">
-                      {{ formatDate(extension.loadedAt) }}
-                    </span>
-                  </div>
-                </div>
-
-                <v-btn
-                  icon="mdi-close"
-                  size="small"
-                  variant="text"
-                  color="error"
-                  @click="confirmRemove(extension)"
-                />
-              </v-card>
-            </v-hover>
-          </v-col>
-        </v-row>
-      </div>
-
-      <!-- Empty -->
-      <v-card
-        v-else
-        rounded="xl"
-        variant="outlined"
-        class="mt-6 text-center pa-6"
-      >
-        <v-icon icon="mdi-puzzle-outline" size="48" class="mb-2 text-grey" />
-        <div class="font-weight-bold mb-1">
-          No extensions loaded yet
-        </div>
-        <div class="text-medium-emphasis text-caption">
-          Upload an extension file to get started
-        </div>
-      </v-card>
+      <!-- Empty State -->
+      <v-fade-transition>
+        <v-card
+          v-if="!loadedExtensions.length"
+          rounded="xl"
+          variant="outlined"
+          class="mt-8 empty-state"
+        >
+          <v-card-text class="text-center pa-8">
+            <v-sheet
+              class="empty-icon-wrapper mx-auto mb-4"
+              rounded="circle"
+            >
+              <v-icon icon="mdi-puzzle-outline" size="64" />
+            </v-sheet>
+            <div class="empty-title mb-2">
+              No extensions loaded yet
+            </div>
+            <div class="empty-subtitle">
+              Upload an extension file to get started
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-fade-transition>
     </v-card-text>
 
     <!-- Dialog Remove -->
-    <v-dialog v-model="showRemoveDialog" max-width="400">
-      <v-card rounded="xl">
-        <v-card-title class="d-flex align-center text-warning">
-          <v-icon icon="mdi-alert" class="mr-2" />
+    <v-dialog v-model="showRemoveDialog" max-width="450">
+      <v-card rounded="xl" class="remove-dialog">
+        <v-card-title class="dialog-title">
+          <v-icon icon="mdi-alert" class="mr-3 warning-icon" />
           Remove Extension?
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text class="dialog-text">
           Are you sure you want to remove <strong>{{ getExtensionName(extensionToRemove) }}</strong>?
+          <div class="mt-2 text-caption text-medium-emphasis">
+            This will remove all tools registered by this extension.
+          </div>
         </v-card-text>
 
-        <v-card-actions>
+        <v-card-actions class="pa-4">
           <v-spacer />
-          <v-btn variant="text" @click="showRemoveDialog = false">
+          <v-btn variant="text" @click="showRemoveDialog = false" class="cancel-btn">
             Cancel
           </v-btn>
-          <v-btn color="error" variant="flat" @click="removeExtension">
+          <v-btn color="error" variant="flat" @click="removeExtension" class="remove-confirm-btn">
+            <v-icon start>mdi-delete</v-icon>
             Remove
           </v-btn>
         </v-card-actions>
@@ -261,9 +354,12 @@ const handleDrop = async (event) => {
   await processFiles(droppedFiles)
 }
 
-const handleFileChange = async (newFiles) => {
+const handleFileChange = async (event) => {
+  const newFiles = event.target?.files
   if (!newFiles?.length) return
-  await processFiles(newFiles)
+  await processFiles([...newFiles])
+  // Reset input so the same file can be selected again
+  event.target.value = ''
 }
 
 const processFiles = async (filesToProcess) => {
@@ -296,7 +392,31 @@ const processFiles = async (filesToProcess) => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString)
-  return date.toLocaleDateString()
+  const now = new Date()
+  const diffMs = now - date
+  const diffSecs = Math.floor(diffMs / 1000)
+  const diffMins = Math.floor(diffSecs / 60)
+  const diffHours = Math.floor(diffMins / 60)
+  const diffDays = Math.floor(diffHours / 24)
+  const diffWeeks = Math.floor(diffDays / 7)
+  const diffMonths = Math.floor(diffDays / 30)
+
+  if (diffSecs < 60) {
+    return 'just now'
+  } else if (diffMins < 60) {
+    return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`
+  } else if (diffHours < 24) {
+    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`
+  } else if (diffDays < 7) {
+    return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`
+  } else if (diffWeeks < 4) {
+    return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'} ago`
+  } else if (diffMonths < 12) {
+    return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
+  } else {
+    // For dates older than a year, show the actual date
+    return date.toLocaleDateString()
+  }
 }
 
 const confirmRemove = (extension) => {
@@ -311,24 +431,87 @@ const removeExtension = () => {
     extensionToRemove.value = null
   }
 }
+
+const getExtensionTools = (extension) => {
+  if (!extension) return []
+  return UIStore.activeTools.filter(tool => tool.extensionPath === extension.path)
+}
+
+const getExtensionToolsCount = (extension) => {
+  return getExtensionTools(extension).length
+}
 </script>
 
 <style scoped>
-.custom-tool-card {
-  transition: all 0.2s ease-in-out;
-}
-.custom-tool-card:hover {
-  transform: scale(1.03);
+/* Container */
+.extension-container {
+  background: #ffffff;
 }
 
-.cursor-pointer {
-  cursor: pointer;
+/* Drop Zone */
+.drop-zone-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: #fafafa;
+  border: 2px dashed #e0e0e0;
 }
 
-.file-input-hidden :deep(.v-input__control) {
-  display: none;
+.drop-zone-hover {
+  transform: translateY(-2px);
+  border-color: rgb(var(--v-theme-primary));
+  background: #f5f9ff;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
 }
 
+.drop-zone-loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Icon Wrapper */
+.icon-wrapper {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eeeeee;
+  transition: all 0.3s ease;
+}
+
+.icon-active {
+  background: rgb(var(--v-theme-primary));
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.icon-wrapper .v-icon {
+  color: #757575;
+  transition: color 0.3s ease;
+}
+
+.icon-active .v-icon {
+  color: white;
+}
+
+/* Drop Zone Text */
+.drop-zone-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #424242;
+  transition: color 0.3s ease;
+}
+
+.drop-zone-hover .drop-zone-title {
+  color: rgb(var(--v-theme-primary));
+}
+
+.drop-zone-subtitle {
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+/* Rotating Animation */
 .rotating {
   animation: rotate 1s linear infinite;
 }
@@ -336,5 +519,344 @@ const removeExtension = () => {
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* Alerts */
+.alert-animated {
+  animation: slide-in 0.3s ease;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section Header */
+.section-header {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-primary));
+  display: flex;
+  align-items: center;
+}
+
+.count-chip {
+  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.15);
+}
+
+/* Extension Panels */
+.extension-panels {
+  background: transparent !important;
+}
+
+.extension-panel {
+  transition: box-shadow 0.3s ease;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e0e0e0;
+}
+
+.extension-panel:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.extension-panel-title {
+  padding: 20px;
+}
+
+/* Extension Header */
+.extension-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+}
+
+.extension-header-expanded {
+  background: #f5f9ff;
+  border-radius: 8px;
+  padding: 8px;
+  margin: -8px;
+}
+
+/* Extension Icon */
+.extension-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.extension-icon-active {
+  background: rgb(var(--v-theme-primary));
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.extension-icon .v-icon {
+  color: #757575;
+  transition: color 0.3s ease;
+}
+
+.extension-icon-active .v-icon {
+  color: white;
+}
+
+/* Extension Info */
+.extension-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.extension-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 4px;
+}
+
+.extension-description {
+  font-size: 0.875rem;
+  color: #757575;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.extension-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-chip {
+  box-shadow: 0 1px 3px rgba(76, 175, 80, 0.15);
+}
+
+.tools-chip {
+  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.15);
+}
+
+.extension-date {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+  white-space: nowrap;
+}
+
+/* Remove Button */
+.remove-btn {
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+  background-color: rgba(244, 67, 54, 0.08);
+}
+
+/* Extension Panel Content */
+.extension-panel-content {
+  padding: 0 24px 24px 24px;
+}
+
+.divider-gradient {
+  background: #e0e0e0;
+  height: 1px;
+  border: none;
+}
+
+/* Tools Section */
+.tools-section-header {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #424242;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tools-list {
+  background: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  transition: all 0.2s ease;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.tool-item:hover {
+  background: #f5f9ff;
+  border-color: rgba(33, 150, 243, 0.3);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.08);
+}
+
+.tool-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e3f2fd;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.tool-item:hover .tool-icon-wrapper {
+  background: rgb(var(--v-theme-primary));
+}
+
+.tool-icon-wrapper .v-icon {
+  color: rgb(var(--v-theme-primary));
+  transition: color 0.2s ease;
+}
+
+.tool-item:hover .tool-icon-wrapper .v-icon {
+  color: white;
+}
+
+.tool-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-title {
+  font-weight: 600;
+  color: #212121;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.tool-description {
+  font-size: 0.8125rem;
+  color: #757575;
+  line-height: 1.5;
+}
+
+.empty-tools-alert {
+  margin-top: 8px;
+}
+
+/* Empty State */
+.empty-state {
+  border: 2px dashed #e0e0e0;
+  background: #fafafa;
+}
+
+.empty-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  margin: 0 auto;
+}
+
+.empty-icon-wrapper .v-icon {
+  color: #bdbdbd;
+}
+
+.empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #424242;
+}
+
+.empty-subtitle {
+  font-size: 0.875rem;
+  color: #757575;
+}
+
+/* Remove Dialog */
+.remove-dialog {
+  overflow: hidden;
+}
+
+.dialog-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #f57c00;
+  padding: 24px 24px 16px 24px;
+  display: flex;
+  align-items: center;
+}
+
+.dialog-text {
+  padding: 0 24px 24px 24px;
+  font-size: 0.9375rem;
+  color: #424242;
+  line-height: 1.6;
+}
+
+.cancel-btn {
+  transition: background-color 0.2s ease;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.remove-confirm-btn {
+  transition: all 0.2s ease;
+}
+
+.remove-confirm-btn:hover {
+  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Utility */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.file-input-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .extension-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .extension-icon .v-icon {
+    font-size: 24px;
+  }
+  
+  .extension-name {
+    font-size: 0.9375rem;
+  }
+  
+  .icon-wrapper {
+    width: 80px;
+    height: 80px;
+  }
 }
 </style>
