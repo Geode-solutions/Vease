@@ -367,7 +367,7 @@
       </v-fade-transition>
     </v-card-text>
 
-    <v-dialog v-model="showRemoveDialog" max-width="500">
+    <v-dialog v-model="showRemoveDialog" max-width="500" style="z-index: 10000;">
       <v-card rounded="xl" elevation="8">
         <v-card-title class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4">
           <v-icon icon="mdi-alert-circle" size="28" class="mr-3" color="warning" />
