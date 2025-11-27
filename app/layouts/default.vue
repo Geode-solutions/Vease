@@ -75,31 +75,24 @@
       indeterminate
       color="white"
     />
-<Transition name="slide-left">
-  <v-navigation-drawer
-    v-if="UIStore.showExtensions"
-    class="align-start"
-    radius="10px"
-    :width="500"
-    location="left"
-    temporary
-    app
-    :model-value="true"
-    style="z-index: 1005;"
-    @update:model-value="UIStore.setShowExtensions($event)"
-  >
-    <Extension />
-  </v-navigation-drawer>
-</Transition>
+    <v-navigation-drawer
+      class="align-start"
+      radius="10px"
+      :width="500"
+      location="left"
+      temporary
+      v-model="UIStore.showExtensions"
+      style="z-index: 9999; left: 0 !important;"
+    >
+      <Extension />
+    </v-navigation-drawer>
   </v-app>
 </template>
 
 <script setup>
-  // Third party imports
   import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
   import InfraConnected from "@ogw_front/components/InfraConnected.vue"
 
-  // Local imports
   import CreateTools from "@vease/components/CreateTools.vue"
   import FullScrenDropZone from "@vease/components/FullScrenDropZone.vue"
   import StepImport from "@vease/components/StepImport.vue"
@@ -176,25 +169,6 @@
   .slide-leave-to {
     transform: translateX(100%);
   }
-.slide-left-enter-active,
-.slide-left-leave-active {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-.slide-left-enter-from {
-  transform: translateX(-100%);
-}
-
-.slide-left-enter-to {
-  transform: translateX(0);
-}
-
-.slide-left-leave-from {
-  transform: translateX(0);
-}
-
-.slide-left-leave-to {
-  transform: translateX(-100%);
-}
 
 </style>
