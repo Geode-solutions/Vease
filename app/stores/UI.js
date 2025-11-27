@@ -58,7 +58,13 @@ export const useUIStore = defineStore("UI", () => {
     console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`)
   }
 
-  const activeTools = computed(() => toolsDefinitions.value)
+  const activeTools = computed(() => {
+    const appStore = useAppStore()
+    return toolsDefinitions.value.filter(tool => {
+      if (!tool.extensionPath) return true
+      return appStore.getExtensionEnabled(tool.extensionPath)
+    })
+  })
 
   function setShowDropZone(value) {
     showDropZone.value = value
