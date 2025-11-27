@@ -1,13 +1,11 @@
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
-
 export class VeaseExtensionAPI {
-  constructor() {
+  constructor({ schemas } = {}) {
     this._uiStore = null
     this._hybridViewerStore = null
     this._appStore = null
     this._dataBaseStore = null
     this._importItem = null
-    this._schemas = back_schemas
+    this._schemas = schemas || null
   }
 
   get UIStore() {

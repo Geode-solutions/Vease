@@ -5,25 +5,7 @@ export const useUIStore = defineStore("UI", () => {
   const showButton = ref(false)
   const showStepImportMenu = ref(false)
   const showCreateTools = ref(false)
-  const showCreatePoint = ref(false)
-  const showCreateAOI = ref(false)
-  const showCreateVOI = ref(false)
   const toolsDefinitions = ref([])
-
-  const initializeDefaultTools = () => {
-    const defaultTools = [
-      {
-        id: "Point",
-        title: "Specific Point",
-        description:
-          "Create a point object with exact coordinates on the viewer.",
-        iconType: "mdi",
-        iconSource: "mdi-circle-medium",
-        component: null,
-      },
-    ]
-    toolsDefinitions.value = defaultTools
-  }
 
   const registerToolComponent = (toolDefinition, extensionPath = null) => {
     const { id, component, ...rest } = toolDefinition
@@ -91,18 +73,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreateTools.value = value
   }
 
-  function setShowCreatePoint(value) {
-    showCreatePoint.value = value
-  }
-
-  function setShowCreateAOI(value) {
-    showCreateAOI.value = value
-  }
-
-  function setShowCreateVOI(value) {
-    showCreateVOI.value = value
-  }
-
   const showExtensions = ref(false)
   function setShowExtensions(value) {
     showExtensions.value = value
@@ -111,7 +81,6 @@ export const useUIStore = defineStore("UI", () => {
   return {
     toolsDefinitions,
     activeTools,
-    initializeDefaultTools,
     registerToolComponent,
     unregisterTool,
     unregisterToolsByExtension,
@@ -121,18 +90,12 @@ export const useUIStore = defineStore("UI", () => {
     showButton,
     showStepImportMenu,
     showCreateTools,
-    showCreatePoint,
-    showCreateAOI,
-    showCreateVOI,
     setShowDropZone,
     setShowStepper,
     setDroppedFiles,
     setShowButton,
     toggleDrawer,
     setShowCreateTools,
-    setShowCreatePoint,
-    setShowCreateAOI,
-    setShowCreateVOI,
     showExtensions,
     setShowExtensions,
   }
