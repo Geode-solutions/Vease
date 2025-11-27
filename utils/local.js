@@ -10,6 +10,10 @@ import {
   executable_name,
   executable_path,
   run_browser,
+  run_back,
+  run_viewer,
+  kill_back,
+  kill_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
 
 function back_microservice() {
@@ -22,6 +26,32 @@ function viewer_microservice() {
   const viewer_path = executable_path(path.join("microservices", "viewer"))
   const viewer_name = executable_name("vease-viewer")
   return { viewer_name, viewer_path }
+}
+
+// Generic microservices configuration
+function get_microservices_config() {
+  return [
+    {
+      name: "back",
+      runner_name: "run_back",
+      config_getter: () => {
+        const { back_name, back_path } = back_microservice()
+        return { name: back_name, path: back_path }
+      },
+      runner_function: run_back,
+      killer_function: kill_back,
+    },
+    {
+      name: "viewer",
+      runner_name: "run_viewer",
+      config_getter: () => {
+        const { viewer_name, viewer_path } = viewer_microservice()
+        return { name: viewer_name, path: viewer_path }
+      },
+      runner_function: run_viewer,
+      killer_function: kill_viewer,
+    },
+  ]
 }
 
 function run_browser_wrapper(script_name) {
@@ -50,4 +80,4 @@ function run_browser_wrapper(script_name) {
   })
 }
 
-export { run_browser_wrapper, back_microservice, viewer_microservice }
+export { run_browser_wrapper, back_microservice, viewer_microservice, get_microservices_config }

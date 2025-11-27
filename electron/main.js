@@ -4,14 +4,10 @@ import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
-  kill_back,
-  kill_viewer,
-  run_back,
-  run_viewer,
   delete_folder_recursive,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
 import { create_new_window } from "/utils/desktop.js"
-import { back_microservice, viewer_microservice } from "/utils/local.js"
+import { get_microservices_config } from "/utils/local.js"
 
 import os from "os"
 
@@ -23,23 +19,25 @@ create_path(project_folder_path)
 
 let mainWindow = null
 
-let back_port = 0
-let viewer_port = 0
+const microservice_ports = new Map()
+// Generic microservice registration
+function registerMicroserviceHandlers(microservices_config) {
+  microservices_config.forEach(({ name, runner_name, config_getter, runner_function, killer_function }) => {
+    ipcMain.handle(runner_name, async (_event) => {
+      const config = config_getter()
+      const port = await runner_function(config.name, config.path, {
+        project_folder_path: project_folder_path,
+      })
+      microservice_ports.set(name, { port, killer: killer_function })
+      return port
+    })
+  })
+}
 
-ipcMain.handle("run_back", async (_event) => {
-  const { back_name, back_path } = back_microservice()
-  back_port = await run_back(back_name, back_path, {
-    project_folder_path: project_folder_path,
-  })
-  return back_port
-})
-ipcMain.handle("run_viewer", async (_event) => {
-  const { viewer_name, viewer_path } = viewer_microservice()
-  viewer_port = await run_viewer(viewer_name, viewer_path, {
-    project_folder_path: project_folder_path,
-  })
-  return viewer_port
-})
+// Register all microservices
+const microservices_config = get_microservices_config()
+registerMicroserviceHandlers(microservices_config)
+
 
 ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window()
@@ -54,7 +52,15 @@ let cleaned = false
 async function clean_up() {
   return new Promise((resolve) => {
     console.log("Shutting down microservices")
-    Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
+    const kill_promises = []
+    
+    // Kill all registered microservices
+    for (const [name, { port, killer }] of microservice_ports.entries()) {
+      console.log(`Killing microservice: ${name} on port ${port}`)
+      kill_promises.push(killer(port))
+    }
+    
+    Promise.all(kill_promises).then(() => {
       delete_folder_recursive(project_folder_path)
       cleaned = true
       console.log("end clean")

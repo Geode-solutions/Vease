@@ -6,6 +6,7 @@ export class VeaseExtensionAPI {
     this._hybridViewerStore = null
     this._appStore = null
     this._dataBaseStore = null
+    this._infraStore = null
     this._importItem = null
     this._schemas = back_schemas
   }
@@ -38,6 +39,13 @@ export class VeaseExtensionAPI {
     return this._dataBaseStore
   }
 
+  get InfraStore() {
+    if (!this._infraStore) {
+      this._infraStore = useInfraStore()
+    }
+    return this._infraStore
+  }
+
   getSchemas() {
     return this._schemas
   }
@@ -63,6 +71,17 @@ export class VeaseExtensionAPI {
 
   getExtensionEnabled(extensionPath) {
     return this.AppStore.getExtensionEnabled(extensionPath)
+  }
+
+  registerMicroservice(microserviceConfig) {
+    // microserviceConfig should contain:
+    // - name: string
+    // - useStore: function that returns the store instance
+    // - request: function(store, schema, params, callbacks)
+    // - connect: function(store)
+    // - launch: function(store) [optional for CLOUD]
+    // - electron_runner: string [optional for DESKTOP]
+    this.InfraStore.register_microservice(microserviceConfig)
   }
 
   get vue() {
