@@ -132,7 +132,7 @@
                     <v-expansion-panel-title class="pa-5">
                       <template v-slot:default="{ expanded }">
                         <v-hover v-slot="{ isHovering, props: hoverProps }">
-                          <div v-bind="hoverProps" class="d-flex align-center ga-4" :class="expanded ? 'bg-blue-lighten-5 rounded-lg pa-2 ma-n2' : ''" :style="{ width: '100%' }">
+                          <div v-bind="hoverProps" class="d-flex align-center ga-4" :style="{ width: '100%' }">
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0"
                               :color="extension.enabled ? (isHovering || expanded ? 'primary' : 'grey-lighten-3') : 'grey-lighten-2'"
@@ -188,31 +188,37 @@
                               </div>
                             </div>
 
-                            <div class="d-flex align-center ga-2 flex-shrink-0">
-                              <v-switch
-                                :model-value="extension.enabled"
-                                color="success"
-                                density="compact"
-                                hide-details
-                                inset
-                                @click.stop
-                                @update:model-value="toggleExtensionState(extension)"
-                              >
-                                <template #label>
-                                  <span class="text-caption" :class="extension.enabled ? 'text-success' : 'text-grey'">
-                                    {{ extension.enabled ? 'Enabled' : 'Disabled' }}
-                                  </span>
-                                </template>
-                              </v-switch>
 
-                              <v-btn
-                                icon="mdi-delete"
-                                size="small"
-                                variant="text"
-                                color="error"
-                                :style="{ transition: 'all 0.2s ease', opacity: 0.7 }"
-                                @click.stop="confirmRemove(extension)"
-                              />
+                            <div class="d-flex align-center ga-1 flex-shrink-0 mr-n2">
+                              <v-tooltip location="bottom">
+                                <template #activator="{ props: tooltipProps }">
+                                  <v-switch
+                                    v-bind="tooltipProps"
+                                    :model-value="extension.enabled"
+                                    color="success"
+                                    density="compact"
+                                    hide-details
+                                    inset
+                                    @click.stop
+                                    @update:model-value="toggleExtensionState(extension)"
+                                  />
+                                </template>
+                                <span>{{ extension.enabled ? 'Disable extension' : 'Enable extension' }}</span>
+                              </v-tooltip>
+
+                              <v-tooltip location="bottom">
+                                <template #activator="{ props: tooltipProps }">
+                                  <v-btn
+                                    v-bind="tooltipProps"
+                                    icon="mdi-delete"
+                                    size="small"
+                                    variant="text"
+                                    color="error"
+                                    @click.stop="confirmRemove(extension)"
+                                  />
+                                </template>
+                                <span>Remove extension</span>
+                              </v-tooltip>
                             </div>
                           </div>
                         </v-hover>
@@ -259,7 +265,7 @@
                             >
                               <v-sheet
                                 class="d-flex align-center justify-center flex-shrink-0"
-                                :color="extension.enabled ? (isHovering ? 'primary' : 'blue-lighten-4') : 'grey-lighten-2'"
+                                :color="extension.enabled ? (isHovering ? 'primary' : 'grey-lighten-3') : 'grey-lighten-2'"
                                 :style="{
                                   width: '48px',
                                   height: '48px',
