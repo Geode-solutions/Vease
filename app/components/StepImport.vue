@@ -4,19 +4,26 @@
 
 <script setup>
   import _ from "lodash"
-  import FileSelector from "@ogw_f/components/FileSelector.vue"
-  import MissingFilesSelector from "@ogw_f/components/MissingFilesSelector.vue"
-  import ObjectSelector from "@ogw_f/components/ObjectSelector.vue"
+
+  import Stepper from "@ogw_front/components/Stepper.vue"
+  import FileSelector from "@ogw_front/components/FileSelector.vue"
+  import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue"
+  import ObjectSelector from "@ogw_front/components/ObjectSelector.vue"
   import ImportFile from "@vease/components/ImportFile.vue"
 
   const props = defineProps({
-    files: {
-      type: Array,
-      default: [],
-    },
+    files: { type: Array, default: [] },
   })
 
   const files = ref(props.files)
+  watch(
+    () => props.files,
+    (newVal) => {
+      files.value = newVal
+    },
+    { deep: true },
+  )
+
   const auto_upload = ref(true)
   const input_geode_object = ref("")
   const additional_files = ref([])

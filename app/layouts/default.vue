@@ -10,62 +10,64 @@
           <NuxtPage style="z-index: 1" />
         </v-col>
       </v-row>
-      <LayoutTopBar />
-      <LayoutSideBar />
+      <TopBar />
+      <SideBar />
       <FeedBackSnackers />
 
-      <div
-        class="icon-container"
-        :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
-      >
-        <v-btn
-          class="icon-style step-import-btn"
-          color="white"
-          @click="UIStore.setShowStepper(true)"
-          icon
-          style="border-radius: 20%"
-          v-tooltip.left="'Import'"
+      <InfraConnected>
+        <div
+          class="icon-container"
+          :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
         >
-          <v-icon>mdi-file-upload-outline</v-icon>
-        </v-btn>
-        <v-btn
-          class="icon-style create-point-btn"
-          color="white"
-          @click="openCreateTools"
-          icon
-          style="border-radius: 20%"
-          v-tooltip.left="'Create'"
+          <v-btn
+            class="icon-style step-import-btn"
+            color="white"
+            @click="UIStore.setShowStepper(true)"
+            icon
+            style="border-radius: 20%"
+            v-tooltip.left="'Import'"
+          >
+            <v-icon>mdi-file-upload-outline</v-icon>
+          </v-btn>
+          <v-btn
+            class="icon-style create-point-btn"
+            color="white"
+            @click="openCreateTools"
+            icon
+            style="border-radius: 20%"
+            v-tooltip.left="'Create'"
+          >
+            <v-icon>mdi-shape-plus-outline</v-icon>
+          </v-btn>
+        </div>
+
+        <v-navigation-drawer
+          class="rounded align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showStepper"
         >
-          <v-icon>mdi-shape-plus-outline</v-icon>
-        </v-btn>
-      </div>
+          <StepImport
+            :files="UIStore.droppedFiles"
+            @close="UIStore.setShowStepper(false)"
+          />
+        </v-navigation-drawer>
 
-      <v-navigation-drawer
-        class="rounded align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showStepper"
-      >
-        <StepImport
-          :files="UIStore.droppedFiles"
-          @close="UIStore.setShowStepper(false)"
-        />
-      </v-navigation-drawer>
+        <v-navigation-drawer
+          class="align-start"
+          radius="10px"
+          :width="500"
+          location="right"
+          temporary
+          v-model="UIStore.showCreateTools"
+        >
+          <CreateTools />
+        </v-navigation-drawer>
 
-      <v-navigation-drawer
-        class="align-start"
-        radius="10px"
-        :width="500"
-        location="right"
-        temporary
-        v-model="UIStore.showCreateTools"
-      >
-        <CreateTools />
-      </v-navigation-drawer>
-
-      <FullScrenDropZone />
+        <FullScrenDropZone />
+      </InfraConnected>
     </v-main>
 
     <v-progress-linear
@@ -77,6 +79,17 @@
 </template>
 
 <script setup>
+  // Third party imports
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
+  import InfraConnected from "@ogw_front/components/InfraConnected.vue"
+
+  // Local imports
+  import CreateTools from "@vease/components/CreateTools.vue"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone.vue"
+  import StepImport from "@vease/components/StepImport.vue"
+  import TopBar from "@vease/components/Layout/TopBar.vue"
+  import SideBar from "@vease/components/Layout/SideBar.vue"
+
   const UIStore = useUIStore()
   const infra_store = useInfraStore()
 
