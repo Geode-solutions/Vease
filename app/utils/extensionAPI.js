@@ -1,3 +1,5 @@
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
+
 export class VeaseExtensionAPI {
   constructor() {
     this._uiStore = null
@@ -5,6 +7,7 @@ export class VeaseExtensionAPI {
     this._appStore = null
     this._dataBaseStore = null
     this._importItem = null
+    this._schemas = back_schemas
   }
 
   get UIStore() {
@@ -33,6 +36,10 @@ export class VeaseExtensionAPI {
       this._dataBaseStore = useDataBaseStore()
     }
     return this._dataBaseStore
+  }
+
+  getSchemas() {
+    return this._schemas
   }
 
   registerTool(toolDefinition, extensionPath = null) {
