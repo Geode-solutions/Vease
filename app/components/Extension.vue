@@ -83,14 +83,14 @@
       <v-slide-y-transition>
         <v-alert
           v-if="errorMessage"
-          type="error"
+          type="info"
           rounded="xl"
           class="mt-4 alert-animated"
           closable
           @click:close="errorMessage = ''"
         >
           <template #prepend>
-            <v-icon class="error-icon">mdi-alert-circle</v-icon>
+            <v-icon class="error-icon">mdi-information</v-icon>
           </template>
           {{ errorMessage }}
         </v-alert>
@@ -358,7 +358,6 @@ const handleFileChange = async (event) => {
   const newFiles = event.target?.files
   if (!newFiles?.length) return
   await processFiles([...newFiles])
-  // Reset input so the same file can be selected again
   event.target.value = ''
 }
 
@@ -376,13 +375,13 @@ const processFiles = async (filesToProcess) => {
         await appStore.loadExtension(fileURL)
         successCount++
       } catch (error) {
-        errorMessage.value = `Failed to load ${file.name}: ${error.message}`
+        errorMessage.value = `${error.message}`
       } finally {
         URL.revokeObjectURL(fileURL)
       }
     }
     if (successCount)
-      successMessage.value = `Successfully loaded ${successCount} extension${successCount>1?'s':''}!`
+      successMessage.value = `Successfully loaded ${successCount} extension${successCount>1?'s':''} !`
   } finally {
     loading.value = false
     files.value = []
@@ -414,7 +413,6 @@ const formatDate = (dateString) => {
   } else if (diffMonths < 12) {
     return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
   } else {
-    // For dates older than a year, show the actual date
     return date.toLocaleDateString()
   }
 }
