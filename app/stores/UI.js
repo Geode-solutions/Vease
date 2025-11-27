@@ -25,12 +25,12 @@ export const useUIStore = defineStore("UI", () => {
     toolsDefinitions.value = defaultTools
   }
 
-  const registerToolComponent = (toolDefinition) => {
+  const registerToolComponent = (toolDefinition, extensionPath = null) => {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
       (tool) => tool.id === id,
     )
-    const newDefinition = { id, component, ...rest }
+    const newDefinition = { id, component, extensionPath, ...rest }
     if (existingIndex !== -1) {
       toolsDefinitions.value[existingIndex] = {
         ...toolsDefinitions.value[existingIndex],
@@ -41,7 +41,30 @@ export const useUIStore = defineStore("UI", () => {
     }
   }
 
-  const activeTools = computed(() => toolsDefinitions.value)
+  const unregisterTool = (toolId) => {
+    const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId)
+    if (index !== -1) {
+      toolsDefinitions.value.splice(index, 1)
+      console.log(`[UIStore] Tool unregistered: ${toolId}`)
+    }
+  }
+
+  const unregisterToolsByExtension = (extensionPath) => {
+    const beforeCount = toolsDefinitions.value.length
+    toolsDefinitions.value = toolsDefinitions.value.filter(
+      (tool) => tool.extensionPath !== extensionPath
+    )
+    const removedCount = beforeCount - toolsDefinitions.value.length
+    console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`)
+  }
+
+  const activeTools = computed(() => {
+    const appStore = useAppStore()
+    return toolsDefinitions.value.filter(tool => {
+      if (!tool.extensionPath) return true
+      return appStore.getExtensionEnabled(tool.extensionPath)
+    })
+  })
 
   function setShowDropZone(value) {
     showDropZone.value = value
@@ -80,11 +103,18 @@ export const useUIStore = defineStore("UI", () => {
     showCreateVOI.value = value
   }
 
+  const showExtensions = ref(false)
+  function setShowExtensions(value) {
+    showExtensions.value = value
+  }
+
   return {
     toolsDefinitions,
     activeTools,
     initializeDefaultTools,
     registerToolComponent,
+    unregisterTool,
+    unregisterToolsByExtension,
     showDropZone,
     showStepper,
     droppedFiles,
@@ -103,5 +133,7 @@ export const useUIStore = defineStore("UI", () => {
     setShowCreatePoint,
     setShowCreateAOI,
     setShowCreateVOI,
+    showExtensions,
+    setShowExtensions,
   }
 })

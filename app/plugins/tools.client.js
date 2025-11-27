@@ -18,27 +18,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     component: markRaw(CreatePointComponent),
   })
 
-  const CreateAOIComponent = defineAsyncComponent(
-    () => import("../components/tools/CreateAOI.vue"),
-  )
-  UIStore.registerToolComponent({
-    id: "AOI",
-    title: "Area of Interest",
-    description: "Define an area of interest on the viewer with 4 points.",
-    iconType: "svg",
-    iconSource: AOIicon,
-    component: markRaw(CreateAOIComponent),
-  })
+  // const CreateAOIComponent = defineAsyncComponent(
+  //   () => import("@/components/tools/CreateAOI.vue"),
+  // )
+  // UIStore.registerToolComponent({
+  //   id: "AOI",
+  //   title: "Area of Interest",
+  //   description: "Define an area of interest on the viewer with 4 points.",
+  //   iconType: "svg",
+  //   iconSource: AOIicon,
+  //   component: markRaw(CreateAOIComponent),
+  // })
 
-  const CreateVOIComponent = defineAsyncComponent(
-    () => import("../components/tools/CreateVOI.vue"),
-  )
-  UIStore.registerToolComponent({
-    id: "VOI",
-    title: "Volume of Interest",
-    description: "Create a 3D bounding box from an existing AOI with Z bounds.",
-    iconType: "svg",
-    iconSource: VOIicon,
-    component: markRaw(CreateVOIComponent),
-  })
+  // const CreateVOIComponent = defineAsyncComponent(
+  //   () => import("@/components/tools/CreateVOI.vue"),
+  // )
+  // UIStore.registerToolComponent({
+  //   id: "VOI",
+  //   title: "Volume of Interest",
+  //   description: "Create a 3D bounding box from an existing AOI with Z bounds.",
+  //   iconType: "svg",
+  //   iconSource: VOIicon,
+  //   component: markRaw(CreateVOIComponent),
+  // })
 })
