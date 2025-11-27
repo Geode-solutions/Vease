@@ -1,9 +1,9 @@
 <template>
-  <v-card flat rounded="xl" elevation="0" class="extension-container">
+  <v-card flat rounded="xl" elevation="0" class="bg-surface">
     <v-card-title
       class="text-h4 text-primary pa-6 font-weight-bold d-flex align-center"
     >
-      <v-icon icon="mdi-puzzle" class="mr-3 title-icon"></v-icon>
+      <v-icon icon="mdi-puzzle" class="mr-3"></v-icon>
       Extensions
     </v-card-title>
 
@@ -16,39 +16,53 @@
       <v-hover v-slot="{ isHovering, props }">
         <v-card
           v-bind="props"
-          class="text-center cursor-pointer drop-zone-card"
+          class="text-center cursor-pointer"
           :class="{
-            'drop-zone-hover': isHovering || isDragging,
-            'drop-zone-loading': loading
+            'elevation-8': isHovering || isDragging,
+            'elevation-2': !(isHovering || isDragging)
+          }"
+          :style="{
+            position: 'relative',
+            overflow: 'hidden',
+            transition: 'all 0.3s ease',
+            background: isHovering || isDragging ? '#f5f9ff' : '#fafafa',
+            border: `2px dashed ${isHovering || isDragging ? 'rgb(var(--v-theme-primary))' : '#e0e0e0'}`,
+            transform: isHovering || isDragging ? 'translateY(-2px)' : 'none',
+            pointerEvents: loading ? 'none' : 'auto',
+            opacity: loading ? 0.6 : 1
           }"
           rounded="xl"
-          :elevation="isHovering || isDragging ? 8 : 2"
           @click="triggerFileDialog"
           @dragover.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @drop.prevent="handleDrop"
         >
           <v-card-text class="pa-8">
-            <div class="drop-zone-content">
-              <v-sheet
-                class="icon-wrapper mx-auto mb-6"
-                :class="{ 'icon-loading': loading, 'icon-active': isHovering || isDragging }"
-                rounded="circle"
-              >
-                <v-icon
-                  :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
-                  size="56"
-                  :class="{ 'rotating': loading }"
-                />
-              </v-sheet>
+            <v-sheet
+              class="mx-auto mb-6 d-flex align-center justify-center"
+              :color="isHovering || isDragging ? 'primary' : 'grey-lighten-2'"
+              :style="{
+                width: '100px',
+                height: '100px',
+                transition: 'all 0.3s ease'
+              }"
+              rounded="circle"
+              :elevation="isHovering || isDragging ? 4 : 0"
+            >
+              <v-icon
+                :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
+                size="56"
+                :color="isHovering || isDragging ? 'white' : 'grey-darken-1'"
+                :class="{ 'rotating': loading }"
+              />
+            </v-sheet>
 
-              <div class="drop-zone-title mb-2">
-                {{ loading ? 'Loading Extension...' : isDragging ? 'Drop to Install' : 'Click or Drag & Drop Extension' }}
-              </div>
+            <div class="text-h6 font-weight-semibold mb-2" :class="isHovering || isDragging ? 'text-primary' : 'text-grey-darken-2'" style="transition: color 0.3s ease">
+              {{ loading ? 'Loading Extension...' : isDragging ? 'Drop to Install' : 'Click or Drag & Drop Extension' }}
+            </div>
 
-              <div class="drop-zone-subtitle">
-                (.es.js files only)
-              </div>
+            <div class="text-body-2 text-grey-darken-1">
+              (.es.js files only)
             </div>
           </v-card-text>
 
@@ -69,13 +83,10 @@
           v-if="successMessage"
           type="success"
           rounded="xl"
-          class="mt-4 alert-animated"
+          class="mt-4"
           closable
           @click:close="successMessage = ''"
         >
-          <template #prepend>
-            <v-icon class="success-icon">mdi-check-circle</v-icon>
-          </template>
           {{ successMessage }}
         </v-alert>
       </v-slide-y-transition>
@@ -85,13 +96,10 @@
           v-if="errorMessage"
           type="info"
           rounded="xl"
-          class="mt-4 alert-animated"
+          class="mt-4"
           closable
           @click:close="errorMessage = ''"
         >
-          <template #prepend>
-            <v-icon class="error-icon">mdi-information</v-icon>
-          </template>
           {{ errorMessage }}
         </v-alert>
       </v-slide-y-transition>
@@ -99,10 +107,10 @@
       <!-- Loaded Extensions -->
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-8">
-          <div class="section-header mb-4">
+          <div class="d-flex align-center mb-4 text-h6 font-weight-semibold text-primary">
             <v-icon icon="mdi-puzzle-check" class="mr-2" />
             Active Extensions
-            <v-chip size="small" class="ml-3 count-chip" color="primary" variant="flat">
+            <v-chip size="small" class="ml-3" color="primary" variant="flat" elevation="2">
               {{ loadedExtensions.length }}
             </v-chip>
           </div>
@@ -114,35 +122,41 @@
               cols="12"
             >
               <v-scale-transition :delay="index * 50">
-                <v-expansion-panels variant="accordion" class="extension-panels">
-                  <v-expansion-panel rounded="xl" class="extension-panel">
-                    <v-expansion-panel-title class="extension-panel-title">
+                <v-expansion-panels variant="accordion" class="bg-transparent">
+                  <v-expansion-panel rounded="xl" border elevation="0" :style="{ transition: 'box-shadow 0.3s ease' }">
+                    <v-expansion-panel-title class="pa-5">
                       <template v-slot:default="{ expanded }">
                         <v-hover v-slot="{ isHovering, props: hoverProps }">
-                          <div v-bind="hoverProps" class="extension-header" :class="{ 'extension-header-expanded': expanded }">
+                          <div v-bind="hoverProps" class="d-flex align-center ga-4" :class="expanded ? 'bg-blue-lighten-5 rounded-lg pa-2 ma-n2' : ''" :style="{ width: '100%' }">
                             <v-sheet
-                              class="extension-icon"
-                              :class="{ 'extension-icon-active': isHovering || expanded }"
+                              class="d-flex align-center justify-center flex-shrink-0"
+                              :color="isHovering || expanded ? 'primary' : 'grey-lighten-3'"
+                              :style="{
+                                width: '56px',
+                                height: '56px',
+                                transition: 'all 0.3s ease'
+                              }"
                               rounded="circle"
+                              :elevation="isHovering || expanded ? 4 : 0"
                             >
-                              <v-icon icon="mdi-puzzle" size="32" />
+                              <v-icon icon="mdi-puzzle" size="32" :color="isHovering || expanded ? 'white' : 'grey-darken-1'" />
                             </v-sheet>
 
-                            <div class="extension-info">
-                              <div class="extension-name">
+                            <div class="flex-grow-1" style="min-width: 0">
+                              <div class="text-body-1 font-weight-semibold text-grey-darken-4 mb-1">
                                 {{ getExtensionName(extension) }}
                               </div>
 
-                              <div class="extension-description">
+                              <div class="text-body-2 text-grey-darken-1 mb-2" style="line-height: 1.5; white-space: normal; word-wrap: break-word">
                                 {{ getExtensionDescription(extension) }}
                               </div>
 
-                              <div class="extension-badges">
+                              <div class="d-flex align-center ga-2 flex-wrap">
                                 <v-chip
                                   size="x-small"
                                   color="success"
                                   variant="flat"
-                                  class="status-chip"
+                                  elevation="1"
                                 >
                                   <v-icon start size="12">mdi-check-circle</v-icon>
                                   Active
@@ -151,7 +165,6 @@
                                 <v-chip
                                   v-if="getExtensionVersion(extension)"
                                   size="x-small"
-                                  class="ml-2"
                                   variant="tonal"
                                   color="primary"
                                 >
@@ -160,9 +173,9 @@
 
                                 <v-chip
                                   size="x-small"
-                                  class="ml-2 tools-chip"
                                   color="primary"
                                   variant="flat"
+                                  elevation="1"
                                 >
                                   <v-icon start size="12">mdi-tools</v-icon>
                                   {{ getExtensionToolsCount(extension) }}
@@ -170,7 +183,7 @@
 
                                 <v-spacer />
 
-                                <span class="extension-date">
+                                <span class="text-caption text-grey" style="white-space: nowrap">
                                   {{ formatDate(extension.loadedAt) }}
                                 </span>
                               </div>
@@ -181,7 +194,7 @@
                               size="small"
                               variant="text"
                               color="error"
-                              class="remove-btn"
+                              :style="{ transition: 'all 0.2s ease', opacity: 0.7 }"
                               @click.stop="confirmRemove(extension)"
                             />
                           </div>
@@ -189,50 +202,75 @@
                       </template>
                     </v-expansion-panel-title>
 
-                    <v-expansion-panel-text class="extension-panel-content">
-                      <v-divider class="mb-6 divider-gradient" />
+                    <v-expansion-panel-text class="px-6 pb-6">
+                      <v-divider class="mb-6" />
                       
-                      <div class="tools-section-header">
+                      <div class="d-flex align-center text-body-1 font-weight-semibold text-grey-darken-2 mb-3">
                         <v-icon icon="mdi-tools" size="20" class="mr-2" />
                         Tools Added by This Extension
                       </div>
 
-                      <div v-if="getExtensionTools(extension).length" class="tools-list">
+                      <div v-if="getExtensionTools(extension).length" class="d-flex flex-column ga-2">
                         <v-fade-transition group>
-                          <div
+                          <v-hover
                             v-for="(tool, toolIndex) in getExtensionTools(extension)"
                             :key="tool.id"
-                            class="tool-item"
-                            :style="{ transitionDelay: `${toolIndex * 30}ms` }"
+                            v-slot="{ isHovering, props: toolProps }"
                           >
-                            <v-sheet
-                              class="tool-icon-wrapper"
-                              rounded="circle"
+                            <v-card
+                              v-bind="toolProps"
+                              class="d-flex align-start ga-3 pa-3"
+                              :style="{
+                                transitionDelay: `${toolIndex * 30}ms`,
+                                transition: 'all 0.2s ease',
+                                background: isHovering ? '#f5f9ff' : '#fafafa',
+                                borderColor: isHovering ? 'rgba(33, 150, 243, 0.3)' : '#e0e0e0'
+                              }"
+                              border
+                              rounded="lg"
+                              :elevation="isHovering ? 2 : 0"
                             >
-                              <v-icon
-                                v-if="tool.iconType === 'mdi'"
-                                :icon="tool.iconSource"
-                                size="20"
-                              />
-                              <v-img
-                                v-else-if="tool.iconType === 'svg'"
-                                :src="tool.iconSource"
-                                width="20"
-                                height="20"
-                                contain
-                              />
-                            </v-sheet>
+                              <v-sheet
+                                class="d-flex align-center justify-center flex-shrink-0"
+                                :color="isHovering ? 'primary' : 'blue-lighten-4'"
+                                :style="{
+                                  width: '40px',
+                                  height: '40px',
+                                  transition: 'background 0.2s ease'
+                                }"
+                                rounded="circle"
+                              >
+                                <v-icon
+                                  v-if="tool.iconType === 'mdi'"
+                                  :icon="tool.iconSource"
+                                  size="20"
+                                  :color="isHovering ? 'white' : 'primary'"
+                                  :style="{ transition: 'color 0.2s ease' }"
+                                />
+                                <v-img
+                                  v-else-if="tool.iconType === 'svg'"
+                                  :src="tool.iconSource"
+                                  width="20"
+                                  height="20"
+                                  contain
+                                  :style="{
+                                    transition: 'filter 0.2s ease',
+                                    filter: isHovering ? 'brightness(0) invert(1)' : 'none'
+                                  }"
+                                />
+                              </v-sheet>
 
-                            <div class="tool-content">
-                              <div class="tool-title">
-                                {{ tool.title }}
-                              </div>
+                              <div class="flex-grow-1" style="min-width: 0">
+                                <div class="text-body-1 font-weight-semibold text-grey-darken-4 mb-1" style="line-height: 1.4">
+                                  {{ tool.title }}
+                                </div>
 
-                              <div class="tool-description">
-                                {{ tool.description }}
+                                <div class="text-body-2 text-grey-darken-1" style="line-height: 1.5">
+                                  {{ tool.description }}
+                                </div>
                               </div>
-                            </div>
-                          </div>
+                            </v-card>
+                          </v-hover>
                         </v-fade-transition>
                       </div>
 
@@ -241,11 +279,8 @@
                         type="info"
                         variant="tonal"
                         rounded="lg"
-                        class="empty-tools-alert"
+                        class="mt-2"
                       >
-                        <template #prepend>
-                          <v-icon>mdi-information</v-icon>
-                        </template>
                         No tools registered by this extension
                       </v-alert>
                     </v-expansion-panel-text>
@@ -263,19 +298,25 @@
           v-if="!loadedExtensions.length"
           rounded="xl"
           variant="outlined"
-          class="mt-8 empty-state"
+          class="mt-8 bg-grey-lighten-4"
+          :style="{ border: '2px dashed #e0e0e0' }"
         >
           <v-card-text class="text-center pa-8">
             <v-sheet
-              class="empty-icon-wrapper mx-auto mb-4"
+              class="mx-auto mb-4 d-flex align-center justify-center"
+              color="grey-lighten-3"
+              :style="{
+                width: '100px',
+                height: '100px'
+              }"
               rounded="circle"
             >
-              <v-icon icon="mdi-puzzle-outline" size="64" />
+              <v-icon icon="mdi-puzzle-outline" size="64" color="grey-lighten-1" />
             </v-sheet>
-            <div class="empty-title mb-2">
+            <div class="text-body-1 font-weight-semibold text-grey-darken-2 mb-2">
               No extensions loaded yet
             </div>
-            <div class="empty-subtitle">
+            <div class="text-body-2 text-grey-darken-1">
               Upload an extension file to get started
             </div>
           </v-card-text>
@@ -284,26 +325,48 @@
     </v-card-text>
 
     <!-- Dialog Remove -->
-    <v-dialog v-model="showRemoveDialog" max-width="450">
-      <v-card rounded="xl" class="remove-dialog">
-        <v-card-title class="dialog-title">
-          <v-icon icon="mdi-alert" class="mr-3 warning-icon" />
+    <v-dialog v-model="showRemoveDialog" max-width="500">
+      <v-card rounded="xl" elevation="8">
+        <v-card-title class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4">
+          <v-icon icon="mdi-alert-circle" size="28" class="mr-3" color="warning" />
           Remove Extension?
         </v-card-title>
 
-        <v-card-text class="dialog-text">
-          Are you sure you want to remove <strong>{{ getExtensionName(extensionToRemove) }}</strong>?
-          <div class="mt-2 text-caption text-medium-emphasis">
-            This will remove all tools registered by this extension.
+        <v-card-text class="px-6 pb-6 text-body-1">
+          <div class="text-medium-emphasis mb-3">
+            Are you sure you want to remove <span class="font-weight-bold text-high-emphasis">{{ getExtensionName(extensionToRemove) }}</span>?
           </div>
+          <v-alert
+            type="info"
+            variant="tonal"
+            density="compact"
+            rounded="lg"
+            class="text-caption"
+          >
+            <template #prepend>
+              <v-icon size="18">mdi-information</v-icon>
+            </template>
+            This will remove all tools registered by this extension.
+          </v-alert>
         </v-card-text>
+
+        <v-divider />
 
         <v-card-actions class="pa-4">
           <v-spacer />
-          <v-btn variant="text" @click="showRemoveDialog = false" class="cancel-btn">
+          <v-btn
+            variant="text"
+            size="large"
+            @click="showRemoveDialog = false"
+          >
             Cancel
           </v-btn>
-          <v-btn color="error" variant="flat" @click="removeExtension" class="remove-confirm-btn">
+          <v-btn
+            color="error"
+            variant="elevated"
+            size="large"
+            @click="removeExtension"
+          >
             <v-icon start>mdi-delete</v-icon>
             Remove
           </v-btn>
@@ -314,8 +377,6 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-
 const UIStore = useUIStore()
 const appStore = useAppStore()
 const files = ref([])
@@ -441,75 +502,6 @@ const getExtensionToolsCount = (extension) => {
 </script>
 
 <style scoped>
-/* Container */
-.extension-container {
-  background: #ffffff;
-}
-
-/* Drop Zone */
-.drop-zone-card {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  background: #fafafa;
-  border: 2px dashed #e0e0e0;
-}
-
-.drop-zone-hover {
-  transform: translateY(-2px);
-  border-color: rgb(var(--v-theme-primary));
-  background: #f5f9ff;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
-}
-
-.drop-zone-loading {
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-/* Icon Wrapper */
-.icon-wrapper {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #eeeeee;
-  transition: all 0.3s ease;
-}
-
-.icon-active {
-  background: rgb(var(--v-theme-primary));
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
-}
-
-.icon-wrapper .v-icon {
-  color: #757575;
-  transition: color 0.3s ease;
-}
-
-.icon-active .v-icon {
-  color: white;
-}
-
-/* Drop Zone Text */
-.drop-zone-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #424242;
-  transition: color 0.3s ease;
-}
-
-.drop-zone-hover .drop-zone-title {
-  color: rgb(var(--v-theme-primary));
-}
-
-.drop-zone-subtitle {
-  font-size: 0.875rem;
-  color: #757575;
-}
-
-/* Rotating Animation */
 .rotating {
   animation: rotate 1s linear infinite;
 }
@@ -519,320 +511,6 @@ const getExtensionToolsCount = (extension) => {
   to { transform: rotate(360deg); }
 }
 
-/* Alerts */
-.alert-animated {
-  animation: slide-in 0.3s ease;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Section Header */
-.section-header {
-  font-size: 1rem;
-  font-weight: 600;
-  color: rgb(var(--v-theme-primary));
-  display: flex;
-  align-items: center;
-}
-
-.count-chip {
-  box-shadow: 0 2px 4px rgba(33, 150, 243, 0.15);
-}
-
-/* Extension Panels */
-.extension-panels {
-  background: transparent !important;
-}
-
-.extension-panel {
-  transition: box-shadow 0.3s ease;
-  overflow: hidden;
-  background: white;
-  border: 1px solid #e0e0e0;
-}
-
-.extension-panel:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.extension-panel-title {
-  padding: 20px;
-}
-
-/* Extension Header */
-.extension-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 16px;
-}
-
-.extension-header-expanded {
-  background: #f5f9ff;
-  border-radius: 8px;
-  padding: 8px;
-  margin: -8px;
-}
-
-/* Extension Icon */
-.extension-icon {
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.extension-icon-active {
-  background: rgb(var(--v-theme-primary));
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
-}
-
-.extension-icon .v-icon {
-  color: #757575;
-  transition: color 0.3s ease;
-}
-
-.extension-icon-active .v-icon {
-  color: white;
-}
-
-/* Extension Info */
-.extension-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.extension-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #212121;
-  margin-bottom: 4px;
-}
-
-.extension-description {
-  font-size: 0.875rem;
-  color: #757575;
-  margin-bottom: 8px;
-  line-height: 1.5;
-  white-space: normal;
-  word-wrap: break-word;
-}
-
-.extension-badges {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.status-chip {
-  box-shadow: 0 1px 3px rgba(76, 175, 80, 0.15);
-}
-
-.tools-chip {
-  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.15);
-}
-
-.extension-date {
-  font-size: 0.75rem;
-  color: #9e9e9e;
-  white-space: nowrap;
-}
-
-/* Remove Button */
-.remove-btn {
-  transition: all 0.2s ease;
-  opacity: 0.7;
-}
-
-.remove-btn:hover {
-  opacity: 1;
-  background-color: rgba(244, 67, 54, 0.08);
-}
-
-/* Extension Panel Content */
-.extension-panel-content {
-  padding: 0 24px 24px 24px;
-}
-
-.divider-gradient {
-  background: #e0e0e0;
-  height: 1px;
-  border: none;
-}
-
-/* Tools Section */
-.tools-section-header {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #424242;
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.tools-list {
-  background: transparent;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tool-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px;
-  transition: all 0.2s ease;
-  background: #fafafa;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-}
-
-.tool-item:hover {
-  background: #f5f9ff;
-  border-color: rgba(33, 150, 243, 0.3);
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.08);
-}
-
-.tool-icon-wrapper {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #e3f2fd;
-  transition: background 0.2s ease;
-  flex-shrink: 0;
-}
-
-.tool-item:hover .tool-icon-wrapper {
-  background: rgb(var(--v-theme-primary));
-}
-
-.tool-icon-wrapper .v-icon {
-  color: rgb(var(--v-theme-primary));
-  transition: color 0.2s ease;
-}
-
-.tool-item:hover .tool-icon-wrapper .v-icon {
-  color: white;
-}
-
-.tool-icon-wrapper .v-img {
-  transition: filter 0.2s ease;
-}
-
-.tool-item:hover .tool-icon-wrapper .v-img {
-  filter: brightness(0) invert(1);
-}
-
-.tool-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.tool-title {
-  font-weight: 600;
-  color: #212121;
-  font-size: 0.9375rem;
-  line-height: 1.4;
-  margin-bottom: 4px;
-}
-
-.tool-description {
-  font-size: 0.8125rem;
-  color: #757575;
-  line-height: 1.5;
-}
-
-.empty-tools-alert {
-  margin-top: 8px;
-}
-
-/* Empty State */
-.empty-state {
-  border: 2px dashed #e0e0e0;
-  background: #fafafa;
-}
-
-.empty-icon-wrapper {
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  margin: 0 auto;
-}
-
-.empty-icon-wrapper .v-icon {
-  color: #bdbdbd;
-}
-
-.empty-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #424242;
-}
-
-.empty-subtitle {
-  font-size: 0.875rem;
-  color: #757575;
-}
-
-/* Remove Dialog */
-.remove-dialog {
-  overflow: hidden;
-}
-
-.dialog-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #f57c00;
-  padding: 24px 24px 16px 24px;
-  display: flex;
-  align-items: center;
-}
-
-.dialog-text {
-  padding: 0 24px 24px 24px;
-  font-size: 0.9375rem;
-  color: #424242;
-  line-height: 1.6;
-}
-
-.cancel-btn {
-  transition: background-color 0.2s ease;
-}
-
-.cancel-btn:hover {
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
-.remove-confirm-btn {
-  transition: all 0.2s ease;
-}
-
-.remove-confirm-btn:hover {
-  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
-}
-
-/* Utility */
 .cursor-pointer {
   cursor: pointer;
 }
@@ -843,26 +521,5 @@ const getExtensionToolsCount = (extension) => {
   height: 0;
   opacity: 0;
   pointer-events: none;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .extension-icon {
-    width: 48px;
-    height: 48px;
-  }
-  
-  .extension-icon .v-icon {
-    font-size: 24px;
-  }
-  
-  .extension-name {
-    font-size: 0.9375rem;
-  }
-  
-  .icon-wrapper {
-    width: 80px;
-    height: 80px;
-  }
 }
 </style>
