@@ -29,6 +29,7 @@
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree.vue"
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu.vue"
   import Status from "@ogw_front/utils/status.js"
+  import { viewer_call } from "@ogw_internal/utils/viewer_call.js"
 
   const query = useRoute().query
   if (query.geode_port) {
@@ -49,7 +50,7 @@
   }
 
   const infra_store = useInfraStore()
-  const viewer_store = useViewerStore()
+  const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
   const dataStyleStore = useDataStyleStore()
 
@@ -65,6 +66,7 @@
   async function get_viewer_id(x, y) {
     const ids = dataStyleStore.selectedObjects
     await viewer_call(
+      viewerStore,
       {
         schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
         params: { x, y, ids },
@@ -101,7 +103,7 @@
   }
 
   watch(
-    () => viewer_store.status,
+    () => viewerStore.status,
     (value) => {
       if (value === Status.CONNECTED) {
         resize()
@@ -110,7 +112,7 @@
   )
 
   onMounted(async () => {
-    if (viewer_store.status === Status.CONNECTED) {
+    if (viewerStore.status === Status.CONNECTED) {
       resize()
     }
   })
