@@ -120,6 +120,7 @@
   import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 
   const UIStore = useUIStore()
+  const geode_store = useGeodeStore()
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
@@ -172,6 +173,7 @@
     loading.value = true
     try {
       await api_fetch(
+        geode_store,
         {
           schema: pointSchema,
           params: pointData,

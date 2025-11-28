@@ -162,6 +162,7 @@
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
   import Status from "@ogw_front/utils/status.js"
+  import { viewer_call } from "@ogw_front/composables/viewer_call.js"
 
   const version = useRuntimeConfig().public.VERSION
   const infraStore = useInfraStore()
@@ -189,6 +190,7 @@
 
   async function get_packages_versions() {
     api_fetch(
+      geodeStore,
       { schema: vease_back_schemas.vease_back.packages_versions },
       {
         response_function: (response) => {
@@ -200,6 +202,7 @@
 
   async function get_back_version() {
     api_fetch(
+      geodeStore,
       { schema: vease_back_schemas.vease_back.microservice_version },
       {
         response_function: (response) => {
@@ -211,6 +214,7 @@
 
   async function get_viewer_version() {
     viewer_call(
+      viewerStore,
       { schema: vease_viewer_schemas.vease_viewer.microservice_version },
       {
         response_function: (response) => {
