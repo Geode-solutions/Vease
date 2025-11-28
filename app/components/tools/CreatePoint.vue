@@ -179,15 +179,7 @@
         {
           response_function: async (response) => {
             const dataToImport = {
-              id: response._data.id,
-              object_type: response._data.object_type,
-              geode_object_type: response._data.geode_object,
-              native_filename: response._data.native_file_name,
-              viewable_filename: response._data.viewable_file_name,
-              displayed_name: name.value,
-              vtk_js: {
-                binary_light_viewable: response._data.binary_light_viewable,
-              },
+              ...response.data,
             }
             await importItem(dataToImport)
             closeDrawer()
