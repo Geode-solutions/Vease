@@ -75,15 +75,24 @@
       indeterminate
       color="white"
     />
+    <v-navigation-drawer
+      class="align-start"
+      radius="10px"
+      :width="500"
+      location="left"
+      temporary
+      v-model="UIStore.showExtensions"
+      style="z-index: 9999; left: 0 !important;"
+    >
+      <Extension />
+    </v-navigation-drawer>
   </v-app>
 </template>
 
 <script setup>
-  // Third party imports
   import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
   import InfraConnected from "@ogw_front/components/InfraConnected.vue"
 
-  // Local imports
   import CreateTools from "@vease/components/CreateTools.vue"
   import FullScrenDropZone from "@vease/components/FullScrenDropZone.vue"
   import StepImport from "@vease/components/StepImport.vue"
@@ -160,4 +169,6 @@
   .slide-leave-to {
     transform: translateX(100%);
   }
+
+
 </style>
