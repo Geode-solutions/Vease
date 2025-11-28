@@ -21,6 +21,7 @@ export default defineNuxtConfig({
   alias: {
     "@vease": __dirname + "/app/",
     "@ogw_front": "@geode/opengeodeweb-front/app/",
+    "@ogw_internal": "@geode/opengeodeweb-front/internal/",
   },
 
   modules: [

@@ -152,7 +152,7 @@
 
   const UIStore = useUIStore()
   const hybridViewerStore = useHybridViewerStore()
-  const geode_store = useGeodeStore()
+  const geodeStore = useGeodeStore()
   const showCreateTools = () => {
     UIStore.setShowCreateTools(true)
   }
@@ -324,7 +324,7 @@
     loading.value = true
     try {
       const response = await api_fetch(
-        geode_store,
+        geodeStore,
         {
           schema: aoiSchema,
           params: aoiData,
