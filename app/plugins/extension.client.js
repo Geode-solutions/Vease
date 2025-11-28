@@ -9,9 +9,19 @@ export default defineNuxtPlugin((nuxtApp) => {
     window.Pinia = Pinia
   }
   
-  const appStore = useAppStore()
-  const extensionAPI = new VeaseExtensionAPI({ schemas: back_schemas })
-  appStore.setExtensionAPI(extensionAPI)
+  const extensionsStore = useExtensionsStore()
+  const uiStore = useUIStore()
+  const hybridViewerStore = useHybridViewerStore()
+  const dataBaseStore = useDataBaseStore()
+  
+  const extensionAPI = new VeaseExtensionAPI({ 
+    schemas: back_schemas,
+    uiStore,
+    hybridViewerStore,
+    dataBaseStore
+  })
+  
+  extensionsStore.setExtensionAPI(extensionAPI)
   nuxtApp.vueApp.provide('extensionAPI', extensionAPI)
 
   console.log('[Vease] Extension system initialized')

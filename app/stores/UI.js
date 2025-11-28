@@ -41,10 +41,10 @@ export const useUIStore = defineStore("UI", () => {
   }
 
   const activeTools = computed(() => {
-    const appStore = useAppStore()
+    const extensionsStore = useExtensionsStore()
     return toolsDefinitions.value.filter(tool => {
       if (!tool.extensionPath) return true
-      return appStore.getExtensionEnabled(tool.extensionPath)
+      return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
   })
 

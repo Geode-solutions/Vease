@@ -1,38 +1,21 @@
 export class VeaseExtensionAPI {
-  constructor({ schemas } = {}) {
-    this._uiStore = null
-    this._hybridViewerStore = null
-    this._appStore = null
-    this._dataBaseStore = null
+  constructor({ schemas, uiStore, hybridViewerStore, dataBaseStore } = {}) {
+    this._uiStore = uiStore
+    this._hybridViewerStore = hybridViewerStore
+    this._dataBaseStore = dataBaseStore
     this._importItem = null
     this._schemas = schemas || null
   }
 
   get UIStore() {
-    if (!this._uiStore) {
-      this._uiStore = useUIStore()
-    }
     return this._uiStore
   }
 
   get HybridViewerStore() {
-    if (!this._hybridViewerStore) {
-      this._hybridViewerStore = useHybridViewerStore()
-    }
     return this._hybridViewerStore
   }
 
-  get AppStore() {
-    if (!this._appStore) {
-      this._appStore = useAppStore()
-    }
-    return this._appStore
-  }
-
   get DataBaseStore() {
-    if (!this._dataBaseStore) {
-      this._dataBaseStore = useDataBaseStore()
-    }
     return this._dataBaseStore
   }
 
@@ -57,10 +40,6 @@ export class VeaseExtensionAPI {
 
   unregisterToolsByExtension(extensionPath) {
     this.UIStore.unregisterToolsByExtension(extensionPath)
-  }
-
-  getExtensionEnabled(extensionPath) {
-    return this.AppStore.getExtensionEnabled(extensionPath)
   }
 
   get vue() {

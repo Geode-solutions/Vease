@@ -419,9 +419,11 @@
 </template>
 
 <script setup>
+import { formatRelativeTime } from '@/utils/formatDate.js'
+import { useExtensionMetadata } from '@/composables/useExtensionMetadata.js'
+
 const UIStore = useUIStore()
-const appStore = useAppStore()
-const files = ref([])
+const extensionsStore = useExtensionsStore()
 const hiddenFileInput = ref(null)
 const loading = ref(false)
 const isDragging = ref(false)
@@ -430,22 +432,17 @@ const successMessage = ref('')
 const showRemoveDialog = ref(false)
 const extensionToRemove = ref(null)
 
-const loadedExtensions = computed(() => appStore.getLoadedExtensions())
+const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
+
+const {
+  getExtensionName,
+  getExtensionDescription,
+  getExtensionVersion,
+  getExtensionTools,
+  getExtensionToolsCount,
+} = useExtensionMetadata()
 
 const triggerFileDialog = () => hiddenFileInput.value?.click()
-
-const getExtensionName = (extension) => {
-  if (!extension) return 'Unknown Extension'
-  if (extension.metadata?.name) return extension.metadata.name
-  const filename = (extension.path || '').split('/').pop()
-  return filename.replace(/\.es\.js$/, '').replace(/[-_]/g, ' ')
-}
-
-const getExtensionDescription = (extension) =>
-  extension?.metadata?.description || 'Custom extension module'
-
-const getExtensionVersion = (extension) =>
-  extension?.metadata?.version || null
 
 const handleDrop = async (event) => {
   isDragging.value = false
@@ -475,7 +472,7 @@ const processFiles = async (filesToProcess) => {
     for (const file of filesToProcess) {
       const fileURL = URL.createObjectURL(file)
       try {
-        await appStore.loadExtension(fileURL)
+        await extensionsStore.loadExtension(fileURL)
         successCount++
       } catch (error) {
         errorMessage.value = `${error.message}`
@@ -487,42 +484,15 @@ const processFiles = async (filesToProcess) => {
       successMessage.value = `Successfully loaded ${successCount} extension${successCount>1?'s':''} !`
   } finally {
     loading.value = false
-    files.value = []
     setTimeout(() => (successMessage.value = ''), 4000)
   }
 }
 
 const toggleExtensionState = (extension) => {
-  appStore.toggleExtension(extension.path)
+  extensionsStore.toggleExtension(extension.path)
 }
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now - date
-  const diffSecs = Math.floor(diffMs / 1000)
-  const diffMins = Math.floor(diffSecs / 60)
-  const diffHours = Math.floor(diffMins / 60)
-  const diffDays = Math.floor(diffHours / 24)
-  const diffWeeks = Math.floor(diffDays / 7)
-  const diffMonths = Math.floor(diffDays / 30)
-
-  if (diffSecs < 60) {
-    return 'just now'
-  } else if (diffMins < 60) {
-    return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`
-  } else if (diffHours < 24) {
-    return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`
-  } else if (diffDays < 7) {
-    return `${diffDays} ${diffDays === 1 ? 'day' : 'days'} ago`
-  } else if (diffWeeks < 4) {
-    return `${diffWeeks} ${diffWeeks === 1 ? 'week' : 'weeks'} ago`
-  } else if (diffMonths < 12) {
-    return `${diffMonths} ${diffMonths === 1 ? 'month' : 'months'} ago`
-  } else {
-    return date.toLocaleDateString()
-  }
-}
+const formatDate = (dateString) => formatRelativeTime(dateString)
 
 const confirmRemove = (extension) => {
   extensionToRemove.value = extension
@@ -531,19 +501,10 @@ const confirmRemove = (extension) => {
 
 const removeExtension = () => {
   if (extensionToRemove.value) {
-    appStore.unloadExtension(extensionToRemove.value.path)
+    extensionsStore.unloadExtension(extensionToRemove.value.path)
     showRemoveDialog.value = false
     extensionToRemove.value = null
   }
-}
-
-const getExtensionTools = (extension) => {
-  if (!extension) return []
-  return UIStore.toolsDefinitions.filter(tool => tool.extensionPath === extension.path)
-}
-
-const getExtensionToolsCount = (extension) => {
-  return getExtensionTools(extension).length
 }
 </script>
 
@@ -555,10 +516,6 @@ const getExtensionToolsCount = (extension) => {
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-.cursor-pointer {
-  cursor: pointer;
 }
 
 .file-input-hidden {
