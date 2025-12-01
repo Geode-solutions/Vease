@@ -1,17 +1,5 @@
 export class VeaseExtensionAPI {
-  constructor() {
-    this.currentExtensionId = null
-  }
-
-  setCurrentExtensionId(id) {
-    this.currentExtensionId = id
-  }
-
-  clearCurrentExtensionId() {
-    this.currentExtensionId = null
-  }
-
-  registerTool(toolDefinition) {
+  registerTool(extensionId, toolDefinition) {
     if (!toolDefinition.id) {
       throw new Error('Tool definition must have an id')
     }
@@ -19,7 +7,7 @@ export class VeaseExtensionAPI {
       throw new Error('Tool definition must have a component')
     }
 
-    useUIStore().registerToolComponent(toolDefinition, this.currentExtensionId)
+    useUIStore().registerToolComponent(toolDefinition, extensionId)
   }
 
   unregisterTool(toolId) {
