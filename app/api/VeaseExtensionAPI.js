@@ -5,13 +5,22 @@ export class VeaseExtensionAPI {
   constructor() {
     this.vue = Vue
     this.uiStore = useUIStore()
+    this.currentExtensionId = null
+  }
+
+  setCurrentExtensionId(id) {
+    this.currentExtensionId = id
+  }
+
+  clearCurrentExtensionId() {
+    this.currentExtensionId = null
   }
 
   registerTool(toolDefinition) {
-    this.uiStore.registerToolComponent(toolDefinition)
+    this.uiStore.registerToolComponent(toolDefinition, this.currentExtensionId)
   }
 
-  unregisterToolsByExtension(extensionPath) {
-    this.uiStore.unregisterToolsByExtension(extensionPath)
+  unregisterToolsByExtension(extensionId) {
+    this.uiStore.unregisterToolsByExtension(extensionId)
   }
 }

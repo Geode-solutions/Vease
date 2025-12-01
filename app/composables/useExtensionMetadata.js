@@ -4,8 +4,7 @@ export function useExtensionMetadata() {
   const getExtensionName = (extension) => {
     if (!extension) return 'Unknown Extension'
     if (extension.metadata?.name) return extension.metadata.name
-    const filename = (extension.path || '').split('/').pop()
-    return filename.replace(/\.es\.js$/, '').replace(/[-_]/g, ' ')
+    return extension.id || 'Unknown Extension'
   }
 
   const getExtensionDescription = (extension) => {
@@ -18,7 +17,7 @@ export function useExtensionMetadata() {
 
   const getExtensionTools = (extension) => {
     if (!extension) return []
-    return UIStore.toolsDefinitions.filter(tool => tool.extensionPath === extension.path)
+    return UIStore.toolsDefinitions.filter(tool => tool.extensionPath === extension.id)
   }
 
   const getExtensionToolsCount = (extension) => {

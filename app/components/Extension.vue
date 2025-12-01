@@ -489,7 +489,7 @@ const processFiles = async (filesToProcess) => {
 }
 
 const toggleExtensionState = (extension) => {
-  extensionsStore.toggleExtension(extension.path)
+  extensionsStore.toggleExtension(extension.id)
 }
 
 const formatDate = (dateString) => formatRelativeTime(dateString)
@@ -501,7 +501,7 @@ const confirmRemove = (extension) => {
 
 const removeExtension = () => {
   if (extensionToRemove.value) {
-    extensionsStore.unloadExtension(extensionToRemove.value.path)
+    extensionsStore.unloadExtension(extensionToRemove.value.id)
     showRemoveDialog.value = false
     extensionToRemove.value = null
   }

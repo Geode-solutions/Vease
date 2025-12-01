@@ -5,6 +5,7 @@ export class VeaseExtensionAPI {
     this._dataBaseStore = dataBaseStore
     this._importItem = null
     this._schemas = schemas || null
+    this.currentExtensionId = null
   }
 
   get UIStore() {
@@ -23,7 +24,15 @@ export class VeaseExtensionAPI {
     return this._schemas
   }
 
-  registerTool(toolDefinition, extensionPath = null) {
+  setCurrentExtensionId(id) {
+    this.currentExtensionId = id
+  }
+
+  clearCurrentExtensionId() {
+    this.currentExtensionId = null
+  }
+
+  registerTool(toolDefinition) {
     if (!toolDefinition.id) {
       throw new Error('Tool definition must have an id')
     }
@@ -31,15 +40,15 @@ export class VeaseExtensionAPI {
       throw new Error('Tool definition must have a component')
     }
 
-    this.UIStore.registerToolComponent(toolDefinition, extensionPath)
+    this.UIStore.registerToolComponent(toolDefinition, this.currentExtensionId)
   }
 
   unregisterTool(toolId) {
     this.UIStore.unregisterTool(toolId)
   }
 
-  unregisterToolsByExtension(extensionPath) {
-    this.UIStore.unregisterToolsByExtension(extensionPath)
+  unregisterToolsByExtension(extensionId) {
+    this.UIStore.unregisterToolsByExtension(extensionId)
   }
 
   get vue() {
