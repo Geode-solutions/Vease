@@ -178,7 +178,7 @@
       if (item.is_aoi === true && item.name) {
         items.push({
           id: id,
-          name: item.name || item.native_filename || id,
+          name: item.name || item.native_file || id,
         })
       }
     }
