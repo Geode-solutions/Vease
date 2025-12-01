@@ -10,4 +10,8 @@ export class VeaseExtensionAPI {
   registerTool(toolDefinition) {
     this.uiStore.registerToolComponent(toolDefinition)
   }
+
+  unregisterToolsByExtension(extensionPath) {
+    this.uiStore.unregisterToolsByExtension(extensionPath)
+  }
 }
