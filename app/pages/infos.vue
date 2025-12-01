@@ -162,7 +162,6 @@
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
   import Status from "@ogw_front/utils/status.js"
-  import { viewer_call } from "@geode/opengeodeweb-front/internal/utils/viewer_call.js"
 
   const version = useRuntimeConfig().public.VERSION
   const infraStore = useInfraStore()
