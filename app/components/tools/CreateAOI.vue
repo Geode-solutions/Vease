@@ -323,28 +323,24 @@
 
     loading.value = true
     try {
-      const response = await geodeStore.request(
-        aoiSchema,
-        aoiData,
-        {
-          response_function: async (response) => {
-            const dataToImport = {
-              id: response._data.id,
-              object_type: response._data.object_type,
-              geode_object: response._data.geode_object,
-              native_filename: response._data.native_file_name,
-              viewable_filename: response._data.viewable_file_name,
-              displayed_name: name.value,
-              is_aoi: true,
-              vtk_js: {
-                binary_light_viewable: response._data.binary_light_viewable,
-              },
-            }
-            await importItem(dataToImport)
-            closeDrawer()
-          },
+      const response = await geodeStore.request(aoiSchema, aoiData, {
+        response_function: async (response) => {
+          const dataToImport = {
+            id: response._data.id,
+            object_type: response._data.object_type,
+            geode_object: response._data.geode_object,
+            native_filename: response._data.native_file_name,
+            viewable_filename: response._data.viewable_file_name,
+            displayed_name: name.value,
+            is_aoi: true,
+            vtk_js: {
+              binary_light_viewable: response._data.binary_light_viewable,
+            },
+          }
+          await importItem(dataToImport)
+          closeDrawer()
         },
-      )
+      })
     } catch (error) {
     } finally {
       loading.value = false
