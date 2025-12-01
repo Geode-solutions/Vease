@@ -252,14 +252,13 @@
     }
 
     const voiSchema = back_schemas.opengeodeweb_back.create.create_voi
+    const geodeStore = useGeodeStore()
 
     loading.value = true
     try {
-      const response = await api_fetch(
-        {
-          schema: voiSchema,
-          params: voiData,
-        },
+      const response = await geodeStore.request(
+        voiSchema,
+        voiData,
         {
           response_function: async (response) => {
             const dataToImport = {

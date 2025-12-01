@@ -172,12 +172,9 @@
 
     loading.value = true
     try {
-      await api_fetch(
-        geodeStore,
-        {
-          schema: pointSchema,
-          params: pointData,
-        },
+      await geodeStore.request(
+        pointSchema,
+        pointData,
         {
           response_function: async (response) => {
             const dataToImport = {

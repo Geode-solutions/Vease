@@ -323,12 +323,9 @@
 
     loading.value = true
     try {
-      const response = await api_fetch(
-        geodeStore,
-        {
-          schema: aoiSchema,
-          params: aoiData,
-        },
+      const response = await geodeStore.request(
+        aoiSchema,
+        aoiData,
         {
           response_function: async (response) => {
             const dataToImport = {

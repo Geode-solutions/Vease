@@ -162,7 +162,7 @@
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
   import Status from "@ogw_front/utils/status.js"
-  import { viewer_call } from "@ogw_internal/utils/viewer_call.js"
+  import { viewer_call } from "@geode/opengeodeweb-front/internal/utils/viewer_call.js"
 
   const version = useRuntimeConfig().public.VERSION
   const infraStore = useInfraStore()
@@ -189,9 +189,9 @@
   ])
 
   async function get_packages_versions() {
-    api_fetch(
-      geodeStore,
-      { schema: vease_back_schemas.vease_back.packages_versions },
+    geodeStore.request(
+      vease_back_schemas.vease_back.packages_versions,
+      {},
       {
         response_function: (response) => {
           packages_versions.value = response._data.packages_versions
@@ -201,9 +201,9 @@
   }
 
   async function get_back_version() {
-    api_fetch(
-      geodeStore,
-      { schema: vease_back_schemas.vease_back.microservice_version },
+    geodeStore.request(
+      vease_back_schemas.vease_back.microservice_version,
+      {},
       {
         response_function: (response) => {
           back_version.value = response._data.microservice_version
@@ -213,9 +213,9 @@
   }
 
   async function get_viewer_version() {
-    viewer_call(
-      viewerStore,
-      { schema: vease_viewer_schemas.vease_viewer.microservice_version },
+    viewerStore.request(
+      vease_viewer_schemas.vease_viewer.microservice_version,
+      {},
       {
         response_function: (response) => {
           viewer_version.value = response.microservice_version

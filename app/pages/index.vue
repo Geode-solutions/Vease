@@ -29,7 +29,7 @@
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree.vue"
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu.vue"
   import Status from "@ogw_front/utils/status.js"
-  import { viewer_call } from "@ogw_internal/utils/viewer_call.js"
+  import { viewer_call } from "@geode/opengeodeweb-front/internal/utils/viewer_call.js"
 
   const query = useRoute().query
   if (query.geode_port) {
@@ -65,12 +65,9 @@
 
   async function get_viewer_id(x, y) {
     const ids = dataStyleStore.selectedObjects
-    await viewer_call(
-      viewerStore,
-      {
-        schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
-        params: { x, y, ids },
-      },
+    await viewerStore.request(
+      viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
+      { x, y, ids },
       {
         response_function: (response) => {
           const array_ids = response.array_ids
