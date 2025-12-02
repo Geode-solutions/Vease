@@ -18,7 +18,7 @@
           class="text-center cursor-pointer"
           :class="{
             'elevation-8': isHovering || isDragging,
-            'elevation-2': !(isHovering || isDragging)
+            'elevation-2': !(isHovering || isDragging),
           }"
           :style="{
             position: 'relative',
@@ -28,7 +28,7 @@
             border: `2px dashed ${isHovering || isDragging ? 'rgb(var(--v-theme-primary))' : '#e0e0e0'}`,
             transform: isHovering || isDragging ? 'translateY(-2px)' : 'none',
             pointerEvents: loading ? 'none' : 'auto',
-            opacity: loading ? 0.6 : 1
+            opacity: loading ? 0.6 : 1,
           }"
           rounded="xl"
           @click="triggerFileDialog"
@@ -43,7 +43,7 @@
               :style="{
                 width: '100px',
                 height: '100px',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
               }"
               rounded="circle"
               :elevation="isHovering || isDragging ? 4 : 0"
@@ -52,12 +52,24 @@
                 :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
                 size="56"
                 :color="isHovering || isDragging ? 'white' : 'grey-darken-1'"
-                :class="{ 'rotating': loading }"
+                :class="{ rotating: loading }"
               />
             </v-sheet>
 
-            <div class="text-h6 font-weight-semibold mb-2" :class="isHovering || isDragging ? 'text-primary' : 'text-grey-darken-2'" style="transition: color 0.3s ease">
-              {{ loading ? 'Loading Extension...' : isDragging ? 'Drop to Install' : 'Click or Drag & Drop Extension' }}
+            <div
+              class="text-h6 font-weight-semibold mb-2"
+              :class="
+                isHovering || isDragging ? 'text-primary' : 'text-grey-darken-2'
+              "
+              style="transition: color 0.3s ease"
+            >
+              {{
+                loading
+                  ? "Loading Extension..."
+                  : isDragging
+                    ? "Drop to Install"
+                    : "Click or Drag & Drop Extension"
+              }}
             </div>
 
             <div class="text-body-2 text-grey-darken-1">
@@ -104,10 +116,18 @@
 
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-8">
-          <div class="d-flex align-center mb-4 text-h6 font-weight-semibold text-primary">
+          <div
+            class="d-flex align-center mb-4 text-h6 font-weight-semibold text-primary"
+          >
             <v-icon icon="mdi-puzzle-check" class="mr-2" />
             Active Extensions
-            <v-chip size="small" class="ml-3" color="primary" variant="flat" elevation="2">
+            <v-chip
+              size="small"
+              class="ml-3"
+              color="primary"
+              variant="flat"
+              elevation="2"
+            >
               {{ loadedExtensions.length }}
             </v-chip>
           </div>
@@ -120,43 +140,78 @@
             >
               <v-scale-transition :delay="index * 50">
                 <v-expansion-panels variant="accordion" class="bg-transparent">
-                  <v-expansion-panel 
-                    rounded="xl" 
-                    border 
-                    elevation="0" 
-                    :style="{ 
+                  <v-expansion-panel
+                    rounded="xl"
+                    border
+                    elevation="0"
+                    :style="{
                       transition: 'all 0.3s ease',
-                      opacity: extension.enabled ? 1 : 0.6
+                      opacity: extension.enabled ? 1 : 0.6,
                     }"
                   >
                     <v-expansion-panel-title class="pa-5">
                       <template v-slot:default="{ expanded }">
                         <v-hover v-slot="{ isHovering, props: hoverProps }">
-                          <div v-bind="hoverProps" class="d-flex align-center ga-4" :style="{ width: '100%' }">
+                          <div
+                            v-bind="hoverProps"
+                            class="d-flex align-center ga-4"
+                            :style="{ width: '100%' }"
+                          >
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0"
-                              :color="extension.enabled ? (isHovering || expanded ? 'primary' : 'grey-lighten-3') : 'grey-lighten-2'"
+                              :color="
+                                extension.enabled
+                                  ? isHovering || expanded
+                                    ? 'primary'
+                                    : 'grey-lighten-3'
+                                  : 'grey-lighten-2'
+                              "
                               :style="{
                                 width: '56px',
                                 height: '56px',
-                                transition: 'all 0.3s ease'
+                                transition: 'all 0.3s ease',
                               }"
                               rounded="circle"
                               :elevation="isHovering || expanded ? 4 : 0"
                             >
-                              <v-icon 
-                                icon="mdi-puzzle" 
-                                size="32" 
-                                :color="extension.enabled ? (isHovering || expanded ? 'white' : 'grey-darken-1') : 'grey'"
+                              <v-icon
+                                icon="mdi-puzzle"
+                                size="32"
+                                :color="
+                                  extension.enabled
+                                    ? isHovering || expanded
+                                      ? 'white'
+                                      : 'grey-darken-1'
+                                    : 'grey'
+                                "
                               />
                             </v-sheet>
 
                             <div class="flex-grow-1" style="min-width: 0">
-                              <div class="text-body-1 font-weight-semibold mb-1" :class="extension.enabled ? 'text-grey-darken-4' : 'text-grey'">
+                              <div
+                                class="text-body-1 font-weight-semibold mb-1"
+                                :class="
+                                  extension.enabled
+                                    ? 'text-grey-darken-4'
+                                    : 'text-grey'
+                                "
+                              >
                                 {{ getExtensionName(extension) }}
                               </div>
 
-                              <div class="text-body-2 mb-2" :class="extension.enabled ? 'text-grey-darken-1' : 'text-grey'" style="line-height: 1.5; white-space: normal; word-wrap: break-word">
+                              <div
+                                class="text-body-2 mb-2"
+                                :class="
+                                  extension.enabled
+                                    ? 'text-grey-darken-1'
+                                    : 'text-grey'
+                                "
+                                style="
+                                  line-height: 1.5;
+                                  white-space: normal;
+                                  word-wrap: break-word;
+                                "
+                              >
                                 {{ getExtensionDescription(extension) }}
                               </div>
 
@@ -172,7 +227,9 @@
 
                                 <v-chip
                                   size="x-small"
-                                  :color="extension.enabled ? 'primary' : 'grey'"
+                                  :color="
+                                    extension.enabled ? 'primary' : 'grey'
+                                  "
                                   variant="flat"
                                   elevation="1"
                                 >
@@ -182,14 +239,18 @@
 
                                 <v-spacer />
 
-                                <span class="text-caption text-grey" style="white-space: nowrap">
+                                <span
+                                  class="text-caption text-grey"
+                                  style="white-space: nowrap"
+                                >
                                   {{ formatDate(extension.loadedAt) }}
                                 </span>
                               </div>
                             </div>
 
-
-                            <div class="d-flex align-center ga-1 flex-shrink-0 mr-n2">
+                            <div
+                              class="d-flex align-center ga-1 flex-shrink-0 mr-n2"
+                            >
                               <v-tooltip location="bottom">
                                 <template #activator="{ props: tooltipProps }">
                                   <v-switch
@@ -200,10 +261,16 @@
                                     hide-details
                                     inset
                                     @click.stop
-                                    @update:model-value="toggleExtensionState(extension)"
+                                    @update:model-value="
+                                      toggleExtensionState(extension)
+                                    "
                                   />
                                 </template>
-                                <span>{{ extension.enabled ? 'Disable extension' : 'Enable extension' }}</span>
+                                <span>{{
+                                  extension.enabled
+                                    ? "Disable extension"
+                                    : "Enable extension"
+                                }}</span>
                               </v-tooltip>
 
                               <v-tooltip location="bottom">
@@ -227,9 +294,13 @@
 
                     <v-expansion-panel-text class="px-6 pb-6">
                       <v-divider class="mb-4" />
-                      
-                      <div class="d-flex align-center justify-space-between mb-4">
-                        <div class="d-flex align-center text-h6 font-weight-semibold text-grey-darken-3">
+
+                      <div
+                        class="d-flex align-center justify-space-between mb-4"
+                      >
+                        <div
+                          class="d-flex align-center text-h6 font-weight-semibold text-grey-darken-3"
+                        >
                           <v-icon icon="mdi-tools" size="22" class="mr-2" />
                           Tools
                         </div>
@@ -238,14 +309,24 @@
                           :color="extension.enabled ? 'primary' : 'grey'"
                           variant="tonal"
                         >
-                          {{ getExtensionToolsCount(extension) }} {{ getExtensionToolsCount(extension) === 1 ? 'tool' : 'tools' }}
+                          {{ getExtensionToolsCount(extension) }}
+                          {{
+                            getExtensionToolsCount(extension) === 1
+                              ? "tool"
+                              : "tools"
+                          }}
                         </v-chip>
                       </div>
 
-                      <div v-if="getExtensionTools(extension).length" class="d-flex flex-column ga-3">
+                      <div
+                        v-if="getExtensionTools(extension).length"
+                        class="d-flex flex-column ga-3"
+                      >
                         <v-fade-transition group>
                           <v-hover
-                            v-for="(tool, toolIndex) in getExtensionTools(extension)"
+                            v-for="(tool, toolIndex) in getExtensionTools(
+                              extension,
+                            )"
                             :key="tool.id"
                             v-slot="{ isHovering, props: toolProps }"
                           >
@@ -255,21 +336,37 @@
                               :style="{
                                 transitionDelay: `${toolIndex * 30}ms`,
                                 transition: 'all 0.2s ease',
-                                background: extension.enabled ? (isHovering ? '#f5f9ff' : '#fafafa') : '#f5f5f5',
-                                borderColor: extension.enabled ? (isHovering ? 'rgba(33, 150, 243, 0.3)' : '#e0e0e0') : '#e0e0e0',
-                                opacity: extension.enabled ? 1 : 0.7
+                                background: extension.enabled
+                                  ? isHovering
+                                    ? '#f5f9ff'
+                                    : '#fafafa'
+                                  : '#f5f5f5',
+                                borderColor: extension.enabled
+                                  ? isHovering
+                                    ? 'rgba(33, 150, 243, 0.3)'
+                                    : '#e0e0e0'
+                                  : '#e0e0e0',
+                                opacity: extension.enabled ? 1 : 0.7,
                               }"
                               border
                               rounded="lg"
-                              :elevation="isHovering && extension.enabled ? 2 : 0"
+                              :elevation="
+                                isHovering && extension.enabled ? 2 : 0
+                              "
                             >
                               <v-sheet
                                 class="d-flex align-center justify-center flex-shrink-0"
-                                :color="extension.enabled ? (isHovering ? 'primary' : 'grey-lighten-3') : 'grey-lighten-2'"
+                                :color="
+                                  extension.enabled
+                                    ? isHovering
+                                      ? 'primary'
+                                      : 'grey-lighten-3'
+                                    : 'grey-lighten-2'
+                                "
                                 :style="{
                                   width: '48px',
                                   height: '48px',
-                                  transition: 'background 0.2s ease'
+                                  transition: 'background 0.2s ease',
                                 }"
                                 rounded="lg"
                               >
@@ -277,7 +374,13 @@
                                   v-if="tool.iconType === 'mdi'"
                                   :icon="tool.iconSource"
                                   size="24"
-                                  :color="extension.enabled ? (isHovering ? 'white' : 'primary') : 'grey'"
+                                  :color="
+                                    extension.enabled
+                                      ? isHovering
+                                        ? 'white'
+                                        : 'primary'
+                                      : 'grey'
+                                  "
                                   :style="{ transition: 'color 0.2s ease' }"
                                 />
                                 <v-img
@@ -288,14 +391,26 @@
                                   contain
                                   :style="{
                                     transition: 'filter 0.2s ease',
-                                    filter: extension.enabled ? (isHovering ? 'brightness(0) invert(1)' : 'none') : 'grayscale(100%) opacity(0.5)'
+                                    filter: extension.enabled
+                                      ? isHovering
+                                        ? 'brightness(0) invert(1)'
+                                        : 'none'
+                                      : 'grayscale(100%) opacity(0.5)',
                                   }"
                                 />
                               </v-sheet>
 
                               <div class="flex-grow-1" style="min-width: 0">
                                 <div class="d-flex align-center ga-2 mb-1">
-                                  <span class="text-body-1 font-weight-semibold" :class="extension.enabled ? 'text-grey-darken-4' : 'text-grey-darken-1'" style="line-height: 1.4">
+                                  <span
+                                    class="text-body-1 font-weight-semibold"
+                                    :class="
+                                      extension.enabled
+                                        ? 'text-grey-darken-4'
+                                        : 'text-grey-darken-1'
+                                    "
+                                    style="line-height: 1.4"
+                                  >
                                     {{ tool.title }}
                                   </span>
                                   <v-chip
@@ -308,7 +423,15 @@
                                   </v-chip>
                                 </div>
 
-                                <div class="text-body-2" :class="extension.enabled ? 'text-grey-darken-1' : 'text-grey'" style="line-height: 1.5">
+                                <div
+                                  class="text-body-2"
+                                  :class="
+                                    extension.enabled
+                                      ? 'text-grey-darken-1'
+                                      : 'text-grey'
+                                  "
+                                  style="line-height: 1.5"
+                                >
                                   {{ tool.description }}
                                 </div>
                               </div>
@@ -350,13 +473,19 @@
               color="grey-lighten-3"
               :style="{
                 width: '100px',
-                height: '100px'
+                height: '100px',
               }"
               rounded="circle"
             >
-              <v-icon icon="mdi-puzzle-outline" size="64" color="grey-lighten-1" />
+              <v-icon
+                icon="mdi-puzzle-outline"
+                size="64"
+                color="grey-lighten-1"
+              />
             </v-sheet>
-            <div class="text-body-1 font-weight-semibold text-grey-darken-2 mb-2">
+            <div
+              class="text-body-1 font-weight-semibold text-grey-darken-2 mb-2"
+            >
               No extensions loaded yet
             </div>
             <div class="text-body-2 text-grey-darken-1">
@@ -367,16 +496,27 @@
       </v-fade-transition>
     </v-card-text>
 
-    <v-dialog v-model="showRemoveDialog" max-width="500" style="z-index: 10000;">
+    <v-dialog v-model="showRemoveDialog" max-width="500" style="z-index: 10000">
       <v-card rounded="xl" elevation="8">
-        <v-card-title class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4">
-          <v-icon icon="mdi-alert-circle" size="28" class="mr-3" color="warning" />
+        <v-card-title
+          class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4"
+        >
+          <v-icon
+            icon="mdi-alert-circle"
+            size="28"
+            class="mr-3"
+            color="warning"
+          />
           Remove Extension?
         </v-card-title>
 
         <v-card-text class="px-6 pb-6 text-body-1">
           <div class="text-medium-emphasis mb-3">
-            Are you sure you want to remove <span class="font-weight-bold text-high-emphasis">{{ getExtensionName(extensionToRemove) }}</span>?
+            Are you sure you want to remove
+            <span class="font-weight-bold text-high-emphasis">{{
+              getExtensionName(extensionToRemove)
+            }}</span
+            >?
           </div>
           <v-alert
             type="info"
@@ -396,11 +536,7 @@
 
         <v-card-actions class="pa-4">
           <v-spacer />
-          <v-btn
-            variant="text"
-            size="large"
-            @click="showRemoveDialog = false"
-          >
+          <v-btn variant="text" size="large" @click="showRemoveDialog = false">
             Cancel
           </v-btn>
           <v-btn
@@ -419,110 +555,116 @@
 </template>
 
 <script setup>
-import { formatRelativeTime } from '@/utils/formatDate.js'
-import { useExtensionMetadata } from '@/composables/useExtensionMetadata.js'
+  import { formatRelativeTime } from "@/utils/formatDate.js"
+  import { useExtensionMetadata } from "@/composables/useExtensionMetadata.js"
 
-const UIStore = useUIStore()
-const extensionsStore = useExtensionsStore()
-const hiddenFileInput = ref(null)
-const loading = ref(false)
-const isDragging = ref(false)
-const errorMessage = ref('')
-const successMessage = ref('')
-const showRemoveDialog = ref(false)
-const extensionToRemove = ref(null)
+  const UIStore = useUIStore()
+  const extensionsStore = useExtensionsStore()
+  const hiddenFileInput = ref(null)
+  const loading = ref(false)
+  const isDragging = ref(false)
+  const errorMessage = ref("")
+  const successMessage = ref("")
+  const showRemoveDialog = ref(false)
+  const extensionToRemove = ref(null)
 
-const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
+  const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
 
-const {
-  getExtensionName,
-  getExtensionDescription,
-  getExtensionVersion,
-  getExtensionTools,
-  getExtensionToolsCount,
-} = useExtensionMetadata()
+  const {
+    getExtensionName,
+    getExtensionDescription,
+    getExtensionVersion,
+    getExtensionTools,
+    getExtensionToolsCount,
+  } = useExtensionMetadata()
 
-const triggerFileDialog = () => hiddenFileInput.value?.click()
+  const triggerFileDialog = () => hiddenFileInput.value?.click()
 
-const handleDrop = async (event) => {
-  isDragging.value = false
-  const droppedFiles = [...event.dataTransfer.files].filter(f => f.name.endsWith('.es.js'))
-  if (!droppedFiles.length) {
-    errorMessage.value = 'Please drop valid extension files (.es.js)'
-    return
-  }
-  await processFiles(droppedFiles)
-}
-
-const handleFileChange = async (event) => {
-  const newFiles = event.target?.files
-  if (!newFiles?.length) return
-  await processFiles([...newFiles])
-  event.target.value = ''
-}
-
-const processFiles = async (filesToProcess) => {
-  errorMessage.value = ''
-  successMessage.value = ''
-  loading.value = true
-
-  let successCount = 0
-
-  try {
-    for (const file of filesToProcess) {
-      const fileURL = URL.createObjectURL(file)
-      try {
-        await extensionsStore.loadExtension(fileURL)
-        successCount++
-      } catch (error) {
-        errorMessage.value = `${error.message}`
-      } finally {
-        URL.revokeObjectURL(fileURL)
-      }
+  const handleDrop = async (event) => {
+    isDragging.value = false
+    const droppedFiles = [...event.dataTransfer.files].filter((f) =>
+      f.name.endsWith(".es.js"),
+    )
+    if (!droppedFiles.length) {
+      errorMessage.value = "Please drop valid extension files (.es.js)"
+      return
     }
-    if (successCount)
-      successMessage.value = `Successfully loaded ${successCount} extension${successCount>1?'s':''} !`
-  } finally {
-    loading.value = false
-    setTimeout(() => (successMessage.value = ''), 4000)
+    await processFiles(droppedFiles)
   }
-}
 
-const toggleExtensionState = (extension) => {
-  extensionsStore.toggleExtension(extension.id)
-}
-
-const formatDate = (dateString) => formatRelativeTime(dateString)
-
-const confirmRemove = (extension) => {
-  extensionToRemove.value = extension
-  showRemoveDialog.value = true
-}
-
-const removeExtension = () => {
-  if (extensionToRemove.value) {
-    extensionsStore.unloadExtension(extensionToRemove.value.id)
-    showRemoveDialog.value = false
-    extensionToRemove.value = null
+  const handleFileChange = async (event) => {
+    const newFiles = event.target?.files
+    if (!newFiles?.length) return
+    await processFiles([...newFiles])
+    event.target.value = ""
   }
-}
+
+  const processFiles = async (filesToProcess) => {
+    errorMessage.value = ""
+    successMessage.value = ""
+    loading.value = true
+
+    let successCount = 0
+
+    try {
+      for (const file of filesToProcess) {
+        const fileURL = URL.createObjectURL(file)
+        try {
+          await extensionsStore.loadExtension(fileURL)
+          successCount++
+        } catch (error) {
+          errorMessage.value = `${error.message}`
+        } finally {
+          URL.revokeObjectURL(fileURL)
+        }
+      }
+      if (successCount)
+        successMessage.value = `Successfully loaded ${successCount} extension${successCount > 1 ? "s" : ""} !`
+    } finally {
+      loading.value = false
+      setTimeout(() => (successMessage.value = ""), 4000)
+    }
+  }
+
+  const toggleExtensionState = (extension) => {
+    extensionsStore.toggleExtension(extension.id)
+  }
+
+  const formatDate = (dateString) => formatRelativeTime(dateString)
+
+  const confirmRemove = (extension) => {
+    extensionToRemove.value = extension
+    showRemoveDialog.value = true
+  }
+
+  const removeExtension = () => {
+    if (extensionToRemove.value) {
+      extensionsStore.unloadExtension(extensionToRemove.value.id)
+      showRemoveDialog.value = false
+      extensionToRemove.value = null
+    }
+  }
 </script>
 
 <style scoped>
-.rotating {
-  animation: rotate 1s linear infinite;
-}
+  .rotating {
+    animation: rotate 1s linear infinite;
+  }
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
-.file-input-hidden {
-  position: absolute;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-}
+  .file-input-hidden {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
 </style>

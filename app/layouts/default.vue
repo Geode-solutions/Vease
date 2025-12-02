@@ -82,7 +82,7 @@
       location="left"
       temporary
       v-model="UIStore.showExtensions"
-      style="z-index: 9999; left: 0 !important;"
+      style="z-index: 9999; left: 0 !important"
     >
       <Extension />
     </v-navigation-drawer>
@@ -169,6 +169,4 @@
   .slide-leave-to {
     transform: translateX(100%);
   }
-
-
 </style>

@@ -7,8 +7,8 @@ export default defineNuxtPlugin(() => {
     description: "Create a point object with exact coordinates on the viewer.",
     iconType: "mdi",
     iconSource: "mdi-circle-medium",
-    component: markRaw(defineAsyncComponent(
-      () => import("../components/tools/CreatePoint.vue")
-    )),
+    component: markRaw(
+      defineAsyncComponent(() => import("../components/tools/CreatePoint.vue")),
+    ),
   })
 })

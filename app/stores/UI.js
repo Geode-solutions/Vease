@@ -37,15 +37,17 @@ export const useUIStore = defineStore("UI", () => {
   const unregisterToolsByExtension = (extensionPath) => {
     const beforeCount = toolsDefinitions.value.length
     toolsDefinitions.value = toolsDefinitions.value.filter(
-      (tool) => tool.extensionPath !== extensionPath
+      (tool) => tool.extensionPath !== extensionPath,
     )
     const removedCount = beforeCount - toolsDefinitions.value.length
-    console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`)
+    console.log(
+      `[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`,
+    )
   }
 
   const activeTools = computed(() => {
     const extensionsStore = useExtensionsStore()
-    return toolsDefinitions.value.filter(tool => {
+    return toolsDefinitions.value.filter((tool) => {
       if (!tool.extensionPath) return true
       return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
@@ -87,7 +89,6 @@ export const useUIStore = defineStore("UI", () => {
   function setShowCreateAOI(value) {
     showCreateAOI.value = value
   }
-  
 
   return {
     toolsDefinitions,

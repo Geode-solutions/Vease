@@ -1,10 +1,10 @@
 <template>
-  <v-card 
-    v-if="!selectedTool" 
-    :width="500" 
-    flat 
-    class="d-flex flex-column" 
-    style="height: 100%;"
+  <v-card
+    v-if="!selectedTool"
+    :width="500"
+    flat
+    class="d-flex flex-column"
+    style="height: 100%"
   >
     <div class="flex-shrink-0">
       <v-card-title
@@ -80,13 +80,13 @@
       </v-row>
     </v-card-text>
   </v-card>
-  
+
   <v-sheet v-else class="position-relative tool-component-wrapper">
     <v-btn
       icon
       variant="text"
       class="ma-2 position-sticky bg-white"
-      style="top: 0; z-index: 10;"
+      style="top: 0; z-index: 10"
       @click="handleBack"
     >
       <v-icon>mdi-arrow-left</v-icon>
@@ -138,7 +138,7 @@
   .custom-tool-card {
     transition: all 0.2s ease-in-out;
   }
-  
+
   .custom-tool-card:hover {
     transform: scale(1.03);
   }

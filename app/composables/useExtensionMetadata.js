@@ -2,13 +2,13 @@ export function useExtensionMetadata() {
   const UIStore = useUIStore()
 
   const getExtensionName = (extension) => {
-    if (!extension) return 'Unknown Extension'
+    if (!extension) return "Unknown Extension"
     if (extension.metadata?.name) return extension.metadata.name
-    return extension.id || 'Unknown Extension'
+    return extension.id || "Unknown Extension"
   }
 
   const getExtensionDescription = (extension) => {
-    return extension?.metadata?.description || 'Custom extension module'
+    return extension?.metadata?.description || "Custom extension module"
   }
 
   const getExtensionVersion = (extension) => {
@@ -17,7 +17,9 @@ export function useExtensionMetadata() {
 
   const getExtensionTools = (extension) => {
     if (!extension) return []
-    return UIStore.toolsDefinitions.filter(tool => tool.extensionPath === extension.id)
+    return UIStore.toolsDefinitions.filter(
+      (tool) => tool.extensionPath === extension.id,
+    )
   }
 
   const getExtensionToolsCount = (extension) => {
