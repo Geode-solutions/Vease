@@ -175,10 +175,10 @@
   const aoiList = computed(() => {
     const items = []
     for (const [id, item] of Object.entries(dataBaseStore.db)) {
-      if (item.is_aoi === true && item.displayed_name) {
+      if (item.is_aoi === true && item.name) {
         items.push({
           id: id,
-          name: item.displayed_name || item.native_filename || id,
+          name: item.name || item.native_file || id,
         })
       }
     }

@@ -25,7 +25,7 @@
   )
 
   const auto_upload = ref(true)
-  const input_geode_object = ref("")
+  const geode_object_type = ref("")
   const additional_files = ref([])
   const supported_feature = ""
 
@@ -33,7 +33,7 @@
     current_step_index: ref(0),
     files,
     auto_upload,
-    input_geode_object,
+    geode_object_type,
     supported_feature,
     steps: [
       {
@@ -63,10 +63,10 @@
           },
         },
         chips: computed(() => {
-          if (input_geode_object.value === "") {
+          if (geode_object_type.value === "") {
             return []
           } else {
-            return [input_geode_object.value]
+            return [geode_object_type.value]
           }
         }),
       },
@@ -77,7 +77,7 @@
           component_name: shallowRef(MissingFilesSelector),
           component_options: {
             multiple: true,
-            input_geode_object,
+            geode_object_type,
             filenames: computed(() => {
               return files.value.map((file) => file.name)
             }),
@@ -94,7 +94,7 @@
         component: {
           component_name: shallowRef(ImportFile),
           component_options: {
-            input_geode_object,
+            geode_object_type,
             filenames: computed(() => {
               return files.value.map((file) => file.name)
             }),
@@ -102,7 +102,7 @@
         },
         chips: computed(() => {
           const output_params = computed(() => {
-            return [input_geode_object, additional_files]
+            return [geode_object_type, additional_files]
           })
           if (_.isEmpty(output_params)) {
             return []
