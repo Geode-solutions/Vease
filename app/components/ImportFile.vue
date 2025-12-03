@@ -42,6 +42,7 @@
       geode_object_type: props.geode_object_type,
     }))
     await importWorkflow(files_array)
+    emit("reset_values")
     UIStore.setShowStepper(false)
     toggle_loading()
   }
