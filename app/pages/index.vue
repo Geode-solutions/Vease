@@ -49,7 +49,7 @@
   }
 
   const infra_store = useInfraStore()
-  const viewer_store = useViewerStore()
+  const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
   const dataStyleStore = useDataStyleStore()
 
@@ -64,11 +64,9 @@
 
   async function get_viewer_id(x, y) {
     const ids = dataStyleStore.selectedObjects
-    await viewer_call(
-      {
-        schema: viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
-        params: { x, y, ids },
-      },
+    await viewerStore.request(
+      viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
+      { x, y, ids },
       {
         response_function: (response) => {
           const array_ids = response.array_ids
@@ -101,7 +99,7 @@
   }
 
   watch(
-    () => viewer_store.status,
+    () => viewerStore.status,
     (value) => {
       if (value === Status.CONNECTED) {
         resize()
@@ -110,7 +108,7 @@
   )
 
   onMounted(async () => {
-    if (viewer_store.status === Status.CONNECTED) {
+    if (viewerStore.status === Status.CONNECTED) {
       resize()
     }
   })
