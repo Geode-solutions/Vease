@@ -37,6 +37,10 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ].filter(Boolean),
 
+  plugins: [
+    "@geode/opengeodeweb-front/app/plugins/auto_store_register.js",
+  ],
+
   ssr: false,
   electron: {
     build: [
