@@ -21,7 +21,8 @@
                   The current version of the app is
                   <a
                     :href="
-                      'https://github.com/Geode-solutions/Vease/releases/tag/v' +
+                      'https://github.com/Geode-solutions/Vease/releases/' +
+                      (version !== 'latest' ? 'tag/v' : '') +
                       version
                     "
                     target="_blank"
