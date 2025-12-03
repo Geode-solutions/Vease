@@ -1,5 +1,5 @@
 <template>
-  <Stepper @close="$emit('close')" />
+  <Stepper @close="$emit('close')" @reset_values="reset_values()" />
 </template>
 
 <script setup>
@@ -121,4 +121,12 @@
   })
 
   provide("stepper_tree", stepper_tree)
+
+  function reset_values() {
+    files.value = []
+    auto_upload.value = true
+    geode_object_type.value = ""
+    additional_files.value = []
+    stepper_tree.current_step_index = 0
+  }
 </script>
