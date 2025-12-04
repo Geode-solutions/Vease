@@ -5,10 +5,6 @@ import { fileURLToPath } from "url"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
-  future: {
-    compatibilityVersion: 4,
-  },
-
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
