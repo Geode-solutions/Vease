@@ -152,6 +152,7 @@
 
   const UIStore = useUIStore()
   const hybridViewerStore = useHybridViewerStore()
+  const geodeStore = useGeodeStore()
   const showCreateTools = () => {
     UIStore.setShowCreateTools(true)
   }
@@ -322,22 +323,15 @@
 
     loading.value = true
     try {
-      await api_fetch(
-        {
-          schema: aoiSchema,
-          params: aoiData,
+      const response = await geodeStore.request(aoiSchema, aoiData, {
+        response_function: async (response) => {
+          const dataToImport = {
+            ...response._data,
+          }
+          await importItem(dataToImport)
+          closeDrawer()
         },
-        {
-          response_function: async (response) => {
-            const dataToImport = {
-              ...response.data,
-              is_aoi: true,
-            }
-            await importItem(dataToImport)
-            closeDrawer()
-          },
-        },
-      )
+      })
     } catch (error) {
     } finally {
       loading.value = false

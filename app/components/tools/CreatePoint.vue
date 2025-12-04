@@ -120,6 +120,7 @@
   import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 
   const UIStore = useUIStore()
+  const geodeStore = useGeodeStore()
   const openCreateTools = () => {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
@@ -171,21 +172,15 @@
 
     loading.value = true
     try {
-      await api_fetch(
-        {
-          schema: pointSchema,
-          params: pointData,
+      await geodeStore.request(pointSchema, pointData, {
+        response_function: async (response) => {
+          const dataToImport = {
+            ...response._data,
+          }
+          await importItem(dataToImport)
+          closeDrawer()
         },
-        {
-          response_function: async (response) => {
-            const dataToImport = {
-              ...response.data,
-            }
-            await importItem(dataToImport)
-            closeDrawer()
-          },
-        },
-      )
+      })
     } finally {
       loading.value = false
     }
