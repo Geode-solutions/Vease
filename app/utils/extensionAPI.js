@@ -104,7 +104,7 @@ export class VeaseExtensionAPI {
   importItem(item) {
     return importItem(item)
   }
-  
+
   registerStore(store) {
     const appStore = useAppStore()
     appStore.registerStore(store)
@@ -121,7 +121,7 @@ export class VeaseExtensionAPI {
   get HybridViewerStore() {
     return useHybridViewerStore()
   }
-  
+
   get AppStore() {
     return useAppStore()
   }
