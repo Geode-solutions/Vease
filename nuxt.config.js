@@ -19,6 +19,10 @@ export default defineNuxtConfig({
     "@ogw_front": "@geode/opengeodeweb-front/app/",
   },
 
+  imports: {
+    scan: false,
+  },
+
   modules: [
     process.env.BROWSER && process.env.BROWSER == "true"
       ? null
@@ -96,9 +100,6 @@ export default defineNuxtConfig({
     },
   },
 
-  imports: {
-    dirs: ["stores", "@geode/opengeodeweb-front/app/stores"],
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),

@@ -52,10 +52,9 @@
 <script setup>
   import logo from "@vease/assets/img/logo.png"
 
-  const infraStore = useInfraStore()
-  const search = ref("")
-  const userStore = useUserStore()
-  const { profileImagePath } = storeToRefs(userStore)
+  // const search = ref("")
+  // const userStore = useUserStore()
+  // const { profileImagePath } = storeToRefs(userStore)
 
   const getProfileImage = (path) => {
     if (path) {

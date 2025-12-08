@@ -71,7 +71,7 @@
     </v-main>
 
     <v-progress-linear
-      v-if="infra_store.microservices_busy"
+      v-if="infraStore.microservices_busy"
       indeterminate
       color="white"
     />
@@ -90,8 +90,10 @@
   import TopBar from "@vease/components/Layout/TopBar.vue"
   import SideBar from "@vease/components/Layout/SideBar.vue"
 
+  import { useUIStore } from "@vease/stores/UI"
+  import { useInfraStore } from "@ogw_front/stores/infra"
   const UIStore = useUIStore()
-  const infra_store = useInfraStore()
+  const infraStore = useInfraStore()
 
   const handleMouseMove = (e) => {
     const screenWidth = window.innerWidth

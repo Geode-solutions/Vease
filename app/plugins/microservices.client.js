@@ -17,5 +17,7 @@ export default defineNuxtPlugin(() => {
   const viewerStore = useViewerStore()
   infraStore.register_microservice(viewerStore)
 
+  console.log(infraStore.microservices)
+
   console.log("[PLUGIN] All microservices registered and stores initialized")
 })

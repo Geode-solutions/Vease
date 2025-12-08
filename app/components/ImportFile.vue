@@ -15,6 +15,7 @@
 
 <script setup>
   import { importWorkflow } from "@ogw_front/utils/file_import_workflow.js"
+  import { useUIStore } from "@vease/stores/UI"
 
   const emit = defineEmits([
     "update_values",
