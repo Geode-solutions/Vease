@@ -162,6 +162,7 @@
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
   import Status from "@ogw_front/utils/status.js"
+  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected.js"
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useViewerStore } from "@ogw_front/stores/viewer"
 
