@@ -23,7 +23,9 @@ export function useExtensionManager() {
     const { extension_name, frontend_content, backend_path } = result
 
     // Create blob URL from frontend JS content
-    const blob = new Blob([frontend_content], { type: "application/javascript" })
+    const blob = new Blob([frontend_content], {
+      type: "application/javascript",
+    })
     const blobUrl = URL.createObjectURL(blob)
 
     // Load the extension module
