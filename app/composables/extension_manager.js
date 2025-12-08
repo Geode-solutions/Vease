@@ -41,11 +41,20 @@ export function useExtensionManager() {
       console.log("[ExtensionManager] Store registered:", store.$id)
 
       // Launch the microservice if the store has a launch method
-      if (typeof store.launch === "function") {
+      // Only in DESKTOP mode - in BROWSER/CLOUD mode, the backend runs on the server
+      const infraStore = useInfraStore()
+      if (
+        typeof store.launch === "function" &&
+        infraStore.app_mode === "DESKTOP"
+      ) {
         console.log("[ExtensionManager] Launching microservice...")
-        await store.launch()
+        await store.launch(backend_path)
         await store.connect()
         console.log("[ExtensionManager] Microservice connected")
+      } else if (infraStore.app_mode !== "DESKTOP") {
+        console.log(
+          `[ExtensionManager] Skipping microservice launch in ${infraStore.app_mode} mode`,
+        )
       }
     }
 
