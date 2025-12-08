@@ -73,14 +73,14 @@
             </div>
 
             <div class="text-body-2 text-grey-darken-1">
-              (.es.js files only)
+              (.vext extension files)
             </div>
           </v-card-text>
 
           <input
             ref="hiddenFileInput"
             type="file"
-            accept=".es.js"
+            accept=".vext"
             multiple
             class="file-input-hidden"
             @change="handleFileChange"
@@ -583,10 +583,10 @@
   const handleDrop = async (event) => {
     isDragging.value = false
     const droppedFiles = [...event.dataTransfer.files].filter((f) =>
-      f.name.endsWith(".es.js"),
+      f.name.endsWith(".vext"),
     )
     if (!droppedFiles.length) {
-      errorMessage.value = "Please drop valid extension files (.es.js)"
+      errorMessage.value = "Please drop valid extension files (.vext)"
       return
     }
     await processFiles(droppedFiles)
@@ -605,17 +605,16 @@
     loading.value = true
 
     let successCount = 0
+    const extensionManager = useExtensionManager()
 
     try {
       for (const file of filesToProcess) {
-        const fileURL = URL.createObjectURL(file)
         try {
-          await extensionsStore.loadExtension(fileURL)
+          await extensionManager.importExtensionFile(file)
           successCount++
         } catch (error) {
+          console.error("[Extension.vue] Failed to import extension:", error)
           errorMessage.value = `${error.message}`
-        } finally {
-          URL.revokeObjectURL(fileURL)
         }
       }
       if (successCount)

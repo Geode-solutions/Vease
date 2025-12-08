@@ -110,6 +110,29 @@ export class VeaseExtensionAPI {
     appStore.registerStore(store)
   }
 
+  launchExtensionMicroservice(extensionId, executablePath) {
+    console.log(
+      `[ExtensionAPI] Launching microservice for ${extensionId}:`,
+      executablePath,
+    )
+    
+    // Extensions only work in Electron desktop mode
+    if (typeof window === "undefined" || !window.electronAPI) {
+      const error = "[ExtensionAPI] Extensions require Electron desktop mode"
+      console.error(error)
+      throw new Error(error)
+    }
+    
+    if (typeof window.electronAPI.run_extension !== "function") {
+      const error = "[ExtensionAPI] run_extension not available in electronAPI"
+      console.error(error)
+      throw new Error(error)
+    }
+    
+    // Call run_extension like we call run_back
+    return window.electronAPI.run_extension(extensionId, executablePath)
+  }
+
   get UIStore() {
     return useUIStore()
   }
