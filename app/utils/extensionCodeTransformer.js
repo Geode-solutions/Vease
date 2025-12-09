@@ -25,7 +25,18 @@ export function transformExtensionCode(code) {
       '"',
   )
 
-  // Transform @ogw_front/app/stores/* imports
+  // Transform @ogw_front/app/stores/app.js specifically
+  code = code.replace(
+    /from\s+["']@ogw_front\/app\/stores\/app\.js["']/g,
+    'from "data:text/javascript,' +
+      encodeURIComponent(`
+        export const useAppStore = window.__VEASE_STORES__.useAppStore;
+        export default useAppStore;
+      `) +
+      '"',
+  )
+
+  // Transform @ogw_front/app/stores/* imports (generic pattern)
   code = code.replace(
     /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/g,
     (match, storePath) => {
@@ -60,7 +71,7 @@ export function transformExtensionCode(code) {
       '"',
   )
 
-  // Transform @ogw_front/internal/utils/api_fetch.js
+  // Transform @ogw_front/internal/utils/api_fetch.js (actual path in OpenGeodeWeb-Front)
   code = code.replace(
     /from\s+["']@ogw_front\/internal\/utils\/api_fetch\.js["']/g,
     'from "data:text/javascript,' +

@@ -2,7 +2,7 @@ import * as Vue from "vue"
 import * as Pinia from "pinia"
 import { VeaseExtensionAPI } from "../utils/extensionAPI.js"
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
   if (typeof window !== "undefined") {
     window.Vue = Vue
     window.Pinia = Pinia
@@ -15,8 +15,15 @@ export default defineNuxtPlugin((nuxtApp) => {
       useGeodeStore,
     }
 
-    // Utilities and schemas will be accessed from stores
-    window.__VEASE_UTILS__ = {}
+    // Expose utilities for extensions
+    const { api_fetch } = await import(
+      "@geode/opengeodeweb-front/internal/utils/api_fetch.js"
+    )
+    window.__VEASE_UTILS__ = {
+      Status: (await import("@ogw_front/utils/status.js")).default,
+      appMode: (await import("@ogw_front/utils/app_mode.js")).appMode,
+      api_fetch,
+    }
     window.__VEASE_SCHEMAS__ = {}
   }
 

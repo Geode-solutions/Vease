@@ -110,23 +110,6 @@ export class VeaseExtensionAPI {
     appStore.registerStore(store)
   }
 
-  launchExtensionMicroservice(extensionId, executablePath) {
-    console.log(
-      `[ExtensionAPI] Launching microservice for ${extensionId}:`,
-      executablePath,
-    )
-
-    const appStore = useAppStore()
-    if (!appStore.launchExtensionMicroservice) {
-      const error =
-        "[ExtensionAPI] launchExtensionMicroservice not available in appStore"
-      console.error(error)
-      throw new Error(error)
-    }
-
-    return appStore.launchExtensionMicroservice(extensionId, executablePath)
-  }
-
   get UIStore() {
     return useUIStore()
   }
