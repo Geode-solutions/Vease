@@ -10,7 +10,7 @@ import {
   executable_name,
   executable_path,
   run_browser,
-} from "@geode/opengeodeweb-front/app/utils/local.js"
+} from "@geode/opengeodeweb-front/app/utils/local
 
 function back_microservice() {
   const back_path = executable_path(path.join("microservices", "back"))

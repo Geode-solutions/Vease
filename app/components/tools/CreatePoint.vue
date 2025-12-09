@@ -117,7 +117,7 @@
 </template>
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
-  import { importItem } from "@ogw_front/utils/file_import_workflow.js"
+  import { importItem } from "@ogw_front/utils/file_import_workflow
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useUIStore } from "@vease/stores/UI"
 

@@ -28,7 +28,7 @@
   import Launcher from "@ogw_front/components/Launcher.vue"
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree.vue"
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu.vue"
-  import Status from "@ogw_front/utils/status.js"
+  import Status from "@ogw_front/utils/status
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useViewerStore } from "@ogw_front/stores/viewer"
