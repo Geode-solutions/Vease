@@ -3,6 +3,10 @@ name: Deploy
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   deploy:
     uses: Geode-solutions/actions/.github/workflows/js-deploy.yml@master
