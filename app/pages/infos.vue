@@ -189,8 +189,9 @@
   ])
 
   async function get_packages_versions() {
-    api_fetch(
-      { schema: vease_back_schemas.vease_back.packages_versions },
+    geodeStore.request(
+      vease_back_schemas.vease_back.packages_versions,
+      {},
       {
         response_function: (response) => {
           packages_versions.value = response._data.packages_versions
@@ -200,8 +201,9 @@
   }
 
   async function get_back_version() {
-    api_fetch(
-      { schema: vease_back_schemas.vease_back.microservice_version },
+    geodeStore.request(
+      vease_back_schemas.vease_back.microservice_version,
+      {},
       {
         response_function: (response) => {
           back_version.value = response._data.microservice_version
@@ -211,8 +213,9 @@
   }
 
   async function get_viewer_version() {
-    viewer_call(
-      { schema: vease_viewer_schemas.vease_viewer.microservice_version },
+    viewerStore.request(
+      vease_viewer_schemas.vease_viewer.microservice_version,
+      {},
       {
         response_function: (response) => {
           viewer_version.value = response.microservice_version
