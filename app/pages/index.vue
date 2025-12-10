@@ -24,10 +24,10 @@
 
 <script setup>
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
-  import HybridRenderingView from "@ogw_front/components/HybridRenderingView.vue"
-  import Launcher from "@ogw_front/components/Launcher.vue"
-  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree.vue"
-  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu.vue"
+  import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
+  import Launcher from "@ogw_front/components/Launcher"
+  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
+  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
   import Status from "@ogw_front/utils/status
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useGeodeStore } from "@ogw_front/stores/geode"

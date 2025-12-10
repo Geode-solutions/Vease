@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   UIStore.initializeDefaultTools()
 
   const CreatePointComponent = defineAsyncComponent(
-    () => import("../components/tools/CreatePoint.vue"),
+    () => import("../components/tools/CreatePoint"),
   )
   UIStore.registerToolComponent({
     id: "Point",
@@ -20,7 +20,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   const CreateAOIComponent = defineAsyncComponent(
-    () => import("../components/tools/CreateAOI.vue"),
+    () => import("../components/tools/CreateAOI"),
   )
   UIStore.registerToolComponent({
     id: "AOI",
@@ -32,7 +32,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   })
 
   const CreateVOIComponent = defineAsyncComponent(
-    () => import("../components/tools/CreateVOI.vue"),
+    () => import("../components/tools/CreateVOI"),
   )
   UIStore.registerToolComponent({
     id: "VOI",
