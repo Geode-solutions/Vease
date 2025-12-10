@@ -16,7 +16,7 @@ function create_new_window() {
       contextIsolation: true,
       nodeIntegration: true,
       webSecurity: true,
-      preload: path.join(__dirname, "preload),
+      preload: path.join(__dirname, "preload.js"),
     },
   })
   win.setMenuBarVisibility(false)

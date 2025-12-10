@@ -60,7 +60,7 @@
     "nuxt-electron": "0.7.0",
     "playwright": "1.54.1",
     "std-env": "3.9.0",
-    "vuetify-nuxt-module": "0.18.8"
+    "vuetify-nuxt-module": "0.18.7"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
