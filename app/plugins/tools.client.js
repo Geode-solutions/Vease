@@ -1,5 +1,6 @@
 import AOIicon from "../assets/img/aoi.svg"
 import VOIicon from "../assets/img/voi.svg"
+import { useUIStore } from "../stores/UI"
 
 export default defineNuxtPlugin((nuxtApp) => {
   const UIStore = useUIStore()

@@ -5,10 +5,6 @@ import { fileURLToPath } from "url"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
-  future: {
-    compatibilityVersion: 4,
-  },
-
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
@@ -21,6 +17,10 @@ export default defineNuxtConfig({
   alias: {
     "@vease": __dirname + "/app/",
     "@ogw_front": "@geode/opengeodeweb-front/app/",
+  },
+
+  imports: {
+    scan: false,
   },
 
   modules: [
@@ -100,9 +100,6 @@ export default defineNuxtConfig({
     },
   },
 
-  imports: {
-    dirs: ["stores", "@geode/opengeodeweb-front/app/stores"],
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => ["md-linedivider"].includes(tag),

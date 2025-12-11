@@ -51,8 +51,11 @@
 </template>
 
 <script setup>
+  import { useFeedbackStore } from "@ogw_front/stores/feedback"
+  import { useUIStore } from "@vease/stores/UI"
+
   const UIStore = useUIStore()
-  const feedback_store = useFeedbackStore()
+  const feedbackStore = useFeedbackStore()
 
   const isDragging = ref(false)
   let dragLeaveTimeout = null
@@ -80,7 +83,7 @@
     clearTimeout(dragLeaveTimeout)
 
     if (!e.dataTransfer) {
-      feedback_store.add_error(
+      feedbackStore.add_error(
         500,
         "/internal",
         "Internal error",
@@ -93,14 +96,14 @@
     const files = e.dataTransfer.files
 
     if (files.length === 0) {
-      feedback_store.add_error(
+      feedbackStore.add_error(
         500,
         "/internal",
         "Internal error",
         "No file dropped.",
       )
     } else {
-      feedback_store.add_success(`${files.length} file(s) dropped`)
+      feedbackStore.add_success(`${files.length} file(s) dropped`)
       UIStore.setDroppedFiles(Array.from(files))
       UIStore.setShowStepper(true)
     }

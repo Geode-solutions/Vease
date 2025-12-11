@@ -162,10 +162,12 @@
 <script setup>
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
-  import Status from "@ogw_front/utils/status.js"
+  import Status from "@ogw_front/utils/status"
+  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected"
+  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useViewerStore } from "@ogw_front/stores/viewer"
 
   const version = useRuntimeConfig().public.VERSION
-  const infraStore = useInfraStore()
   const geodeStore = useGeodeStore()
   const viewerStore = useViewerStore()
 

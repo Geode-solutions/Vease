@@ -71,7 +71,7 @@
     </v-main>
 
     <v-progress-linear
-      v-if="infra_store.microservices_busy"
+      v-if="infraStore.microservices_busy"
       indeterminate
       color="white"
     />
@@ -80,18 +80,20 @@
 
 <script setup>
   // Third party imports
-  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
-  import InfraConnected from "@ogw_front/components/InfraConnected.vue"
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
+  import InfraConnected from "@ogw_front/components/InfraConnected"
 
   // Local imports
-  import CreateTools from "@vease/components/CreateTools.vue"
-  import FullScrenDropZone from "@vease/components/FullScrenDropZone.vue"
-  import StepImport from "@vease/components/StepImport.vue"
-  import TopBar from "@vease/components/Layout/TopBar.vue"
-  import SideBar from "@vease/components/Layout/SideBar.vue"
+  import CreateTools from "@vease/components/CreateTools"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
+  import StepImport from "@vease/components/StepImport"
+  import TopBar from "@vease/components/Layout/TopBar"
+  import SideBar from "@vease/components/Layout/SideBar"
 
+  import { useUIStore } from "@vease/stores/UI"
+  import { useInfraStore } from "@ogw_front/stores/infra"
   const UIStore = useUIStore()
-  const infra_store = useInfraStore()
+  const infraStore = useInfraStore()
 
   const handleMouseMove = (e) => {
     const screenWidth = window.innerWidth

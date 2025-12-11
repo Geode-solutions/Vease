@@ -1,4 +1,5 @@
 import { BroadcastChannel, createLeaderElection } from "broadcast-channel"
+import { createPinia } from "pinia"
 
 function serialize(obj, keysToUpdate) {
   obj = Object.fromEntries(
@@ -61,7 +62,12 @@ function PiniaSharedState() {
 }
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  nuxtApp.$pinia.use(PiniaSharedState())
+  const { $pinia } = nuxtApp
+  if (!$pinia) {
+    console.warn("Pinia instance not available; skipping shared state plugin.")
+    return
+  }
+  $pinia.use(PiniaSharedState())
 })
 
 console.log("PINIA PLUGIN")

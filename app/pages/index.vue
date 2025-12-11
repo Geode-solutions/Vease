@@ -1,5 +1,5 @@
 <template>
-  <Launcher v-if="infra_store.status != Status.CREATED" />
+  <Launcher v-if="infraStore.status != Status.CREATED" />
   <v-card
     v-else
     ref="cardContainer"
@@ -24,11 +24,18 @@
 
 <script setup>
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
-  import HybridRenderingView from "@ogw_front/components/HybridRenderingView.vue"
-  import Launcher from "@ogw_front/components/Launcher.vue"
-  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree.vue"
-  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu.vue"
-  import Status from "@ogw_front/utils/status.js"
+  import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
+  import Launcher from "@ogw_front/components/Launcher"
+  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
+  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
+  import Status from "@ogw_front/utils/status"
+  import { useInfraStore } from "@ogw_front/stores/infra"
+  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useViewerStore } from "@ogw_front/stores/viewer"
+  import { useDataStyleStore } from "@ogw_front/stores/data_style"
+  import { useMenuStore } from "@ogw_front/stores/menu"
+
+  console.log("Status", Status)
 
   const query = useRoute().query
   if (query.geode_port) {
@@ -48,7 +55,11 @@
     viewerStore.$patch({ default_local_port: query.viewer_port })
   }
 
-  const infra_store = useInfraStore()
+  const infraStore = useInfraStore()
+
+  console.log("test", import.meta.client)
+  console.log("infraStore.status", infraStore.status)
+
   const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
   const dataStyleStore = useDataStyleStore()

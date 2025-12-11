@@ -94,6 +94,8 @@
 </template>
 
 <script setup>
+  import { useUIStore } from "@vease/stores/UI"
+
   const UIStore = useUIStore()
   const selectedTool = ref(null)
 
