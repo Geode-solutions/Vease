@@ -6,6 +6,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   runtimeConfig: {
+    app: {
+      baseURL: "./",
+    },
     public: {
       VERSION: package_json.version,
       PROJECT: process.env.PROJECT,
@@ -53,7 +56,7 @@ export default defineNuxtConfig({
         },
       },
     ],
-    // disableDefaultOptions: true,
+    disableDefaultOptions: true,
   },
 
   vuetify: {
@@ -99,7 +102,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
-    // baseURL: "./", // Fixes relative paths in packaged app
+    baseURL: "./", // Fixes relative paths in packaged app
   },
 
   vue: {
@@ -135,13 +138,13 @@ export default defineNuxtConfig({
     },
   },
 
-  // nitro: {
-  //   runtimeConfig: {
-  //     app: {
-  //       baseURL: "./",
-  //     },
-  //   },
-  // },
+  nitro: {
+    runtimeConfig: {
+      app: {
+        baseURL: "./",
+      },
+    },
+  },
 
   router: {
     options: {
