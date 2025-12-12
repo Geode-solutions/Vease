@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Desktop and cloud software for data visualization",
   "main": "dist-electron/main.js",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
