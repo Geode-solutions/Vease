@@ -8,7 +8,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     app: {
       baseURL: "./",
-      buildAssetsDir: "/",
     },
     public: {
       VERSION: package_json.version,
@@ -104,7 +103,6 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
     baseURL: "./", // Fixes relative paths in packaged app
-    buildAssetsDir: "/",
   },
 
   vue: {
