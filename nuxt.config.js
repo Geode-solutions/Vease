@@ -146,6 +146,12 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    app: {
+      baseURL: "./",
+    },
+  },
+
   router: {
     options: {
       hashMode:
