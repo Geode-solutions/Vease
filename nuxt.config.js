@@ -99,6 +99,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
     },
+    baseURL: "/",
   },
 
   vue: {
