@@ -1,4 +1,6 @@
-export default defineNuxtPlugin(() => {
+import { useUIStore } from "../stores/UI"
+
+export default defineNuxtPlugin((nuxtApp) => {
   const UIStore = useUIStore()
 
   UIStore.registerToolComponent({
