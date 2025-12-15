@@ -86,6 +86,8 @@
 
 <script setup>
   import { useProjectManager } from "@ogw_front/composables/project_manager"
+  import { useUIStore } from "@vease/stores/UI"
+
   const UIStore = useUIStore()
 
   const drawer = ref(true)

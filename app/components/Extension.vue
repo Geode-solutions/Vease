@@ -555,8 +555,10 @@
 </template>
 
 <script setup>
-  import { formatRelativeTime } from "@/utils/formatDate.js"
-  import { useExtensionMetadata } from "@/composables/useExtensionMetadata.js"
+  import { formatRelativeTime } from "@/utils/formatDate"
+  import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
+  import { useExtensionsStore } from "@vease/stores/extensions"
+  import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
   const extensionsStore = useExtensionsStore()

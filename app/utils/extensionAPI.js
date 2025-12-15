@@ -1,6 +1,9 @@
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
 import { importItem } from "@ogw_front/utils/file_import_workflow.js"
+import { useAppStore } from "@ogw_front/stores/app"
+import { useFeedbackStore } from "@ogw_front/stores/feedback"
+import { useGeodeStore } from "@ogw_front/stores/geode"
 
 export class VeaseExtensionAPI {
   registerTool(extensionId, toolDefinition) {

@@ -1,3 +1,5 @@
+import { useExtensionsStore } from "@vease/stores/extensions"
+
 export const useUIStore = defineStore("UI", () => {
   const showDropZone = ref(false)
   const showStepper = ref(false)

@@ -1,3 +1,5 @@
+import { useUIStore } from "@vease/stores/UI"
+
 export function useExtensionMetadata() {
   const UIStore = useUIStore()
 

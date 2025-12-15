@@ -10,7 +10,7 @@ import {
   run_viewer,
   delete_folder_recursive,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { create_new_window } from "/utils/desktop.js"
+import { create_new_window, run_extensions } from "/utils/desktop.js"
 import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 import os from "os"
