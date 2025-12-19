@@ -4,6 +4,7 @@ COPY . .
 
 ENV TZ=Europe/Paris
 
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ca-certificates \
@@ -20,6 +21,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         libffi-dev \
         libsqlite3-dev \
         libbz2-dev \
+        libc6-dev \
         liblzma-dev \
         tk-dev \
         uuid-dev \
@@ -45,10 +47,11 @@ RUN add-apt-repository ppa:deadsnakes/ppa -y && \
 
 RUN npm install
 RUN npm list
-RUN npm run install:microservices
-RUN npm run build:microservices
+RUN npm run install:viewer
+RUN npm run build:viewer
 RUN ls
-RUN npm run build:desktop
+
+CMD ["./vease-viewer"]
 
 
 
