@@ -260,15 +260,21 @@
 
     loading.value = true
     try {
-      const response = await geodeStore.request(voiSchema, voiData, {
-        response_function: async (response) => {
-          const dataToImport = {
-            ...response._data,
-          }
-          await importItem(dataToImport)
-          closeDrawer()
+      const response = await api_fetch(
+        {
+          schema: voiSchema,
+          params: voiData,
         },
-      })
+        {
+          response_function: async (response) => {
+            const dataToImport = {
+              ...response._data,
+            }
+            await importItem(dataToImport)
+            closeDrawer()
+          },
+        },
+      )
     } catch (error) {
     } finally {
       loading.value = false

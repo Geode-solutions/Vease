@@ -110,6 +110,11 @@
       icon: "mdi-puzzle",
       click: () => toggleExtensions(),
     },
+    {
+      title: "Data Manager",
+      icon: "mdi-database-cog",
+      click: () => navigateTo("/data-manager"),
+    },
     // {
     //   title: "New Project",
     //   icon: "mdi-plus",

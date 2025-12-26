@@ -174,15 +174,21 @@
 
     loading.value = true
     try {
-      await geodeStore.request(pointSchema, pointData, {
-        response_function: async (response) => {
-          const dataToImport = {
-            ...response._data,
-          }
-          await importItem(dataToImport)
-          closeDrawer()
+      await api_fetch(
+        {
+          schema: pointSchema,
+          params: pointData,
         },
-      })
+        {
+          response_function: async (response) => {
+            const dataToImport = {
+              ...response._data,
+            }
+            await importItem(dataToImport)
+            closeDrawer()
+          },
+        },
+      )
     } finally {
       loading.value = false
     }

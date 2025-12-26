@@ -14,7 +14,8 @@
       <SideBar />
       <FeedBackSnackers />
 
-      <InfraConnected>
+      <Launcher v-if="!infraStore.microservices_connected" />
+      <template v-else>
         <div
           class="icon-container"
           :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
@@ -67,7 +68,7 @@
         </v-navigation-drawer>
 
         <FullScrenDropZone />
-      </InfraConnected>
+      </template>
     </v-main>
 
     <v-progress-linear
@@ -92,7 +93,7 @@
 <script setup>
   // Third party imports
   import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
-  import InfraConnected from "@ogw_front/components/InfraConnected"
+  import Launcher from "@ogw_front/components/Launcher"
 
   // Local imports
   import CreateTools from "@vease/components/CreateTools"
@@ -105,6 +106,15 @@
   import { useInfraStore } from "@ogw_front/stores/infra"
   const UIStore = useUIStore()
   const infraStore = useInfraStore()
+  const dataBaseStore = useDataBaseStore()
+  const treeviewStore = useTreeviewStore()
+  const hybridViewerStore = useHybridViewerStore()
+
+  onMounted(() => {
+    dataBaseStore.clear()
+    treeviewStore.clear()
+    hybridViewerStore.clear()
+  })
 
   const handleMouseMove = (e) => {
     const screenWidth = window.innerWidth

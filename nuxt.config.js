@@ -12,15 +12,16 @@ export default defineNuxtConfig({
       RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     },
   },
+  srcDir: "app",
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": __dirname + "/app/",
-    "@ogw_front": "@geode/opengeodeweb-front/app/",
+    "@vease": path.join(__dirname, "app"),
+    "@ogw_front": "@geode/opengeodeweb-front/",
   },
 
   imports: {
-    scan: false,
+    dirs: ["stores", "composables", "utils"],
   },
 
   modules: [
@@ -28,16 +29,9 @@ export default defineNuxtConfig({
       ? null
       : "nuxt-electron",
     "vuetify-nuxt-module",
-    [
-      "@pinia/nuxt",
-      {
-        autoImports: ["storeToRefs", "defineStore"],
-      },
-    ],
-    "@vueuse/nuxt",
   ].filter(Boolean),
 
-  plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
+  plugins: ["@geode/opengeodeweb-front/plugins/auto_store_register.js"],
 
   ssr: false,
   electron: {

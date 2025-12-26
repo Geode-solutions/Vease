@@ -51,6 +51,7 @@
   "homepage": "https://github.com/Geode-solutions/Vease#readme",
   "devDependencies": {
     "@nuxt/test-utils": "3.20.1",
+    "@pinia/nuxt": "0.11.3",
     "@playwright/test": "1.54.1",
     "concurrently": "9.2.1",
     "cross-env": "10.0.0",
@@ -58,6 +59,7 @@
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "1.7.1",
     "nuxt-electron": "0.7.0",
+    "pinia": "3.0.4",
     "playwright": "1.54.1",
     "std-env": "3.9.0",
     "vuetify-nuxt-module": "0.18.7"
@@ -70,7 +72,8 @@
     "@geode/vease-back": "0.0.0",
     "@geode/vease-viewer": "0.0.0",
     "broadcast-channel": "7.1.0",
-    "bufferutil": "4.0.9",
+    "bufferutil": "^4.0.9",
+    "dexie": "^4.2.1",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
     "get-port-please": "3.2.0",

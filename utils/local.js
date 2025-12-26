@@ -10,18 +10,20 @@ import {
   executable_name,
   executable_path,
   run_browser,
-} from "@geode/opengeodeweb-front/app/utils/local.js"
+} from "@geode/opengeodeweb-front/utils/local.js"
 
 function back_microservice() {
   const back_path = executable_path(path.join("microservices", "back"))
-  const back_name = executable_name("vease-back")
-  return { back_name, back_path }
+  const back_bin = executable_name("vease-back")
+  const back_full_path = path.join(back_path, back_bin)
+  return { back_name: back_full_path, back_path: "" }
 }
 
 function viewer_microservice() {
   const viewer_path = executable_path(path.join("microservices", "viewer"))
-  const viewer_name = executable_name("vease-viewer")
-  return { viewer_name, viewer_path }
+  const viewer_bin = executable_name("vease-viewer")
+  const viewer_full_path = path.join(viewer_path, viewer_bin)
+  return { viewer_name: viewer_full_path, viewer_path: "" }
 }
 
 function run_browser_wrapper(script_name) {

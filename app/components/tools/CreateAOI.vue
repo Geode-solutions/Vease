@@ -326,15 +326,21 @@
 
     loading.value = true
     try {
-      const response = await geodeStore.request(aoiSchema, aoiData, {
-        response_function: async (response) => {
-          const dataToImport = {
-            ...response._data,
-          }
-          await importItem(dataToImport)
-          closeDrawer()
+      const response = await api_fetch(
+        {
+          schema: aoiSchema,
+          params: aoiData,
         },
-      })
+        {
+          response_function: async (response) => {
+            const dataToImport = {
+              ...response._data,
+            }
+            await importItem(dataToImport)
+            closeDrawer()
+          },
+        },
+      )
     } catch (error) {
     } finally {
       loading.value = false
