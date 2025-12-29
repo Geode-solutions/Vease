@@ -279,6 +279,7 @@
   const dataBaseStore = useDataBaseStore()
   const hybridViewerStore = useHybridViewerStore()
   const treeviewStore = useTreeviewStore()
+  const dataStyleStore = useDataStyleStore()
 
   const activeTab = ref("imported")
   const items = ref([])
@@ -392,10 +393,8 @@
           item.object_type,
         )
         await hybridViewerStore.addItem(item.id)
-        const dataStyleStore = useDataStyleStore()
         await dataStyleStore.setVisibility(item.id, true)
       } else {
-        const dataStyleStore = useDataStyleStore()
         await dataStyleStore.setVisibility(item.id, false)
         treeviewStore.removeItem(item.id)
         await hybridViewerStore.removeItem(item.id)
@@ -413,10 +412,7 @@
     if (selected.value.length === 0) return
     
     const firstItem = items.value.find(i => i.id === selected.value[0])
-    const targetVisibility = firstItem ? !firstItem.visible : true
-    
     try {
-      const dataStyleStore = useDataStyleStore()
       for (const id of selected.value) {
         const item = items.value.find(i => i.id === id)
         if (item && item.visible !== targetVisibility) {
