@@ -102,7 +102,7 @@
   const items = ref([
     {
       title: "Home",
-      icon: "mdi-home",
+      icon: "mdi-rotate-orbit",
       click: () => navigateTo("/"),
     },
     {
