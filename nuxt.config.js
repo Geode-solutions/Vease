@@ -13,10 +13,11 @@ export default defineNuxtConfig({
     },
   },
   extends: ["@geode/opengeodeweb-front"],
+  srcDir: "app",
 
   alias: {
     "@vease": __dirname + "/app/",
-    "@ogw_front": "@geode/opengeodeweb-front/app/",
+    "@ogw_front": "@geode/opengeodeweb-front/",
   },
 
   imports: {
@@ -37,7 +38,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ].filter(Boolean),
 
-  plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
+  plugins: ["@geode/opengeodeweb-front/plugins/auto_store_register.js"],
 
   ssr: false,
   electron: {

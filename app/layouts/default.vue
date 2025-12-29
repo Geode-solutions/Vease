@@ -80,15 +80,15 @@
 
 <script setup>
   // Third party imports
-  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
-  import InfraConnected from "@ogw_front/components/InfraConnected"
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue"
+  import InfraConnected from "@ogw_front/components/InfraConnected.vue"
 
   // Local imports
-  import CreateTools from "@vease/components/CreateTools"
-  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
-  import StepImport from "@vease/components/StepImport"
-  import TopBar from "@vease/components/Layout/TopBar"
-  import SideBar from "@vease/components/Layout/SideBar"
+  import CreateTools from "@vease/components/CreateTools.vue"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone.vue"
+  import StepImport from "@vease/components/StepImport.vue"
+  import TopBar from "@vease/components/Layout/TopBar.vue"
+  import SideBar from "@vease/components/Layout/SideBar.vue"
 
   import { useUIStore } from "@vease/stores/UI"
   import { useInfraStore } from "@ogw_front/stores/infra"
