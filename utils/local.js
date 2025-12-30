@@ -12,14 +12,16 @@ import {
   run_browser,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
 
-function back_microservice() {
-  const back_path = executable_path(path.join("microservices", "back"))
+async function back_microservice() {
+  const back_path = await executable_path(path.join("microservices", "back"))
   const back_name = executable_name("vease-back")
   return { back_name, back_path }
 }
 
-function viewer_microservice() {
-  const viewer_path = executable_path(path.join("microservices", "viewer"))
+async function viewer_microservice() {
+  const viewer_path = await executable_path(
+    path.join("microservices", "viewer"),
+  )
   const viewer_name = executable_name("vease-viewer")
   return { viewer_name, viewer_path }
 }
