@@ -461,11 +461,13 @@
   })
 
   function isSelected(item) {
-    return selectedIds.value.some(selected => selected.id === item.id)
+    return selectedIds.value.some((selected) => selected.id === item.id)
   }
 
   function toggleSelection(item) {
-    const index = selectedIds.value.findIndex(selected => selected.id === item.id)
+    const index = selectedIds.value.findIndex(
+      (selected) => selected.id === item.id,
+    )
     if (index > -1) {
       selectedIds.value.splice(index, 1)
     } else {
@@ -574,13 +576,15 @@
     await hybridViewerStore.removeItem(itemToDelete.value.id)
     treeviewStore.removeItem(itemToDelete.value.id)
     items.value = items.value.filter((i) => i.id !== itemToDelete.value.id)
-    selectedIds.value = selectedIds.value.filter((selected) => selected.id !== itemToDelete.value.id)
+    selectedIds.value = selectedIds.value.filter(
+      (selected) => selected.id !== itemToDelete.value.id,
+    )
     deleteSingleDialog.value = false
     showFeedback("Item deleted")
   }
 
   async function deleteSelected() {
-    const idsToDelete = selectedIds.value.map(item => item.id)
+    const idsToDelete = selectedIds.value.map((item) => item.id)
     for (const id of idsToDelete) {
       await dataBaseStore.deleteItem(id)
       await hybridViewerStore.removeItem(id)
@@ -665,7 +669,7 @@
       rgba(var(--v-theme-primary), 0.2) 0%,
       rgba(var(--v-theme-primary), 0.1) 100%
     ) !important;
-    box-shadow: 
+    box-shadow:
       0 0 0 1px rgba(var(--v-theme-primary), 0.3),
       0 8px 32px rgba(var(--v-theme-primary), 0.2);
   }
