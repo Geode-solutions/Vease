@@ -27,14 +27,14 @@ let back_port = 0
 let viewer_port = 0
 
 ipcMain.handle("run_back", async (_event) => {
-  const { back_name, back_path } = back_microservice()
+  const { back_name, back_path } = await back_microservice()
   back_port = await run_back(back_name, back_path, {
     project_folder_path: project_folder_path,
   })
   return back_port
 })
 ipcMain.handle("run_viewer", async (_event) => {
-  const { viewer_name, viewer_path } = viewer_microservice()
+  const { viewer_name, viewer_path } = await viewer_microservice()
   viewer_port = await run_viewer(viewer_name, viewer_path, {
     project_folder_path: project_folder_path,
   })
