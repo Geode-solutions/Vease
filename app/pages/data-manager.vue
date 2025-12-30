@@ -85,23 +85,23 @@
             hover
             class="custom-table"
           >
-            <template v-slot:item.displayed_name="{ item }">
+            <template v-slot:item.name="{ item }">
               <span
                 class="font-weight-medium cursor-pointer text-white text-decoration-underline"
                 @click="openRenameDialog(item)"
               >
-                {{ item.displayed_name }}
+                {{ item.name }}
               </span>
             </template>
 
-            <template v-slot:item.geode_object="{ item }">
+            <template v-slot:item.geode_object_type="{ item }">
               <div class="d-flex flex-column py-2 align-start">
                 <v-chip
                   size="x-small"
                   variant="outlined"
                   class="type-chip mb-1 d-inline-flex"
                 >
-                  {{ item.geode_object }}
+                  {{ item.geode_object_type }}
                 </v-chip>
                 <span class="text-caption text-white-opacity-60">{{
                   getItemMetadata(item)
@@ -193,14 +193,14 @@
                   <div
                     class="text-subtitle-1 font-weight-bold text-truncate mb-1"
                   >
-                    {{ item.displayed_name }}
+                    {{ item.name }}
                   </div>
                   <v-chip
                     size="x-small"
                     color="primary"
                     variant="flat"
                     class="mb-4 d-inline-flex"
-                    >{{ item.geode_object }}</v-chip
+                    >{{ item.geode_object_type }}</v-chip
                   >
                   <div class="text-caption text-white-opacity-60">
                     {{ formatSmartDate(item.created_at) }}
@@ -270,7 +270,7 @@
           <div
             class="bg-grey-lighten-4 rounded-lg pa-3 my-4 text-grey-darken-3 font-weight-bold border"
           >
-            {{ itemToDelete?.displayed_name }}
+            {{ itemToDelete?.name }}
           </div>
         </v-card-text>
         <v-card-actions class="px-8 pb-8"
@@ -394,8 +394,8 @@
   const searchInput = useTemplateRef("searchInput")
 
   const headers = [
-    { title: "Name", key: "displayed_name", sortable: true },
-    { title: "Type", key: "geode_object", sortable: true },
+    { title: "Name", key: "name", sortable: true },
+    { title: "Type", key: "geode_object_type", sortable: true },
     { title: "Date", key: "created_at", sortable: true },
     { title: "Visibility", key: "visible", sortable: false, align: "center" },
     { title: "Actions", key: "actions", sortable: false, align: "end" },
@@ -418,7 +418,7 @@
     if (!search.value) return items.value
     const lower = search.value.toLowerCase()
     return items.value.filter((i) =>
-      i.displayed_name?.toLowerCase().includes(lower),
+      i.name?.toLowerCase().includes(lower),
     )
   })
 
@@ -438,8 +438,8 @@
     item.visible = newVisible
     if (newVisible) {
       await treeviewStore.addItem(
-        item.geode_object,
-        item.displayed_name,
+        item.geode_object_type,
+        item.name,
         item.id,
         item.viewer_type,
       )
@@ -476,20 +476,20 @@
 
   function openRenameDialog(item) {
     itemToRename.value = item
-    newItemName.value = item.displayed_name
+    newItemName.value = item.name
     renameDialog.value = true
   }
 
   async function confirmRename() {
     if (!newItemName.value || !itemToRename.value) return
     try {
-      itemToRename.value.displayed_name = newItemName.value
+      itemToRename.value.name = newItemName.value
       await dataBaseStore.updateItem(itemToRename.value.id, {
-        displayed_name: newItemName.value,
+        name: newItemName.value,
       })
       treeviewStore.removeItem(itemToRename.value.id)
       await treeviewStore.addItem(
-        itemToRename.value.geode_object,
+        itemToRename.value.geode_object_type,
         newItemName.value,
         itemToRename.value.id,
         itemToRename.value.viewer_type,
