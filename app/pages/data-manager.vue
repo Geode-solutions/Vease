@@ -47,12 +47,12 @@
         <div class="flex-grow-1 overflow-y-auto pa-4">
           <v-expand-transition>
             <div
-              v-if="selected.length > 0"
+              v-if="selectedIds.length > 0"
               class="mb-4 pa-2 batch-banner rounded-lg d-flex align-center justify-space-between"
             >
               <div class="d-flex align-center ga-2">
                 <span class="text-subtitle-2 text-white px-2"
-                  >{{ selected.length }} items selected</span
+                  >{{ selectedIds.length }} items selected</span
                 >
                 <v-divider vertical class="mx-2" />
                 <v-btn
@@ -69,14 +69,14 @@
                 size="x-small"
                 variant="text"
                 color="white"
-                @click="selected = []"
+                @click="selectedIds = []"
               />
             </div>
           </v-expand-transition>
 
           <v-data-table
             v-if="viewMode === 'list'"
-            v-model="selected"
+            v-model="selectedIds"
             :headers="headers"
             :items="items"
             :search="search"
@@ -84,10 +84,12 @@
             theme="dark"
             hover
             class="custom-table"
+            item-value="id"
+            return-object
           >
             <template v-slot:item.name="{ item }">
               <span
-                class="font-weight-medium cursor-pointer text-white text-decoration-underline"
+                class="font-weight-medium cursor-pointer text-white title-hover"
                 @click="openRenameDialog(item)"
               >
                 {{ item.name }}
@@ -188,10 +190,20 @@
               md="4"
               lg="3"
             >
-              <v-card variant="outlined" class="glass-card h-100">
+              <v-card
+                variant="outlined"
+                class="glass-card h-100 cursor-pointer"
+                :class="{ 'card-selected': isSelected(item) }"
+                @click="toggleSelection(item)"
+              >
+                <div v-if="isSelected(item)" class="selection-indicator">
+                  <v-icon color="white" size="20">mdi-check-circle</v-icon>
+                </div>
+
                 <v-card-text class="pa-4 text-white">
                   <div
-                    class="text-subtitle-1 font-weight-bold text-truncate mb-1"
+                    class="text-subtitle-1 font-weight-bold text-truncate mb-2 title-clickable"
+                    @click.stop="openRenameDialog(item)"
                   >
                     {{ item.name }}
                   </div>
@@ -199,14 +211,17 @@
                     size="x-small"
                     color="primary"
                     variant="flat"
-                    class="mb-4 d-inline-flex"
+                    class="mb-3"
                     >{{ item.geode_object_type }}</v-chip
                   >
                   <div class="text-caption text-white-opacity-60">
                     {{ formatSmartDate(item.created_at) }}
                   </div>
                 </v-card-text>
-                <v-card-actions class="bg-white-opacity-5">
+
+                <v-divider class="border-opacity-10" />
+
+                <v-card-actions class="pa-2">
                   <v-btn
                     icon
                     size="small"
@@ -214,9 +229,12 @@
                     color="white"
                     @click.stop="toggleVisibility(item)"
                   >
-                    <v-icon>{{
+                    <v-icon size="20">{{
                       item.visible ? "mdi-eye" : "mdi-eye-off"
                     }}</v-icon>
+                    <v-tooltip activator="parent" location="top"
+                      >Toggle Visibility</v-tooltip
+                    >
                   </v-btn>
                   <v-spacer />
                   <v-btn
@@ -226,7 +244,10 @@
                     color="white"
                     @click.stop="focusCamera(item)"
                   >
-                    <v-icon>mdi-target</v-icon>
+                    <v-icon size="20">mdi-target</v-icon>
+                    <v-tooltip activator="parent" location="top"
+                      >Focus Camera</v-tooltip
+                    >
                   </v-btn>
                   <v-btn
                     icon
@@ -235,7 +256,22 @@
                     color="white"
                     @click.stop="isolateItem(item)"
                   >
-                    <v-icon>mdi-filter-variant</v-icon>
+                    <v-icon size="20">mdi-filter-variant</v-icon>
+                    <v-tooltip activator="parent" location="top"
+                      >Isolate</v-tooltip
+                    >
+                  </v-btn>
+                  <v-btn
+                    icon
+                    size="small"
+                    variant="text"
+                    color="white"
+                    @click.stop="openRenameDialog(item)"
+                  >
+                    <v-icon size="20">mdi-pencil</v-icon>
+                    <v-tooltip activator="parent" location="top"
+                      >Rename</v-tooltip
+                    >
                   </v-btn>
                   <v-btn
                     icon
@@ -244,7 +280,10 @@
                     color="error"
                     @click.stop="confirmDelete(item)"
                   >
-                    <v-icon>mdi-delete</v-icon>
+                    <v-icon size="20">mdi-delete</v-icon>
+                    <v-tooltip activator="parent" location="top"
+                      >Delete</v-tooltip
+                    >
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -301,7 +340,7 @@
         >
         <v-card-text class="text-grey-darken-1 px-8">
           Are you sure you want to delete
-          <strong>{{ selected.length }}</strong> items?
+          <strong>{{ selectedIds.length }}</strong> items?
         </v-card-text>
         <v-card-actions class="px-8 pb-8"
           ><v-spacer /><v-btn
@@ -380,8 +419,9 @@
   const loading = ref(false)
   const search = ref("")
   const viewMode = ref("list")
-  const selected = ref([])
   const items = ref([])
+
+  const selectedIds = ref([])
 
   const deleteSelectedDialog = ref(false)
   const deleteSingleDialog = ref(false)
@@ -419,6 +459,19 @@
     const lower = search.value.toLowerCase()
     return items.value.filter((i) => i.name?.toLowerCase().includes(lower))
   })
+
+  function isSelected(item) {
+    return selectedIds.value.some(selected => selected.id === item.id)
+  }
+
+  function toggleSelection(item) {
+    const index = selectedIds.value.findIndex(selected => selected.id === item.id)
+    if (index > -1) {
+      selectedIds.value.splice(index, 1)
+    } else {
+      selectedIds.value.push(item)
+    }
+  }
 
   async function loadData() {
     loading.value = true
@@ -521,18 +574,20 @@
     await hybridViewerStore.removeItem(itemToDelete.value.id)
     treeviewStore.removeItem(itemToDelete.value.id)
     items.value = items.value.filter((i) => i.id !== itemToDelete.value.id)
+    selectedIds.value = selectedIds.value.filter((selected) => selected.id !== itemToDelete.value.id)
     deleteSingleDialog.value = false
     showFeedback("Item deleted")
   }
 
   async function deleteSelected() {
-    for (const item of selected.value) {
-      await dataBaseStore.deleteItem(item.id)
-      await hybridViewerStore.removeItem(item.id)
-      treeviewStore.removeItem(item.id)
+    const idsToDelete = selectedIds.value.map(item => item.id)
+    for (const id of idsToDelete) {
+      await dataBaseStore.deleteItem(id)
+      await hybridViewerStore.removeItem(id)
+      treeviewStore.removeItem(id)
     }
-    items.value = items.value.filter((i) => !selected.value.includes(i))
-    selected.value = []
+    items.value = items.value.filter((i) => !idsToDelete.includes(i.id))
+    selectedIds.value = []
     deleteSelectedDialog.value = false
     showFeedback("Selected items deleted")
   }
@@ -546,7 +601,7 @@
   const { delete: del } = useMagicKeys()
   whenever(del, () => {
     if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return
-    if (selected.value.length > 0) deleteSelectedDialog.value = true
+    if (selectedIds.value.length > 0) deleteSelectedDialog.value = true
   })
 
   useEventListener(document, "keydown", (e) => {
@@ -590,14 +645,69 @@
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.03) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.25s ease;
+    position: relative;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateY(-2px);
+  }
+
+  .card-selected {
+    border-color: rgb(var(--v-theme-primary)) !important;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-primary), 0.2) 0%,
+      rgba(var(--v-theme-primary), 0.1) 100%
+    ) !important;
+    box-shadow: 
+      0 0 0 1px rgba(var(--v-theme-primary), 0.3),
+      0 8px 32px rgba(var(--v-theme-primary), 0.2);
+  }
+
+  .card-selected:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-primary), 0.25) 0%,
+      rgba(var(--v-theme-primary), 0.15) 100%
+    ) !important;
+  }
+
+  .selection-indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(var(--v-theme-primary), 0.9);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .title-clickable {
+    transition: color 0.2s ease;
+  }
+
+  .title-clickable:hover {
+    color: rgb(var(--v-theme-primary)) !important;
   }
 
   .batch-banner {
-    background: rgba(var(--v-theme-primary), 0.2);
-    border: 1px solid rgba(var(--v-theme-primary), 0.5);
+    background: rgba(var(--v-theme-primary), 0.15);
+    border: 1px solid rgba(var(--v-theme-primary), 0.3);
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
 
   :deep(.v-data-table-header__content) {
