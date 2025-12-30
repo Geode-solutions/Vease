@@ -417,9 +417,7 @@
   const filteredItems = computed(() => {
     if (!search.value) return items.value
     const lower = search.value.toLowerCase()
-    return items.value.filter((i) =>
-      i.name?.toLowerCase().includes(lower),
-    )
+    return items.value.filter((i) => i.name?.toLowerCase().includes(lower))
   })
 
   async function loadData() {
