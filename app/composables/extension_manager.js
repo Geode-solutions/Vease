@@ -1,6 +1,7 @@
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { useAppStore } from "@ogw_front/stores/app"
 import { useGeodeStore } from "@ogw_front/stores/geode"
+import { useInfraStore } from "@ogw_front/stores/infra"
 
 export function useExtensionManager() {
   const appStore = useAppStore()

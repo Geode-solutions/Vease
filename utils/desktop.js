@@ -1,6 +1,5 @@
 import { app, BrowserWindow } from "electron"
 import path from "path"
-import Conf from "conf"
 
 import { fileURLToPath } from "url"
 
@@ -86,8 +85,8 @@ function create_new_window() {
 }
 
 function run_extensions() {
-  const config = new Conf({ projectName: "Vease" })
-  config.set("unicorn", "🦄")
+  const a = 1
+  console.log(a)
 }
 
 export { create_new_window, run_extensions }

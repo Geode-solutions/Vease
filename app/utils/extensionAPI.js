@@ -4,6 +4,7 @@ import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 import { useAppStore } from "@ogw_front/stores/app"
 import { useFeedbackStore } from "@ogw_front/stores/feedback"
 import { useGeodeStore } from "@ogw_front/stores/geode"
+import { useUIStore } from "@vease/stores/UI"
 
 export class VeaseExtensionAPI {
   registerTool(extensionId, toolDefinition) {

@@ -559,6 +559,7 @@
   import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
   import { useExtensionsStore } from "@vease/stores/extensions"
   import { useUIStore } from "@vease/stores/UI"
+  import { useExtensionManager } from "@vease/composables/extension_manager"
 
   const UIStore = useUIStore()
   const extensionsStore = useExtensionsStore()
