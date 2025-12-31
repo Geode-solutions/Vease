@@ -1,4 +1,4 @@
-FROM ubuntu:jammy-20251013
+FROM ubuntu:22.04
 
 COPY . .
 
