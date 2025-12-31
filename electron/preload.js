@@ -13,4 +13,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
     console.log("PRELOAD new_window", args)
     ipcRenderer.invoke("new_window", args)
   },
+  run_extension: async (extensionId, executablePath) => {
+    console.log("PRELOAD run_extension", extensionId, executablePath)
+    const result = await ipcRenderer.invoke("run_extension", {
+      extensionId,
+      executablePath,
+    })
+    return result
+  },
 })

@@ -84,4 +84,9 @@ function create_new_window() {
   return win
 }
 
-export { create_new_window }
+function run_extensions() {
+  const a = 1
+  console.log(a)
+}
+
+export { create_new_window, run_extensions }

@@ -10,7 +10,7 @@ import {
   run_viewer,
   delete_folder_recursive,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { create_new_window } from "/utils/desktop.js"
+import { create_new_window, run_extensions } from "/utils/desktop.js"
 import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 import os from "os"
@@ -45,6 +45,61 @@ ipcMain.handle("new_window", async (_event) => {
   const _new_window = create_new_window()
 })
 
+// Extension microservices management
+const extensionProcesses = new Map()
+
+ipcMain.handle(
+  "run_extension",
+  async (_event, { extensionId, executablePath }) => {
+    console.log(`[Electron] Launching extension microservice: ${extensionId}`)
+    console.log(`[Electron] Executable path: ${executablePath}`)
+
+    try {
+      const { spawn } = await import("child_process")
+      const getPort = (await import("get-port-please")).getPort
+
+      // Get a free port for the extension microservice
+      const port = await getPort({ portRange: [5001, 5999] })
+      console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
+
+      // Spawn the microservice process
+      const process = spawn(
+        executablePath,
+        ["--port", port.toString(), "--data_folder_path", project_folder_path],
+        {
+          stdio: "inherit",
+        },
+      )
+
+      // Store the process
+      extensionProcesses.set(extensionId, { process, port })
+
+      process.on("error", (error) => {
+        console.error(
+          `[Electron] Extension ${extensionId} process error:`,
+          error,
+        )
+        extensionProcesses.delete(extensionId)
+      })
+
+      process.on("exit", (code) => {
+        console.log(
+          `[Electron] Extension ${extensionId} process exited with code ${code}`,
+        )
+        extensionProcesses.delete(extensionId)
+      })
+
+      return { success: true, port }
+    } catch (error) {
+      console.error(
+        `[Electron] Failed to launch extension ${extensionId}:`,
+        error,
+      )
+      return { success: false, error: error.message }
+    }
+  },
+)
+
 app.whenReady().then(() => {
   mainWindow = create_new_window()
 })
@@ -54,7 +109,24 @@ let cleaned = false
 async function clean_up() {
   return new Promise((resolve) => {
     console.log("Shutting down microservices")
-    Promise.all([kill_back(back_port), kill_viewer(viewer_port)]).then(() => {
+
+    // Kill extension microservices
+    const extensionKillPromises = Array.from(extensionProcesses.values()).map(
+      ({ process, port }) => {
+        return new Promise((resolveKill) => {
+          if (process && !process.killed) {
+            process.kill()
+          }
+          resolveKill()
+        })
+      },
+    )
+
+    Promise.all([
+      kill_back(back_port),
+      kill_viewer(viewer_port),
+      ...extensionKillPromises,
+    ]).then(() => {
       delete_folder_recursive(project_folder_path)
       cleaned = true
       console.log("end clean")

@@ -36,6 +36,7 @@ logs
 vease-back*
 vease-viewer*
 VTK.txt
+/data
 
 # Playwright
 node_modules/
