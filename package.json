@@ -54,13 +54,11 @@
     "@playwright/test": "1.54.1",
     "concurrently": "9.2.1",
     "cross-env": "10.0.0",
-    "electron": "36.4.0",
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "1.7.1",
     "nuxt-electron": "0.7.0",
     "playwright": "1.54.1",
-    "std-env": "3.9.0",
-    "vuetify-nuxt-module": "0.18.7"
+    "std-env": "3.9.0"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
@@ -73,9 +71,8 @@
     "bufferutil": "4.0.9",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
-    "get-port-please": "3.2.0",
     "h3-formidable": "1.0.0",
-    "jszip": "^3.10.1",
-    "utf-8-validate": "^6.0.5"
+    "jszip": "3.10.1",
+    "utf-8-validate": "6.0.5"
   }
 }
