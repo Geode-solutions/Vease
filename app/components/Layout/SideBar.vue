@@ -95,7 +95,7 @@
   const items = ref([
     {
       title: "Home",
-      icon: "mdi-home",
+      icon: "mdi-rotate-orbit",
       click: () => navigateTo("/"),
     },
     // {
@@ -108,6 +108,11 @@
     //   icon: "mdi-folder-outline",
     //   click: () => (openproject.value = true),
     // },
+    {
+      title: "Data Manager",
+      icon: "mdi-database",
+      click: () => navigateTo("/data-manager"),
+    },
     {
       title: "Import Project",
       icon: "mdi-download",

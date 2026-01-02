@@ -9,6 +9,7 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateAOI = ref(false)
   const showCreateVOI = ref(false)
   const toolsDefinitions = ref([])
+  const dataManagerTabs = ref([])
 
   const initializeDefaultTools = () => {
     const defaultTools = [
@@ -38,6 +39,22 @@ export const useUIStore = defineStore("UI", () => {
       }
     } else {
       toolsDefinitions.value.push(newDefinition)
+    }
+  }
+
+  const registerDataManagerTab = (tabDefinition) => {
+    const { id, component, ...rest } = tabDefinition
+    const existingIndex = dataManagerTabs.value.findIndex(
+      (tab) => tab.id === id,
+    )
+    const newDefinition = { id, component, ...rest }
+    if (existingIndex !== -1) {
+      dataManagerTabs.value[existingIndex] = {
+        ...dataManagerTabs.value[existingIndex],
+        ...newDefinition,
+      }
+    } else {
+      dataManagerTabs.value.push(newDefinition)
     }
   }
 
@@ -83,8 +100,10 @@ export const useUIStore = defineStore("UI", () => {
   return {
     toolsDefinitions,
     activeTools,
+    dataManagerTabs,
     initializeDefaultTools,
     registerToolComponent,
+    registerDataManagerTab,
     showDropZone,
     showStepper,
     droppedFiles,
