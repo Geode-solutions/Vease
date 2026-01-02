@@ -5,18 +5,18 @@ import { useTreeviewStore } from "@ogw_front/stores/treeview"
 import { useDataStyleStore } from "@ogw_front/stores/data_style"
 
 export const useExtensionAPI = () => {
-    const UIStore = useUIStore()
-    const dataBaseStore = useDataBaseStore()
-    const hybridViewerStore = useHybridViewerStore()
-    const treeviewStore = useTreeviewStore()
-    const dataStyleStore = useDataStyleStore()
+  const UIStore = useUIStore()
+  const dataBaseStore = useDataBaseStore()
+  const hybridViewerStore = useHybridViewerStore()
+  const treeviewStore = useTreeviewStore()
+  const dataStyleStore = useDataStyleStore()
 
-    return {
-        UIStore,
-        dataBaseStore,
-        hybridViewerStore,
-        treeviewStore,
-        dataStyleStore,
-        registerDataManagerTab: UIStore.registerDataManagerTab,
-    }
+  return {
+    UIStore,
+    dataBaseStore,
+    hybridViewerStore,
+    treeviewStore,
+    dataStyleStore,
+    registerDataManagerTab: UIStore.registerDataManagerTab,
+  }
 }
