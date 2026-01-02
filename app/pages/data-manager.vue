@@ -4,17 +4,7 @@
       <v-col class="d-flex flex-column fill-height overflow-hidden">
         <div class="glass-header pa-4">
           <div class="d-flex align-center justify-space-between mb-4">
-            <div class="d-flex align-center ga-4">
-              <h2 class="text-h5 text-white font-weight-light">Data Manager</h2>
-              <v-btn
-                icon="mdi-refresh"
-                size="small"
-                variant="text"
-                color="white"
-                @click="loadData"
-                :loading="loading"
-              />
-            </div>
+            <h2 class="text-h5 text-white font-weight-light">Data Manager</h2>
 
             <v-btn-toggle
               v-model="viewMode"
@@ -42,9 +32,29 @@
             class="search-field"
             ref="searchInput"
           />
+
+          <v-tabs
+            v-if="UIStore.dataManagerTabs.length > 0"
+            v-model="activeTab"
+            bg-color="transparent"
+            color="primary"
+            class="mt-4"
+            density="compact"
+          >
+            <v-tab value="data" class="text-none">Data</v-tab>
+            <v-tab
+              v-for="tab in UIStore.dataManagerTabs"
+              :key="tab.id"
+              :value="tab.id"
+              class="text-none"
+            >
+              {{ tab.title }}
+            </v-tab>
+          </v-tabs>
         </div>
 
-        <div class="flex-grow-1 overflow-y-auto pa-4">
+        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
+          <v-window-item value="data" class="fill-height overflow-y-auto pa-4">
           <v-expand-transition>
             <div
               v-if="selectedIds.length > 0"
@@ -289,7 +299,17 @@
               </v-card>
             </v-col>
           </v-row>
-        </div>
+        </v-window-item>
+
+        <v-window-item
+          v-for="tab in UIStore.dataManagerTabs"
+          :key="tab.id"
+          :value="tab.id"
+          class="fill-height overflow-y-auto pa-4"
+        >
+          <component :is="tab.component" v-bind="tab.props" />
+        </v-window-item>
+      </v-window>
       </v-col>
     </v-row>
 
@@ -405,12 +425,15 @@
 </template>
 
 <script setup>
+  import { useUIStore } from "../stores/UI"
   import { useDataBaseStore } from "@ogw_front/stores/data_base"
   import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
   import { useTreeviewStore } from "@ogw_front/stores/treeview"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
   import { useMagicKeys, useEventListener, whenever } from "@vueuse/core"
+  import { useObservable } from "@vueuse/rxjs"
 
+  const UIStore = useUIStore()
   const dataBaseStore = useDataBaseStore()
   const hybridViewerStore = useHybridViewerStore()
   const treeviewStore = useTreeviewStore()
@@ -419,7 +442,10 @@
   const loading = ref(false)
   const search = ref("")
   const viewMode = ref("list")
-  const items = ref([])
+  
+  const items = useObservable(dataBaseStore.getAllItemsLive(), { initialValue: [] })
+  
+  const activeTab = ref("data")
 
   const selectedIds = ref([])
 
@@ -472,15 +498,6 @@
       selectedIds.value.splice(index, 1)
     } else {
       selectedIds.value.push(item)
-    }
-  }
-
-  async function loadData() {
-    loading.value = true
-    try {
-      items.value = await dataBaseStore.getAllItems()
-    } finally {
-      loading.value = false
     }
   }
 
@@ -572,6 +589,7 @@
 
   async function executeDelete() {
     if (!itemToDelete.value) return
+    await dataBaseStore.deregisterObject(itemToDelete.value.id)
     await dataBaseStore.deleteItem(itemToDelete.value.id)
     await hybridViewerStore.removeItem(itemToDelete.value.id)
     treeviewStore.removeItem(itemToDelete.value.id)
@@ -586,6 +604,7 @@
   async function deleteSelected() {
     const idsToDelete = selectedIds.value.map((item) => item.id)
     for (const id of idsToDelete) {
+      await dataBaseStore.deregisterObject(id)
       await dataBaseStore.deleteItem(id)
       await hybridViewerStore.removeItem(id)
       treeviewStore.removeItem(id)
@@ -614,8 +633,6 @@
       searchInput.value?.focus()
     }
   })
-
-  onMounted(loadData)
 </script>
 
 <style scoped>
