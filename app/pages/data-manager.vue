@@ -53,8 +53,8 @@
           </v-tabs>
         </div>
 
-        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
-          <v-window-item value="data" class="fill-height overflow-y-auto pa-4">
+        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden pa-4">
+          <v-window-item value="data" class="fill-height overflow-y-auto">
             <v-expand-transition>
               <div
                 v-if="selectedIds.length > 0"
@@ -96,7 +96,7 @@
               class="custom-table"
               item-value="id"
               return-object
-              height="600"
+              height="580"
             >
               <template v-slot:item.name="{ item }">
                 <span
@@ -619,6 +619,7 @@
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
   }
 
   .search-field :deep(.v-field) {
@@ -641,6 +642,31 @@
   .custom-table :deep(thead tr th) {
     background: rgba(255, 255, 255, 0.03) !important;
     backdrop-filter: blur(10px);
+  }
+
+  /* Custom scrollbar styling */
+  .custom-table :deep(.v-table__wrapper) {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+
+  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar) {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+
+  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-thumb:hover) {
+    background: rgba(255, 255, 255, 0.5);
   }
 
   .type-chip {
