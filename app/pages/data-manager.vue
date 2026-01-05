@@ -108,11 +108,7 @@
               </template>
 
               <template v-slot:item.geode_object_type="{ item }">
-                <v-chip
-                  size="x-small"
-                  variant="outlined"
-                  class="type-chip"
-                >
+                <v-chip size="x-small" variant="outlined" class="type-chip">
                   {{ item.geode_object_type }}
                 </v-chip>
               </template>
