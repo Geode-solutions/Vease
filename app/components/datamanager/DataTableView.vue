@@ -54,9 +54,7 @@
           @click.stop="$emit('focus-camera', item)"
         >
           <v-icon>mdi-target</v-icon>
-          <v-tooltip activator="parent" location="top"
-            >Focus Camera</v-tooltip
-          >
+          <v-tooltip activator="parent" location="top">Focus Camera</v-tooltip>
         </v-btn>
         <v-btn
           icon
