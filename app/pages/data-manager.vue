@@ -2,299 +2,50 @@
   <v-container fluid class="pa-0 fill-height bg-transparent">
     <v-row no-gutters class="fill-height">
       <v-col class="d-flex flex-column fill-height overflow-hidden">
-        <div class="glass-header pa-4">
-          <div class="d-flex align-center justify-space-between mb-4">
-            <h2 class="text-h5 text-white font-weight-light">Data Manager</h2>
-
-            <v-btn-toggle
-              v-model="viewMode"
-              mandatory
-              density="compact"
-              theme="dark"
-              variant="outlined"
-              divided
-            >
-              <v-btn value="list" icon="mdi-view-list" size="small" />
-              <v-btn value="grid" icon="mdi-view-grid" size="small" />
-            </v-btn-toggle>
-          </div>
-
-          <v-text-field
-            v-model="search"
-            prepend-inner-icon="mdi-magnify"
-            label="Search data (Ctrl+K)"
-            variant="solo"
-            density="compact"
-            hide-details
-            flat
-            rounded="lg"
-            clearable
-            class="search-field"
-            ref="searchInput"
-          />
-
-          <v-tabs
-            v-if="UIStore.dataManagerTabs.length > 0"
-            v-model="activeTab"
-            bg-color="transparent"
-            color="primary"
-            class="mt-4"
-            density="compact"
-          >
-            <v-tab value="data" class="text-none">Data</v-tab>
-            <v-tab
-              v-for="tab in UIStore.dataManagerTabs"
-              :key="tab.id"
-              :value="tab.id"
-              class="text-none"
-            >
-              {{ tab.title }}
-            </v-tab>
-          </v-tabs>
-        </div>
+        <DataManagerHeader
+          v-model:search-value="search"
+          v-model:view-mode="viewMode"
+          v-model:active-tab="activeTab"
+          :tabs="UIStore.datamanagerTabs"
+          ref="headerRef"
+        />
 
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden pa-4">
           <v-window-item value="data" class="fill-height overflow-y-auto">
-            <v-expand-transition>
-              <div
-                v-if="selectedIds.length > 0"
-                class="mb-4 pa-2 batch-banner rounded-lg d-flex align-center justify-space-between"
-              >
-                <div class="d-flex align-center ga-2">
-                  <span class="text-subtitle-2 text-white px-2"
-                    >{{ selectedIds.length }} items selected</span
-                  >
-                  <v-divider vertical class="mx-2" />
-                  <v-btn
-                    prepend-icon="mdi-delete"
-                    size="small"
-                    variant="text"
-                    color="error"
-                    @click="deleteSelectedDialog = true"
-                    >Delete</v-btn
-                  >
-                </div>
-                <v-btn
-                  icon="mdi-close"
-                  size="x-small"
-                  variant="text"
-                  color="white"
-                  @click="selectedIds = []"
-                />
-              </div>
-            </v-expand-transition>
+            <BatchActionBanner
+              :selected-count="selectedIds.length"
+              @delete="deleteSelectedDialog = true"
+              @clear="selectedIds = []"
+            />
 
-            <v-data-table
+            <DataTableView
               v-if="viewMode === 'list'"
-              v-model="selectedIds"
-              :headers="headers"
+              v-model:selected-ids="selectedIds"
               :items="items"
               :search="search"
-              show-select
-              theme="dark"
-              hover
-              class="custom-table"
-              item-value="id"
-              return-object
-              height="580"
-            >
-              <template v-slot:item.name="{ item }">
-                <span
-                  class="font-weight-medium cursor-pointer text-white title-hover"
-                  @click="openRenameDialog(item)"
-                >
-                  {{ item.name }}
-                </span>
-              </template>
+              @toggle-visibility="toggleVisibility"
+              @focus-camera="focusCamera"
+              @isolate="isolateItem"
+              @rename="openRenameDialog"
+              @delete="confirmDelete"
+            />
 
-              <template v-slot:item.geode_object_type="{ item }">
-                <v-chip size="x-small" variant="outlined" class="type-chip">
-                  {{ item.geode_object_type }}
-                </v-chip>
-              </template>
-
-              <template v-slot:item.created_at="{ item }">
-                <span class="text-caption text-white-opacity-60">{{
-                  formatSmartDate(item.created_at)
-                }}</span>
-              </template>
-
-              <template v-slot:item.visible="{ item }">
-                <v-btn
-                  :icon="item.visible ? 'mdi-eye' : 'mdi-eye-off'"
-                  size="small"
-                  variant="text"
-                  color="white"
-                  @click.stop="toggleVisibility(item)"
-                />
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <div class="d-flex ga-1 justify-end">
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="white"
-                    @click.stop="focusCamera(item)"
-                  >
-                    <v-icon>mdi-target</v-icon>
-                    <v-tooltip activator="parent" location="top"
-                      >Focus Camera</v-tooltip
-                    >
-                  </v-btn>
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="white"
-                    @click.stop="isolateItem(item)"
-                  >
-                    <v-icon>mdi-filter-variant</v-icon>
-                    <v-tooltip activator="parent" location="top"
-                      >Isolate</v-tooltip
-                    >
-                  </v-btn>
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="white"
-                    @click.stop="openRenameDialog(item)"
-                  >
-                    <v-icon>mdi-pencil</v-icon>
-                    <v-tooltip activator="parent" location="top"
-                      >Rename</v-tooltip
-                    >
-                  </v-btn>
-                  <v-btn
-                    icon
-                    size="small"
-                    variant="text"
-                    color="error"
-                    @click.stop="confirmDelete(item)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                    <v-tooltip activator="parent" location="top"
-                      >Delete</v-tooltip
-                    >
-                  </v-btn>
-                </div>
-              </template>
-            </v-data-table>
-
-            <v-row v-else class="mt-2">
-              <v-col
-                v-for="item in filteredItems"
-                :key="item.id"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
-              >
-                <v-card
-                  variant="outlined"
-                  class="glass-card h-100 cursor-pointer"
-                  :class="{ 'card-selected': isSelected(item) }"
-                  @click="toggleSelection(item)"
-                >
-                  <div v-if="isSelected(item)" class="selection-indicator">
-                    <v-icon color="white" size="20">mdi-check-circle</v-icon>
-                  </div>
-
-                  <v-card-text class="pa-4 text-white">
-                    <div
-                      class="text-subtitle-1 font-weight-bold text-truncate mb-2 title-clickable"
-                      @click.stop="openRenameDialog(item)"
-                    >
-                      {{ item.name }}
-                    </div>
-                    <v-chip
-                      size="x-small"
-                      color="primary"
-                      variant="flat"
-                      class="mb-3"
-                      >{{ item.geode_object_type }}</v-chip
-                    >
-                    <div class="text-caption text-white-opacity-60">
-                      {{ formatSmartDate(item.created_at) }}
-                    </div>
-                  </v-card-text>
-
-                  <v-divider class="border-opacity-10" />
-
-                  <v-card-actions class="pa-2">
-                    <v-btn
-                      icon
-                      size="small"
-                      variant="text"
-                      color="white"
-                      @click.stop="toggleVisibility(item)"
-                    >
-                      <v-icon size="20">{{
-                        item.visible ? "mdi-eye" : "mdi-eye-off"
-                      }}</v-icon>
-                      <v-tooltip activator="parent" location="top"
-                        >Toggle Visibility</v-tooltip
-                      >
-                    </v-btn>
-                    <v-spacer />
-                    <v-btn
-                      icon
-                      size="small"
-                      variant="text"
-                      color="white"
-                      @click.stop="focusCamera(item)"
-                    >
-                      <v-icon size="20">mdi-target</v-icon>
-                      <v-tooltip activator="parent" location="top"
-                        >Focus Camera</v-tooltip
-                      >
-                    </v-btn>
-                    <v-btn
-                      icon
-                      size="small"
-                      variant="text"
-                      color="white"
-                      @click.stop="isolateItem(item)"
-                    >
-                      <v-icon size="20">mdi-filter-variant</v-icon>
-                      <v-tooltip activator="parent" location="top"
-                        >Isolate</v-tooltip
-                      >
-                    </v-btn>
-                    <v-btn
-                      icon
-                      size="small"
-                      variant="text"
-                      color="white"
-                      @click.stop="openRenameDialog(item)"
-                    >
-                      <v-icon size="20">mdi-pencil</v-icon>
-                      <v-tooltip activator="parent" location="top"
-                        >Rename</v-tooltip
-                      >
-                    </v-btn>
-                    <v-btn
-                      icon
-                      size="small"
-                      variant="text"
-                      color="error"
-                      @click.stop="confirmDelete(item)"
-                    >
-                      <v-icon size="20">mdi-delete</v-icon>
-                      <v-tooltip activator="parent" location="top"
-                        >Delete</v-tooltip
-                      >
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
+            <DataGridView
+              v-else
+              :items="items"
+              :selected-ids="selectedIds"
+              :search="search"
+              @toggle-selection="toggleSelection"
+              @toggle-visibility="toggleVisibility"
+              @focus-camera="focusCamera"
+              @isolate="isolateItem"
+              @rename="openRenameDialog"
+              @delete="confirmDelete"
+            />
           </v-window-item>
 
           <v-window-item
-            v-for="tab in UIStore.dataManagerTabs"
+            v-for="tab in UIStore.datamanagerTabs"
             :key="tab.id"
             :value="tab.id"
             class="fill-height overflow-y-auto pa-4"
@@ -305,107 +56,24 @@
       </v-col>
     </v-row>
 
-    <v-dialog v-model="deleteSingleDialog" max-width="400" persistent>
-      <v-card rounded="xl" class="bg-white text-center overflow-hidden">
-        <div class="bg-error w-100" style="height: 6px"></div>
-        <v-avatar color="red-lighten-5" size="64" class="mt-8 mx-auto"
-          ><v-icon color="error" size="32"
-            >mdi-trash-can-outline</v-icon
-          ></v-avatar
-        >
-        <v-card-title class="text-h5 font-weight-bold text-grey-darken-4 pt-4"
-          >Delete Item</v-card-title
-        >
-        <v-card-text class="text-grey-darken-1 px-8">
-          Are you sure you want to delete this item?
-          <div
-            class="bg-grey-lighten-4 rounded-lg pa-3 my-4 text-grey-darken-3 font-weight-bold border"
-          >
-            {{ itemToDelete?.name }}
-          </div>
-        </v-card-text>
-        <v-card-actions class="px-8 pb-8"
-          ><v-spacer /><v-btn variant="text" @click="deleteSingleDialog = false"
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="error"
-            variant="flat"
-            class="px-8 rounded-pill"
-            @click="executeDelete"
-            >Delete</v-btn
-          ></v-card-actions
-        >
-      </v-card>
-    </v-dialog>
+    <DeleteDialog
+      v-model:show="deleteSingleDialog"
+      :item="itemToDelete"
+      @confirm="executeDelete"
+    />
 
-    <v-dialog v-model="deleteSelectedDialog" max-width="400" persistent>
-      <v-card rounded="xl" class="bg-white text-center overflow-hidden">
-        <div class="bg-error w-100" style="height: 6px"></div>
-        <v-avatar color="red-lighten-5" size="64" class="mt-8 mx-auto"
-          ><v-icon color="error" size="32"
-            >mdi-alert-circle-outline</v-icon
-          ></v-avatar
-        >
-        <v-card-title class="text-h5 font-weight-bold text-grey-darken-4 pt-4"
-          >Delete Items</v-card-title
-        >
-        <v-card-text class="text-grey-darken-1 px-8">
-          Are you sure you want to delete
-          <strong>{{ selectedIds.length }}</strong> items?
-        </v-card-text>
-        <v-card-actions class="px-8 pb-8"
-          ><v-spacer /><v-btn
-            variant="text"
-            @click="deleteSelectedDialog = false"
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="error"
-            variant="flat"
-            class="px-8 rounded-pill"
-            @click="deleteSelected"
-            >Delete All</v-btn
-          ></v-card-actions
-        >
-      </v-card>
-    </v-dialog>
+    <DeleteDialog
+      v-model:show="deleteSelectedDialog"
+      :selected-count="selectedIds.length"
+      @confirm="deleteSelected"
+    />
 
-    <v-dialog v-model="renameDialog" max-width="400">
-      <v-card rounded="xl" class="bg-white text-center overflow-hidden">
-        <div class="bg-primary w-100" style="height: 6px"></div>
-        <v-avatar color="blue-lighten-5" size="64" class="mt-8 mx-auto"
-          ><v-icon color="primary" size="32"
-            >mdi-pencil-outline</v-icon
-          ></v-avatar
-        >
-        <v-card-title class="text-h5 font-weight-bold text-grey-darken-4 pt-4"
-          >Rename Item</v-card-title
-        >
-        <v-card-text class="px-8">
-          <v-text-field
-            v-model="newItemName"
-            label="New Name"
-            variant="outlined"
-            color="primary"
-            class="mt-4"
-            @keydown.enter="confirmRename"
-          />
-        </v-card-text>
-        <v-card-actions class="px-8 pb-8"
-          ><v-spacer /><v-btn variant="text" @click="renameDialog = false"
-            >Cancel</v-btn
-          >
-          <v-btn
-            color="primary"
-            variant="flat"
-            class="px-8 rounded-pill"
-            @click="confirmRename"
-            >Rename</v-btn
-          ></v-card-actions
-        >
-      </v-card>
-    </v-dialog>
+    <RenameDialog
+      v-model:show="renameDialog"
+      :item="itemToRename"
+      :initial-name="newItemName"
+      @confirm="confirmRename"
+    />
 
     <v-snackbar
       v-model="snackbar.show"
@@ -417,6 +85,13 @@
 </template>
 
 <script setup>
+  import DataManagerHeader from "../components/datamanager/DataManagerHeader.vue"
+  import BatchActionBanner from "../components/datamanager/BatchActionBanner.vue"
+  import DataTableView from "../components/datamanager/DataTableView.vue"
+  import DataGridView from "../components/datamanager/DataGridView.vue"
+  import DeleteDialog from "../components/datamanager/DeleteDialog.vue"
+  import RenameDialog from "../components/datamanager/RenameDialog.vue"
+
   import { useUIStore } from "../stores/UI"
   import { useDataStore } from "@ogw_front/stores/data"
   import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
@@ -430,14 +105,10 @@
   const treeviewStore = useTreeviewStore()
   const dataStyleStore = useDataStyleStore()
 
-  const loading = ref(false)
   const search = ref("")
   const viewMode = ref("list")
-
   const items = dataStore.getAllItems()
-
   const activeTab = ref("data")
-
   const selectedIds = ref([])
 
   const deleteSelectedDialog = ref(false)
@@ -448,38 +119,7 @@
   const newItemName = ref("")
 
   const snackbar = reactive({ show: false, text: "", color: "success" })
-  const searchInput = useTemplateRef("searchInput")
-
-  const headers = [
-    { title: "Name", key: "name", sortable: true },
-    { title: "Type", key: "geode_object_type", sortable: true },
-    { title: "Date", key: "created_at", sortable: true },
-    { title: "Visibility", key: "visible", sortable: false, align: "center" },
-    { title: "Actions", key: "actions", sortable: false, align: "end" },
-  ]
-
-  function formatSmartDate(dateStr) {
-    if (!dateStr) return ""
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diff = Math.floor((now - date) / 1000)
-    let relative = ""
-    if (diff < 60) relative = "just now"
-    else if (diff < 3600) relative = `${Math.floor(diff / 60)}m ago`
-    else if (diff < 86400) relative = `${Math.floor(diff / 3600)}h ago`
-    else relative = `${Math.floor(diff / 86400)}d ago`
-    return `${relative} (${date.toLocaleDateString()})`
-  }
-
-  const filteredItems = computed(() => {
-    if (!search.value) return items.value
-    const lower = search.value.toLowerCase()
-    return items.value.filter((i) => i.name?.toLowerCase().includes(lower))
-  })
-
-  function isSelected(item) {
-    return selectedIds.value.some((selected) => selected.id === item.id)
-  }
+  const headerRef = useTemplateRef("headerRef")
 
   function toggleSelection(item) {
     const index = selectedIds.value.findIndex(
@@ -525,17 +165,17 @@
     renameDialog.value = true
   }
 
-  async function confirmRename() {
-    if (!newItemName.value || !itemToRename.value) return
+  async function confirmRename(newName) {
+    if (!newName || !itemToRename.value) return
     try {
-      itemToRename.value.name = newItemName.value
+      itemToRename.value.name = newName
       await dataStore.updateItem(itemToRename.value.id, {
-        name: newItemName.value,
+        name: newName,
       })
       treeviewStore.removeItem(itemToRename.value.id)
       await treeviewStore.addItem(
         itemToRename.value.geode_object_type,
-        newItemName.value,
+        newName,
         itemToRename.value.id,
         itemToRename.value.viewer_type,
       )
@@ -605,151 +245,12 @@
   useEventListener(document, "keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
       e.preventDefault()
-      searchInput.value?.focus()
+      headerRef.value?.focusSearch()
     }
   })
 </script>
 
 <style scoped>
-  .glass-header {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
-
-  .search-field :deep(.v-field) {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-  }
-
-  .custom-table {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
-
-  .custom-table :deep(thead) {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .custom-table :deep(thead tr th) {
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(10px);
-  }
-
-  /* Custom scrollbar styling */
-  .custom-table :deep(.v-table__wrapper) {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-  }
-
-  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar) {
-    width: 8px;
-    height: 8px;
-  }
-
-  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-track) {
-    background: transparent;
-  }
-
-  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    transition: background 0.2s ease;
-  }
-
-  .custom-table :deep(.v-table__wrapper::-webkit-scrollbar-thumb:hover) {
-    background: rgba(255, 255, 255, 0.5);
-  }
-
-  .type-chip {
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: white !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    height: 20px !important;
-    width: auto !important;
-  }
-
-  .text-white-opacity-60 {
-    color: rgba(255, 255, 255, 0.6) !important;
-  }
-
-  .glass-card {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.1) !important;
-    transition: all 0.25s ease;
-    position: relative;
-  }
-
-  .glass-card:hover {
-    border-color: rgba(255, 255, 255, 0.25) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
-    transform: translateY(-2px);
-  }
-
-  .card-selected {
-    border-color: rgb(var(--v-theme-primary)) !important;
-    background: linear-gradient(
-      135deg,
-      rgba(var(--v-theme-primary), 0.2) 0%,
-      rgba(var(--v-theme-primary), 0.1) 100%
-    ) !important;
-    box-shadow:
-      0 0 0 1px rgba(var(--v-theme-primary), 0.3),
-      0 8px 32px rgba(var(--v-theme-primary), 0.2);
-  }
-
-  .card-selected:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(var(--v-theme-primary), 0.25) 0%,
-      rgba(var(--v-theme-primary), 0.15) 100%
-    ) !important;
-  }
-
-  .selection-indicator {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 2;
-    background: rgba(var(--v-theme-primary), 0.9);
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .title-clickable {
-    transition: color 0.2s ease;
-  }
-
-  .title-clickable:hover {
-    color: rgb(var(--v-theme-primary)) !important;
-  }
-
-  .batch-banner {
-    background: rgba(var(--v-theme-primary), 0.15);
-    border: 1px solid rgba(var(--v-theme-primary), 0.3);
-  }
-
-  .cursor-pointer {
-    cursor: pointer;
-  }
-
-  :deep(.v-data-table-header__content) {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-
   :deep(.v-overlay__scrim) {
     background: rgba(0, 0, 0, 0.85) !important;
     backdrop-filter: blur(8px);
