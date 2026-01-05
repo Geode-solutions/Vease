@@ -1,11 +1,11 @@
-import { useDataBaseStore } from "@ogw_front/stores/data_base"
+import { useDataStore } from "@ogw_front/stores/data"
 
 const clearDbPlugin = defineNuxtPlugin(() => {
   console.log("[DB RESET] Clearing Dexie database on app start...")
 
   try {
-    const dataBaseStore = useDataBaseStore()
-    return dataBaseStore.clear().then(() => {
+    const dataStore = useDataStore()
+    return dataStore.clear().then(() => {
       console.log("[DB RESET] Database cleared successfully")
       return true
     })

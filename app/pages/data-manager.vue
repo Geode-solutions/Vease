@@ -22,7 +22,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Search data... (Ctrl+K)"
+            label="Search data (Ctrl+K)"
             variant="solo"
             density="compact"
             hide-details
@@ -96,6 +96,7 @@
               class="custom-table"
               item-value="id"
               return-object
+              height="600"
             >
               <template v-slot:item.name="{ item }">
                 <span
@@ -107,18 +108,13 @@
               </template>
 
               <template v-slot:item.geode_object_type="{ item }">
-                <div class="d-flex flex-column py-2 align-start">
-                  <v-chip
-                    size="x-small"
-                    variant="outlined"
-                    class="type-chip mb-1 d-inline-flex"
-                  >
-                    {{ item.geode_object_type }}
-                  </v-chip>
-                  <span class="text-caption text-white-opacity-60">{{
-                    getItemMetadata(item)
-                  }}</span>
-                </div>
+                <v-chip
+                  size="x-small"
+                  variant="outlined"
+                  class="type-chip"
+                >
+                  {{ item.geode_object_type }}
+                </v-chip>
               </template>
 
               <template v-slot:item.created_at="{ item }">
@@ -426,15 +422,14 @@
 
 <script setup>
   import { useUIStore } from "../stores/UI"
-  import { useDataBaseStore } from "@ogw_front/stores/data_base"
+  import { useDataStore } from "@ogw_front/stores/data"
   import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
   import { useTreeviewStore } from "@ogw_front/stores/treeview"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
   import { useMagicKeys, useEventListener, whenever } from "@vueuse/core"
-  import { useObservable } from "@vueuse/rxjs"
 
   const UIStore = useUIStore()
-  const dataBaseStore = useDataBaseStore()
+  const dataStore = useDataStore()
   const hybridViewerStore = useHybridViewerStore()
   const treeviewStore = useTreeviewStore()
   const dataStyleStore = useDataStyleStore()
@@ -443,9 +438,7 @@
   const search = ref("")
   const viewMode = ref("list")
 
-  const items = useObservable(dataBaseStore.getAllItemsLive(), {
-    initialValue: [],
-  })
+  const items = dataStore.getAllItems()
 
   const activeTab = ref("data")
 
@@ -505,8 +498,8 @@
 
   async function toggleVisibility(item) {
     const newVisible = !item.visible
-    await dataBaseStore.updateItem(item.id, { visible: newVisible })
-    await dataStyleStore.setVisibility(item.id, newVisible)
+    await dataStore.updateItem(item.id, { visible: newVisible })
+    await dataStyleStore.setVisibility(item.id, newVisible, item)
     item.visible = newVisible
     if (newVisible) {
       await treeviewStore.addItem(
@@ -520,24 +513,8 @@
     }
   }
 
-  function getItemMetadata(item) {
-    const data = hybridViewerStore.db[item.id]
-    if (!data?.polydata) return ""
-    const pts = data.polydata.getNumberOfPoints().toLocaleString()
-    const cells = data.polydata.getNumberOfCells().toLocaleString()
-    const bounds = data.polydata.getBounds()
-    let meta = `${pts} pts | ${cells} cells`
-    if (bounds?.length === 6) {
-      const dx = Math.round((bounds[1] - bounds[0]) * 100) / 100
-      const dy = Math.round((bounds[3] - bounds[2]) * 100) / 100
-      const dz = Math.round((bounds[5] - bounds[4]) * 100) / 100
-      meta += ` | Box: ${dx}x${dy}x${dz}`
-    }
-    return meta
-  }
-
   async function focusCamera(item) {
-    const data = hybridViewerStore.db[item.id]
+    const data = hybridViewerStore.hybridDb[item.id]
     if (data?.actor) {
       const renderer = hybridViewerStore.genericRenderWindow.value.getRenderer()
       renderer.resetCamera(data.actor.getBounds())
@@ -556,7 +533,7 @@
     if (!newItemName.value || !itemToRename.value) return
     try {
       itemToRename.value.name = newItemName.value
-      await dataBaseStore.updateItem(itemToRename.value.id, {
+      await dataStore.updateItem(itemToRename.value.id, {
         name: newItemName.value,
       })
       treeviewStore.removeItem(itemToRename.value.id)
@@ -576,8 +553,8 @@
   async function isolateItem(item) {
     for (const i of items.value) {
       const visible = i.id === item.id
-      await dataBaseStore.updateItem(i.id, { visible })
-      await dataStyleStore.setVisibility(i.id, visible)
+      await dataStore.updateItem(i.id, { visible })
+      await dataStyleStore.setVisibility(i.id, visible, i)
       i.visible = visible
       if (!visible) treeviewStore.removeItem(i.id)
     }
@@ -591,8 +568,8 @@
 
   async function executeDelete() {
     if (!itemToDelete.value) return
-    await dataBaseStore.deregisterObject(itemToDelete.value.id)
-    await dataBaseStore.deleteItem(itemToDelete.value.id)
+    await dataStore.deregisterObject(itemToDelete.value.id)
+    await dataStore.deleteItem(itemToDelete.value.id)
     await hybridViewerStore.removeItem(itemToDelete.value.id)
     treeviewStore.removeItem(itemToDelete.value.id)
     items.value = items.value.filter((i) => i.id !== itemToDelete.value.id)
@@ -606,8 +583,8 @@
   async function deleteSelected() {
     const idsToDelete = selectedIds.value.map((item) => item.id)
     for (const id of idsToDelete) {
-      await dataBaseStore.deregisterObject(id)
-      await dataBaseStore.deleteItem(id)
+      await dataStore.deregisterObject(id)
+      await dataStore.deleteItem(id)
       await hybridViewerStore.removeItem(id)
       treeviewStore.removeItem(id)
     }
@@ -653,6 +630,17 @@
     background: rgba(255, 255, 255, 0.03) !important;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
+  }
+
+  .custom-table :deep(thead) {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .custom-table :deep(thead tr th) {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px);
   }
 
   .type-chip {
