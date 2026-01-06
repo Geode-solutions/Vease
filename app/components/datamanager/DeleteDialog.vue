@@ -33,7 +33,6 @@
       >
     </v-card>
 
-    <!-- Multiple items delete -->
     <v-card v-else rounded="xl" class="bg-white text-center overflow-hidden">
       <div class="bg-error w-100" style="height: 6px"></div>
       <v-avatar color="red-lighten-5" size="64" class="mt-8 mx-auto"
