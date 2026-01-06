@@ -1,103 +1,63 @@
 <template>
-  <div class="glass-header pa-4">
-    <div class="d-flex align-center justify-space-between mb-4">
-      <h2 class="text-h5 text-white font-weight-light">Data Manager</h2>
+  <v-sheet class="pa-6 pb-2" rounded="xl" color="transparent">
+    <v-tabs :model-value="activeTab" @update:model-value="$emit('update:activeTab', $event)" bg-color="transparent"
+      color="white" class="mb-6 border-b-thin" height="48" hide-slider selected-class="tab-active">
+      <v-tab value="data" class="text-none font-weight-medium px-6 rounded-t-lg tab-item">
+        <v-icon start size="20">mdi-database</v-icon>
+        Data Manager
+      </v-tab>
 
-      <v-btn-toggle
-        :model-value="viewMode"
-        @update:model-value="$emit('update:viewMode', $event)"
-        mandatory
-        density="compact"
-        theme="dark"
-        variant="outlined"
-        divided
-      >
-        <v-btn value="list" icon="mdi-view-list" size="small" />
-        <v-btn value="grid" icon="mdi-view-grid" size="small" />
-      </v-btn-toggle>
-    </div>
-
-    <v-text-field
-      :model-value="searchValue"
-      @update:model-value="$emit('update:searchValue', $event)"
-      prepend-inner-icon="mdi-magnify"
-      label="Search data (Ctrl+K)"
-      variant="solo"
-      density="compact"
-      hide-details
-      flat
-      rounded="lg"
-      clearable
-      class="search-field"
-      ref="searchInput"
-    />
-
-    <v-tabs
-      v-if="tabs.length > 0"
-      :model-value="activeTab"
-      @update:model-value="$emit('update:activeTab', $event)"
-      bg-color="transparent"
-      color="primary"
-      class="mt-4"
-      density="compact"
-    >
-      <v-tab value="data" class="text-none">Data</v-tab>
-      <v-tab
-        v-for="tab in tabs"
-        :key="tab.id"
-        :value="tab.id"
-        class="text-none"
-      >
+      <v-tab v-for="tab in tabs" :key="tab.id" :value="tab.id"
+        class="text-none font-weight-medium px-6 rounded-t-lg tab-item">
+        <v-icon v-if="tab.icon" start size="20">{{ tab.icon }}</v-icon>
         {{ tab.title }}
       </v-tab>
     </v-tabs>
-  </div>
+
+    <v-text-field :model-value="searchValue" @update:model-value="$emit('update:searchValue', $event)"
+      prepend-inner-icon="mdi-magnify" placeholder="Search your data..." variant="solo" density="comfortable"
+      hide-details flat clearable bg-color="transparent" class="border-thin rounded-lg text-white" ref="searchInput">
+      <template #append-inner>
+        <v-chip size="small" variant="tonal" color="grey-lighten-1" class="text-caption font-weight-bold">
+          Ctrl+K
+        </v-chip>
+      </template>
+    </v-text-field>
+  </v-sheet>
 </template>
 
 <script setup>
-  const props = defineProps({
-    searchValue: {
-      type: String,
-      default: "",
-    },
-    viewMode: {
-      type: String,
-      default: "list",
-      validator: (val) => ["list", "grid"].includes(val),
-    },
-    activeTab: {
-      type: String,
-      default: "data",
-    },
-    tabs: {
-      type: Array,
-      default: () => [],
-    },
-  })
+import { useTemplateRef } from 'vue'
 
-  defineEmits(["update:searchValue", "update:viewMode", "update:activeTab"])
+const props = defineProps({
+  searchValue: { type: String, default: "" },
+  activeTab: { type: String, default: "data" },
+  tabs: { type: Array, default: () => [] },
+})
 
-  const searchInput = useTemplateRef("searchInput")
+defineEmits(["update:searchValue", "update:activeTab"])
+const searchInput = useTemplateRef("searchInput")
 
-  function focusSearch() {
-    searchInput.value?.focus()
-  }
-
-  defineExpose({
-    focusSearch,
-  })
+defineExpose({ focusSearch: () => searchInput.value?.focus() })
 </script>
 
 <style scoped>
-  .glass-header {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-  }
+.tab-item {
+  transition: background 0.2s ease-in-out;
+  opacity: 0.7;
+}
 
-  .search-field :deep(.v-field) {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-  }
+.tab-item:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-active {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: none !important;
+  margin-bottom: -1px;
+}
 </style>
