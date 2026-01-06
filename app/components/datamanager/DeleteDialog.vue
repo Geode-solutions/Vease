@@ -1,7 +1,16 @@
 <template>
-  <v-dialog :model-value="show" @update:model-value="$emit('update:show', $event)" max-width="400" persistent>
+  <v-dialog
+    :model-value="show"
+    @update:model-value="$emit('update:show', $event)"
+    max-width="400"
+    persistent
+  >
     <!-- Single item delete -->
-    <v-card v-if="item" rounded="xl" class="bg-white text-center overflow-hidden">
+    <v-card
+      v-if="item"
+      rounded="xl"
+      class="bg-white text-center overflow-hidden"
+    >
       <div class="bg-error w-100" style="height: 6px"></div>
       <v-avatar color="red-lighten-5" size="64" class="mt-8 mx-auto"
         ><v-icon color="error" size="32"
@@ -48,9 +57,7 @@
         <strong>{{ selectedCount }}</strong> items?
       </v-card-text>
       <v-card-actions class="px-8 pb-8"
-        ><v-spacer /><v-btn
-          variant="text"
-          @click="$emit('update:show', false)"
+        ><v-spacer /><v-btn variant="text" @click="$emit('update:show', false)"
           >Cancel</v-btn
         >
         <v-btn

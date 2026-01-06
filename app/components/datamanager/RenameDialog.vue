@@ -1,11 +1,13 @@
 <template>
-  <v-dialog :model-value="show" @update:model-value="$emit('update:show', $event)" max-width="400">
+  <v-dialog
+    :model-value="show"
+    @update:model-value="$emit('update:show', $event)"
+    max-width="400"
+  >
     <v-card rounded="xl" class="bg-white text-center overflow-hidden">
       <div class="bg-primary w-100" style="height: 6px"></div>
       <v-avatar color="blue-lighten-5" size="64" class="mt-8 mx-auto"
-        ><v-icon color="primary" size="32"
-          >mdi-pencil-outline</v-icon
-        ></v-avatar
+        ><v-icon color="primary" size="32">mdi-pencil-outline</v-icon></v-avatar
       >
       <v-card-title class="text-h5 font-weight-bold text-grey-darken-4 pt-4"
         >Rename Item</v-card-title
@@ -57,9 +59,12 @@
 
   const currentName = ref(props.initialName)
 
-  watch(() => props.initialName, (newVal) => {
-    currentName.value = newVal
-  })
+  watch(
+    () => props.initialName,
+    (newVal) => {
+      currentName.value = newVal
+    },
+  )
 
   function handleConfirm() {
     if (!currentName.value) return
