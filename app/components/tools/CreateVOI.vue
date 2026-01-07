@@ -22,7 +22,7 @@
           <template #item="{ props, item }">
             <v-list-item v-bind="props" :title="item.raw.name">
               <template #prepend>
-                <v-img src="../../assets/img/aoi.svg" alt="AOI" width="24" height="24" class="mr-2" />
+                <v-img src="@vease/assets/img/aoi.svg" alt="AOI" width="24" height="24" class="mr-2" />
               </template>
             </v-list-item>
           </template>
