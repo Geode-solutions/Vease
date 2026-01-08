@@ -20,10 +20,8 @@ export function useExtensionManager() {
       method: "POST",
       body: form,
     })
-
-    console.log("[ExtensionManager] Extension extracted:", result)
-
     const { extension_name, frontend_content, backend_path } = result
+    console.log("[ExtensionManager] Extension extracted", extension_name)
 
     // Create blob URL from frontend JS content
     const blob = new Blob([frontend_content], {
@@ -35,7 +33,6 @@ export function useExtensionManager() {
     const extensionModule = await appStore.loadExtension(blobUrl, backend_path)
 
     console.log("[ExtensionManager] Extension loaded:", extension_name)
-
     // Register the store if present
     if (extensionModule.metadata?.store) {
       const storeFactory = extensionModule.metadata.store
@@ -65,6 +62,7 @@ export function useExtensionManager() {
             `[ExtensionManager] Skipping microservice launch in ${infraStore.app_mode} mode`,
           )
         }
+        infraStore.register_microservice(store)
       }
     }
 
