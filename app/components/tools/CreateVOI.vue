@@ -4,7 +4,7 @@
       class="pb-2 text-h6 text-primary font-weight-bold d-flex align-center"
     >
       <v-img
-        src="../../assets/img/voi.svg"
+        src="@vease/assets/img/voi.svg"
         alt="AOI icon"
         class="mr-3"
         width="48"
@@ -51,7 +51,7 @@
             <v-list-item v-bind="props" :title="item.raw.name">
               <template #prepend>
                 <v-img
-                  src="@/assets/img/aoi.svg"
+                  src="@vease/assets/img/aoi.svg"
                   alt="AOI"
                   width="24"
                   height="24"
