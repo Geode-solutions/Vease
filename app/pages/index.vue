@@ -4,7 +4,7 @@
     v-else
     ref="cardContainer"
     style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
-    @click.right="openMenu"
+    @contextmenu.prevent="openMenu"
   >
     <HybridRenderingView>
       <template #ui>
@@ -33,6 +33,7 @@
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useViewerStore } from "@ogw_front/stores/viewer"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
+  import { useDataStore } from "@ogw_front/stores/data"
   import { useMenuStore } from "@ogw_front/stores/menu"
 
   console.log("Status", Status)
@@ -62,6 +63,7 @@
 
   const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
+  const dataStore = useDataStore()
   const dataStyleStore = useDataStyleStore()
 
   const menuX = ref(0)
@@ -74,7 +76,7 @@
   const { display_menu } = storeToRefs(menuStore)
 
   async function get_viewer_id(x, y) {
-    const ids = dataStyleStore.selectedObjects
+    const ids = Object.keys(dataStyleStore.styles)
     await viewerStore.request(
       viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
       { x, y, ids },
@@ -88,16 +90,19 @@
   }
 
   async function openMenu(event) {
-    menuX.value = event.clientX
-    menuY.value = event.clientY
+    const rect = cardContainer.value.$el.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = containerHeight.value - (event.clientY - rect.top)
 
-    await get_viewer_id(event.offsetX, event.offsetY)
+    await get_viewer_id(x, y)
+    const item = dataStore.getItem(id.value)
     menuStore.openMenu(
       id.value,
       event.clientX,
       event.clientY,
       containerWidth.value,
       containerHeight.value,
+      item.value,
     )
   }
 
