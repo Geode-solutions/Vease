@@ -11,6 +11,7 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateVOI = ref(false)
   const showCreateAOI = ref(false)
   const showExtensions = ref(false)
+  const dataManagerTabs = ref([])
 
   const registerToolComponent = (toolDefinition, extensionPath = null) => {
     const { id, component, ...rest } = toolDefinition
@@ -54,6 +55,21 @@ export const useUIStore = defineStore("UI", () => {
       return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
   })
+  const registerDataManagerTab = (tabDefinition) => {
+    const { id, component, ...rest } = tabDefinition
+    const existingIndex = dataManagerTabs.value.findIndex(
+      (tab) => tab.id === id,
+    )
+    const newDefinition = { id, component, ...rest }
+    if (existingIndex !== -1) {
+      dataManagerTabs.value[existingIndex] = {
+        ...dataManagerTabs.value[existingIndex],
+        ...newDefinition,
+      }
+    } else {
+      dataManagerTabs.value.push(newDefinition)
+    }
+  }
 
   function setShowDropZone(value) {
     showDropZone.value = value
@@ -95,7 +111,10 @@ export const useUIStore = defineStore("UI", () => {
   return {
     toolsDefinitions,
     activeTools,
+    dataManagerTabs,
+    initializeDefaultTools,
     registerToolComponent,
+    registerDataManagerTab,
     unregisterTool,
     unregisterToolsByExtension,
     showDropZone,
