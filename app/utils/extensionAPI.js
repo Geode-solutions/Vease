@@ -2,7 +2,7 @@ import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.jso
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
 import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 import { useAppStore } from "@ogw_front/stores/app"
-import { useDataBaseStore } from "@ogw_front/stores/data"
+import { useDataStore } from "@ogw_front/stores/data"
 import { useFeedbackStore } from "@ogw_front/stores/feedback"
 import { useGeodeStore } from "@ogw_front/stores/geode"
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
@@ -121,7 +121,7 @@ export class VeaseExtensionAPI {
   }
 
   get DataBaseStore() {
-    return useDataBaseStore()
+    return useDataStore()
   }
 
   get HybridViewerStore() {
