@@ -112,7 +112,6 @@ export const useUIStore = defineStore("UI", () => {
     toolsDefinitions,
     activeTools,
     dataManagerTabs,
-    initializeDefaultTools,
     registerToolComponent,
     registerDataManagerTab,
     unregisterTool,
