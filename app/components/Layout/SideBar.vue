@@ -86,17 +86,29 @@
 
 <script setup>
   import { useProjectManager } from "@ogw_front/composables/project_manager"
+  import { useUIStore } from "@vease/stores/UI"
+
+  const UIStore = useUIStore()
 
   const drawer = ref(true)
   const newproject = ref(false)
   const openproject = ref(false)
   const importFileInput = templateRef("importFileInput")
 
+  const toggleExtensions = () => {
+    UIStore.setShowExtensions(!UIStore.showExtensions)
+  }
+
   const items = ref([
     {
       title: "Home",
       icon: "mdi-rotate-orbit",
       click: () => navigateTo("/"),
+    },
+    {
+      title: "Extensions",
+      icon: "mdi-puzzle",
+      click: () => toggleExtensions(),
     },
     // {
     //   title: "New Project",
