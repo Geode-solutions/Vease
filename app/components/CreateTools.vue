@@ -1,15 +1,24 @@
 <template>
-  <v-card v-if="!selectedTool" :width="500" flat>
-    <v-card-title
-      class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
-    >
-      <v-icon icon="mdi-creation" class="mr-3"></v-icon>
-      Create New Object
-    </v-card-title>
-    <v-card-subtitle class="ma-0 text-medium">
-      Choose a drawing tool to get started.
-    </v-card-subtitle>
-    <v-card-text class="pt-6">
+  <v-card
+    v-if="!selectedTool"
+    :width="500"
+    flat
+    class="d-flex flex-column"
+    style="height: 100%"
+  >
+    <div class="flex-shrink-0">
+      <v-card-title
+        class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
+      >
+        <v-icon icon="mdi-creation" class="mr-3"></v-icon>
+        Create New Object
+      </v-card-title>
+      <v-card-subtitle class="ma-0 text-medium pb-4">
+        Choose a drawing tool to get started.
+      </v-card-subtitle>
+    </div>
+
+    <v-card-text class="pt-4 pb-8 flex-1-1 overflow-y-auto">
       <v-row>
         <v-col
           v-for="tool in UIStore.activeTools"
@@ -71,11 +80,13 @@
       </v-row>
     </v-card-text>
   </v-card>
-  <v-sheet v-else class="tool-component-wrapper v-sheet-tool-wrapper">
+
+  <v-sheet v-else class="position-relative tool-component-wrapper">
     <v-btn
       icon
       variant="text"
-      class="back-button ma-2 v-sheet-back-button"
+      class="ma-2 position-sticky bg-white"
+      style="top: 0; z-index: 10"
       @click="handleBack"
     >
       <v-icon>mdi-arrow-left</v-icon>
@@ -129,31 +140,40 @@
   .custom-tool-card {
     transition: all 0.2s ease-in-out;
   }
+
   .custom-tool-card:hover {
     transform: scale(1.03);
   }
 
-  .cursor-pointer {
-    cursor: pointer;
-  }
   .svg-white-filter {
     filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg)
       brightness(100%) contrast(100%);
   }
+
   .tool-title {
     min-height: 2em;
     line-height: 1.2;
   }
 
-  .v-sheet-tool-wrapper {
-    position: relative;
+  .tool-component-wrapper {
     min-height: 400px;
   }
 
-  .v-sheet-back-button {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: white;
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 </style>

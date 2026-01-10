@@ -75,6 +75,17 @@
       indeterminate
       color="white"
     />
+    <v-navigation-drawer
+      class="align-start"
+      radius="10px"
+      :width="500"
+      location="left"
+      temporary
+      v-model="UIStore.showExtensions"
+      style="z-index: 9999; left: 0 !important"
+    >
+      <Extension />
+    </v-navigation-drawer>
   </v-app>
 </template>
 

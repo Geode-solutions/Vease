@@ -162,11 +162,11 @@
       name: name.value,
     }
 
-    const pointSchema = back_schemas.opengeodeweb_back.create.create_point
+    const pointSchema = back_schemas.opengeodeweb_back.create.point
 
     if (!pointSchema || typeof pointSchema !== "object") {
       console.error(
-        "FATAL ERROR: The Point schema is missing or invalid at back_schemas.opengeodeweb_back.create.create_point",
+        "FATAL ERROR: The Point schema is missing or invalid at back_schemas.opengeodeweb_back.create.point",
       )
       loading.value = false
       return
