@@ -196,7 +196,7 @@
       {},
       {
         response_function: (response) => {
-          packages_versions.value = response._data.packages_versions
+          packages_versions.value = response.packages_versions
         },
       },
     )
@@ -208,7 +208,7 @@
       {},
       {
         response_function: (response) => {
-          back_version.value = response._data.microservice_version
+          back_version.value = response.microservice_version
         },
       },
     )

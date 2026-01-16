@@ -177,7 +177,7 @@
       await geodeStore.request(pointSchema, pointData, {
         response_function: async (response) => {
           const dataToImport = {
-            ...response._data,
+            ...response,
           }
           await importItem(dataToImport)
           closeDrawer()
