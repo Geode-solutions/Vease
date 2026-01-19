@@ -53,6 +53,8 @@ export default defineNuxtConfig({
         },
       },
     ],
+    // TO REMOVE TEMPORARY
+    disableDefaultOptions: true,
   },
 
   vuetify: {
