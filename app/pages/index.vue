@@ -8,7 +8,7 @@
   >
     <HybridRenderingView>
       <template #ui>
-        <ViewerTreeObjectTree />
+        <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
         <ViewerContextMenu
           v-if="display_menu"
           :id="menuStore.current_id || id"
@@ -36,8 +36,6 @@
   import { useDataStore } from "@ogw_front/stores/data"
   import { useMenuStore } from "@ogw_front/stores/menu"
 
-  console.log("Status", Status)
-
   const query = useRoute().query
   if (query.geode_port) {
     console.log(
@@ -57,20 +55,14 @@
   }
 
   const infraStore = useInfraStore()
-
-  console.log("test", import.meta.client)
-  console.log("infraStore.status", infraStore.status)
-
   const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
   const dataStore = useDataStore()
   const dataStyleStore = useDataStyleStore()
 
-  const menuX = ref(0)
-  const menuY = ref(0)
+  const id = ref("")
   const containerWidth = ref(0)
   const containerHeight = ref(0)
-  const id = ref("")
   const cardContainer = useTemplateRef("cardContainer")
 
   const { display_menu } = storeToRefs(menuStore)
@@ -89,44 +81,51 @@
     )
   }
 
-  async function openMenu(event) {
+  async function handleTreeMenu({ event, itemId }) {
     const rect = cardContainer.value.$el.getBoundingClientRect()
     const x = event.clientX - rect.left
-    const y = containerHeight.value - (event.clientY - rect.top)
+    const yUI = event.clientY - rect.top
 
-    await get_viewer_id(x, y)
-    const item = dataStore.getItem(id.value)
+    const item = dataStore.getItem(itemId)
+
     menuStore.openMenu(
-      id.value,
-      event.clientX,
-      event.clientY,
+      itemId,
+      x,
+      yUI,
       containerWidth.value,
       containerHeight.value,
+      rect.top,
+      rect.left,
       item.value,
     )
   }
 
-  function resize() {
-    if (cardContainer.value) {
-      const { width, height } = useElementSize(cardContainer.value)
-      containerWidth.value = width.value
-      containerHeight.value = height.value
-    }
+  async function openMenu(event) {
+    const rect = cardContainer.value.$el.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const yPicking = containerHeight.value - (event.clientY - rect.top)
+    const yUI = event.clientY - rect.top
+
+    await get_viewer_id(x, yPicking)
+    const item = dataStore.getItem(id.value)
+
+    menuStore.openMenu(
+      id.value,
+      x,
+      yUI,
+      containerWidth.value,
+      containerHeight.value,
+      rect.top,
+      rect.left,
+      item.value,
+    )
   }
 
-  watch(
-    () => viewerStore.status,
-    (value) => {
-      if (value === Status.CONNECTED) {
-        resize()
-      }
-    },
-  )
+  const { width: elWidth, height: elHeight } = useElementSize(cardContainer)
 
-  onMounted(async () => {
-    if (viewerStore.status === Status.CONNECTED) {
-      resize()
-    }
+  watch([elWidth, elHeight], ([w, h]) => {
+    containerWidth.value = w
+    containerHeight.value = h
   })
 </script>
 
