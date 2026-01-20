@@ -1,16 +1,28 @@
 <template>
-  <v-btn
-    :loading="loading"
-    color="primary"
-    @click="import_files()"
-    ref="import_button"
-  >
-    Import
-    <template #loader>
-      <v-progress-circular indeterminate size="20" color="white" width="3" />
-    </template>
-  </v-btn>
-  <v-btn variant="text" @click="UIStore.setShowStepper(false)"> Cancel </v-btn>
+  <div class="d-flex align-center mt-4">
+    <v-btn
+      :loading="loading"
+      color="primary"
+      @click="import_files()"
+      ref="import_button"
+      class="mr-2"
+    >
+      Import
+      <template #loader>
+        <v-progress-circular indeterminate size="20" color="white" width="3" />
+      </template>
+    </v-btn>
+    <v-btn
+      variant="text"
+      color="error"
+      @click="
+        $emit('reset_values');
+        UIStore.setShowStepper(false);
+      "
+    >
+      Cancel
+    </v-btn>
+  </div>
 </template>
 
 <script setup>
@@ -21,6 +33,7 @@
     "update_values",
     "increment_step",
     "decrement_step",
+    "reset_values",
   ])
 
   const props = defineProps({

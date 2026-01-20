@@ -1,5 +1,11 @@
 <template>
-  <Stepper @close="$emit('close')" @reset_values="reset_values()" />
+  <Stepper
+    @close="
+      reset_values();
+      $emit('close');
+    "
+    @reset_values="reset_values()"
+  />
 </template>
 
 <script setup>
@@ -10,6 +16,9 @@
   import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector"
   import ObjectSelector from "@ogw_front/components/ObjectSelector"
   import ImportFile from "@vease/components/ImportFile"
+  import { useUIStore } from "@vease/stores/UI"
+
+  const UIStore = useUIStore()
 
   const props = defineProps({
     files: { type: Array, default: [] },
@@ -30,6 +39,7 @@
 
   const stepper_tree = reactive({
     current_step_index: ref(0),
+    navigating_back: ref(false),
     files,
     auto_upload,
     geode_object_type,
@@ -120,9 +130,20 @@
 
   function reset_values() {
     files.value = []
+    UIStore.setDroppedFiles([])
     auto_upload.value = true
     geode_object_type.value = ""
     additional_files.value = []
     stepper_tree.current_step_index = 0
+    stepper_tree.navigating_back = false
   }
+
+  watch(
+    () => UIStore.showStepper,
+    (newVal) => {
+      if (!newVal) {
+        reset_values()
+      }
+    },
+  )
 </script>
