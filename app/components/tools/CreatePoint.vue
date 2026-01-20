@@ -123,11 +123,6 @@
 
   const UIStore = useUIStore()
   const geodeStore = useGeodeStore()
-  const openCreateTools = () => {
-    UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
-  }
 
   const name = ref("")
   const x = ref("")
@@ -143,7 +138,7 @@
   })
 
   const closeDrawer = () => {
-    UIStore.setShowCreatePoint(false)
+    UIStore.setShowCreateTools(false)
   }
 
   const safeParseFloat = (value) => {
