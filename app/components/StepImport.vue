@@ -1,4 +1,15 @@
 <template>
+      <div class="flex-shrink-0">
+      <v-card-title
+        class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
+      >
+        <v-icon icon="mdi-file-upload-outline" class="mr-3"></v-icon>
+        Import Data
+      </v-card-title>
+      <v-card-subtitle class="ma-0 text-medium pb-4">
+        Choose a file to import.
+      </v-card-subtitle>
+    </div>
   <Stepper
     @close="
       reset_values();
@@ -45,7 +56,7 @@
     geode_object_type,
     steps: [
       {
-        step_title: "Please select file(s) to import",
+        step_title: "Select files to import",
         component: {
           component_name: shallowRef(FileSelector),
           component_options: {
@@ -59,7 +70,7 @@
         }),
       },
       {
-        step_title: "Confirm the data type",
+        step_title: "Confirm data type",
         component: {
           component_name: shallowRef(ObjectSelector),
           component_options: {
@@ -78,7 +89,7 @@
       },
 
       {
-        step_title: "Please select additionnal files",
+        step_title: "Add additional files",
         component: {
           component_name: shallowRef(MissingFilesSelector),
           component_options: {
@@ -96,7 +107,7 @@
         }),
       },
       {
-        step_title: "Import your file(s)",
+        step_title: "Finalize import",
         component: {
           component_name: shallowRef(ImportFile),
           component_options: {
