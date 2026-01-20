@@ -10,6 +10,7 @@ export const useUIStore = defineStore("UI", () => {
   const toolsDefinitions = ref([])
   const showCreateVOI = ref(false)
   const showCreateAOI = ref(false)
+  const showCreatePoint = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
 
@@ -108,6 +109,10 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
+  function setShowCreatePoint(value) {
+    showCreatePoint.value = value
+  }
+
   return {
     toolsDefinitions,
     activeTools,
@@ -134,5 +139,7 @@ export const useUIStore = defineStore("UI", () => {
     setShowExtensions,
     setShowCreateVOI,
     setShowCreateAOI,
+    setShowCreatePoint,
+    showCreatePoint,
   }
 })
