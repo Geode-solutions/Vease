@@ -98,8 +98,6 @@ export const useUIStore = defineStore("UI", () => {
     showExtensions.value = value
   }
 
-
-
   return {
     toolsDefinitions,
     activeTools,
@@ -122,6 +120,5 @@ export const useUIStore = defineStore("UI", () => {
     toggleDrawer,
     setShowCreateTools,
     setShowExtensions,
-
   }
 })
