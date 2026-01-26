@@ -8,8 +8,6 @@ export const useUIStore = defineStore("UI", () => {
   const showStepImportMenu = ref(false)
   const showCreateTools = ref(false)
   const toolsDefinitions = ref([])
-  const showCreateVOI = ref(false)
-  const showCreateAOI = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
 
@@ -100,14 +98,6 @@ export const useUIStore = defineStore("UI", () => {
     showExtensions.value = value
   }
 
-  function setShowCreateVOI(value) {
-    showCreateVOI.value = value
-  }
-
-  function setShowCreateAOI(value) {
-    showCreateAOI.value = value
-  }
-
   return {
     toolsDefinitions,
     activeTools,
@@ -123,8 +113,6 @@ export const useUIStore = defineStore("UI", () => {
     showStepImportMenu,
     showCreateTools,
     showExtensions,
-    showCreateVOI,
-    showCreateAOI,
     setShowDropZone,
     setShowStepper,
     setDroppedFiles,
@@ -132,7 +120,5 @@ export const useUIStore = defineStore("UI", () => {
     toggleDrawer,
     setShowCreateTools,
     setShowExtensions,
-    setShowCreateVOI,
-    setShowCreateAOI,
   }
 })
