@@ -1,15 +1,4 @@
 <template>
-      <div class="flex-shrink-0">
-      <v-card-title
-        class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
-      >
-        <v-icon icon="mdi-file-upload-outline" class="mr-3"></v-icon>
-        Import Data
-      </v-card-title>
-      <v-card-subtitle class="ma-0 text-medium pb-4">
-        Choose a file to import.
-      </v-card-subtitle>
-    </div>
   <Stepper
     @close="
       reset_values();
@@ -21,7 +10,6 @@
 
 <script setup>
   import _ from "lodash"
-
   import Stepper from "@ogw_front/components/Stepper"
   import FileSelector from "@ogw_front/components/FileSelector"
   import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector"

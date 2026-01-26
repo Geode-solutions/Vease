@@ -1,20 +1,24 @@
 <template>
-  <div class="d-flex align-center mt-4">
+  <v-card-actions class="mt-4">
     <v-btn
+      ref="import_button"
       :loading="loading"
       color="primary"
-      @click="import_files()"
-      ref="import_button"
-      class="mr-2"
+      variant="elevated"
+      size="large"
+      rounded="lg"
+      class="text-none px-8 font-weight-bold"
+      @click="import_files"
     >
+      <v-icon start size="20">mdi-file-upload-outline</v-icon>
       Import
-      <template #loader>
-        <v-progress-circular indeterminate size="20" color="white" width="3" />
-      </template>
     </v-btn>
+
     <v-btn
-      variant="text"
       color="error"
+      variant="text"
+      size="large"
+      class="text-none ml-2 font-weight-bold"
       @click="
         $emit('reset_values');
         UIStore.setShowStepper(false);
@@ -22,7 +26,7 @@
     >
       Cancel
     </v-btn>
-  </div>
+  </v-card-actions>
 </template>
 
 <script setup>
