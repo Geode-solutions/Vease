@@ -6,10 +6,7 @@
       Import
     </v-btn>
 
-    <v-btn color="error" variant="text" size="large" class="text-none ml-2 font-weight-bold" @click="
-      $emit('reset_values');
-    UIStore.setShowStepper(false)
-      ">
+    <v-btn color="error" variant="text" size="large" class="text-none ml-2 font-weight-bold" @click="cancel">
       Cancel
     </v-btn>
   </v-card-actions>
@@ -49,5 +46,10 @@ async function import_files() {
   emit("reset_values")
   UIStore.setShowStepper(false)
   toggle_loading()
+}
+
+function cancel() {
+  emit("reset_values")
+  UIStore.setShowStepper(false)
 }
 </script>
