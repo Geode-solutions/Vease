@@ -1,8 +1,8 @@
 <template>
   <Stepper
     @close="
-      reset_values();
-      $emit('close');
+      reset_values()
+      $emit('close')
     "
     @reset_values="reset_values()"
   />

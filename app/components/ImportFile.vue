@@ -20,8 +20,8 @@
       size="large"
       class="text-none ml-2 font-weight-bold"
       @click="
-        $emit('reset_values');
-        UIStore.setShowStepper(false);
+        $emit('reset_values')
+        UIStore.setShowStepper(false)
       "
     >
       Cancel
