@@ -106,81 +106,16 @@
     </v-card-subtitle>
 
     <v-card-text class="px-6 pb-6">
-      <v-hover v-slot="{ isHovering, props }">
-        <v-card
-          v-bind="props"
-          class="text-center cursor-pointer"
-          :class="{
-            'elevation-8': isHovering || isDragging,
-            'elevation-2': !(isHovering || isDragging),
-          }"
-          :style="{
-            position: 'relative',
-            overflow: 'hidden',
-            transition: 'all 0.3s ease',
-            background: isHovering || isDragging ? '#f5f9ff' : '#fafafa',
-            border: `2px dashed ${isHovering || isDragging ? 'rgb(var(--v-theme-primary))' : '#e0e0e0'}`,
-            transform: isHovering || isDragging ? 'translateY(-2px)' : 'none',
-            pointerEvents: loading ? 'none' : 'auto',
-            opacity: loading ? 0.6 : 1,
-          }"
-          rounded="xl"
-          @click="triggerFileDialog"
-          @dragover.prevent="isDragging = true"
-          @dragleave.prevent="isDragging = false"
-          @drop.prevent="handleDrop"
-        >
-          <v-card-text class="pa-8">
-            <v-sheet
-              class="mx-auto mb-6 d-flex align-center justify-center"
-              :color="isHovering || isDragging ? 'primary' : 'grey-lighten-2'"
-              :style="{
-                width: '100px',
-                height: '100px',
-                transition: 'all 0.3s ease',
-              }"
-              rounded="circle"
-              :elevation="isHovering || isDragging ? 4 : 0"
-            >
-              <v-icon
-                :icon="loading ? 'mdi-loading' : 'mdi-cloud-upload'"
-                size="56"
-                :color="isHovering || isDragging ? 'white' : 'grey-darken-1'"
-                :class="{ rotating: loading }"
-              />
-            </v-sheet>
-
-            <div
-              class="text-h6 font-weight-semibold mb-2"
-              :class="
-                isHovering || isDragging ? 'text-primary' : 'text-grey-darken-2'
-              "
-              style="transition: color 0.3s ease"
-            >
-              {{
-                loading
-                  ? "Loading Extension..."
-                  : isDragging
-                    ? "Drop to Install"
-                    : "Click or Drag & Drop Extension"
-              }}
-            </div>
-
-            <div class="text-body-2 text-grey-darken-1">
-              (.vext extension files)
-            </div>
-          </v-card-text>
-
-          <input
-            ref="hiddenFileInput"
-            type="file"
-            accept=".vext"
-            multiple
-            class="file-input-hidden"
-            @change="handleFileChange"
-          />
-        </v-card>
-      </v-hover>
+      <DragAndDrop
+        :multiple="true"
+        accept=".vext"
+        :loading="loading"
+        :show-extensions="true"
+        idle-text="Click or Drag & Drop Extension"
+        drop-text="Drop to Install"
+        loading-text="Loading Extension..."
+        @files-selected="processFiles"
+      />
 
       <v-slide-y-transition>
         <v-alert
@@ -647,6 +582,83 @@
     </v-dialog>
   </v-card>
 </template>
+
+<script setup>
+  import { formatRelativeTime } from "@/utils/formatDate"
+  import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
+  import { useExtensionsStore } from "@vease/stores/extensions"
+  import { useUIStore } from "@vease/stores/UI"
+  import { useExtensionManager } from "@vease/composables/extension_manager"
+  import DragAndDrop from "@ogw_front/components/DragAndDrop"
+
+  const UIStore = useUIStore()
+  const extensionsStore = useExtensionsStore()
+  const loading = ref(false)
+  const errorMessage = ref("")
+  const successMessage = ref("")
+  const showRemoveDialog = ref(false)
+  const extensionToRemove = ref(null)
+
+  const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
+
+  const {
+    getExtensionName,
+    getExtensionDescription,
+    getExtensionVersion,
+    getExtensionTools,
+    getExtensionToolsCount,
+  } = useExtensionMetadata()
+
+  const processFiles = async (filesToProcess) => {
+    const validFiles = filesToProcess.filter((f) => f.name.endsWith(".vext"))
+    if (!validFiles.length) {
+      errorMessage.value = "Please drop valid extension files (.vext)"
+      return
+    }
+    errorMessage.value = ""
+    successMessage.value = ""
+    loading.value = true
+
+    let successCount = 0
+    const extensionManager = useExtensionManager()
+
+    try {
+      for (const file of filesToProcess) {
+        try {
+          await extensionManager.importExtensionFile(file)
+          successCount++
+        } catch (error) {
+          console.error("[Extension.vue] Failed to import extension:", error)
+          errorMessage.value = `${error.message}`
+        }
+      }
+      if (successCount)
+        successMessage.value = `Successfully loaded ${successCount} extension${successCount > 1 ? "s" : ""} !`
+    } finally {
+      loading.value = false
+      setTimeout(() => (successMessage.value = ""), 4000)
+    }
+  }
+
+  const toggleExtensionState = (extension) => {
+    extensionsStore.toggleExtension(extension.id)
+  }
+
+  const formatDate = (dateString) => formatRelativeTime(dateString)
+
+  const confirmRemove = (extension) => {
+    extensionToRemove.value = extension
+    showRemoveDialog.value = true
+  }
+
+  const removeExtension = () => {
+    if (extensionToRemove.value) {
+      extensionsStore.unloadExtension(extensionToRemove.value.id)
+      showRemoveDialog.value = false
+      extensionToRemove.value = null
+    }
+  }
+</script>
 
 <style scoped>
   .rotating {
