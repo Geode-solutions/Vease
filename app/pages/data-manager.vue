@@ -1,75 +1,3 @@
-<template>
-  <v-container fluid class="pa-0 fill-height bg-transparent">
-    <v-row no-gutters class="fill-height">
-      <v-col class="d-flex flex-column fill-height overflow-hidden">
-        <DataManagerHeader
-          v-model:search-value="search"
-          v-model:active-tab="activeTab"
-          :tabs="UIStore.dataManagerTabs"
-          ref="headerRef"
-        />
-
-        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden pa-4">
-          <v-window-item value="data" class="fill-height overflow-y-auto">
-            <BatchActionBanner
-              :selected-count="selectedIds.length"
-              @delete="deleteSelectedDialog = true"
-              @clear="selectedIds = []"
-            />
-
-            <DataTable
-              v-if="viewMode === 'list'"
-              v-model:selected-ids="selectedIds"
-              :items="items"
-              :search="search"
-              @toggle-visibility="toggleVisibility"
-              @focus-camera="focusCamera"
-              @isolate="isolateItem"
-              @rename="openRenameDialog"
-              @delete="confirmDelete"
-            />
-          </v-window-item>
-
-          <v-window-item
-            v-for="tab in UIStore.datamanagerTabs"
-            :key="tab.id"
-            :value="tab.id"
-            class="fill-height overflow-y-auto pa-4"
-          >
-            <component :is="tab.component" v-bind="tab.props" />
-          </v-window-item>
-        </v-window>
-      </v-col>
-    </v-row>
-
-    <DeleteDialog
-      v-model:show="deleteSingleDialog"
-      :item="itemToDelete"
-      @confirm="executeDelete"
-    />
-
-    <DeleteDialog
-      v-model:show="deleteSelectedDialog"
-      :selected-count="selectedIds.length"
-      @confirm="deleteSelected"
-    />
-
-    <RenameDialog
-      v-model:show="renameDialog"
-      :item="itemToRename"
-      :initial-name="newItemName"
-      @confirm="confirmRename"
-    />
-
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      location="bottom right"
-      >{{ snackbar.text }}</v-snackbar
-    >
-  </v-container>
-</template>
-
 <script setup>
   import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue"
   import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue"
@@ -234,3 +162,75 @@
     }
   })
 </script>
+
+<template>
+  <v-container fluid class="pa-0 fill-height bg-transparent">
+    <v-row no-gutters class="fill-height">
+      <v-col class="d-flex flex-column fill-height overflow-hidden">
+        <DataManagerHeader
+          v-model:search-value="search"
+          v-model:active-tab="activeTab"
+          :tabs="UIStore.dataManagerTabs"
+          ref="headerRef"
+        />
+
+        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden pa-4">
+          <v-window-item value="data" class="fill-height overflow-y-auto">
+            <BatchActionBanner
+              :selected-count="selectedIds.length"
+              @delete="deleteSelectedDialog = true"
+              @clear="selectedIds = []"
+            />
+
+            <DataTable
+              v-if="viewMode === 'list'"
+              v-model:selected-ids="selectedIds"
+              :items="items"
+              :search="search"
+              @toggle-visibility="toggleVisibility"
+              @focus-camera="focusCamera"
+              @isolate="isolateItem"
+              @rename="openRenameDialog"
+              @delete="confirmDelete"
+            />
+          </v-window-item>
+
+          <v-window-item
+            v-for="tab in UIStore.datamanagerTabs"
+            :key="tab.id"
+            :value="tab.id"
+            class="fill-height overflow-y-auto pa-4"
+          >
+            <component :is="tab.component" v-bind="tab.props" />
+          </v-window-item>
+        </v-window>
+      </v-col>
+    </v-row>
+
+    <DeleteDialog
+      v-model:show="deleteSingleDialog"
+      :item="itemToDelete"
+      @confirm="executeDelete"
+    />
+
+    <DeleteDialog
+      v-model:show="deleteSelectedDialog"
+      :selected-count="selectedIds.length"
+      @confirm="deleteSelected"
+    />
+
+    <RenameDialog
+      v-model:show="renameDialog"
+      :item="itemToRename"
+      :initial-name="newItemName"
+      @confirm="confirmRename"
+    />
+
+    <v-snackbar
+      v-model="snackbar.show"
+      :color="snackbar.color"
+      location="bottom right"
+      >{{ snackbar.text }}</v-snackbar
+    >
+  </v-container>
+</template>
