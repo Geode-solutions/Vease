@@ -1,27 +1,3 @@
-<template>
-  <Launcher v-if="infraStore.status != Status.CREATED" />
-  <v-card
-    v-else
-    ref="cardContainer"
-    style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
-    @contextmenu.prevent="openMenu"
-  >
-    <HybridRenderingView>
-      <template #ui>
-        <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
-        <ViewerContextMenu
-          v-if="display_menu"
-          :id="menuStore.current_id || id"
-          :x="menuStore.menuX"
-          :y="menuStore.menuY"
-          :containerWidth="containerWidth"
-          :containerHeight="containerHeight"
-        />
-      </template>
-    </HybridRenderingView>
-  </v-card>
-</template>
-
 <script setup>
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
   import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
@@ -135,11 +111,11 @@
     v-else
     ref="cardContainer"
     style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
-    @click.right="openMenu"
+    @contextmenu.prevent="openMenu"
   >
     <HybridRenderingView>
       <template #ui>
-        <ViewerTreeObjectTree />
+        <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
         <ViewerContextMenu
           v-if="display_menu"
           :id="menuStore.current_id || id"

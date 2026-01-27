@@ -1,124 +1,69 @@
 <script setup>
-  import _ from "lodash"
-  import Stepper from "@ogw_front/components/Stepper"
-  import FileSelector from "@ogw_front/components/FileSelector"
-  import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector"
-  import ObjectSelector from "@ogw_front/components/ObjectSelector"
-  import ImportFile from "@vease/components/ImportFile"
+  import { importWorkflow } from "@ogw_front/utils/file_import_workflow"
   import { useUIStore } from "@vease/stores/UI"
 
-  const emit = defineEmits(["close"])
-  const UIStore = useUIStore()
+  const emit = defineEmits([
+    "update_values",
+    "increment_step",
+    "decrement_step",
+    "reset_values",
+  ])
 
   const props = defineProps({
-    files: { type: Array, default: () => [] },
+    filenames: { type: Array, required: true },
+    geode_object_type: { type: String, required: true },
   })
 
-  const files = ref(props.files)
-  watch(
-    () => props.files,
-    (newVal) => {
-      files.value = newVal
-    },
-    { deep: true },
-  )
+  const UIStore = useUIStore()
 
-  const auto_upload = ref(true)
-  const geode_object_type = ref("")
-  const additional_files = ref([])
+  const import_button = useTemplateRef("import_button")
+  useFocus(import_button, { initialValue: true })
 
-  const stepper_tree = reactive({
-    current_step_index: 0,
-    navigating_back: false,
-    files,
-    auto_upload,
-    geode_object_type,
-    steps: [
-      {
-        step_title: "Select files to import",
-        component: {
-          component_name: shallowRef(FileSelector),
-          component_options: {
-            multiple: true,
-            files,
-            auto_upload,
-          },
-        },
-        chips: computed(() => files.value.map((file) => file.name)),
-      },
-      {
-        step_title: "Confirm data type",
-        component: {
-          component_name: shallowRef(ObjectSelector),
-          component_options: {
-            filenames: computed(() => files.value.map((file) => file.name)),
-          },
-        },
-        chips: computed(() =>
-          geode_object_type.value === "" ? [] : [geode_object_type.value],
-        ),
-      },
-      {
-        step_title: "Add additional files",
-        component: {
-          component_name: shallowRef(MissingFilesSelector),
-          component_options: {
-            multiple: true,
-            geode_object_type,
-            filenames: computed(() => files.value.map((file) => file.name)),
-          },
-        },
-        chips: computed(() => additional_files.value.map((f) => f.name)),
-      },
-      {
-        step_title: "Finalize import",
-        component: {
-          component_name: shallowRef(ImportFile),
-          component_options: {
-            geode_object_type,
-            filenames: computed(() => files.value.map((file) => file.name)),
-          },
-        },
-        chips: computed(() => {
-          const output_params = [
-            geode_object_type.value,
-            additional_files.value,
-          ]
-          return output_params.filter(
-            (val) => val !== "" && (!Array.isArray(val) || val.length > 0),
-          )
-        }),
-      },
-    ],
-  })
+  const loading = ref(false)
+  const toggle_loading = useToggle(loading)
 
-  provide("stepper_tree", stepper_tree)
-
-  function reset_values() {
-    files.value = []
-    UIStore.setDroppedFiles([])
-    auto_upload.value = true
-    geode_object_type.value = ""
-    additional_files.value = []
-    stepper_tree.current_step_index = 0
-    stepper_tree.navigating_back = false
+  async function import_files() {
+    toggle_loading()
+    const files_array = props.filenames.map((filename) => ({
+      filename,
+      geode_object_type: props.geode_object_type,
+    }))
+    await importWorkflow(files_array)
+    emit("reset_values")
+    UIStore.setShowStepper(false)
+    toggle_loading()
   }
 
-  function handleClose() {
-    reset_values()
-    emit("close")
+  function cancel() {
+    emit("reset_values")
+    UIStore.setShowStepper(false)
   }
-
-  watch(
-    () => UIStore.showStepper,
-    (newVal) => {
-      if (!newVal) {
-        reset_values()
-      }
-    },
-  )
 </script>
 
 <template>
-  <Stepper @close="handleClose" @reset_values="reset_values" />
+  <v-card-actions class="mt-4">
+    <v-btn
+      ref="import_button"
+      :loading="loading"
+      color="primary"
+      variant="elevated"
+      size="large"
+      rounded="lg"
+      class="text-none px-8 font-weight-bold"
+      @click="import_files"
+    >
+      <v-icon start size="20">mdi-file-upload-outline</v-icon>
+      Import
+    </v-btn>
+
+    <v-btn
+      color="error"
+      variant="text"
+      size="large"
+      class="text-none ml-2 font-weight-bold"
+      @click="cancel"
+    >
+      Cancel
+    </v-btn>
+  </v-card-actions>
 </template>
