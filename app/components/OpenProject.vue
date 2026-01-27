@@ -1,3 +1,10 @@
+<script setup>
+  const emit = defineEmits(["close"])
+  const props = defineProps({
+    show_dialog: { type: Boolean, required: true },
+  })
+</script>
+
 <template>
   <v-dialog
     v-model="props.show_dialog"
@@ -41,10 +48,3 @@
     </v-sheet>
   </v-dialog>
 </template>
-
-<script setup>
-  const emit = defineEmits(["close"])
-  const props = defineProps({
-    show_dialog: { type: Boolean, required: true },
-  })
-</script>

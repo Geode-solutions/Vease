@@ -1,3 +1,14 @@
+<script setup>
+  defineProps({
+    selectedCount: {
+      type: Number,
+      default: 0,
+    },
+  })
+
+  defineEmits(["delete", "clear"])
+</script>
+
 <template>
   <v-expand-transition>
     <v-sheet
@@ -33,14 +44,3 @@
     </v-sheet>
   </v-expand-transition>
 </template>
-
-<script setup>
-  defineProps({
-    selectedCount: {
-      type: Number,
-      default: 0,
-    },
-  })
-
-  defineEmits(["delete", "clear"])
-</script>

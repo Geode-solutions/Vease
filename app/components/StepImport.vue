@@ -1,7 +1,3 @@
-<template>
-  <Stepper @close="$emit('close')" @reset_values="reset_values()" />
-</template>
-
 <script setup>
   import _ from "lodash"
 
@@ -126,3 +122,7 @@
     stepper_tree.current_step_index = 0
   }
 </script>
+
+<template>
+  <Stepper @close="$emit('close')" @reset_values="reset_values()" />
+</template>

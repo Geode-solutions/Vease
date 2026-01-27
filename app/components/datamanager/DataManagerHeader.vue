@@ -1,3 +1,18 @@
+<script setup>
+  import { useTemplateRef } from "vue"
+
+  const props = defineProps({
+    searchValue: { type: String, default: "" },
+    activeTab: { type: String, default: "data" },
+    tabs: { type: Array, default: () => [] },
+  })
+
+  defineEmits(["update:searchValue", "update:activeTab"])
+  const searchInput = useTemplateRef("searchInput")
+
+  defineExpose({ focusSearch: () => searchInput.value?.focus() })
+</script>
+
 <template>
   <v-sheet class="pa-6 pb-2" rounded="xl" color="transparent">
     <v-tabs
@@ -60,18 +75,3 @@
     </v-text-field>
   </v-sheet>
 </template>
-
-<script setup>
-  import { useTemplateRef } from "vue"
-
-  const props = defineProps({
-    searchValue: { type: String, default: "" },
-    activeTab: { type: String, default: "data" },
-    tabs: { type: Array, default: () => [] },
-  })
-
-  defineEmits(["update:searchValue", "update:activeTab"])
-  const searchInput = useTemplateRef("searchInput")
-
-  defineExpose({ focusSearch: () => searchInput.value?.focus() })
-</script>
