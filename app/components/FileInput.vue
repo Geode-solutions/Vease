@@ -1,16 +1,3 @@
-<template>
-  <v-file-input
-    :value="value"
-    :rules="rules"
-    :label="label"
-    :required="required"
-    :prepend-icon="prependIcon"
-    :accept="accept"
-    @input="$emit('input', $event)"
-    @change="$emit('change', $event)"
-  ></v-file-input>
-</template>
-
 <script>
   export default {
     props: {
@@ -41,3 +28,16 @@
     },
   }
 </script>
+
+<template>
+  <v-file-input
+    :value="value"
+    :rules="rules"
+    :label="label"
+    :required="required"
+    :prepend-icon="prependIcon"
+    :accept="accept"
+    @input="$emit('input', $event)"
+    @change="$emit('change', $event)"
+  ></v-file-input>
+</template>

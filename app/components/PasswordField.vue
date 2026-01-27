@@ -1,16 +1,3 @@
-<template>
-  <v-text-field
-    :value="value"
-    :rules="rules"
-    :label="label"
-    :required="required"
-    :type="showPassword ? 'text' : 'password'"
-    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-    @input="$emit('input', $event)"
-    @click:append="toggleVisibility"
-  ></v-text-field>
-</template>
-
 <script>
   export default {
     props: {
@@ -42,3 +29,16 @@
     },
   }
 </script>
+
+<template>
+  <v-text-field
+    :value="value"
+    :rules="rules"
+    :label="label"
+    :required="required"
+    :type="showPassword ? 'text' : 'password'"
+    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+    @input="$emit('input', $event)"
+    @click:append="toggleVisibility"
+  ></v-text-field>
+</template>

@@ -1,3 +1,80 @@
+<script setup>
+  import { formatRelativeTime } from "@/utils/formatDate"
+  import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
+  import { useExtensionsStore } from "@vease/stores/extensions"
+  import { useUIStore } from "@vease/stores/UI"
+  import { useExtensionManager } from "@vease/composables/extension_manager"
+  import DragAndDrop from "@ogw_front/components/DragAndDrop"
+
+  const UIStore = useUIStore()
+  const extensionsStore = useExtensionsStore()
+  const loading = ref(false)
+  const errorMessage = ref("")
+  const successMessage = ref("")
+  const showRemoveDialog = ref(false)
+  const extensionToRemove = ref(null)
+
+  const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
+
+  const {
+    getExtensionName,
+    getExtensionDescription,
+    getExtensionVersion,
+    getExtensionTools,
+    getExtensionToolsCount,
+  } = useExtensionMetadata()
+
+  const processFiles = async (filesToProcess) => {
+    const validFiles = filesToProcess.filter((f) => f.name.endsWith(".vext"))
+    if (!validFiles.length) {
+      errorMessage.value = "Please drop valid extension files (.vext)"
+      return
+    }
+    errorMessage.value = ""
+    successMessage.value = ""
+    loading.value = true
+
+    let successCount = 0
+    const extensionManager = useExtensionManager()
+
+    try {
+      for (const file of filesToProcess) {
+        try {
+          await extensionManager.importExtensionFile(file)
+          successCount++
+        } catch (error) {
+          console.error("[Extension.vue] Failed to import extension:", error)
+          errorMessage.value = `${error.message}`
+        }
+      }
+      if (successCount)
+        successMessage.value = `Successfully loaded ${successCount} extension${successCount > 1 ? "s" : ""} !`
+    } finally {
+      loading.value = false
+      setTimeout(() => (successMessage.value = ""), 4000)
+    }
+  }
+
+  const toggleExtensionState = (extension) => {
+    extensionsStore.toggleExtension(extension.id)
+  }
+
+  const formatDate = (dateString) => formatRelativeTime(dateString)
+
+  const confirmRemove = (extension) => {
+    extensionToRemove.value = extension
+    showRemoveDialog.value = true
+  }
+
+  const removeExtension = () => {
+    if (extensionToRemove.value) {
+      extensionsStore.unloadExtension(extensionToRemove.value.id)
+      showRemoveDialog.value = false
+      extensionToRemove.value = null
+    }
+  }
+</script>
+
 <template>
   <v-card flat rounded="xl" elevation="0" class="bg-surface">
     <v-card-title
@@ -488,83 +565,6 @@
     </v-dialog>
   </v-card>
 </template>
-
-<script setup>
-  import { formatRelativeTime } from "@/utils/formatDate"
-  import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
-  import { useExtensionsStore } from "@vease/stores/extensions"
-  import { useUIStore } from "@vease/stores/UI"
-  import { useExtensionManager } from "@vease/composables/extension_manager"
-  import DragAndDrop from "@ogw_front/components/DragAndDrop"
-
-  const UIStore = useUIStore()
-  const extensionsStore = useExtensionsStore()
-  const loading = ref(false)
-  const errorMessage = ref("")
-  const successMessage = ref("")
-  const showRemoveDialog = ref(false)
-  const extensionToRemove = ref(null)
-
-  const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
-
-  const {
-    getExtensionName,
-    getExtensionDescription,
-    getExtensionVersion,
-    getExtensionTools,
-    getExtensionToolsCount,
-  } = useExtensionMetadata()
-
-  const processFiles = async (filesToProcess) => {
-    const validFiles = filesToProcess.filter((f) => f.name.endsWith(".vext"))
-    if (!validFiles.length) {
-      errorMessage.value = "Please drop valid extension files (.vext)"
-      return
-    }
-    errorMessage.value = ""
-    successMessage.value = ""
-    loading.value = true
-
-    let successCount = 0
-    const extensionManager = useExtensionManager()
-
-    try {
-      for (const file of filesToProcess) {
-        try {
-          await extensionManager.importExtensionFile(file)
-          successCount++
-        } catch (error) {
-          console.error("[Extension.vue] Failed to import extension:", error)
-          errorMessage.value = `${error.message}`
-        }
-      }
-      if (successCount)
-        successMessage.value = `Successfully loaded ${successCount} extension${successCount > 1 ? "s" : ""} !`
-    } finally {
-      loading.value = false
-      setTimeout(() => (successMessage.value = ""), 4000)
-    }
-  }
-
-  const toggleExtensionState = (extension) => {
-    extensionsStore.toggleExtension(extension.id)
-  }
-
-  const formatDate = (dateString) => formatRelativeTime(dateString)
-
-  const confirmRemove = (extension) => {
-    extensionToRemove.value = extension
-    showRemoveDialog.value = true
-  }
-
-  const removeExtension = () => {
-    if (extensionToRemove.value) {
-      extensionsStore.unloadExtension(extensionToRemove.value.id)
-      showRemoveDialog.value = false
-      extensionToRemove.value = null
-    }
-  }
-</script>
 
 <style scoped>
   .rotating {

@@ -1,14 +1,3 @@
-<template>
-  <v-text-field
-    :value="value"
-    :rules="rules"
-    :label="label"
-    :required="required"
-    :counter="counter"
-    @input="$emit('input', $event)"
-  ></v-text-field>
-</template>
-
 <script>
   export default {
     props: {
@@ -35,3 +24,14 @@
     },
   }
 </script>
+
+<template>
+  <v-text-field
+    :value="value"
+    :rules="rules"
+    :label="label"
+    :required="required"
+    :counter="counter"
+    @input="$emit('input', $event)"
+  ></v-text-field>
+</template>

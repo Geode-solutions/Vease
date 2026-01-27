@@ -1,3 +1,48 @@
+<script setup>
+  const props = defineProps({
+    items: { type: Array, required: true },
+    selectedIds: { type: Array, default: () => [] },
+    search: { type: String, default: "" },
+  })
+
+  defineEmits([
+    "update:selectedIds",
+    "toggle-visibility",
+    "focus-camera",
+    "isolate",
+    "rename",
+    "delete",
+  ])
+
+  const headers = [
+    { title: "Name", key: "name", sortable: true },
+    {
+      title: "Type",
+      key: "geode_object_type",
+      sortable: true,
+      align: "center",
+    },
+    { title: "Date", key: "created_at", sortable: true, align: "center" },
+    { title: "Visibility", key: "visible", sortable: false, align: "center" },
+    { title: "Actions", key: "actions", sortable: false, align: "end" },
+  ]
+
+  const formatSmartDate = (dateStr) => {
+    if (!dateStr) return ""
+    const date = new Date(dateStr)
+    const diff = Math.floor((new Date() - date) / 1000)
+    const relative =
+      diff < 60
+        ? "just now"
+        : diff < 3600
+          ? `${Math.floor(diff / 60)}m ago`
+          : diff < 86400
+            ? `${Math.floor(diff / 3600)}h ago`
+            : `${Math.floor(diff / 86400)}d ago`
+    return `${relative} (${date.toLocaleDateString()})`
+  }
+</script>
+
 <template>
   <v-data-table
     :model-value="selectedIds"
@@ -100,51 +145,6 @@
     </template>
   </v-data-table>
 </template>
-
-<script setup>
-  const props = defineProps({
-    items: { type: Array, required: true },
-    selectedIds: { type: Array, default: () => [] },
-    search: { type: String, default: "" },
-  })
-
-  defineEmits([
-    "update:selectedIds",
-    "toggle-visibility",
-    "focus-camera",
-    "isolate",
-    "rename",
-    "delete",
-  ])
-
-  const headers = [
-    { title: "Name", key: "name", sortable: true },
-    {
-      title: "Type",
-      key: "geode_object_type",
-      sortable: true,
-      align: "center",
-    },
-    { title: "Date", key: "created_at", sortable: true, align: "center" },
-    { title: "Visibility", key: "visible", sortable: false, align: "center" },
-    { title: "Actions", key: "actions", sortable: false, align: "end" },
-  ]
-
-  const formatSmartDate = (dateStr) => {
-    if (!dateStr) return ""
-    const date = new Date(dateStr)
-    const diff = Math.floor((new Date() - date) / 1000)
-    const relative =
-      diff < 60
-        ? "just now"
-        : diff < 3600
-          ? `${Math.floor(diff / 60)}m ago`
-          : diff < 86400
-            ? `${Math.floor(diff / 3600)}h ago`
-            : `${Math.floor(diff / 86400)}d ago`
-    return `${relative} (${date.toLocaleDateString()})`
-  }
-</script>
 
 <style scoped>
   :deep(.v-data-table-header__content) {

@@ -1,55 +1,3 @@
-<template>
-  <v-overlay
-    v-model="UIStore.showDropZone"
-    transition="dropzone-transition"
-    @keyup.esc="UIStore.disableDropZone()"
-    @click:outside="UIStore.disableDropZone()"
-    height="100%"
-    width="100%"
-    @dragover.prevent="onDragOver"
-    @dragleave.prevent="onDragLeave"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Zone de dépôt de fichiers"
-    class="dropzone-overlay"
-  >
-    <v-row no-gutters class="fill-height">
-      <v-col cols="12" class="fill-height justify-center align-center d-flex">
-        <v-card
-          align="center"
-          justify="center"
-          height="100%"
-          width="100%"
-          color="transparent"
-          class="pa-5 justify-center align-center d-flex"
-          @drop="onDrop"
-        >
-          <v-card
-            width="90%"
-            max-width="600px"
-            height="auto"
-            class="pa-10 dropzone-card text-center"
-            tabindex="0"
-            aria-label="Déposez vos fichiers ici"
-            color="white"
-            :class="{ dragging: isDragging }"
-          >
-            <v-icon size="56" color="primary" class="mb-4 pulse-animation"
-              >mdi-cloud-upload-outline</v-icon
-            >
-            <h2 class="text-h5 font-weight-medium mb-2 text-black">
-              Drag and drop your files here
-            </h2>
-            <p class="text-body-1 text-grey-darken-2">
-              Import at least one file
-            </p>
-          </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-overlay>
-</template>
-
 <script setup>
   import { useFeedbackStore } from "@ogw_front/stores/feedback"
   import { useUIStore } from "@vease/stores/UI"
@@ -111,6 +59,58 @@
     UIStore.setShowDropZone(false)
   }
 </script>
+
+<template>
+  <v-overlay
+    v-model="UIStore.showDropZone"
+    transition="dropzone-transition"
+    @keyup.esc="UIStore.disableDropZone()"
+    @click:outside="UIStore.disableDropZone()"
+    height="100%"
+    width="100%"
+    @dragover.prevent="onDragOver"
+    @dragleave.prevent="onDragLeave"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Zone de dépôt de fichiers"
+    class="dropzone-overlay"
+  >
+    <v-row no-gutters class="fill-height">
+      <v-col cols="12" class="fill-height justify-center align-center d-flex">
+        <v-card
+          align="center"
+          justify="center"
+          height="100%"
+          width="100%"
+          color="transparent"
+          class="pa-5 justify-center align-center d-flex"
+          @drop="onDrop"
+        >
+          <v-card
+            width="90%"
+            max-width="600px"
+            height="auto"
+            class="pa-10 dropzone-card text-center"
+            tabindex="0"
+            aria-label="Déposez vos fichiers ici"
+            color="white"
+            :class="{ dragging: isDragging }"
+          >
+            <v-icon size="56" color="primary" class="mb-4 pulse-animation"
+              >mdi-cloud-upload-outline</v-icon
+            >
+            <h2 class="text-h5 font-weight-medium mb-2 text-black">
+              Drag and drop your files here
+            </h2>
+            <p class="text-body-1 text-grey-darken-2">
+              Import at least one file
+            </p>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-overlay>
+</template>
 
 <style scoped>
   .dropzone-overlay {

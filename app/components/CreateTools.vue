@@ -1,3 +1,35 @@
+<script setup>
+  import { useUIStore } from "@vease/stores/UI"
+
+  const UIStore = useUIStore()
+  const selectedTool = ref(null)
+
+  const getToolComponent = (toolId) =>
+    UIStore.toolsDefinitions.find((t) => t.id === toolId)?.component
+
+  const handleSelectTool = (toolId) => {
+    selectedTool.value = toolId
+  }
+
+  const handleBack = () => {
+    selectedTool.value = null
+  }
+
+  const handleToolCreated = () => {
+    selectedTool.value = null
+    UIStore.setShowCreateTools(false)
+  }
+
+  watch(
+    () => UIStore.showCreateTools,
+    (newVal) => {
+      if (!newVal) {
+        selectedTool.value = null
+      }
+    },
+  )
+</script>
+
 <template>
   <v-card
     v-if="!selectedTool"
@@ -103,38 +135,6 @@
     </v-alert>
   </v-sheet>
 </template>
-
-<script setup>
-  import { useUIStore } from "@vease/stores/UI"
-
-  const UIStore = useUIStore()
-  const selectedTool = ref(null)
-
-  const getToolComponent = (toolId) =>
-    UIStore.toolsDefinitions.find((t) => t.id === toolId)?.component
-
-  const handleSelectTool = (toolId) => {
-    selectedTool.value = toolId
-  }
-
-  const handleBack = () => {
-    selectedTool.value = null
-  }
-
-  const handleToolCreated = () => {
-    selectedTool.value = null
-    UIStore.setShowCreateTools(false)
-  }
-
-  watch(
-    () => UIStore.showCreateTools,
-    (newVal) => {
-      if (!newVal) {
-        selectedTool.value = null
-      }
-    },
-  )
-</script>
 
 <style scoped>
   .custom-tool-card {

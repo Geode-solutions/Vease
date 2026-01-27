@@ -1,31 +1,3 @@
-<template>
-  <v-card-actions class="mt-4">
-    <v-btn
-      ref="import_button"
-      :loading="loading"
-      color="primary"
-      variant="elevated"
-      size="large"
-      rounded="lg"
-      class="text-none px-8 font-weight-bold"
-      @click="import_files"
-    >
-      <v-icon start size="20">mdi-file-upload-outline</v-icon>
-      Import
-    </v-btn>
-
-    <v-btn
-      color="error"
-      variant="text"
-      size="large"
-      class="text-none ml-2 font-weight-bold"
-      @click="cancel"
-    >
-      Cancel
-    </v-btn>
-  </v-card-actions>
-</template>
-
 <script setup>
   import { importWorkflow } from "@ogw_front/utils/file_import_workflow"
   import { useUIStore } from "@vease/stores/UI"
@@ -67,3 +39,31 @@
     UIStore.setShowStepper(false)
   }
 </script>
+
+<template>
+  <v-card-actions class="mt-4">
+    <v-btn
+      ref="import_button"
+      :loading="loading"
+      color="primary"
+      variant="elevated"
+      size="large"
+      rounded="lg"
+      class="text-none px-8 font-weight-bold"
+      @click="import_files"
+    >
+      <v-icon start size="20">mdi-file-upload-outline</v-icon>
+      Import
+    </v-btn>
+
+    <v-btn
+      color="error"
+      variant="text"
+      size="large"
+      class="text-none ml-2 font-weight-bold"
+      @click="cancel"
+    >
+      Cancel
+    </v-btn>
+  </v-card-actions>
+</template>

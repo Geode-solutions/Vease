@@ -1,3 +1,84 @@
+<script setup>
+  const valid = ref(true)
+  const showPassword = ref(false)
+  const userStore = useUserStore()
+
+  const { firstName, lastName, email, password, profileImage } = userStore
+
+  const files = ref()
+  const image = ref()
+  const success = ref()
+  const error = ref()
+  const imageUploaded = ref(false)
+
+  const nameRules = [
+    (v) => !!v || "Name is required",
+    (v) => /^[\p{L}\p{M}\s]*$/u.test(v) || "Use only letters and spaces",
+    (v) => (v && v.length <= 50) || "Name must be less than 50 characters",
+  ]
+
+  const emailRules = [
+    (v) => !!v || "E-mail is required",
+    (v) =>
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        v,
+      ) || "E-mail should be valid",
+  ]
+
+  const passwordRules = [
+    (v) => !!v || "Password is required",
+    (v) => (v && v.length >= 12) || "Password must be at least 12 characters",
+  ]
+
+  const confirmPasswordRules = [
+    (v) => !!v || "Confirm password is required",
+    (v) => v === password || "Passwords are different",
+  ]
+
+  const updateProfile = () => {
+    if (valid.value) {
+      console.log("Update profile", image)
+      userStore.$patch({
+        firstName,
+        lastName,
+        email,
+        password,
+        image,
+      })
+    }
+  }
+
+  const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value
+  }
+
+  function onFileChange(e) {
+    const file = e.target.files[0]
+    image.value = URL.createObjectURL(file)
+  }
+
+  async function uploadImage() {
+    try {
+      error.value = null
+      success.value = null
+      const formData = new FormData()
+      Array.from(files.value.files).map((file, index) =>
+        formData.append(index, file),
+      )
+
+      const { message } = await $fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      success.value = message
+      imageUploaded.value = true
+    } catch (e) {
+      error.value = e.statusMessage
+    }
+  }
+</script>
+
 <template>
   <v-container fluid fill-height>
     <v-row align="center" justify="center">
@@ -129,84 +210,3 @@
     padding: 25px;
   }
 </style>
-
-<script setup>
-  const valid = ref(true)
-  const showPassword = ref(false)
-  const userStore = useUserStore()
-
-  const { firstName, lastName, email, password, profileImage } = userStore
-
-  const files = ref()
-  const image = ref()
-  const success = ref()
-  const error = ref()
-  const imageUploaded = ref(false)
-
-  const nameRules = [
-    (v) => !!v || "Name is required",
-    (v) => /^[\p{L}\p{M}\s]*$/u.test(v) || "Use only letters and spaces",
-    (v) => (v && v.length <= 50) || "Name must be less than 50 characters",
-  ]
-
-  const emailRules = [
-    (v) => !!v || "E-mail is required",
-    (v) =>
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        v,
-      ) || "E-mail should be valid",
-  ]
-
-  const passwordRules = [
-    (v) => !!v || "Password is required",
-    (v) => (v && v.length >= 12) || "Password must be at least 12 characters",
-  ]
-
-  const confirmPasswordRules = [
-    (v) => !!v || "Confirm password is required",
-    (v) => v === password || "Passwords are different",
-  ]
-
-  const updateProfile = () => {
-    if (valid.value) {
-      console.log("Update profile", image)
-      userStore.$patch({
-        firstName,
-        lastName,
-        email,
-        password,
-        image,
-      })
-    }
-  }
-
-  const togglePasswordVisibility = () => {
-    showPassword.value = !showPassword.value
-  }
-
-  function onFileChange(e) {
-    const file = e.target.files[0]
-    image.value = URL.createObjectURL(file)
-  }
-
-  async function uploadImage() {
-    try {
-      error.value = null
-      success.value = null
-      const formData = new FormData()
-      Array.from(files.value.files).map((file, index) =>
-        formData.append(index, file),
-      )
-
-      const { message } = await $fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
-
-      success.value = message
-      imageUploaded.value = true
-    } catch (e) {
-      error.value = e.statusMessage
-    }
-  }
-</script>

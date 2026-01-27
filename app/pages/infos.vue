@@ -1,3 +1,76 @@
+<script setup>
+  import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
+  import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
+  import Status from "@ogw_front/utils/status"
+  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected"
+  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useViewerStore } from "@ogw_front/stores/viewer"
+
+  const version = useRuntimeConfig().public.VERSION
+  const geodeStore = useGeodeStore()
+  const viewerStore = useViewerStore()
+
+  const packages_versions = ref([])
+  const back_version = ref("")
+  const viewer_version = ref("")
+
+  const microservices = ref([
+    {
+      name: "Back",
+      package: "vease-back",
+      version: back_version,
+      status: geodeStore.status,
+    },
+    {
+      name: "Viewer",
+      package: "vease-viewer",
+      version: viewer_version,
+      status: viewerStore.status,
+    },
+  ])
+
+  async function get_packages_versions() {
+    geodeStore.request(
+      vease_back_schemas.vease_back.packages_versions,
+      {},
+      {
+        response_function: (response) => {
+          packages_versions.value = response.packages_versions
+        },
+      },
+    )
+  }
+
+  async function get_back_version() {
+    geodeStore.request(
+      vease_back_schemas.vease_back.microservice_version,
+      {},
+      {
+        response_function: (response) => {
+          back_version.value = response.microservice_version
+        },
+      },
+    )
+  }
+
+  async function get_viewer_version() {
+    viewerStore.request(
+      vease_viewer_schemas.vease_viewer.microservice_version,
+      {},
+      {
+        response_function: (response) => {
+          viewer_version.value = response.microservice_version
+        },
+      },
+    )
+  }
+  run_function_when_microservices_connected(() => {
+    get_packages_versions()
+    get_back_version()
+    get_viewer_version()
+  })
+</script>
+
 <template>
   <v-card
     style="
@@ -158,79 +231,6 @@
     </v-container>
   </v-card>
 </template>
-
-<script setup>
-  import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
-  import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
-  import Status from "@ogw_front/utils/status"
-  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected"
-  import { useGeodeStore } from "@ogw_front/stores/geode"
-  import { useViewerStore } from "@ogw_front/stores/viewer"
-
-  const version = useRuntimeConfig().public.VERSION
-  const geodeStore = useGeodeStore()
-  const viewerStore = useViewerStore()
-
-  const packages_versions = ref([])
-  const back_version = ref("")
-  const viewer_version = ref("")
-
-  const microservices = ref([
-    {
-      name: "Back",
-      package: "vease-back",
-      version: back_version,
-      status: geodeStore.status,
-    },
-    {
-      name: "Viewer",
-      package: "vease-viewer",
-      version: viewer_version,
-      status: viewerStore.status,
-    },
-  ])
-
-  async function get_packages_versions() {
-    geodeStore.request(
-      vease_back_schemas.vease_back.packages_versions,
-      {},
-      {
-        response_function: (response) => {
-          packages_versions.value = response.packages_versions
-        },
-      },
-    )
-  }
-
-  async function get_back_version() {
-    geodeStore.request(
-      vease_back_schemas.vease_back.microservice_version,
-      {},
-      {
-        response_function: (response) => {
-          back_version.value = response.microservice_version
-        },
-      },
-    )
-  }
-
-  async function get_viewer_version() {
-    viewerStore.request(
-      vease_viewer_schemas.vease_viewer.microservice_version,
-      {},
-      {
-        response_function: (response) => {
-          viewer_version.value = response.microservice_version
-        },
-      },
-    )
-  }
-  run_function_when_microservices_connected(() => {
-    get_packages_versions()
-    get_back_version()
-    get_viewer_version()
-  })
-</script>
 
 <style scoped>
   td {
