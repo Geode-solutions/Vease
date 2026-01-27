@@ -1,7 +1,3 @@
-<template>
-  <Stepper @close="handleClose" @reset_values="reset_values" />
-</template>
-
 <script setup>
   import _ from "lodash"
   import Stepper from "@ogw_front/components/Stepper"
@@ -124,5 +120,5 @@
 </script>
 
 <template>
-  <Stepper @close="$emit('close')" @reset_values="reset_values()" />
+  <Stepper @close="handleClose" @reset_values="reset_values" />
 </template>
