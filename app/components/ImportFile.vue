@@ -1,18 +1,3 @@
-<template>
-  <v-btn
-    :loading="loading"
-    color="primary"
-    @click="import_files()"
-    ref="import_button"
-  >
-    Import
-    <template #loader>
-      <v-progress-circular indeterminate size="20" color="white" width="3" />
-    </template>
-  </v-btn>
-  <v-btn variant="text" @click="UIStore.setShowStepper(false)"> Cancel </v-btn>
-</template>
-
 <script setup>
   import { importWorkflow } from "@ogw_front/utils/file_import_workflow"
   import { useUIStore } from "@vease/stores/UI"
@@ -21,6 +6,7 @@
     "update_values",
     "increment_step",
     "decrement_step",
+    "reset_values",
   ])
 
   const props = defineProps({
@@ -47,4 +33,37 @@
     UIStore.setShowStepper(false)
     toggle_loading()
   }
+
+  function cancel() {
+    emit("reset_values")
+    UIStore.setShowStepper(false)
+  }
 </script>
+
+<template>
+  <v-card-actions class="mt-4">
+    <v-btn
+      ref="import_button"
+      :loading="loading"
+      color="primary"
+      variant="elevated"
+      size="large"
+      rounded="lg"
+      class="text-none px-8 font-weight-bold"
+      @click="import_files"
+    >
+      <v-icon start size="20">mdi-file-upload-outline</v-icon>
+      Import
+    </v-btn>
+
+    <v-btn
+      color="error"
+      variant="text"
+      size="large"
+      class="text-none ml-2 font-weight-bold"
+      @click="cancel"
+    >
+      Cancel
+    </v-btn>
+  </v-card-actions>
+</template>

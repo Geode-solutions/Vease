@@ -1,3 +1,36 @@
+<script setup>
+  const props = defineProps({
+    show: {
+      type: Boolean,
+      default: false,
+    },
+    item: {
+      type: Object,
+      default: null,
+    },
+    initialName: {
+      type: String,
+      default: "",
+    },
+  })
+
+  const emit = defineEmits(["update:show", "confirm"])
+
+  const currentName = ref(props.initialName)
+
+  watch(
+    () => props.initialName,
+    (newVal) => {
+      currentName.value = newVal
+    },
+  )
+
+  function handleConfirm() {
+    if (!currentName.value) return
+    emit("confirm", currentName.value)
+  }
+</script>
+
 <template>
   <v-dialog
     :model-value="show"
@@ -38,36 +71,3 @@
     </v-card>
   </v-dialog>
 </template>
-
-<script setup>
-  const props = defineProps({
-    show: {
-      type: Boolean,
-      default: false,
-    },
-    item: {
-      type: Object,
-      default: null,
-    },
-    initialName: {
-      type: String,
-      default: "",
-    },
-  })
-
-  const emit = defineEmits(["update:show", "confirm"])
-
-  const currentName = ref(props.initialName)
-
-  watch(
-    () => props.initialName,
-    (newVal) => {
-      currentName.value = newVal
-    },
-  )
-
-  function handleConfirm() {
-    if (!currentName.value) return
-    emit("confirm", currentName.value)
-  }
-</script>

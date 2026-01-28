@@ -1,120 +1,3 @@
-<template>
-  <v-card :width="500" elevation="0" class="pa-4">
-    <v-card-title
-      class="pb-2 text-h5 text-primary font-weight-bold d-flex align-center"
-    >
-      <v-icon
-        icon="mdi-circle-medium"
-        class="mr-3 text-h4"
-        color="grey-darken-2"
-      ></v-icon>
-      Create Specific Point
-    </v-card-title>
-
-    <v-card-subtitle class="ma-0 text-medium-emphasis">
-      Enter the coordinates and a title for your new point object.
-    </v-card-subtitle>
-    <v-card-text>
-      <v-form ref="form">
-        <v-text-field
-          label="Object Name"
-          v-model="name"
-          prepend-inner-icon="mdi-format-title"
-          type="text"
-          variant="outlined"
-          color="primary"
-          :rules="[(v) => !!v || 'Name is required']"
-          required
-          class="mb-4"
-        />
-
-        <v-row dense>
-          <v-col cols="4">
-            <v-text-field
-              label="X Coordinate"
-              v-model="x"
-              prepend-inner-icon="mdi-axis-x-arrow"
-              type="text"
-              inputmode="decimal"
-              variant="outlined"
-              color="secondary"
-              density="comfortable"
-              :rules="[(v) => !!v || 'X is required']"
-              @paste="handlePaste($event, 'x')"
-              @update:modelValue="(val) => sanitizeInput(val, 'x')"
-            />
-          </v-col>
-
-          <v-col cols="4">
-            <v-text-field
-              label="Y Coordinate"
-              v-model="y"
-              prepend-inner-icon="mdi-axis-y-arrow"
-              type="text"
-              inputmode="decimal"
-              variant="outlined"
-              color="secondary"
-              density="comfortable"
-              :rules="[(v) => !!v || 'Y is required']"
-              @paste="handlePaste($event, 'y')"
-              @update:modelValue="(val) => sanitizeInput(val, 'y')"
-            />
-          </v-col>
-
-          <v-col cols="4">
-            <v-text-field
-              label="Z Coordinate"
-              v-model="z"
-              prepend-inner-icon="mdi-axis-z-arrow"
-              type="text"
-              inputmode="decimal"
-              variant="outlined"
-              color="secondary"
-              density="comfortable"
-              :rules="[(v) => !!v || 'Z is required']"
-              @paste="handlePaste($event, 'z')"
-              @update:modelValue="(val) => sanitizeInput(val, 'z')"
-            />
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-card-text>
-    <v-card-actions class="px-4 pb-4">
-      <v-btn
-        variant="text"
-        color="grey-darken-1"
-        size="large"
-        @click="openCreateTools"
-        :disabled="loading"
-        class="text-none"
-      >
-        <v-icon start>mdi-close-circle-outline</v-icon>
-        Cancel
-      </v-btn>
-
-      <v-btn
-        color="primary"
-        size="large"
-        variant="flat"
-        :loading="loading"
-        :disabled="!isFormFilled"
-        @click="createPoint"
-        class="text-none ml-4"
-      >
-        <v-icon start class="ml-1">mdi-send</v-icon>
-        Create Point
-        <template #loader>
-          <v-progress-circular
-            indeterminate
-            size="20"
-            color="white"
-            width="3"
-          />
-        </template>
-      </v-btn>
-    </v-card-actions>
-  </v-card>
-</template>
 <script setup>
   import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
   import { importItem } from "@ogw_front/utils/file_import_workflow"
@@ -244,3 +127,121 @@
     else if (label === "name") name.value = value
   }
 </script>
+
+<template>
+  <v-card :width="500" elevation="0" class="pa-4">
+    <v-card-title
+      class="pb-2 text-h5 text-primary font-weight-bold d-flex align-center"
+    >
+      <v-icon
+        icon="mdi-circle-medium"
+        class="mr-3 text-h4"
+        color="grey-darken-2"
+      ></v-icon>
+      Create Specific Point
+    </v-card-title>
+
+    <v-card-subtitle class="ma-0 text-medium-emphasis">
+      Enter the coordinates and a title for your new point object.
+    </v-card-subtitle>
+    <v-card-text>
+      <v-form ref="form">
+        <v-text-field
+          label="Object Name"
+          v-model="name"
+          prepend-inner-icon="mdi-format-title"
+          type="text"
+          variant="outlined"
+          color="primary"
+          :rules="[(v) => !!v || 'Name is required']"
+          required
+          class="mb-4"
+        />
+
+        <v-row dense>
+          <v-col cols="4">
+            <v-text-field
+              label="X Coordinate"
+              v-model="x"
+              prepend-inner-icon="mdi-axis-x-arrow"
+              type="text"
+              inputmode="decimal"
+              variant="outlined"
+              color="secondary"
+              density="comfortable"
+              :rules="[(v) => !!v || 'X is required']"
+              @paste="handlePaste($event, 'x')"
+              @update:modelValue="(val) => sanitizeInput(val, 'x')"
+            />
+          </v-col>
+
+          <v-col cols="4">
+            <v-text-field
+              label="Y Coordinate"
+              v-model="y"
+              prepend-inner-icon="mdi-axis-y-arrow"
+              type="text"
+              inputmode="decimal"
+              variant="outlined"
+              color="secondary"
+              density="comfortable"
+              :rules="[(v) => !!v || 'Y is required']"
+              @paste="handlePaste($event, 'y')"
+              @update:modelValue="(val) => sanitizeInput(val, 'y')"
+            />
+          </v-col>
+
+          <v-col cols="4">
+            <v-text-field
+              label="Z Coordinate"
+              v-model="z"
+              prepend-inner-icon="mdi-axis-z-arrow"
+              type="text"
+              inputmode="decimal"
+              variant="outlined"
+              color="secondary"
+              density="comfortable"
+              :rules="[(v) => !!v || 'Z is required']"
+              @paste="handlePaste($event, 'z')"
+              @update:modelValue="(val) => sanitizeInput(val, 'z')"
+            />
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-card-text>
+    <v-card-actions class="px-4 pb-4">
+      <v-btn
+        variant="text"
+        color="grey-darken-1"
+        size="large"
+        @click="openCreateTools"
+        :disabled="loading"
+        class="text-none"
+      >
+        <v-icon start>mdi-close-circle-outline</v-icon>
+        Cancel
+      </v-btn>
+
+      <v-btn
+        color="primary"
+        size="large"
+        variant="flat"
+        :loading="loading"
+        :disabled="!isFormFilled"
+        @click="createPoint"
+        class="text-none ml-4"
+      >
+        <v-icon start class="ml-1">mdi-send</v-icon>
+        Create Point
+        <template #loader>
+          <v-progress-circular
+            indeterminate
+            size="20"
+            color="white"
+            width="3"
+          />
+        </template>
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</template>

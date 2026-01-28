@@ -1,3 +1,7 @@
+<script setup>
+  import logo from "@vease/assets/img/logo.png"
+</script>
+
 <template>
   <v-app-bar flat color="transparent" class="ma-1" height="60" :elevation="0">
     <v-row class="pa-1 ma-1 align-center">
@@ -13,7 +17,3 @@
     </v-row>
   </v-app-bar>
 </template>
-
-<script setup>
-  import logo from "@vease/assets/img/logo.png"
-</script>

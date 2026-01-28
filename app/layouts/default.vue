@@ -1,3 +1,35 @@
+<script setup>
+  // Third party imports
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
+  import InfraConnected from "@ogw_front/components/InfraConnected"
+
+  // Local imports
+  import CreateTools from "@vease/components/CreateTools"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
+  import StepImport from "@vease/components/StepImport"
+  import TopBar from "@vease/components/Layout/TopBar"
+  import SideBar from "@vease/components/Layout/SideBar"
+
+  import { useUIStore } from "@vease/stores/UI"
+  import { useInfraStore } from "@ogw_front/stores/infra"
+  const UIStore = useUIStore()
+  const infraStore = useInfraStore()
+
+  const handleMouseMove = (e) => {
+    const screenWidth = window.innerWidth
+    const threshold = 75
+    if (e.clientX > screenWidth - threshold) {
+      UIStore.setShowButton(true)
+    } else {
+      UIStore.setShowButton(false)
+    }
+  }
+
+  const openCreateTools = () => {
+    UIStore.setShowCreateTools(true)
+  }
+</script>
+
 <template>
   <v-app>
     <v-main
@@ -88,38 +120,6 @@
     </v-navigation-drawer>
   </v-app>
 </template>
-
-<script setup>
-  // Third party imports
-  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
-  import InfraConnected from "@ogw_front/components/InfraConnected"
-
-  // Local imports
-  import CreateTools from "@vease/components/CreateTools"
-  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
-  import StepImport from "@vease/components/StepImport"
-  import TopBar from "@vease/components/Layout/TopBar"
-  import SideBar from "@vease/components/Layout/SideBar"
-
-  import { useUIStore } from "@vease/stores/UI"
-  import { useInfraStore } from "@ogw_front/stores/infra"
-  const UIStore = useUIStore()
-  const infraStore = useInfraStore()
-
-  const handleMouseMove = (e) => {
-    const screenWidth = window.innerWidth
-    const threshold = 75
-    if (e.clientX > screenWidth - threshold) {
-      UIStore.setShowButton(true)
-    } else {
-      UIStore.setShowButton(false)
-    }
-  }
-
-  const openCreateTools = () => {
-    UIStore.setShowCreateTools(true)
-  }
-</script>
 
 <style scoped>
   .drop-zone {

@@ -1,3 +1,22 @@
+<script setup>
+  defineProps({
+    show: {
+      type: Boolean,
+      default: false,
+    },
+    item: {
+      type: Object,
+      default: null,
+    },
+    selectedCount: {
+      type: Number,
+      default: 0,
+    },
+  })
+
+  defineEmits(["update:show", "confirm"])
+</script>
+
 <template>
   <v-dialog
     :model-value="show"
@@ -70,22 +89,3 @@
     </v-card>
   </v-dialog>
 </template>
-
-<script setup>
-  defineProps({
-    show: {
-      type: Boolean,
-      default: false,
-    },
-    item: {
-      type: Object,
-      default: null,
-    },
-    selectedCount: {
-      type: Number,
-      default: 0,
-    },
-  })
-
-  defineEmits(["update:show", "confirm"])
-</script>
