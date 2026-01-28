@@ -1,6 +1,11 @@
+// Standard library imports
+import os from "os"
+import path from "path"
+
+// Third party imports
+import config from "config"
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
-import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
@@ -10,10 +15,10 @@ import {
   run_viewer,
   delete_folder_recursive,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
+
+// Local imports
 import { create_new_window, run_extensions } from "/utils/desktop.js"
 import { back_microservice, viewer_microservice } from "/utils/local.js"
-
-import os from "os"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
@@ -74,6 +79,9 @@ ipcMain.handle(
       // Store the process
       extensionProcesses.set(extensionId, { process, port })
 
+      console.log("config.extensions.push(")
+      // config.push({ extensions: {} })
+      config.push({ id: extensionId, path: executablePath })
       process.on("error", (error) => {
         console.error(
           `[Electron] Extension ${extensionId} process error:`,
