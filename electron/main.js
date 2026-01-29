@@ -3,7 +3,7 @@ import os from "os"
 import path from "path"
 
 // Third party imports
-import config from "config"
+import Conf from "conf"
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
 import { v4 as uuidv4 } from "uuid"
@@ -24,6 +24,7 @@ autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
+const config = new Conf({ projectName: "vease" })
 create_path(project_folder_path)
 
 let mainWindow = null
@@ -78,10 +79,14 @@ ipcMain.handle(
 
       // Store the process
       extensionProcesses.set(extensionId, { process, port })
-
+      config.set("unicorn", "🦄")
+      console.log(config.get("unicorn"))
       console.log("config.extensions.push(")
       // config.push({ extensions: {} })
-      config.push({ id: extensionId, path: executablePath })
+      // config.push({ id: extensionId, path: executablePath })
+      config.set(`extensions.${extensionId}`, executablePath)
+      console.log("config.get('extensions')", config.get("extensions"))
+      console.log
       process.on("error", (error) => {
         console.error(
           `[Electron] Extension ${extensionId} process error:`,
