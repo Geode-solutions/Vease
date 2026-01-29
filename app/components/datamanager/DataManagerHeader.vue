@@ -1,7 +1,7 @@
 <script setup>
   import { useTemplateRef } from "vue"
 
-  const props = defineProps({
+  const { searchValue, activeTab, tabs } = defineProps({
     searchValue: { type: String, default: "" },
     activeTab: { type: String, default: "data" },
     tabs: { type: Array, default: () => [] },

@@ -1,5 +1,5 @@
 <script setup>
-  defineProps({
+  const { show, item, selectedCount } = defineProps({
     show: {
       type: Boolean,
       default: false,

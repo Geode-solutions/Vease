@@ -4,18 +4,19 @@
   const UIStore = useUIStore()
   const selectedTool = ref(null)
 
-  const getToolComponent = (toolId) =>
-    UIStore.toolsDefinitions.find((t) => t.id === toolId)?.component
+  function getToolComponent(toolId) {
+    return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component
+  }
 
-  const handleSelectTool = (toolId) => {
+  function handleSelectTool(toolId) {
     selectedTool.value = toolId
   }
 
-  const handleBack = () => {
+  function handleBack() {
     selectedTool.value = null
   }
 
-  const handleToolCreated = () => {
+  function handleToolCreated() {
     selectedTool.value = null
     UIStore.setShowCreateTools(false)
   }

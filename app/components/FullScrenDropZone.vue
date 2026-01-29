@@ -2,37 +2,41 @@
   import { useFeedbackStore } from "@ogw_front/stores/feedback"
   import { useUIStore } from "@vease/stores/UI"
 
+
+  const UI_TIMEOUT = 300
+  const ERROR_500 = 500
+
   const UIStore = useUIStore()
   const feedbackStore = useFeedbackStore()
 
   const isDragging = ref(false)
   let dragLeaveTimeout = null
 
-  const onDragOver = (e) => {
-    e.preventDefault()
+  function onDragOver(event) {
+    event.preventDefault()
     isDragging.value = true
     clearTimeout(dragLeaveTimeout)
   }
 
-  const onDragLeave = (e) => {
-    e.preventDefault()
+  function onDragLeave(event) {
+    event.preventDefault()
     isDragging.value = false
 
     dragLeaveTimeout = setTimeout(() => {
       if (!isDragging.value) {
         UIStore.setShowDropZone(false)
       }
-    }, 300)
+    }, UI_TIMEOUT)
   }
 
-  const onDrop = (e) => {
-    e.preventDefault()
+  function onDrop(event) {
+    event.preventDefault()
     isDragging.value = false
     clearTimeout(dragLeaveTimeout)
 
-    if (!e.dataTransfer) {
+    if (!event.dataTransfer) {
       feedbackStore.add_error(
-        500,
+        ERROR_500,
         "/internal",
         "Internal error",
         "No file dropped.",
@@ -45,7 +49,7 @@
 
     if (files.length === 0) {
       feedbackStore.add_error(
-        500,
+        ERROR_500,
         "/internal",
         "Internal error",
         "No file dropped.",

@@ -1,5 +1,10 @@
 <script setup>
-  const props = defineProps({
+  const SECONDS_IN_MINUTE = 60
+  const SECONDS_IN_HOUR = 3600
+  const SECONDS_IN_DAY = 86400
+  const MILLISECONDS_TO_SECONDS = 1000
+
+  const { items, selectedIds, search } = defineProps({
     items: { type: Array, required: true },
     selectedIds: { type: Array, default: () => [] },
     search: { type: String, default: "" },
@@ -27,150 +32,99 @@
     { title: "Actions", key: "actions", sortable: false, align: "end" },
   ]
 
-  const formatSmartDate = (dateStr) => {
+  function formatSmartDate(dateStr) {
     if (!dateStr) return ""
     const date = new Date(dateStr)
-    const diff = Math.floor((new Date() - date) / 1000)
-    const relative =
-      diff < 60
-        ? "just now"
-        : diff < 3600
-          ? `${Math.floor(diff / 60)}m ago`
-          : diff < 86400
-            ? `${Math.floor(diff / 3600)}h ago`
-            : `${Math.floor(diff / 86400)}d ago`
+    const diff = Math.floor((new Date() - date) / MILLISECONDS_TO_SECONDS)
+
+    let relative = ""
+    if (diff < SECONDS_IN_MINUTE) {
+      relative = "just now"
+    } else if (diff < SECONDS_IN_HOUR) {
+      relative = `${Math.floor(diff / SECONDS_IN_MINUTE)}m ago`
+    } else if (diff < SECONDS_IN_DAY) {
+      relative = `${Math.floor(diff / SECONDS_IN_HOUR)}h ago`
+    } else {
+      relative = `${Math.floor(diff / SECONDS_IN_DAY)}d ago`
+    }
+
     return `${relative} (${date.toLocaleDateString()})`
   }
 </script>
 
 <template>
   <v-data-table
-    :model-value="selectedIds"
-    @update:model-value="$emit('update:selectedIds', $event)"
+    v-model="selectedIds"
     :headers="headers"
     :items="items"
     :search="search"
     show-select
-    fixed-header
-    :height="selectedIds.length > 0 ? '480' : '550'"
     item-value="id"
-    return-object
-    class="bg-transparent border-thin rounded-lg text-white custom-scrollbar"
+    class="bg-transparent"
+    hide-default-footer
+    :items-per-page="-1"
   >
-    <template v-slot:item.name="{ item }">
-      <span
-        class="font-weight-medium cursor-pointer text-no-wrap"
-        @click="$emit('rename', item)"
-      >
-        {{ item.name }}
-      </span>
+    <template #[`item.name`]="{ item }">
+      <div class="d-flex align-center ga-2">
+        <span class="text-body-2 font-weight-medium text-white">{{
+          item.name || "Unnamed Object"
+        }}</span>
+      </div>
     </template>
 
-    <template v-slot:item.geode_object_type="{ item }">
-      <v-chip
-        size="x-small"
-        variant="outlined"
-        class="text-caption border-opacity-25 px-2"
-      >
+    <template #[`item.geode_object_type`]="{ item }">
+      <v-chip size="x-small" color="primary" variant="tonal" class="text-none">
         {{ item.geode_object_type }}
       </v-chip>
     </template>
 
-    <template v-slot:item.created_at="{ item }">
-      <span class="text-caption text-grey-lighten-1">
-        {{ formatSmartDate(item.created_at) }}
-      </span>
+    <template #[`item.created_at`]="{ item }">
+      <span class="text-caption text-grey-lighten-1">{{
+        formatSmartDate(item.created_at)
+      }}</span>
     </template>
 
-    <template v-slot:item.visible="{ item }">
+    <template #[`item.visible`]="{ item }">
       <v-btn
-        icon
-        size="small"
+        :icon="item.visible ? 'mdi-eye' : 'mdi-eye-off'"
+        size="x-small"
         variant="text"
-        color="white"
-        @click.stop="$emit('toggle-visibility', item)"
-      >
-        <v-icon size="20">{{
-          item.visible ? "mdi-eye" : "mdi-eye-off"
-        }}</v-icon>
-      </v-btn>
+        :color="item.visible ? 'primary' : 'grey-lighten-1'"
+        @click="$emit('toggle-visibility', item)"
+      />
     </template>
 
-    <template v-slot:item.actions="{ item }">
+    <template #[`item.actions`]="{ item }">
       <div class="d-flex ga-1 justify-end">
         <v-btn
-          icon
-          size="small"
+          icon="mdi-crosshairs-gps"
+          size="x-small"
           variant="text"
           color="white"
-          @click.stop="$emit('focus-camera', item)"
-        >
-          <v-icon size="18">mdi-target</v-icon>
-          <v-tooltip activator="parent" location="top">Focus</v-tooltip>
-        </v-btn>
-
+          @click="$emit('focus-camera', item)"
+        />
         <v-btn
-          icon
-          size="small"
+          icon="mdi-filter"
+          size="x-small"
           variant="text"
           color="white"
-          @click.stop="$emit('isolate', item)"
-        >
-          <v-icon size="18">mdi-filter-variant</v-icon>
-          <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
-        </v-btn>
-
+          @click="$emit('isolate', item)"
+        />
         <v-btn
-          icon
-          size="small"
+          icon="mdi-pencil"
+          size="x-small"
           variant="text"
           color="white"
-          @click.stop="$emit('rename', item)"
-        >
-          <v-icon size="18">mdi-pencil</v-icon>
-          <v-tooltip activator="parent" location="top">Rename</v-tooltip>
-        </v-btn>
-
+          @click="$emit('rename', item)"
+        />
         <v-btn
-          icon
-          size="small"
+          icon="mdi-delete"
+          size="x-small"
           variant="text"
           color="error"
-          @click.stop="$emit('delete', item)"
-        >
-          <v-icon size="18">mdi-delete</v-icon>
-          <v-tooltip activator="parent" location="top">Delete</v-tooltip>
-        </v-btn>
+          @click="$emit('delete', item)"
+        />
       </div>
     </template>
   </v-data-table>
 </template>
-
-<style scoped>
-  :deep(.v-data-table-header__content) {
-    font-size: 0.65rem !important;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  :deep(.v-data-table__th) {
-    background: transparent !important;
-    backdrop-filter: blur(10px);
-  }
-
-  .custom-scrollbar :deep(.v-table__wrapper) {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-  }
-
-  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar) {
-    width: 8px;
-  }
-
-  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-  }
-</style>

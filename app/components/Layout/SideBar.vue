@@ -9,7 +9,7 @@
   const openproject = ref(false)
   const importFileInput = templateRef("importFileInput")
 
-  const toggleExtensions = () => {
+  function toggleExtensions() {
     UIStore.setShowExtensions(!UIStore.showExtensions)
   }
 
@@ -66,13 +66,13 @@
 
   let draggedItem = null
 
-  const startDrag = (event, item) => {
+  function startDrag(event, item) {
     draggedItem = item
     event.dataTransfer.setData("text/plain", "sidebar-icon")
   }
 
-  const onDrop = (event, dropIndex) => {
-    const dragIndex = items.value.findIndex((item) => item === draggedItem)
+  function onDrop(event, dropIndex) {
+    const dragIndex = items.value.indexOf(draggedItem)
     if (dragIndex === dropIndex) return
 
     items.value.splice(dragIndex, 1)

@@ -1,5 +1,5 @@
 <script setup>
-  const props = defineProps({
+  const { show, item, initialName } = defineProps({
     show: {
       type: Boolean,
       default: false,
@@ -16,10 +16,10 @@
 
   const emit = defineEmits(["update:show", "confirm"])
 
-  const currentName = ref(props.initialName)
+  const currentName = ref(initialName)
 
   watch(
-    () => props.initialName,
+    () => initialName,
     (newVal) => {
       currentName.value = newVal
     },

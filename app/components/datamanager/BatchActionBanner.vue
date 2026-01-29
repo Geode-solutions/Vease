@@ -1,5 +1,5 @@
 <script setup>
-  defineProps({
+  const { selectedCount } = defineProps({
     selectedCount: {
       type: Number,
       default: 0,

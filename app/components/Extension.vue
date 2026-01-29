@@ -1,10 +1,12 @@
 <script setup>
+  import DragAndDrop from "@ogw_front/components/DragAndDrop"
   import { formatRelativeTime } from "@/utils/formatDate"
+  import { useExtensionManager } from "@vease/composables/extension_manager"
   import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
   import { useExtensionsStore } from "@vease/stores/extensions"
   import { useUIStore } from "@vease/stores/UI"
-  import { useExtensionManager } from "@vease/composables/extension_manager"
-  import DragAndDrop from "@ogw_front/components/DragAndDrop"
+
+  const MESSAGE_TIMEOUT = 4000
 
   const UIStore = useUIStore()
   const extensionsStore = useExtensionsStore()
@@ -24,8 +26,8 @@
     getExtensionToolsCount,
   } = useExtensionMetadata()
 
-  const processFiles = async (filesToProcess) => {
-    const validFiles = filesToProcess.filter((f) => f.name.endsWith(".vext"))
+  async function processFiles(filesToProcess) {
+    const validFiles = filesToProcess.filter((file) => file.name.endsWith(".vext"))
     if (!validFiles.length) {
       errorMessage.value = "Please drop valid extension files (.vext)"
       return
@@ -38,35 +40,45 @@
     const extensionManager = useExtensionManager()
 
     try {
-      for (const file of filesToProcess) {
-        try {
-          await extensionManager.importExtensionFile(file)
-          successCount++
-        } catch (error) {
-          console.error("[Extension.vue] Failed to import extension:", error)
-          errorMessage.value = `${error.message}`
+      const results = await Promise.allSettled(
+        validFiles.map((file) => extensionManager.importExtensionFile(file)),
+      )
+
+      for (const result of results) {
+        if (result.status === "fulfilled") {
+          successCount += 1
+        } else {
+          console.error(
+            "[Extension.vue] Failed to import extension:",
+            result.reason,
+          )
+          errorMessage.value = `${result.reason.message}`
         }
       }
-      if (successCount)
+
+      if (successCount) {
         successMessage.value = `Successfully loaded ${successCount} extension${successCount > 1 ? "s" : ""} !`
+      }
     } finally {
       loading.value = false
-      setTimeout(() => (successMessage.value = ""), 4000)
+      setTimeout(() => (successMessage.value = ""), MESSAGE_TIMEOUT)
     }
   }
 
-  const toggleExtensionState = (extension) => {
+  function toggleExtensionState(extension) {
     extensionsStore.toggleExtension(extension.id)
   }
 
-  const formatDate = (dateString) => formatRelativeTime(dateString)
+  function formatDate(dateString) {
+    return formatRelativeTime(dateString)
+  }
 
-  const confirmRemove = (extension) => {
+  function confirmRemove(extension) {
     extensionToRemove.value = extension
     showRemoveDialog.value = true
   }
 
-  const removeExtension = () => {
+  function removeExtension() {
     if (extensionToRemove.value) {
       extensionsStore.unloadExtension(extensionToRemove.value.id)
       showRemoveDialog.value = false
