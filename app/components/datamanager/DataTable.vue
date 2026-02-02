@@ -4,14 +4,17 @@
   const SECONDS_IN_DAY = 86400
   const MILLISECONDS_TO_SECONDS = 1000
 
-  const { items, selectedIds, search } = defineProps({
+  const { items, search } = defineProps({
     items: { type: Array, required: true },
-    selectedIds: { type: Array, default: () => [] },
     search: { type: String, default: "" },
   })
 
+  const selectedIds = defineModel("selectedIds", {
+    type: Array,
+    default: () => [],
+  })
+
   defineEmits([
-    "update:selectedIds",
     "toggle-visibility",
     "focus-camera",
     "isolate",
@@ -35,7 +38,7 @@
   function formatSmartDate(dateStr) {
     if (!dateStr) return ""
     const date = new Date(dateStr)
-    const diff = Math.floor((new Date() - date) / MILLISECONDS_TO_SECONDS)
+    const diff = Math.floor((Date.now() - date) / MILLISECONDS_TO_SECONDS)
 
     let relative = ""
     if (diff < SECONDS_IN_MINUTE) {

@@ -1,13 +1,22 @@
 <script setup>
   const emit = defineEmits(["close"])
-  const props = defineProps({
+  const { show_dialog } = defineProps({
     show_dialog: { type: Boolean, required: true },
+  })
+
+  const isVisible = computed({
+    get: () => show_dialog,
+    set: (value) => {
+      if (!value) {
+        emit("close")
+      }
+    },
   })
 </script>
 
 <template>
   <v-dialog
-    v-model="props.show_dialog"
+    v-model="isVisible"
     @click:outside="emit('close')"
     max-width="800px"
     radius="20px"
@@ -32,7 +41,7 @@
             variant="outlined"
             color="white"
             text
-            @click="emit('close')"
+            @click="$emit('close')"
             class="ml-8 mb-4"
             >Close</v-btn
           >
@@ -41,7 +50,7 @@
             class="mb-4"
             color="white"
             text
-            @click="emit('close')"
+            @click="$emit('close')"
             >Create</v-btn
           >
         </v-card-actions>

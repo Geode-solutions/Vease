@@ -5,6 +5,10 @@ import { isWindows } from "std-env"
 // Local imports
 import { run_browser_wrapper } from "../../../utils/local"
 
+const WINDOWS_TIMEOUT = 10
+const LINUX_TIMEOUT = 5
+const MILLISECONDS = 1000
+
 test.beforeEach(async ({ page }) => {
   const ports = await run_browser_wrapper(`preview:browser`)
   console.log("ports", ports)
@@ -18,7 +22,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test("Microservices running", async ({ page }) => {
-  await page.waitForTimeout((isWindows ? 10 : 5) * 1000)
+  await page.waitForTimeout((isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS)
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })

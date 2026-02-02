@@ -1,48 +1,57 @@
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
-import path from "path"
+import node_os from "node:os"
+import node_path from "node:path"
 import { v4 as uuidv4 } from "uuid"
+
+import {
+  back_microservice,
+  viewer_microservice,
+} from "/utils/local.js"
 import {
   create_path,
+  delete_folder_recursive,
   kill_back,
   kill_viewer,
   run_back,
   run_viewer,
-  delete_folder_recursive,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { create_new_window, run_extensions } from "/utils/desktop.js"
-import { back_microservice, viewer_microservice } from "/utils/local.js"
+import { create_new_window } from "/utils/desktop.js"
 
-import os from "os"
+const PORT_RANGE_MIN = 5001
+const PORT_RANGE_MAX = 5999
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 const uuid_project_folder = uuidv4()
-const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
+const project_folder_path = node_path.join(
+  node_os.tmpdir(),
+  "vease",
+  uuid_project_folder,
+)
 create_path(project_folder_path)
 
-let mainWindow = null
+let _mainWindow = null
 
 let back_port = 0
 let viewer_port = 0
 
 ipcMain.handle("run_back", async (_event) => {
   const { back_name, back_path } = await back_microservice()
-  back_port = await run_back(back_name, back_path, {
-    project_folder_path: project_folder_path,
-  })
+  back_port = await run_back(back_name, back_path, { project_folder_path })
   return back_port
 })
+
 ipcMain.handle("run_viewer", async (_event) => {
   const { viewer_name, viewer_path } = await viewer_microservice()
   viewer_port = await run_viewer(viewer_name, viewer_path, {
-    project_folder_path: project_folder_path,
+    project_folder_path,
   })
   return viewer_port
 })
 
 ipcMain.handle("new_window", async (_event) => {
-  const _new_window = create_new_window()
+  create_new_window()
 })
 
 // Extension microservices management
@@ -55,11 +64,11 @@ ipcMain.handle(
     console.log(`[Electron] Executable path: ${executablePath}`)
 
     try {
-      const { spawn } = await import("child_process")
-      const getPort = (await import("get-port-please")).getPort
+      const { spawn } = await import("node:child_process")
+      const { getPort } = await import("get-port-please")
 
       // Get a free port for the extension microservice
-      const port = await getPort({ portRange: [5001, 5999] })
+      const port = await getPort({ portRange: [PORT_RANGE_MIN, PORT_RANGE_MAX] })
       console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
 
       // Spawn the microservice process
@@ -100,45 +109,39 @@ ipcMain.handle(
   },
 )
 
-app.whenReady().then(() => {
-  mainWindow = create_new_window()
+app.on("ready", () => {
+  _mainWindow = create_new_window()
 })
 
 let cleaned = false
 
 async function clean_up() {
-  return new Promise((resolve) => {
-    console.log("Shutting down microservices")
+  console.log("Shutting down microservices")
 
-    // Kill extension microservices
-    const extensionKillPromises = Array.from(extensionProcesses.values()).map(
-      ({ process, port }) => {
-        return new Promise((resolveKill) => {
-          if (process && !process.killed) {
-            process.kill()
-          }
-          resolveKill()
-        })
-      },
-    )
+  // Kill extension microservices
+  for (const { process } of extensionProcesses.values()) {
+    if (process && !process.killed) {
+      process.kill()
+    }
+  }
 
-    Promise.all([
-      kill_back(back_port),
-      kill_viewer(viewer_port),
-      ...extensionKillPromises,
-    ]).then(() => {
-      delete_folder_recursive(project_folder_path)
-      cleaned = true
-      console.log("end clean")
-      resolve()
-    })
-  })
+  await Promise.all([kill_back(back_port), kill_viewer(viewer_port)])
+
+  delete_folder_recursive(project_folder_path)
+  cleaned = true
+  console.log("end clean")
 }
 
-app.on("before-quit", function (event) {
-  if (!cleaned) {
-    event.preventDefault()
-    clean_up().then(() => app.quit())
+app.on("before-quit", async (event) => {
+  if (cleaned) return
+
+  event.preventDefault()
+  try {
+    await clean_up()
+  } catch (error) {
+    console.error("Error during cleanup:", error)
+  } finally {
+    app.quit()
   }
 })
 

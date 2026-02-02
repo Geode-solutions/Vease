@@ -45,7 +45,7 @@
       return
     }
 
-    const files = e.dataTransfer.files
+    const { files } = event.dataTransfer
 
     if (files.length === 0) {
       feedbackStore.add_error(
@@ -56,7 +56,7 @@
       )
     } else {
       feedbackStore.add_success(`${files.length} file(s) dropped`)
-      UIStore.setDroppedFiles(Array.from(files))
+      UIStore.setDroppedFiles([...files])
       UIStore.setShowStepper(true)
     }
 

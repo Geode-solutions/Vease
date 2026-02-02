@@ -1,16 +1,17 @@
-import { readFiles } from "h3-formidable"
 import { errors as formidableErrors } from "formidable"
-import path from "path"
-import fs from "fs"
+import fs from "node:fs"
+import path from "node:path"
+import { readFiles } from "h3-formidable"
 
+const MEGABYTE = 1048576 // 1MB
+const MAX_FILE_SIZE = 5242880 // 5MB
+const MAX_FILES = 1
+const RANDOM_COEFFICIENT = 10000000
 export default defineEventHandler(async (event) => {
-  const maxFiles = 1
-  const fileSize = 1024 * 1024 * 5 // 5MB
-
   try {
     const { files } = await readFiles(event, {
-      maxFiles: maxFiles,
-      maxFileSize: fileSize,
+      maxFiles: MAX_FILES,
+      maxFileSize: MAX_FILE_SIZE,
     })
 
     if (!Object.keys(files).length) {
@@ -20,9 +21,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    for (let index = 0; index < Object.keys(files).length; index++) {
-      const filepath = files[index][0].filepath
-      const mimetype = files[index][0].mimetype
+    for (let index = 0; index < Object.keys(files).length; index += 1) {
+      const [{ filepath, mimetype }] = files[index]
 
       if (!mimetype.startsWith("image")) {
         throw createError({
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      let imageName = `${String(Date.now()) + String(Math.round(Math.random() * 10000000))}.${mimetype.split("/")[1]}`
+      let imageName = `${String(Date.now()) + String(Math.round(Math.random() * RANDOM_COEFFICIENT))}.${mimetype.split("/")[1]}`
       let newPath = path.join("upload", imageName)
       fs.copyFileSync(filepath, newPath)
     }
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
 
     if (error.code === formidableErrors.biggerThanTotalMaxFileSize) {
       throw createError({
-        statusMessage: `File is larger than ${fileSize / (1024 * 1024)} MB.`,
+        statusMessage: `File is larger than ${fileSize / MEGABYTE} MB.`,
         statusCode: 400,
       })
     }

@@ -1,11 +1,17 @@
 import { expect, test } from "@playwright/test"
-import { _electron as electron } from "playwright"
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers"
+import { _electron as electron } from "playwright"
 import { isWindows } from "std-env"
 
-import path from "path"
+import path from "node:path"
 
-let electronApp
+const MILLISECONDS = 1000
+const WINDOWS_TIMEOUT = 60
+const LINUX_TIMEOUT = 15
+const DEFAULT_WIDTH = 1200
+const DEFAULT_HEIGHT = 800
+
+let electronApp = undefined
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild(
@@ -41,7 +47,7 @@ test.beforeAll(async () => {
   const browserWindow = await electronApp.browserWindow(firstWindow)
   await browserWindow.evaluate(async (window) => {
     await window.unmaximize()
-    await window.setSize(1200, 800)
+    await window.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
   })
 })
 
@@ -51,7 +57,7 @@ test.afterAll(async () => {
 
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000)
+  await firstWindow.waitForTimeout((isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS)
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })

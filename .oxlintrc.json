@@ -23,7 +23,7 @@
     "oxc/no-async-await": "off",
     "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
     "eslint/max-statements": ["warn", 20],
-    "eslint/id-length": ["error", { "exceptions": ["x", "y", "z"], "min": 2 }],
+    "eslint/id-length": ["error", { "exceptions": ["x", "y", "z", "i"], "min": 2 }],
     "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
     "unicorn/numeric-separators-style": "off", // 1_000 ou 1000 ?
     "sort-imports": ["error", { "allowSeparatedGroups": true }],
@@ -37,6 +37,9 @@
     "oxc/no-optional-chaining": "off",
     "node/no-process-env": "off",
     "capitalized-comments": "warn",
+    "unicorn/consistent-existence-index-check": "off",  // Opérateur < > remplacés par !== -1 for index check
+    "unicorn/require-post-message-target-origin": "off", // lorsqu'on envoie un message avec postMessage, on doit spécifier l'origin
+    "unicorn/prefer-structured-clone": "off", // Pas compatible avec plugin Pinia ?
     "eslint/no-magic-numbers": [
       "error",
       {

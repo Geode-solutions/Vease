@@ -1,28 +1,28 @@
-<script>
-  export default {
-    props: {
-      value: {
-        type: String,
-        required: true,
-      },
-      rules: {
-        type: Array,
-        default: () => [],
-      },
-      label: {
-        type: String,
-        required: true,
-      },
-      required: {
-        type: Boolean,
-        default: false,
-      },
-      counter: {
-        type: Number,
-        default: null,
-      },
+<script setup>
+  const { value, rules, label, required, counter } = defineProps({
+    value: {
+      type: String,
+      required: true,
     },
-  }
+    rules: {
+      type: Array,
+      default: () => [],
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    counter: {
+      type: Number,
+      default: null,
+    },
+  })
+
+  defineEmits(["input"])
 </script>
 
 <template>

@@ -1,6 +1,7 @@
-import { spawn } from "node:child_process"
+import { createError, defineEventHandler, readBody } from "h3"
 import path from "node:path"
-import { defineEventHandler, readBody, createError } from "h3"
+import { setTimeout } from "node:timers/promises"
+import { spawn } from "node:child_process"
 
 // Store running extension processes
 const extensionProcesses = new Map()
@@ -71,7 +72,7 @@ export default defineEventHandler(async (event) => {
       // Look for port in output (format: "Running on http://0.0.0.0:5001")
       const portMatch = output.match(/Running on .*:(\d+)/)
       if (portMatch && !port) {
-        port = portMatch[1]
+        [, port] = portMatch
         console.log(
           `[Extension Launcher] ${extensionId} running on port ${port}`,
         )
@@ -97,7 +98,8 @@ export default defineEventHandler(async (event) => {
     })
 
     // Wait a bit for the process to start and output the port
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const launchTimeout = 2000
+    await setTimeout(launchTimeout)
 
     // Update the port in the stored process info
     if (port) {

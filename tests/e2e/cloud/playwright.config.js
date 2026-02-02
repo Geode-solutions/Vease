@@ -2,6 +2,8 @@
 import { fileURLToPath } from "node:url"
 import { defineConfig, devices } from "@playwright/test"
 
+const MILLISECONDS = 1000
+const DEFAULT_TIMEOUT = 250
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -10,11 +12,11 @@ export default defineConfig({
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
   testDir: "./",
-  timeout: 250 * 1000,
+  timeout: DEFAULT_TIMEOUT * MILLISECONDS,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: Boolean(process.env.CI),
   /* Retry on CI only */
   retries: 0,
   /* Opt out of parallel tests on CI. */
