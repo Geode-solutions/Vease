@@ -1,13 +1,10 @@
 import { expect, test } from "@playwright/test"
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers"
 import { _electron as electron } from "playwright"
-import { isWindows } from "std-env"
 
 import path from "node:path"
 
 const MILLISECONDS = 1000
-const WINDOWS_TIMEOUT = 60
-const LINUX_TIMEOUT = 15
 const DEFAULT_WIDTH = 1200
 const DEFAULT_HEIGHT = 800
 
@@ -45,9 +42,17 @@ test.beforeAll(async () => {
   })
   const firstWindow = await electronApp.firstWindow()
   const browserWindow = await electronApp.browserWindow(firstWindow)
-  await browserWindow.evaluate(async (window) => {
-    await window.unmaximize()
-    await window.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+  await browserWindow.evaluate(
+    async (window, width, height) => {
+      await window.unmaximize()
+      await window.setSize(width, height)
+    },
+    DEFAULT_WIDTH,
+    DEFAULT_HEIGHT,
+  )
+  await firstWindow.setViewportSize({
+    width: DEFAULT_WIDTH,
+    height: DEFAULT_HEIGHT,
   })
 })
 
@@ -57,9 +62,9 @@ test.afterAll(async () => {
 
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout(
-    (isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS,
-  )
+  // Wait for the app to be mounted and visible
+  await firstWindow.waitForSelector(".v-application", { state: "visible" })
+  await firstWindow.waitForTimeout(2 * MILLISECONDS) // Slight buffer for microservices
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })

@@ -1,15 +1,17 @@
 import { BrowserWindow, app, shell } from "electron"
-import path from "node:path"
-
+import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
-const __filename = fileURLToPath(import.meta.url) // Get the resolved path to the file
-const __dirname = path.dirname(__filename) // Get the name of the directory
+// Get the resolved path to the file
+const __filename = fileURLToPath(import.meta.url)
+// Get the name of the directory
+const __dirname = dirname(__filename)
 
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 
 function create_new_window() {
+  const preloadPath = join(__dirname, "preload.js")
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
@@ -19,7 +21,7 @@ function create_new_window() {
       contextIsolation: true,
       nodeIntegration: true,
       webSecurity: true,
-      preload: path.join(__dirname, "preload.js"),
+      preload: preloadPath,
     },
   })
   win.setMenuBarVisibility(false)
@@ -49,7 +51,7 @@ function create_new_window() {
     })
   })
   if (app.isPackaged) {
-    const app_path = path.join(
+    const app_path = join(
       app.getAppPath(),
       ".output",
       "public",
