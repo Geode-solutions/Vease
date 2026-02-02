@@ -51,12 +51,7 @@ function create_new_window() {
     })
   })
   if (app.isPackaged) {
-    const app_path = join(
-      app.getAppPath(),
-      ".output",
-      "public",
-      "index.html",
-    )
+    const app_path = join(app.getAppPath(), ".output", "public", "index.html")
     console.log("APP_PATH", app_path)
     win.loadFile(app_path)
   } else {
