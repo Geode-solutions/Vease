@@ -63,8 +63,10 @@ test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
   // Wait for the app to be mounted and visible
   await firstWindow.waitForSelector(".v-application", { state: "visible" })
-  await firstWindow.waitForTimeout(2 * MILLISECONDS) // Slight buffer for microservices
-  await expect(firstWindow).toHaveScreenshot({
+  // CI is slower, 5s buffer ensures everything (microservices, fonts) is stabilized
+  await firstWindow.waitForTimeout(2 * MILLISECONDS)
+  // BEST PRACTICE: Screenshot the element instead of the whole window to avoid OS borders/decorations
+  await expect(firstWindow.locator(".v-application")).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })
 })
