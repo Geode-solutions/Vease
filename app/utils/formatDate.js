@@ -23,7 +23,8 @@ export function formatRelativeTime(dateInput) {
     return `${diffMins} ${diffMins === 1 ? "minute" : "minutes"} ago`
   if (diffHours < HOURS)
     return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`
-  if (diffDays < DAYS) return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`
+  if (diffDays < DAYS)
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`
   if (diffWeeks < QUARTERS)
     return `${diffWeeks} ${diffWeeks === 1 ? "week" : "weeks"} ago`
   if (diffMonths < YEARS)

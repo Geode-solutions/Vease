@@ -4,10 +4,7 @@ import node_os from "node:os"
 import node_path from "node:path"
 import { v4 as uuidv4 } from "uuid"
 
-import {
-  back_microservice,
-  viewer_microservice,
-} from "/utils/local.js"
+import { back_microservice, viewer_microservice } from "/utils/local.js"
 import {
   create_path,
   delete_folder_recursive,
@@ -68,7 +65,9 @@ ipcMain.handle(
       const { getPort } = await import("get-port-please")
 
       // Get a free port for the extension microservice
-      const port = await getPort({ portRange: [PORT_RANGE_MIN, PORT_RANGE_MAX] })
+      const port = await getPort({
+        portRange: [PORT_RANGE_MIN, PORT_RANGE_MAX],
+      })
       console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
 
       // Spawn the microservice process

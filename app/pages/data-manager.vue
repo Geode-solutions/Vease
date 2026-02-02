@@ -159,7 +159,10 @@
   })
 
   useEventListener(document, "keydown", (event) => {
-    if ((event.ctrlKey || event.metaKey) && (event.key === "k" || event.key === "K")) {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      (event.key === "k" || event.key === "K")
+    ) {
       event.preventDefault()
       headerRef.value?.focusSearch()
     }
