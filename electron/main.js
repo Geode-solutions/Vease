@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid"
 import {
   back_microservice,
   viewer_microservice,
-} from "/utils/local.js"
+} from "../utils/local.js"
 import {
   create_path,
   delete_folder_recursive,
@@ -16,7 +16,7 @@ import {
   run_back,
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { create_new_window } from "/utils/desktop.js"
+import { create_new_window } from "../utils/desktop.js"
 
 const PORT_RANGE_MIN = 5001
 const PORT_RANGE_MAX = 5999

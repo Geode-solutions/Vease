@@ -1,6 +1,6 @@
 // @ts-check
-import { fileURLToPath } from "node:url"
 import { defineConfig, devices } from "@playwright/test"
+import { fileURLToPath } from "node:url"
 
 const MILLISECONDS = 1000
 const DEFAULT_TIMEOUT = 250

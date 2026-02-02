@@ -131,3 +131,32 @@
     </template>
   </v-data-table>
 </template>
+
+<style scoped>
+  :deep(.v-data-table-header__content) {
+    font-size: 0.65rem !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  :deep(.v-data-table__th) {
+    background: transparent !important;
+    backdrop-filter: blur(10px);
+  }
+
+  .custom-scrollbar :deep(.v-table__wrapper) {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+
+  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar) {
+    width: 8px;
+  }
+
+  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+  }
+</style>
