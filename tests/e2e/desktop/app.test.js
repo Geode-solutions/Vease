@@ -43,12 +43,11 @@ test.beforeAll(async () => {
   const firstWindow = await electronApp.firstWindow()
   const browserWindow = await electronApp.browserWindow(firstWindow)
   await browserWindow.evaluate(
-    async (window, width, height) => {
+    async (window, { width, height }) => {
       await window.unmaximize()
       await window.setSize(width, height)
     },
-    DEFAULT_WIDTH,
-    DEFAULT_HEIGHT,
+    { width: DEFAULT_WIDTH, height: DEFAULT_HEIGHT },
   )
   await firstWindow.setViewportSize({
     width: DEFAULT_WIDTH,
