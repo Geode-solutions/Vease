@@ -6,7 +6,7 @@
     },
   })
 
-  defineEmits(["delete", "clear"])
+  const emit = defineEmits(["delete", "clear"])
 </script>
 
 <template>
@@ -28,7 +28,7 @@
             size="small"
             variant="text"
             color="error"
-            @click="$emit('delete')"
+            @click="emit('delete')"
           >
             Delete
           </v-btn>
@@ -38,7 +38,7 @@
           size="x-small"
           variant="text"
           color="white"
-          @click="$emit('clear')"
+          @click="emit('clear')"
         />
       </div>
     </v-sheet>

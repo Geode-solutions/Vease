@@ -22,7 +22,7 @@
     },
   })
 
-  defineEmits(["input"])
+  const emit = defineEmits(["input"])
 
   const showPassword = ref(false)
 </script>
@@ -35,7 +35,7 @@
     :required="required"
     :type="showPassword ? 'text' : 'password'"
     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-    @input="$emit('input', $event)"
+    @input="emit('input', $event)"
     @click:append="toggleVisibility"
   ></v-text-field>
 </template>

@@ -22,7 +22,7 @@
     },
   })
 
-  defineEmits(["input"])
+  const emit = defineEmits(["input"])
 </script>
 
 <template>
@@ -32,6 +32,6 @@
     :label="label"
     :required="required"
     :counter="counter"
-    @input="$emit('input', $event)"
+    @input="emit('input', $event)"
   ></v-text-field>
 </template>

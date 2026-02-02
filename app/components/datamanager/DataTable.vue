@@ -93,7 +93,7 @@
         size="x-small"
         variant="text"
         :color="item.visible ? 'primary' : 'grey-lighten-1'"
-        @click="$emit('toggle-visibility', item)"
+        @click="emit('toggle-visibility', item)"
       />
     </template>
 
@@ -104,28 +104,28 @@
           size="x-small"
           variant="text"
           color="white"
-          @click="$emit('focus-camera', item)"
+          @click="emit('focus-camera', item)"
         />
         <v-btn
           icon="mdi-filter"
           size="x-small"
           variant="text"
           color="white"
-          @click="$emit('isolate', item)"
+          @click="emit('isolate', item)"
         />
         <v-btn
           icon="mdi-pencil"
           size="x-small"
           variant="text"
           color="white"
-          @click="$emit('rename', item)"
+          @click="emit('rename', item)"
         />
         <v-btn
           icon="mdi-delete"
           size="x-small"
           variant="text"
           color="error"
-          @click="$emit('delete', item)"
+          @click="emit('delete', item)"
         />
       </div>
     </template>

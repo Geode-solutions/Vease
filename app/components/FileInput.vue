@@ -25,12 +25,14 @@
       default: undefined,
     },
   })
+
+  const emit = defineEmits(["update:value"])
 </script>
 
 <template>
   <v-file-input
     :model-value="value"
-    @update:model-value="$emit('update:value', $event)"
+    @update:model-value="emit('update:value', $event)"
     :rules="rules"
     :label="label"
     :required="required"

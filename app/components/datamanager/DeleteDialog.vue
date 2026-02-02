@@ -14,13 +14,13 @@
     },
   })
 
-  defineEmits(["update:show", "confirm"])
+  const emit = defineEmits(["update:show", "confirm"])
 </script>
 
 <template>
   <v-dialog
     :model-value="show"
-    @update:model-value="$emit('update:show', $event)"
+    @update:model-value="emit('update:show', $event)"
     max-width="400"
     persistent
   >
@@ -47,14 +47,14 @@
         </div>
       </v-card-text>
       <v-card-actions class="px-8 pb-8"
-        ><v-spacer /><v-btn variant="text" @click="$emit('update:show', false)"
+        ><v-spacer /><v-btn variant="text" @click="emit('update:show', false)"
           >Cancel</v-btn
         >
         <v-btn
           color="error"
           variant="flat"
           class="px-8 rounded-pill"
-          @click="$emit('confirm')"
+          @click="emit('confirm')"
           >Delete</v-btn
         ></v-card-actions
       >
@@ -75,14 +75,14 @@
         <strong>{{ selectedCount }}</strong> items?
       </v-card-text>
       <v-card-actions class="px-8 pb-8"
-        ><v-spacer /><v-btn variant="text" @click="$emit('update:show', false)"
+        ><v-spacer /><v-btn variant="text" @click="emit('update:show', false)"
           >Cancel</v-btn
         >
         <v-btn
           color="error"
           variant="flat"
           class="px-8 rounded-pill"
-          @click="$emit('confirm')"
+          @click="emit('confirm')"
           >Delete All</v-btn
         ></v-card-actions
       >

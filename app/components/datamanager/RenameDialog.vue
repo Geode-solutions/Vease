@@ -34,7 +34,7 @@
 <template>
   <v-dialog
     :model-value="show"
-    @update:model-value="$emit('update:show', $event)"
+    @update:model-value="emit('update:show', $event)"
     max-width="400"
   >
     <v-card rounded="xl" class="bg-white text-center overflow-hidden">
@@ -57,7 +57,7 @@
         />
       </v-card-text>
       <v-card-actions class="px-8 pb-8"
-        ><v-spacer /><v-btn variant="text" @click="$emit('update:show', false)"
+        ><v-spacer /><v-btn variant="text" @click="emit('update:show', false)"
           >Cancel</v-btn
         >
         <v-btn

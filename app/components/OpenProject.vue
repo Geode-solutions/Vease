@@ -40,7 +40,7 @@
             variant="outlined"
             color="white"
             text
-            @click="$emit('close')"
+            @click="emit('close')"
             class="ml-8 mb-4"
             >Close</v-btn
           >
@@ -49,7 +49,7 @@
             class="mb-4"
             color="white"
             text
-            @click="$emit('close')"
+            @click="emit('close')"
             >Load</v-btn
           >
         </v-card-actions>
