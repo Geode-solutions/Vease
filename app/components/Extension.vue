@@ -27,7 +27,9 @@
   } = useExtensionMetadata()
 
   async function processFiles(filesToProcess) {
-    const validFiles = filesToProcess.filter((file) => file.name.endsWith(".vext"))
+    const validFiles = filesToProcess.filter((file) =>
+      file.name.endsWith(".vext"),
+    )
     if (!validFiles.length) {
       errorMessage.value = "Please drop valid extension files (.vext)"
       return

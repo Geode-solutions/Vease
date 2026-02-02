@@ -16,7 +16,8 @@
 
   const nameRules = [
     (input) => Boolean(input) || "Name is required",
-    (input) => /^[\p{L}\p{M}\s]*$/u.test(input) || "Use only letters and spaces",
+    (input) =>
+      /^[\p{L}\p{M}\s]*$/u.test(input) || "Use only letters and spaces",
     (input) =>
       Boolean(input && input.length <= MAX_NAME_LENGTH) ||
       `Name must be less than ${MAX_NAME_LENGTH} characters`,

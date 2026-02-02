@@ -57,7 +57,9 @@ test.afterAll(async () => {
 
 test("Microservices running", async () => {
   const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout((isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS)
+  await firstWindow.waitForTimeout(
+    (isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS,
+  )
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })

@@ -5,7 +5,8 @@
   const selectedTool = ref(null)
 
   function getToolComponent(toolId) {
-    return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component
+    return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)
+      ?.component
   }
 
   function handleSelectTool(toolId) {

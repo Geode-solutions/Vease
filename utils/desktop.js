@@ -71,19 +71,14 @@ function create_new_window() {
     console.log("Vease cache cleared!")
   })
 
-  win.webContents.on(
-    "console-message",
-    (...args) => {
-      const [, level, message, line, sourceId] = args
-      // Map log levels to readable names
-      const logLevels = ["VERBOSE", "INFO", "ERROR"] // "WARNING",
-      const logLevel = logLevels[level] || "UNKNOWN"
-      // Print the console message to the terminal
-      console.log(
-        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`,
-      )
-    },
-  )
+  win.webContents.on("console-message", (...args) => {
+    const [, level, message, line, sourceId] = args
+    // Map log levels to readable names
+    const logLevels = ["VERBOSE", "INFO", "ERROR"] // "WARNING",
+    const logLevel = logLevels[level] || "UNKNOWN"
+    // Print the console message to the terminal
+    console.log(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`)
+  })
   return win
 }
 

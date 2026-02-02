@@ -2,7 +2,6 @@
   import { useFeedbackStore } from "@ogw_front/stores/feedback"
   import { useUIStore } from "@vease/stores/UI"
 
-
   const UI_TIMEOUT = 300
   const ERROR_500 = 500
 

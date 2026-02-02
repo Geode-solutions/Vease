@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
       // Look for port in output (format: "Running on http://0.0.0.0:5001")
       const portMatch = output.match(/Running on .*:(\d+)/)
       if (portMatch && !port) {
-        [, port] = portMatch
+        ;[, port] = portMatch
         console.log(
           `[Extension Launcher] ${extensionId} running on port ${port}`,
         )
