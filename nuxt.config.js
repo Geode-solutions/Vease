@@ -53,7 +53,6 @@ export default defineNuxtConfig({
         },
       },
     ],
-    disableDefaultOptions: true,
   },
 
   vuetify: {
