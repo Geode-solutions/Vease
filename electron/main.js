@@ -106,7 +106,6 @@ ipcMain.handle(
   },
 )
 
-
 /* eslint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return */
 app.whenReady().then(function onReady() {
   _mainWindow = create_new_window()
