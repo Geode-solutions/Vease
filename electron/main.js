@@ -1,7 +1,11 @@
-/* eslint-disable import/no-absolute-path */
-import { create_new_window } from "/utils/desktop.js"
-// /* eslint-enable import/no-absolute-path */
 import { app, ipcMain } from "electron"
+import { autoUpdater } from "electron-updater"
+import { getPort } from "get-port-please"
+import os from "node:os"
+import path from "node:path"
+/* eslint-disable-next-line import/no-absolute-path */
+import { create_new_window } from "/utils/desktop.js"
+/* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
 import {
   create_path,
@@ -11,11 +15,9 @@ import {
   run_back,
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { autoUpdater } from "electron-updater"
 import { once } from "node:events"
-import os from "node:os"
-import path from "node:path"
 import { setTimeout } from "node:timers/promises"
+import { spawn } from "node:child_process"
 import { v4 as uuidv4 } from "uuid"
 
 const MIN_PORT = 5001
@@ -62,11 +64,6 @@ ipcMain.handle(
     console.log(`[Electron] Executable path: ${executablePath}`)
 
     try {
-      const child_process = await import("node:child_process")
-      const { spawn } = child_process
-      const get_port_please = await import("get-port-please")
-      const { getPort } = get_port_please
-
       // Get a free port for the extension microservice
       const port = await getPort({ portRange: [MIN_PORT, MAX_PORT] })
       console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
@@ -109,7 +106,9 @@ ipcMain.handle(
   },
 )
 
-app.on("ready", () => {
+
+/* eslint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return */
+app.whenReady().then(function onReady() {
   _mainWindow = create_new_window()
 })
 
