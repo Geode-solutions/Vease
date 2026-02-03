@@ -1,4 +1,5 @@
-import { contextBridge, ipcRenderer } from "electron"
+/* eslint-disable import/no-commonjs */
+const { contextBridge, ipcRenderer } = require("electron")
 
 contextBridge.exposeInMainWorld("electronAPI", {
   run_back: async () => {

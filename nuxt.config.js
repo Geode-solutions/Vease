@@ -1,6 +1,6 @@
+import { fileURLToPath } from "node:url"
 import package_json from "./package.json"
-import path from "path"
-import { fileURLToPath } from "url"
+import path from "node:path"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.BROWSER && process.env.BROWSER == "true"
+    process.env.BROWSER && process.env.BROWSER === "true"
       ? null
       : "nuxt-electron",
     "vuetify-nuxt-module",
@@ -53,6 +53,7 @@ export default defineNuxtConfig({
         },
       },
     ],
+    disableDefaultOptions: true,
   },
 
   vuetify: {
@@ -88,7 +89,7 @@ export default defineNuxtConfig({
     head: {
       titleTemplate: "Vease",
       meta: [
-        { charset: "utf-8" },
+        { charset: "utf8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           hid: "description",
@@ -136,7 +137,7 @@ export default defineNuxtConfig({
   router: {
     options: {
       hashMode:
-        process.env.BROWSER && process.env.BROWSER == "true" ? false : true,
+        process.env.BROWSER && process.env.BROWSER === "true" ? false : true,
     },
   },
 
