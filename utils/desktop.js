@@ -1,13 +1,10 @@
-import { BrowserWindow, app, shell } from "electron"
-import path from "node:path"
+import { app, BrowserWindow } from "electron"
+import path from "path"
 
-import { fileURLToPath } from "node:url"
+import { fileURLToPath } from "url"
 
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
 const __dirname = path.dirname(__filename) // get the name of the directory
-
-const MIN_WINDOW_WIDTH = 1000
-const MIN_WINDOW_HEIGHT = 700
 
 function create_new_window() {
   const win = new BrowserWindow({
@@ -24,7 +21,7 @@ function create_new_window() {
   })
   win.setMenuBarVisibility(false)
   win.maximize()
-  win.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT)
+  win.setMinimumSize(1000, 700)
 
   win.webContents.session.webRequest.onBeforeSendHeaders(
     (details, callback) => {
@@ -33,7 +30,7 @@ function create_new_window() {
   )
 
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url)
+    require("electron").shell.openExternal(url)
     return { action: "deny" }
   })
 
@@ -68,24 +65,28 @@ function create_new_window() {
 
   win.webContents.session.clearStorageData()
   win.webContents.session.clearData(["cache"])
-  win.webContents.session.clearCache(function afterClear() {
+  win.webContents.session.clearCache(function () {
     console.log("Vease cache cleared!")
   })
 
-  win.webContents.on("console-message", (...args) => {
-    const [_event, level, message, line, sourceId] = args
-    // Map log levels to readable names
-    const logLevels = ["VERBOSE", "INFO", "ERROR"] // "WARNING",
-    const logLevel = logLevels[level] || "UNKNOWN"
-    // Print the console message to the terminal
-    console.log(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`)
-  })
+  win.webContents.on(
+    "console-message",
+    (event, level, message, line, sourceId) => {
+      // Map log levels to readable names
+      const logLevels = ["VERBOSE", "INFO", "ERROR"] // "WARNING",
+      const logLevel = logLevels[level] || "UNKNOWN"
+      // Print the console message to the terminal
+      console.log(
+        `[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`,
+      )
+    },
+  )
   return win
 }
 
 function run_extensions() {
-  const debug = "EXTENSION RUNNING"
-  console.log(debug)
+  const a = 1
+  console.log(a)
 }
 
 export { create_new_window, run_extensions }
