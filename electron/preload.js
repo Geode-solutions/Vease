@@ -1,4 +1,3 @@
-/* eslint-disable import/no-commonjs */
 const { contextBridge, ipcRenderer } = require("electron")
 
 contextBridge.exposeInMainWorld("electronAPI", {
