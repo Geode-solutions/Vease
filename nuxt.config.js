@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": __dirname + "/app",
+    "@vease": `${__dirname}/app`,
     "@ogw_front": "@geode/opengeodeweb-front/app",
   },
 
@@ -137,7 +137,7 @@ export default defineNuxtConfig({
   router: {
     options: {
       hashMode:
-        process.env.BROWSER && process.env.BROWSER === "true" ? false : true,
+        !(process.env.BROWSER && process.env.BROWSER === "true"),
     },
   },
 

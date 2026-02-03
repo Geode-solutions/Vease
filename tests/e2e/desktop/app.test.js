@@ -44,10 +44,13 @@ test.beforeAll(async () => {
   })
   const firstWindow = await _electronApp.firstWindow()
   const browserWindow = await _electronApp.browserWindow(firstWindow)
-  await browserWindow.evaluate(async (window) => {
-    await window.unmaximize()
-    await window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT)
-  })
+  await browserWindow.evaluate(
+    async (window, { width, height }) => {
+      await window.unmaximize()
+      await window.setSize(width, height)
+    },
+    { width: WINDOW_WIDTH, height: WINDOW_HEIGHT },
+  )
 })
 
 test.afterAll(async () => {
