@@ -7,7 +7,7 @@ export function useExtensionManager() {
   const appStore = useAppStore()
   const geodeStore = useGeodeStore()
 
-  const importExtensionFile = async function (file) {
+  async function importExtensionFile(file) {
     console.log("[ExtensionManager] Importing extension file:", file.name)
 
     // Upload .vext to backend
@@ -73,7 +73,7 @@ export function useExtensionManager() {
     }
   }
 
-  const unloadExtension = async function (extensionId) {
+  async function unloadExtension(extensionId) {
     console.log("[ExtensionManager] Unloading extension:", extensionId)
 
     const extensionData = appStore.getExtension(extensionId)

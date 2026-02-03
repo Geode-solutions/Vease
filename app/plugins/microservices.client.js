@@ -1,6 +1,6 @@
 import { useGeodeStore } from "@ogw_front/stores/geode"
-import { useViewerStore } from "@ogw_front/stores/viewer"
 import { useInfraStore } from "@ogw_front/stores/infra"
+import { useViewerStore } from "@ogw_front/stores/viewer"
 
 export default defineNuxtPlugin(() => {
   console.log("[PLUGIN] Initializing microservices plugin...")

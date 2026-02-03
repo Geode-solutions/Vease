@@ -1,18 +1,17 @@
 import { BroadcastChannel, createLeaderElection } from "broadcast-channel"
-import { createPinia } from "pinia"
 
 function serialize(obj, keysToUpdate) {
-  obj = Object.fromEntries(
+  const object = Object.fromEntries(
     Object.entries(obj).filter(([key]) => keysToUpdate.includes(key)),
   )
-  return JSON.parse(JSON.stringify(obj))
+  return JSON.parse(JSON.stringify(object))
 }
 
 function stateHasKey(key, $state) {
   return Object.keys($state).includes(key)
 }
 
-function PiniaSharedState() {
+function piniaSharedState() {
   return async ({ store, options }) => {
     const omittedKeys = options?.share?.omit ?? []
     store.is_sync = false
@@ -23,32 +22,34 @@ function PiniaSharedState() {
     const keysToUpdate = Object.keys(store.$state).filter(
       (key) => !omittedKeys.includes(key) && stateHasKey(key, store.$state),
     )
-    channel.onmessage = (newState) => {
-      if (newState === void 0) {
+    channel.addEventListener("message", (newState) => {
+      if (newState === undefined) {
         channel.postMessage({
           timestamp,
           state: serialize(store.$state, keysToUpdate),
         })
         return
       }
-      if (newState.timestamp <= timestamp) return
+
+      const { timestamp: incomingTimestamp, state: incomingState } = newState
+      if (incomingTimestamp <= timestamp) return
 
       externalUpdate = true
-      timestamp = newState.timestamp
+      timestamp = incomingTimestamp
       store.$patch((state) => {
-        keysToUpdate.forEach((key) => {
-          state[key] = newState.state[key]
-        })
+        for (const key of keysToUpdate) {
+          state[key] = incomingState[key]
+        }
       })
       store.is_sync = true
-    }
+    })
     if (await election.hasLeader()) {
-      channel.postMessage(void 0)
+      channel.postMessage()
     } else {
       await election.awaitLeadership()
       store.is_sync = true
     }
-    store.$subscribe((_, state) => {
+    store.$subscribe((mutation, state) => {
       if (!externalUpdate) {
         timestamp = Date.now()
         channel.postMessage({
@@ -61,13 +62,15 @@ function PiniaSharedState() {
   }
 }
 
-export default defineNuxtPlugin(async (nuxtApp) => {
+const piniaPlugin = defineNuxtPlugin((nuxtApp) => {
   const { $pinia } = nuxtApp
   if (!$pinia) {
     console.warn("Pinia instance not available; skipping shared state plugin.")
     return
   }
-  $pinia.use(PiniaSharedState())
+  $pinia.use(piniaSharedState())
 })
 
 console.log("PINIA PLUGIN")
+
+export default piniaPlugin

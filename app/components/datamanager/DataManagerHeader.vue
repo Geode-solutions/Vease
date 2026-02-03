@@ -1,13 +1,13 @@
 <script setup>
   import { useTemplateRef } from "vue"
 
-  const props = defineProps({
+  const { searchValue, activeTab, tabs } = defineProps({
     searchValue: { type: String, default: "" },
     activeTab: { type: String, default: "data" },
     tabs: { type: Array, default: () => [] },
   })
 
-  defineEmits(["update:searchValue", "update:activeTab"])
+  const emit = defineEmits(["update:searchValue", "update:activeTab"])
   const searchInput = useTemplateRef("searchInput")
 
   defineExpose({ focusSearch: () => searchInput.value?.focus() })
@@ -17,7 +17,7 @@
   <v-sheet class="pa-6 pb-2" rounded="xl" color="transparent">
     <v-tabs
       :model-value="activeTab"
-      @update:model-value="$emit('update:activeTab', $event)"
+      @update:model-value="emit('update:activeTab', $event)"
       bg-color="transparent"
       color="primary"
       class="mb-6 border-b-thin"
@@ -50,7 +50,7 @@
 
     <v-text-field
       :model-value="searchValue"
-      @update:model-value="$emit('update:searchValue', $event)"
+      @update:model-value="emit('update:searchValue', $event)"
       prepend-inner-icon="mdi-magnify"
       placeholder="Search your data..."
       variant="solo"

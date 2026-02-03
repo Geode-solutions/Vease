@@ -1,13 +1,22 @@
 <script setup>
   const emit = defineEmits(["close"])
-  const props = defineProps({
+  const { show_dialog } = defineProps({
     show_dialog: { type: Boolean, required: true },
+  })
+
+  const isVisible = computed({
+    get: () => show_dialog,
+    set: (value) => {
+      if (!value) {
+        emit("close")
+      }
+    },
   })
 </script>
 
 <template>
   <v-dialog
-    v-model="props.show_dialog"
+    v-model="isVisible"
     @click:outside="emit('close')"
     max-width="800px"
     class="text-center"
