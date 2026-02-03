@@ -9,7 +9,7 @@
     "reset_values",
   ])
 
-  const props = defineProps({
+  const { filenames, geode_object_type } = defineProps({
     filenames: { type: Array, required: true },
     geode_object_type: { type: String, required: true },
   })
@@ -24,9 +24,9 @@
 
   async function import_files() {
     toggle_loading()
-    const files_array = props.filenames.map((filename) => ({
+    const files_array = filenames.map((filename) => ({
       filename,
-      geode_object_type: props.geode_object_type,
+      geode_object_type,
     }))
     await importWorkflow(files_array)
     emit("reset_values")

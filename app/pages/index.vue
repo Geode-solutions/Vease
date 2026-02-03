@@ -1,18 +1,19 @@
 <script setup>
-  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
   import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
   import Launcher from "@ogw_front/components/Launcher"
-  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
-  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
   import Status from "@ogw_front/utils/status"
-  import { useInfraStore } from "@ogw_front/stores/infra"
-  import { useGeodeStore } from "@ogw_front/stores/geode"
-  import { useViewerStore } from "@ogw_front/stores/viewer"
-  import { useDataStyleStore } from "@ogw_front/stores/data_style"
-  import { useDataStore } from "@ogw_front/stores/data"
-  import { useMenuStore } from "@ogw_front/stores/menu"
+  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
+  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
+  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
 
-  const query = useRoute().query
+  import { useDataStore } from "@ogw_front/stores/data"
+  import { useDataStyleStore } from "@ogw_front/stores/data_style"
+  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useInfraStore } from "@ogw_front/stores/infra"
+  import { useMenuStore } from "@ogw_front/stores/menu"
+  import { useViewerStore } from "@ogw_front/stores/viewer"
+
+  const { query } = useRoute()
   if (query.geode_port) {
     console.log(
       "Modifying geode port from query parameters to",
@@ -50,8 +51,9 @@
       { x, y, ids },
       {
         response_function: (response) => {
-          const array_ids = response.array_ids
-          id.value = array_ids[0]
+          const { array_ids } = response
+          const [first_id] = array_ids
+          id.value = first_id
         },
       },
     )
@@ -99,9 +101,9 @@
 
   const { width: elWidth, height: elHeight } = useElementSize(cardContainer)
 
-  watch([elWidth, elHeight], ([w, h]) => {
-    containerWidth.value = w
-    containerHeight.value = h
+  watch([elWidth, elHeight], ([width, height]) => {
+    containerWidth.value = width
+    containerHeight.value = height
   })
 </script>
 

@@ -13,7 +13,7 @@ export const useUIStore = defineStore("UI", () => {
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
 
-  const registerToolComponent = (toolDefinition, extensionPath = null) => {
+  function registerToolComponent(toolDefinition, extensionPath = null) {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
       (tool) => tool.id === id,
@@ -29,7 +29,7 @@ export const useUIStore = defineStore("UI", () => {
     }
   }
 
-  const unregisterTool = (toolId) => {
+  function unregisterTool(toolId) {
     const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId)
     if (index !== -1) {
       toolsDefinitions.value.splice(index, 1)
@@ -37,7 +37,7 @@ export const useUIStore = defineStore("UI", () => {
     }
   }
 
-  const unregisterToolsByExtension = (extensionPath) => {
+  function unregisterToolsByExtension(extensionPath) {
     const beforeCount = toolsDefinitions.value.length
     toolsDefinitions.value = toolsDefinitions.value.filter(
       (tool) => tool.extensionPath !== extensionPath,
@@ -48,14 +48,17 @@ export const useUIStore = defineStore("UI", () => {
     )
   }
 
-  const activeTools = computed(() => {
+  function getActiveTools() {
     const extensionsStore = useExtensionsStore()
     return toolsDefinitions.value.filter((tool) => {
       if (!tool.extensionPath) return true
       return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
-  })
-  const registerDataManagerTab = (tabDefinition) => {
+  }
+
+  const activeTools = computed(getActiveTools)
+
+  function registerDataManagerTab(tabDefinition) {
     const { id, component, ...rest } = tabDefinition
     const existingIndex = dataManagerTabs.value.findIndex(
       (tab) => tab.id === id,
