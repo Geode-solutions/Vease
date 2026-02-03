@@ -7,8 +7,16 @@ import path from "node:path"
 import { create_new_window } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
+import { getPort } from "get-port-please"
+import os from "node:os"
+import path from "node:path"
+/* eslint-disable-next-line import/no-absolute-path */
+import { create_new_window } from "/utils/desktop.js"
+/* eslint-disable-next-line import/no-absolute-path */
+import { back_microservice, viewer_microservice } from "/utils/local.js"
 import {
   create_path,
+  delete_folder_recursive,
   delete_folder_recursive,
   kill_back,
   kill_viewer,
@@ -54,6 +62,8 @@ ipcMain.handle("run_viewer", async (_event) => {
 
 ipcMain.handle("new_window", () => {
   create_new_window()
+ipcMain.handle("new_window", () => {
+  create_new_window()
 })
 
 // Extension microservices management
@@ -67,6 +77,7 @@ ipcMain.handle(
 
     try {
       // Get a free port for the extension microservice
+      const port = await getPort({ portRange: [MIN_PORT, MAX_PORT] })
       const port = await getPort({ portRange: [MIN_PORT, MAX_PORT] })
       console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
 
@@ -117,7 +128,22 @@ let cleaned = false
 
 async function clean_up() {
   console.log("Shutting down microservices")
+  console.log("Shutting down microservices")
 
+  // Kill extension microservices
+  const extensionKillPromises = [...extensionProcesses.values()].map(
+    async ({ process, _port }) => {
+      if (process && !process.killed) {
+        process.kill()
+        try {
+          // Wait for exit or timeout
+          await Promise.race([once(process, "exit"), setTimeout(KILL_TIMEOUT)])
+        } catch {
+          // Ignore errors during kill wait
+        }
+      }
+    },
+  )
   // Kill extension microservices
   const extensionKillPromises = [...extensionProcesses.values()].map(
     async ({ process, _port }) => {
@@ -141,11 +167,27 @@ async function clean_up() {
   delete_folder_recursive(project_folder_path)
   cleaned = true
   console.log("end clean")
+  await Promise.all([
+    kill_back(back_port),
+    kill_viewer(viewer_port),
+    ...extensionKillPromises,
+  ])
+  delete_folder_recursive(project_folder_path)
+  cleaned = true
+  console.log("end clean")
 }
 
 app.on("before-quit", async function onBeforeQuit(event) {
+app.on("before-quit", async function onBeforeQuit(event) {
   if (!cleaned) {
     event.preventDefault()
+    try {
+      await clean_up()
+      app.quit()
+    } catch (error) {
+      console.error("Cleanup failed", error)
+      app.quit()
+    }
     try {
       await clean_up()
       app.quit()
