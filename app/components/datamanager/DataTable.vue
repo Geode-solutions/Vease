@@ -14,7 +14,7 @@
     default: () => [],
   })
 
-  defineEmits([
+  const emit = defineEmits([
     "toggle-visibility",
     "focus-camera",
     "isolate",
@@ -62,17 +62,21 @@
     :items="items"
     :search="search"
     show-select
+    fixed-header
+    :height="selectedIds.length > 0 ? '480' : '550'"
     item-value="id"
-    class="bg-transparent"
+    return-object
+    class="bg-transparent border-thin rounded-lg text-white custom-scrollbar"
     hide-default-footer
     :items-per-page="-1"
   >
     <template #[`item.name`]="{ item }">
-      <div class="d-flex align-center ga-2">
-        <span class="text-body-2 font-weight-medium text-white">{{
-          item.name || "Unnamed Object"
-        }}</span>
-      </div>
+      <span
+        class="font-weight-medium cursor-pointer text-no-wrap"
+        @click="emit('rename', item)"
+      >
+        {{ item.name }}
+      </span>
     </template>
 
     <template #[`item.geode_object_type`]="{ item }">
@@ -89,44 +93,63 @@
 
     <template #[`item.visible`]="{ item }">
       <v-btn
-        :icon="item.visible ? 'mdi-eye' : 'mdi-eye-off'"
-        size="x-small"
+        icon
+        size="small"
         variant="text"
-        :color="item.visible ? 'primary' : 'grey-lighten-1'"
-        @click="emit('toggle-visibility', item)"
-      />
+        :color="item.visible ? 'primary' : 'white'"
+        @click.stop="emit('toggle-visibility', item)"
+      >
+        <v-icon size="20">{{
+          item.visible ? "mdi-eye" : "mdi-eye-off"
+        }}</v-icon>
+      </v-btn>
     </template>
 
     <template #[`item.actions`]="{ item }">
       <div class="d-flex ga-1 justify-end">
         <v-btn
-          icon="mdi-crosshairs-gps"
-          size="x-small"
+          icon
+          size="small"
           variant="text"
           color="white"
-          @click="emit('focus-camera', item)"
-        />
+          @click.stop="emit('focus-camera', item)"
+        >
+          <v-icon size="18">mdi-target</v-icon>
+          <v-tooltip activator="parent" location="top">Focus</v-tooltip>
+        </v-btn>
+
         <v-btn
-          icon="mdi-filter"
-          size="x-small"
+          icon
+          size="small"
           variant="text"
           color="white"
-          @click="emit('isolate', item)"
-        />
+          @click.stop="emit('isolate', item)"
+        >
+          <v-icon size="18">mdi-filter-variant</v-icon>
+          <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
+        </v-btn>
+
         <v-btn
-          icon="mdi-pencil"
-          size="x-small"
+          icon
+          size="small"
           variant="text"
           color="white"
-          @click="emit('rename', item)"
-        />
+          @click.stop="emit('rename', item)"
+        >
+          <v-icon size="18">mdi-pencil</v-icon>
+          <v-tooltip activator="parent" location="top">Rename</v-tooltip>
+        </v-btn>
+
         <v-btn
-          icon="mdi-delete"
-          size="x-small"
+          icon
+          size="small"
           variant="text"
           color="error"
-          @click="emit('delete', item)"
-        />
+          @click.stop="emit('delete', item)"
+        >
+          <v-icon size="18">mdi-delete</v-icon>
+          <v-tooltip activator="parent" location="top">Delete</v-tooltip>
+        </v-btn>
       </div>
     </template>
   </v-data-table>
