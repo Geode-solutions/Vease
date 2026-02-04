@@ -75,7 +75,7 @@
         class="font-weight-medium cursor-pointer text-no-wrap"
         @click="emit('rename', item)"
       >
-        {{ item.name || "Unnamed Object" }}
+        {{ item.name }}
       </span>
     </template>
 
