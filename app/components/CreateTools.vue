@@ -2,7 +2,6 @@
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
-  const selectedTool = ref(null)
 
   function getToolComponent(toolId) {
     return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)
@@ -10,15 +9,15 @@
   }
 
   function handleSelectTool(toolId) {
-    selectedTool.value = toolId
+    UIStore.setSelectedTool(toolId)
   }
 
   function handleBack() {
-    selectedTool.value = null
+    UIStore.setSelectedTool(null)
   }
 
   function handleToolCreated() {
-    selectedTool.value = null
+    UIStore.setSelectedTool(null)
     UIStore.setShowCreateTools(false)
   }
 
@@ -26,7 +25,7 @@
     () => UIStore.showCreateTools,
     (newVal) => {
       if (!newVal) {
-        selectedTool.value = null
+        UIStore.setSelectedTool(null)
       }
     },
   )
@@ -34,7 +33,7 @@
 
 <template>
   <v-card
-    v-if="!selectedTool"
+    v-if="!UIStore.selectedTool"
     :width="500"
     flat
     class="d-flex flex-column"
@@ -126,14 +125,14 @@
       <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
     <component
-      v-if="getToolComponent(selectedTool)"
-      :is="getToolComponent(selectedTool)"
+      v-if="getToolComponent(UIStore.selectedTool)"
+      :is="getToolComponent(UIStore.selectedTool)"
       @close="handleBack"
       @created="handleToolCreated"
     />
     <v-alert v-else type="error" class="ma-4">
-      Component not found for **{{ selectedTool }}**. Please check the plugin
-      registration.
+      Component not found for **{{ UIStore.selectedTool }}**. Please check the
+      plugin registration.
     </v-alert>
   </v-sheet>
 </template>
