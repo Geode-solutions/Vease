@@ -1,12 +1,20 @@
 <script setup>
-  const props = defineProps({
+  const SECONDS_IN_MINUTE = 60
+  const SECONDS_IN_HOUR = 3600
+  const SECONDS_IN_DAY = 86400
+  const MILLISECONDS_TO_SECONDS = 1000
+
+  const { items, search } = defineProps({
     items: { type: Array, required: true },
-    selectedIds: { type: Array, default: () => [] },
     search: { type: String, default: "" },
   })
 
-  defineEmits([
-    "update:selectedIds",
+  const selectedIds = defineModel("selectedIds", {
+    type: Array,
+    default: () => [],
+  })
+
+  const emit = defineEmits([
     "toggle-visibility",
     "focus-camera",
     "isolate",
@@ -27,26 +35,29 @@
     { title: "Actions", key: "actions", sortable: false, align: "end" },
   ]
 
-  const formatSmartDate = (dateStr) => {
+  function formatSmartDate(dateStr) {
     if (!dateStr) return ""
     const date = new Date(dateStr)
-    const diff = Math.floor((new Date() - date) / 1000)
-    const relative =
-      diff < 60
-        ? "just now"
-        : diff < 3600
-          ? `${Math.floor(diff / 60)}m ago`
-          : diff < 86400
-            ? `${Math.floor(diff / 3600)}h ago`
-            : `${Math.floor(diff / 86400)}d ago`
+    const diff = Math.floor((Date.now() - date) / MILLISECONDS_TO_SECONDS)
+
+    let relative = ""
+    if (diff < SECONDS_IN_MINUTE) {
+      relative = "just now"
+    } else if (diff < SECONDS_IN_HOUR) {
+      relative = `${Math.floor(diff / SECONDS_IN_MINUTE)}m ago`
+    } else if (diff < SECONDS_IN_DAY) {
+      relative = `${Math.floor(diff / SECONDS_IN_HOUR)}h ago`
+    } else {
+      relative = `${Math.floor(diff / SECONDS_IN_DAY)}d ago`
+    }
+
     return `${relative} (${date.toLocaleDateString()})`
   }
 </script>
 
 <template>
   <v-data-table
-    :model-value="selectedIds"
-    @update:model-value="$emit('update:selectedIds', $event)"
+    v-model="selectedIds"
     :headers="headers"
     :items="items"
     :search="search"
@@ -56,39 +67,37 @@
     item-value="id"
     return-object
     class="bg-transparent border-thin rounded-lg text-white custom-scrollbar"
+    hide-default-footer
+    :items-per-page="-1"
   >
-    <template v-slot:item.name="{ item }">
+    <template #[`item.name`]="{ item }">
       <span
         class="font-weight-medium cursor-pointer text-no-wrap"
-        @click="$emit('rename', item)"
+        @click="emit('rename', item)"
       >
         {{ item.name }}
       </span>
     </template>
 
-    <template v-slot:item.geode_object_type="{ item }">
-      <v-chip
-        size="x-small"
-        variant="outlined"
-        class="text-caption border-opacity-25 px-2"
-      >
+    <template #[`item.geode_object_type`]="{ item }">
+      <v-chip size="x-small" color="primary" variant="tonal" class="text-none">
         {{ item.geode_object_type }}
       </v-chip>
     </template>
 
-    <template v-slot:item.created_at="{ item }">
-      <span class="text-caption text-grey-lighten-1">
-        {{ formatSmartDate(item.created_at) }}
-      </span>
+    <template #[`item.created_at`]="{ item }">
+      <span class="text-caption text-grey-lighten-1">{{
+        formatSmartDate(item.created_at)
+      }}</span>
     </template>
 
-    <template v-slot:item.visible="{ item }">
+    <template #[`item.visible`]="{ item }">
       <v-btn
         icon
         size="small"
         variant="text"
-        color="white"
-        @click.stop="$emit('toggle-visibility', item)"
+        :color="item.visible ? 'primary' : 'white'"
+        @click.stop="emit('toggle-visibility', item)"
       >
         <v-icon size="20">{{
           item.visible ? "mdi-eye" : "mdi-eye-off"
@@ -96,14 +105,14 @@
       </v-btn>
     </template>
 
-    <template v-slot:item.actions="{ item }">
+    <template #[`item.actions`]="{ item }">
       <div class="d-flex ga-1 justify-end">
         <v-btn
           icon
           size="small"
           variant="text"
           color="white"
-          @click.stop="$emit('focus-camera', item)"
+          @click.stop="emit('focus-camera', item)"
         >
           <v-icon size="18">mdi-target</v-icon>
           <v-tooltip activator="parent" location="top">Focus</v-tooltip>
@@ -114,7 +123,7 @@
           size="small"
           variant="text"
           color="white"
-          @click.stop="$emit('isolate', item)"
+          @click.stop="emit('isolate', item)"
         >
           <v-icon size="18">mdi-filter-variant</v-icon>
           <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
@@ -125,7 +134,7 @@
           size="small"
           variant="text"
           color="white"
-          @click.stop="$emit('rename', item)"
+          @click.stop="emit('rename', item)"
         >
           <v-icon size="18">mdi-pencil</v-icon>
           <v-tooltip activator="parent" location="top">Rename</v-tooltip>
@@ -136,7 +145,7 @@
           size="small"
           variant="text"
           color="error"
-          @click.stop="$emit('delete', item)"
+          @click.stop="emit('delete', item)"
         >
           <v-icon size="18">mdi-delete</v-icon>
           <v-tooltip activator="parent" location="top">Delete</v-tooltip>

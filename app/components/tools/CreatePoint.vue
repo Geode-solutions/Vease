@@ -6,7 +6,10 @@
 
   const UIStore = useUIStore()
   const geodeStore = useGeodeStore()
-  const openCreateTools = () => {
+
+  const MIN_COORDINATES = 3
+
+  function openCreateTools() {
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)
@@ -19,20 +22,19 @@
 
   const loading = ref(false)
 
-  const isFormFilled = computed(() => {
-    return (
-      name.value !== "" && x.value !== "" && y.value !== "" && z.value !== ""
-    )
-  })
+  const isFormFilled = computed(
+    () =>
+      name.value !== "" && x.value !== "" && y.value !== "" && z.value !== "",
+  )
 
-  const closeDrawer = () => {
+  function closeDrawer() {
     UIStore.setShowCreatePoint(false)
   }
 
-  const safeParseFloat = (value) => {
-    const sanitizedValue = String(value).trim().replace(",", ".")
-    const result = parseFloat(sanitizedValue)
-    return isNaN(result) && sanitizedValue === "" ? NaN : result
+  function safeParseFloat(value) {
+    const sanitizedValue = String(value).trim().replaceAll(",", ".")
+    const result = Number.parseFloat(sanitizedValue)
+    return Number.isNaN(result) && sanitizedValue === "" ? Number.NaN : result
   }
 
   async function createPoint() {
@@ -71,8 +73,8 @@
     }
   }
 
-  const sanitizeNumberString = (str) => {
-    if (str == null) return ""
+  function sanitizeNumberString(str) {
+    if (str === undefined || str === null) return ""
     let value = String(str)
       .replace(/,/g, ".")
       .replace(/[^0-9eE+\-.]/g, "")
@@ -90,7 +92,24 @@
     return value
   }
 
-  const handlePaste = (event, field) => {
+  function assignSanitizedCoordinates(sanitized) {
+    if (sanitized.length >= MIN_COORDINATES) {
+      const [sanitizedX, sanitizedY, sanitizedZ] = sanitized
+      x.value = sanitizedX
+      y.value = sanitizedY
+      z.value = sanitizedZ
+      return true
+    } else if (sanitized.length === 2) {
+      const [sanitizedX, sanitizedY] = sanitized
+      x.value = sanitizedX
+      y.value = sanitizedY
+      z.value = "0"
+      return true
+    }
+    return false
+  }
+
+  function handlePaste(event, field) {
     const pastedText =
       (event && event.clipboardData && event.clipboardData.getData("text")) ||
       ""
@@ -100,27 +119,21 @@
     const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
     if (!coordinates || coordinates.length === 0) return
 
-    const sanitized = coordinates.map((c) => sanitizeNumberString(c))
+    const sanitized = coordinates.map((coord) => sanitizeNumberString(coord))
 
-    if (sanitized.length >= 3) {
-      x.value = sanitized[0]
-      y.value = sanitized[1]
-      z.value = sanitized[2]
-      event.preventDefault()
-    } else if (sanitized.length === 2) {
-      x.value = sanitized[0]
-      y.value = sanitized[1]
-      z.value = "0"
+    if (assignSanitizedCoordinates(sanitized)) {
       event.preventDefault()
     } else if (sanitized.length === 1) {
-      if (["x", "y", "z"].includes(field)) {
-        eval(`${field}.value = sanitized[0]`)
-        event.preventDefault()
-      }
+      const [firstSanitized] = sanitized
+      if (field === "x") x.value = firstSanitized
+      else if (field === "y") y.value = firstSanitized
+      else if (field === "z") z.value = firstSanitized
+      else return
+      event.preventDefault()
     }
   }
 
-  const sanitizeInput = (value, label) => {
+  function sanitizeInput(value, label) {
     if (label === "x") x.value = sanitizeNumberString(value)
     else if (label === "y") y.value = sanitizeNumberString(value)
     else if (label === "z") z.value = sanitizeNumberString(value)

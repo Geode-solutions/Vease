@@ -1,11 +1,16 @@
 import { expect, test } from "@playwright/test"
-import { _electron as electron } from "playwright"
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers"
+import { _electron as electron } from "playwright"
 import { isWindows } from "std-env"
+import path from "node:path"
 
-import path from "path"
+const WINDOW_WIDTH = 1200
+const WINDOW_HEIGHT = 800
+const WINDOWS_TIMEOUT_SECONDS = 30
+const DEFAULT_TIMEOUT_SECONDS = 15
+const MS_PER_SECOND = 1000
 
-let electronApp
+let _electronApp = undefined
 test.beforeAll(async () => {
   // find the latest build in the out directory
   const latestBuild = findLatestBuild(
@@ -16,7 +21,7 @@ test.beforeAll(async () => {
   const appInfo = parseElectronApp(latestBuild)
   // set the CI environment variable to true
   process.env.CI = "e2e"
-  electronApp = await electron.launch({
+  _electronApp = await electron.launch({
     args: [appInfo.main, "--no-sandbox"],
     executablePath: appInfo.executable,
     timeout: 20000,
@@ -27,31 +32,37 @@ test.beforeAll(async () => {
     },
   })
 
-  electronApp
+  _electronApp
     .process()
     .stdout.on("data", (data) => console.log(`stdout: ${data}`))
-  electronApp
+  _electronApp
     .process()
     .stderr.on("data", (error) => console.log(`stderr: ${error}`))
 
-  electronApp.on("close", (data) => {
+  _electronApp.on("close", (data) => {
     console.log("electronApp close", data)
   })
-  const firstWindow = await electronApp.firstWindow()
-  const browserWindow = await electronApp.browserWindow(firstWindow)
-  await browserWindow.evaluate(async (window) => {
-    await window.unmaximize()
-    await window.setSize(1200, 800)
-  })
+  const firstWindow = await _electronApp.firstWindow()
+  const browserWindow = await _electronApp.browserWindow(firstWindow)
+  await browserWindow.evaluate(
+    async (window, { width, height }) => {
+      await window.unmaximize()
+      await window.setSize(width, height)
+    },
+    { width: WINDOW_WIDTH, height: WINDOW_HEIGHT },
+  )
 })
 
 test.afterAll(async () => {
-  await electronApp.close()
+  await _electronApp.close()
 })
 
 test("Microservices running", async () => {
-  const firstWindow = await electronApp.firstWindow()
-  await firstWindow.waitForTimeout((isWindows ? 30 : 15) * 1000)
+  const firstWindow = await _electronApp.firstWindow()
+  await firstWindow.waitForTimeout(
+    (isWindows ? WINDOWS_TIMEOUT_SECONDS : DEFAULT_TIMEOUT_SECONDS) *
+      MS_PER_SECOND,
+  )
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
   })

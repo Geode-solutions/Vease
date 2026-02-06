@@ -1,22 +1,21 @@
 <script setup>
-  import _ from "lodash"
-  import Stepper from "@ogw_front/components/Stepper"
   import FileSelector from "@ogw_front/components/FileSelector"
+  import ImportFile from "@vease/components/ImportFile"
   import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector"
   import ObjectSelector from "@ogw_front/components/ObjectSelector"
-  import ImportFile from "@vease/components/ImportFile"
+  import Stepper from "@ogw_front/components/Stepper"
   import { useUIStore } from "@vease/stores/UI"
 
   const emit = defineEmits(["close"])
   const UIStore = useUIStore()
 
-  const props = defineProps({
+  const { files: initialFiles } = defineProps({
     files: { type: Array, default: () => [] },
   })
 
-  const files = ref(props.files)
+  const files = ref(initialFiles)
   watch(
-    () => props.files,
+    () => initialFiles,
     (newVal) => {
       files.value = newVal
     },
@@ -68,7 +67,7 @@
             filenames: computed(() => files.value.map((file) => file.name)),
           },
         },
-        chips: computed(() => additional_files.value.map((f) => f.name)),
+        chips: computed(() => additional_files.value.map((file) => file.name)),
       },
       {
         step_title: "Finalize import",

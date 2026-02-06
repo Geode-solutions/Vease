@@ -1,7 +1,12 @@
 // @ts-check
-import { fileURLToPath } from "node:url"
 import { defineConfig, devices } from "@playwright/test"
+import { fileURLToPath } from "node:url"
 import { isWindows } from "std-env"
+
+const WINDOWS_TIMEOUT = 60
+const LINUX_TIMEOUT = 40
+const MILLISECONDS = 1000
+const CI_RETRIES = 3
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -11,13 +16,13 @@ export default defineConfig({
     toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
   testDir: "./",
-  timeout: (isWindows ? 60 : 40) * 1000,
+  timeout: (isWindows ? WINDOWS_TIMEOUT : LINUX_TIMEOUT) * MILLISECONDS,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: Boolean(process.env.CI),
   /* Retry on CI only */
-  retries: process.env.CI ? 3 : 0,
+  retries: process.env.CI ? CI_RETRIES : 0,
   /* Opt out of parallel tests on CI. */
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
