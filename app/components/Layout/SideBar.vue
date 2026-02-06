@@ -1,17 +1,9 @@
 <script setup>
-  import { useProjectManager } from "@ogw_front/composables/project_manager"
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
 
   const drawer = ref(true)
-  const newproject = ref(false)
-  const openproject = ref(false)
-  const importFileInput = templateRef("importFileInput")
-
-  function toggleExtensions() {
-    UIStore.setShowExtensions(!UIStore.showExtensions)
-  }
 
   const items = ref([
     {
@@ -20,48 +12,10 @@
       click: () => navigateTo("/"),
     },
     {
-      title: "Extensions",
-      icon: "mdi-puzzle",
-      click: () => toggleExtensions(),
-    },
-    // {
-    //   title: "New Project",
-    //   icon: "mdi-plus",
-    //   click: () => (newproject.value = true),
-    // },
-    // {
-    //   title: "Open Project",
-    //   icon: "mdi-folder-outline",
-    //   click: () => (openproject.value = true),
-    // },
-    {
       title: "Data Manager",
       icon: "mdi-database",
       click: () => navigateTo("/data-manager"),
     },
-    {
-      title: "Import Project",
-      icon: "mdi-download",
-      click: () => triggerImport(),
-    },
-    {
-      title: "Export Project",
-      icon: "mdi-upload",
-      click: () => triggerExport(),
-    },
-    // {
-    //   title: "Open new window",
-    //   icon: "mdi-dock-window",
-    //   click: () => {
-    //     if (isElectron()) {
-    //       window.electronAPI.new_window();
-    //     } else {
-    //       console.log("notElectron");
-
-    //       window.open("http://localhost:3000", "_blank");
-    //     }
-    //   },
-    // },
   ])
 
   let draggedItem = null
@@ -78,27 +32,6 @@
     items.value.splice(dragIndex, 1)
     items.value.splice(dropIndex, 0, draggedItem)
     draggedItem = null
-  }
-
-  const { importProjectFile, exportProject } = useProjectManager()
-
-  function triggerImport() {
-    importFileInput.value?.click()
-  }
-
-  function onImportFileSelected(event) {
-    const file = event.target.files?.[0]
-    if (!file) return
-    if (!file.name.toLowerCase().endsWith(".vease")) {
-      event.target.value = ""
-      return
-    }
-    importProjectFile(file)
-    event.target.value = ""
-  }
-
-  function triggerExport() {
-    exportProject()
   }
 </script>
 
@@ -175,15 +108,5 @@
         </v-tooltip>
       </v-col>
     </v-row>
-
-    <NewProject :show_dialog="newproject" @close="newproject = false" />
-    <OpenProject :show_dialog="openproject" @close="openproject = false" />
-    <input
-      ref="importFileInput"
-      type="file"
-      accept=".vease"
-      style="display: none"
-      @change="onImportFileSelected"
-    />
   </v-navigation-drawer>
 </template>

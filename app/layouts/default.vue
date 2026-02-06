@@ -14,20 +14,6 @@
   import { useUIStore } from "@vease/stores/UI"
   const UIStore = useUIStore()
   const infraStore = useInfraStore()
-
-  function handleMouseMove(event) {
-    const screenWidth = window.innerWidth
-    const threshold = 75
-    if (event.clientX > screenWidth - threshold) {
-      UIStore.setShowButton(true)
-    } else {
-      UIStore.setShowButton(false)
-    }
-  }
-
-  function openCreateTools() {
-    UIStore.setShowCreateTools(true)
-  }
 </script>
 
 <template>
@@ -35,7 +21,6 @@
     <v-main
       class="custom-background drop-zone"
       @dragover="UIStore.setShowDropZone(true)"
-      @mousemove="handleMouseMove"
     >
       <v-row class="fill-height pa-2 mr-1">
         <v-col cols="12" class="pa-1">
@@ -47,32 +32,6 @@
       <FeedBackSnackers />
 
       <InfraConnected>
-        <div
-          class="icon-container"
-          :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
-        >
-          <v-btn
-            class="icon-style step-import-btn"
-            color="white"
-            @click="UIStore.setShowStepper(true)"
-            icon
-            style="border-radius: 20%"
-            v-tooltip.left="'Import'"
-          >
-            <v-icon>mdi-file-upload-outline</v-icon>
-          </v-btn>
-          <v-btn
-            class="icon-style create-point-btn"
-            color="white"
-            @click="openCreateTools"
-            icon
-            style="border-radius: 20%"
-            v-tooltip.left="'Create'"
-          >
-            <v-icon>mdi-shape-plus-outline</v-icon>
-          </v-btn>
-        </div>
-
         <v-navigation-drawer
           class="rounded align-start"
           radius="10px"
@@ -134,34 +93,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .icon-container {
-    position: fixed;
-    top: 53%;
-    right: 0;
-    z-index: 1000;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .icon-container.show {
-    opacity: 1;
-  }
-
-  .step-import-btn,
-  .create-point-btn {
-    margin-bottom: 20px;
-    transition: opacity 0.3s;
-  }
-
-  .step-import-btn.show,
-  .create-point-btn.show {
-    opacity: 1;
   }
 
   .slide-enter-active,
