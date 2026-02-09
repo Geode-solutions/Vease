@@ -1,18 +1,16 @@
 // Standard library imports
-import os from "os"
-import path from "path"
+import os from "node:os"
+import path from "node:path"
+import { once } from "node:events"
+import { setTimeout } from "node:timers/promises"
+import { spawn } from "node:child_process"
 
 // Third party imports
 import Conf from "conf"
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
 import { getPort } from "get-port-please"
-import os from "node:os"
-import path from "node:path"
-/* eslint-disable-next-line import/no-absolute-path */
-import { create_new_window } from "/utils/desktop.js"
-/* eslint-disable-next-line import/no-absolute-path */
-import { back_microservice, viewer_microservice } from "/utils/local.js"
+import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
   delete_folder_recursive,
@@ -22,11 +20,11 @@ import {
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
 
-import { once } from "node:events"
-
-import { setTimeout } from "node:timers/promises"
-import { spawn } from "node:child_process"
-import { v4 as uuidv4 } from "uuid"
+// Local imports
+/* eslint-disable-next-line import/no-absolute-path */
+import { create_new_window } from "/utils/desktop.js"
+/* eslint-disable-next-line import/no-absolute-path */
+import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 const MIN_PORT = 5001
 const MAX_PORT = 5999
