@@ -1,4 +1,7 @@
 <script setup>
+  const MAX_NAME_LENGTH = 50
+  const MIN_PASSWORD_LENGTH = 12
+
   const valid = ref(true)
   const showPassword = ref(false)
   const userStore = useUserStore()
@@ -8,63 +11,70 @@
   const files = ref()
   const image = ref()
   const success = ref()
-  const error = ref()
+  const errorMessage = ref()
   const imageUploaded = ref(false)
 
   const nameRules = [
-    (v) => !!v || "Name is required",
-    (v) => /^[\p{L}\p{M}\s]*$/u.test(v) || "Use only letters and spaces",
-    (v) => (v && v.length <= 50) || "Name must be less than 50 characters",
+    (input) => Boolean(input) || "Name is required",
+    (input) =>
+      /^[\p{L}\p{M}\s]*$/u.test(input) || "Use only letters and spaces",
+    (input) =>
+      Boolean(input && input.length <= MAX_NAME_LENGTH) ||
+      `Name must be less than ${MAX_NAME_LENGTH} characters`,
   ]
 
   const emailRules = [
-    (v) => !!v || "E-mail is required",
-    (v) =>
+    (input) => Boolean(input) || "E-mail is required",
+    (input) =>
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        v,
+        input,
       ) || "E-mail should be valid",
   ]
 
   const passwordRules = [
-    (v) => !!v || "Password is required",
-    (v) => (v && v.length >= 12) || "Password must be at least 12 characters",
+    (input) => Boolean(input) || "Password is required",
+    (input) =>
+      Boolean(input && input.length >= MIN_PASSWORD_LENGTH) ||
+      `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
   ]
 
   const confirmPasswordRules = [
-    (v) => !!v || "Confirm password is required",
-    (v) => v === password || "Passwords are different",
+    (input) => Boolean(input) || "Confirm password is required",
+    (input) => input === password.value || "Passwords are different",
   ]
 
-  const updateProfile = () => {
+  function updateProfile() {
     if (valid.value) {
       console.log("Update profile", image)
       userStore.$patch({
-        firstName,
-        lastName,
-        email,
-        password,
-        image,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        password: password.value,
+        image: image.value,
       })
     }
   }
 
-  const togglePasswordVisibility = () => {
+  function togglePasswordVisibility() {
     showPassword.value = !showPassword.value
   }
 
-  function onFileChange(e) {
-    const file = e.target.files[0]
+  function onFileChange(event) {
+    const [file] = event.target.files
     image.value = URL.createObjectURL(file)
   }
 
   async function uploadImage() {
     try {
-      error.value = null
+      errorMessage.value = null
       success.value = null
       const formData = new FormData()
-      Array.from(files.value.files).map((file, index) =>
-        formData.append(index, file),
-      )
+      let index = 0
+      for (const file of files.value.files) {
+        formData.append(String(index), file)
+        index += 1
+      }
 
       const { message } = await $fetch("/api/upload", {
         method: "POST",
@@ -73,8 +83,8 @@
 
       success.value = message
       imageUploaded.value = true
-    } catch (e) {
-      error.value = e.statusMessage
+    } catch (error) {
+      errorMessage.value = error.statusMessage
     }
   }
 </script>

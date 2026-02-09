@@ -1,16 +1,16 @@
 <script setup>
-  import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue"
   import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue"
+  import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue"
   import DataTable from "@vease/components/datamanager/DataTable.vue"
   import DeleteDialog from "@vease/components/datamanager/DeleteDialog.vue"
   import RenameDialog from "@vease/components/datamanager/RenameDialog.vue"
 
-  import { useUIStore } from "@vease/stores/UI"
+  import { useEventListener, useMagicKeys, whenever } from "@vueuse/core"
   import { useDataStore } from "@ogw_front/stores/data"
+  import { useDataStyleStore } from "@ogw_front/stores/data_style"
   import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
   import { useTreeviewStore } from "@ogw_front/stores/treeview"
-  import { useDataStyleStore } from "@ogw_front/stores/data_style"
-  import { useMagicKeys, useEventListener, whenever } from "@vueuse/core"
+  import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
   const dataStore = useDataStore()
@@ -94,19 +94,21 @@
       )
       renameDialog.value = false
       showFeedback("Renamed successfully")
-    } catch (e) {
+    } catch (error) {
+      console.error(error)
       showFeedback("Failed to rename", "error")
     }
   }
 
   async function isolateItem(item) {
-    for (const i of items.value) {
+    const promises = items.value.map(async (i) => {
       const visible = i.id === item.id
       await dataStore.updateItem(i.id, { visible })
       await dataStyleStore.setVisibility(i.id, visible, i)
       i.visible = visible
       if (!visible) treeviewStore.removeItem(i.id)
-    }
+    })
+    await Promise.all(promises)
     focusCamera(item)
   }
 
@@ -130,13 +132,14 @@
   }
 
   async function deleteSelected() {
-    const idsToDelete = selectedIds.value.map((item) => item.id)
-    for (const id of idsToDelete) {
+    const idsToDelete = selectedIds.value.map((selected) => selected.id)
+    const promises = idsToDelete.map(async (id) => {
       await dataStore.deregisterObject(id)
       await dataStore.deleteItem(id)
       await hybridViewerStore.removeItem(id)
       treeviewStore.removeItem(id)
-    }
+    })
+    await Promise.all(promises)
     items.value = items.value.filter((i) => !idsToDelete.includes(i.id))
     selectedIds.value = []
     deleteSelectedDialog.value = false
@@ -155,9 +158,12 @@
     if (selectedIds.value.length > 0) deleteSelectedDialog.value = true
   })
 
-  useEventListener(document, "keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
-      e.preventDefault()
+  useEventListener(document, "keydown", (event) => {
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      (event.key === "k" || event.key === "K")
+    ) {
+      event.preventDefault()
       headerRef.value?.focusSearch()
     }
   })

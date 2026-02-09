@@ -6,26 +6,26 @@
   // Local imports
   import CreateTools from "@vease/components/CreateTools"
   import FullScrenDropZone from "@vease/components/FullScrenDropZone"
+  import SideBar from "@vease/components/Layout/SideBar"
   import StepImport from "@vease/components/StepImport"
   import TopBar from "@vease/components/Layout/TopBar"
-  import SideBar from "@vease/components/Layout/SideBar"
 
-  import { useUIStore } from "@vease/stores/UI"
   import { useInfraStore } from "@ogw_front/stores/infra"
+  import { useUIStore } from "@vease/stores/UI"
   const UIStore = useUIStore()
   const infraStore = useInfraStore()
 
-  const handleMouseMove = (e) => {
+  function handleMouseMove(event) {
     const screenWidth = window.innerWidth
     const threshold = 75
-    if (e.clientX > screenWidth - threshold) {
+    if (event.clientX > screenWidth - threshold) {
       UIStore.setShowButton(true)
     } else {
       UIStore.setShowButton(false)
     }
   }
 
-  const openCreateTools = () => {
+  function openCreateTools() {
     UIStore.setShowCreateTools(true)
   }
 </script>
