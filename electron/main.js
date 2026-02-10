@@ -6,7 +6,6 @@ import { setTimeout } from "node:timers/promises"
 import { spawn } from "node:child_process"
 
 // Third party imports
-import Conf from "conf"
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
 import { getPort } from "get-port-please"
@@ -19,6 +18,10 @@ import {
   run_back,
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
+import {
+  createProjectConfig,
+  getProjectConfig,
+} from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local imports
 /* eslint-disable-next-line import/no-absolute-path */
@@ -30,17 +33,21 @@ const MIN_PORT = 5001
 const MAX_PORT = 5999
 const KILL_TIMEOUT = 2000
 
+const projectName = "vease"
+
+let back_port = 0
+let viewer_port = 0
+
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
-const config = new Conf({ projectName: "vease" })
+
+const test_config = createProjectConfig(projectName)
+console.log("test_config", { test_config })
 create_path(project_folder_path)
 
 let _mainWindow = null
-
-let back_port = 0
-let viewer_port = 0
 
 ipcMain.handle("run_back", async (_event) => {
   const { back_name, back_path } = await back_microservice()
@@ -74,15 +81,6 @@ ipcMain.handle(
       // Get a free port for the extension microservice
       const port = await getPort({ portRange: [MIN_PORT, MAX_PORT] })
       console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
-
-      // Spawn the microservice process
-      const process = spawn(
-        executablePath,
-        ["--port", port.toString(), "--data_folder_path", project_folder_path],
-        {
-          stdio: "inherit",
-        },
-      )
 
       // Store the process
       extensionProcesses.set(extensionId, { process, port })
