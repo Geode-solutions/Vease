@@ -20,7 +20,12 @@ export function useExtensionManager() {
       method: "POST",
       body: form,
     })
-    const { extension_name, frontend_content, backend_path } = result
+    const {
+      extension_name,
+      extension_version,
+      frontend_content,
+      backend_path,
+    } = result
     console.log("[ExtensionManager] Extension extracted", extension_name)
 
     // Create blob URL from frontend JS content
@@ -67,8 +72,9 @@ export function useExtensionManager() {
     }
 
     return {
-      extensionModule,
       extension_name,
+      extension_version,
+      extensionModule,
       backend_path,
     }
   }

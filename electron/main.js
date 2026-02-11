@@ -74,6 +74,8 @@ const extensionProcesses = new Map()
 ipcMain.handle(
   "run_extension",
   async (_event, { extensionId, executablePath }) => {
+    const testConf = getProjectConfig(projectName)
+
     console.log(`[Electron] Launching extension microservice: ${extensionId}`)
     console.log(`[Electron] Executable path: ${executablePath}`)
 
@@ -84,20 +86,20 @@ ipcMain.handle(
 
       // Store the process
       extensionProcesses.set(extensionId, { process, port })
-      config.set("unicorn", "🦄")
-      console.log(config.get("unicorn"))
-      console.log("config.extensions.push(")
-      // config.push({ extensions: {} })
-      // config.push({ id: extensionId, path: executablePath })
-      config.set(`extensions.${extensionId}`, executablePath)
-      console.log("config.get('extensions')", config.get("extensions"))
-      console.log
+
+      testConf.set("extensions", {})
+      const testExtensions = testConf.get("extensions")
+      testExtensions[extensionId] = {
+        executablePath,
+      }
+
+      console.log("testExtensions", { testExtensions })
       process.on("error", (error) => {
         console.error(
           `[Electron] Extension ${extensionId} process error:`,
           error,
         )
-        extensionProcesses.delete(extensionId)
+        // extensionProcesses.delete(extensionId)
       })
 
       process.on("exit", (code) => {
