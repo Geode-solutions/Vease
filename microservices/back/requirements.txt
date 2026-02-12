@@ -5,4 +5,4 @@
 #    pip-compile --output-file=microservices/back/requirements.txt microservices/back/requirements.in
 #
 
-vease-back==1.*,>=1.8.3
+vease-back==1.*,>=1.8.4rc1
