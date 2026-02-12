@@ -4,11 +4,9 @@
   import { useExtensionManager } from "@vease/composables/extension_manager"
   import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
   import { useExtensionsStore } from "@vease/stores/extensions"
-  import { useUIStore } from "@vease/stores/UI"
 
   const MESSAGE_TIMEOUT = 4000
 
-  const UIStore = useUIStore()
   const extensionsStore = useExtensionsStore()
   const loading = ref(false)
   const errorMessage = ref("")

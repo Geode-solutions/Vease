@@ -1,14 +1,10 @@
 // Standard library imports
 import os from "node:os"
 import path from "node:path"
-import { once } from "node:events"
-import { setTimeout } from "node:timers/promises"
-import { spawn } from "node:child_process"
 
 // Third party imports
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
-import { getPort } from "get-port-please"
 import { v4 as uuidv4 } from "uuid"
 import {
   create_path,
@@ -19,8 +15,8 @@ import {
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
 import {
-  createProjectConfig,
-  getProjectConfig,
+  projectConf,
+  killExtensionMicroservices,
 } from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local imports
@@ -28,10 +24,6 @@ import {
 import { create_new_window } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
-
-const MIN_PORT = 5001
-const MAX_PORT = 5999
-const KILL_TIMEOUT = 2000
 
 const projectName = "vease"
 
@@ -43,8 +35,8 @@ process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
 
-const test_config = createProjectConfig(projectName)
-console.log("test_config", { test_config })
+const projectConfig = projectConf(projectName)
+console.log("projectConfig", { projectConfig })
 create_path(project_folder_path)
 
 let _mainWindow = null
@@ -68,55 +60,10 @@ ipcMain.handle("new_window", () => {
   create_new_window()
 })
 
-// Extension microservices management
-const extensionProcesses = new Map()
-
 ipcMain.handle(
   "run_extension",
   async (_event, { extensionId, executablePath }) => {
-    const testConf = getProjectConfig(projectName)
-
-    console.log(`[Electron] Launching extension microservice: ${extensionId}`)
-    console.log(`[Electron] Executable path: ${executablePath}`)
-
-    try {
-      // Get a free port for the extension microservice
-      const port = await getPort({ portRange: [MIN_PORT, MAX_PORT] })
-      console.log(`[Electron] Extension ${extensionId} will use port ${port}`)
-
-      // Store the process
-      extensionProcesses.set(extensionId, { process, port })
-
-      testConf.set("extensions", {})
-      const testExtensions = testConf.get("extensions")
-      testExtensions[extensionId] = {
-        executablePath,
-      }
-
-      console.log("testExtensions", { testExtensions })
-      process.on("error", (error) => {
-        console.error(
-          `[Electron] Extension ${extensionId} process error:`,
-          error,
-        )
-        // extensionProcesses.delete(extensionId)
-      })
-
-      process.on("exit", (code) => {
-        console.log(
-          `[Electron] Extension ${extensionId} process exited with code ${code}`,
-        )
-        extensionProcesses.delete(extensionId)
-      })
-
-      return { success: true, port }
-    } catch (error) {
-      console.error(
-        `[Electron] Failed to launch extension ${extensionId}:`,
-        error,
-      )
-      return { success: false, error: error.message }
-    }
+    return run_extensions(extensionId, executablePath)
   },
 )
 
@@ -130,25 +77,10 @@ let cleaned = false
 async function clean_up() {
   console.log("Shutting down microservices")
 
-  // Kill extension microservices
-  const extensionKillPromises = [...extensionProcesses.values()].map(
-    async ({ process, _port }) => {
-      if (process && !process.killed) {
-        process.kill()
-        try {
-          // Wait for exit or timeout
-          await Promise.race([once(process, "exit"), setTimeout(KILL_TIMEOUT)])
-        } catch {
-          // Ignore errors during kill wait
-        }
-      }
-    },
-  )
-
   await Promise.all([
     kill_back(back_port),
     kill_viewer(viewer_port),
-    ...extensionKillPromises,
+    ...killExtensionMicroservices(),
   ])
   delete_folder_recursive(project_folder_path)
   cleaned = true
