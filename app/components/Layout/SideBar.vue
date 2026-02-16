@@ -37,76 +37,71 @@
 
 <template>
   <v-navigation-drawer
-    fixed
     v-model="drawer"
-    width="80"
-    color="#FFFFFF00"
-    class="py-4"
+    width="90"
+    color="transparent"
+    class="border-0 px-2 pb-2 pt-0"
     elevation="0"
     floating
-    app
     permanent
   >
-    <v-row
-      no-gutters
-      class="flex-column"
-      style="height: 100%"
-      align="center"
-      justify="center"
+    <div
+      class="glass-panel rounded-xl d-flex flex-column align-center py-4 fill-height mx-1"
     >
-      <v-col cols="auto" v-for="(item, index) in items" :key="index">
-        <v-tooltip :text="item.title">
+      <div v-for="(item, index) in items" :key="index" class="mb-3">
+        <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
               flat
-              color="#FFFFFF00"
+              color="transparent"
               @click="item.click"
-              style="border-radius: 20%"
-              :icon="item.icon"
-              class="mb-1"
+              class="icon-style pa-2"
+              width="48"
+              height="48"
               draggable="false"
               @dragstart="startDrag($event, item)"
               @drop="onDrop($event, index)"
               @dragover.prevent
-              data-type="sidebar-icon"
             >
-              <v-icon
-                class="icon-style pa-6"
-                :icon="item.icon"
-                color="white"
-                size="28"
-              />
+              <v-icon :icon="item.icon" color="white" size="28" />
             </v-btn>
           </template>
         </v-tooltip>
-      </v-col>
+      </div>
 
       <v-spacer />
-      <v-col cols="auto">
-        <v-tooltip text="Infos">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              flat
-              color="#FFFFFF00"
-              @click="navigateTo('/infos')"
-              style="border-radius: 20%"
-              icon="mdi-information-variant-circle"
-              class="mb-1"
-              @dragover.prevent
-              data-type="sidebar-icon"
-            >
-              <v-icon
-                class="icon-style pa-6"
-                icon="mdi-information-variant-circle"
-                color="white"
-                size="28"
-              />
-            </v-btn>
-          </template>
-        </v-tooltip>
-      </v-col>
-    </v-row>
+
+      <v-tooltip text="Infos" location="right">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            flat
+            color="transparent"
+            @click="navigateTo('/infos')"
+            class="icon-style pa-2"
+            width="48"
+            height="48"
+          >
+            <v-icon icon="mdi-information-outline" color="white" size="28" />
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </div>
   </v-navigation-drawer>
 </template>
+
+<style scoped>
+  .icon-style {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-style:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  :deep(.v-navigation-drawer__content) {
+    overflow: visible !important;
+  }
+</style>

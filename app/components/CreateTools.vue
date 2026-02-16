@@ -37,22 +37,18 @@
     v-if="!selectedTool"
     :width="500"
     flat
-    class="d-flex flex-column"
-    style="height: 100%"
+    color="transparent"
+    class="d-flex flex-column h-100"
   >
-    <div class="flex-shrink-0">
-      <v-card-title
-        class="text-h4 text-primary pa-4 font-weight-bold d-flex align-center"
-      >
-        <v-icon icon="mdi-creation" class="mr-3"></v-icon>
-        Create New Object
-      </v-card-title>
-      <v-card-subtitle class="ma-0 text-medium pb-4">
-        Choose a drawing tool to get started.
-      </v-card-subtitle>
+    <div class="flex-shrink-0 pa-6">
+      <div class="d-flex align-center mb-2">
+        <v-icon icon="mdi-creation" class="mr-3 title-text" size="32"></v-icon>
+        <h2 class="title-text">Create New Object</h2>
+      </div>
+      <p class="text-white">Choose a drawing tool to get started.</p>
     </div>
 
-    <v-card-text class="pt-4 pb-8 flex-1-1 overflow-y-auto">
+    <v-card-text class="pt-2 pb-8 flex-1-1 overflow-y-auto px-6">
       <v-row>
         <v-col
           v-for="tool in UIStore.activeTools"
@@ -63,50 +59,48 @@
           <v-hover v-slot="{ isHovering, props }">
             <v-card
               v-bind="props"
-              class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
+              color="transparent"
+              class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card border-thin border-opacity-20"
               :class="{
-                'bg-blue-lighten-5': isHovering,
-                'elevation-6': isHovering,
+                'bg-white-opacity-10': isHovering,
               }"
-              :elevation="isHovering ? 6 : 2"
               rounded="xl"
               @click="handleSelectTool(tool.id)"
             >
               <v-card-text class="pa-4 d-flex flex-column flex-grow-1">
                 <v-sheet
                   class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
-                  :class="isHovering ? 'bg-primary' : 'bg-grey-lighten-3'"
-                  :width="80"
-                  :height="80"
+                  color="rgba(255, 255, 255, 0.1)"
+                  :width="70"
+                  :height="70"
                   elevation="0"
+                  :style="{ transition: 'all 0.3s ease' }"
+                  :class="{ 'bg-primary': isHovering }"
                 >
                   <v-icon
                     v-if="tool.iconType === 'mdi'"
                     :icon="tool.iconSource"
-                    size="48"
-                    :color="isHovering ? 'white' : 'grey-darken-2'"
+                    size="36"
+                    color="white"
                   />
                   <v-img
                     v-else-if="tool.iconType === 'svg'"
                     :src="tool.iconSource"
                     :alt="tool.title + ' icon'"
-                    height="48"
-                    width="48"
+                    height="36"
+                    width="36"
                     contain
-                    :class="{ 'svg-white-filter': isHovering }"
+                    class="svg-white-filter"
                   />
                 </v-sheet>
-                <v-card-title
-                  class="text-h5 font-weight-bold mb-1 text-wrap tool-title"
-                  :class="isHovering ? 'text-primary' : 'text-medium-emphasis'"
+                <div
+                  class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white"
                 >
                   {{ tool.title }}
-                </v-card-title>
-                <v-card-subtitle
-                  class="text-caption text-wrap text-grey-darken-4"
-                >
+                </div>
+                <div class="text-caption text-wrap text-white opacity-85">
                   {{ tool.description }}
-                </v-card-subtitle>
+                </div>
               </v-card-text>
             </v-card>
           </v-hover>
@@ -115,30 +109,38 @@
     </v-card-text>
   </v-card>
 
-  <v-sheet v-else class="position-relative tool-component-wrapper">
+  <div v-else class="position-relative tool-component-wrapper pa-4">
     <v-btn
       icon
       variant="text"
-      class="ma-2 position-sticky bg-white"
-      style="top: 0; z-index: 10"
+      class="ma-2 position-sticky glass-panel back-btn"
       @click="handleBack"
     >
-      <v-icon>mdi-arrow-left</v-icon>
+      <v-icon color="white">mdi-arrow-left</v-icon>
     </v-btn>
-    <component
-      v-if="getToolComponent(selectedTool)"
-      :is="getToolComponent(selectedTool)"
-      @close="handleBack"
-      @created="handleToolCreated"
-    />
-    <v-alert v-else type="error" class="ma-4">
-      Component not found for **{{ selectedTool }}**. Please check the plugin
-      registration.
-    </v-alert>
-  </v-sheet>
+    <div
+      class="glass-panel pa-6 rounded-xl border-white border-opacity-10 mt-4"
+    >
+      <component
+        v-if="getToolComponent(selectedTool)"
+        :is="getToolComponent(selectedTool)"
+        @close="handleBack"
+        @created="handleToolCreated"
+      />
+      <v-alert v-else type="error" variant="tonal" class="ma-4">
+        Component not found for **{{ selectedTool }}**. Please check the plugin
+        registration.
+      </v-alert>
+    </div>
+  </div>
 </template>
 
 <style scoped>
+  .back-btn {
+    top: 0;
+    z-index: 10;
+  }
+
   .custom-tool-card {
     transition: all 0.2s ease-in-out;
   }
@@ -159,23 +161,5 @@
 
   .tool-component-wrapper {
     min-height: 400px;
-  }
-
-  .overflow-y-auto::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .overflow-y-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-
-  .overflow-y-auto::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-    background: #555;
   }
 </style>

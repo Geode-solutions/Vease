@@ -25,88 +25,104 @@
 </script>
 
 <template>
-  <v-app-bar flat color="transparent" class="ma-1" height="60" :elevation="0">
-    <v-row class="pa-1 ma-1 align-center">
+  <v-app-bar flat color="transparent" height="90" class="px-12" elevation="0">
+    <div
+      class="d-flex align-center w-100 px-8 glass-panel rounded-xl"
+      style="height: 70px"
+    >
       <v-img
         :src="logo"
-        max-height="50"
-        max-width="50"
-        class="ml-3 mr-0"
+        max-height="32"
+        max-width="32"
+        class="mr-2"
         contain
         draggable="false"
       />
-      <h2 style="color: white" class="ml-2 mb-1 title-text mr-8">Vease</h2>
+      <h2 class="title-text font-michroma mr-8 text-h5">Vease</h2>
 
-      <v-menu transition="slide-y-transition">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            variant="text"
-            color="white"
-            v-bind="props"
-            class="text-none font-weight-bold"
+      <div class="d-flex ga-2">
+        <v-menu transition="slide-y-transition">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              variant="text"
+              color="white"
+              v-bind="props"
+              class="text-none font-weight-medium rounded-lg"
+              prepend-icon="mdi-folder-star-outline"
+            >
+              Project
+              <v-icon end size="18">mdi-chevron-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list
+            density="compact"
+            class="glass-panel border-0 mt-2 rounded-lg"
           >
-            <v-icon start>mdi-folder-star-outline</v-icon>
-            Project
-            <v-icon end>mdi-chevron-down</v-icon>
-          </v-btn>
-        </template>
-        <v-list density="compact" rounded="lg">
-          <v-list-item
-            prepend-icon="mdi-download"
-            title="Import Project"
-            @click="triggerImport"
-          />
-          <v-list-item
-            prepend-icon="mdi-upload"
-            title="Export Project"
-            @click="exportProject()"
-          />
-        </v-list>
-      </v-menu>
+            <v-list-item
+              prepend-icon="mdi-download"
+              title="Import Project"
+              class="rounded-md"
+              @click="triggerImport"
+            />
+            <v-list-item
+              prepend-icon="mdi-upload"
+              title="Export Project"
+              class="rounded-md"
+              @click="exportProject()"
+            />
+          </v-list>
+        </v-menu>
 
-      <v-btn
-        variant="text"
-        color="white"
-        class="text-none font-weight-bold"
-        @click="UIStore.setShowExtensions(!UIStore.showExtensions)"
-      >
-        <v-icon start>mdi-puzzle-outline</v-icon>
-        Extensions
-      </v-btn>
+        <v-btn
+          variant="text"
+          color="white"
+          class="text-none font-weight-medium rounded-lg"
+          prepend-icon="mdi-puzzle-outline"
+          @click="UIStore.setShowExtensions(!UIStore.showExtensions)"
+        >
+          Extensions
+        </v-btn>
+      </div>
 
       <v-spacer />
 
       <!-- Action Buttons -->
-      <div class="d-flex align-center bg-white rounded-pill pa-1 mr-4">
+      <div class="d-flex align-center ga-3">
         <v-btn
-          color="primary"
-          variant="flat"
-          rounded="pill"
-          class="text-none px-6 font-weight-bold mr-1"
+          color="white"
+          variant="tonal"
+          rounded="lg"
+          class="text-none px-6 font-weight-bold"
+          prepend-icon="mdi-file-upload-outline"
           @click="UIStore.setShowStepper(!UIStore.showStepper)"
         >
-          <v-icon start size="20">mdi-file-upload-outline</v-icon>
           Import
         </v-btn>
         <v-btn
           color="primary"
-          variant="tonal"
-          rounded="pill"
+          variant="flat"
+          rounded="lg"
           class="text-none px-6 font-weight-bold"
+          prepend-icon="mdi-shape-plus-outline"
           @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
         >
-          <v-icon start size="20">mdi-shape-plus-outline</v-icon>
           Create
         </v-btn>
       </div>
-    </v-row>
+    </div>
 
     <input
       ref="importFileInput"
       type="file"
       accept=".vease"
-      style="display: none"
+      class="d-none"
       @change="onImportFileSelected"
     />
   </v-app-bar>
 </template>
+
+<style scoped>
+  :deep(.v-toolbar__content) {
+    overflow: visible !important;
+  }
+</style>

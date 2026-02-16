@@ -112,7 +112,7 @@
   <v-card
     v-else
     ref="cardContainer"
-    style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
+    class="border-0 w-100 h-100 rounded-xl fill-height"
     @contextmenu.prevent="openMenu"
   >
     <HybridRenderingView>
@@ -130,9 +130,3 @@
     </HybridRenderingView>
   </v-card>
 </template>
-
-<style>
-  html {
-    overflow-y: auto;
-  }
-</style>

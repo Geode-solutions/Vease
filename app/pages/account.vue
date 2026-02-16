@@ -93,9 +93,11 @@
   <v-container fluid fill-height>
     <v-row align="center" justify="center">
       <v-col cols="12" md="6">
-        <v-card color="#277a67" class="custom-card">
+        <v-card color="#277a67" class="rounded-xl border pa-5">
           <v-card-title class="text-center">
-            <h2 class="mb-6">Profil Management</h2>
+            <h2 class="mb-6 text-h4 font-weight-bold text-white font-michroma">
+              Profil Management
+            </h2>
           </v-card-title>
           <v-card-text>
             <v-form
@@ -147,56 +149,57 @@
                 @click:append="togglePasswordVisibility"
               ></v-text-field>
               <form
-                class="mt-4 flex flex-col space-y-4"
+                class="mt-4 d-flex flex-column ga-4"
                 @submit.prevent="uploadImage"
               >
-                <div class="flex items-center space-x-4">
-                  <div class="flex items-center justify-center h-40 w-40">
+                <div class="d-flex align-center ga-4">
+                  <div
+                    class="d-flex align-center justify-center"
+                    style="height: 160px; width: 160px"
+                  >
                     <label
                       for="dropzone-file"
-                      class="flex flex-col items-center justify-center border-2 h-40 w-40 border-gray-300 rounded-full cursor-pointer bg-gray-50 hover:bg-gray-100"
-                      ><v-file-input
+                      class="d-flex flex-column align-center justify-center border-sm rounded-circle cursor-pointer bg-grey-lighten-4"
+                      style="height: 160px; width: 160px"
+                    >
+                      <v-file-input
                         prepend-icon="mdi-camera"
                         label="Profil Picture"
                         ref="files"
                         accept="image/*"
                         id="dropzone-file"
                         type="file"
-                        class="hidden"
+                        class="d-none"
                         @change="onFileChange"
                       />
                       <div
                         v-if="!image"
-                        class="flex flex-col items-center justify-center pt-5 pb-6"
+                        class="d-flex flex-column align-center justify-center pt-5 pb-6"
                       ></div>
                       <img
                         v-else
                         :src="image"
-                        class="rounded-full object-fill"
-                        :width="250"
-                        aspect-ratio="16/19"
-                        cover
+                        class="rounded-circle"
+                        style="width: 100%; height: 100%; object-fit: cover"
                       />
                     </label>
                   </div>
                   <v-btn type="submit" class="mb-6"> Upload Image </v-btn>
                 </div>
                 <span
-                  v-if="success || error"
-                  :class="{
-                    'text-green-600': success,
-                    'text-red-600': error,
-                  }"
-                  class="font-medium mb-6"
-                  >{{ success || error }}</span
+                  v-if="success || errorMessage"
+                  :class="success ? 'text-success' : 'text-error'"
+                  class="font-weight-medium mb-6"
+                  >{{ success || errorMessage }}</span
                 >
               </form>
               <v-btn
                 :disabled="!valid || !imageUploaded"
                 color="#277a67"
                 block
-                class="icon-style custom-button"
+                class="rounded-xl border pa-6"
                 type="submit"
+                height="auto"
               >
                 Update profile
               </v-btn>
@@ -204,19 +207,6 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
-  </v-container>
+    </v-row></v-container
+  >
 </template>
-
-<style scoped>
-  .custom-card {
-    border: 1px solid white;
-    border-radius: 20px;
-    padding: 20px;
-  }
-
-  .custom-button {
-    border: 1px solid white;
-    padding: 25px;
-  }
-</style>

@@ -28,7 +28,7 @@
   )
 
   function closeDrawer() {
-    UIStore.setShowCreatePoint(false)
+    UIStore.setShowCreateTools(false)
   }
 
   function safeParseFloat(value) {
@@ -142,22 +142,23 @@
 </script>
 
 <template>
-  <v-card :width="500" elevation="0" class="pa-4">
+  <v-card flat color="transparent" class="pa-0" theme="dark">
     <v-card-title
-      class="pb-2 text-h5 text-primary font-weight-bold d-flex align-center"
+      class="pb-2 text-h5 font-weight-bold d-flex align-center text-white"
     >
       <v-icon
         icon="mdi-circle-medium"
         class="mr-3 text-h4"
-        color="grey-darken-2"
+        color="secondary"
       ></v-icon>
       Create Specific Point
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 text-medium-emphasis">
+    <v-card-subtitle class="ma-0 text-white opacity-80">
       Enter the coordinates and a title for your new point object.
     </v-card-subtitle>
-    <v-card-text>
+
+    <v-card-text class="pt-6">
       <v-form ref="form">
         <v-text-field
           label="Object Name"
@@ -165,75 +166,89 @@
           prepend-inner-icon="mdi-format-title"
           type="text"
           variant="outlined"
-          color="primary"
+          color="white"
           :rules="[(v) => !!v || 'Name is required']"
           required
-          class="mb-4"
+          class="mb-4 rounded-lg"
+          base-color="rgba(255, 255, 255, 0.2)"
+          bg-color="rgba(255, 255, 255, 0.05)"
         />
 
         <v-row dense>
           <v-col cols="4">
             <v-text-field
-              label="X Coordinate"
+              label="X"
               v-model="x"
               prepend-inner-icon="mdi-axis-x-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
-              color="secondary"
+              color="white"
               density="comfortable"
               :rules="[(v) => !!v || 'X is required']"
               @paste="handlePaste($event, 'x')"
               @update:modelValue="(val) => sanitizeInput(val, 'x')"
+              class="rounded-lg"
+              base-color="rgba(255, 255, 255, 0.2)"
+              bg-color="rgba(255, 255, 255, 0.05)"
             />
           </v-col>
 
           <v-col cols="4">
             <v-text-field
-              label="Y Coordinate"
+              label="Y"
               v-model="y"
               prepend-inner-icon="mdi-axis-y-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
-              color="secondary"
+              color="white"
               density="comfortable"
               :rules="[(v) => !!v || 'Y is required']"
               @paste="handlePaste($event, 'y')"
               @update:modelValue="(val) => sanitizeInput(val, 'y')"
+              class="rounded-lg"
+              base-color="rgba(255, 255, 255, 0.2)"
+              bg-color="rgba(255, 255, 255, 0.05)"
             />
           </v-col>
 
           <v-col cols="4">
             <v-text-field
-              label="Z Coordinate"
+              label="Z"
               v-model="z"
               prepend-inner-icon="mdi-axis-z-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
-              color="secondary"
+              color="white"
               density="comfortable"
               :rules="[(v) => !!v || 'Z is required']"
               @paste="handlePaste($event, 'z')"
               @update:modelValue="(val) => sanitizeInput(val, 'z')"
+              class="rounded-lg"
+              base-color="rgba(255, 255, 255, 0.2)"
+              bg-color="rgba(255, 255, 255, 0.05)"
             />
           </v-col>
         </v-row>
       </v-form>
     </v-card-text>
-    <v-card-actions class="px-4 pb-4">
+
+    <v-card-actions class="px-0 pb-0 mt-4">
       <v-btn
         variant="text"
-        color="grey-darken-1"
+        color="white"
         size="large"
         @click="openCreateTools"
         :disabled="loading"
-        class="text-none"
+        class="text-none rounded-lg"
       >
         <v-icon start>mdi-close-circle-outline</v-icon>
         Cancel
       </v-btn>
+
+      <v-spacer />
 
       <v-btn
         color="primary"
@@ -242,9 +257,10 @@
         :loading="loading"
         :disabled="!isFormFilled"
         @click="createPoint"
-        class="text-none ml-4"
+        class="text-none rounded-lg font-weight-bold"
+        elevation="4"
       >
-        <v-icon start class="ml-1">mdi-send</v-icon>
+        <v-icon start>mdi-send</v-icon>
         Create Point
         <template #loader>
           <v-progress-circular

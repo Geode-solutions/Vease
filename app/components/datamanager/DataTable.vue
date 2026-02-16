@@ -63,30 +63,38 @@
     :search="search"
     show-select
     fixed-header
-    :height="selectedIds.length > 0 ? '480' : '550'"
+    :height="selectedIds.length > 0 ? '550' : '620'"
     item-value="id"
     return-object
-    class="bg-transparent border-thin rounded-lg text-white custom-scrollbar"
+    class="bg-transparent text-white custom-scrollbar border-0"
     hide-default-footer
     :items-per-page="-1"
   >
     <template #[`item.name`]="{ item }">
-      <span
-        class="font-weight-medium cursor-pointer text-no-wrap"
-        @click="emit('rename', item)"
-      >
-        {{ item.name }}
-      </span>
+      <div class="d-flex align-center py-2">
+        <v-icon size="20" class="mr-3 opacity-60">mdi-file-outline</v-icon>
+        <span
+          class="font-weight-medium cursor-pointer text-no-wrap"
+          @click="emit('rename', item)"
+        >
+          {{ item.name }}
+        </span>
+      </div>
     </template>
 
     <template #[`item.geode_object_type`]="{ item }">
-      <v-chip size="x-small" color="primary" variant="tonal" class="text-none">
+      <v-chip
+        size="x-small"
+        color="white"
+        variant="outlined"
+        class="text-none border-opacity-20 font-weight-bold"
+      >
         {{ item.geode_object_type }}
       </v-chip>
     </template>
 
     <template #[`item.created_at`]="{ item }">
-      <span class="text-caption text-grey-lighten-1">{{
+      <span class="text-caption text-grey-lighten-2 font-weight-light">{{
         formatSmartDate(item.created_at)
       }}</span>
     </template>
@@ -97,6 +105,7 @@
         size="small"
         variant="text"
         :color="item.visible ? 'primary' : 'white'"
+        class="opacity-80"
         @click.stop="emit('toggle-visibility', item)"
       >
         <v-icon size="20">{{
@@ -157,29 +166,39 @@
 
 <style scoped>
   :deep(.v-data-table-header__content) {
-    font-size: 0.65rem !important;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-size: 0.7rem !important;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   :deep(.v-data-table__th) {
     background: transparent !important;
-    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+
+  :deep(.v-data-table__td) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  :deep(.v-data-table__tr:hover) {
+    background: rgba(255, 255, 255, 0.02) !important;
   }
 
   .custom-scrollbar :deep(.v-table__wrapper) {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }
 
   .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar) {
-    width: 8px;
+    width: 6px;
   }
 
   .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
   }
 </style>
