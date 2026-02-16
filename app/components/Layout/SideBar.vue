@@ -7,7 +7,7 @@
 
   const items = ref([
     {
-      title: "Home",
+      title: "Viewer",
       icon: "mdi-rotate-orbit",
       click: () => navigateTo("/"),
     },
@@ -46,8 +46,8 @@
     permanent
   >
     <div
-      class="glass-panel rounded-xl d-flex flex-column align-center py-4 fill-height"
-      style="width: 70px; margin: 0 10px 10px 10px"
+      class="d-flex flex-column align-center py-4 fill-height"
+      style="width: 100%"
     >
       <div v-for="(item, index) in items" :key="index" class="mb-3">
         <v-tooltip :text="item.title" location="right">
@@ -57,7 +57,7 @@
               flat
               color="transparent"
               @click="item.click"
-              class="icon-style pa-2"
+              class="icon-style pa-2 rounded-lg"
               width="48"
               height="48"
               draggable="false"

@@ -170,7 +170,7 @@
 </script>
 
 <template>
-  <v-container fluid class="pa-8 bg-transparent data-manager-container">
+  <v-container fluid class="fill-height pa-8 overflow-hidden" theme="dark">
     <v-row no-gutters class="fill-height">
       <v-col class="d-flex flex-column fill-height overflow-hidden">
         <DataManagerHeader
@@ -181,10 +181,7 @@
           class="mb-6"
         />
 
-        <v-window
-          v-model="activeTab"
-          class="flex-grow-1 overflow-hidden glass-panel rounded-lg"
-        >
+        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
           <v-window-item value="data" class="fill-height overflow-y-auto pa-6">
             <BatchActionBanner
               :selected-count="selectedIds.length"
@@ -244,11 +241,3 @@
     >
   </v-container>
 </template>
-
-<style scoped>
-  .data-manager-container {
-    height: 100%;
-    max-height: 100%;
-    overflow: hidden;
-  }
-</style>

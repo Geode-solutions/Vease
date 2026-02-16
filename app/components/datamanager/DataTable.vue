@@ -104,8 +104,7 @@
         icon
         size="small"
         variant="text"
-        :color="item.visible ? 'primary' : 'white'"
-        class="opacity-80"
+        color="white"
         @click.stop="emit('toggle-visibility', item)"
       >
         <v-icon size="20">{{

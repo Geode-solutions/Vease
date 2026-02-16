@@ -52,9 +52,13 @@
       class="custom-background dropzone"
       @dragover="UIStore.setShowDropZone(true)"
     >
-      <div class="island-wrapper">
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden border-0"
+      >
         <NuxtPage style="z-index: 1" class="fill-height" />
-      </div>
+      </GlassCard>
 
       <InfraConnected>
         <v-fade-transition>
@@ -77,8 +81,11 @@
             :width="548"
             class="drawer-container right-0"
           >
-            <div
-              class="rounded-xl glass-panel fill-height overflow-hidden border-0"
+            <GlassCard
+              v-if="UIStore.showStepper || UIStore.showCreateTools"
+              variant="panel"
+              padding="pa-0"
+              class="fill-height overflow-hidden border-0"
             >
               <StepImport
                 v-if="UIStore.showStepper"
@@ -86,7 +93,7 @@
                 @close="UIStore.setShowStepper(false)"
               />
               <CreateTools v-if="UIStore.showCreateTools" />
-            </div>
+            </GlassCard>
           </v-card>
         </v-fade-transition>
 
@@ -99,11 +106,14 @@
             class="drawer-container left-0"
             style="z-index: 9999"
           >
-            <div
-              class="rounded-xl glass-panel fill-height overflow-hidden border-0"
+            <GlassCard
+              v-if="UIStore.showExtensions"
+              variant="panel"
+              padding="pa-0"
+              class="fill-height overflow-hidden border-0"
             >
               <Extension />
-            </div>
+            </GlassCard>
           </v-card>
         </v-fade-transition>
 
@@ -146,7 +156,8 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
-    padding: 0 10px 10px 0;
+    margin: 0 10px 10px 0;
+    padding: 0;
   }
 
   .custom-background {
@@ -169,6 +180,17 @@
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     z-index: 98;
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+    isolation: isolate;
+    backface-visibility: hidden;
+  }
+
+  .v-fade-transition-enter-active,
+  .v-fade-transition-leave-active {
+    transition:
+      opacity 0.1s linear,
+      backdrop-filter 0.1s linear !important;
   }
 
   .drawer-container {
@@ -178,6 +200,9 @@
     margin-top: 84px;
     padding: 16px;
     z-index: 99;
+    isolation: isolate;
+    backface-visibility: hidden;
+    transform: translateZ(0);
   }
 
   .v-btn {

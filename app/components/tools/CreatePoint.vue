@@ -159,27 +159,31 @@
     </v-card-subtitle>
 
     <v-card-text class="pt-6">
-      <v-form ref="form">
+      <v-form ref="form" class="mt-4">
         <v-text-field
-          label="Object Name"
           v-model="name"
-          prepend-inner-icon="mdi-format-title"
           type="text"
           variant="outlined"
           color="white"
           :rules="[(v) => !!v || 'Name is required']"
           required
+          theme="dark"
+          base-color="white"
+          bg-color="rgba(255, 255, 255, 0.15)"
           class="mb-4 rounded-lg"
-          base-color="rgba(255, 255, 255, 0.2)"
-          bg-color="rgba(255, 255, 255, 0.05)"
-        />
+        >
+          <template v-slot:label>
+            <span class="text-white opacity-100">Object Name</span>
+          </template>
+          <template v-slot:prepend-inner>
+            <v-icon color="white" class="opacity-100">mdi-format-title</v-icon>
+          </template>
+        </v-text-field>
 
         <v-row dense>
           <v-col cols="4">
             <v-text-field
-              label="X"
               v-model="x"
-              prepend-inner-icon="mdi-axis-x-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
@@ -189,16 +193,24 @@
               @paste="handlePaste($event, 'x')"
               @update:modelValue="(val) => sanitizeInput(val, 'x')"
               class="rounded-lg"
-              base-color="rgba(255, 255, 255, 0.2)"
-              bg-color="rgba(255, 255, 255, 0.05)"
-            />
+              theme="dark"
+              base-color="white"
+              bg-color="rgba(255, 255, 255, 0.15)"
+            >
+              <template v-slot:label>
+                <span class="text-white opacity-100">X</span>
+              </template>
+              <template v-slot:prepend-inner>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-x-arrow</v-icon
+                >
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col cols="4">
             <v-text-field
-              label="Y"
               v-model="y"
-              prepend-inner-icon="mdi-axis-y-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
@@ -208,16 +220,24 @@
               @paste="handlePaste($event, 'y')"
               @update:modelValue="(val) => sanitizeInput(val, 'y')"
               class="rounded-lg"
-              base-color="rgba(255, 255, 255, 0.2)"
-              bg-color="rgba(255, 255, 255, 0.05)"
-            />
+              theme="dark"
+              base-color="white"
+              bg-color="rgba(255, 255, 255, 0.15)"
+            >
+              <template v-slot:label>
+                <span class="text-white opacity-100">Y</span>
+              </template>
+              <template v-slot:prepend-inner>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-y-arrow</v-icon
+                >
+              </template>
+            </v-text-field>
           </v-col>
 
           <v-col cols="4">
             <v-text-field
-              label="Z"
               v-model="z"
-              prepend-inner-icon="mdi-axis-z-arrow"
               type="text"
               inputmode="decimal"
               variant="outlined"
@@ -227,9 +247,19 @@
               @paste="handlePaste($event, 'z')"
               @update:modelValue="(val) => sanitizeInput(val, 'z')"
               class="rounded-lg"
-              base-color="rgba(255, 255, 255, 0.2)"
-              bg-color="rgba(255, 255, 255, 0.05)"
-            />
+              theme="dark"
+              base-color="white"
+              bg-color="rgba(255, 255, 255, 0.15)"
+            >
+              <template v-slot:label>
+                <span class="text-white opacity-100">Z</span>
+              </template>
+              <template v-slot:prepend-inner>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-z-arrow</v-icon
+                >
+              </template>
+            </v-text-field>
           </v-col>
         </v-row>
       </v-form>

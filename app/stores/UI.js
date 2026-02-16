@@ -13,6 +13,10 @@ export const useUIStore = defineStore("UI", () => {
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
 
+  const anyOverlayOpen = computed(
+    () => showStepper.value || showCreateTools.value || showExtensions.value,
+  )
+
 
   function registerToolComponent(toolDefinition, extensionPath = null) {
     const { id, component, ...rest } = toolDefinition
@@ -130,6 +134,7 @@ export const useUIStore = defineStore("UI", () => {
     showExtensions,
     showCreateVOI,
     showCreateAOI,
+    anyOverlayOpen,
     setShowDropZone,
     setShowStepper,
     setDroppedFiles,

@@ -176,7 +176,7 @@
                 <v-expansion-panels variant="accordion" class="bg-transparent">
                   <v-expansion-panel
                     rounded="xl"
-                    class="glass-panel border-white border-opacity-10 mb-3"
+                    class="glass-ui border-white border-opacity-10 mb-3"
                     elevation="0"
                     :style="{
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -402,13 +402,13 @@
       </v-fade-transition>
 
       <v-fade-transition>
-        <v-card
+        <GlassCard
           v-if="!loadedExtensions.length"
-          rounded="xl"
-          class="mt-8 glass-panel border-opacity-10"
-          variant="flat"
+          variant="ui"
+          class="mt-8 border-opacity-10"
+          padding="pa-10"
         >
-          <v-card-text class="text-center pa-10">
+          <div class="text-center">
             <v-sheet
               class="mx-auto mb-6 d-flex align-center justify-center empty-icon-wrapper"
               rounded="circle"
@@ -426,13 +426,13 @@
             <div class="text-body-1 text-white opacity-60">
               Upload an extension file to get started
             </div>
-          </v-card-text>
-        </v-card>
+          </div>
+        </GlassCard>
       </v-fade-transition>
     </v-card-text>
 
     <v-dialog v-model="showRemoveDialog" max-width="500" class="remove-dialog">
-      <v-card rounded="xl" class="glass-panel" theme="dark">
+      <v-card rounded="xl" class="glass-ui" theme="dark">
         <v-card-title
           class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4"
         >

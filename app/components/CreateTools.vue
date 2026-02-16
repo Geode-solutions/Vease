@@ -118,9 +118,7 @@
     >
       <v-icon color="white">mdi-arrow-left</v-icon>
     </v-btn>
-    <div
-      class="glass-panel pa-6 rounded-xl border-white border-opacity-10 mt-4"
-    >
+    <GlassCard variant="panel" padding="pa-6" class="mt-4">
       <component
         v-if="getToolComponent(selectedTool)"
         :is="getToolComponent(selectedTool)"
@@ -131,7 +129,7 @@
         Component not found for **{{ selectedTool }}**. Please check the plugin
         registration.
       </v-alert>
-    </div>
+    </GlassCard>
   </div>
 </template>
 
