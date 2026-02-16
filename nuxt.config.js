@@ -60,6 +60,10 @@ export default defineNuxtConfig({
       VImg: {
         draggable: false,
       },
+      VSwitch: {
+        color: "primary",
+        inset: true,
+      },
     },
     moduleOptions: {},
     vuetifyOptions: {

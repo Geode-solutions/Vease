@@ -26,6 +26,18 @@ img {
   );
 }
 
+.glass-panel {
+  background: rgba(30, 30, 30, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  isolation: isolate;
+  backface-visibility: hidden;
+}
+
 .glass-ui {
   background: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(10px) !important;

@@ -326,9 +326,11 @@
                           :key="tool.id"
                           v-slot="{ isHovering, props: toolProps }"
                         >
-                          <v-card
+                          <GlassCard
                             v-bind="toolProps"
-                            class="d-flex align-start ga-3 pa-4 border-white border-opacity-10 active-tool-card"
+                            variant="ui"
+                            padding="pa-4"
+                            class="d-flex align-start ga-3 border-white border-opacity-10 active-tool-card"
                             :style="{
                               transitionDelay: `${toolIndex * 30}ms`,
                               background: isHovering
@@ -336,8 +338,6 @@
                                 : 'transparent',
                               opacity: extension.enabled ? 1 : 0.5,
                             }"
-                            variant="outlined"
-                            rounded="lg"
                           >
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0 tool-icon"
@@ -378,7 +378,7 @@
                                 {{ tool.description }}
                               </div>
                             </div>
-                          </v-card>
+                          </GlassCard>
                         </v-hover>
                       </div>
 
@@ -432,7 +432,7 @@
     </v-card-text>
 
     <v-dialog v-model="showRemoveDialog" max-width="500" class="remove-dialog">
-      <v-card rounded="xl" class="glass-ui" theme="dark">
+      <GlassCard variant="ui" padding="pa-0">
         <v-card-title
           class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4"
         >
@@ -447,7 +447,7 @@
 
         <v-card-text class="px-6 pb-6 text-body-1">
           <div class="text-medium-emphasis mb-3">
-            Are you sure you want to remove
+            Are you sure you want to delete
             <span class="font-weight-bold text-high-emphasis">{{
               getExtensionName(extensionToRemove)
             }}</span
@@ -457,7 +457,7 @@
             type="info"
             variant="tonal"
             density="compact"
-            rounded="lg"
+            rounded="xl"
             class="text-caption"
           >
             <template #prepend>
@@ -484,7 +484,7 @@
             Remove
           </v-btn>
         </v-card-actions>
-      </v-card>
+      </GlassCard>
     </v-dialog>
   </v-card>
 </template>

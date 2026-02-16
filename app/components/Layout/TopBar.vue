@@ -31,6 +31,7 @@
     height="70"
     elevation="0"
     class="d-flex align-center w-100 px-8"
+    @mousedown.stop
   >
     <v-img
       :src="logo"

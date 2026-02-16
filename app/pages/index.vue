@@ -115,7 +115,6 @@
     v-else
     ref="cardContainer"
     class="w-100 h-100 fill-height"
-    :style="{ pointerEvents: UIStore.anyOverlayOpen ? 'none' : 'auto' }"
     @contextmenu.prevent="openMenu"
   >
     <HybridRenderingView>

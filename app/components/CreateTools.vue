@@ -57,17 +57,17 @@
           class="d-flex pa-2"
         >
           <v-hover v-slot="{ isHovering, props }">
-            <v-card
+            <GlassCard
               v-bind="props"
-              color="transparent"
-              class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card border-thin border-opacity-20"
+              variant="ui"
+              class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
               :class="{
                 'bg-white-opacity-10': isHovering,
               }"
-              rounded="xl"
+              padding="pa-4"
               @click="handleSelectTool(tool.id)"
             >
-              <v-card-text class="pa-4 d-flex flex-column flex-grow-1">
+              <v-card-text class="pa-0 d-flex flex-column flex-grow-1">
                 <v-sheet
                   class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
                   color="rgba(255, 255, 255, 0.1)"
@@ -102,7 +102,7 @@
                   {{ tool.description }}
                 </div>
               </v-card-text>
-            </v-card>
+            </GlassCard>
           </v-hover>
         </v-col>
       </v-row>
@@ -110,14 +110,17 @@
   </v-card>
 
   <div v-else class="position-relative tool-component-wrapper pa-4">
-    <v-btn
-      icon
-      variant="text"
-      class="ma-2 position-sticky glass-panel back-btn"
-      @click="handleBack"
+    <GlassCard
+      variant="panel"
+      padding="pa-0"
+      class="ma-2 position-sticky back-btn rounded-circle"
+      width="48"
+      height="48"
     >
-      <v-icon color="white">mdi-arrow-left</v-icon>
-    </v-btn>
+      <v-btn icon variant="text" @click="handleBack" class="w-100 h-100">
+        <v-icon color="white">mdi-arrow-left</v-icon>
+      </v-btn>
+    </GlassCard>
     <GlassCard variant="panel" padding="pa-6" class="mt-4">
       <component
         v-if="getToolComponent(selectedTool)"

@@ -48,6 +48,7 @@
     <div
       class="d-flex flex-column align-center py-4 fill-height"
       style="width: 100%"
+      @mousedown.stop
     >
       <div v-for="(item, index) in items" :key="index" class="mb-3">
         <v-tooltip :text="item.title" location="right">

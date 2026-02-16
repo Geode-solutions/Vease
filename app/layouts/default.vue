@@ -55,7 +55,7 @@
       <GlassCard
         variant="ui"
         padding="pa-0"
-        class="island-wrapper overflow-hidden border-0"
+        class="island-wrapper overflow-hidden"
       >
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
@@ -152,7 +152,7 @@
 
   .island-wrapper {
     flex-grow: 1;
-    height: 100%;
+    height: 99%;
     min-height: 0;
     display: flex;
     flex-direction: column;
