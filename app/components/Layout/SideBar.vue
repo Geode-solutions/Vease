@@ -40,13 +40,14 @@
     v-model="drawer"
     width="90"
     color="transparent"
-    class="border-0 px-2 pb-2 pt-0"
+    class="border-0 pb-2 pt-0"
     elevation="0"
     floating
     permanent
   >
     <div
-      class="glass-panel rounded-xl d-flex flex-column align-center py-4 fill-height mx-1"
+      class="glass-panel rounded-xl d-flex flex-column align-center py-4 fill-height"
+      style="width: 70px; margin: 0 10px 10px 10px"
     >
       <div v-for="(item, index) in items" :key="index" class="mb-3">
         <v-tooltip :text="item.title" location="right">

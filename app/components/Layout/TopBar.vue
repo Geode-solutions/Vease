@@ -25,7 +25,13 @@
 </script>
 
 <template>
-  <v-app-bar flat color="transparent" height="90" class="px-12" elevation="0">
+  <v-app-bar
+    flat
+    color="transparent"
+    height="90"
+    style="padding: 0 10px"
+    elevation="0"
+  >
     <div
       class="d-flex align-center w-100 px-8 glass-panel rounded-xl"
       style="height: 70px"

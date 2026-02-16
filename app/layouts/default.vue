@@ -52,7 +52,7 @@
       class="custom-background dropzone"
       @dragover="UIStore.setShowDropZone(true)"
     >
-      <div class="island-wrapper pa-3">
+      <div class="island-wrapper">
         <NuxtPage style="z-index: 1" class="fill-height" />
       </div>
 
@@ -146,6 +146,7 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+    padding: 0 10px 10px 0;
   }
 
   .custom-background {
