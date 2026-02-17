@@ -1,7 +1,7 @@
 <script setup>
   const SECONDS_IN_MINUTE = 60
   const SECONDS_IN_HOUR = 3600
-  const SECONDS_IN_DAY = 86400
+  const SECONDS_IN_DAY = 86_400
   const MILLISECONDS_TO_SECONDS = 1000
 
   const { items, search } = defineProps({
@@ -36,7 +36,9 @@
   ]
 
   function formatSmartDate(dateStr) {
-    if (!dateStr) return ""
+    if (!dateStr) {
+      return ""
+    }
     const date = new Date(dateStr)
     const diff = Math.floor((Date.now() - date) / MILLISECONDS_TO_SECONDS)
 

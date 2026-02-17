@@ -64,7 +64,7 @@
     // },
   ])
 
-  let draggedItem = null
+  let draggedItem = undefined
 
   function startDrag(event, item) {
     draggedItem = item
@@ -73,11 +73,13 @@
 
   function onDrop(event, dropIndex) {
     const dragIndex = items.value.indexOf(draggedItem)
-    if (dragIndex === dropIndex) return
+    if (dragIndex === dropIndex) {
+      return
+    }
 
     items.value.splice(dragIndex, 1)
     items.value.splice(dropIndex, 0, draggedItem)
-    draggedItem = null
+    draggedItem = undefined
   }
 
   const { importProjectFile, exportProject } = useProjectManager()
@@ -88,7 +90,9 @@
 
   function onImportFileSelected(event) {
     const file = event.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
     if (!file.name.toLowerCase().endsWith(".vease")) {
       event.target.value = ""
       return

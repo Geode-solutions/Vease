@@ -7,7 +7,7 @@
     "style": "error",
     "restriction": "error"
   },
-  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest"],
+  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest", "vue"],
   "rules": {
     "unicorn/filename-case": [
       "error",
@@ -15,14 +15,35 @@
         "case": "snakeCase"
       }
     ],
-    "eslint/func-style": [
+    "eslint/func-style": ["error", "declaration"],
+    "eslint/sort-keys": "off",
+    "eslint/no-ternary": "off", // A utiliser pour des opérations simples
+    "oxc/no-async-await": "off",
+    "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
+    "eslint/max-statements": ["warn", 20],
+    "eslint/id-length": ["error", { "exceptions": ["x", "y", "z", "i", "j", "k", "r", "g", "b", "id", "ID"], "min": 3 }],
+    "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
+    "sort-imports": ["error", { "allowSeparatedGroups": true }],
+    "eslint/no-undefined": "off", // Conflict with unicorn/no-typeof-undefined which prefers direct undefined comparison
+    "import/prefer-default-export": "off",
+    "import/no-named-export": "off",
+    "import/no-namespace": ["error", { "ignore": ["vuetify/*"] }],
+    "vue/max-props": ["error", { "maxProps": 7 }],
+    "oxc/no-optional-chaining": "off",
+    "node/no-process-env": "off",
+    "capitalized-comments": "warn",
+    "no-continue": "off",
+    "max-params": ["warn", { "max": 4 }],
+    "eslint/no-magic-numbers": [
       "error",
       {
-        "style:": "declaration"
+        "ignore": [-1, 0, 1, 2, 4],
+        "ignoreArrayIndexes": true
       }
     ],
-    "eslint/sort-keys": "off",
-    "eslint/no-ternary": "off"
+    "vitest/require-hook": ["error", {
+      "allowedFunctionCalls": ["defineProps", "defineEmits", "defineModel", "ref", "computed", "reactive", "watch", "watchEffect", "onMounted", "onBeforeMount", "onBeforeUnmount", "onUnmounted", "useEventListener", "useMousePressed", "defineExpose"]
+    }]
   },
   "overrides": [
     {
@@ -34,6 +55,18 @@
             "case": "PascalCase"
           }
         ]
+      }
+    },
+    {
+      "files": ["*.js", "app/plugins/**"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": ["utils/**"],
+      "rules": {
+        "promise/prefer-await-to-callbacks": "off"
       }
     }
   ]

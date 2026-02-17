@@ -2,7 +2,7 @@
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
-  const selectedTool = ref(null)
+  const selectedTool = ref(undefined)
 
   function getToolComponent(toolId) {
     return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)
@@ -14,11 +14,11 @@
   }
 
   function handleBack() {
-    selectedTool.value = null
+    selectedTool.value = undefined
   }
 
   function handleToolCreated() {
-    selectedTool.value = null
+    selectedTool.value = undefined
     UIStore.setShowCreateTools(false)
   }
 
@@ -26,7 +26,7 @@
     () => UIStore.showCreateTools,
     (newVal) => {
       if (!newVal) {
-        selectedTool.value = null
+        selectedTool.value = undefined
       }
     },
   )

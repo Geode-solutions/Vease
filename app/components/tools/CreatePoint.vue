@@ -38,7 +38,9 @@
   }
 
   async function createPoint() {
-    if (!isFormFilled.value) return
+    if (!isFormFilled.value) {
+      return
+    }
 
     const pointData = {
       x: safeParseFloat(x.value),
@@ -74,7 +76,9 @@
   }
 
   function sanitizeNumberString(str) {
-    if (str === undefined || str === null) return ""
+    if (str === undefined || str === null) {
+      return ""
+    }
     let value = String(str)
       .replace(/,/g, ".")
       .replace(/[^0-9eE+\-.]/g, "")
@@ -114,10 +118,14 @@
       (event && event.clipboardData && event.clipboardData.getData("text")) ||
       ""
 
-    if (!pastedText) return
+    if (!pastedText) {
+      return
+    }
 
     const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g)
-    if (!coordinates || coordinates.length === 0) return
+    if (!coordinates || coordinates.length === 0) {
+      return
+    }
 
     const sanitized = coordinates.map((coord) => sanitizeNumberString(coord))
 
@@ -125,19 +133,29 @@
       event.preventDefault()
     } else if (sanitized.length === 1) {
       const [firstSanitized] = sanitized
-      if (field === "x") x.value = firstSanitized
-      else if (field === "y") y.value = firstSanitized
-      else if (field === "z") z.value = firstSanitized
-      else return
+      if (field === "x") {
+        x.value = firstSanitized
+      } else if (field === "y") {
+        y.value = firstSanitized
+      } else if (field === "z") {
+        z.value = firstSanitized
+      } else {
+        return
+      }
       event.preventDefault()
     }
   }
 
   function sanitizeInput(value, label) {
-    if (label === "x") x.value = sanitizeNumberString(value)
-    else if (label === "y") y.value = sanitizeNumberString(value)
-    else if (label === "z") z.value = sanitizeNumberString(value)
-    else if (label === "name") name.value = value
+    if (label === "x") {
+      x.value = sanitizeNumberString(value)
+    } else if (label === "y") {
+      y.value = sanitizeNumberString(value)
+    } else if (label === "z") {
+      z.value = sanitizeNumberString(value)
+    } else if (label === "name") {
+      name.value = value
+    }
   }
 </script>
 
