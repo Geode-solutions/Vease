@@ -2,7 +2,6 @@
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
-  const selectedTool = ref(null)
 
   function getToolComponent(toolId) {
     return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)
@@ -10,15 +9,15 @@
   }
 
   function handleSelectTool(toolId) {
-    selectedTool.value = toolId
+    UIStore.setSelectedTool(toolId)
   }
 
   function handleBack() {
-    selectedTool.value = null
+    UIStore.setSelectedTool(null)
   }
 
   function handleToolCreated() {
-    selectedTool.value = null
+    UIStore.setSelectedTool(null)
     UIStore.setShowCreateTools(false)
   }
 
@@ -26,7 +25,7 @@
     () => UIStore.showCreateTools,
     (newVal) => {
       if (!newVal) {
-        selectedTool.value = null
+        UIStore.setSelectedTool(null)
       }
     },
   )
@@ -34,7 +33,7 @@
 
 <template>
   <v-card
-    v-if="!selectedTool"
+    v-if="!UIStore.selectedTool"
     :width="500"
     flat
     color="transparent"

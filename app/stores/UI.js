@@ -10,8 +10,10 @@ export const useUIStore = defineStore("UI", () => {
   const toolsDefinitions = ref([])
   const showCreateVOI = ref(false)
   const showCreateAOI = ref(false)
+  const showCreatePoint = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
+  const selectedTool = ref(null)
 
   const anyOverlayOpen = computed(
     () => showStepper.value || showCreateTools.value || showExtensions.value,
@@ -144,6 +146,5 @@ export const useUIStore = defineStore("UI", () => {
     setShowExtensions,
     setShowCreateVOI,
     setShowCreateAOI,
-
   }
 })
