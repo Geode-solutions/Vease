@@ -1,4 +1,5 @@
 <script setup>
+  import GlassCard from "@ogw_front/components/GlassCard"
   import DragAndDrop from "@ogw_front/components/DragAndDrop"
   import { formatRelativeTime } from "@/utils/formatDate"
   import { useExtensionManager } from "@vease/composables/extension_manager"

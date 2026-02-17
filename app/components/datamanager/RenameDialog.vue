@@ -1,4 +1,6 @@
 <script setup>
+  import GlassCard from "@ogw_front/components/GlassCard"
+
   const { show, item, initialName } = defineProps({
     show: {
       type: Boolean,

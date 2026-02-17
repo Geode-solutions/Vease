@@ -1,4 +1,5 @@
 <script setup>
+  import GlassCard from "@ogw_front/components/GlassCard"
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()

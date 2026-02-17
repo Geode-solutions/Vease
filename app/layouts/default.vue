@@ -2,6 +2,7 @@
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useUIStore } from "@vease/stores/UI"
 
+  import GlassCard from "@ogw_front/components/GlassCard"
   import InfraConnected from "@ogw_front/components/InfraConnected"
   import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
   import TopBar from "@vease/components/Layout/TopBar"
