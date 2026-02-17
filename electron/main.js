@@ -21,7 +21,7 @@ import {
 
 // Local imports
 /* eslint-disable-next-line import/no-absolute-path */
-import { create_new_window } from "/utils/desktop.js"
+import { create_new_window, import_extension } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
 
@@ -61,9 +61,9 @@ ipcMain.handle("new_window", () => {
 })
 
 ipcMain.handle(
-  "run_extension",
+  import_extension.name,
   async (_event, { extensionId, executablePath }) => {
-    return run_extensions(extensionId, executablePath)
+    return import_extension(extensionId, executablePath)
   },
 )
 

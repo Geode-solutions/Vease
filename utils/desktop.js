@@ -83,9 +83,9 @@ function create_new_window() {
   return win
 }
 
-function run_extensions() {
+function import_extension() {
   const debug = "EXTENSION RUNNING"
   console.log(debug)
 }
 
-export { create_new_window, run_extensions }
+export { create_new_window, import_extension }

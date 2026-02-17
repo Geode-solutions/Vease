@@ -1,25 +1,19 @@
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { useAppStore } from "@ogw_front/stores/app"
-import { useGeodeStore } from "@ogw_front/stores/geode"
 import { useInfraStore } from "@ogw_front/stores/infra"
 
 export function useExtensionManager() {
   const appStore = useAppStore()
-  const geodeStore = useGeodeStore()
 
   async function importExtensionFile(file) {
     console.log("[ExtensionManager] Importing extension file:", file.name)
 
-    // Upload .vext to backend
-    const schemaImport = back_schemas.opengeodeweb_back.import_extension
-    const form = new FormData()
-    form.append("file", file, file.name)
+    const result = await window.electronAPI
+      .run_back()
+      .invoke("import_extension", {
+        archiveFile: file,
+        filename: file.name,
+      })
 
-    const result = await $fetch(schemaImport.$id, {
-      baseURL: geodeStore.base_url,
-      method: "POST",
-      body: form,
-    })
     const {
       extension_name,
       extension_version,
