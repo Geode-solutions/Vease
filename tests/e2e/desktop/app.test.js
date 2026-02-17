@@ -47,7 +47,7 @@ test.beforeAll(async () => {
   await browserWindow.evaluate(
     async (window, { width, height }) => {
       await window.unmaximize()
-      await window.setContentSize(width, height)
+      await window.setSize(width, height)
     },
     { width: WINDOW_WIDTH, height: WINDOW_HEIGHT },
   )
@@ -61,11 +61,9 @@ test("Microservices running", async () => {
   const firstWindow = await _electronApp.firstWindow()
   await firstWindow.waitForTimeout(
     (isWindows ? WINDOWS_TIMEOUT_SECONDS : DEFAULT_TIMEOUT_SECONDS) *
-      MS_PER_SECOND,
+    MS_PER_SECOND,
   )
   await expect(firstWindow).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
-    timeout: 15000,
-    maxDiffPixelRatio: 0.02,
   })
 })
