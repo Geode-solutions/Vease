@@ -3,14 +3,16 @@ import os from "node:os"
 import path from "node:path"
 import { v4 as uuidv4 } from "uuid"
 // Third party imports
-
-// Local imports
 import {
   create_path,
   executable_name,
   executable_path,
   run_browser,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
+import { runExtensions } from "@geode/opengeodeweb-front/app/utils/extension.js"
+
+// Local constants
+const projectName = "vease"
 
 async function back_microservice() {
   const back_path = await executable_path(path.join("microservices", "back"))
@@ -35,6 +37,9 @@ async function run_browser_wrapper(script_name) {
   console.log("back_command", back_path, back_name)
   const { viewer_name, viewer_path } = await viewer_microservice()
   console.log("viewer_command", viewer_path, viewer_name)
+
+  runExtensions(projectName, path.join(project_folder_path, "extensions"))
+
   return run_browser(script_name, {
     back: {
       executable_name: back_name,
