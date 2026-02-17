@@ -1,5 +1,4 @@
 <script setup>
-  import { watch } from "vue"
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useUIStore } from "@vease/stores/UI"
 
