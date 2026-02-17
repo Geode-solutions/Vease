@@ -10,6 +10,7 @@
   const MIN_COORDINATES = 3
 
   function openCreateTools() {
+    UIStore.setSelectedTool(null)
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)
@@ -28,7 +29,7 @@
   )
 
   function closeDrawer() {
-    UIStore.setShowCreatePoint(false)
+    UIStore.setShowCreateTools(false)
   }
 
   function safeParseFloat(value) {
