@@ -17,7 +17,6 @@ export const useUIStore = defineStore("UI", () => {
     () => showStepper.value || showCreateTools.value || showExtensions.value,
   )
 
-
   function registerToolComponent(toolDefinition, extensionPath = null) {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
@@ -116,7 +115,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
-
   return {
     toolsDefinitions,
     activeTools,
@@ -144,6 +142,5 @@ export const useUIStore = defineStore("UI", () => {
     setShowExtensions,
     setShowCreateVOI,
     setShowCreateAOI,
-
   }
 })
