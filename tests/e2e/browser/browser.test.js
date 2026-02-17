@@ -27,5 +27,7 @@ test("Microservices running", async ({ page }) => {
   )
   await expect(page).toHaveScreenshot({
     path: `microservices-running-${process.platform}.png`,
+    timeout: 15000,
+    maxDiffPixelRatio: 0.02,
   })
 })

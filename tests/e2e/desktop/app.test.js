@@ -47,7 +47,7 @@ test.beforeAll(async () => {
   await browserWindow.evaluate(
     async (window, { width, height }) => {
       await window.unmaximize()
-      await window.setSize(width, height)
+      await window.setContentSize(width, height)
     },
     { width: WINDOW_WIDTH, height: WINDOW_HEIGHT },
   )
