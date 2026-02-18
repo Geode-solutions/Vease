@@ -67,8 +67,8 @@
 
   async function uploadImage() {
     try {
-      errorMessage.value = null
-      success.value = null
+      errorMessage.value = undefined
+      success.value = undefined
       const formData = new FormData()
       let index = 0
       for (const file of files.value.files) {

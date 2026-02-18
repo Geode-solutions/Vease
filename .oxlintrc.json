@@ -42,7 +42,7 @@
       }
     ],
     "vitest/require-hook": ["error", {
-      "allowedFunctionCalls": ["defineProps", "defineEmits", "defineModel", "ref", "computed", "reactive", "watch", "watchEffect", "onMounted", "onBeforeMount", "onBeforeUnmount", "onUnmounted", "useEventListener", "useMousePressed", "defineExpose"]
+      "allowedFunctionCalls": ["defineProps", "defineEmits", "defineModel", "ref", "computed", "reactive", "watch", "watchEffect", "onMounted", "onBeforeMount", "onBeforeUnmount", "onUnmounted", "useEventListener", "useMousePressed", "defineExpose", "whenever"]
     }]
   },
   "overrides": [

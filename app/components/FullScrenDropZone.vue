@@ -9,7 +9,7 @@
   const feedbackStore = useFeedbackStore()
 
   const isDragging = ref(false)
-  let dragLeaveTimeout = null
+  let dragLeaveTimeout = undefined
 
   function onDragOver(event) {
     event.preventDefault()

@@ -26,9 +26,9 @@
 
   const deleteSelectedDialog = ref(false)
   const deleteSingleDialog = ref(false)
-  const itemToDelete = ref(null)
+  const itemToDelete = ref(undefined)
   const renameDialog = ref(false)
-  const itemToRename = ref(null)
+  const itemToRename = ref(undefined)
   const newItemName = ref("")
 
   const snackbar = reactive({ show: false, text: "", color: "success" })
@@ -38,7 +38,7 @@
     const index = selectedIds.value.findIndex(
       (selected) => selected.id === item.id,
     )
-    if (index > -1) {
+    if (index !== -1) {
       selectedIds.value.splice(index, 1)
     } else {
       selectedIds.value.push(item)
@@ -79,7 +79,9 @@
   }
 
   async function confirmRename(newName) {
-    if (!newName || !itemToRename.value) return
+    if (!newName || !itemToRename.value) {
+      return
+    }
     try {
       itemToRename.value.name = newName
       await dataStore.updateItem(itemToRename.value.id, {
@@ -106,7 +108,9 @@
       await dataStore.updateItem(i.id, { visible })
       await dataStyleStore.setVisibility(i.id, visible, i)
       i.visible = visible
-      if (!visible) treeviewStore.removeItem(i.id)
+      if (!visible) {
+        treeviewStore.removeItem(i.id)
+      }
     })
     await Promise.all(promises)
     focusCamera(item)
@@ -118,7 +122,9 @@
   }
 
   async function executeDelete() {
-    if (!itemToDelete.value) return
+    if (!itemToDelete.value) {
+      return
+    }
     await dataStore.deregisterObject(itemToDelete.value.id)
     await dataStore.deleteItem(itemToDelete.value.id)
     await hybridViewerStore.removeItem(itemToDelete.value.id)
@@ -154,8 +160,12 @@
 
   const { delete: del } = useMagicKeys()
   whenever(del, () => {
-    if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return
-    if (selectedIds.value.length > 0) deleteSelectedDialog.value = true
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+      return
+    }
+    if (selectedIds.value.length > 0) {
+      deleteSelectedDialog.value = true
+    }
   })
 
   useEventListener(document, "keydown", (event) => {

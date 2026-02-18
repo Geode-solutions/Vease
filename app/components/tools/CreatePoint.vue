@@ -10,7 +10,7 @@
   const MIN_COORDINATES = 3
 
   function openCreateTools() {
-    UIStore.setSelectedTool(null)
+    UIStore.setSelectedTool(undefined)
     UIStore.setShowCreateTools(true)
     UIStore.setShowCreatePoint(false)
     UIStore.setShowCreateAOI(false)

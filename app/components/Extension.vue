@@ -14,7 +14,7 @@
   const errorMessage = ref("")
   const successMessage = ref("")
   const showRemoveDialog = ref(false)
-  const extensionToRemove = ref(null)
+  const extensionToRemove = ref(undefined)
 
   const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions())
 
@@ -84,7 +84,7 @@
     if (extensionToRemove.value) {
       extensionsStore.unloadExtension(extensionToRemove.value.id)
       showRemoveDialog.value = false
-      extensionToRemove.value = null
+      extensionToRemove.value = undefined
     }
   }
 </script>

@@ -18,7 +18,7 @@
     },
     counter: {
       type: Number,
-      default: null,
+      default: undefined,
     },
   })
 
