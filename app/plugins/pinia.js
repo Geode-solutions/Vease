@@ -32,7 +32,9 @@ function piniaSharedState() {
       }
 
       const { timestamp: incomingTimestamp, state: incomingState } = newState
-      if (incomingTimestamp <= timestamp) return
+      if (incomingTimestamp <= timestamp) {
+        return
+      }
 
       externalUpdate = true
       timestamp = incomingTimestamp

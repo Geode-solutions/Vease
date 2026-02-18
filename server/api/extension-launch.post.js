@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    let port = null
+    let port = undefined
 
     // Capture stdout to get the port
     extensionProcess.stdout.on("data", (data) => {

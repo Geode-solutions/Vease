@@ -41,9 +41,7 @@
         "ignoreArrayIndexes": true
       }
     ],
-    "vitest/require-hook": ["error", {
-      "allowedFunctionCalls": ["defineProps", "defineEmits", "defineModel", "ref", "computed", "reactive", "watch", "watchEffect", "onMounted", "onBeforeMount", "onBeforeUnmount", "onUnmounted", "useEventListener", "useMousePressed", "defineExpose", "whenever"]
-    }]
+    "vitest/require-hook": "off"
   },
   "overrides": [
     {
@@ -58,15 +56,23 @@
       }
     },
     {
-      "files": ["*.js", "app/plugins/**"],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
       "rules": {
-        "import/no-default-export": "off"
+        "import/no-default-export": "off",
+        "unicorn/prefer-structured-clone": "off",
+        "unicorn/require-post-message-target-origin": "off"
       }
     },
     {
       "files": ["utils/**"],
       "rules": {
         "promise/prefer-await-to-callbacks": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.*"],
+      "rules": {
+        "vitest/require-hook": "error"
       }
     }
   ]

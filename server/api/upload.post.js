@@ -1,12 +1,14 @@
 import { errors as formidableErrors } from "formidable"
+//oxlint-disable-next-line id-length
 import fs from "node:fs"
 import path from "node:path"
 import { readFiles } from "h3-formidable"
 
-const MEGABYTE = 1048576 // 1MB
-const MAX_FILE_SIZE = 5242880 // 5MB
+const MEGABYTE = 1_048_576 // 1MB
+const MAX_FILE_SIZE = 5_242_880 // 5MB
 const MAX_FILES = 1
-const RANDOM_COEFFICIENT = 10000000
+const RANDOM_COEFFICIENT = 10_000_000
+
 export default defineEventHandler(async (event) => {
   try {
     const { files } = await readFiles(event, {

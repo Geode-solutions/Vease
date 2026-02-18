@@ -1,6 +1,7 @@
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
 import { getPort } from "get-port-please"
+// oxlint-disable-next-line id-length
 import os from "node:os"
 import path from "node:path"
 /* eslint-disable-next-line import/no-absolute-path */
@@ -32,7 +33,7 @@ const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
 create_path(project_folder_path)
 
-let _mainWindow = null
+let _mainWindow = undefined
 
 let back_port = 0
 let viewer_port = 0

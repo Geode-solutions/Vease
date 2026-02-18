@@ -13,9 +13,9 @@ export const useUIStore = defineStore("UI", () => {
   const showCreatePoint = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
-  const selectedTool = ref(null)
+  const selectedTool = ref(undefined)
 
-  function registerToolComponent(toolDefinition, extensionPath = null) {
+  function registerToolComponent(toolDefinition, extensionPath = undefined) {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
       (tool) => tool.id === id,
@@ -53,7 +53,9 @@ export const useUIStore = defineStore("UI", () => {
   function getActiveTools() {
     const extensionsStore = useExtensionsStore()
     return toolsDefinitions.value.filter((tool) => {
-      if (!tool.extensionPath) return true
+      if (!tool.extensionPath) {
+        return true
+      }
       return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
   }

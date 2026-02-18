@@ -18,17 +18,24 @@ export function formatRelativeTime(dateInput) {
   const diffWeeks = Math.floor(diffDays / WEEKS)
   const diffMonths = Math.floor(diffDays / MONTHS)
 
-  if (diffSecs < SECONDS) return "just now"
-  if (diffMins < MINUTES)
+  if (diffSecs < SECONDS) {
+    return "just now"
+  }
+  if (diffMins < MINUTES) {
     return `${diffMins} ${diffMins === 1 ? "minute" : "minutes"} ago`
-  if (diffHours < HOURS)
+  }
+  if (diffHours < HOURS) {
     return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`
-  if (diffDays < DAYS)
+  }
+  if (diffDays < DAYS) {
     return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`
-  if (diffWeeks < QUARTERS)
+  }
+  if (diffWeeks < QUARTERS) {
     return `${diffWeeks} ${diffWeeks === 1 ? "week" : "weeks"} ago`
-  if (diffMonths < YEARS)
+  }
+  if (diffMonths < YEARS) {
     return `${diffMonths} ${diffMonths === 1 ? "month" : "months"} ago`
+  }
 
   return date.toLocaleDateString()
 }
