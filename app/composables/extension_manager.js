@@ -1,18 +1,26 @@
 import { useAppStore } from "@ogw_front/stores/app"
 import { useInfraStore } from "@ogw_front/stores/infra"
+import { appMode } from "@ogw_front/utils/app_mode"
+import { uploadExtension } from "@ogw_front/utils/extension"
 
 export function useExtensionManager() {
+  const infraStore = useInfraStore()
   const appStore = useAppStore()
 
   async function importExtensionFile(file) {
+    const archiveFileContent = await file.text()
     console.log("[ExtensionManager] Importing extension file:", file.name)
 
-    const result = await window.electronAPI
-      .run_back()
-      .invoke("import_extension", {
-        archiveFile: file,
-        filename: file.name,
-      })
+    await uploadExtension(archiveFileContent, file.name, "vease")
+
+    if (infraStore.app_mode === appMode.BROWSER) {
+      console.log(
+        "[ExtensionManager] Cannot import extension in BROWSER mode, please reload the page",
+      )
+      return "Extension uploaded, please reload the page"
+    } else if (infraStore.app_mode === appMode.DESKTOP) {
+      console.log("[ExtensionManager] Importing extension in DESKTOP mode...")
+    }
 
     const {
       extension_name,
@@ -40,7 +48,6 @@ export function useExtensionManager() {
       console.log("[ExtensionManager] Store registered:", store.$id)
 
       // Launch the microservice if the store has a launch method
-      const infraStore = useInfraStore()
       if (typeof store.launch === "function") {
         if (infraStore.app_mode === "DESKTOP") {
           console.log(
@@ -101,5 +108,3 @@ export function useExtensionManager() {
 
   return { importExtensionFile, unloadExtension }
 }
-
-export default useExtensionManager

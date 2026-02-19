@@ -38,7 +38,8 @@ async function run_browser_wrapper(script_name) {
   const { viewer_name, viewer_path } = await viewer_microservice()
   console.log("viewer_command", viewer_path, viewer_name)
 
-  runExtensions(projectName, path.join(project_folder_path, "extensions"))
+  const extensions_folder_path = path.join(project_folder_path, "extensions")
+  await runExtensions(projectName, extensions_folder_path)
 
   return run_browser(script_name, {
     back: {

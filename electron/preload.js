@@ -22,11 +22,4 @@ contextBridge.exposeInMainWorld("electronAPI", {
     })
     return result
   },
-  import_extension: async (archiveFile, filename) => {
-    console.log("PRELOAD import_extension", { archiveFile, filename })
-    return await ipcRenderer.invoke("import_extension", {
-      archiveFile,
-      filename,
-    })
-  },
 })

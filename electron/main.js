@@ -14,14 +14,11 @@ import {
   run_back,
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import {
-  projectConf,
-  killExtensionMicroservices,
-} from "@geode/opengeodeweb-front/app/utils/extension.js"
+import { killExtensionMicroservices } from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local imports
 /* eslint-disable-next-line import/no-absolute-path */
-import { create_new_window, import_extension } from "/utils/desktop.js"
+import { create_new_window } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
 
@@ -34,9 +31,6 @@ autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 const uuid_project_folder = uuidv4()
 const project_folder_path = path.join(os.tmpdir(), "vease", uuid_project_folder)
-
-const projectConfig = projectConf(projectName)
-console.log("projectConfig", { projectConfig })
 create_path(project_folder_path)
 
 let _mainWindow = null
@@ -59,13 +53,6 @@ ipcMain.handle("run_viewer", async (_event) => {
 ipcMain.handle("new_window", () => {
   create_new_window()
 })
-
-ipcMain.handle(
-  import_extension.name,
-  async (_event, { extensionId, executablePath }) => {
-    return import_extension(extensionId, executablePath)
-  },
-)
 
 /* eslint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return */
 app.whenReady().then(function onReady() {
