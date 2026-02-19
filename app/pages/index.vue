@@ -12,6 +12,7 @@
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useMenuStore } from "@ogw_front/stores/menu"
   import { useViewerStore } from "@ogw_front/stores/viewer"
+  import { useUIStore } from "@vease/stores/UI"
 
   const { query } = useRoute()
   if (query.geode_port) {
@@ -36,6 +37,7 @@
   const menuStore = useMenuStore()
   const dataStore = useDataStore()
   const dataStyleStore = useDataStyleStore()
+  const UIStore = useUIStore()
 
   const id = ref("")
   const containerWidth = ref(0)
@@ -60,7 +62,7 @@
   }
 
   async function handleTreeMenu({ event, itemId }) {
-    const rect = cardContainer.value.$el.getBoundingClientRect()
+    const rect = cardContainer.value.getBoundingClientRect()
     const x = event.clientX - rect.left
     const yUI = event.clientY - rect.top
 
@@ -79,7 +81,7 @@
   }
 
   async function openMenu(event) {
-    const rect = cardContainer.value.$el.getBoundingClientRect()
+    const rect = cardContainer.value.getBoundingClientRect()
     const x = event.clientX - rect.left
     const yPicking = containerHeight.value - (event.clientY - rect.top)
     const yUI = event.clientY - rect.top
@@ -109,10 +111,10 @@
 
 <template>
   <Launcher v-if="infraStore.status != Status.CREATED" />
-  <v-card
+  <div
     v-else
     ref="cardContainer"
-    style="width: 100%; height: calc(100vh - 75px); border-radius: 15px"
+    class="w-100 h-100 fill-height"
     @contextmenu.prevent="openMenu"
   >
     <HybridRenderingView>
@@ -128,11 +130,5 @@
         />
       </template>
     </HybridRenderingView>
-  </v-card>
+  </div>
 </template>
-
-<style>
-  html {
-    overflow-y: auto;
-  }
-</style>

@@ -1,67 +1,21 @@
 <script setup>
-  import { useProjectManager } from "@ogw_front/composables/project_manager"
   import { useUIStore } from "@vease/stores/UI"
 
   const UIStore = useUIStore()
 
   const drawer = ref(true)
-  const newproject = ref(false)
-  const openproject = ref(false)
-  const importFileInput = templateRef("importFileInput")
-
-  function toggleExtensions() {
-    UIStore.setShowExtensions(!UIStore.showExtensions)
-  }
 
   const items = ref([
     {
-      title: "Home",
+      title: "Viewer",
       icon: "mdi-rotate-orbit",
       click: () => navigateTo("/"),
     },
-    {
-      title: "Extensions",
-      icon: "mdi-puzzle",
-      click: () => toggleExtensions(),
-    },
-    // {
-    //   title: "New Project",
-    //   icon: "mdi-plus",
-    //   click: () => (newproject.value = true),
-    // },
-    // {
-    //   title: "Open Project",
-    //   icon: "mdi-folder-outline",
-    //   click: () => (openproject.value = true),
-    // },
     {
       title: "Data Manager",
       icon: "mdi-database",
       click: () => navigateTo("/data-manager"),
     },
-    {
-      title: "Import Project",
-      icon: "mdi-download",
-      click: () => triggerImport(),
-    },
-    {
-      title: "Export Project",
-      icon: "mdi-upload",
-      click: () => triggerExport(),
-    },
-    // {
-    //   title: "Open new window",
-    //   icon: "mdi-dock-window",
-    //   click: () => {
-    //     if (isElectron()) {
-    //       window.electronAPI.new_window();
-    //     } else {
-    //       console.log("notElectron");
-
-    //       window.open("http://localhost:3000", "_blank");
-    //     }
-    //   },
-    // },
   ])
 
   let draggedItem = null
@@ -79,111 +33,77 @@
     items.value.splice(dropIndex, 0, draggedItem)
     draggedItem = null
   }
-
-  const { importProjectFile, exportProject } = useProjectManager()
-
-  function triggerImport() {
-    importFileInput.value?.click()
-  }
-
-  function onImportFileSelected(event) {
-    const file = event.target.files?.[0]
-    if (!file) return
-    if (!file.name.toLowerCase().endsWith(".vease")) {
-      event.target.value = ""
-      return
-    }
-    importProjectFile(file)
-    event.target.value = ""
-  }
-
-  function triggerExport() {
-    exportProject()
-  }
 </script>
 
 <template>
   <v-navigation-drawer
-    fixed
     v-model="drawer"
-    width="80"
-    color="#FFFFFF00"
-    class="py-4"
+    width="90"
+    color="transparent"
+    class="border-0 pb-2 pt-0"
     elevation="0"
     floating
-    app
     permanent
   >
-    <v-row
-      no-gutters
-      class="flex-column"
-      style="height: 100%"
-      align="center"
-      justify="center"
+    <div
+      class="d-flex flex-column align-center py-4 fill-height"
+      style="width: 100%"
+      @mousedown.stop
     >
-      <v-col cols="auto" v-for="(item, index) in items" :key="index">
-        <v-tooltip :text="item.title">
+      <div v-for="(item, index) in items" :key="index" class="mb-3">
+        <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
               flat
-              color="#FFFFFF00"
+              color="transparent"
               @click="item.click"
-              style="border-radius: 20%"
-              :icon="item.icon"
-              class="mb-1"
+              class="icon-style pa-2 rounded-lg"
+              width="48"
+              height="48"
               draggable="false"
               @dragstart="startDrag($event, item)"
               @drop="onDrop($event, index)"
               @dragover.prevent
-              data-type="sidebar-icon"
             >
-              <v-icon
-                class="icon-style pa-6"
-                :icon="item.icon"
-                color="white"
-                size="28"
-              />
+              <v-icon :icon="item.icon" color="white" size="28" />
             </v-btn>
           </template>
         </v-tooltip>
-      </v-col>
+      </div>
 
       <v-spacer />
-      <v-col cols="auto">
-        <v-tooltip text="Infos">
-          <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              flat
-              color="#FFFFFF00"
-              @click="navigateTo('/infos')"
-              style="border-radius: 20%"
-              icon="mdi-information-variant-circle"
-              class="mb-1"
-              @dragover.prevent
-              data-type="sidebar-icon"
-            >
-              <v-icon
-                class="icon-style pa-6"
-                icon="mdi-information-variant-circle"
-                color="white"
-                size="28"
-              />
-            </v-btn>
-          </template>
-        </v-tooltip>
-      </v-col>
-    </v-row>
 
-    <NewProject :show_dialog="newproject" @close="newproject = false" />
-    <OpenProject :show_dialog="openproject" @close="openproject = false" />
-    <input
-      ref="importFileInput"
-      type="file"
-      accept=".vease"
-      style="display: none"
-      @change="onImportFileSelected"
-    />
+      <v-tooltip text="Infos" location="right">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            flat
+            color="transparent"
+            @click="navigateTo('/infos')"
+            class="icon-style pa-2"
+            width="48"
+            height="48"
+          >
+            <v-icon icon="mdi-information-outline" color="white" size="28" />
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </div>
   </v-navigation-drawer>
 </template>
+
+<style scoped>
+  .icon-style {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-style:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  :deep(.v-navigation-drawer__content) {
+    overflow: visible !important;
+  }
+</style>

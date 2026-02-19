@@ -170,7 +170,7 @@
 </script>
 
 <template>
-  <v-container fluid class="pa-0 fill-height bg-transparent">
+  <v-container fluid class="fill-height pa-8 overflow-hidden" theme="dark">
     <v-row no-gutters class="fill-height">
       <v-col class="d-flex flex-column fill-height overflow-hidden">
         <DataManagerHeader
@@ -178,10 +178,11 @@
           v-model:active-tab="activeTab"
           :tabs="UIStore.dataManagerTabs"
           ref="headerRef"
+          class="mb-6"
         />
 
-        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden pa-4">
-          <v-window-item value="data" class="fill-height overflow-y-auto">
+        <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
+          <v-window-item value="data" class="fill-height overflow-y-auto pa-6">
             <BatchActionBanner
               :selected-count="selectedIds.length"
               @delete="deleteSelectedDialog = true"

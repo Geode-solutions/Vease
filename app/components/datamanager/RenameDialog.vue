@@ -1,4 +1,6 @@
 <script setup>
+  import GlassCard from "@ogw_front/components/GlassCard"
+
   const { show, item, initialName } = defineProps({
     show: {
       type: Boolean,
@@ -37,37 +39,71 @@
     @update:model-value="emit('update:show', $event)"
     max-width="400"
   >
-    <v-card rounded="xl" class="bg-white text-center overflow-hidden">
-      <div class="bg-primary w-100" style="height: 6px"></div>
-      <v-avatar color="blue-lighten-5" size="64" class="mt-8 mx-auto"
-        ><v-icon color="primary" size="32">mdi-pencil-outline</v-icon></v-avatar
+    <GlassCard variant="panel" padding="pa-8" :width="400">
+      <v-card-title
+        class="pb-2 text-h5 font-weight-bold d-flex align-center text-white"
       >
-      <v-card-title class="text-h5 font-weight-bold text-grey-darken-4 pt-4"
-        >Rename Item</v-card-title
-      >
-      <v-card-text class="px-8">
+        <v-icon
+          icon="mdi-pencil-outline"
+          class="mr-3 text-h4"
+          color="white"
+        ></v-icon>
+        Rename Item
+      </v-card-title>
+
+      <v-card-subtitle class="ma-0 text-white opacity-80">
+        Enter a new name for this object.
+      </v-card-subtitle>
+
+      <v-card-text class="pt-8 px-0">
         <v-text-field
           :model-value="currentName"
           @update:model-value="currentName = $event"
-          label="New Name"
+          type="text"
           variant="outlined"
-          color="primary"
-          class="mt-4"
+          color="white"
+          base-color="white"
+          bg-color="rgba(255, 255, 255, 0.15)"
+          class="mb-4 rounded-lg"
           @keydown.enter="handleConfirm"
-        />
-      </v-card-text>
-      <v-card-actions class="px-8 pb-8"
-        ><v-spacer /><v-btn variant="text" @click="emit('update:show', false)"
-          >Cancel</v-btn
+          hide-details
+          clearable
         >
+          <template v-slot:label>
+            <span class="text-white opacity-100">Object Name</span>
+          </template>
+          <template v-slot:prepend-inner>
+            <v-icon color="white" class="opacity-100">mdi-format-title</v-icon>
+          </template>
+        </v-text-field>
+      </v-card-text>
+
+      <v-card-actions class="px-0 pb-0 mt-4">
+        <v-btn
+          variant="text"
+          color="white"
+          size="large"
+          @click="emit('update:show', false)"
+          class="text-none rounded-lg"
+        >
+          <v-icon start>mdi-close-circle-outline</v-icon>
+          Cancel
+        </v-btn>
+
+        <v-spacer />
+
         <v-btn
           color="primary"
+          size="large"
           variant="flat"
-          class="px-8 rounded-pill"
           @click="handleConfirm"
-          >Rename</v-btn
-        ></v-card-actions
-      >
-    </v-card>
+          class="text-none rounded-lg font-weight-bold"
+          elevation="4"
+        >
+          <v-icon start>mdi-check-circle-outline</v-icon>
+          Rename
+        </v-btn>
+      </v-card-actions>
+    </GlassCard>
   </v-dialog>
 </template>
