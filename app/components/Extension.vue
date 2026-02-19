@@ -530,15 +530,4 @@
       transform: rotate(360deg);
     }
   }
-
-  .glass-ui {
-    background: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    will-change: backdrop-filter;
-    transform: translateZ(0);
-    isolation: isolate;
-    backface-visibility: hidden;
-  }
 </style>
