@@ -2,22 +2,24 @@
 
 * {
   font-family: "Roboto", sans-serif;
+}
+* {
   user-select: none;
+  box-sizing: border-box;
 }
 
-body {
-  overflow: hidden;
+html,
+body,
+#outer-app,
+.v-application {
+  overflow: hidden !important;
+  height: 100vh !important;
+  margin: 0;
+  padding: 0;
 }
+
 img {
   pointer-events: none;
-}
-p {
-  color: rgb(60, 153, 131);
-}
-
-h2 {
-  font-family: "Michroma", sans-serif;
-  color: white;
 }
 
 .custom-background {
@@ -29,30 +31,24 @@ h2 {
   );
 }
 
-.icon-style {
-  border-radius: 20%;
-  background-color: #ffffff26;
+.glass-ui {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  isolation: isolate;
+  backface-visibility: hidden;
 }
-
-.icon-style:hover {
-  background-color: #ffffff4d;
-}
-
 .title-text {
-  font-size: 30px;
-  font-weight: 100;
+  font-weight: 300;
+  background: linear-gradient(to right, #ffffff, #a7f3d0);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.drop-zone {
-  width: 5%;
-  padding: 30px;
-  min-height: 10px;
-}
-
-.drag-el {
-  padding: 6px;
-}
-
-.drag-el:last-child {
-  margin-bottom: 0;
+.font-michroma {
+  font-family: "Michroma", sans-serif;
 }

@@ -66,94 +66,52 @@
 <template>
   <v-overlay
     v-model="UIStore.showDropZone"
-    transition="dropzone-transition"
     @keyup.esc="UIStore.disableDropZone()"
     @click:outside="UIStore.disableDropZone()"
-    height="100%"
-    width="100%"
-    @dragover.prevent="onDragOver"
-    @dragleave.prevent="onDragLeave"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Zone de dépôt de fichiers"
-    class="dropzone-overlay"
+    class="align-center justify-center dropzone-overlay"
+    persistent
+    scrim="black"
   >
-    <v-row no-gutters class="fill-height">
-      <v-col cols="12" class="fill-height justify-center align-center d-flex">
-        <v-card
-          align="center"
-          justify="center"
-          height="100%"
-          width="100%"
-          color="transparent"
-          class="pa-5 justify-center align-center d-flex"
-          @drop="onDrop"
+    <div
+      class="fill-height d-flex align-center justify-center"
+      style="width: 100vw; height: 100vh"
+      @dragover.prevent="onDragOver"
+      @dragleave.prevent="onDragLeave"
+      @drop="onDrop"
+    >
+      <v-card
+        width="90%"
+        max-width="600px"
+        class="pa-10 dropzone-card text-center rounded-xl"
+        elevation="12"
+        :class="{ dragging: isDragging }"
+      >
+        <v-icon size="64" color="primary" class="mb-6 pulse-animation"
+          >mdi-cloud-upload-outline</v-icon
         >
-          <v-card
-            width="90%"
-            max-width="600px"
-            height="auto"
-            class="pa-10 dropzone-card text-center"
-            tabindex="0"
-            aria-label="Déposez vos fichiers ici"
-            color="white"
-            :class="{ dragging: isDragging }"
-          >
-            <v-icon size="56" color="primary" class="mb-4 pulse-animation"
-              >mdi-cloud-upload-outline</v-icon
-            >
-            <h2 class="text-h5 font-weight-medium mb-2 text-black">
-              Drag and drop your files here
-            </h2>
-            <p class="text-body-1 text-grey-darken-2">
-              Import at least one file
-            </p>
-          </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
+        <h2 class="text-h4 font-weight-bold mb-3 text-black font-michroma">
+          Drop files here
+        </h2>
+        <p class="text-body-1 text-grey-darken-1">Add data to your project</p>
+      </v-card>
+    </div>
   </v-overlay>
 </template>
 
 <style scoped>
   .dropzone-overlay {
     backdrop-filter: blur(8px);
-    background-color: rgba(0, 0, 0, 0.5);
   }
 
   .dropzone-card {
-    border: 2px dashed var(--v-primary-base);
-    border-radius: 16px;
-    background-color: #ffffff;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  }
-
-  .dropzone-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    border: 3px dashed rgb(var(--v-theme-primary));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dropzone-card.dragging {
-    border-color: var(--v-success-base);
-    background-color: rgba(46, 125, 50, 0.05);
-    transform: scale(1.02);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-  }
-
-  .dropzone-transition-enter-active,
-  .dropzone-transition-leave-active {
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  .dropzone-transition-enter-from,
-  .dropzone-transition-leave-to {
-    opacity: 0;
-    transform: scale(0.98);
+    border-color: rgb(var(--v-theme-success));
+    background-color: rgba(rgb(var(--v-theme-success)), 0.05);
+    transform: scale(1.05);
   }
 
   .pulse-animation {

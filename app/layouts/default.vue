@@ -1,102 +1,121 @@
 <script setup>
-  // Third party imports
-  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
-  import InfraConnected from "@ogw_front/components/InfraConnected"
-
-  // Local imports
-  import CreateTools from "@vease/components/CreateTools"
-  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
-  import SideBar from "@vease/components/Layout/SideBar"
-  import StepImport from "@vease/components/StepImport"
-  import TopBar from "@vease/components/Layout/TopBar"
-
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useUIStore } from "@vease/stores/UI"
+
+  import GlassCard from "@ogw_front/components/GlassCard"
+  import InfraConnected from "@ogw_front/components/InfraConnected"
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
+  import TopBar from "@vease/components/Layout/TopBar"
+  import SideBar from "@vease/components/Layout/SideBar"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
+  import CreateTools from "@vease/components/CreateTools"
+  import StepImport from "@vease/components/StepImport"
+
   const UIStore = useUIStore()
   const infraStore = useInfraStore()
 
-  function handleMouseMove(event) {
-    const screenWidth = window.innerWidth
-    const threshold = 75
-    if (event.clientX > screenWidth - threshold) {
-      UIStore.setShowButton(true)
-    } else {
-      UIStore.setShowButton(false)
-    }
+  function closeAllDrawers() {
+    UIStore.setShowStepper(false)
+    UIStore.setShowCreateTools(false)
+    UIStore.setShowExtensions(false)
   }
 
-  function openCreateTools() {
-    UIStore.setShowCreateTools(true)
-  }
+  watch(
+    () => [
+      UIStore.showStepper,
+      UIStore.showCreateTools,
+      UIStore.showExtensions,
+    ],
+    ([stepper, tools, extensions], [oldStepper, oldTools, oldExtensions]) => {
+      if (stepper && !oldStepper) {
+        UIStore.setShowCreateTools(false)
+        UIStore.setShowExtensions(false)
+      }
+      if (tools && !oldTools) {
+        UIStore.setShowStepper(false)
+        UIStore.setShowExtensions(false)
+      }
+      if (extensions && !oldExtensions) {
+        UIStore.setShowStepper(false)
+        UIStore.setShowCreateTools(false)
+      }
+    },
+  )
 </script>
 
 <template>
   <v-app>
+    <TopBar />
+    <SideBar />
+
     <v-main
-      class="custom-background drop-zone"
+      class="custom-background dropzone"
       @dragover="UIStore.setShowDropZone(true)"
-      @mousemove="handleMouseMove"
     >
-      <v-row class="fill-height pa-2 mr-1">
-        <v-col cols="12" class="pa-1">
-          <NuxtPage style="z-index: 1" />
-        </v-col>
-      </v-row>
-      <TopBar />
-      <SideBar />
-      <FeedBackSnackers />
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden"
+      >
+        <NuxtPage style="z-index: 1" class="fill-height" />
+      </GlassCard>
 
       <InfraConnected>
-        <div
-          class="icon-container"
-          :class="{ show: UIStore.showButton || UIStore.showStepImportMenu }"
-        >
-          <v-btn
-            class="icon-style step-import-btn"
-            color="white"
-            @click="UIStore.setShowStepper(true)"
-            icon
-            style="border-radius: 20%"
-            v-tooltip.left="'Import'"
-          >
-            <v-icon>mdi-file-upload-outline</v-icon>
-          </v-btn>
-          <v-btn
-            class="icon-style create-point-btn"
-            color="white"
-            @click="openCreateTools"
-            icon
-            style="border-radius: 20%"
-            v-tooltip.left="'Create'"
-          >
-            <v-icon>mdi-shape-plus-outline</v-icon>
-          </v-btn>
-        </div>
-
-        <v-navigation-drawer
-          class="rounded align-start"
-          radius="10px"
-          :width="500"
-          location="right"
-          temporary
-          v-model="UIStore.showStepper"
-        >
-          <StepImport
-            :files="UIStore.droppedFiles"
-            @close="UIStore.setShowStepper(false)"
+        <v-fade-transition>
+          <div
+            v-if="
+              UIStore.showStepper ||
+              UIStore.showCreateTools ||
+              UIStore.showExtensions
+            "
+            class="drawer-overlay"
+            @click="closeAllDrawers"
           />
-        </v-navigation-drawer>
+        </v-fade-transition>
 
-        <v-navigation-drawer
-          class="align-start"
-          radius="10px"
-          :width="500"
-          location="right"
-          temporary
-          v-model="UIStore.showCreateTools"
-        >
-          <CreateTools />
-        </v-navigation-drawer>
+        <v-fade-transition>
+          <v-card
+            v-if="UIStore.showStepper || UIStore.showCreateTools"
+            color="transparent"
+            elevation="0"
+            :width="548"
+            class="drawer-container right-0"
+          >
+            <GlassCard
+              v-if="UIStore.showStepper || UIStore.showCreateTools"
+              variant="panel"
+              padding="pa-0"
+              class="fill-height overflow-hidden border-0"
+            >
+              <StepImport
+                v-if="UIStore.showStepper"
+                :files="UIStore.droppedFiles"
+                @close="UIStore.setShowStepper(false)"
+              />
+              <CreateTools v-if="UIStore.showCreateTools" />
+            </GlassCard>
+          </v-card>
+        </v-fade-transition>
+
+        <v-fade-transition>
+          <v-card
+            v-if="UIStore.showExtensions"
+            color="transparent"
+            elevation="0"
+            :width="548"
+            class="drawer-container left-0"
+            style="z-index: 9999"
+          >
+            <GlassCard
+              v-if="UIStore.showExtensions"
+              variant="panel"
+              padding="pa-0"
+              class="fill-height overflow-hidden border-0"
+            >
+              <Extension />
+            </GlassCard>
+          </v-card>
+        </v-fade-transition>
 
         <FullScrenDropZone />
       </InfraConnected>
@@ -106,71 +125,91 @@
       v-if="infraStore.microservices_busy"
       indeterminate
       color="white"
+      class="position-fixed top-0"
+      style="z-index: 10001"
     />
-    <v-navigation-drawer
-      class="align-start"
-      radius="10px"
-      :width="500"
-      location="left"
-      temporary
-      v-model="UIStore.showExtensions"
-      style="z-index: 9999; left: 0 !important"
-    >
-      <Extension />
-    </v-navigation-drawer>
+
+    <FeedBackSnackers />
   </v-app>
 </template>
 
 <style scoped>
-  .drop-zone {
-    background-color: transparent;
-    border-width: 0;
-    border: solid 0px transparent;
+  .v-app {
     height: 100vh;
-    width: 100vw;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-height: 100vh;
+    overflow: hidden;
   }
 
-  .icon-container {
-    position: fixed;
-    top: 53%;
-    right: 0;
-    z-index: 1000;
-    transform: translateY(-50%);
+  .v-main {
+    height: 100vh;
+  }
+
+  :deep(.v-main__wrap) {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    height: 100%;
   }
 
-  .icon-container.show {
-    opacity: 1;
+  .island-wrapper {
+    flex-grow: 1;
+    height: 99%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px 10px 0;
+    padding: 0;
   }
 
-  .step-import-btn,
-  .create-point-btn {
-    margin-bottom: 20px;
-    transition: opacity 0.3s;
+  .custom-background {
+    position: relative;
+    overflow: hidden;
   }
 
-  .step-import-btn.show,
-  .create-point-btn.show {
-    opacity: 1;
+  .custom-background::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    pointer-events: none;
   }
 
-  .slide-enter-active,
-  .slide-leave-active {
-    transition: transform 0.5s ease;
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 98;
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+    isolation: isolate;
+    backface-visibility: hidden;
   }
 
-  .slide-enter,
-  .slide-leave-to {
-    transform: translateX(100%);
+  .v-fade-transition-enter-active,
+  .v-fade-transition-leave-active {
+    transition:
+      opacity 0.1s linear,
+      backdrop-filter 0.1s linear !important;
+  }
+
+  .drawer-container {
+    position: fixed;
+    top: 0;
+    height: calc(100vh - 100px) !important;
+    margin-top: 84px;
+    padding: 16px;
+    z-index: 99;
+    isolation: isolate;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  .v-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .v-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
   }
 </style>
