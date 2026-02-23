@@ -1,6 +1,4 @@
 <script setup>
-  import { computed } from "vue"
-  import { useAppStore } from "@ogw_front/stores/app"
   import { useUIStore } from "@vease/stores/UI"
   const SECONDS_IN_MINUTE = 60
   const SECONDS_IN_HOUR = 3600
