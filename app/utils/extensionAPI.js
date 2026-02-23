@@ -1,3 +1,4 @@
+import { Database } from "@geode/opengeodeweb-front/internal/database/database.js"
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 import { useAppStore } from "@ogw_front/stores/app"
@@ -55,5 +56,9 @@ export const VeaseExtensionAPI = {
 
   get AppStore() {
     return useAppStore()
+  },
+
+  get Database() {
+    return Database
   },
 }
