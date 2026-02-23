@@ -4,7 +4,10 @@ import { useAppStore } from "@ogw_front/stores/app"
 import { useDataStore } from "@ogw_front/stores/data"
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
 import { useUIStore } from "@vease/stores/UI"
-import { Database, databaseRef } from "@geode/opengeodeweb-front/internal/database/database.js"
+import {
+  Database,
+  databaseRef,
+} from "@geode/opengeodeweb-front/internal/database/database.js"
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
 
 export const VeaseExtensionAPI = {
