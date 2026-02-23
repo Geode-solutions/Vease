@@ -4,16 +4,9 @@ import { useAppStore } from "@ogw_front/stores/app"
 import { useDataStore } from "@ogw_front/stores/data"
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
 import { useUIStore } from "@vease/stores/UI"
-import { Database, databaseRef } from "@geode/opengeodeweb-front/internal/database/database.js"
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
 
 export const VeaseExtensionAPI = {
-  get Database() {
-    return Database
-  },
-  get database() {
-    return databaseRef.value
-  },
   registerTool(extensionId, toolDefinition) {
     if (!toolDefinition.id) {
       throw new Error("Tool definition must have an id")
@@ -29,19 +22,7 @@ export const VeaseExtensionAPI = {
   },
 
   unregisterToolsByExtension(extensionId) {
-    const uiStore = useUIStore()
-    uiStore.unregisterToolsByExtension(extensionId)
-    uiStore.unregisterDataTableColumnsByExtension(extensionId)
-    uiStore.unregisterBatchActionsByExtension(extensionId)
-  },
-
-  registerDataTableColumn(columnDefinition, extensionId) {
-    useUIStore().registerDataTableColumn(columnDefinition, extensionId)
-  },
-
-  registerBatchAction(actionDefinition, extensionId) {
-    actionDefinition.extensionPath = extensionId
-    useUIStore().registerBatchAction(actionDefinition)
+    useUIStore().unregisterToolsByExtension(extensionId)
   },
 
   getSchemas() {
@@ -74,9 +55,5 @@ export const VeaseExtensionAPI = {
 
   get AppStore() {
     return useAppStore()
-  },
-  getStore(id) {
-    const pinia = window.Pinia?.getActivePinia()
-    return pinia?._s.get(id)
   },
 }
