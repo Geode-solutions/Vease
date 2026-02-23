@@ -33,8 +33,8 @@ logs
 /microservices/viewer/venv
 /release
 /uploads
-vease-back*
-vease-viewer*
+/vease-back*
+/vease-viewer*
 VTK.txt
 /data
 
