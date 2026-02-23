@@ -12,6 +12,8 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateAOI = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
+  const dataTableColumns = ref([])
+  const batchActions = ref([])
 
   const anyOverlayOpen = computed(
     () => showStepper.value || showCreateTools.value || showExtensions.value,
@@ -115,14 +117,64 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
+  function registerDataTableColumn(columnDefinition, extensionPath = null) {
+    const { key, title, component, ...rest } = columnDefinition
+    const existingIndex = dataTableColumns.value.findIndex(
+      (col) => col.key === key,
+    )
+    const newDefinition = { key, title, component, extensionPath, ...rest }
+    if (existingIndex !== -1) {
+      dataTableColumns.value[existingIndex] = {
+        ...dataTableColumns.value[existingIndex],
+        ...newDefinition,
+      }
+    } else {
+      dataTableColumns.value.push(newDefinition)
+    }
+  }
+
+  function unregisterDataTableColumnsByExtension(extensionPath) {
+    dataTableColumns.value = dataTableColumns.value.filter(
+      (col) => col.extensionPath !== extensionPath,
+    )
+  }
+
+  function registerBatchAction(actionDefinition) {
+    const { id, component, extensionPath, ...rest } = actionDefinition
+    const existingIndex = batchActions.value.findIndex(
+      (action) => action.id === id,
+    )
+    const newDefinition = { id, component, extensionPath, ...rest }
+    if (existingIndex !== -1) {
+      batchActions.value[existingIndex] = {
+        ...batchActions.value[existingIndex],
+        ...newDefinition,
+      }
+    } else {
+      batchActions.value.push(newDefinition)
+    }
+  }
+
+  function unregisterBatchActionsByExtension(extensionPath) {
+    batchActions.value = batchActions.value.filter(
+      (action) => action.extensionPath !== extensionPath,
+    )
+  }
+
   return {
     toolsDefinitions,
     activeTools,
     dataManagerTabs,
+    dataTableColumns,
+    batchActions,
     registerToolComponent,
     registerDataManagerTab,
+    registerDataTableColumn,
+    registerBatchAction,
     unregisterTool,
     unregisterToolsByExtension,
+    unregisterDataTableColumnsByExtension,
+    unregisterBatchActionsByExtension,
     showDropZone,
     showStepper,
     droppedFiles,

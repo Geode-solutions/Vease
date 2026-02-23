@@ -1,8 +1,12 @@
 <script setup>
-  const { selectedCount } = defineProps({
-    selectedCount: {
-      type: Number,
-      default: 0,
+  import { useUIStore } from "@vease/stores/UI"
+
+  const UIStore = useUIStore()
+
+  const { selectedIds } = defineProps({
+    selectedIds: {
+      type: Array,
+      default: () => [],
     },
   })
 
@@ -12,7 +16,7 @@
 <template>
   <v-expand-transition>
     <v-sheet
-      v-if="selectedCount > 0"
+      v-if="selectedIds.length > 0"
       class="mb-4 pa-3 border-thin rounded-lg"
       color="transparent"
       rounded="lg"
@@ -20,7 +24,7 @@
       <div class="d-flex align-center justify-space-between">
         <div class="d-flex align-center ga-2">
           <span class="text-subtitle-2 text-white px-2"
-            >{{ selectedCount }} items selected</span
+            >{{ selectedIds.length }} items selected</span
           >
           <v-divider vertical class="mx-2" />
           <v-btn
@@ -32,6 +36,16 @@
           >
             Delete
           </v-btn>
+
+          <template v-for="action in UIStore.batchActions" :key="action.id">
+            <v-divider vertical class="mx-2" />
+            <component
+              :is="action.component"
+              v-bind="action.props"
+              :selected-ids="selectedIds"
+              @done="emit('clear')"
+            />
+          </template>
         </div>
         <v-btn
           icon="mdi-close"

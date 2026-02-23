@@ -2,7 +2,7 @@
   import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue"
   import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue"
   import DataTable from "@vease/components/datamanager/DataTable.vue"
-  import DeleteDialog from "@vease/components/datamanager/DeleteDialog.vue"
+  import DeleteDialog from "@ogw_front/components/DeleteDialog.vue"
   import RenameDialog from "@vease/components/datamanager/RenameDialog.vue"
 
   import { useEventListener, useMagicKeys, whenever } from "@vueuse/core"
@@ -12,8 +12,11 @@
   import { useTreeviewStore } from "@ogw_front/stores/treeview"
   import { useUIStore } from "@vease/stores/UI"
 
+  import { useAppStore } from "@ogw_front/stores/app"
+
   const UIStore = useUIStore()
   const dataStore = useDataStore()
+  const appStore = useAppStore()
   const hybridViewerStore = useHybridViewerStore()
   const treeviewStore = useTreeviewStore()
   const dataStyleStore = useDataStyleStore()
@@ -182,9 +185,12 @@
         />
 
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
-          <v-window-item value="data" class="fill-height overflow-y-auto pa-6">
+          <v-window-item
+            value="data"
+            class="fill-height overflow-y-auto overflow-x-hidden pa-6"
+          >
             <BatchActionBanner
-              :selected-count="selectedIds.length"
+              :selected-ids="selectedIds"
               @delete="deleteSelectedDialog = true"
               @clear="selectedIds = []"
             />
@@ -203,10 +209,10 @@
           </v-window-item>
 
           <v-window-item
-            v-for="tab in UIStore.datamanagerTabs"
+            v-for="tab in UIStore.dataManagerTabs"
             :key="tab.id"
             :value="tab.id"
-            class="fill-height overflow-y-auto pa-4"
+            class="fill-height overflow-y-auto overflow-x-hidden pa-4"
           >
             <component :is="tab.component" v-bind="tab.props" />
           </v-window-item>
@@ -241,3 +247,10 @@
     >
   </v-container>
 </template>
+
+<style scoped>
+  :deep(.v-window__container) {
+    height: 100%;
+    flex: 1 1 auto;
+  }
+</style>
