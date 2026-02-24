@@ -115,8 +115,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
-
-
   return {
     toolsDefinitions,
     activeTools,
