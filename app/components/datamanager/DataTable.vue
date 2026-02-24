@@ -1,5 +1,4 @@
 <script setup>
-  import { useUIStore } from "@vease/stores/UI"
   const SECONDS_IN_MINUTE = 60
   const SECONDS_IN_HOUR = 3600
   const SECONDS_IN_DAY = 86400
@@ -23,9 +22,7 @@
     "delete",
   ])
 
-  const uiStore = useUIStore()
-
-  const coreHeaders = [
+  const headers = [
     { title: "Name", key: "name", sortable: true },
     {
       title: "Type",
@@ -37,20 +34,6 @@
     { title: "Visibility", key: "visible", sortable: false, align: "center" },
     { title: "Actions", key: "actions", sortable: false, align: "end" },
   ]
-
-  const headers = computed(() => {
-    const dynamicColumns = uiStore.dataTableColumns.map((col) => ({
-      title: col.title,
-      key: col.key,
-      sortable: col.sortable ?? true,
-      align: col.align || "center",
-      width: col.width,
-    }))
-
-    const result = [...coreHeaders]
-    result.splice(2, 0, ...dynamicColumns)
-    return result
-  })
 
   function formatSmartDate(dateStr) {
     if (!dateStr) return ""
@@ -108,14 +91,6 @@
       >
         {{ item.geode_object_type }}
       </v-chip>
-    </template>
-
-    <template
-      v-for="col in uiStore.dataTableColumns"
-      :key="col.key"
-      #[`item.${col.key}`]="{ item }"
-    >
-      <component :is="col.component" :item="item" v-bind="col.props" />
     </template>
 
     <template #[`item.created_at`]="{ item }">

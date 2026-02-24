@@ -1,8 +1,4 @@
 <script setup>
-  import { useUIStore } from "@vease/stores/UI"
-
-  const UIStore = useUIStore()
-
   const { selectedIds } = defineProps({
     selectedIds: {
       type: Array,
@@ -36,16 +32,6 @@
           >
             Delete
           </v-btn>
-
-          <template v-for="action in UIStore.batchActions" :key="action.id">
-            <v-divider vertical class="mx-2" />
-            <component
-              :is="action.component"
-              v-bind="action.props"
-              :selected-ids="selectedIds"
-              @done="emit('clear')"
-            />
-          </template>
         </div>
         <v-btn
           icon="mdi-close"

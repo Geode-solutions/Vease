@@ -1,5 +1,4 @@
 <script setup>
-  import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue"
   import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue"
   import DataTable from "@vease/components/datamanager/DataTable.vue"
   import DeleteDialog from "@ogw_front/components/DeleteDialog.vue"
@@ -189,12 +188,6 @@
             value="data"
             class="fill-height overflow-y-auto overflow-x-hidden pa-6"
           >
-            <BatchActionBanner
-              :selected-ids="selectedIds"
-              @delete="deleteSelectedDialog = true"
-              @clear="selectedIds = []"
-            />
-
             <DataTable
               v-if="viewMode === 'list'"
               v-model:selected-ids="selectedIds"
