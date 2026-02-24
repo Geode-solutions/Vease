@@ -1,5 +1,6 @@
 <script setup>
   import { useTemplateRef } from "vue"
+  import SearchBar from "@ogw_front/components/SearchBar.vue"
 
   const { searchValue, activeTab, tabs } = defineProps({
     searchValue: { type: String, default: "" },
@@ -48,17 +49,11 @@
       </v-tab>
     </v-tabs>
 
-    <v-text-field
+    <SearchBar
       :model-value="searchValue"
       @update:model-value="emit('update:searchValue', $event)"
-      prepend-inner-icon="mdi-magnify"
       placeholder="Search your data..."
-      variant="solo"
-      density="comfortable"
-      hide-details
-      flat
       clearable
-      bg-color="transparent"
       class="border-thin rounded-lg text-white"
       ref="searchInput"
     >
@@ -72,6 +67,6 @@
           Ctrl+K
         </v-chip>
       </template>
-    </v-text-field>
+    </SearchBar>
   </div>
 </template>

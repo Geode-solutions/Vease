@@ -63,7 +63,7 @@
     :search="search"
     show-select
     fixed-header
-    :height="selectedIds.length > 0 ? '550' : '620'"
+    :height="selectedIds?.length > 0 ? '550' : '620'"
     item-value="id"
     return-object
     class="bg-transparent text-white custom-scrollbar border-0"
