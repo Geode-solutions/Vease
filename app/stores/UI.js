@@ -10,10 +10,12 @@ export const useUIStore = defineStore("UI", () => {
   const toolsDefinitions = ref([])
   const showCreateVOI = ref(false)
   const showCreateAOI = ref(false)
-  const showCreatePoint = ref(false)
   const showExtensions = ref(false)
   const dataManagerTabs = ref([])
-  const selectedTool = ref(undefined)
+
+  const anyOverlayOpen = computed(
+    () => showStepper.value || showCreateTools.value || showExtensions.value,
+  )
 
   function registerToolComponent(toolDefinition, extensionPath = undefined) {
     const { id, component, ...rest } = toolDefinition
@@ -115,14 +117,6 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
-  function setShowCreatePoint(value) {
-    showCreatePoint.value = value
-  }
-
-  function setSelectedTool(value) {
-    selectedTool.value = value
-  }
-
   return {
     toolsDefinitions,
     activeTools,
@@ -140,8 +134,7 @@ export const useUIStore = defineStore("UI", () => {
     showExtensions,
     showCreateVOI,
     showCreateAOI,
-    showCreatePoint,
-    selectedTool,
+    anyOverlayOpen,
     setShowDropZone,
     setShowStepper,
     setDroppedFiles,
@@ -151,7 +144,5 @@ export const useUIStore = defineStore("UI", () => {
     setShowExtensions,
     setShowCreateVOI,
     setShowCreateAOI,
-    setShowCreatePoint,
-    setSelectedTool,
   }
 })

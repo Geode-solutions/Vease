@@ -1,4 +1,5 @@
 <script setup>
+  import GlassCard from "@ogw_front/components/GlassCard"
   import DragAndDrop from "@ogw_front/components/DragAndDrop"
   import { formatRelativeTime } from "@/utils/formatDate"
   import { useExtensionManager } from "@vease/composables/extension_manager"
@@ -90,19 +91,27 @@
 </script>
 
 <template>
-  <v-card flat rounded="xl" elevation="0" class="bg-surface">
-    <v-card-title
-      class="text-h4 text-primary pa-6 font-weight-bold d-flex align-center"
-    >
-      <v-icon icon="mdi-puzzle" class="mr-3"></v-icon>
-      Extensions
-    </v-card-title>
+  <v-card
+    flat
+    color="transparent"
+    class="d-flex flex-column fill-height"
+    theme="dark"
+  >
+    <div class="pa-6">
+      <div class="d-flex align-center mb-2">
+        <v-icon
+          icon="mdi-puzzle"
+          class="mr-3 text-secondary"
+          size="32"
+        ></v-icon>
+        <h2 class="text-h4 font-weight-bold text-white">Extensions</h2>
+      </div>
+      <p class="text-white opacity-80">
+        Enhance your application with additional features and tools.
+      </p>
+    </div>
 
-    <v-card-subtitle class="px-6 pb-4 text-medium-emphasis">
-      Enhance your application with additional features and tools.
-    </v-card-subtitle>
-
-    <v-card-text class="px-6 pb-6">
+    <v-card-text class="px-6 pb-6 overflow-y-auto">
       <DragAndDrop
         :multiple="true"
         accept=".vext"
@@ -143,16 +152,16 @@
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-8">
           <div
-            class="d-flex align-center mb-4 text-h6 font-weight-semibold text-primary"
+            class="d-flex align-center mb-4 text-h6 font-weight-semibold text-white"
           >
             <v-icon icon="mdi-puzzle-check" class="mr-2" />
             Active Extensions
             <v-chip
               size="small"
-              class="ml-3"
-              color="primary"
+              color="white"
               variant="flat"
-              elevation="2"
+              class="ml-3 border-opacity-10 bg-white-opacity-10"
+              elevation="0"
             >
               {{ loadedExtensions.length }}
             </v-chip>
@@ -168,10 +177,10 @@
                 <v-expansion-panels variant="accordion" class="bg-transparent">
                   <v-expansion-panel
                     rounded="xl"
-                    border
+                    class="glass-ui border-white border-opacity-10 mb-3"
                     elevation="0"
                     :style="{
-                      transition: 'all 0.3s ease',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       opacity: extension.enabled ? 1 : 0.6,
                     }"
                   >
@@ -180,25 +189,18 @@
                         <v-hover v-slot="{ isHovering, props: hoverProps }">
                           <div
                             v-bind="hoverProps"
-                            class="d-flex align-center ga-4"
-                            :style="{ width: '100%' }"
+                            class="d-flex align-center ga-4 w-100"
                           >
                             <v-sheet
-                              class="d-flex align-center justify-center flex-shrink-0"
+                              class="d-flex align-center justify-center flex-shrink-0 extension-icon"
                               :color="
                                 extension.enabled
                                   ? isHovering || expanded
-                                    ? 'primary'
-                                    : 'grey-lighten-3'
-                                  : 'grey-lighten-2'
+                                    ? 'white'
+                                    : 'rgba(255, 255, 255, 0.15)'
+                                  : 'rgba(255, 255, 255, 0.08)'
                               "
-                              :style="{
-                                width: '56px',
-                                height: '56px',
-                                transition: 'all 0.3s ease',
-                              }"
                               rounded="circle"
-                              :elevation="isHovering || expanded ? 4 : 0"
                             >
                               <v-icon
                                 icon="mdi-puzzle"
@@ -207,35 +209,26 @@
                                   extension.enabled
                                     ? isHovering || expanded
                                       ? 'white'
-                                      : 'grey-darken-1'
+                                      : 'white'
                                     : 'grey'
                                 "
                               />
                             </v-sheet>
 
-                            <div class="flex-grow-1" style="min-width: 0">
+                            <div class="flex-grow-1 min-w-0">
                               <div
                                 class="text-body-1 font-weight-semibold mb-1"
                                 :class="
-                                  extension.enabled
-                                    ? 'text-grey-darken-4'
-                                    : 'text-grey'
+                                  extension.enabled ? 'text-white' : 'text-grey'
                                 "
                               >
                                 {{ getExtensionName(extension) }}
                               </div>
 
                               <div
-                                class="text-body-2 mb-2"
+                                class="text-body-2 mb-2 text-wrap"
                                 :class="
-                                  extension.enabled
-                                    ? 'text-grey-darken-1'
-                                    : 'text-grey'
-                                "
-                                style="
-                                  line-height: 1.5;
-                                  white-space: normal;
-                                  word-wrap: break-word;
+                                  extension.enabled ? 'text-white' : 'text-grey'
                                 "
                               >
                                 {{ getExtensionDescription(extension) }}
@@ -245,19 +238,18 @@
                                 <v-chip
                                   v-if="getExtensionVersion(extension)"
                                   size="x-small"
-                                  variant="tonal"
-                                  color="primary"
+                                  variant="outlined"
+                                  color="white"
+                                  class="border-opacity-20"
                                 >
                                   v{{ getExtensionVersion(extension) }}
                                 </v-chip>
 
                                 <v-chip
                                   size="x-small"
-                                  :color="
-                                    extension.enabled ? 'primary' : 'grey'
-                                  "
-                                  variant="flat"
-                                  elevation="1"
+                                  :color="extension.enabled ? 'white' : 'grey'"
+                                  variant="outlined"
+                                  class="border-opacity-20"
                                 >
                                   <v-icon start size="12">mdi-tools</v-icon>
                                   {{ getExtensionToolsCount(extension) }}
@@ -266,8 +258,7 @@
                                 <v-spacer />
 
                                 <span
-                                  class="text-caption text-grey"
-                                  style="white-space: nowrap"
+                                  class="text-caption text-white opacity-70 text-no-wrap"
                                 >
                                   {{ formatDate(extension.loadedAt) }}
                                 </span>
@@ -277,41 +268,26 @@
                             <div
                               class="d-flex align-center ga-1 flex-shrink-0 mr-n2"
                             >
-                              <v-tooltip location="bottom">
-                                <template #activator="{ props: tooltipProps }">
-                                  <v-switch
-                                    v-bind="tooltipProps"
-                                    :model-value="extension.enabled"
-                                    color="success"
-                                    density="compact"
-                                    hide-details
-                                    inset
-                                    @click.stop
-                                    @update:model-value="
-                                      toggleExtensionState(extension)
-                                    "
-                                  />
-                                </template>
-                                <span>{{
-                                  extension.enabled
-                                    ? "Disable extension"
-                                    : "Enable extension"
-                                }}</span>
-                              </v-tooltip>
+                              <v-switch
+                                :model-value="extension.enabled"
+                                color="success"
+                                density="compact"
+                                hide-details
+                                inset
+                                @click.stop
+                                @update:model-value="
+                                  toggleExtensionState(extension)
+                                "
+                              />
 
-                              <v-tooltip location="bottom">
-                                <template #activator="{ props: tooltipProps }">
-                                  <v-btn
-                                    v-bind="tooltipProps"
-                                    icon="mdi-delete"
-                                    size="small"
-                                    variant="text"
-                                    color="error"
-                                    @click.stop="confirmRemove(extension)"
-                                  />
-                                </template>
-                                <span>Remove extension</span>
-                              </v-tooltip>
+                              <v-btn
+                                icon="mdi-delete"
+                                size="small"
+                                variant="text"
+                                color="error"
+                                class="opacity-60"
+                                @click.stop="confirmRemove(extension)"
+                              />
                             </div>
                           </div>
                         </v-hover>
@@ -319,28 +295,24 @@
                     </v-expansion-panel-title>
 
                     <v-expansion-panel-text class="px-6 pb-6">
-                      <v-divider class="mb-4" />
+                      <v-divider class="mb-4 opacity-10" />
 
                       <div
                         class="d-flex align-center justify-space-between mb-4"
                       >
                         <div
-                          class="d-flex align-center text-h6 font-weight-semibold text-grey-darken-3"
+                          class="d-flex align-center text-subtitle-1 font-weight-semibold text-white"
                         >
-                          <v-icon icon="mdi-tools" size="22" class="mr-2" />
+                          <v-icon icon="mdi-tools" size="18" class="mr-2" />
                           Tools
                         </div>
                         <v-chip
                           size="small"
-                          :color="extension.enabled ? 'primary' : 'grey'"
-                          variant="tonal"
+                          :color="extension.enabled ? 'white' : 'grey'"
+                          variant="outlined"
+                          class="border-opacity-20"
                         >
                           {{ getExtensionToolsCount(extension) }}
-                          {{
-                            getExtensionToolsCount(extension) === 1
-                              ? "tool"
-                              : "tools"
-                          }}
                         </v-chip>
                       </div>
 
@@ -348,131 +320,76 @@
                         v-if="getExtensionTools(extension).length"
                         class="d-flex flex-column ga-3"
                       >
-                        <v-fade-transition group>
-                          <v-hover
-                            v-for="(tool, toolIndex) in getExtensionTools(
-                              extension,
-                            )"
-                            :key="tool.id"
-                            v-slot="{ isHovering, props: toolProps }"
+                        <v-hover
+                          v-for="(tool, toolIndex) in getExtensionTools(
+                            extension,
+                          )"
+                          :key="tool.id"
+                          v-slot="{ isHovering, props: toolProps }"
+                        >
+                          <GlassCard
+                            v-bind="toolProps"
+                            variant="ui"
+                            padding="pa-4"
+                            class="d-flex align-start ga-3 border-white border-opacity-10 active-tool-card"
+                            :style="{
+                              transitionDelay: `${toolIndex * 30}ms`,
+                              background: isHovering
+                                ? 'rgba(255, 255, 255, 0.05)'
+                                : 'transparent',
+                              opacity: extension.enabled ? 1 : 0.5,
+                            }"
                           >
-                            <v-card
-                              v-bind="toolProps"
-                              class="d-flex align-start ga-3 pa-4"
-                              :style="{
-                                transitionDelay: `${toolIndex * 30}ms`,
-                                transition: 'all 0.2s ease',
-                                background: extension.enabled
-                                  ? isHovering
-                                    ? '#f5f9ff'
-                                    : '#fafafa'
-                                  : '#f5f5f5',
-                                borderColor: extension.enabled
-                                  ? isHovering
-                                    ? 'rgba(33, 150, 243, 0.3)'
-                                    : '#e0e0e0'
-                                  : '#e0e0e0',
-                                opacity: extension.enabled ? 1 : 0.7,
-                              }"
-                              border
-                              rounded="lg"
-                              :elevation="
-                                isHovering && extension.enabled ? 2 : 0
+                            <v-sheet
+                              class="d-flex align-center justify-center flex-shrink-0 tool-icon"
+                              :color="
+                                isHovering
+                                  ? 'primary'
+                                  : 'rgba(255, 255, 255, 0.1)'
                               "
+                              rounded="lg"
                             >
-                              <v-sheet
-                                class="d-flex align-center justify-center flex-shrink-0"
-                                :color="
-                                  extension.enabled
-                                    ? isHovering
-                                      ? 'primary'
-                                      : 'grey-lighten-3'
-                                    : 'grey-lighten-2'
-                                "
-                                :style="{
-                                  width: '48px',
-                                  height: '48px',
-                                  transition: 'background 0.2s ease',
-                                }"
-                                rounded="lg"
-                              >
-                                <v-icon
-                                  v-if="tool.iconType === 'mdi'"
-                                  :icon="tool.iconSource"
-                                  size="24"
-                                  :color="
-                                    extension.enabled
-                                      ? isHovering
-                                        ? 'white'
-                                        : 'primary'
-                                      : 'grey'
-                                  "
-                                  :style="{ transition: 'color 0.2s ease' }"
-                                />
-                                <v-img
-                                  v-else-if="tool.iconType === 'svg'"
-                                  :src="tool.iconSource"
-                                  width="24"
-                                  height="24"
-                                  contain
-                                  :style="{
-                                    transition: 'filter 0.2s ease',
-                                    filter: extension.enabled
-                                      ? isHovering
-                                        ? 'brightness(0) invert(1)'
-                                        : 'none'
-                                      : 'grayscale(100%) opacity(0.5)',
-                                  }"
-                                />
-                              </v-sheet>
+                              <v-icon
+                                v-if="tool.iconType === 'mdi'"
+                                :icon="tool.iconSource"
+                                size="20"
+                                color="white"
+                                :class="{ 'opacity-100': isHovering }"
+                              />
+                              <v-img
+                                v-else-if="tool.iconType === 'svg'"
+                                :src="tool.iconSource"
+                                width="20"
+                                height="20"
+                                contain
+                                class="svg-white-filter"
+                              />
+                            </v-sheet>
 
-                              <div class="flex-grow-1" style="min-width: 0">
-                                <div class="d-flex align-center ga-2 mb-1">
-                                  <span
-                                    class="text-body-1 font-weight-semibold"
-                                    :class="
-                                      extension.enabled
-                                        ? 'text-grey-darken-4'
-                                        : 'text-grey-darken-1'
-                                    "
-                                    style="line-height: 1.4"
-                                  >
-                                    {{ tool.title }}
-                                  </span>
-                                  <v-chip
-                                    v-if="!extension.enabled"
-                                    size="x-small"
-                                    color="grey"
-                                    variant="flat"
-                                  >
-                                    Disabled
-                                  </v-chip>
-                                </div>
-
-                                <div
-                                  class="text-body-2"
-                                  :class="
-                                    extension.enabled
-                                      ? 'text-grey-darken-1'
-                                      : 'text-grey'
-                                  "
-                                  style="line-height: 1.5"
+                            <div class="flex-grow-1 min-w-0">
+                              <div class="d-flex align-center ga-2 mb-1">
+                                <span
+                                  class="text-body-2 font-weight-semibold text-white"
                                 >
-                                  {{ tool.description }}
-                                </div>
+                                  {{ tool.title }}
+                                </span>
                               </div>
-                            </v-card>
-                          </v-hover>
-                        </v-fade-transition>
+
+                              <div class="text-caption text-white opacity-80">
+                                {{ tool.description }}
+                              </div>
+                            </div>
+                          </GlassCard>
+                        </v-hover>
                       </div>
 
                       <v-alert
                         v-else
                         type="info"
                         variant="tonal"
-                        density="comfortable"
+                        density="compact"
                         rounded="lg"
-                        class="mt-2"
+                        class="mt-2 text-caption"
                       >
                         This extension doesn't register any tools
                       </v-alert>
@@ -486,44 +403,37 @@
       </v-fade-transition>
 
       <v-fade-transition>
-        <v-card
+        <GlassCard
           v-if="!loadedExtensions.length"
-          rounded="xl"
-          variant="outlined"
-          class="mt-8 bg-grey-lighten-4"
-          :style="{ border: '2px dashed #e0e0e0' }"
+          variant="ui"
+          class="mt-8 border-opacity-10"
+          padding="pa-10"
         >
-          <v-card-text class="text-center pa-8">
+          <div class="text-center">
             <v-sheet
-              class="mx-auto mb-4 d-flex align-center justify-center"
-              color="grey-lighten-3"
-              :style="{
-                width: '100px',
-                height: '100px',
-              }"
+              class="mx-auto mb-6 d-flex align-center justify-center empty-icon-wrapper"
               rounded="circle"
             >
               <v-icon
                 icon="mdi-puzzle-outline"
                 size="64"
-                color="grey-lighten-1"
+                color="white"
+                class="opacity-30"
               />
             </v-sheet>
-            <div
-              class="text-body-1 font-weight-semibold text-grey-darken-2 mb-2"
-            >
+            <div class="text-h6 font-weight-bold text-white mb-2">
               No extensions loaded yet
             </div>
-            <div class="text-body-2 text-grey-darken-1">
+            <div class="text-body-1 text-white opacity-60">
               Upload an extension file to get started
             </div>
-          </v-card-text>
-        </v-card>
+          </div>
+        </GlassCard>
       </v-fade-transition>
     </v-card-text>
 
-    <v-dialog v-model="showRemoveDialog" max-width="500" style="z-index: 10000">
-      <v-card rounded="xl" elevation="8">
+    <v-dialog v-model="showRemoveDialog" max-width="500" class="remove-dialog">
+      <GlassCard variant="ui" padding="pa-0">
         <v-card-title
           class="d-flex align-center text-h6 font-weight-semibold text-warning pa-6 pb-4"
         >
@@ -538,7 +448,7 @@
 
         <v-card-text class="px-6 pb-6 text-body-1">
           <div class="text-medium-emphasis mb-3">
-            Are you sure you want to remove
+            Are you sure you want to delete
             <span class="font-weight-bold text-high-emphasis">{{
               getExtensionName(extensionToRemove)
             }}</span
@@ -548,7 +458,7 @@
             type="info"
             variant="tonal"
             density="compact"
-            rounded="lg"
+            rounded="xl"
             class="text-caption"
           >
             <template #prepend>
@@ -575,12 +485,39 @@
             Remove
           </v-btn>
         </v-card-actions>
-      </v-card>
+      </GlassCard>
     </v-dialog>
   </v-card>
 </template>
 
 <style scoped>
+  .min-w-0 {
+    min-width: 0;
+  }
+
+  .remove-dialog {
+    z-index: 10000;
+  }
+
+  .extension-icon {
+    width: 56px;
+    height: 56px;
+    transition: all 0.3s ease;
+  }
+
+  .tool-icon {
+    width: 40px;
+    height: 40px;
+    transition: all 0.2s ease;
+  }
+
+  .empty-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .rotating {
     animation: rotate 1s linear infinite;
   }
@@ -592,13 +529,5 @@
     to {
       transform: rotate(360deg);
     }
-  }
-
-  .file-input-hidden {
-    position: absolute;
-    width: 0;
-    height: 0;
-    opacity: 0;
-    pointer-events: none;
   }
 </style>

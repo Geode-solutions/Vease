@@ -14,7 +14,7 @@
 </script>
 
 <template>
-  <v-sheet class="pa-6 pb-2" rounded="xl" color="transparent">
+  <div class="pa-8 pb-2">
     <v-tabs
       :model-value="activeTab"
       @update:model-value="emit('update:activeTab', $event)"
@@ -73,5 +73,5 @@
         </v-chip>
       </template>
     </v-text-field>
-  </v-sheet>
+  </div>
 </template>

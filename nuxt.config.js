@@ -60,6 +60,10 @@ export default defineNuxtConfig({
       VImg: {
         draggable: false,
       },
+      VSwitch: {
+        color: "primary",
+        inset: true,
+      },
     },
     moduleOptions: {},
     vuetifyOptions: {
@@ -71,12 +75,26 @@ export default defineNuxtConfig({
             dark: false,
             colors: {
               primary: "#3c9983",
-              secondary: "#424242",
+              secondary: "#3c9983",
               accent: "#82B1FF",
               error: "#FF5252",
               info: "#2196F3",
               success: "#4CAF50",
               warning: "#FB8C00",
+            },
+          },
+          dark: {
+            dark: true,
+            colors: {
+              primary: "#3c9983",
+              secondary: "#3c9983",
+              accent: "#82B1FF",
+              error: "#FF5252",
+              info: "#2196F3",
+              success: "#4CAF50",
+              warning: "#FB8C00",
+              background: "#0a0f0e",
+              surface: "#121817",
             },
           },
         },
