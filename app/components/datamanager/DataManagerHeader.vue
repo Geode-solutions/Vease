@@ -1,21 +1,35 @@
 <script setup>
   import { useTemplateRef } from "vue"
   import SearchBar from "@ogw_front/components/SearchBar.vue"
+  import { useUIStore } from "@vease/stores/UI"
 
-  const { searchValue, activeTab, tabs } = defineProps({
+  const UIStore = useUIStore()
+
+  const {
+    searchValue,
+    activeTab,
+    tabs,
+    compact = false,
+  } = defineProps({
     searchValue: { type: String, default: "" },
     activeTab: { type: String, default: "data" },
     tabs: { type: Array, default: () => [] },
+    compact: { type: Boolean, default: false },
   })
 
   const emit = defineEmits(["update:searchValue", "update:activeTab"])
   const searchInput = useTemplateRef("searchInput")
 
+  function enterPiP() {
+    UIStore.setShowDataManagerPiP(true)
+    navigateTo("/")
+  }
+
   defineExpose({ focusSearch: () => searchInput.value?.focus() })
 </script>
 
 <template>
-  <div class="pa-8 pb-2">
+  <div :class="[compact ? 'px-0 py-4 pb-0' : 'px-0 py-8 pb-2']">
     <v-tabs
       :model-value="activeTab"
       @update:model-value="emit('update:activeTab', $event)"
@@ -47,6 +61,23 @@
         <v-icon v-if="tab.icon" start size="20">{{ tab.icon }}</v-icon>
         {{ tab.title }}
       </v-tab>
+
+      <v-spacer />
+
+      <v-btn
+        v-if="!compact"
+        icon
+        size="small"
+        variant="text"
+        color="white"
+        class="align-self-center mr-2"
+        @click="enterPiP"
+      >
+        <v-icon size="20">mdi-picture-in-picture-bottom-right</v-icon>
+        <v-tooltip activator="parent" location="top"
+          >Picture in Picture</v-tooltip
+        >
+      </v-btn>
     </v-tabs>
 
     <SearchBar
