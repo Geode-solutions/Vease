@@ -182,7 +182,6 @@
 </template>
 
 <style scoped>
-  /* ── Make entire table transparent ── */
   .transparent-table {
     background: transparent !important;
     color: white !important;
@@ -221,7 +220,6 @@
     table-layout: fixed !important;
   }
 
-  /* ── Header styling ── */
   .transparent-table :deep(.v-data-table__th) {
     background: transparent !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
@@ -239,7 +237,6 @@
     letter-spacing: 1.5px !important;
   }
 
-  /* ── Row & cell styling ── */
   .transparent-table :deep(.v-data-table__tr) {
     background: transparent !important;
   }
@@ -253,23 +250,19 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
   }
 
-  /* ── Sort icon color ── */
   .transparent-table :deep(.v-data-table__th .v-icon) {
     color: rgba(255, 255, 255, 0.3) !important;
   }
 
-  /* ── Checkbox color ── */
   .transparent-table :deep(.v-selection-control) {
     color: white !important;
   }
 
-  /* ── No data row ── */
   .transparent-table :deep(.v-data-table-rows-no-data) {
     background: transparent !important;
     color: rgba(255, 255, 255, 0.4) !important;
   }
 
-  /* ── Scrollbar styling ── */
   .transparent-table :deep(tbody) {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
