@@ -68,7 +68,7 @@
         class="align-self-center mr-2"
         @click="enterPiP"
       >
-        <v-icon size="20">mdi-picture-in-picture-bottom-right</v-icon>
+        <v-icon size="30">mdi-picture-in-picture-bottom-right</v-icon>
         <v-tooltip activator="parent" location="top"
           >Picture in Picture</v-tooltip
         >
