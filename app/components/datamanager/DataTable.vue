@@ -23,7 +23,6 @@
     "delete",
   ])
 
-  // Filter items by search (case-insensitive on name)
   const filteredItems = computed(() => {
     if (!props.search) return props.items
     const q = props.search.toLowerCase()
@@ -87,7 +86,6 @@
   <div
     class="d-flex flex-column fill-height overflow-hidden position-relative pt-1"
   >
-    <!-- Custom Fixed Header (Unified Grid) -->
     <div class="custom-table-header flex-shrink-0 table-grid-row">
       <div class="grid-cell d-flex justify-center py-3">
         <v-checkbox-btn
@@ -104,7 +102,6 @@
       <div class="grid-cell header-label text-end py-3 pr-2">ACTIONS</div>
     </div>
 
-    <!-- Scrollable content area with mask -->
     <div
       class="flex-grow-1 overflow-y-auto data-scroll-container custom-scrollbar"
     >
@@ -113,7 +110,6 @@
         :key="item.id"
         class="table-grid-row data-row py-1 text-white"
       >
-        <!-- Checkbox cell -->
         <div class="grid-cell d-flex justify-center align-center">
           <v-checkbox-btn
             :model-value="isItemSelected(item)"
@@ -122,7 +118,6 @@
           />
         </div>
 
-        <!-- Name cell -->
         <div class="grid-cell d-flex align-center overflow-hidden">
           <v-icon size="20" class="mr-3 opacity-60 flex-shrink-0"
             >mdi-file-outline</v-icon
@@ -135,7 +130,6 @@
           </span>
         </div>
 
-        <!-- Type cell -->
         <div class="grid-cell d-flex justify-center align-center">
           <v-chip
             size="x-small"
@@ -147,7 +141,6 @@
           </v-chip>
         </div>
 
-        <!-- Date cell -->
         <div class="grid-cell d-flex justify-center align-center">
           <span
             class="text-caption text-grey-lighten-2 font-weight-light text-center"
@@ -156,7 +149,6 @@
           </span>
         </div>
 
-        <!-- Visibility cell -->
         <div class="grid-cell d-flex justify-center align-center">
           <v-btn
             icon
@@ -171,7 +163,6 @@
           </v-btn>
         </div>
 
-        <!-- Actions cell -->
         <div class="grid-cell d-flex ga-1 justify-end align-center pr-2">
           <v-btn
             icon
@@ -219,7 +210,6 @@
         </div>
       </div>
 
-      <!-- Empty state -->
       <div
         v-if="filteredItems.length === 0"
         class="d-flex justify-center align-center py-12 text-grey-lighten-1"
@@ -231,10 +221,8 @@
 </template>
 
 <style scoped>
-  /* Unified Grid System for perfect alignment */
   .table-grid-row {
     display: grid;
-    /* [Select] [Name] [Type] [Date] [Vis] [Actions] */
     grid-template-columns: 48px 1fr 80px 160px 100px 160px;
     align-items: center;
     width: 100%;
@@ -258,7 +246,6 @@
   }
 
   .data-scroll-container {
-    /* Create the "disappearing" effect at the top boundary */
     mask-image: linear-gradient(
       to bottom,
       transparent 0,
