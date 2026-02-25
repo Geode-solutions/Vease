@@ -4,7 +4,7 @@
   const SECONDS_IN_DAY = 86400
   const MILLISECONDS_TO_SECONDS = 1000
 
-  const props = defineProps({
+  const { items, search, compact } = defineProps({
     items: { type: Array, required: true },
     search: { type: String, default: "" },
     compact: { type: Boolean, default: false },
@@ -23,44 +23,37 @@
     "delete",
   ])
 
-  const filteredItems = computed(() => {
-    if (!props.search) return props.items
-    const q = props.search.toLowerCase()
-    return props.items.filter((item) => item.name?.toLowerCase().includes(q))
-  })
-
-  const isAllSelected = computed(() => {
-    return (
-      filteredItems.value.length > 0 &&
-      filteredItems.value.every((item) =>
-        selectedIds.value.some((s) => s.id === item.id),
-      )
-    )
-  })
-
-  const isSomeSelected = computed(() => {
-    return selectedIds.value.length > 0 && !isAllSelected.value
-  })
-
-  function isItemSelected(item) {
-    return selectedIds.value.some((s) => s.id === item.id)
-  }
-
-  function toggleItem(item) {
-    if (isItemSelected(item)) {
-      selectedIds.value = selectedIds.value.filter((s) => s.id !== item.id)
-    } else {
-      selectedIds.value = [...selectedIds.value, item]
-    }
-  }
-
-  function toggleSelectAll() {
-    if (isAllSelected.value) {
-      selectedIds.value = []
-    } else {
-      selectedIds.value = [...filteredItems.value]
-    }
-  }
+  const headers = [
+    { title: "Name", key: "name", sortable: true, width: "auto" },
+    {
+      title: "Type",
+      key: "geode_object_type",
+      sortable: true,
+      align: "center",
+      width: "100px",
+    },
+    {
+      title: "Date",
+      key: "created_at",
+      sortable: true,
+      align: "center",
+      width: "160px",
+    },
+    {
+      title: "Visibility",
+      key: "visible",
+      sortable: false,
+      align: "center",
+      width: "100px",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      sortable: false,
+      align: "end",
+      width: "180px",
+    },
+  ]
 
   function formatSmartDate(dateStr) {
     if (!dateStr) return ""
@@ -83,202 +76,210 @@
 </script>
 
 <template>
-  <div
-    class="d-flex flex-column fill-height overflow-hidden position-relative pt-1"
+  <v-data-table
+    v-model="selectedIds"
+    :headers="headers"
+    :items="items"
+    :search="search"
+    show-select
+    item-value="id"
+    return-object
+    class="transparent-table"
+    hide-default-footer
+    :items-per-page="-1"
   >
-    <div class="custom-table-header flex-shrink-0 table-grid-row">
-      <div class="grid-cell d-flex justify-center py-3">
-        <v-checkbox-btn
-          :model-value="isAllSelected"
-          :indeterminate="isSomeSelected"
+    <template #[`item.name`]="{ item }">
+      <div class="d-flex align-center py-2">
+        <v-icon size="20" class="mr-3 opacity-60">mdi-file-outline</v-icon>
+        <span
+          class="font-weight-medium cursor-pointer text-no-wrap"
+          @click="emit('rename', item)"
+        >
+          {{ item.name }}
+        </span>
+      </div>
+    </template>
+
+    <template #[`item.geode_object_type`]="{ item }">
+      <v-chip
+        size="x-small"
+        color="white"
+        variant="outlined"
+        class="text-none border-opacity-20 font-weight-bold"
+      >
+        {{ item.geode_object_type }}
+      </v-chip>
+    </template>
+
+    <template #[`item.created_at`]="{ item }">
+      <span class="text-caption text-grey-lighten-2 font-weight-light">{{
+        formatSmartDate(item.created_at)
+      }}</span>
+    </template>
+
+    <template #[`item.visible`]="{ item }">
+      <v-btn
+        icon
+        size="small"
+        variant="text"
+        color="white"
+        @click.stop="emit('toggle-visibility', item)"
+      >
+        <v-icon size="20">{{
+          item.visible ? "mdi-eye" : "mdi-eye-off"
+        }}</v-icon>
+      </v-btn>
+    </template>
+
+    <template #[`item.actions`]="{ item }">
+      <div class="d-flex ga-1 justify-end">
+        <v-btn
+          icon
+          size="small"
+          variant="text"
           color="white"
-          @update:model-value="toggleSelectAll"
-        />
+          @click.stop="emit('focus-camera', item)"
+        >
+          <v-icon size="18">mdi-target</v-icon>
+          <v-tooltip activator="parent" location="top">Focus</v-tooltip>
+        </v-btn>
+
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="white"
+          @click.stop="emit('isolate', item)"
+        >
+          <v-icon size="18">mdi-filter-variant</v-icon>
+          <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
+        </v-btn>
+
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="white"
+          @click.stop="emit('rename', item)"
+        >
+          <v-icon size="18">mdi-pencil</v-icon>
+          <v-tooltip activator="parent" location="top">Rename</v-tooltip>
+        </v-btn>
+
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="error"
+          @click.stop="emit('delete', item)"
+        >
+          <v-icon size="18">mdi-delete</v-icon>
+          <v-tooltip activator="parent" location="top">Delete</v-tooltip>
+        </v-btn>
       </div>
-      <div class="grid-cell header-label py-3">NAME</div>
-      <div class="grid-cell header-label text-center py-3">TYPE</div>
-      <div class="grid-cell header-label text-center py-3">DATE</div>
-      <div class="grid-cell header-label text-center py-3">VISIBILITY</div>
-      <div class="grid-cell header-label text-end py-3 pr-2">ACTIONS</div>
-    </div>
-
-    <div
-      class="flex-grow-1 overflow-y-auto data-scroll-container custom-scrollbar"
-    >
-      <div
-        v-for="item in filteredItems"
-        :key="item.id"
-        class="table-grid-row data-row py-1 text-white"
-      >
-        <div class="grid-cell d-flex justify-center align-center">
-          <v-checkbox-btn
-            :model-value="isItemSelected(item)"
-            color="white"
-            @update:model-value="toggleItem(item)"
-          />
-        </div>
-
-        <div class="grid-cell d-flex align-center overflow-hidden">
-          <v-icon size="20" class="mr-3 opacity-60 flex-shrink-0"
-            >mdi-file-outline</v-icon
-          >
-          <span
-            class="font-weight-medium cursor-pointer text-truncate"
-            @click="emit('rename', item)"
-          >
-            {{ item.name }}
-          </span>
-        </div>
-
-        <div class="grid-cell d-flex justify-center align-center">
-          <v-chip
-            size="x-small"
-            color="white"
-            variant="outlined"
-            class="text-none border-opacity-20 font-weight-bold"
-          >
-            {{ item.geode_object_type }}
-          </v-chip>
-        </div>
-
-        <div class="grid-cell d-flex justify-center align-center">
-          <span
-            class="text-caption text-grey-lighten-2 font-weight-light text-center"
-          >
-            {{ formatSmartDate(item.created_at) }}
-          </span>
-        </div>
-
-        <div class="grid-cell d-flex justify-center align-center">
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            color="white"
-            @click.stop="emit('toggle-visibility', item)"
-          >
-            <v-icon size="20">{{
-              item.visible ? "mdi-eye" : "mdi-eye-off"
-            }}</v-icon>
-          </v-btn>
-        </div>
-
-        <div class="grid-cell d-flex ga-1 justify-end align-center pr-2">
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            color="white"
-            @click.stop="emit('focus-camera', item)"
-          >
-            <v-icon size="18">mdi-target</v-icon>
-            <v-tooltip activator="parent" location="top">Focus</v-tooltip>
-          </v-btn>
-
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            color="white"
-            @click.stop="emit('isolate', item)"
-          >
-            <v-icon size="18">mdi-filter-variant</v-icon>
-            <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
-          </v-btn>
-
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            color="white"
-            @click.stop="emit('rename', item)"
-          >
-            <v-icon size="18">mdi-pencil</v-icon>
-            <v-tooltip activator="parent" location="top">Rename</v-tooltip>
-          </v-btn>
-
-          <v-btn
-            icon
-            size="small"
-            variant="text"
-            color="error"
-            @click.stop="emit('delete', item)"
-          >
-            <v-icon size="18">mdi-delete</v-icon>
-            <v-tooltip activator="parent" location="top">Delete</v-tooltip>
-          </v-btn>
-        </div>
-      </div>
-
-      <div
-        v-if="filteredItems.length === 0"
-        class="d-flex justify-center align-center py-12 text-grey-lighten-1"
-      >
-        No data found
-      </div>
-    </div>
-  </div>
+    </template>
+  </v-data-table>
 </template>
 
 <style scoped>
-  .table-grid-row {
-    display: grid;
-    grid-template-columns: 48px 1fr 80px 160px 100px 160px;
-    align-items: center;
-    width: 100%;
+  /* ── Make entire table transparent ── */
+  .transparent-table {
+    background: transparent !important;
+    color: white !important;
+    border: none !important;
   }
 
-  .grid-cell {
-    min-width: 0;
+  .transparent-table :deep(.v-table__wrapper) {
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
 
-  .header-label {
+  .transparent-table :deep(table) {
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+
+  .transparent-table :deep(thead) {
+    flex-shrink: 0 !important;
+  }
+
+  .transparent-table :deep(tbody) {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+  }
+
+  .transparent-table :deep(thead tr),
+  .transparent-table :deep(tbody tr) {
+    display: table !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  /* ── Header styling ── */
+  .transparent-table :deep(.v-data-table__th) {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
     font-size: 0.7rem !important;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-    padding: 0 8px;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
   }
 
-  .custom-table-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  .transparent-table :deep(.v-data-table-header__content) {
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
   }
 
-  .data-scroll-container {
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      black 15px,
-      black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      black 15px,
-      black 100%
-    );
+  /* ── Row & cell styling ── */
+  .transparent-table :deep(.v-data-table__tr) {
+    background: transparent !important;
   }
 
-  .data-row {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    transition: background-color 0.15s ease;
+  .transparent-table :deep(.v-data-table__tr:hover) {
+    background: rgba(255, 255, 255, 0.02) !important;
   }
 
-  .data-row:hover {
-    background: rgba(255, 255, 255, 0.02);
+  .transparent-table :deep(.v-data-table__td) {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
   }
 
-  .custom-scrollbar {
+  /* ── Sort icon color ── */
+  .transparent-table :deep(.v-data-table__th .v-icon) {
+    color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  /* ── Checkbox color ── */
+  .transparent-table :deep(.v-selection-control) {
+    color: white !important;
+  }
+
+  /* ── No data row ── */
+  .transparent-table :deep(.v-data-table-rows-no-data) {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* ── Scrollbar styling ── */
+  .transparent-table :deep(tbody) {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }
 
-  .custom-scrollbar::-webkit-scrollbar {
+  .transparent-table :deep(tbody::-webkit-scrollbar) {
     width: 6px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
+  .transparent-table :deep(tbody::-webkit-scrollbar-thumb) {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
   }
