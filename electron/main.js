@@ -151,7 +151,7 @@ app.on("before-quit", async function onBeforeQuit(event) {
       app.quit()
     } catch (error) {
       console.error("Cleanup failed", error)
-      app.quit()
+      process.exit(1)
     }
   }
 })
