@@ -83,7 +83,6 @@ img {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Global hover overrides to disable interactive flickering */
 .v-btn:hover > .v-btn__overlay,
 .v-list-item:hover > .v-list-item__overlay,
 .v-card:hover > .v-card__overlay,
@@ -91,17 +90,16 @@ img {
   opacity: 0 !important;
 }
 
-/* Specific fix for stepper items which often have hover backgrounds */
 .v-stepper-vertical-item--editable:hover {
   background: transparent !important;
 }
 
 .v-field--variant-outlined:hover .v-field__outline {
-  --v-field-border-opacity: 0.38 !important; /* Keep default border opacity */
+  --v-field-border-opacity: 0.38 !important;
 }
 
 .v-field--focused.v-field--variant-outlined .v-field__outline {
-  --v-field-border-opacity: 1 !important; /* Allow focused state to be visible */
+  --v-field-border-opacity: 1 !important;
 }
 
 .v-field--variant-outlined:hover .v-field__outline .v-field-outline__start,
