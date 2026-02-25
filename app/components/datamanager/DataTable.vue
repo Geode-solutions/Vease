@@ -4,7 +4,7 @@
   const SECONDS_IN_DAY = 86400
   const MILLISECONDS_TO_SECONDS = 1000
 
-  const props = defineProps({
+  const { items, search, compact } = defineProps({
     items: { type: Array, required: true },
     search: { type: String, default: "" },
     compact: { type: Boolean, default: false },
