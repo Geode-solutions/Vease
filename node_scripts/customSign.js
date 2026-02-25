@@ -1,7 +1,12 @@
 import child_process from "node:child_process"
+import fs from "node:fs"
+import path from "node:path"
 
 export default async function customSign(configuration) {
   console.log("customSign", configuration)
+  for (const file of fs.readdirSync(path.dirname(configuration.path))) {
+    console.log(file)
+  }
 
   child_process.execSync(
     `AzureSignTool sign \
