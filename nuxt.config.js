@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
+      APP_NAME: package_json.name,
       VERSION: package_json.version,
       PROJECT: process.env.PROJECT,
       RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,

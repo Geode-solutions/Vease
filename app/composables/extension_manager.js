@@ -8,11 +8,12 @@ export function useExtensionManager() {
   const appStore = useAppStore()
 
   async function importExtensionFile(file) {
+    console.log("[TIME] await uploadExtension", Date.now())
     const archiveFileContent = await file.text()
-    console.log("[ExtensionManager] Importing extension file:", file.name)
+    console.log("[TIME] archiveFileContent", Date.now())
 
     await uploadExtension(archiveFileContent, file.name, "vease")
-
+    console.log("[TIME] await uploadExtension", Date.now())
     if (infraStore.app_mode === appMode.BROWSER) {
       console.log(
         "[ExtensionManager] Cannot import extension in BROWSER mode, please reload the page",

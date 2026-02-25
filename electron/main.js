@@ -14,15 +14,13 @@ import {
   run_back,
   run_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { killExtensionMicroservices } from "@geode/opengeodeweb-front/app/utils/extension.js"
+// import { killExtensionMicroservices } from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local imports
 /* eslint-disable-next-line import/no-absolute-path */
 import { create_new_window } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
 import { back_microservice, viewer_microservice } from "/utils/local.js"
-
-const projectName = "vease"
 
 let back_port = 0
 let viewer_port = 0

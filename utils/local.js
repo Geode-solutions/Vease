@@ -9,7 +9,7 @@ import {
   executable_path,
   run_browser,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-import { runExtensions } from "@geode/opengeodeweb-front/app/utils/extension.js"
+// import { runExtensions } from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local constants
 const projectName = "vease"
@@ -39,7 +39,7 @@ async function run_browser_wrapper(script_name) {
   console.log("viewer_command", viewer_path, viewer_name)
 
   const extensions_folder_path = path.join(project_folder_path, "extensions")
-  await runExtensions(projectName, extensions_folder_path)
+  // await runExtensions(projectName, extensions_folder_path)
 
   return run_browser(script_name, {
     back: {
