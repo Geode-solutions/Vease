@@ -5,12 +5,7 @@
 
   const UIStore = useUIStore()
 
-  const {
-    searchValue,
-    activeTab,
-    tabs,
-    compact = false,
-  } = defineProps({
+  const { searchValue, activeTab, tabs, compact } = defineProps({
     searchValue: { type: String, default: "" },
     activeTab: { type: String, default: "data" },
     tabs: { type: Array, default: () => [] },
