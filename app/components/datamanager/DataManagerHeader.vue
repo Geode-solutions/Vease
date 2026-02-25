@@ -29,13 +29,13 @@
 </script>
 
 <template>
-  <div :class="[compact ? 'px-0 py-4 pb-0' : 'px-0 py-8 pb-2']">
+  <div :class="[compact ? 'px-0 py-1 pb-0' : 'px-0 py-8 pb-2']">
     <v-tabs
       :model-value="activeTab"
       @update:model-value="emit('update:activeTab', $event)"
       bg-color="transparent"
       color="primary"
-      class="mb-6 border-b-thin"
+      :class="[compact ? 'mb-2' : 'mb-6', 'border-b-thin']"
       height="48"
       selected-class="bg-primary text-white"
     >

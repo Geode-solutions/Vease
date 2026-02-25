@@ -189,7 +189,7 @@
           :tabs="UIStore.dataManagerTabs"
           :compact="compact"
           ref="headerRef"
-          :class="compact ? 'mb-2' : 'mb-6'"
+          :class="compact ? 'mb-0' : 'mb-6'"
         />
 
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">

@@ -142,56 +142,131 @@
         width: `${pipWidth}px`,
         height: `${pipHeight}px`,
         zIndex: 1500,
+        filter: 'drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5))',
+        transition: isResizing ? 'none' : 'filter 0.2s ease',
+        userSelect: isResizing ? 'none' : undefined,
       }"
-      :class="['pip-container', { 'pip-resizing': isResizing }]"
     >
       <!-- Edge resize zones -->
       <div
-        class="resize-edge resize-top"
-        :style="{ height: `${EDGE_SIZE}px` }"
+        class="position-absolute"
+        :style="{
+          top: 0,
+          left: 0,
+          right: 0,
+          height: `${EDGE_SIZE}px`,
+          zIndex: 11,
+          touchAction: 'none',
+          cursor: 'ns-resize',
+        }"
         @pointerdown="startResize($event, 'top')"
       />
       <div
-        class="resize-edge resize-bottom"
-        :style="{ height: `${EDGE_SIZE}px` }"
+        class="position-absolute"
+        :style="{
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: `${EDGE_SIZE}px`,
+          zIndex: 11,
+          touchAction: 'none',
+          cursor: 'ns-resize',
+        }"
         @pointerdown="startResize($event, 'bottom')"
       />
       <div
-        class="resize-edge resize-left"
-        :style="{ width: `${EDGE_SIZE}px` }"
+        class="position-absolute"
+        :style="{
+          top: 0,
+          bottom: 0,
+          left: 0,
+          width: `${EDGE_SIZE}px`,
+          zIndex: 11,
+          touchAction: 'none',
+          cursor: 'ew-resize',
+        }"
         @pointerdown="startResize($event, 'left')"
       />
       <div
-        class="resize-edge resize-right"
-        :style="{ width: `${EDGE_SIZE}px` }"
+        class="position-absolute"
+        :style="{
+          top: 0,
+          bottom: 0,
+          right: 0,
+          width: `${EDGE_SIZE}px`,
+          zIndex: 11,
+          touchAction: 'none',
+          cursor: 'ew-resize',
+        }"
         @pointerdown="startResize($event, 'right')"
       />
 
       <!-- Corner resize zones -->
       <div
-        class="resize-corner resize-top-left"
+        class="position-absolute"
+        :style="{
+          top: 0,
+          left: 0,
+          width: '12px',
+          height: '12px',
+          zIndex: 12,
+          touchAction: 'none',
+          cursor: 'nwse-resize',
+        }"
         @pointerdown="startResize($event, 'top-left')"
       />
       <div
-        class="resize-corner resize-top-right"
+        class="position-absolute"
+        :style="{
+          top: 0,
+          right: 0,
+          width: '12px',
+          height: '12px',
+          zIndex: 12,
+          touchAction: 'none',
+          cursor: 'nesw-resize',
+        }"
         @pointerdown="startResize($event, 'top-right')"
       />
       <div
-        class="resize-corner resize-bottom-left"
+        class="position-absolute"
+        :style="{
+          bottom: 0,
+          left: 0,
+          width: '12px',
+          height: '12px',
+          zIndex: 12,
+          touchAction: 'none',
+          cursor: 'nesw-resize',
+        }"
         @pointerdown="startResize($event, 'bottom-left')"
       />
       <div
-        class="resize-corner resize-bottom-right"
+        class="position-absolute"
+        :style="{
+          bottom: 0,
+          right: 0,
+          width: '12px',
+          height: '12px',
+          zIndex: 12,
+          touchAction: 'none',
+          cursor: 'nwse-resize',
+        }"
         @pointerdown="startResize($event, 'bottom-right')"
       />
 
       <GlassCard
         variant="panel"
         padding="pa-0"
-        class="fill-height overflow-hidden pip-card"
+        class="fill-height overflow-hidden"
         rounded="xl"
+        :style="{ border: '1px solid rgba(255, 255, 255, 0.12)' }"
       >
-        <div ref="dragHandle" class="pip-header d-flex align-center px-4">
+        <div
+          ref="dragHandle"
+          class="pip-header d-flex align-center px-4"
+          style="height: 40px; min-height: 40px; user-select: none"
+        >
           <v-icon size="18" color="primary" class="mr-2">mdi-database</v-icon>
           <span class="text-subtitle-2 font-weight-bold text-white"
             >Data Manager</span
@@ -219,7 +294,7 @@
           </v-btn>
         </div>
 
-        <div class="pip-content">
+        <div class="overflow-hidden" style="height: calc(100% - 40px)">
           <DataManagerContent compact />
         </div>
       </GlassCard>
@@ -228,101 +303,11 @@
 </template>
 
 <style scoped>
-  .pip-container {
-    filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
-    transition: filter 0.2s ease;
-  }
-
-  .pip-container.pip-resizing {
-    transition: none;
-    user-select: none;
-  }
-
   .pip-header {
     cursor: grab;
-    height: 40px;
-    min-height: 40px;
-    user-select: none;
   }
 
   .pip-header:active {
     cursor: grabbing;
-  }
-
-  .pip-content {
-    height: calc(100% - 40px);
-    overflow: hidden;
-  }
-
-  .pip-card {
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  }
-
-  /* ── Resize edges ── */
-  .resize-edge {
-    position: absolute;
-    z-index: 11;
-    touch-action: none;
-  }
-
-  .resize-top {
-    top: 0;
-    left: 0;
-    right: 0;
-    cursor: ns-resize;
-  }
-
-  .resize-bottom {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    cursor: ns-resize;
-  }
-
-  .resize-left {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    cursor: ew-resize;
-  }
-
-  .resize-right {
-    top: 0;
-    bottom: 0;
-    right: 0;
-    cursor: ew-resize;
-  }
-
-  /* ── Resize corners ── */
-  .resize-corner {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    z-index: 12;
-    touch-action: none;
-  }
-
-  .resize-top-left {
-    top: 0;
-    left: 0;
-    cursor: nwse-resize;
-  }
-
-  .resize-top-right {
-    top: 0;
-    right: 0;
-    cursor: nesw-resize;
-  }
-
-  .resize-bottom-left {
-    bottom: 0;
-    left: 0;
-    cursor: nesw-resize;
-  }
-
-  .resize-bottom-right {
-    bottom: 0;
-    right: 0;
-    cursor: nwse-resize;
   }
 </style>
