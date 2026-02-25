@@ -6,11 +6,12 @@
   },
   "files": [".output/**/*", "dist-electron"],
   "extraResources": [
-    ".output/*",
+    {
+      "from": ".output/public/",
+      "to": "public/"
+    },
     "./vease-back*",
-    "./vease-viewer*",
-    "!./vease-back.spec",
-    "!./vease-viewer.spec"
+    "./vease-viewer*"
   ],
   "linux": {
     "artifactName": "${productName}_${platform}.${ext}",
