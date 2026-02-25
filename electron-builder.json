@@ -4,8 +4,15 @@
   "directories": {
     "output": "release/${version}"
   },
-  "files": [".output/**/*", "dist-electron"],
-  "extraResources": ["./vease-back*", "./vease-viewer*"],
+  "files": ["dist-electron"],
+  "extraResources": [
+    {
+      "from": ".output/public/",
+      "to": "public/"
+    },
+    "vease-*",
+    "!*.spec"
+  ],
   "linux": {
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",
