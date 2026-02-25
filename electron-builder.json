@@ -5,7 +5,13 @@
     "output": "release/${version}"
   },
   "files": [".output/**/*", "dist-electron"],
-  "extraResources": [".output/**/*", "./vease-back*", "./vease-viewer*"],
+  "extraResources": [
+    ".output/*",
+    "./vease-back*",
+    "./vease-viewer*",
+    "!./vease-back.spec",
+    "!./vease-viewer.spec"
+  ],
   "linux": {
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",

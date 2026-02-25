@@ -12,6 +12,30 @@ export default async function customSign(configuration) {
   )) {
     console.log("assar", file)
   }
+  for (const file of fs.readdirSync(
+    path.dirname(path.dirname(configuration.path)),
+  )) {
+    console.log("1", file)
+  }
+  for (const file of fs.readdirSync(
+    path.dirname(path.dirname(path.dirname(configuration.path))),
+  )) {
+    console.log("2", file)
+  }
+  for (const file of fs.readdirSync(
+    path.dirname(path.dirname(path.dirname(path.dirname(configuration.path)))),
+  )) {
+    console.log("3", file)
+  }
+  for (const file of fs.readdirSync(
+    path.dirname(
+      path.dirname(
+        path.dirname(path.dirname(path.dirname(configuration.path))),
+      ),
+    ),
+  )) {
+    console.log("4", file)
+  }
 
   child_process.execSync(
     `AzureSignTool sign \
