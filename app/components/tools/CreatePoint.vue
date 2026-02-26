@@ -9,14 +9,12 @@
 
   const MIN_COORDINATES = 3
 
-  function openCreateTools() {
-    UIStore.setSelectedTool(null)
-    UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
+  function handleClose() {
+    resetForm()
+    UIStore.setShowCreateTools(false)
   }
 
-  const name = ref("")
+  const name = ref("New Point")
   const x = ref("")
   const y = ref("")
   const z = ref("")
@@ -27,6 +25,13 @@
     () =>
       name.value !== "" && x.value !== "" && y.value !== "" && z.value !== "",
   )
+
+  function resetForm() {
+    name.value = "New Point"
+    x.value = ""
+    y.value = ""
+    z.value = ""
+  }
 
   function closeDrawer() {
     UIStore.setShowCreateTools(false)
@@ -66,7 +71,7 @@
             ...response,
           }
           await importItem(dataToImport)
-          closeDrawer()
+          resetForm()
         },
       })
     } finally {
@@ -271,12 +276,12 @@
         variant="text"
         color="white"
         size="large"
-        @click="openCreateTools"
+        @click="handleClose"
         :disabled="loading"
         class="text-none rounded-lg"
       >
-        <v-icon start>mdi-close-circle-outline</v-icon>
-        Cancel
+        <v-icon start>mdi-close-circle</v-icon>
+        Close
       </v-btn>
 
       <v-spacer />
