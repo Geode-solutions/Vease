@@ -3,9 +3,11 @@
   import { importItem } from "@ogw_front/utils/file_import_workflow"
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useUIStore } from "@vease/stores/UI"
+  import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
 
   const UIStore = useUIStore()
   const geodeStore = useGeodeStore()
+  const hybridViewerStore = useHybridViewerStore()
 
   const MIN_COORDINATES = 3
 
@@ -72,6 +74,7 @@
             ...response,
           }
           await importItem(dataToImport)
+          hybridViewerStore.remoteRender()
           initializeForm()
         },
       })
