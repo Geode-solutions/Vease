@@ -9,6 +9,11 @@
 
   const MIN_COORDINATES = 3
 
+  const name = ref("")
+  const x = ref("")
+  const y = ref("")
+  const z = ref("")
+
   function initializeForm() {
     name.value = "New Point"
     x.value = ""
@@ -16,18 +21,12 @@
     z.value = ""
   }
 
-  onMounted(() => initializeForm())
+  initializeForm()
 
   function handleClose() {
     initializeForm()
     UIStore.setShowCreateTools(false)
   }
-
-  const name = ref("")
-  const x = ref("")
-  const y = ref("")
-  const z = ref("")
-
   const loading = ref(false)
 
   const isFormFilled = computed(
