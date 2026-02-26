@@ -9,12 +9,21 @@
 
   const MIN_COORDINATES = 3
 
+  function initializeForm() {
+    name.value = "New Point"
+    x.value = ""
+    y.value = ""
+    z.value = ""
+  }
+
+  onMounted(() => initializeForm())
+
   function handleClose() {
-    resetForm()
+    initializeForm()
     UIStore.setShowCreateTools(false)
   }
 
-  const name = ref("New Point")
+  const name = ref("")
   const x = ref("")
   const y = ref("")
   const z = ref("")
@@ -25,13 +34,6 @@
     () =>
       name.value !== "" && x.value !== "" && y.value !== "" && z.value !== "",
   )
-
-  function resetForm() {
-    name.value = "New Point"
-    x.value = ""
-    y.value = ""
-    z.value = ""
-  }
 
   function closeDrawer() {
     UIStore.setShowCreateTools(false)
@@ -71,7 +73,7 @@
             ...response,
           }
           await importItem(dataToImport)
-          resetForm()
+          initializeForm()
         },
       })
     } finally {
