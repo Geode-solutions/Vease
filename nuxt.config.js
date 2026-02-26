@@ -7,10 +7,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      APP_NAME: package_json.name,
       VERSION: package_json.version,
-      PROJECT: process.env.PROJECT,
-      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+      PROJECT: package_json.name,
+      BACK_PATH: path.join(__dirname, "microservices", "back"),
+      BACK_COMMAND: "vease-back",
+      VIEWER_PATH: path.join(__dirname, "microservices", "viewer"),
+      VIEWER_COMMAND: "vease-viewer",
     },
   },
   extends: ["@geode/opengeodeweb-front"],

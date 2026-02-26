@@ -1,28 +1,14 @@
 import { useAppStore } from "@ogw_front/stores/app"
 import { useInfraStore } from "@ogw_front/stores/infra"
-import { appMode } from "@ogw_front/utils/app_mode"
-import { uploadExtension } from "@ogw_front/utils/extension"
+import { importExtensions, uploadExtension } from "@ogw_front/utils/extension"
 
 export function useExtensionManager() {
   const infraStore = useInfraStore()
   const appStore = useAppStore()
 
   async function importExtensionFile(file) {
-    console.log("[TIME] await uploadExtension", Date.now())
-    const archiveFileContent = await file.text()
-    console.log("[TIME] archiveFileContent", Date.now())
-
-    await uploadExtension(archiveFileContent, file.name, "vease")
-    console.log("[TIME] await uploadExtension", Date.now())
-    if (infraStore.app_mode === appMode.BROWSER) {
-      console.log(
-        "[ExtensionManager] Cannot import extension in BROWSER mode, please reload the page",
-      )
-      return "Extension uploaded, please reload the page"
-    } else if (infraStore.app_mode === appMode.DESKTOP) {
-      console.log("[ExtensionManager] Importing extension in DESKTOP mode...")
-    }
-
+    await uploadExtension(file)
+    const result = await importExtensions()
     const {
       extension_name,
       extension_version,
