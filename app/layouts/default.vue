@@ -10,6 +10,7 @@
   import FullScrenDropZone from "@vease/components/FullScrenDropZone"
   import CreateTools from "@vease/components/CreateTools"
   import StepImport from "@vease/components/StepImport"
+  import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue"
 
   const UIStore = useUIStore()
   const infraStore = useInfraStore()
@@ -119,6 +120,8 @@
 
         <FullScrenDropZone />
       </InfraConnected>
+
+      <DataManagerPiP v-if="UIStore.showDataManagerPiP" />
     </v-main>
 
     <v-progress-linear

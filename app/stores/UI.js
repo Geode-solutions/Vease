@@ -11,6 +11,7 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateVOI = ref(false)
   const showCreateAOI = ref(false)
   const showExtensions = ref(false)
+  const showDataManagerPiP = ref(false)
   const dataManagerTabs = ref([])
 
   const anyOverlayOpen = computed(
@@ -115,6 +116,10 @@ export const useUIStore = defineStore("UI", () => {
     showCreateAOI.value = value
   }
 
+  function setShowDataManagerPiP(value) {
+    showDataManagerPiP.value = value
+  }
+
   return {
     toolsDefinitions,
     activeTools,
@@ -130,6 +135,7 @@ export const useUIStore = defineStore("UI", () => {
     showStepImportMenu,
     showCreateTools,
     showExtensions,
+    showDataManagerPiP,
     showCreateVOI,
     showCreateAOI,
     anyOverlayOpen,
@@ -140,6 +146,7 @@ export const useUIStore = defineStore("UI", () => {
     toggleDrawer,
     setShowCreateTools,
     setShowExtensions,
+    setShowDataManagerPiP,
     setShowCreateVOI,
     setShowCreateAOI,
   }
