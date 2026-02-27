@@ -1,6 +1,4 @@
 // Standard library imports
-import os from "node:os"
-import path from "node:path"
 
 // Third party imports
 import { app, ipcMain } from "electron"
@@ -10,13 +8,12 @@ import {
   kill_back,
   kill_viewer,
 } from "@geode/opengeodeweb-front/app/utils/local.js"
-// import { killExtensionMicroservices } from "@geode/opengeodeweb-front/app/utils/extension.js"
+import { killExtensionMicroservices } from "@geode/opengeodeweb-front/app/utils/extension.js"
 
 // Local imports
 /* eslint-disable-next-line import/no-absolute-path */
 import { create_new_window } from "/utils/desktop.js"
 /* eslint-disable-next-line import/no-absolute-path */
-// import { back_microservice, viewer_microservice } from "/utils/local.js"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"

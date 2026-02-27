@@ -1,6 +1,9 @@
-import { fileURLToPath } from "node:url"
-import package_json from "./package.json"
+// Node imports
 import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+// Local imports
+import package_json from "./package.json"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
