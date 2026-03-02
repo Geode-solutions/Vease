@@ -61,7 +61,7 @@ export function transformExtensionCode(code) {
     `)}"`,
   )
 
-  // Transform @ogw_front/internal/utils/api_fetch.js (actual path in OpenGeodeWeb-Front)
+  // Transform @ogw_front/internal/utils/api_fetch.js
   transformedCode = transformedCode.replaceAll(
     /from\s+["']@ogw_front\/internal\/utils\/api_fetch\.js["']/g,
     `from "data:text/javascript,${encodeURIComponent(`

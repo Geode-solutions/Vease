@@ -1,4 +1,5 @@
 import { VeaseExtensionAPI } from "../utils/extensionAPI.js"
+import { transformExtensionCode } from "../utils/extensionCodeTransformer.js"
 import { useAppStore } from "@ogw_front/stores/app"
 import { useExtensionsStore } from "@vease/stores/extensions"
 import { useFeedbackStore } from "@ogw_front/stores/feedback"
@@ -32,8 +33,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
 
   const extensionsStore = useExtensionsStore()
+  const appStore = useAppStore()
   const extensionAPI = VeaseExtensionAPI
 
+  appStore.setCodeTransformer(transformExtensionCode)
   extensionsStore.setExtensionAPI(extensionAPI)
   nuxtApp.vueApp.provide("extensionAPI", extensionAPI)
 

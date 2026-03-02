@@ -1,4 +1,4 @@
-import { Database } from "@geode/opengeodeweb-front/internal/database/database.js"
+import { Database, database } from "@geode/opengeodeweb-front/internal/database/database.js"
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { importItem } from "@ogw_front/utils/file_import_workflow.js"
 import { useAppStore } from "@ogw_front/stores/app"
@@ -61,6 +61,9 @@ export const VeaseExtensionAPI = {
 
   get Database() {
     return Database
+  },
+  get database() {
+    return database
   },
 
   register_microservice(store) {
