@@ -1,11 +1,13 @@
-import { BrowserWindow, app, shell } from "electron"
+// Node imports
 import path from "node:path"
-
 import { fileURLToPath } from "node:url"
 
+// Third party imports
+import { BrowserWindow, app, shell } from "electron"
+
+// Local constants
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
 const __dirname = path.dirname(__filename) // get the name of the directory
-
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 

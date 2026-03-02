@@ -7,6 +7,8 @@ import package_json from "./package.json"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+console.log(`__dirname: ${__dirname}`)
+
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
