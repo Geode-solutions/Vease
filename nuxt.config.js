@@ -1,15 +1,23 @@
-import { fileURLToPath } from "node:url"
-import package_json from "./package.json"
+// Node imports
 import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+// Local imports
+import package_json from "./package.json"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+console.log(`__dirname: ${__dirname}`)
 
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
-      PROJECT: process.env.PROJECT,
-      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+      PROJECT: package_json.name,
+      BACK_PATH: path.join(__dirname, "microservices", "back"),
+      BACK_COMMAND: "vease-back",
+      VIEWER_PATH: path.join(__dirname, "microservices", "viewer"),
+      VIEWER_COMMAND: "vease-viewer",
     },
   },
   extends: ["@geode/opengeodeweb-front"],
@@ -24,9 +32,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.BROWSER && process.env.BROWSER === "true"
-      ? null
-      : "nuxt-electron",
+    // process.env.BROWSER && process.env.BROWSER === "true"
+    //   ? null
+    //   : "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -53,6 +61,8 @@ export default defineNuxtConfig({
         },
       },
     ],
+    // TO REMOVE TEMPORARY
+    disableDefaultOptions: true,
   },
 
   vuetify: {

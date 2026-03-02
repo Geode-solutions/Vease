@@ -1,229 +1,113 @@
 <script setup>
+  import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
+  import Launcher from "@ogw_front/components/Launcher"
   import Status from "@ogw_front/utils/status"
-  import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
-  import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
+  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
+  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
+  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
 
-  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected"
-  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useDataStore } from "@ogw_front/stores/data"
+  import { useDataStyleStore } from "@ogw_front/stores/data_style"
+  import { useInfraStore } from "@ogw_front/stores/infra"
+  import { useMenuStore } from "@ogw_front/stores/menu"
   import { useViewerStore } from "@ogw_front/stores/viewer"
 
-  const version = useRuntimeConfig().public.VERSION
-  const geodeStore = useGeodeStore()
+  const infraStore = useInfraStore()
   const viewerStore = useViewerStore()
+  const menuStore = useMenuStore()
+  const dataStore = useDataStore()
+  const dataStyleStore = useDataStyleStore()
 
-  const packages_versions = ref([])
-  const back_version = ref("")
-  const viewer_version = ref("")
+  const id = ref("")
+  const containerWidth = ref(0)
+  const containerHeight = ref(0)
+  const cardContainer = useTemplateRef("cardContainer")
 
-  const microservices = ref([
-    {
-      name: "Back",
-      package: "vease-back",
-      version: back_version,
-      status: geodeStore.status,
-    },
-    {
-      name: "Viewer",
-      package: "vease-viewer",
-      version: viewer_version,
-      status: viewerStore.status,
-    },
-  ])
+  const { display_menu } = storeToRefs(menuStore)
 
-  async function get_packages_versions() {
-    geodeStore.request(
-      vease_back_schemas.vease_back.packages_versions,
-      {},
+  async function get_viewer_id(x, y) {
+    const ids = Object.keys(dataStyleStore.styles)
+    await viewerStore.request(
+      viewer_schemas.opengeodeweb_viewer.viewer.picked_ids,
+      { x, y, ids },
       {
         response_function: (response) => {
-          packages_versions.value = response.packages_versions
+          const { array_ids } = response
+          const [first_id] = array_ids
+          id.value = first_id
         },
       },
     )
   }
 
-  async function get_back_version() {
-    geodeStore.request(
-      vease_back_schemas.vease_back.microservice_version,
-      {},
-      {
-        response_function: (response) => {
-          back_version.value = response.microservice_version
-        },
-      },
+  async function handleTreeMenu({ event, itemId }) {
+    const rect = cardContainer.value.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const yUI = event.clientY - rect.top
+
+    const item = dataStore.getItem(itemId)
+
+    menuStore.openMenu(
+      itemId,
+      x,
+      yUI,
+      containerWidth.value,
+      containerHeight.value,
+      rect.top,
+      rect.left,
+      item.value,
     )
   }
 
-  async function get_viewer_version() {
-    viewerStore.request(
-      vease_viewer_schemas.vease_viewer.microservice_version,
-      {},
-      {
-        response_function: (response) => {
-          viewer_version.value = response.microservice_version
-        },
-      },
+  async function openMenu(event) {
+    const rect = cardContainer.value.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const yPicking = containerHeight.value - (event.clientY - rect.top)
+    const yUI = event.clientY - rect.top
+
+    await get_viewer_id(x, yPicking)
+    const item = dataStore.getItem(id.value)
+
+    menuStore.openMenu(
+      id.value,
+      x,
+      yUI,
+      containerWidth.value,
+      containerHeight.value,
+      rect.top,
+      rect.left,
+      item.value,
     )
   }
-  run_function_when_microservices_connected(() => {
-    get_packages_versions()
-    get_back_version()
-    get_viewer_version()
+
+  const { width: elWidth, height: elHeight } = useElementSize(cardContainer)
+
+  watch([elWidth, elHeight], ([width, height]) => {
+    containerWidth.value = width
+    containerHeight.value = height
   })
 </script>
 
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="6">
-        <v-row class="pa-3">
-          <p class="text-h4 text-white">App version</p>
-          <v-divider />
-          <v-row class="pa-3">
-            <v-col cols="12">
-              <p class="text-white text-no-wrap">
-                The current version of the app is
-                <a
-                  :href="
-                    'https://github.com/Geode-solutions/Vease/releases/' +
-                    (version !== 'latest' ? 'tag/v' : '') +
-                    version
-                  "
-                  target="_blank"
-                  class="text-left text-white"
-                >
-                  {{ version }}</a
-                >
-              </p>
-            </v-col>
-          </v-row>
-        </v-row>
-        <v-row class="pa-3">
-          <p class="text-h4 text-white">Internal dependencies</p>
-          <v-divider />
-          <v-table
-            class="pa-3"
-            density="compact"
-            style="background-color: transparent"
-          >
-            <thead>
-              <tr>
-                <th class="text-left text-white" width="400px">Package</th>
-                <th class="text-left text-white">Version</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="pkg in packages_versions" :key="pkg">
-                <td class="text-left text-white">{{ pkg.package }}</td>
-                <td>
-                  <a
-                    :href="
-                      'https://pypi.org/project/' +
-                      pkg.package +
-                      '/' +
-                      pkg.version +
-                      '/'
-                    "
-                    target="_blank"
-                    class="text-left text-white"
-                    >{{ pkg.version }}</a
-                  >
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-row>
-        <v-row class="pa-3">
-          <v-col cols="12">
-            <p class="text-white">
-              Vease is an open-source project.
-              <br />
-              Copyright © 2019 - {{ new Date().getFullYear() }} —
-              Geode-solutions SAS. All rights reserved.
-            </p>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-divider vertical />
-      <v-col cols="6">
-        <v-row class="pa-3">
-          <p class="text-h4 text-white">Microservices</p>
-          <v-divider />
-          <v-row class="pa-3">
-            <v-table
-              class="pa-2"
-              density="compact"
-              style="background-color: transparent"
-              width="50%"
-            >
-              <thead>
-                <tr>
-                  <th class="text-left text-white"></th>
-                  <th class="text-left text-white">Version</th>
-                  <th class="text-left text-white">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="microservice in microservices" :key="microservice">
-                  <td class="text-left text-white">
-                    {{ microservice.name }}
-                  </td>
-                  <td>
-                    <a
-                      :href="`https://pypi.org/project/${microservice.package}/${microservice.version}/`"
-                      target="_blank"
-                      class="text-left text-white"
-                      >{{ microservice.version }}
-                    </a>
-                  </td>
-                  <td>
-                    <v-tooltip
-                      :text="`Microservice is ${microservice.status}`"
-                      location="right"
-                    >
-                      <template v-slot:activator="{ props }">
-                        <v-icon
-                          v-if="microservice.status == Status.NOT_CONNECTED"
-                          v-bind="props"
-                          icon="mdi-close-circle"
-                          color="red"
-                        />
-                        <v-progress-circular
-                          v-else-if="microservice.status == Status.CONNECTING"
-                          v-bind="props"
-                          indeterminate
-                          color="primary"
-                        />
-                        <v-icon
-                          v-if="microservice.status == Status.CONNECTED"
-                          v-bind="props"
-                          icon="mdi-check-circle"
-                          color="white"
-                        />
-                      </template>
-                    </v-tooltip>
-                  </td>
-                </tr>
-              </tbody>
-            </v-table>
-          </v-row>
-        </v-row>
-        <v-row class="pa-3">
-          <v-col cols="12">
-            <v-btn
-              href="https://github.com/Geode-solutions/Vease/issues/new"
-              target="_blank"
-              >Report an issue</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+  <Launcher v-if="infraStore.status != Status.CREATED" />
+  <div
+    v-else
+    ref="cardContainer"
+    class="w-100 h-100 fill-height"
+    @contextmenu.prevent="openMenu"
+  >
+    <HybridRenderingView>
+      <template #ui>
+        <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
+        <ViewerContextMenu
+          v-if="display_menu"
+          :id="menuStore.current_id || id"
+          :x="menuStore.menuX"
+          :y="menuStore.menuY"
+          :containerWidth="containerWidth"
+          :containerHeight="containerHeight"
+        />
+      </template>
+    </HybridRenderingView>
+  </div>
 </template>
-
-<style scoped>
-  td {
-    text-align: left;
-  }
-</style>

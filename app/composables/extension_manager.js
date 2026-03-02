@@ -1,26 +1,20 @@
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { useAppStore } from "@ogw_front/stores/app"
-import { useGeodeStore } from "@ogw_front/stores/geode"
 import { useInfraStore } from "@ogw_front/stores/infra"
+import { importExtensions, uploadExtension } from "@ogw_front/utils/extension"
 
 export function useExtensionManager() {
+  const infraStore = useInfraStore()
   const appStore = useAppStore()
-  const geodeStore = useGeodeStore()
 
   async function importExtensionFile(file) {
-    console.log("[ExtensionManager] Importing extension file:", file.name)
-
-    // Upload .vext to backend
-    const schemaImport = back_schemas.opengeodeweb_back.import_extension
-    const form = new FormData()
-    form.append("file", file, file.name)
-
-    const result = await $fetch(schemaImport.$id, {
-      baseURL: geodeStore.base_url,
-      method: "POST",
-      body: form,
-    })
-    const { extension_name, frontend_content, backend_path } = result
+    await uploadExtension(file)
+    const result = await importExtensions()
+    const {
+      extension_name,
+      extension_version,
+      frontend_content,
+      backend_path,
+    } = result
     console.log("[ExtensionManager] Extension extracted", extension_name)
 
     // Create blob URL from frontend JS content
@@ -41,7 +35,6 @@ export function useExtensionManager() {
       console.log("[ExtensionManager] Store registered:", store.$id)
 
       // Launch the microservice if the store has a launch method
-      const infraStore = useInfraStore()
       if (typeof store.launch === "function") {
         if (infraStore.app_mode === "DESKTOP") {
           console.log(
@@ -67,8 +60,9 @@ export function useExtensionManager() {
     }
 
     return {
-      extensionModule,
       extension_name,
+      extension_version,
+      extensionModule,
       backend_path,
     }
   }
@@ -101,5 +95,3 @@ export function useExtensionManager() {
 
   return { importExtensionFile, unloadExtension }
 }
-
-export default useExtensionManager
