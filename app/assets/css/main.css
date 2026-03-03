@@ -41,6 +41,17 @@ img {
   isolation: isolate;
   backface-visibility: hidden;
 }
+
+.glass-panel {
+  background: rgba(30, 30, 30, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  isolation: isolate;
+  backface-visibility: hidden;
+}
 .title-text {
   font-weight: 300;
   background: linear-gradient(to right, #ffffff, #a7f3d0);
@@ -51,4 +62,48 @@ img {
 
 .font-michroma {
   font-family: "Michroma", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.v-btn:hover > .v-btn__overlay,
+.v-list-item:hover > .v-list-item__overlay,
+.v-card:hover > .v-card__overlay,
+.v-stepper-vertical-item:hover > .v-stepper-vertical-item__overlay {
+  opacity: 0 !important;
+}
+
+.v-stepper-vertical-item--editable:hover {
+  background: transparent !important;
+}
+
+.v-field--variant-outlined:hover .v-field__outline {
+  --v-field-border-opacity: 0.38 !important;
+}
+
+.v-field--focused.v-field--variant-outlined .v-field__outline {
+  --v-field-border-opacity: 1 !important;
+}
+
+.v-field--variant-outlined:hover .v-field__outline .v-field-outline__start,
+.v-field--variant-outlined:hover .v-field__outline .v-field-outline__notch,
+.v-field--variant-outlined:hover .v-field__outline .v-field-outline__end {
+  border-color: currentColor !important;
 }

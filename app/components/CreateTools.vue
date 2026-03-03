@@ -57,54 +57,47 @@
           cols="6"
           class="d-flex pa-2"
         >
-          <v-hover v-slot="{ isHovering, props }">
-            <GlassCard
-              v-bind="props"
-              variant="ui"
-              class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
-              :class="{
-                'bg-white-opacity-10': isHovering,
-              }"
-              padding="pa-4"
-              @click="handleSelectTool(tool.id)"
-            >
-              <v-card-text class="pa-0 d-flex flex-column flex-grow-1">
-                <v-sheet
-                  class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
-                  color="rgba(255, 255, 255, 0.1)"
-                  :width="70"
-                  :height="70"
-                  elevation="0"
-                  :style="{ transition: 'all 0.3s ease' }"
-                  :class="{ 'bg-primary': isHovering }"
-                >
-                  <v-icon
-                    v-if="tool.iconType === 'mdi'"
-                    :icon="tool.iconSource"
-                    size="36"
-                    color="white"
-                  />
-                  <v-img
-                    v-else-if="tool.iconType === 'svg'"
-                    :src="tool.iconSource"
-                    :alt="tool.title + ' icon'"
-                    height="36"
-                    width="36"
-                    contain
-                    class="svg-white-filter"
-                  />
-                </v-sheet>
-                <div
-                  class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white"
-                >
-                  {{ tool.title }}
-                </div>
-                <div class="text-caption text-wrap text-white opacity-85">
-                  {{ tool.description }}
-                </div>
-              </v-card-text>
-            </GlassCard>
-          </v-hover>
+          <GlassCard
+            variant="ui"
+            class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
+            padding="pa-4"
+            @click="handleSelectTool(tool.id)"
+          >
+            <v-card-text class="pa-0 d-flex flex-column flex-grow-1">
+              <v-sheet
+                class="d-flex align-center justify-center pa-4 rounded-circle mb-4 mx-auto"
+                color="rgba(255, 255, 255, 0.1)"
+                :width="70"
+                :height="70"
+                elevation="0"
+                :style="{ transition: 'all 0.3s ease' }"
+              >
+                <v-icon
+                  v-if="tool.iconType === 'mdi'"
+                  :icon="tool.iconSource"
+                  size="36"
+                  color="white"
+                />
+                <v-img
+                  v-else-if="tool.iconType === 'svg'"
+                  :src="tool.iconSource"
+                  :alt="tool.title + ' icon'"
+                  height="36"
+                  width="36"
+                  contain
+                  class="svg-white-filter"
+                />
+              </v-sheet>
+              <div
+                class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white"
+              >
+                {{ tool.title }}
+              </div>
+              <div class="text-caption text-wrap text-white opacity-85">
+                {{ tool.description }}
+              </div>
+            </v-card-text>
+          </GlassCard>
         </v-col>
       </v-row>
     </v-card-text>

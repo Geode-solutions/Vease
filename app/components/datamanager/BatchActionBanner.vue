@@ -1,8 +1,8 @@
 <script setup>
-  const { selectedCount } = defineProps({
-    selectedCount: {
-      type: Number,
-      default: 0,
+  const { selectedIds } = defineProps({
+    selectedIds: {
+      type: Array,
+      default: () => [],
     },
   })
 
@@ -12,7 +12,7 @@
 <template>
   <v-expand-transition>
     <v-sheet
-      v-if="selectedCount > 0"
+      v-if="selectedIds.length > 0"
       class="mb-4 pa-3 border-thin rounded-lg"
       color="transparent"
       rounded="lg"
@@ -20,7 +20,7 @@
       <div class="d-flex align-center justify-space-between">
         <div class="d-flex align-center ga-2">
           <span class="text-subtitle-2 text-white px-2"
-            >{{ selectedCount }} items selected</span
+            >{{ selectedIds.length }} items selected</span
           >
           <v-divider vertical class="mx-2" />
           <v-btn

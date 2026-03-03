@@ -4,9 +4,10 @@
   const SECONDS_IN_DAY = 86_400
   const MILLISECONDS_TO_SECONDS = 1000
 
-  const { items, search } = defineProps({
+  const { items, search, compact } = defineProps({
     items: { type: Array, required: true },
     search: { type: String, default: "" },
+    compact: { type: Boolean, default: false },
   })
 
   const selectedIds = defineModel("selectedIds", {
@@ -23,16 +24,35 @@
   ])
 
   const headers = [
-    { title: "Name", key: "name", sortable: true },
+    { title: "Name", key: "name", sortable: true, width: "auto" },
     {
       title: "Type",
       key: "geode_object_type",
       sortable: true,
       align: "center",
+      width: "100px",
     },
-    { title: "Date", key: "created_at", sortable: true, align: "center" },
-    { title: "Visibility", key: "visible", sortable: false, align: "center" },
-    { title: "Actions", key: "actions", sortable: false, align: "end" },
+    {
+      title: "Date",
+      key: "created_at",
+      sortable: true,
+      align: "center",
+      width: "160px",
+    },
+    {
+      title: "Visibility",
+      key: "visible",
+      sortable: false,
+      align: "center",
+      width: "100px",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      sortable: false,
+      align: "end",
+      width: "180px",
+    },
   ]
 
   function formatSmartDate(dateStr) {
@@ -64,11 +84,9 @@
     :items="items"
     :search="search"
     show-select
-    fixed-header
-    :height="selectedIds.length > 0 ? '550' : '620'"
     item-value="id"
     return-object
-    class="bg-transparent text-white custom-scrollbar border-0"
+    class="transparent-table"
     hide-default-footer
     :items-per-page="-1"
   >
@@ -166,39 +184,97 @@
 </template>
 
 <style scoped>
-  :deep(.v-data-table-header__content) {
-    font-size: 0.7rem !important;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
+  .transparent-table {
+    background: transparent !important;
+    color: white !important;
+    border: none !important;
   }
 
-  :deep(.v-data-table__th) {
+  .transparent-table :deep(.v-table__wrapper) {
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .transparent-table :deep(table) {
+    background: transparent !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+
+  .transparent-table :deep(thead) {
+    flex-shrink: 0 !important;
+  }
+
+  .transparent-table :deep(tbody) {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+  }
+
+  .transparent-table :deep(thead tr),
+  .transparent-table :deep(tbody tr) {
+    display: table !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .transparent-table :deep(.v-data-table__th) {
     background: transparent !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
   }
 
-  :deep(.v-data-table__td) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
+  .transparent-table :deep(.v-data-table-header__content) {
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
   }
 
-  :deep(.v-data-table__tr:hover) {
+  .transparent-table :deep(.v-data-table__tr) {
+    background: transparent !important;
+  }
+
+  .transparent-table :deep(.v-data-table__tr:hover) {
     background: rgba(255, 255, 255, 0.02) !important;
   }
 
-  .custom-scrollbar :deep(.v-table__wrapper) {
+  .transparent-table :deep(.v-data-table__td) {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+  }
+
+  .transparent-table :deep(.v-data-table__th .v-icon) {
+    color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .transparent-table :deep(.v-selection-control) {
+    color: white !important;
+  }
+
+  .transparent-table :deep(.v-data-table-rows-no-data) {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  .transparent-table :deep(tbody) {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
   }
 
-  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar) {
+  .transparent-table :deep(tbody::-webkit-scrollbar) {
     width: 6px;
   }
 
-  .custom-scrollbar :deep(.v-table__wrapper::-webkit-scrollbar-thumb) {
+  .transparent-table :deep(tbody::-webkit-scrollbar-thumb) {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
   }

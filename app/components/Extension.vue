@@ -177,7 +177,7 @@
                 <v-expansion-panels variant="accordion" class="bg-transparent">
                   <v-expansion-panel
                     rounded="xl"
-                    class="glass-ui border-white border-opacity-10 mb-3"
+                    class="glass-panel border-white border-opacity-10 mb-3"
                     elevation="0"
                     :style="{
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

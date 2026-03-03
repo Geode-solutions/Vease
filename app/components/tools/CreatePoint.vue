@@ -3,24 +3,32 @@
   import { importItem } from "@ogw_front/utils/file_import_workflow"
   import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useUIStore } from "@vease/stores/UI"
+  import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
 
   const UIStore = useUIStore()
   const geodeStore = useGeodeStore()
+  const hybridViewerStore = useHybridViewerStore()
 
   const MIN_COORDINATES = 3
-
-  function openCreateTools() {
-    UIStore.setSelectedTool(undefined)
-    UIStore.setShowCreateTools(true)
-    UIStore.setShowCreatePoint(false)
-    UIStore.setShowCreateAOI(false)
-  }
 
   const name = ref("")
   const x = ref("")
   const y = ref("")
   const z = ref("")
 
+  function initializeForm() {
+    name.value = "New Point"
+    x.value = ""
+    y.value = ""
+    z.value = ""
+  }
+
+  initializeForm()
+
+  function handleClose() {
+    initializeForm()
+    UIStore.setShowCreateTools(false)
+  }
   const loading = ref(false)
 
   const isFormFilled = computed(
@@ -68,7 +76,8 @@
             ...response,
           }
           await importItem(dataToImport)
-          closeDrawer()
+          hybridViewerStore.remoteRender()
+          initializeForm()
         },
       })
     } finally {
@@ -289,12 +298,12 @@
         variant="text"
         color="white"
         size="large"
-        @click="openCreateTools"
+        @click="handleClose"
         :disabled="loading"
         class="text-none rounded-lg"
       >
-        <v-icon start>mdi-close-circle-outline</v-icon>
-        Cancel
+        <v-icon start>mdi-close-circle</v-icon>
+        Close
       </v-btn>
 
       <v-spacer />
