@@ -103,34 +103,59 @@
     </v-card-text>
   </v-card>
 
-  <div v-else class="position-relative tool-component-wrapper pa-4">
-    <GlassCard
-      variant="panel"
-      padding="pa-0"
-      class="ma-2 position-sticky back-btn rounded-circle"
-      width="48"
-      height="48"
-    >
-      <v-btn icon variant="text" @click="handleBack" class="w-100 h-100">
-        <v-icon color="white">mdi-arrow-left</v-icon>
-      </v-btn>
-    </GlassCard>
-    <GlassCard variant="panel" padding="pa-6" class="mt-4">
-      <component
-        v-if="getToolComponent(selectedTool)"
-        :is="getToolComponent(selectedTool)"
-        @close="handleBack"
-        @created="handleToolCreated"
-      />
-      <v-alert v-else type="error" variant="tonal" class="ma-4">
-        Component not found for **{{ selectedTool }}**. Please check the plugin
-        registration.
-      </v-alert>
-    </GlassCard>
+  <div v-else class="tool-wrapper">
+    <div class="tool-scroll-area pa-4">
+      <GlassCard
+        variant="panel"
+        padding="pa-0"
+        class="ma-2 position-sticky back-btn rounded-circle"
+        width="48"
+        height="48"
+      >
+        <v-btn icon variant="text" @click="handleBack" class="w-100 h-100">
+          <v-icon color="white">mdi-arrow-left</v-icon>
+        </v-btn>
+      </GlassCard>
+      <GlassCard variant="panel" padding="pa-6" class="mt-4">
+        <component
+          v-if="getToolComponent(selectedTool)"
+          :is="getToolComponent(selectedTool)"
+          @close="handleBack"
+          @created="handleToolCreated"
+        />
+        <v-alert v-else type="error" variant="tonal" class="ma-4">
+          Component not found for **{{ selectedTool }}**. Please check the
+          plugin registration.
+        </v-alert>
+      </GlassCard>
+    </div>
   </div>
 </template>
 
 <style scoped>
+  .tool-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .tool-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+
+  .tool-scroll-area::-webkit-scrollbar {
+    width: 4px;
+  }
+  .tool-scroll-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
   .back-btn {
     top: 0;
     z-index: 10;
@@ -152,9 +177,5 @@
   .tool-title {
     min-height: 2em;
     line-height: 1.2;
-  }
-
-  .tool-component-wrapper {
-    min-height: 400px;
   }
 </style>
