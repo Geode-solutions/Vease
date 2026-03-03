@@ -143,7 +143,6 @@
   .tool-scroll-area {
     flex-grow: 1;
     overflow-y: auto;
-    /* Custom scrollbar */
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
