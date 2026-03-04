@@ -178,11 +178,18 @@
 <template>
   <v-container
     fluid
-    :class="['fill-height overflow-hidden', compact ? 'pa-2' : 'pa-8']"
+    :class="[
+      'fill-height d-flex flex-column overflow-hidden',
+      compact ? 'pa-2' : 'pa-8',
+    ]"
+    style="min-height: 0"
     theme="dark"
   >
-    <v-row no-gutters class="fill-height">
-      <v-col class="d-flex flex-column fill-height overflow-hidden">
+    <v-row no-gutters class="fill-height" style="min-height: 0">
+      <v-col
+        class="d-flex flex-column fill-height overflow-hidden"
+        style="min-height: 0"
+      >
         <DataManagerHeader
           v-model:search-value="search"
           v-model:active-tab="activeTab"

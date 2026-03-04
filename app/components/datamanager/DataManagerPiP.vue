@@ -51,7 +51,10 @@
       </div>
     </template>
 
-    <div class="overflow-hidden fill-height">
+    <div
+      class="d-flex flex-column overflow-hidden"
+      style="flex: 1 1 0; min-height: 0"
+    >
       <DataManagerContent compact />
     </div>
   </ResizablePiP>
