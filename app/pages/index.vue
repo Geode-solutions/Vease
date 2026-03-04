@@ -5,6 +5,7 @@
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+  import { database } from "@geode/opengeodeweb-front/internal/database/database.js"
 
   import { useDataStore } from "@ogw_front/stores/data"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
@@ -66,7 +67,7 @@
     const x = event.clientX - rect.left
     const yUI = event.clientY - rect.top
 
-    const item = dataStore.getItem(itemId)
+    const item = await database.data.get(itemId)
 
     menuStore.openMenu(
       itemId,
@@ -76,7 +77,7 @@
       containerHeight.value,
       rect.top,
       rect.left,
-      item.value,
+      item,
     )
   }
 
@@ -87,7 +88,7 @@
     const yUI = event.clientY - rect.top
 
     await get_viewer_id(x, yPicking)
-    const item = dataStore.getItem(id.value)
+    const item = await database.data.get(id.value)
 
     menuStore.openMenu(
       id.value,
@@ -97,7 +98,7 @@
       containerHeight.value,
       rect.top,
       rect.left,
-      item.value,
+      item,
     )
   }
 
