@@ -26,7 +26,7 @@
 
   const search = ref("")
   const viewMode = ref("list")
-  const items = dataStore.getAllItems()
+  const items = dataStore.refAllItems()
   const activeTab = ref("data")
   const selectedIds = ref([])
 
