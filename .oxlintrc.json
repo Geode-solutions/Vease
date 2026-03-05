@@ -18,6 +18,7 @@
     "eslint/func-style": ["error", "declaration"],
     "eslint/sort-keys": "off",
     "eslint/no-ternary": "off", // A utiliser pour des opérations simples
+    "unicorn/prefer-ternary": "off",
     "oxc/no-async-await": "off",
     "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
     "eslint/max-statements": ["warn", 20],
@@ -91,8 +92,7 @@
       "rules": {
         "vitest/require-hook": "off",
         "vitest/no-hooks": "off",
-        "vitest/no-importing-vitest-globals": "off",
-        "import/no-relative-parent-imports": "warn"
+        "vitest/no-importing-vitest-globals": "off"
       }
     },
     {
