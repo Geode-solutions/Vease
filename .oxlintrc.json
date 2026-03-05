@@ -7,7 +7,7 @@
     "style": "error",
     "restriction": "error"
   },
-  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest"],
+  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest", "vue"],
   "rules": {
     "unicorn/filename-case": [
       "error",
@@ -15,25 +15,90 @@
         "case": "snakeCase"
       }
     ],
-    "eslint/func-style": [
+    "eslint/func-style": ["error", "declaration"],
+    "eslint/sort-keys": "off",
+    "eslint/no-ternary": "off", // A utiliser pour des opérations simples
+    "oxc/no-async-await": "off",
+    "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
+    "eslint/max-statements": ["warn", 20],
+    "eslint/id-length": [
       "error",
       {
-        "style:": "declaration"
+        "exceptions": [
+          "x",
+          "y",
+          "z",
+          "i",
+          "j",
+          "k",
+          "r",
+          "g",
+          "b",
+          "id",
+          "ID",
+          "fs",
+          "os"
+        ],
+        "min": 3
       }
     ],
-    "eslint/sort-keys": "off",
-    "eslint/no-ternary": "off"
+    "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
+    "sort-imports": ["error", { "allowSeparatedGroups": true }],
+    "eslint/no-undefined": "off", // Conflict with unicorn/no-typeof-undefined which prefers direct undefined comparison
+    "import/prefer-default-export": "off",
+    "import/no-named-export": "off",
+    "import/no-namespace": ["error", { "ignore": ["vuetify/*"] }],
+    "vue/max-props": ["error", { "maxProps": 8 }],
+    "oxc/no-optional-chaining": "off",
+    "node/no-process-env": "off",
+    "no-continue": "off",
+    "import/unambiguous": "off",
+    "max-params": ["warn", { "max": 4 }],
+    "import/no-nodejs-modules": "off",
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        "ignore": [-1, 0, 1, 2, 3, 4],
+        "ignoreArrayIndexes": true
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["**/components/*"],
+      "files": ["**/components/**"],
       "rules": {
         "unicorn/filename-case": [
           "error",
           {
-            "case": "PascalCase"
+            "case": "pascalCase"
           }
         ]
+      }
+    },
+    {
+      "files": [
+        "app/plugins/**",
+        "node_scripts/**",
+        "server/**",
+        "*.config.js"
+      ],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": ["tests/**"],
+      "rules": {
+        "vitest/require-hook": "off",
+        "vitest/no-hooks": "off",
+        "vitest/no-importing-vitest-globals": "off",
+        "import/no-relative-parent-imports": "warn"
+      }
+    },
+    {
+      "files": ["**/preload.js"],
+      "rules": {
+        "import/no-commonjs": "off"
       }
     }
   ]
