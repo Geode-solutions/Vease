@@ -54,6 +54,7 @@
     "no-continue": "off",
     "import/unambiguous": "off",
     "max-params": ["warn", { "max": 4 }],
+    "import/no-nodejs-modules": "off",
     "eslint/no-magic-numbers": [
       "error",
       {
@@ -89,7 +90,9 @@
       "files": ["tests/**"],
       "rules": {
         "vitest/require-hook": "off",
-        "vitest/no-hooks": "off"
+        "vitest/no-hooks": "off",
+        "vitest/no-importing-vitest-globals": "off",
+        "import/no-relative-parent-imports": "warn"
       }
     },
     {
