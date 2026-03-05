@@ -7,8 +7,6 @@ import package_json from "./package.json"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-console.log(`__dirname: ${__dirname}`)
-
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -168,4 +166,8 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-03-27",
+
+  nitro: {
+    scanDirs: ["../../OpenGeodeWeb/OpenGeoWeb-Front/server"],
+  },
 })
