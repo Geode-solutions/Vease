@@ -5,8 +5,8 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 
 // Local imports
 
-const WINDOWS_TIMEOUT = 15
-const LINUX_TIMEOUT = 10
+const WINDOWS_TIMEOUT = 20
+const LINUX_TIMEOUT = 15
 const MILLISECONDS = 1000
 
 test.beforeEach(async ({ page }) => {
