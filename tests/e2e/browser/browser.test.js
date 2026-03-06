@@ -10,10 +10,9 @@ const LINUX_TIMEOUT = 5
 const MILLISECONDS = 1000
 
 test.beforeEach(async ({ page }) => {
-  await runBrowser("preview:browser")
+  const port = await runBrowser("preview:browser")
   page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
-  const nuxt_port = 3000
-  await page.goto(`http://localhost:${nuxt_port}`)
+  await page.goto(`http://localhost:${port}`)
   console.log("Navigated to", page.url())
   await page.setViewportSize({ width: 1200, height: 800 })
 })
