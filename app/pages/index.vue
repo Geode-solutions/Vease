@@ -8,36 +8,15 @@
 
   import { useDataStore } from "@ogw_front/stores/data"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
-  import { useGeodeStore } from "@ogw_front/stores/geode"
   import { useInfraStore } from "@ogw_front/stores/infra"
   import { useMenuStore } from "@ogw_front/stores/menu"
   import { useViewerStore } from "@ogw_front/stores/viewer"
-  import { useUIStore } from "@vease/stores/UI"
-
-  const { query } = useRoute()
-  if (query.geode_port) {
-    console.log(
-      "Modifying geode port from query parameters to",
-      query.geode_port,
-    )
-    const geodeStore = useGeodeStore()
-    geodeStore.$patch({ default_local_port: query.geode_port })
-  }
-  if (query.viewer_port) {
-    console.log(
-      "Modifying viewer port from query parameters to",
-      query.viewer_port,
-    )
-    const viewerStore = useViewerStore()
-    viewerStore.$patch({ default_local_port: query.viewer_port })
-  }
 
   const infraStore = useInfraStore()
   const viewerStore = useViewerStore()
   const menuStore = useMenuStore()
   const dataStore = useDataStore()
   const dataStyleStore = useDataStyleStore()
-  const UIStore = useUIStore()
 
   const id = ref("")
   const containerWidth = ref(0)

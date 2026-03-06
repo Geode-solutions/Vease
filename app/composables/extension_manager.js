@@ -1,75 +1,41 @@
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json"
 import { useAppStore } from "@ogw_front/stores/app"
-import { useGeodeStore } from "@ogw_front/stores/geode"
 import { useInfraStore } from "@ogw_front/stores/infra"
+import { uploadExtension, runExtensions } from "@ogw_front/utils/extension"
 
 export function useExtensionManager() {
+  const infraStore = useInfraStore()
   const appStore = useAppStore()
-  const geodeStore = useGeodeStore()
 
   async function importExtensionFile(file) {
-    console.log("[ExtensionManager] Importing extension file:", file.name)
+    await uploadExtension(file)
+    const { extensionsArray } = await runExtensions()
 
-    // Upload .vext to backend
-    const schemaImport = back_schemas.opengeodeweb_back.import_extension
-    const form = new FormData()
-    form.append("file", file, file.name)
+    for (const extension of extensionsArray) {
+      const { id, name, version, frontendContent, port } = extension
+      const blob = new Blob([frontendContent], {
+        type: "application/javascript",
+      })
+      const blobUrl = URL.createObjectURL(blob)
+      const extensionModule = await appStore.loadExtension(blobUrl)
+      console.log("[ExtensionManager] Extension loaded:", id)
 
-    const result = await $fetch(schemaImport.$id, {
-      baseURL: geodeStore.base_url,
-      method: "POST",
-      body: form,
-    })
-    const { extension_name, frontend_content, backend_path } = result
-    console.log("[ExtensionManager] Extension extracted", extension_name)
-
-    // Create blob URL from frontend JS content
-    const blob = new Blob([frontend_content], {
-      type: "application/javascript",
-    })
-    const blobUrl = URL.createObjectURL(blob)
-
-    // Load the extension module
-    const extensionModule = await appStore.loadExtension(blobUrl, backend_path)
-
-    console.log("[ExtensionManager] Extension loaded:", extension_name)
-    // Register the store if present
-    if (extensionModule.metadata?.store) {
-      const storeFactory = extensionModule.metadata.store
-      const store = storeFactory()
-      appStore.registerStore(store)
-      console.log("[ExtensionManager] Store registered:", store.$id)
-
-      // Launch the microservice if the store has a launch method
-      const infraStore = useInfraStore()
-      if (typeof store.launch === "function") {
-        if (infraStore.app_mode === "DESKTOP") {
-          console.log(
-            "[ExtensionManager] Launching microservice in DESKTOP mode...",
-          )
-          await store.launch(backend_path)
-          await store.connect()
-          console.log("[ExtensionManager] Microservice connected")
-        } else if (infraStore.app_mode === "BROWSER") {
-          console.log(
-            "[ExtensionManager] Launching microservice in BROWSER mode...",
-          )
-          await store.launch(backend_path)
-          await store.connect()
-          console.log("[ExtensionManager] Microservice connected")
-        } else {
-          console.log(
-            `[ExtensionManager] Skipping microservice launch in ${infraStore.app_mode} mode`,
-          )
-        }
+      if (extensionModule.metadata?.store) {
+        const storeFactory = extensionModule.metadata.store
+        const store = storeFactory()
+        store.$patch((state) => {
+          state.default_local_port = port
+        })
+        appStore.registerStore(store)
+        console.log("[ExtensionManager] Store registered:", store.$id)
+        await store.connect()
+        console.log("[ExtensionManager] Microservice connected:", store.$id)
         infraStore.register_microservice(store)
       }
-    }
-
-    return {
-      extensionModule,
-      extension_name,
-      backend_path,
+      return {
+        name,
+        version,
+        extensionModule,
+      }
     }
   }
 
@@ -101,5 +67,3 @@ export function useExtensionManager() {
 
   return { importExtensionFile, unloadExtension }
 }
-
-export default useExtensionManager

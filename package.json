@@ -27,7 +27,7 @@
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run dev:browser",
-    "dev:browser": "node node_scripts/browser.js dev:nuxt",
+    "dev:browser": "cross-env BROWSER=true npm run dev:nuxt",
     "dev:desktop": "npm run dev:nuxt",
     "dev:nuxt": "npm run clean_cache && npx nuxi dev --no-fork",
     "build": "nuxi build --prerender",
@@ -61,7 +61,6 @@
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
     "h3-formidable": "1.0.0",
-    "jszip": "3.10.1",
     "utf-8-validate": "6.0.5"
   },
   "devDependencies": {
