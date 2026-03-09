@@ -49,7 +49,7 @@ export function transformExtensionCode(code) {
     /from\s+["']@ogw_front\/app\/utils\/status\.js["']/g,
     `from "data:text/javascript,${encodeURIComponent(`
       const Status = window.__VEASE_UTILS__.Status;
-      export default Status;
+      export { Status };
     `)}"`,
   )
 
