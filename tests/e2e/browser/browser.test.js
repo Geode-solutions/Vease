@@ -1,9 +1,8 @@
 // Third party imports
 import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
-import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js"
-
 import kill from "kill-port"
+import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js"
 
 // Local imports
 
@@ -13,6 +12,7 @@ const LINUX_TIMEOUT = 10
 const MILLISECONDS = 1000
 
 let nuxtPort
+
 test.beforeEach(async ({ page }) => {
   nuxtPort = await runBrowser("preview:browser")
   page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
