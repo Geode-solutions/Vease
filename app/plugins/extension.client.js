@@ -24,7 +24,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const StatusModule = await import("@ogw_front/utils/status.js")
     const appModeModule = await import("@ogw_front/utils/app_mode.js")
     window.__VEASE_UTILS__ = {
-      Status: StatusModule.default,
+      Status: StatusModule.Status,
       appMode: appModeModule.appMode,
       api_fetch,
     }

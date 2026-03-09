@@ -1,7 +1,7 @@
 <script setup>
   import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
   import Launcher from "@ogw_front/components/Launcher"
-  import Status from "@ogw_front/utils/status"
+  import { Status } from "@ogw_front/utils/status"
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
