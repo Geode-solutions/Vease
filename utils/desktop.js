@@ -54,6 +54,7 @@ async function create_new_window() {
       },
     })
   })
+  console.log("app.isPackaged", app.isPackaged)
   if (app.isPackaged) {
     const serverPath = path.join(
       process.resourcesPath,
@@ -86,7 +87,7 @@ async function create_new_window() {
 
     app.on("before-quit", async () => {
       console.log("Killing server process", { PORT })
-      await kill(PORT)
+      await fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" })
     })
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL)
