@@ -81,7 +81,10 @@ async function create_new_window() {
     server.on("stdout", (data) => console.log(`[server]: ${data}`))
     server.on("stderr", (data) => console.error(`[server]: ${data}`))
 
-    app.on("before-quit", () => kill(PORT))
+    app.on("before-quit", async () => {
+      console.log("Killing server process", { PORT })
+      await kill(PORT)
+    })
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL)
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
