@@ -74,9 +74,12 @@ async function create_new_window() {
       shell: true,
     })
 
-    await setTimeout(() => {
-      win.loadURL(`http://localhost:${PORT}`)
-    }, 1500)
+    await setTimeout(
+      () => {
+        win.loadURL(`http://localhost:${PORT}`)
+      },
+      process.platform === "win32" ? 3000 : 1000,
+    )
 
     server.on("stdout", (data) => console.log(`[server]: ${data}`))
     server.on("stderr", (data) => console.error(`[server]: ${data}`))
