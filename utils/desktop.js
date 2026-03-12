@@ -1,6 +1,9 @@
 // Node imports
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { spawn } from "node:child_process"
+// import { createServer } from "node:http"
+import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 
 // Third party imports
 import { BrowserWindow, app, shell } from "electron"
@@ -11,7 +14,7 @@ const __dirname = path.dirname(__filename) // get the name of the directory
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 
-function create_new_window() {
+async function create_new_window() {
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
@@ -51,15 +54,38 @@ function create_new_window() {
     })
   })
   if (app.isPackaged) {
-    const app_path = path.join(process.resourcesPath, "public", "index.html")
-    console.log("APP_PATH", app_path)
-    win.loadFile(app_path)
+    const serverPath = path.join(
+      process.resourcesPath,
+      "web",
+      "server",
+      "index.mjs",
+    )
+
+    console.log("starting server " + serverPath)
+
+    const PORT = await getAvailablePort()
+    const portPrefix =
+      process.platform === "win32" ? "set PORT=" + PORT : "PORT=" + PORT
+    const command = portPrefix + " node " + serverPath
+    console.log("command", command)
+    const server = spawn(command, {
+      encoding: "utf8",
+      shell: true,
+    })
+
+    await setTimeout(() => {
+      win.loadURL(`http://localhost:${PORT}`)
+    }, 1500)
+
+    server.on("stdout", (data) => console.log(`[server]: ${data}`))
+    server.on("stderr", (data) => console.error(`[server]: ${data}`))
+
+    app.on("before-quit", () => server.kill())
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL)
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
     win.on("ready-to-show", () => {
       win.webContents.openDevTools()
-      // win.webContents.openDevTools({ mode: "detach" });
     })
   }
 

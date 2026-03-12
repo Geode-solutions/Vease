@@ -166,8 +166,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-03-27",
-
-  nitro: {
-    scanDirs: ["../../OpenGeodeWeb/OpenGeoWeb-Front/server"],
-  },
 })

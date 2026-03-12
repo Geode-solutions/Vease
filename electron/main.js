@@ -11,11 +11,16 @@ import { create_new_window } from "../utils/desktop.js"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
-let project_folder_path = ""
+let projectFolderPath = ""
 let _mainWindow = null
 
 ipcMain.handle("new_window", () => {
   create_new_window()
+})
+
+ipcMain.handle("project_folder_path", async (_event, args) => {
+  ;({ projectFolderPath } = args)
+  console.log(`[Electron] Updated projectFolderPath: ${projectFolderPath}`)
 })
 
 /* eslint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return */
@@ -27,7 +32,7 @@ let cleaned = false
 
 async function clean_up() {
   console.log("Shutting down microservices")
-  await cleanupBackend(project_folder_path)
+  await cleanupBackend(projectFolderPath)
   cleaned = true
   console.log("end clean")
 }

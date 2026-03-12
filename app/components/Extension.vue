@@ -1,14 +1,18 @@
 <script setup>
   import GlassCard from "@ogw_front/components/GlassCard"
   import DragAndDrop from "@ogw_front/components/DragAndDrop"
+  import { importExtensionFile } from "@ogw_front/utils/extension"
+  import { useInfraStore } from "@ogw_front/stores/infra"
+  import { appMode } from "@ogw_front/utils/app_mode"
+
   import { formatRelativeTime } from "@/utils/formatDate"
-  import { useExtensionManager } from "@vease/composables/extension_manager"
   import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
   import { useExtensionsStore } from "@vease/stores/extensions"
 
   const MESSAGE_TIMEOUT = 4000
 
   const extensionsStore = useExtensionsStore()
+  const infraStore = useInfraStore()
   const loading = ref(false)
   const errorMessage = ref("")
   const successMessage = ref("")
@@ -38,11 +42,10 @@
     loading.value = true
 
     let successCount = 0
-    const extensionManager = useExtensionManager()
 
     try {
       const results = await Promise.allSettled(
-        validFiles.map((file) => extensionManager.importExtensionFile(file)),
+        validFiles.map((file) => importExtensionFile(file)),
       )
 
       for (const result of results) {
@@ -109,7 +112,15 @@
       </p>
     </div>
 
-    <v-card-text class="px-6 pb-6 overflow-y-auto">
+    <v-card-text
+      v-if="infraStore.app_mode === appMode.CLOUD"
+      class="px-6 pb-6 overflow-y-auto"
+    >
+      <p class="text-white font-weight-semibold opacity-80">
+        Feature disabled in cloud mode
+      </p>
+    </v-card-text>
+    <v-card-text v-else class="px-6 pb-6 overflow-y-auto">
       <DragAndDrop
         :multiple="true"
         accept=".vext"
