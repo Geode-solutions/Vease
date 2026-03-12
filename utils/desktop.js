@@ -79,7 +79,7 @@ async function create_new_window() {
       () => {
         win.loadURL(`http://localhost:${PORT}`)
       },
-      process.platform === "win32" ? 3000 : 1000,
+      process.platform === "win32" ? 4000 : 1000,
     )
 
     server.on("stdout", (data) => console.log(`[server]: ${data}`))
