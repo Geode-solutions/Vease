@@ -3,10 +3,11 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { spawn } from "node:child_process"
 // import { createServer } from "node:http"
-import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 
 // Third party imports
+import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 import { BrowserWindow, app, shell } from "electron"
+import kill from "kill-port"
 
 // Local constants
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
@@ -80,7 +81,7 @@ async function create_new_window() {
     server.on("stdout", (data) => console.log(`[server]: ${data}`))
     server.on("stderr", (data) => console.error(`[server]: ${data}`))
 
-    app.on("before-quit", () => server.kill())
+    app.on("before-quit", () => kill(PORT))
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL)
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
