@@ -67,7 +67,7 @@ async function create_new_window() {
 
     const PORT = await getAvailablePort()
     const portPrefix =
-      process.platform === "win32" ? "set PORT=" + PORT : "PORT=" + PORT
+      process.platform === "win32" ? "set PORT=" + PORT + " &" : "PORT=" + PORT
     const command = portPrefix + " node " + serverPath
     console.log("command", command)
     const server = spawn(command, {
