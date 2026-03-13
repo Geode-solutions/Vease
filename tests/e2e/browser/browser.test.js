@@ -1,24 +1,30 @@
 // Third party imports
 import { expect, test } from "@playwright/test"
 import { isWindows } from "std-env"
+import kill from "kill-port"
+import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js"
 
 // Local imports
-import { run_browser_wrapper } from "../../../utils/local"
 
-const WINDOWS_TIMEOUT = 10
-const LINUX_TIMEOUT = 5
+// Constants
+const WINDOWS_TIMEOUT = 15
+const LINUX_TIMEOUT = 10
 const MILLISECONDS = 1000
 
+let nuxtPort
+
 test.beforeEach(async ({ page }) => {
-  const ports = await run_browser_wrapper(`preview:browser`)
-  console.log("ports", ports)
-  const { geode_port, viewer_port, nuxt_port } = ports
+  nuxtPort = await runBrowser("preview:browser")
   page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`))
-  await page.goto(
-    `http://localhost:${nuxt_port}?geode_port=${geode_port}&viewer_port=${viewer_port}`,
-  )
+  await page.goto(`http://localhost:${nuxtPort}`)
   console.log("Navigated to", page.url())
   await page.setViewportSize({ width: 1200, height: 800 })
+})
+
+test.afterEach(async () => {
+  console.log("Killing Nuxt process", { nuxtPort })
+  await kill(nuxtPort)
+  console.log("Killed Nuxt process", { nuxtPort })
 })
 
 test("Microservices running", async ({ page }) => {

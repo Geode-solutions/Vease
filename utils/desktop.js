@@ -1,15 +1,20 @@
-import { BrowserWindow, app, shell } from "electron"
+// Node imports
 import path from "node:path"
-
 import { fileURLToPath } from "node:url"
+import { spawn } from "node:child_process"
+// import { createServer } from "node:http"
 
+// Third party imports
+import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
+import { BrowserWindow, app, shell } from "electron"
+
+// Local constants
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
 const __dirname = path.dirname(__filename) // get the name of the directory
-
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 
-function create_new_window() {
+async function create_new_window() {
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
@@ -48,16 +53,46 @@ function create_new_window() {
       },
     })
   })
+  console.log("app.isPackaged", app.isPackaged)
   if (app.isPackaged) {
-    const app_path = path.join(process.resourcesPath, "public", "index.html")
-    console.log("APP_PATH", app_path)
-    win.loadFile(app_path)
+    const serverPath = path.join(
+      process.resourcesPath,
+      "web",
+      "server",
+      "index.mjs",
+    )
+
+    console.log("starting server " + serverPath)
+
+    const PORT = await getAvailablePort()
+    const portPrefix =
+      process.platform === "win32" ? "set PORT=" + PORT + " &" : "PORT=" + PORT
+    const command = portPrefix + " node " + serverPath
+    console.log("command", command)
+    const server = spawn(command, {
+      encoding: "utf8",
+      shell: true,
+    })
+
+    await setTimeout(
+      () => {
+        win.loadURL(`http://localhost:${PORT}`)
+      },
+      process.platform === "win32" ? 4000 : 1000,
+    )
+
+    server.on("stdout", (data) => console.log(`[server]: ${data}`))
+    server.on("stderr", (data) => console.error(`[server]: ${data}`))
+
+    app.on("before-quit", async () => {
+      console.log("Killing server process", { PORT })
+      await fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" })
+    })
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL)
     win.loadURL(process.env.VITE_DEV_SERVER_URL)
     win.on("ready-to-show", () => {
       win.webContents.openDevTools()
-      // win.webContents.openDevTools({ mode: "detach" });
     })
   }
 
@@ -78,9 +113,4 @@ function create_new_window() {
   return win
 }
 
-function run_extensions() {
-  const debug = "EXTENSION RUNNING"
-  console.log(debug)
-}
-
-export { create_new_window, run_extensions }
+export { create_new_window }
