@@ -7,7 +7,6 @@ import { spawn } from "node:child_process"
 // Third party imports
 import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 import { BrowserWindow, app, shell } from "electron"
-import kill from "kill-port"
 
 // Local constants
 const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
