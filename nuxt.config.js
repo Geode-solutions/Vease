@@ -1,6 +1,6 @@
 // Node imports
-import path from "node:path"
 import { fileURLToPath } from "node:url"
+import path from "node:path"
 
 // Local imports
 import package_json from "./package.json"
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": `${__dirname}/app`,
+    "@vease": path.resolve(__dirname, "app"),
   },
 
   imports: {
@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 
   modules: [
     process.env.BROWSER && process.env.BROWSER === "true"
-      ? null
+      ? undefined
       : "nuxt-electron",
     "vuetify-nuxt-module",
     [

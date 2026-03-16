@@ -6,13 +6,13 @@ import { autoUpdater } from "electron-updater"
 import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 
 // Local imports
-/* eslint-disable-next-line import/no-absolute-path */
+// oxlint-disable-next-line import/no-relative-parent-imports
 import { create_new_window } from "../utils/desktop.js"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 let projectFolderPath = ""
-let _mainWindow = null
+let _mainWindow = undefined
 
 ipcMain.handle("new_window", () => {
   create_new_window()
@@ -45,6 +45,7 @@ app.on("before-quit", async function onBeforeQuit(event) {
       app.quit()
     } catch (error) {
       console.error("Cleanup failed", error)
+      // oxlint-disable-next-line no-process-exit
       process.exit(1)
     }
   }

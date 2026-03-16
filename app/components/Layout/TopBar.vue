@@ -1,13 +1,13 @@
 <script setup>
   import GlassCard from "@ogw_front/components/GlassCard"
   import logo from "@vease/assets/img/logo.png"
-  import { useUIStore } from "@vease/stores/UI"
   import { useProjectManager } from "@ogw_front/composables/project_manager"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UIStore = useUIStore()
   const { importProjectFile, exportProject } = useProjectManager()
 
-  const importFileInput = ref(null)
+  const importFileInput = ref(undefined)
 
   function triggerImport() {
     importFileInput.value?.click()
@@ -15,7 +15,9 @@
 
   function onImportFileSelected(event) {
     const file = event.target.files?.[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
     if (!file.name.toLowerCase().endsWith(".vease")) {
       event.target.value = ""
       return

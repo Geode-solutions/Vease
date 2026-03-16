@@ -11,7 +11,7 @@ const WINDOWS_TIMEOUT = 15
 const LINUX_TIMEOUT = 10
 const MILLISECONDS = 1000
 
-let nuxtPort
+let nuxtPort = undefined
 
 test.beforeEach(async ({ page }) => {
   nuxtPort = await runBrowser("preview:browser")

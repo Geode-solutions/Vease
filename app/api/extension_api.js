@@ -1,4 +1,4 @@
-import { useUIStore } from "@vease/stores/UI"
+import { useUIStore } from "@vease/stores/ui"
 
 export function useExtensionAPI() {
   const UIStore = useUIStore()

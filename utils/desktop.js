@@ -1,16 +1,19 @@
+// oxlint-disable promise/prefer-await-to-callbacks
+
 // Node imports
-import path from "node:path"
 import { fileURLToPath } from "node:url"
+import path from "node:path"
 import { spawn } from "node:child_process"
-// import { createServer } from "node:http"
 
 // Third party imports
-import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 import { BrowserWindow, app, shell } from "electron"
+import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 
 // Local constants
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
-const __dirname = path.dirname(__filename) // get the name of the directory
+const PROCESS_WIN32_TIMEOUT = 4000
+const PROCESS_LINUX_TIMEOUT = 1000
+const __filename = fileURLToPath(import.meta.url) // Get the resolved path to the file
+const __dirname = path.dirname(__filename) // Get the name of the directory
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 
@@ -62,12 +65,12 @@ async function create_new_window() {
       "index.mjs",
     )
 
-    console.log("starting server " + serverPath)
+    console.log(`starting server ${serverPath}`)
 
     const PORT = await getAvailablePort()
     const portPrefix =
-      process.platform === "win32" ? "set PORT=" + PORT + " &" : "PORT=" + PORT
-    const command = portPrefix + " node " + serverPath
+      process.platform === "win32" ? `set PORT=${PORT} &` : `PORT=${PORT}`
+    const command = `${portPrefix} node ${serverPath}`
     console.log("command", command)
     const server = spawn(command, {
       encoding: "utf8",
@@ -78,7 +81,9 @@ async function create_new_window() {
       () => {
         win.loadURL(`http://localhost:${PORT}`)
       },
-      process.platform === "win32" ? 4000 : 1000,
+      process.platform === "win32"
+        ? PROCESS_WIN32_TIMEOUT
+        : PROCESS_LINUX_TIMEOUT,
     )
 
     server.on("stdout", (data) => console.log(`[server]: ${data}`))

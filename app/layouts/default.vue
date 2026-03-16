@@ -1,16 +1,16 @@
 <script setup>
   import { useInfraStore } from "@ogw_front/stores/infra"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
+  import CreateTools from "@vease/components/CreateTools"
+  import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue"
+  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
+  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
   import GlassCard from "@ogw_front/components/GlassCard"
   import InfraConnected from "@ogw_front/components/InfraConnected"
-  import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers"
-  import TopBar from "@vease/components/Layout/TopBar"
   import SideBar from "@vease/components/Layout/SideBar"
-  import FullScrenDropZone from "@vease/components/FullScrenDropZone"
-  import CreateTools from "@vease/components/CreateTools"
   import StepImport from "@vease/components/StepImport"
-  import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue"
+  import TopBar from "@vease/components/Layout/TopBar"
 
   const UIStore = useUIStore()
   const infraStore = useInfraStore()

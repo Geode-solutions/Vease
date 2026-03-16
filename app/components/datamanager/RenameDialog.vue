@@ -8,7 +8,7 @@
     },
     item: {
       type: Object,
-      default: null,
+      default: undefined,
     },
     initialName: {
       type: String,
@@ -28,7 +28,9 @@
   )
 
   function handleConfirm() {
-    if (!currentName.value) return
+    if (!currentName.value) {
+      return
+    }
     emit("confirm", currentName.value)
   }
 </script>

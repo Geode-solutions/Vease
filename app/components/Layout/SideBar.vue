@@ -1,5 +1,5 @@
 <script setup>
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UIStore = useUIStore()
 
@@ -18,7 +18,7 @@
     },
   ])
 
-  let draggedItem = null
+  let draggedItem = undefined
 
   function startDrag(event, item) {
     draggedItem = item
@@ -27,11 +27,13 @@
 
   function onDrop(event, dropIndex) {
     const dragIndex = items.value.indexOf(draggedItem)
-    if (dragIndex === dropIndex) return
+    if (dragIndex === dropIndex) {
+      return
+    }
 
     items.value.splice(dragIndex, 1)
     items.value.splice(dropIndex, 0, draggedItem)
-    draggedItem = null
+    draggedItem = undefined
   }
 </script>
 
