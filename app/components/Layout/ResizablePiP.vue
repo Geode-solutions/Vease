@@ -3,7 +3,16 @@
 
   const RATIO = 0.9
 
-  const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, edgeSize, margin, zIndex } = defineProps({
+  const {
+    defaultWidth,
+    defaultHeight,
+    minWidth,
+    minHeight,
+    storageKey,
+    edgeSize,
+    margin,
+    zIndex,
+  } = defineProps({
     defaultWidth: { type: Number, default: 560 },
     defaultHeight: { type: Number, default: 480 },
     minWidth: { type: Number, default: 400 },
