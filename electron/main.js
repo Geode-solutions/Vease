@@ -6,8 +6,7 @@ import { autoUpdater } from "electron-updater"
 import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
 
 // Local imports
-// oxlint-disable-next-line import/no-relative-parent-imports
-import { create_new_window } from "../utils/desktop.js"
+import { create_new_window } from "@vease_utils/desktop.js"
 
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"

@@ -21,7 +21,8 @@ export default defineNuxtConfig({
   extends: ["@geode/opengeodeweb-front"],
 
   alias: {
-    "@vease": `${__dirname}/app`,
+    "@vease": path.resolve(__dirname, "app"),
+    "@vease_utils": path.resolve(__dirname, "utils"),
   },
 
   imports: {
