@@ -1,4 +1,4 @@
-import { VeaseExtensionAPI } from "../utils/extension_api.js"
+import { VeaseExtensionAPI } from "@vease/utils/extension_api.js"
 import { useAppStore } from "@ogw_front/stores/app"
 import { useExtensionsStore } from "@vease/stores/extensions"
 import { useFeedbackStore } from "@ogw_front/stores/feedback"
@@ -19,8 +19,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
 
     // Expose utilities for extensions
-    const { api_fetch } =
-      await import("@geode/opengeodeweb-front/internal/utils/api_fetch.js")
+    const { api_fetch } = await import(
+      "@geode/opengeodeweb-front/internal/utils/api_fetch.js"
+    )
     const StatusModule = await import("@ogw_front/utils/status.js")
     const appModeModule = await import("@ogw_front/utils/app_mode.js")
     globalThis.__VEASE_UTILS__ = {
