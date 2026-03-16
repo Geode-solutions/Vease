@@ -1,3 +1,4 @@
+//oxlint-disable unicorn/prefer-module
 const { contextBridge, ipcRenderer } = require("electron")
 
 contextBridge.exposeInMainWorld("electronAPI", {

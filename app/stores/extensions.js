@@ -1,4 +1,4 @@
-import { transformExtensionCode } from "../utils/extension_code_transformer.js"
+import { transformExtensionCode } from "@vease/utils/extension_code_transformer.js"
 import { useAppStore } from "@ogw_front/stores/app.js"
 
 export function useExtensionsStore() {
