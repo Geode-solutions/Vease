@@ -11,11 +11,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
+      COMMAND_BACK: "vease-back",
+      COMMAND_VIEWER: "vease-viewer",
       PROJECT: package_json.name,
-      BACK_PATH: path.join(__dirname, "microservices", "back"),
-      BACK_COMMAND: "vease-back",
-      VIEWER_PATH: path.join(__dirname, "microservices", "viewer"),
-      VIEWER_COMMAND: "vease-viewer",
     },
   },
   extends: ["@geode/opengeodeweb-front"],
