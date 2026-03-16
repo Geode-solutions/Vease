@@ -1,7 +1,7 @@
 <script setup>
   import GlassCard from "@ogw_front/components/GlassCard"
   import logo from "@vease/assets/img/logo.png"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
   import { useProjectManager } from "@ogw_front/composables/project_manager"
 
   const UIStore = useUIStore()

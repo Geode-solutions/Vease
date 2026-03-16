@@ -1,12 +1,12 @@
 <script setup>
-  import GlassCard from "@ogw_front/components/GlassCard"
   import DragAndDrop from "@ogw_front/components/DragAndDrop"
+  import GlassCard from "@ogw_front/components/GlassCard"
+  import { appMode } from "@ogw_front/utils/app_mode"
   import { importExtensionFile } from "@ogw_front/utils/extension"
   import { useInfraStore } from "@ogw_front/stores/infra"
-  import { appMode } from "@ogw_front/utils/app_mode"
 
-  import { formatRelativeTime } from "@/utils/formatDate"
-  import { useExtensionMetadata } from "@/composables/useExtensionMetadata"
+  import { formatRelativeTime } from "@/utils/format_date"
+  import { useExtensionMetadata } from "@/composables/extension_metadata"
   import { useExtensionsStore } from "@vease/stores/extensions"
 
   const MESSAGE_TIMEOUT = 4000

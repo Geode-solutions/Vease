@@ -1,12 +1,14 @@
 <script setup>
-  import { useDraggable, useWindowSize, useStorage } from "@vueuse/core"
+  import { useDraggable, useStorage, useWindowSize } from "@vueuse/core"
 
-  const props = defineProps({
+  const RATIO = 0.9
+
+  const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, edgeSize, margin, zIndex } = defineProps({
     defaultWidth: { type: Number, default: 560 },
     defaultHeight: { type: Number, default: 480 },
     minWidth: { type: Number, default: 400 },
     minHeight: { type: Number, default: 300 },
-    storageKey: { type: String, default: null },
+    storageKey: { type: String, default: undefined },
     edgeSize: { type: Number, default: 6 },
     margin: { type: Number, default: 16 },
     zIndex: { type: Number, default: 1500 },
@@ -14,19 +16,19 @@
 
   const { width: winWidth, height: winHeight } = useWindowSize()
 
-  const maxWidth = computed(() => Math.floor(winWidth.value * 0.9))
-  const maxHeight = computed(() => Math.floor(winHeight.value * 0.9))
+  const maxWidth = computed(() => Math.floor(winWidth.value * RATIO))
+  const maxHeight = computed(() => Math.floor(winHeight.value * RATIO))
 
-  const savedPosition = props.storageKey
-    ? useStorage(`${props.storageKey}-position`, { x: null, y: null })
-    : ref({ x: null, y: null })
+  const savedPosition = storageKey
+    ? useStorage(`${storageKey}-position`, { x: undefined, y: undefined })
+    : ref({ x: undefined, y: undefined })
 
-  const savedSize = props.storageKey
-    ? useStorage(`${props.storageKey}-size`, {
-        width: props.defaultWidth,
-        height: props.defaultHeight,
+  const savedSize = storageKey
+    ? useStorage(`${storageKey}-size`, {
+        width: defaultWidth,
+        height: defaultHeight,
       })
-    : ref({ width: props.defaultWidth, height: props.defaultHeight })
+    : ref({ width: defaultWidth, height: defaultHeight })
 
   const pipWidth = ref(savedSize.value.width)
   const pipHeight = ref(savedSize.value.height)
@@ -34,16 +36,16 @@
   const initialX = computed(() =>
     savedPosition.value.x !== null
       ? savedPosition.value.x
-      : winWidth.value - pipWidth.value - props.margin,
+      : winWidth.value - pipWidth.value - margin,
   )
   const initialY = computed(() =>
     savedPosition.value.y !== null
       ? savedPosition.value.y
-      : winHeight.value - pipHeight.value - props.margin,
+      : winHeight.value - pipHeight.value - margin,
   )
 
-  const pipRef = ref(null)
-  const dragHandle = ref(null)
+  const pipRef = ref(undefined)
+  const dragHandle = ref(undefined)
 
   const { x, y } = useDraggable(pipRef, {
     handle: dragHandle,
@@ -82,27 +84,27 @@
   }
 
   function onResizeMove(event) {
-    const dx = event.clientX - resizeStartPointerX
-    const dy = event.clientY - resizeStartPointerY
+    const deltaX = event.clientX - resizeStartPointerX
+    const deltaY = event.clientY - resizeStartPointerY
 
     if (resizeEdge.includes("right")) {
       pipWidth.value = clamp(
-        resizeStartWidth + dx,
-        props.minWidth,
+        resizeStartWidth + deltaX,
+        minWidth,
         maxWidth.value,
       )
     }
     if (resizeEdge.includes("bottom")) {
       pipHeight.value = clamp(
-        resizeStartHeight + dy,
-        props.minHeight,
+        resizeStartHeight + deltaY,
+        minHeight,
         maxHeight.value,
       )
     }
     if (resizeEdge.includes("left")) {
       const newWidth = clamp(
-        resizeStartWidth - dx,
-        props.minWidth,
+        resizeStartWidth - deltaX,
+        minWidth,
         maxWidth.value,
       )
       const widthDelta = resizeStartWidth - newWidth
@@ -111,8 +113,8 @@
     }
     if (resizeEdge.includes("top")) {
       const newHeight = clamp(
-        resizeStartHeight - dy,
-        props.minHeight,
+        resizeStartHeight - deltaY,
+        minHeight,
         maxHeight.value,
       )
       const heightDelta = resizeStartHeight - newHeight
@@ -140,7 +142,7 @@
         top: `${y}px`,
         width: `${pipWidth}px`,
         height: `${pipHeight}px`,
-        zIndex: props.zIndex,
+        zIndex: zIndex,
         transition: isResizing ? 'none' : 'filter 0.2s ease',
         userSelect: isResizing ? 'none' : undefined,
       }"
@@ -153,7 +155,7 @@
           top: 0,
           left: 0,
           right: 0,
-          height: `${props.edgeSize}px`,
+          height: `${edgeSize}px`,
           zIndex: 11,
           touchAction: 'none',
           cursor: 'ns-resize',
@@ -166,7 +168,7 @@
           bottom: 0,
           left: 0,
           right: 0,
-          height: `${props.edgeSize}px`,
+          height: `${edgeSize}px`,
           zIndex: 11,
           touchAction: 'none',
           cursor: 'ns-resize',
@@ -179,7 +181,7 @@
           top: 0,
           bottom: 0,
           left: 0,
-          width: `${props.edgeSize}px`,
+          width: `${edgeSize}px`,
           zIndex: 11,
           touchAction: 'none',
           cursor: 'ew-resize',
@@ -192,7 +194,7 @@
           top: 0,
           bottom: 0,
           right: 0,
-          width: `${props.edgeSize}px`,
+          width: `${edgeSize}px`,
           zIndex: 11,
           touchAction: 'none',
           cursor: 'ew-resize',

@@ -22,27 +22,7 @@
     "oxc/no-async-await": "off",
     "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
     "eslint/max-statements": ["warn", 20],
-    "eslint/id-length": [
-      "error",
-      {
-        "exceptions": [
-          "x",
-          "y",
-          "z",
-          "i",
-          "j",
-          "k",
-          "r",
-          "g",
-          "b",
-          "id",
-          "ID",
-          "fs",
-          "os"
-        ],
-        "min": 3
-      }
-    ],
+    "eslint/id-length": ["error", { "exceptions": ["x", "y", "z", "i", "j", "k", "r", "g", "b", "id", "ID", "fs", "os", "_"], "min": 3 }],
     "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
     "sort-imports": ["error", { "allowSeparatedGroups": true }],
     "eslint/no-undefined": "off", // Conflict with unicorn/no-typeof-undefined which prefers direct undefined comparison
@@ -53,6 +33,7 @@
     "oxc/no-optional-chaining": "off",
     "node/no-process-env": "off",
     "no-continue": "off",
+    "vitest/require-hook": "off",
     "import/unambiguous": "off",
     "max-params": ["warn", { "max": 4 }],
     "import/no-nodejs-modules": "off",
@@ -62,7 +43,7 @@
         "ignore": [-1, 0, 1, 2, 3, 4],
         "ignoreArrayIndexes": true
       }
-    ]
+    ],
   },
   "overrides": [
     {
@@ -73,7 +54,7 @@
           {
             "case": "pascalCase"
           }
-        ]
+        ],
       }
     },
     {

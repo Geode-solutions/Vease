@@ -1,4 +1,4 @@
-import { useUIStore } from "../stores/UI"
+import { useUIStore } from "../stores/ui"
 
 export default defineNuxtPlugin(() => {
   const UIStore = useUIStore()

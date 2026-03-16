@@ -1,4 +1,4 @@
-import { VeaseExtensionAPI } from "../utils/extensionAPI.js"
+import { VeaseExtensionAPI } from "../utils/extension_api.js"
 import { useAppStore } from "@ogw_front/stores/app"
 import { useExtensionsStore } from "@vease/stores/extensions"
 import { useFeedbackStore } from "@ogw_front/stores/feedback"
@@ -24,7 +24,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     )
     const StatusModule = await import("@ogw_front/utils/status.js")
     const appModeModule = await import("@ogw_front/utils/app_mode.js")
-    window.__VEASE_UTILS__ = {
+    globalThis.__VEASE_UTILS__ = {
       Status: StatusModule.Status,
       appMode: appModeModule.appMode,
       api_fetch,

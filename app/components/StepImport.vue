@@ -4,7 +4,7 @@
   import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector"
   import ObjectSelector from "@ogw_front/components/ObjectSelector"
   import Stepper from "@ogw_front/components/Stepper"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
   const emit = defineEmits(["close"])
   const UIStore = useUIStore()

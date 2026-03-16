@@ -1,5 +1,5 @@
 <script setup>
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UIStore = useUIStore()
 
@@ -18,7 +18,7 @@
     },
   ])
 
-  let draggedItem = null
+  let draggedItem = undefined
 
   function startDrag(event, item) {
     draggedItem = item

@@ -1,6 +1,6 @@
 // Node imports
-import path from "node:path"
 import { fileURLToPath } from "node:url"
+import path from "node:path"
 
 // Local imports
 import package_json from "./package.json"
@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 
   modules: [
     process.env.BROWSER && process.env.BROWSER === "true"
-      ? null
+      ? undefined
       : "nuxt-electron",
     "vuetify-nuxt-module",
     [

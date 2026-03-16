@@ -1,4 +1,4 @@
-import { useUIStore } from "@vease/stores/UI"
+import { useUIStore } from "@vease/stores/ui"
 
 function getExtensionName(extension) {
   if (!extension) {

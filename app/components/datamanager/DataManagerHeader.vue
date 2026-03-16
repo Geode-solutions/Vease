@@ -1,7 +1,7 @@
 <script setup>
-  import { useTemplateRef } from "vue"
   import SearchBar from "@ogw_front/components/SearchBar.vue"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useTemplateRef } from "vue"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UIStore = useUIStore()
 

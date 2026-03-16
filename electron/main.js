@@ -12,7 +12,7 @@ import { create_new_window } from "../utils/desktop.js"
 autoUpdater.checkForUpdatesAndNotify()
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true"
 let projectFolderPath = ""
-let _mainWindow = null
+let _mainWindow = undefined
 
 ipcMain.handle("new_window", () => {
   create_new_window()
@@ -45,6 +45,7 @@ app.on("before-quit", async function onBeforeQuit(event) {
       app.quit()
     } catch (error) {
       console.error("Cleanup failed", error)
+      // oxlint-disable-next-line no-process-exit
       process.exit(1)
     }
   }

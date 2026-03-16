@@ -1,9 +1,11 @@
+//oxlint-disable unicorn/require-post-message-target-origin
 import { BroadcastChannel, createLeaderElection } from "broadcast-channel"
 
 function serialize(obj, keysToUpdate) {
   const object = Object.fromEntries(
     Object.entries(obj).filter(([key]) => keysToUpdate.includes(key)),
   )
+  //oxlint-disable-next-line unicorn/prefer-structured-clone
   return JSON.parse(JSON.stringify(object))
 }
 
@@ -30,12 +32,10 @@ function piniaSharedState() {
         })
         return
       }
-
       const { timestamp: incomingTimestamp, state: incomingState } = newState
       if (incomingTimestamp <= timestamp) {
         return
       }
-
       externalUpdate = true
       timestamp = incomingTimestamp
       store.$patch((state) => {
