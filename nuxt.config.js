@@ -22,7 +22,6 @@ export default defineNuxtConfig({
 
   alias: {
     "@vease": path.resolve(__dirname, "app"),
-    "@vease_utils": path.resolve(__dirname, "utils"),
   },
 
   imports: {
