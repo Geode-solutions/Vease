@@ -15,7 +15,7 @@
 
   function onImportFileSelected(event) {
     const file = event.target.files?.[0]
-    if (!file){
+    if (!file) {
       return
     }
     if (!file.name.toLowerCase().endsWith(".vease")) {
