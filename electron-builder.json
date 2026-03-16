@@ -7,8 +7,8 @@
   "files": ["dist-electron"],
   "extraResources": [
     {
-      "from": ".output/public/",
-      "to": "public/"
+      "from": ".output/",
+      "to": "web/"
     },
     "vease-*",
     "!*.spec"

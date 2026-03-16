@@ -264,7 +264,7 @@
         <div ref="dragHandle" class="resizable-pip-handle">
           <slot name="handle" />
         </div>
-        <div class="resizable-pip-content fill-height overflow-hidden">
+        <div class="resizable-pip-content overflow-hidden">
           <slot />
         </div>
       </GlassCard>
@@ -293,6 +293,7 @@
 
   .resizable-pip-content {
     flex-grow: 1;
+    min-height: 0;
     overflow: hidden;
   }
 </style>

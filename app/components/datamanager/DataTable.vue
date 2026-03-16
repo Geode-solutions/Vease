@@ -23,37 +23,37 @@
     "delete",
   ])
 
-  const headers = [
+  const headers = computed(() => [
     { title: "Name", key: "name", sortable: true, width: "auto" },
     {
       title: "Type",
       key: "geode_object_type",
       sortable: true,
       align: "center",
-      width: "100px",
+      width: compact ? "80px" : "100px",
     },
     {
       title: "Date",
       key: "created_at",
       sortable: true,
       align: "center",
-      width: "160px",
+      width: compact ? "110px" : "160px",
     },
     {
       title: "Visibility",
       key: "visible",
       sortable: false,
       align: "center",
-      width: "100px",
+      width: compact ? "70px" : "100px",
     },
     {
       title: "Actions",
       key: "actions",
       sortable: false,
       align: "end",
-      width: "180px",
+      width: compact ? "140px" : "180px",
     },
-  ]
+  ])
 
   function formatSmartDate(dateStr) {
     if (!dateStr) {
@@ -91,10 +91,16 @@
     :items-per-page="-1"
   >
     <template #[`item.name`]="{ item }">
-      <div class="d-flex align-center py-2">
-        <v-icon size="20" class="mr-3 opacity-60">mdi-file-outline</v-icon>
+      <div
+        class="d-flex align-center py-2 overflow-hidden"
+        style="min-width: 0"
+      >
+        <v-icon size="20" class="mr-3 flex-shrink-0 opacity-60"
+          >mdi-file-outline</v-icon
+        >
         <span
-          class="font-weight-medium cursor-pointer text-no-wrap"
+          class="font-weight-medium cursor-pointer text-truncate pb-1"
+          style="min-width: 0; flex: 1 1 auto"
           @click="emit('rename', item)"
         >
           {{ item.name }}
@@ -250,6 +256,9 @@
   .transparent-table :deep(.v-data-table__td) {
     background: transparent !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   .transparent-table :deep(.v-data-table__th .v-icon) {

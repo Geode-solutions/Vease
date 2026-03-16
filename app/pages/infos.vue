@@ -1,5 +1,5 @@
 <script setup>
-  import Status from "@ogw_front/utils/status"
+  import { Status } from "@ogw_front/utils/status"
   import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
   import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
 
