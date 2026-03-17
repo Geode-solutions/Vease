@@ -12,19 +12,20 @@ const MS_PER_SECOND = 1000
 
 let _electronApp = undefined
 test.beforeAll(async () => {
-  // find the latest build in the out directory
+  // Find the latest build in the out directory
   const latestBuild = findLatestBuild(
     path.join(process.cwd(), "release", "0.0.0"),
   )
   console.log("latestBuild", latestBuild)
-  // parse the directory and find paths and other info
+  // Parse the directory and find paths and other info
   const appInfo = parseElectronApp(latestBuild)
-  // set the CI environment variable to true
+  // Set the CI environment variable to true
+  //oxlint-disable-next-line id-length
   process.env.CI = "e2e"
   _electronApp = await electron.launch({
     args: [appInfo.main, "--no-sandbox"],
     executablePath: appInfo.executable,
-    timeout: 20000,
+    timeout: 20_000,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,

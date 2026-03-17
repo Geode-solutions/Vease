@@ -18,7 +18,7 @@ export const useUIStore = defineStore("UI", () => {
     () => showStepper.value || showCreateTools.value || showExtensions.value,
   )
 
-  function registerToolComponent(toolDefinition, extensionPath = null) {
+  function registerToolComponent(toolDefinition, extensionPath = undefined) {
     const { id, component, ...rest } = toolDefinition
     const existingIndex = toolsDefinitions.value.findIndex(
       (tool) => tool.id === id,
@@ -56,7 +56,9 @@ export const useUIStore = defineStore("UI", () => {
   function getActiveTools() {
     const extensionsStore = useExtensionsStore()
     return toolsDefinitions.value.filter((tool) => {
-      if (!tool.extensionPath) return true
+      if (!tool.extensionPath) {
+        return true
+      }
       return extensionsStore.getExtensionEnabled(tool.extensionPath)
     })
   }

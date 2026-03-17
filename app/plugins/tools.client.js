@@ -1,4 +1,4 @@
-import { useUIStore } from "../stores/UI"
+import { useUIStore } from "@vease/stores/ui"
 
 export default defineNuxtPlugin(() => {
   const UIStore = useUIStore()
@@ -10,7 +10,9 @@ export default defineNuxtPlugin(() => {
     iconType: "mdi",
     iconSource: "mdi-circle-medium",
     component: markRaw(
-      defineAsyncComponent(() => import("../components/tools/CreatePoint.vue")),
+      defineAsyncComponent(
+        () => import("@vease/components/tools/CreatePoint.vue"),
+      ),
     ),
   })
 })

@@ -5,7 +5,7 @@ import { useAppStore } from "@ogw_front/stores/app"
 import { useDataStore } from "@ogw_front/stores/data"
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer"
 import { useInfraStore } from "@ogw_front/stores/infra"
-import { useUIStore } from "@vease/stores/UI"
+import { useUIStore } from "@vease/stores/ui"
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
 
 export const VeaseExtensionAPI = {

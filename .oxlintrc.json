@@ -38,7 +38,8 @@
           "id",
           "ID",
           "fs",
-          "os"
+          "os",
+          "_"
         ],
         "min": 3
       }
@@ -53,6 +54,7 @@
     "oxc/no-optional-chaining": "off",
     "node/no-process-env": "off",
     "no-continue": "off",
+    "vitest/require-hook": "off",
     "import/unambiguous": "off",
     "max-params": ["warn", { "max": 4 }],
     "import/no-nodejs-modules": "off",

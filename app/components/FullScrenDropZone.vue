@@ -1,6 +1,6 @@
 <script setup>
   import { useFeedbackStore } from "@ogw_front/stores/feedback"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UI_TIMEOUT = 300
   const ERROR_500 = 500
@@ -9,7 +9,7 @@
   const feedbackStore = useFeedbackStore()
 
   const isDragging = ref(false)
-  let dragLeaveTimeout = null
+  let dragLeaveTimeout = undefined
 
   function onDragOver(event) {
     event.preventDefault()

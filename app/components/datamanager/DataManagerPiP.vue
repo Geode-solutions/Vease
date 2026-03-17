@@ -1,8 +1,7 @@
 <script setup>
-  import GlassCard from "@ogw_front/components/GlassCard"
   import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue"
   import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue"
-  import { useUIStore } from "@vease/stores/UI"
+  import { useUIStore } from "@vease/stores/ui"
 
   const UIStore = useUIStore()
 
