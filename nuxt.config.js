@@ -7,11 +7,10 @@ import {
   getAppMode,
 } from "@geode/opengeodeweb-front/app/utils/app_mode"
 
-console.log("FROM NUXT VEASE App mode:", getAppMode())
-
 // Local imports
 import package_json from "./package.json"
 
+console.log("FROM NUXT VEASE App mode:", getAppMode())
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
