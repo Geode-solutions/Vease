@@ -77,6 +77,13 @@ async function create_new_window() {
       shell: true,
     })
 
+    server.stdout.on("data", (data) =>
+      console.log(`[NITRO] ${data.toString()}`),
+    )
+    server.stderr.on("data", (data) =>
+      console.log(`[NITRO] ${data.toString()}`),
+    )
+
     await setTimeout(
       () => {
         win.loadURL(`http://localhost:${PORT}`)
@@ -85,10 +92,6 @@ async function create_new_window() {
         ? PROCESS_WIN32_TIMEOUT
         : PROCESS_LINUX_TIMEOUT,
     )
-
-    server.on("stdout", (data) => console.log(`[server]: ${data}`))
-    server.on("stderr", (data) => console.error(`[server]: ${data}`))
-
     app.on("before-quit", async () => {
       console.log("Killing server process", { PORT })
       await fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" })
