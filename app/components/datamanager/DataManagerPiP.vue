@@ -7,7 +7,7 @@
 
   function expandToFullPage() {
     UIStore.setShowDataManagerPiP(false)
-    navigateTo("/data-manager")
+    navigateTo("/data_manager")
   }
 
   function close() {
