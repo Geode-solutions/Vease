@@ -13,6 +13,7 @@ export default defineNuxtConfig({
       VERSION: package_json.version,
       COMMAND_BACK: "vease-back",
       COMMAND_VIEWER: "vease-viewer",
+      NUXT_ROOT_PATH: __dirname,
       PROJECT: package_json.name,
     },
   },
