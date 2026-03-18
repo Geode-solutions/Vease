@@ -2,15 +2,15 @@
 import { fileURLToPath } from "node:url"
 import path from "node:path"
 
-import {
-  appMode,
-  getAppMode,
-} from "@geode/opengeodeweb-front/app/utils/app_mode.js"
+// import {
+//  appMode,
+//  getAppMode,
+// } from //"@geode/opengeodeweb-fronapp/utils/app_mode.js"
 
 // Local imports
 import package_json from "./package.json"
 
-console.log("FROM NUXT VEASE App mode:", getAppMode())
+// console.log("FROM NUXT VEASE App mode:", getAppMode())
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
@@ -34,7 +34,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    getAppMode() === appMode.DESKTOP ? "nuxt-electron" : undefined,
+    process.env.MODE && process.env.MODE === "DESKTOP" ? "nuxt-electron" : undefined,
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
