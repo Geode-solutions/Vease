@@ -130,9 +130,6 @@ export default defineNuxtConfig({
     },
   },
 
-  experimental: {
-    appManifest: false,
-  },
   css: ["@vease/assets/css/main.css"],
 
   vite: {
