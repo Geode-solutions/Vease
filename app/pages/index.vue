@@ -5,6 +5,7 @@
   import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
   import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
   import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
+  import appLogo from "@/assets/img/logo.png"
 
   import { useDataStore } from "@ogw_front/stores/data"
   import { useDataStyleStore } from "@ogw_front/stores/data_style"
@@ -89,7 +90,7 @@
 </script>
 
 <template>
-  <Launcher v-if="infraStore.status != Status.CREATED" />
+  <Launcher v-if="infraStore.status != Status.CREATED" :logo="appLogo" />
   <div
     v-else
     ref="cardContainer"

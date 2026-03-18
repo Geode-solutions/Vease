@@ -46,8 +46,8 @@
 
 <template>
   <v-app>
-    <TopBar />
-    <SideBar />
+    <TopBar style="z-index: 1" />
+    <SideBar style="z-index: 1" />
 
     <v-main
       class="custom-background dropzone"
@@ -58,7 +58,7 @@
         padding="pa-0"
         class="island-wrapper overflow-hidden"
       >
-        <NuxtPage style="z-index: 1" class="fill-height" />
+        <NuxtPage style="z-index: 1000" class="fill-height" />
       </GlassCard>
 
       <InfraConnected>
