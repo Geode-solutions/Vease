@@ -5,7 +5,7 @@ import path from "node:path"
 import {
   appMode,
   getAppMode,
-} from "@geode/opengeodeweb-front/app/utils/app_mode"
+} from "@geode/opengeodeweb-front/app/utils/app_mode.js"
 
 // Local imports
 import package_json from "./package.json"
