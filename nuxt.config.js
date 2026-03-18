@@ -159,7 +159,7 @@ export default defineNuxtConfig({
 
   router: {
     options: {
-      hashMode: process.env.MODE && process.env.MODE === "DESKTOP"
+      hashMode: process.env.MODE && process.env.MODE === "DESKTOP",
     },
   },
 
