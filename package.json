@@ -38,7 +38,7 @@
     "build:desktop": "cross-env MODE=DESKTOP npm run build && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
-    "package": "npm run build && electron-builder build --publish=never",
+    "package": "cross-env MODE=DESKTOP npm run build && electron-builder build --publish=never",
     "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
     "test:e2e:cloud": "npx playwright test --config ./tests/e2e/cloud/playwright.config.js",
     "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
