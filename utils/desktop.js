@@ -74,6 +74,10 @@ async function create_new_window() {
     console.log("command", command)
     const server = spawn(command, {
       encoding: "utf8",
+      env: {
+        ...process.env,
+        RESOURCES_PATH: process.resourcesPath,
+      },
       shell: true,
     })
 
