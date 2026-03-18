@@ -2,15 +2,9 @@
 import { fileURLToPath } from "node:url"
 import path from "node:path"
 
-// import {
-//  appMode,
-//  getAppMode,
-// } from //"@geode/opengeodeweb-fronapp/utils/app_mode.js"
-
 // Local imports
 import package_json from "./package.json"
 
-// console.log("FROM NUXT VEASE App mode:", getAppMode())
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
@@ -165,7 +159,7 @@ export default defineNuxtConfig({
 
   router: {
     options: {
-      hashMode: getAppMode() === appMode.DESKTOP,
+      hashMode: process.env.MODE && process.env.MODE === "DESKTOP"
     },
   },
 
