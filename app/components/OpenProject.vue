@@ -1,17 +1,17 @@
 <script setup>
-const emit = defineEmits(["close"]);
-const { show_dialog } = defineProps({
-  show_dialog: { type: Boolean, required: true },
-});
+  const emit = defineEmits(["close"])
+  const { show_dialog } = defineProps({
+    show_dialog: { type: Boolean, required: true },
+  })
 
-const isVisible = computed({
-  get: () => show_dialog,
-  set: (value) => {
-    if (!value) {
-      emit("close");
-    }
-  },
-});
+  const isVisible = computed({
+    get: () => show_dialog,
+    set: (value) => {
+      if (!value) {
+        emit("close")
+      }
+    },
+  })
 </script>
 
 <template>
@@ -36,10 +36,20 @@ const isVisible = computed({
           </v-container>
         </v-card-text>
         <v-card-actions justify-center>
-          <v-btn variant="outlined" color="white" text @click="emit('close')" class="ml-8 mb-4"
+          <v-btn
+            variant="outlined"
+            color="white"
+            text
+            @click="emit('close')"
+            class="ml-8 mb-4"
             >Close</v-btn
           >
-          <v-btn variant="outlined" class="mb-4" color="white" text @click="emit('close')"
+          <v-btn
+            variant="outlined"
+            class="mb-4"
+            color="white"
+            text
+            @click="emit('close')"
             >Load</v-btn
           >
         </v-card-actions>

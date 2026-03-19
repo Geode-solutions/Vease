@@ -7,11 +7,11 @@ async function updateProfile() {
 }
 
 export const useUserStore = defineStore("user", () => {
-  const firstName = ref("");
-  const lastName = ref("");
-  const email = ref("");
-  const password = ref("");
-  const image = ref("");
+  const firstName = ref("")
+  const lastName = ref("")
+  const email = ref("")
+  const password = ref("")
+  const image = ref("")
 
   return {
     firstName,
@@ -21,5 +21,5 @@ export const useUserStore = defineStore("user", () => {
     image,
     fetchUserData,
     updateProfile,
-  };
-});
+  }
+})

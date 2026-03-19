@@ -1,9 +1,9 @@
 // @ts-check
-import { defineConfig, devices } from "@playwright/test";
-import { fileURLToPath } from "node:url";
+import { defineConfig, devices } from "@playwright/test"
+import { fileURLToPath } from "node:url"
 
-const MILLISECONDS = 1000;
-const DEFAULT_TIMEOUT = 250;
+const MILLISECONDS = 1000
+const DEFAULT_TIMEOUT = 250
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -43,4 +43,4 @@ export default defineConfig({
       },
     },
   ],
-});
+})

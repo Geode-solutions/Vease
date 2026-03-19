@@ -1,35 +1,36 @@
 <script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
-import { useUIStore } from "@vease/stores/ui";
+  import GlassCard from "@ogw_front/components/GlassCard"
+  import { useUIStore } from "@vease/stores/ui"
 
-const UIStore = useUIStore();
-const selectedTool = ref(undefined);
+  const UIStore = useUIStore()
+  const selectedTool = ref(undefined)
 
-function getToolComponent(toolId) {
-  return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component;
-}
+  function getToolComponent(toolId) {
+    return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)
+      ?.component
+  }
 
-function handleSelectTool(toolId) {
-  selectedTool.value = toolId;
-}
+  function handleSelectTool(toolId) {
+    selectedTool.value = toolId
+  }
 
-function handleBack() {
-  selectedTool.value = undefined;
-}
+  function handleBack() {
+    selectedTool.value = undefined
+  }
 
-function handleToolCreated() {
-  selectedTool.value = undefined;
-  UIStore.setShowCreateTools(false);
-}
+  function handleToolCreated() {
+    selectedTool.value = undefined
+    UIStore.setShowCreateTools(false)
+  }
 
-watch(
-  () => UIStore.showCreateTools,
-  (newVal) => {
-    if (!newVal) {
-      selectedTool.value = undefined;
-    }
-  },
-);
+  watch(
+    () => UIStore.showCreateTools,
+    (newVal) => {
+      if (!newVal) {
+        selectedTool.value = undefined
+      }
+    },
+  )
 </script>
 
 <template>
@@ -50,7 +51,12 @@ watch(
 
     <v-card-text class="pt-2 pb-8 flex-1-1 overflow-y-auto px-6">
       <v-row>
-        <v-col v-for="tool in UIStore.activeTools" :key="tool.id" cols="6" class="d-flex pa-2">
+        <v-col
+          v-for="tool in UIStore.activeTools"
+          :key="tool.id"
+          cols="6"
+          class="d-flex pa-2"
+        >
           <GlassCard
             variant="ui"
             class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
@@ -82,7 +88,9 @@ watch(
                   class="svg-white-filter"
                 />
               </v-sheet>
-              <div class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white">
+              <div
+                class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white"
+              >
                 {{ tool.title }}
               </div>
               <div class="text-caption text-wrap text-white opacity-85">
@@ -115,36 +123,38 @@ watch(
         @created="handleToolCreated"
       />
       <v-alert v-else type="error" variant="tonal" class="ma-4">
-        Component not found for **{{ selectedTool }}**. Please check the plugin registration.
+        Component not found for **{{ selectedTool }}**. Please check the plugin
+        registration.
       </v-alert>
     </GlassCard>
   </div>
 </template>
 
 <style scoped>
-.back-btn {
-  top: 0;
-  z-index: 10;
-}
+  .back-btn {
+    top: 0;
+    z-index: 10;
+  }
 
-.custom-tool-card {
-  transition: all 0.2s ease-in-out;
-}
+  .custom-tool-card {
+    transition: all 0.2s ease-in-out;
+  }
 
-.custom-tool-card:hover {
-  transform: scale(1.03);
-}
+  .custom-tool-card:hover {
+    transform: scale(1.03);
+  }
 
-.svg-white-filter {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
-}
+  .svg-white-filter {
+    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg)
+      brightness(100%) contrast(100%);
+  }
 
-.tool-title {
-  min-height: 2em;
-  line-height: 1.2;
-}
+  .tool-title {
+    min-height: 2em;
+    line-height: 1.2;
+  }
 
-.tool-component-wrapper {
-  min-height: 400px;
-}
+  .tool-component-wrapper {
+    min-height: 400px;
+  }
 </style>
