@@ -1,9 +1,9 @@
 //oxlint-disable import/no-commonjs
 //oxlint-disable oxc/func-names
 //oxlint-disable unicorn/prefer-module
-import { check_recaptcha_params } from "@geode/opengeodeweb-front/app/utils/recaptcha.js";
+import { check_recaptcha_params } from "@geode/opengeodeweb-front/app/utils/recaptcha.js"
 
 exports.handler = function (event) {
-  const { name, email, launch } = JSON.parse(event.body);
-  return check_recaptcha_params(name, email, launch);
-};
+  const { name, email, launch } = JSON.parse(event.body)
+  return check_recaptcha_params(name, email, launch)
+}

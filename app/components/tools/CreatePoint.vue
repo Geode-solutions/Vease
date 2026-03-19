@@ -97,7 +97,10 @@
       if (parts.length > 2) {
         value =
           parts.slice(0, 2).join("e") +
-          parts.slice(2).join("").replaceAll(/[^0-9+\-.]/g, "")
+          parts
+            .slice(2)
+            .join("")
+            .replaceAll(/[^0-9+\-.]/g, "")
       }
     }
     return value
