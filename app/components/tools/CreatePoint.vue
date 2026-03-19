@@ -90,17 +90,14 @@
       return ""
     }
     let value = String(str)
-      .replace(/,/g, ".")
-      .replace(/[^0-9eE+\-.]/g, "")
+      .replaceAll(",", ".")
+      .replaceAll(/[^0-9eE+\-.]/g, "")
     if (/[eE]/.test(value)) {
       const parts = value.split(/[eE]/)
       if (parts.length > 2) {
         value =
           parts.slice(0, 2).join("e") +
-          parts
-            .slice(2)
-            .join("")
-            .replace(/[^0-9+\-.]/g, "")
+          parts.slice(2).join("").replaceAll(/[^0-9+\-.]/g, "")
       }
     }
     return value

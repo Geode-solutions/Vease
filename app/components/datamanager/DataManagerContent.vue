@@ -44,10 +44,10 @@
     const index = selectedIds.value.findIndex(
       (selected) => selected.id === item.id,
     )
-    if (index !== -1) {
-      selectedIds.value.splice(index, 1)
-    } else {
+    if (index === -1) {
       selectedIds.value.push(item)
+    } else {
+      selectedIds.value.splice(index, 1)
     }
   }
 
@@ -68,7 +68,7 @@
     }
   }
 
-  async function focusCamera(item) {
+  function focusCamera(item) {
     const data = hybridViewerStore.hybridDb[item.id]
     if (data?.actor) {
       const renderer = hybridViewerStore.genericRenderWindow.value.getRenderer()

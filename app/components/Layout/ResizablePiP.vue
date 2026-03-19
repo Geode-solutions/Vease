@@ -43,14 +43,14 @@
   const pipHeight = ref(savedSize.value.height)
 
   const initialX = computed(() =>
-    savedPosition.value.x !== null
-      ? savedPosition.value.x
-      : winWidth.value - pipWidth.value - margin,
+    savedPosition.value.x === null
+      ? winWidth.value - pipWidth.value - margin
+      : savedPosition.value.x,
   )
   const initialY = computed(() =>
-    savedPosition.value.y !== null
-      ? savedPosition.value.y
-      : winHeight.value - pipHeight.value - margin,
+    savedPosition.value.y === null
+      ? winHeight.value - pipHeight.value - margin
+      : savedPosition.value.y,
   )
 
   const pipRef = ref(undefined)

@@ -33,7 +33,7 @@
     const validFiles = filesToProcess.filter((file) =>
       file.name.endsWith(".vext"),
     )
-    if (!validFiles.length) {
+    if (validFiles.length === 0) {
       errorMessage.value = "Please drop valid extension files (.vext)"
       return
     }
