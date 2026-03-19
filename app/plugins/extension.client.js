@@ -1,14 +1,14 @@
-import { VeaseExtensionAPI } from "@vease/utils/extension_api.js"
-import { useAppStore } from "@ogw_front/stores/app"
-import { useExtensionsStore } from "@vease/stores/extensions"
-import { useFeedbackStore } from "@ogw_front/stores/feedback"
-import { useGeodeStore } from "@ogw_front/stores/geode"
-import { useInfraStore } from "@ogw_front/stores/infra"
+import { VeaseExtensionAPI } from "@vease/utils/extension_api.js";
+import { useAppStore } from "@ogw_front/stores/app";
+import { useExtensionsStore } from "@vease/stores/extensions";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
+import { useGeodeStore } from "@ogw_front/stores/geode";
+import { useInfraStore } from "@ogw_front/stores/infra";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   if (typeof globalThis !== "undefined") {
-    globalThis.Vue = await import("vue")
-    globalThis.Pinia = await import("pinia")
+    globalThis.Vue = await import("vue");
+    globalThis.Pinia = await import("pinia");
 
     // Expose stores as factory functions - these are auto-imported by Nuxt
     globalThis.__VEASE_STORES__ = {
@@ -16,26 +16,25 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       useInfraStore,
       useFeedbackStore,
       useGeodeStore,
-    }
+    };
 
     // Expose utilities for extensions
-    const { api_fetch } =
-      await import("@geode/opengeodeweb-front/internal/utils/api_fetch.js")
-    const StatusModule = await import("@ogw_front/utils/status.js")
-    const appModeModule = await import("@ogw_front/utils/app_mode.js")
+    const { api_fetch } = await import("@geode/opengeodeweb-front/internal/utils/api_fetch.js");
+    const StatusModule = await import("@ogw_front/utils/status.js");
+    const appModeModule = await import("@ogw_front/utils/app_mode.js");
     globalThis.__VEASE_UTILS__ = {
       Status: StatusModule.Status,
       appMode: appModeModule.appMode,
       api_fetch,
-    }
-    globalThis.__VEASE_SCHEMAS__ = {}
+    };
+    globalThis.__VEASE_SCHEMAS__ = {};
   }
 
-  const extensionsStore = useExtensionsStore()
-  const extensionAPI = VeaseExtensionAPI
+  const extensionsStore = useExtensionsStore();
+  const extensionAPI = VeaseExtensionAPI;
 
-  extensionsStore.setExtensionAPI(extensionAPI)
-  nuxtApp.vueApp.provide("extensionAPI", extensionAPI)
+  extensionsStore.setExtensionAPI(extensionAPI);
+  nuxtApp.vueApp.provide("extensionAPI", extensionAPI);
 
-  console.log("[Vease] Extension system initialized")
-})
+  console.log("[Vease] Extension system initialized");
+});

@@ -1,11 +1,11 @@
 // Node imports
-import { fileURLToPath } from "node:url"
-import path from "node:path"
+import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 // Local imports
-import package_json from "./package.json"
+import package_json from "./package.json";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -29,9 +29,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.BROWSER && process.env.BROWSER === "true"
-      ? undefined
-      : "nuxt-electron",
+    process.env.BROWSER && process.env.BROWSER === "true" ? undefined : "nuxt-electron",
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -54,7 +52,7 @@ export default defineNuxtConfig({
       {
         entry: "electron/preload.js",
         onstart(args) {
-          args.reload()
+          args.reload();
         },
       },
     ],
@@ -146,12 +144,7 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: [
-        "@geode/opengeodeweb-front",
-        "@kitware/vtk.js",
-        "xmlbuilder2",
-        "spark-md5",
-      ],
+      include: ["@geode/opengeodeweb-front", "@kitware/vtk.js", "xmlbuilder2", "spark-md5"],
     },
     watch: {
       ignored: ["**"],
@@ -165,4 +158,4 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: "2025-03-27",
-})
+});

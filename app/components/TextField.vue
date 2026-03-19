@@ -1,28 +1,28 @@
 <script setup>
-  const { value, rules, label, required, counter } = defineProps({
-    value: {
-      type: String,
-      required: true,
-    },
-    rules: {
-      type: Array,
-      default: () => [],
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    required: {
-      type: Boolean,
-      default: false,
-    },
-    counter: {
-      type: Number,
-      default: undefined,
-    },
-  })
+const { value, rules, label, required, counter } = defineProps({
+  value: {
+    type: String,
+    required: true,
+  },
+  rules: {
+    type: Array,
+    default: () => [],
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  counter: {
+    type: Number,
+    default: undefined,
+  },
+});
 
-  const emit = defineEmits(["input"])
+const emit = defineEmits(["input"]);
 </script>
 
 <template>

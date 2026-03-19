@@ -8,7 +8,7 @@ export function transformExtensionCode(code) {
         .map((key) => `export const ${key} = Vue.${key};`)
         .join("")}
     `)}"`,
-  )
+  );
 
   transformedCode = transformedCode.replaceAll(
     /from\s+["']pinia["']/g,
@@ -19,7 +19,7 @@ export function transformExtensionCode(code) {
         .map((key) => `export const ${key} = Pinia.${key};`)
         .join("")}
     `)}"`,
-  )
+  );
 
   // Transform @ogw_front/app/stores/app.js specifically
   transformedCode = transformedCode.replaceAll(
@@ -28,21 +28,20 @@ export function transformExtensionCode(code) {
         export const useAppStore = globalThis.__VEASE_STORES__.useAppStore;
         export default useAppStore;
       `)}"`,
-  )
+  );
 
   // Transform @ogw_front/app/stores/* imports (generic pattern)
   transformedCode = transformedCode.replaceAll(
     /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/g,
     (match, storePath) => {
-      const storeName = storePath.replace(".js", "")
-      const capitalizedName =
-        storeName.charAt(0).toUpperCase() + storeName.slice(1)
+      const storeName = storePath.replace(".js", "");
+      const capitalizedName = storeName.charAt(0).toUpperCase() + storeName.slice(1);
       return `from "data:text/javascript,${encodeURIComponent(`
         export const use${capitalizedName}Store = globalThis.__VEASE_STORES__.use${capitalizedName}Store;
         export default use${capitalizedName}Store;
-      `)}"`
+      `)}"`;
     },
-  )
+  );
 
   // Transform @ogw_front/app/utils/status.js
   transformedCode = transformedCode.replaceAll(
@@ -51,7 +50,7 @@ export function transformExtensionCode(code) {
       const Status = window.__VEASE_UTILS__.Status;
       export { Status };
     `)}"`,
-  )
+  );
 
   // Transform @ogw_front/app/utils/app_mode.js
   transformedCode = transformedCode.replaceAll(
@@ -59,7 +58,7 @@ export function transformExtensionCode(code) {
     `from "data:text/javascript,${encodeURIComponent(`
       export const appMode = globalThis.__VEASE_UTILS__.appMode;
     `)}"`,
-  )
+  );
 
   // Transform @ogw_front/internal/utils/api_fetch.js (actual path in OpenGeodeWeb-Front)
   transformedCode = transformedCode.replaceAll(
@@ -67,7 +66,7 @@ export function transformExtensionCode(code) {
     `from "data:text/javascript,${encodeURIComponent(`
       export const api_fetch = globalThis.__VEASE_UTILS__.api_fetch;
     `)}"`,
-  )
+  );
 
   // Transform @geode/vease-modeling-back/vease_modeling_back_schemas.json
   transformedCode = transformedCode.replaceAll(
@@ -76,22 +75,22 @@ export function transformExtensionCode(code) {
       const schemas = globalThis.__VEASE_SCHEMAS__.vease_modeling_back;
       export default schemas;
     `)}"`,
-  )
+  );
 
   // Replace direct function calls to use window globals
   // This handles cases where functions are externalized and called without imports
   transformedCode = transformedCode.replaceAll(
     /\buseInfraStore\(/g,
     "globalThis.__VEASE_STORES__.useInfraStore(",
-  )
+  );
   transformedCode = transformedCode.replaceAll(
     /\buseAppStore\(/g,
     "globalThis.__VEASE_STORES__.useAppStore(",
-  )
+  );
   transformedCode = transformedCode.replaceAll(
     /\buseFeedbackStore\(/g,
     "globalThis.__VEASE_STORES__.useFeedbackStore(",
-  )
+  );
 
-  return transformedCode
+  return transformedCode;
 }
