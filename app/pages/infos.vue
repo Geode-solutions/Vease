@@ -1,75 +1,75 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
-import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
-import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
+  import { Status } from "@ogw_front/utils/status"
+  import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json"
+  import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json"
 
-import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected";
-import { useGeodeStore } from "@ogw_front/stores/geode";
-import { useViewerStore } from "@ogw_front/stores/viewer";
+  import { run_function_when_microservices_connected } from "@ogw_front/composables/run_function_when_microservices_connected"
+  import { useGeodeStore } from "@ogw_front/stores/geode"
+  import { useViewerStore } from "@ogw_front/stores/viewer"
 
-const version = useRuntimeConfig().public.VERSION;
-const geodeStore = useGeodeStore();
-const viewerStore = useViewerStore();
+  const version = useRuntimeConfig().public.VERSION
+  const geodeStore = useGeodeStore()
+  const viewerStore = useViewerStore()
 
-const packages_versions = ref([]);
-const back_version = ref("");
-const viewer_version = ref("");
+  const packages_versions = ref([])
+  const back_version = ref("")
+  const viewer_version = ref("")
 
-const microservices = ref([
-  {
-    name: "Back",
-    package: "vease-back",
-    version: back_version,
-    status: geodeStore.status,
-  },
-  {
-    name: "Viewer",
-    package: "vease-viewer",
-    version: viewer_version,
-    status: viewerStore.status,
-  },
-]);
-
-async function get_packages_versions() {
-  geodeStore.request(
-    vease_back_schemas.vease_back.packages_versions,
-    {},
+  const microservices = ref([
     {
-      response_function: (response) => {
-        packages_versions.value = response.packages_versions;
-      },
+      name: "Back",
+      package: "vease-back",
+      version: back_version,
+      status: geodeStore.status,
     },
-  );
-}
-
-async function get_back_version() {
-  geodeStore.request(
-    vease_back_schemas.vease_back.microservice_version,
-    {},
     {
-      response_function: (response) => {
-        back_version.value = response.microservice_version;
-      },
+      name: "Viewer",
+      package: "vease-viewer",
+      version: viewer_version,
+      status: viewerStore.status,
     },
-  );
-}
+  ])
 
-async function get_viewer_version() {
-  viewerStore.request(
-    vease_viewer_schemas.vease_viewer.microservice_version,
-    {},
-    {
-      response_function: (response) => {
-        viewer_version.value = response.microservice_version;
+  async function get_packages_versions() {
+    geodeStore.request(
+      vease_back_schemas.vease_back.packages_versions,
+      {},
+      {
+        response_function: (response) => {
+          packages_versions.value = response.packages_versions
+        },
       },
-    },
-  );
-}
-run_function_when_microservices_connected(() => {
-  get_packages_versions();
-  get_back_version();
-  get_viewer_version();
-});
+    )
+  }
+
+  async function get_back_version() {
+    geodeStore.request(
+      vease_back_schemas.vease_back.microservice_version,
+      {},
+      {
+        response_function: (response) => {
+          back_version.value = response.microservice_version
+        },
+      },
+    )
+  }
+
+  async function get_viewer_version() {
+    viewerStore.request(
+      vease_viewer_schemas.vease_viewer.microservice_version,
+      {},
+      {
+        response_function: (response) => {
+          viewer_version.value = response.microservice_version
+        },
+      },
+    )
+  }
+  run_function_when_microservices_connected(() => {
+    get_packages_versions()
+    get_back_version()
+    get_viewer_version()
+  })
 </script>
 
 <template>
@@ -101,7 +101,11 @@ run_function_when_microservices_connected(() => {
         <v-row class="pa-3">
           <p class="text-h4 text-white">Internal dependencies</p>
           <v-divider />
-          <v-table class="pa-3" density="compact" style="background-color: transparent">
+          <v-table
+            class="pa-3"
+            density="compact"
+            style="background-color: transparent"
+          >
             <thead>
               <tr>
                 <th class="text-left text-white" width="400px">Package</th>
@@ -113,7 +117,13 @@ run_function_when_microservices_connected(() => {
                 <td class="text-left text-white">{{ pkg.package }}</td>
                 <td>
                   <a
-                    :href="'https://pypi.org/project/' + pkg.package + '/' + pkg.version + '/'"
+                    :href="
+                      'https://pypi.org/project/' +
+                      pkg.package +
+                      '/' +
+                      pkg.version +
+                      '/'
+                    "
                     target="_blank"
                     class="text-left text-white"
                     >{{ pkg.version }}</a
@@ -128,8 +138,8 @@ run_function_when_microservices_connected(() => {
             <p class="text-white">
               Vease is an open-source project.
               <br />
-              Copyright © 2019 - {{ new Date().getFullYear() }} — Geode-solutions SAS. All rights
-              reserved.
+              Copyright © 2019 - {{ new Date().getFullYear() }} —
+              Geode-solutions SAS. All rights reserved.
             </p>
           </v-col>
         </v-row>
@@ -167,7 +177,10 @@ run_function_when_microservices_connected(() => {
                     </a>
                   </td>
                   <td>
-                    <v-tooltip :text="`Microservice is ${microservice.status}`" location="right">
+                    <v-tooltip
+                      :text="`Microservice is ${microservice.status}`"
+                      location="right"
+                    >
                       <template v-slot:activator="{ props }">
                         <v-icon
                           v-if="microservice.status == Status.NOT_CONNECTED"
@@ -197,7 +210,9 @@ run_function_when_microservices_connected(() => {
         </v-row>
         <v-row class="pa-3">
           <v-col cols="12">
-            <v-btn href="https://github.com/Geode-solutions/Vease/issues/new" target="_blank"
+            <v-btn
+              href="https://github.com/Geode-solutions/Vease/issues/new"
+              target="_blank"
               >Report an issue</v-btn
             >
           </v-col>
@@ -208,7 +223,7 @@ run_function_when_microservices_connected(() => {
 </template>
 
 <style scoped>
-td {
-  text-align: left;
-}
+  td {
+    text-align: left;
+  }
 </style>

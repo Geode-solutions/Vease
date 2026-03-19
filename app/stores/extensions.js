@@ -1,10 +1,10 @@
-import { transformExtensionCode } from "@vease/utils/extension_code_transformer.js";
-import { useAppStore } from "@ogw_front/stores/app.js";
+import { transformExtensionCode } from "@vease/utils/extension_code_transformer.js"
+import { useAppStore } from "@ogw_front/stores/app.js"
 
 export function useExtensionsStore() {
-  const appStore = useAppStore();
+  const appStore = useAppStore()
 
-  appStore.setCodeTransformer(transformExtensionCode);
+  appStore.setCodeTransformer(transformExtensionCode)
 
-  return appStore;
+  return appStore
 }

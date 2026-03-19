@@ -1,12 +1,12 @@
 <script setup>
-const { selectedIds } = defineProps({
-  selectedIds: {
-    type: Array,
-    default: () => [],
-  },
-});
+  const { selectedIds } = defineProps({
+    selectedIds: {
+      type: Array,
+      default: () => [],
+    },
+  })
 
-const emit = defineEmits(["delete", "clear"]);
+  const emit = defineEmits(["delete", "clear"])
 </script>
 
 <template>

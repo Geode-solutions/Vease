@@ -1,32 +1,32 @@
 <script setup>
-const { value, rules, label, required, prependIcon, accept } = defineProps({
-  value: {
-    type: File,
-    required: true,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  prependIcon: {
-    type: String,
-    default: undefined,
-  },
-  accept: {
-    type: String,
-    default: undefined,
-  },
-});
+  const { value, rules, label, required, prependIcon, accept } = defineProps({
+    value: {
+      type: File,
+      required: true,
+    },
+    rules: {
+      type: Array,
+      default: () => [],
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    prependIcon: {
+      type: String,
+      default: undefined,
+    },
+    accept: {
+      type: String,
+      default: undefined,
+    },
+  })
 
-const emit = defineEmits(["update:value"]);
+  const emit = defineEmits(["update:value"])
 </script>
 
 <template>
