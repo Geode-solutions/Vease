@@ -22,7 +22,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const { api_fetch } =
       await import("@geode/opengeodeweb-front/internal/utils/api_fetch.js")
     const StatusModule = await import("@ogw_front/utils/status.js")
-    const appModeModule = await import("@ogw_front/utils/app_mode.js")
+    const appModeModule = await import("@ogw_front/utils/local/app_mode.js")
     globalThis.__VEASE_UTILS__ = {
       Status: StatusModule.Status,
       appMode: appModeModule.appMode,
