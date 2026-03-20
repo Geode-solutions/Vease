@@ -1,7 +1,7 @@
-import { useUIStore } from "@vease/stores/ui"
+import { useUIStore } from "@vease/stores/ui";
 
 export default defineNuxtPlugin(() => {
-  const UIStore = useUIStore()
+  const UIStore = useUIStore();
 
   UIStore.registerToolComponent({
     id: "Point",
@@ -10,9 +10,7 @@ export default defineNuxtPlugin(() => {
     iconType: "mdi",
     iconSource: "mdi-circle-medium",
     component: markRaw(
-      defineAsyncComponent(
-        () => import("@vease/components/tools/CreatePoint.vue"),
-      ),
+      defineAsyncComponent(() => import("@vease/components/tools/CreatePoint.vue")),
     ),
-  })
-})
+  });
+});

@@ -25,22 +25,7 @@
     "eslint/id-length": [
       "error",
       {
-        "exceptions": [
-          "x",
-          "y",
-          "z",
-          "i",
-          "j",
-          "k",
-          "r",
-          "g",
-          "b",
-          "id",
-          "ID",
-          "fs",
-          "os",
-          "_"
-        ],
+        "exceptions": ["x", "y", "z", "i", "j", "k", "r", "g", "b", "id", "ID", "fs", "os", "_"],
         "min": 3
       }
     ],
@@ -78,6 +63,7 @@
     "max-lines": [
       "error",
       {
+        "max": 310,
         "skipBlankLines": true,
         "skipComments": true
       }
@@ -121,12 +107,7 @@
       }
     },
     {
-      "files": [
-        "app/plugins/**",
-        "node_scripts/**",
-        "server/**",
-        "*.config.js"
-      ],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
       "rules": {
         "import/no-default-export": "off"
       }

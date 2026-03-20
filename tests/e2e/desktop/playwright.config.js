@@ -1,11 +1,11 @@
 // @ts-check
-import { defineConfig } from "@playwright/test"
-import { isWindows } from "std-env"
+import { defineConfig } from "@playwright/test";
+import { isWindows } from "std-env";
 
-const MILLISECONDS = 1000
-const WINDOWS_TIMEOUT = 60
-const LINUX_TIMEOUT = 30
-const CI_RETRIES = 3
+const MILLISECONDS = 1000;
+const WINDOWS_TIMEOUT = 60;
+const LINUX_TIMEOUT = 30;
+const CI_RETRIES = 3;
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -33,4 +33,4 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
-})
+});
