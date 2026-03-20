@@ -53,7 +53,7 @@ export function transformExtensionCode(code) {
     `)}"`,
   )
 
-  // Transform @ogw_front/app/utils/app_mode.js
+  // Transform @ogw_front/app/utils/local/app_mode.js
   transformedCode = transformedCode.replaceAll(
     /from\s+["']@ogw_front\/app\/utils\/app_mode\.js["']/g,
     `from "data:text/javascript,${encodeURIComponent(`

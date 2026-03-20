@@ -3,7 +3,7 @@
 // Third party imports
 import { app, ipcMain } from "electron"
 import { autoUpdater } from "electron-updater"
-import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/microservices.js"
+import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanup.js"
 
 // Local imports
 // oxlint-disable-next-line import/no-relative-parent-imports

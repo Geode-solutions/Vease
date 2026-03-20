@@ -11,11 +11,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       VERSION: package_json.version,
+      COMMAND_BACK: "vease-back",
+      COMMAND_VIEWER: "vease-viewer",
+      NUXT_ROOT_PATH: __dirname,
       PROJECT: package_json.name,
-      BACK_PATH: path.join(__dirname, "microservices", "back"),
-      BACK_COMMAND: "vease-back",
-      VIEWER_PATH: path.join(__dirname, "microservices", "viewer"),
-      VIEWER_COMMAND: "vease-viewer",
     },
   },
   extends: ["@geode/opengeodeweb-front"],
@@ -29,9 +28,9 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    process.env.BROWSER && process.env.BROWSER === "true"
-      ? undefined
-      : "nuxt-electron",
+    process.env.MODE && process.env.MODE === "DESKTOP"
+      ? "nuxt-electron"
+      : undefined,
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
@@ -131,9 +130,6 @@ export default defineNuxtConfig({
     },
   },
 
-  experimental: {
-    appManifest: false,
-  },
   css: ["@vease/assets/css/main.css"],
 
   vite: {
@@ -160,7 +156,7 @@ export default defineNuxtConfig({
 
   router: {
     options: {
-      hashMode: !(process.env.BROWSER && process.env.BROWSER === "true"),
+      hashMode: process.env.MODE && process.env.MODE === "DESKTOP",
     },
   },
 
