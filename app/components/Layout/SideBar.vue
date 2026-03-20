@@ -14,7 +14,7 @@ const items = ref([
   {
     title: "Data Manager",
     icon: "mdi-database",
-    click: () => navigateTo("/data-manager"),
+    click: () => navigateTo("/data_manager"),
   },
 ]);
 
