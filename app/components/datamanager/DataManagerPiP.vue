@@ -1,18 +1,18 @@
 <script setup>
-  import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue"
-  import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue"
-  import { useUIStore } from "@vease/stores/ui"
+import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
+import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
+import { useUIStore } from "@vease/stores/ui";
 
-  const UIStore = useUIStore()
+const UIStore = useUIStore();
 
-  function expandToFullPage() {
-    UIStore.setShowDataManagerPiP(false)
-    navigateTo("/data_manager")
-  }
+function expandToFullPage() {
+  UIStore.setShowDataManagerPiP(false);
+  navigateTo("/data_manager");
+}
 
-  function close() {
-    UIStore.setShowDataManagerPiP(false)
-  }
+function close() {
+  UIStore.setShowDataManagerPiP(false);
+}
 </script>
 
 <template>
@@ -29,17 +29,9 @@
         style="height: 40px; min-height: 40px; user-select: none"
       >
         <v-icon size="18" color="primary" class="mr-2">mdi-database</v-icon>
-        <span class="text-subtitle-2 font-weight-bold text-white"
-          >Data Manager</span
-        >
+        <span class="text-subtitle-2 font-weight-bold text-white">Data Manager</span>
         <v-spacer />
-        <v-btn
-          icon
-          size="x-small"
-          variant="text"
-          color="white"
-          @click="expandToFullPage"
-        >
+        <v-btn icon size="x-small" variant="text" color="white" @click="expandToFullPage">
           <v-icon size="16">mdi-arrow-expand</v-icon>
           <v-tooltip activator="parent" location="top">Full screen</v-tooltip>
         </v-btn>
@@ -50,21 +42,18 @@
       </div>
     </template>
 
-    <div
-      class="d-flex flex-column overflow-hidden"
-      style="flex: 1 1 0; min-height: 0"
-    >
+    <div class="d-flex flex-column overflow-hidden" style="flex: 1 1 0; min-height: 0">
       <DataManagerContent compact />
     </div>
   </ResizablePiP>
 </template>
 
 <style scoped>
-  .pip-header {
-    cursor: grab;
-  }
+.pip-header {
+  cursor: grab;
+}
 
-  .pip-header:active {
-    cursor: grabbing;
-  }
+.pip-header:active {
+  cursor: grabbing;
+}
 </style>
