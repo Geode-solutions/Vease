@@ -16,7 +16,6 @@ const __dirname = path.dirname(__filename);
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
 
-// oxlint-disable-next-line max-lines-per-function max-statements
 async function create_new_window() {
   const win = new BrowserWindow({
     title: "Vease - New project",
