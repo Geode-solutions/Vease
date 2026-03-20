@@ -3,10 +3,9 @@
 // Node imports
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import { spawn } from "node:child_process";
 
 // Third party imports
-import { BrowserWindow, app, shell } from "electron";
+import { BrowserWindow, app, shell, utilityProcess } from "electron";
 import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js";
 
 // Local constants
@@ -17,6 +16,7 @@ const __dirname = path.dirname(__filename);
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
 
+// oxlint-disable-next-line max-lines-per-function max-statements
 async function create_new_window() {
   const win = new BrowserWindow({
     title: "Vease - New project",
@@ -58,18 +58,17 @@ async function create_new_window() {
   if (app.isPackaged) {
     const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
 
-    console.log(`starting server ${serverPath}`);
+    console.log(`Starting server ${serverPath}`);
 
     const PORT = await getAvailablePort();
-    const portPrefix = process.platform === "win32" ? `set PORT=${PORT} &` : `PORT=${PORT}`;
-    const command = `${portPrefix} node ${serverPath}`;
-    console.log("command", command);
-    const server = spawn(command, {
+    const server = utilityProcess.fork(serverPath, {
       encoding: "utf8",
       env: {
         ...process.env,
+        PORT: String(PORT),
         RESOURCES_PATH: process.resourcesPath,
       },
+      stdio: "pipe",
       shell: true,
     });
 
