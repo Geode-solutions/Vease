@@ -77,7 +77,6 @@
           }
           await importItem(dataToImport)
           hybridViewerStore.remoteRender()
-          initializeForm()
         },
       })
     } finally {
