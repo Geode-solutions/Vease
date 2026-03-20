@@ -1,6 +1,6 @@
 import child_process from "node:child_process"
 
-export default async function customSign(configuration) {
+export default function customSign(configuration) {
   console.log("customSign", configuration)
 
   child_process.execSync(

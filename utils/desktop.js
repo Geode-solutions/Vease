@@ -12,8 +12,8 @@ import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/micr
 // Local constants
 const PROCESS_WIN32_TIMEOUT = 4000
 const PROCESS_LINUX_TIMEOUT = 1000
-const __filename = fileURLToPath(import.meta.url) // Get the resolved path to the file
-const __dirname = path.dirname(__filename) // Get the name of the directory
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const MIN_WINDOW_WIDTH = 1000
 const MIN_WINDOW_HEIGHT = 700
 
@@ -117,7 +117,7 @@ async function create_new_window() {
   win.webContents.on("console-message", (...args) => {
     const [_event, level, message, line, sourceId] = args
     // Map log levels to readable names
-    const logLevels = ["VERBOSE", "INFO", "ERROR"] // "WARNING",
+    const logLevels = ["VERBOSE", "INFO", "ERROR"]
     const logLevel = logLevels[level] || "UNKNOWN"
     // Print the console message to the terminal
     console.log(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`)

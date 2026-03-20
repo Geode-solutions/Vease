@@ -30,7 +30,7 @@
     },
   ])
 
-  async function get_packages_versions() {
+  function get_packages_versions() {
     geodeStore.request(
       vease_back_schemas.vease_back.packages_versions,
       {},
@@ -42,7 +42,7 @@
     )
   }
 
-  async function get_back_version() {
+  function get_back_version() {
     geodeStore.request(
       vease_back_schemas.vease_back.microservice_version,
       {},
@@ -54,7 +54,7 @@
     )
   }
 
-  async function get_viewer_version() {
+  function get_viewer_version() {
     viewerStore.request(
       vease_viewer_schemas.vease_viewer.microservice_version,
       {},

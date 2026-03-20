@@ -18,14 +18,14 @@ ipcMain.handle("new_window", () => {
   create_new_window()
 })
 
-ipcMain.handle("project_folder_path", async (_event, args) => {
+ipcMain.handle("project_folder_path", (_event, args) => {
   ;({ projectFolderPath } = args)
   console.log(`[Electron] Updated projectFolderPath: ${projectFolderPath}`)
 })
 
-/* eslint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return */
-app.whenReady().then(function onReady() {
-  _mainWindow = create_new_window()
+// oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
+app.whenReady().then(async function onReady() {
+  _mainWindow = await create_new_window()
 })
 
 let cleaned = false

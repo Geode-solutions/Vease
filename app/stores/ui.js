@@ -24,22 +24,23 @@ export const useUIStore = defineStore("UI", () => {
       (tool) => tool.id === id,
     )
     const newDefinition = { id, component, extensionPath, ...rest }
-    if (existingIndex !== -1) {
+    if (existingIndex === -1) {
+      toolsDefinitions.value.push(newDefinition)
+    } else {
       toolsDefinitions.value[existingIndex] = {
         ...toolsDefinitions.value[existingIndex],
         ...newDefinition,
       }
-    } else {
-      toolsDefinitions.value.push(newDefinition)
     }
   }
 
   function unregisterTool(toolId) {
     const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId)
-    if (index !== -1) {
-      toolsDefinitions.value.splice(index, 1)
-      console.log(`[UIStore] Tool unregistered: ${toolId}`)
+    if (index === -1) {
+      return
     }
+    toolsDefinitions.value.splice(index, 1)
+    console.log(`[UIStore] Tool unregistered: ${toolId}`)
   }
 
   function unregisterToolsByExtension(extensionPath) {
@@ -71,13 +72,13 @@ export const useUIStore = defineStore("UI", () => {
       (tab) => tab.id === id,
     )
     const newDefinition = { id, component, ...rest }
-    if (existingIndex !== -1) {
+    if (existingIndex === -1) {
+      dataManagerTabs.value.push(newDefinition)
+    } else {
       dataManagerTabs.value[existingIndex] = {
         ...dataManagerTabs.value[existingIndex],
         ...newDefinition,
       }
-    } else {
-      dataManagerTabs.value.push(newDefinition)
     }
   }
 
