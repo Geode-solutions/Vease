@@ -86,4 +86,4 @@ Get the [latest](https://github.com/Geode-solutions/Vease/releases/latest) versi
 
 [LGPL-2.1](https://opensource.org/license/lgpl-2-1)
 
-Copyright (c) 2019 - 2025, Geode-solutions
+Copyright (c) 2019 - 2026, Geode-solutions
