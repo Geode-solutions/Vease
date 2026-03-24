@@ -105,6 +105,8 @@ function removeExtension() {
         accept=".vext"
         :loading="loading"
         :show-extensions="true"
+        :fullscreen="false"
+        :show-overlay="false"
         idle-text="Click or Drag & Drop Extension"
         drop-text="Drop to Install"
         loading-text="Loading Extension..."

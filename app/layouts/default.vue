@@ -5,7 +5,7 @@ import { useUIStore } from "@vease/stores/ui";
 import CreateTools from "@vease/components/CreateTools";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
-import FullScrenDropZone from "@vease/components/FullScrenDropZone";
+import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import SideBar from "@vease/components/Layout/SideBar";
@@ -14,6 +14,13 @@ import TopBar from "@vease/components/Layout/TopBar";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
+
+function handleFilesDropped(files) {
+  if (!UIStore.showStepper && !UIStore.showExtensions) {
+    UIStore.setDroppedFiles([...files]);
+    UIStore.setShowStepper(true);
+  }
+}
 
 function closeAllDrawers() {
   UIStore.setShowStepper(false);
@@ -45,7 +52,9 @@ watch(
     <TopBar />
     <SideBar />
 
-    <v-main class="custom-background dropzone" @dragover="UIStore.setShowDropZone(true)">
+    <v-main
+      class="custom-background dropzone"
+    >
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
@@ -103,7 +112,7 @@ watch(
           </v-card>
         </v-fade-transition>
 
-        <FullScrenDropZone />
+        <DragAndDrop :inline="false" :fullscreen="true" @files-selected="handleFilesDropped" />
       </InfraConnected>
 
       <DataManagerPiP v-if="UIStore.showDataManagerPiP" />
