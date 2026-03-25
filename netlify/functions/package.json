@@ -2,8 +2,8 @@
   "name": "recaptcha-function",
   "version": "1.0.0",
   "description": "Call the reCAPTCHA API",
-  "author": "Geode-solutions",
   "license": "MIT",
+  "author": "Geode-solutions",
   "dependencies": {
     "@geode/opengeodeweb-front": "next"
   }

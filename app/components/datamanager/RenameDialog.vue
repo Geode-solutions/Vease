@@ -1,55 +1,45 @@
 <script setup>
-  import GlassCard from "@ogw_front/components/GlassCard"
+import GlassCard from "@ogw_front/components/GlassCard";
 
-  const { show, item, initialName } = defineProps({
-    show: {
-      type: Boolean,
-      default: false,
-    },
-    item: {
-      type: Object,
-      default: undefined,
-    },
-    initialName: {
-      type: String,
-      default: "",
-    },
-  })
+const { show, item, initialName } = defineProps({
+  show: {
+    type: Boolean,
+    default: false,
+  },
+  item: {
+    type: Object,
+    default: undefined,
+  },
+  initialName: {
+    type: String,
+    default: "",
+  },
+});
 
-  const emit = defineEmits(["update:show", "confirm"])
+const emit = defineEmits(["update:show", "confirm"]);
 
-  const currentName = ref(initialName)
+const currentName = ref(initialName);
 
-  watch(
-    () => initialName,
-    (newVal) => {
-      currentName.value = newVal
-    },
-  )
+watch(
+  () => initialName,
+  (newVal) => {
+    currentName.value = newVal;
+  },
+);
 
-  function handleConfirm() {
-    if (!currentName.value) {
-      return
-    }
-    emit("confirm", currentName.value)
+function handleConfirm() {
+  if (!currentName.value) {
+    return;
   }
+  emit("confirm", currentName.value);
+}
 </script>
 
 <template>
-  <v-dialog
-    :model-value="show"
-    @update:model-value="emit('update:show', $event)"
-    max-width="400"
-  >
+  <v-dialog :model-value="show" @update:model-value="emit('update:show', $event)" max-width="400">
     <GlassCard variant="panel" padding="pa-8" :width="400">
-      <v-card-title
-        class="pb-2 text-h5 font-weight-bold d-flex align-center text-white"
-      >
-        <v-icon
-          icon="mdi-pencil-outline"
-          class="mr-3 text-h4"
-          color="white"
-        ></v-icon>
+      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
+        <v-icon icon="mdi-pencil-outline" class="mr-3 text-h4" color="white"></v-icon>
         Rename Item
       </v-card-title>
 

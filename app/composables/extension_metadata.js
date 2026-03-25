@@ -1,43 +1,41 @@
-import { useUIStore } from "@vease/stores/ui"
+import { useUIStore } from "@vease/stores/ui";
 
 function getExtensionName(extension) {
   if (!extension) {
-    return "Unknown Extension"
+    return "Unknown Extension";
   }
   if (extension.metadata?.name) {
-    return extension.metadata.name
+    return extension.metadata.name;
   }
-  return extension.id || "Unknown Extension"
+  return extension.id || "Unknown Extension";
 }
 
 function getExtensionDescription(extension) {
   if (!extension) {
-    return "Custom extension module"
+    return "Custom extension module";
   }
-  return extension?.metadata?.description || "Custom extension module"
+  return extension?.metadata?.description || "Custom extension module";
 }
 
 function getExtensionVersion(extension) {
   if (!extension) {
-    return undefined
+    return undefined;
   }
-  return extension?.metadata?.version || undefined
+  return extension?.metadata?.version || undefined;
 }
 
 export function useExtensionMetadata() {
-  const UIStore = useUIStore()
+  const UIStore = useUIStore();
 
   function getExtensionTools(extension) {
     if (!extension) {
-      return []
+      return [];
     }
-    return UIStore.toolsDefinitions.filter(
-      (tool) => tool.extensionPath === extension.id,
-    )
+    return UIStore.toolsDefinitions.filter((tool) => tool.extensionPath === extension.id);
   }
 
   function getExtensionToolsCount(extension) {
-    return getExtensionTools(extension).length
+    return getExtensionTools(extension).length;
   }
 
   return {
@@ -46,5 +44,5 @@ export function useExtensionMetadata() {
     getExtensionVersion,
     getExtensionTools,
     getExtensionToolsCount,
-  }
+  };
 }
