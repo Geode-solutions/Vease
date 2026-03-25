@@ -2,15 +2,13 @@
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
 import Launcher from "@ogw_front/components/Launcher";
 import { Status } from "@ogw_front/utils/status";
-import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu";
-import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree";
-import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
-
 import { useDataStore } from "@ogw_front/stores/data";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useMenuStore } from "@ogw_front/stores/menu";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+import ViewerUI from "@ogw_front/components/Viewer/UI";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 const infraStore = useInfraStore();
 const viewerStore = useViewerStore();
@@ -93,14 +91,13 @@ watch([elWidth, elHeight], ([width, height]) => {
   <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
     <HybridRenderingView>
       <template #ui>
-        <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
-        <ViewerContextMenu
-          v-if="display_menu"
-          :id="menuStore.current_id || id"
-          :x="menuStore.menuX"
-          :y="menuStore.menuY"
-          :containerWidth="containerWidth"
-          :containerHeight="containerHeight"
+        <ViewerUI
+          :id="id"
+          :display-menu="display_menu"
+          :menu-store="menuStore"
+          :container-width="containerWidth"
+          :container-height="containerHeight"
+          @show-menu="handleTreeMenu"
         />
       </template>
     </HybridRenderingView>
