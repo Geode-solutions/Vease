@@ -1,11 +1,11 @@
 <script setup>
-  import HybridRenderingView from "@ogw_front/components/HybridRenderingView"
-  import Launcher from "@ogw_front/components/Launcher"
-  import { Status } from "@ogw_front/utils/status"
-  import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu"
-  import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree"
-  import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json"
-  import appLogo from "@/assets/img/logo.png"
+import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
+import Launcher from "@ogw_front/components/Launcher";
+import { Status } from "@ogw_front/utils/status";
+import ViewerContextMenu from "@ogw_front/components/Viewer/ContextMenu";
+import ViewerTreeObjectTree from "@ogw_front/components/Viewer/Tree/ObjectTree";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
+import appLogo from "@/assets/img/logo.png";
 
 import { useDataStore } from "@ogw_front/stores/data";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
@@ -91,12 +91,7 @@ watch([elWidth, elHeight], ([width, height]) => {
 
 <template>
   <Launcher v-if="infraStore.status != Status.CREATED" :logo="appLogo" />
-  <div
-    v-else
-    ref="cardContainer"
-    class="w-100 h-100 fill-height"
-    @contextmenu.prevent="openMenu"
-  >
+  <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
     <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
