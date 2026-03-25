@@ -5,6 +5,7 @@ import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useMenuStore } from "@ogw_front/stores/menu";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
 import Launcher from "@ogw_front/components/Launcher";
 import ViewerUI from "@ogw_front/components/Viewer/Ui";
@@ -73,7 +74,12 @@ watch([elWidth, elHeight], ([width, height]) => {
 
 <template>
   <Launcher v-if="infraStore.status != Status.CREATED" logo="/logo.png" />
-  <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
+  <div
+    v-else
+    ref="cardContainer"
+    class="w-100 h-100 fill-height"
+    @contextmenu.prevent="openMenu"
+  >
     <HybridRenderingView>
       <template #ui>
         <ViewerUI

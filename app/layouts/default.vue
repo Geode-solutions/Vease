@@ -1,11 +1,13 @@
 <script setup>
 import { useInfraStore } from "@ogw_front/stores/infra";
+
 import { useUIStore } from "@vease/stores/ui";
 import DrawerManager from "@vease/components/Layout/DrawerManager";
+import MainNavigation from "@vease/components/Layout/MainNavigation";
+
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
