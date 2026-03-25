@@ -90,12 +90,7 @@ watch([elWidth, elHeight], ([width, height]) => {
 
 <template>
   <Launcher v-if="infraStore.status != Status.CREATED" />
-  <div
-    v-else
-    ref="cardContainer"
-    class="w-100 h-100 fill-height"
-    @contextmenu.prevent="openMenu"
-  >
+  <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
     <HybridRenderingView>
       <template #ui>
         <ViewerTreeObjectTree @show-menu="handleTreeMenu" />
