@@ -45,21 +45,13 @@ watch(
   <v-app>
     <TopBar /> <SideBar />
     <v-main class="custom-background dropzone">
-      <GlassCard
-        variant="ui"
-        padding="pa-0"
-        class="island-wrapper overflow-hidden"
-      >
+      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
         <v-fade-transition>
           <div
-            v-if="
-              UIStore.showStepper ||
-              UIStore.showCreateTools ||
-              UIStore.showExtensions
-            "
+            v-if="UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions"
             class="drawer-overlay"
             @click="closeAllDrawers"
           />
@@ -106,11 +98,7 @@ watch(
             </GlassCard>
           </v-card>
         </v-fade-transition>
-        <DragAndDrop
-          :inline="false"
-          :fullscreen="true"
-          @files-selected="handleFilesDropped"
-        />
+        <DragAndDrop :inline="false" :fullscreen="true" @files-selected="handleFilesDropped" />
       </InfraConnected>
       <DataManagerPiP v-if="UIStore.showDataManagerPiP" />
     </v-main>
