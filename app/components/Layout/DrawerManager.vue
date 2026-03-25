@@ -40,11 +40,7 @@ function handleFilesDropped(files) {
       :width="548"
       class="drawer-container right-0"
     >
-      <GlassCard
-        variant="panel"
-        padding="pa-0"
-        class="fill-height overflow-hidden border-0"
-      >
+      <GlassCard variant="panel" padding="pa-0" class="fill-height overflow-hidden border-0">
         <StepImport
           v-if="uiStore.showStepper"
           :files="uiStore.droppedFiles"
@@ -64,11 +60,7 @@ function handleFilesDropped(files) {
       class="drawer-container left-0"
       style="z-index: 9999"
     >
-      <GlassCard
-        variant="panel"
-        padding="pa-0"
-        class="fill-height overflow-hidden border-0"
-      >
+      <GlassCard variant="panel" padding="pa-0" class="fill-height overflow-hidden border-0">
         <Extension />
       </GlassCard>
     </v-card>
