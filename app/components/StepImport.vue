@@ -54,7 +54,9 @@ const stepper_tree = reactive({
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
-      chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
+      chips: computed(() =>
+        geode_object_type.value === "" ? [] : [geode_object_type.value],
+      ),
     },
     {
       step_title: "Add additional files",
@@ -79,7 +81,9 @@ const stepper_tree = reactive({
       },
       chips: computed(() => {
         const output_params = [geode_object_type.value, additional_files.value];
-        return output_params.filter((val) => val !== "" && (!Array.isArray(val) || val.length > 0));
+        return output_params.filter(
+          (val) => val !== "" && (!Array.isArray(val) || val.length > 0),
+        );
       }),
     },
   ],

@@ -1,31 +1,28 @@
 <script setup>
-import DragAndDrop from "@ogw_front/components/DragAndDrop";
+import { useInfraStore } from "@ogw_front/stores/infra";
+import { useUIStore } from "@vease/stores/ui";
+import CreateTools from "@vease/components/CreateTools";
+import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
+import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
-import { useInfraStore } from "@ogw_front/stores/infra";
-import CreateTools from "@vease/components/CreateTools";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
+import SideBar from "@vease/components/Layout/SideBar";
 import StepImport from "@vease/components/StepImport";
-import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
-import { useUIStore } from "@vease/stores/ui";
-
+import TopBar from "@vease/components/Layout/TopBar";
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
-
 function handleFilesDropped(files) {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
     UIStore.setDroppedFiles([...files]);
     UIStore.setShowStepper(true);
   }
 }
-
 function closeAllDrawers() {
   UIStore.setShowStepper(false);
   UIStore.setShowCreateTools(false);
   UIStore.setShowExtensions(false);
 }
-
 watch(
   () => [UIStore.showStepper, UIStore.showCreateTools, UIStore.showExtensions],
   ([stepper, tools, extensions], [oldStepper, oldTools, oldExtensions]) => {
@@ -44,25 +41,29 @@ watch(
   },
 );
 </script>
-
 <template>
   <v-app>
-    <MainNavigation />
-
+    <TopBar /> <SideBar />
     <v-main class="custom-background dropzone">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden"
+      >
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
-
       <InfraConnected>
         <v-fade-transition>
           <div
-            v-if="UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions"
+            v-if="
+              UIStore.showStepper ||
+              UIStore.showCreateTools ||
+              UIStore.showExtensions
+            "
             class="drawer-overlay"
             @click="closeAllDrawers"
           />
         </v-fade-transition>
-
         <v-fade-transition>
           <v-card
             v-if="UIStore.showStepper || UIStore.showCreateTools"
@@ -86,7 +87,6 @@ watch(
             </GlassCard>
           </v-card>
         </v-fade-transition>
-
         <v-fade-transition>
           <v-card
             v-if="UIStore.showExtensions"
@@ -106,13 +106,14 @@ watch(
             </GlassCard>
           </v-card>
         </v-fade-transition>
-
-        <DragAndDrop :inline="false" :fullscreen="true" @files-selected="handleFilesDropped" />
+        <DragAndDrop
+          :inline="false"
+          :fullscreen="true"
+          @files-selected="handleFilesDropped"
+        />
       </InfraConnected>
-
       <DataManagerPiP v-if="UIStore.showDataManagerPiP" />
     </v-main>
-
     <v-progress-linear
       v-if="infraStore.microservices_busy"
       indeterminate
@@ -120,28 +121,23 @@ watch(
       class="position-fixed top-0"
       style="z-index: 10001"
     />
-
     <FeedBackSnackers />
   </v-app>
 </template>
-
 <style scoped>
 .v-app {
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
 }
-
 .v-main {
   height: 100vh;
 }
-
 :deep(.v-main__wrap) {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .island-wrapper {
   flex-grow: 1;
   height: 99%;
@@ -151,12 +147,10 @@ watch(
   margin: 0 10px 10px 0;
   padding: 0;
 }
-
 .custom-background {
   position: relative;
   overflow: hidden;
 }
-
 .custom-background::before {
   content: "";
   position: absolute;
@@ -164,7 +158,6 @@ watch(
   opacity: 0.15;
   pointer-events: none;
 }
-
 .drawer-overlay {
   position: fixed;
   inset: 0;
@@ -176,14 +169,12 @@ watch(
   isolation: isolate;
   backface-visibility: hidden;
 }
-
 .v-fade-transition-enter-active,
 .v-fade-transition-leave-active {
   transition:
     opacity 0.1s linear,
     backdrop-filter 0.1s linear !important;
 }
-
 .drawer-container {
   position: fixed;
   top: 0;
@@ -195,11 +186,9 @@ watch(
   backface-visibility: hidden;
   transform: translateZ(0);
 }
-
 .v-btn {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
-
 .v-btn:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
