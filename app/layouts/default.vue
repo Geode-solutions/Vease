@@ -1,16 +1,14 @@
 <script setup>
-import { useInfraStore } from "@ogw_front/stores/infra";
-import { useUIStore } from "@vease/stores/ui";
-
-import CreateTools from "@vease/components/CreateTools";
-import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
-import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import DragAndDrop from "@ogw_front/components/DragAndDrop";
+import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
-import SideBar from "@vease/components/Layout/SideBar";
+import { useInfraStore } from "@ogw_front/stores/infra";
+import CreateTools from "@vease/components/CreateTools";
+import MainNavigation from "@vease/components/Layout/MainNavigation";
 import StepImport from "@vease/components/StepImport";
-import TopBar from "@vease/components/Layout/TopBar";
+import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
+import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
@@ -49,8 +47,7 @@ watch(
 
 <template>
   <v-app>
-    <TopBar />
-    <SideBar />
+    <MainNavigation />
 
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">

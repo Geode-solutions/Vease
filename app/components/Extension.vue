@@ -1,12 +1,11 @@
 <script setup>
+import { useExtensionMetadata } from "@/composables/extension_metadata";
+import { formatRelativeTime } from "@/utils/format_date";
 import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
-import { appMode } from "@ogw_front/utils/local/app_mode";
-import { importExtensionFile } from "@ogw_front/utils/extension";
 import { useInfraStore } from "@ogw_front/stores/infra";
-
-import { formatRelativeTime } from "@/utils/format_date";
-import { useExtensionMetadata } from "@/composables/extension_metadata";
+import { importExtensionFile } from "@ogw_front/utils/extension";
+import { appMode } from "@ogw_front/utils/local/app_mode";
 import { useExtensionsStore } from "@vease/stores/extensions";
 
 const MESSAGE_TIMEOUT = 4000;
@@ -48,7 +47,6 @@ async function processFiles(filesToProcess) {
       if (result.status === "fulfilled") {
         successCount += 1;
       } else {
-        console.error("[Extension.vue] Failed to import extension:", result.reason);
         errorMessage.value = `${result.reason.message}`;
       }
     }
