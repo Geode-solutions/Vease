@@ -1,24 +1,22 @@
 <script setup>
-import { useInfraStore } from "@ogw_front/stores/infra";
-import { useUIStore } from "@vease/stores/ui";
-
-import CreateTools from "@vease/components/CreateTools";
-import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
+import DrawerManager from "@vease/components/Layout/DrawerManager";
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
-import FullScrenDropZone from "@vease/components/FullScrenDropZone";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
-import SideBar from "@vease/components/Layout/SideBar";
-import StepImport from "@vease/components/StepImport";
-import TopBar from "@vease/components/Layout/TopBar";
+
+import MainNavigation from "@vease/components/Layout/MainNavigation";
+import { useInfraStore } from "@ogw_front/stores/infra";
+
+import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 
-function closeAllDrawers() {
-  UIStore.setShowStepper(false);
-  UIStore.setShowCreateTools(false);
-  UIStore.setShowExtensions(false);
+function handleFilesDropped(files) {
+  if (!UIStore.showStepper && !UIStore.showExtensions) {
+    UIStore.setDroppedFiles([...files]);
+    UIStore.setShowStepper(true);
+  }
 }
 
 watch(
@@ -42,71 +40,23 @@ watch(
 
 <template>
   <v-app>
-    <TopBar style="z-index: 1" />
-    <SideBar style="z-index: 1" />
+    <MainNavigation />
 
-    <v-main class="custom-background dropzone" @dragover="UIStore.setShowDropZone(true)">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+    <v-main class="custom-background dropzone">
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden"
+      >
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
 
       <InfraConnected>
-        <v-fade-transition>
-          <div
-            v-if="UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions"
-            class="drawer-overlay"
-            @click="closeAllDrawers"
-          />
-        </v-fade-transition>
-
-        <v-fade-transition>
-          <v-card
-            v-if="UIStore.showStepper || UIStore.showCreateTools"
-            color="transparent"
-            elevation="0"
-            :width="548"
-            class="drawer-container right-0"
-          >
-            <GlassCard
-              v-if="UIStore.showStepper || UIStore.showCreateTools"
-              variant="panel"
-              padding="pa-0"
-              class="fill-height overflow-hidden border-0"
-            >
-              <StepImport
-                v-if="UIStore.showStepper"
-                :files="UIStore.droppedFiles"
-                @close="UIStore.setShowStepper(false)"
-              />
-              <CreateTools v-if="UIStore.showCreateTools" />
-            </GlassCard>
-          </v-card>
-        </v-fade-transition>
-
-        <v-fade-transition>
-          <v-card
-            v-if="UIStore.showExtensions"
-            color="transparent"
-            elevation="0"
-            :width="548"
-            class="drawer-container left-0"
-            style="z-index: 9999"
-          >
-            <GlassCard
-              v-if="UIStore.showExtensions"
-              variant="panel"
-              padding="pa-0"
-              class="fill-height overflow-hidden border-0"
-            >
-              <Extension />
-            </GlassCard>
-          </v-card>
-        </v-fade-transition>
-
-        <FullScrenDropZone />
+        <DrawerManager
+          :ui-store="UIStore"
+          @files-dropped="handleFilesDropped"
+        />
       </InfraConnected>
-
-      <DataManagerPiP v-if="UIStore.showDataManagerPiP" />
     </v-main>
 
     <v-progress-linear
