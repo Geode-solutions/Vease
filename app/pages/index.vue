@@ -1,7 +1,7 @@
 <script setup>
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
 import Launcher from "@ogw_front/components/Launcher";
-import ViewerUI from "@ogw_front/components/Viewer/UI";
+import ViewerUI from "@ogw_front/components/Viewer/Ui";
 import { Status } from "@ogw_front/utils/status";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
