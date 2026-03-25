@@ -41,19 +41,12 @@ watch(
     <MainNavigation />
 
     <v-main class="custom-background dropzone">
-      <GlassCard
-        variant="ui"
-        padding="pa-0"
-        class="island-wrapper overflow-hidden"
-      >
+      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
 
       <InfraConnected>
-        <DrawerManager
-          :ui-store="UIStore"
-          @files-dropped="handleFilesDropped"
-        />
+        <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
       </InfraConnected>
     </v-main>
 
