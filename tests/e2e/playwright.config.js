@@ -24,7 +24,10 @@ const TIMEOUTS = {
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
   expect: {
-    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,
+      pathTemplate: `./screenshots/{testName}.png`,
+    },
   },
   testDir: ".",
   fullyParallel: true,
