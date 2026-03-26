@@ -9,7 +9,7 @@ const LINUX_TIMEOUT_BROWSER = 40;
 const LINUX_TIMEOUT_DESKTOP = 30;
 const WINDOWS_TIMEOUT_BROWSER = 60;
 const WINDOWS_TIMEOUT_DESKTOP = 60;
-const CI_RETRIES = 3;
+const CI_RETRIES = 1;
 
 const CLOUD_TIMEOUT = 100;
 
@@ -63,7 +63,7 @@ export default defineConfig({
       name: "cloud",
       testMatch: "tests/e2e/app.test.js",
       timeout: TIMEOUTS.cloud,
-      retries: 0,
+      retries: ciRetries,
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",

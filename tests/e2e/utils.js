@@ -57,7 +57,7 @@ async function runDesktopBuild() {
   await browserWindow.evaluate(
     async (window, { width, height }) => {
       await window.unmaximize();
-      await window.setSize(width, height);
+      await window.setContentSize(width, height);
     },
     { width: PAGE_WIDTH, height: PAGE_HEIGHT },
   );
