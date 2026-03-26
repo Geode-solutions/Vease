@@ -41,7 +41,7 @@
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build && electron-builder build --publish=never",
     "test": "npx playwright test --config ./tests/e2e/playwright.config.js",
-    "test:e2e:browser": "npm run test -- --project=browser-chrome",
+    "test:e2e:browser": "npm run test -- --project=browser-chrome --project=browser-firefox",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop"
   },

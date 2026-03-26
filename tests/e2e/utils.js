@@ -1,12 +1,16 @@
 // Node imports
 import { execSync } from "node:child_process";
+import path from "node:path";
 
 // Third party imports
+import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
+import { _electron as electron } from "playwright";
 import { isWindows } from "std-env";
+import kill from "kill-port";
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
-const MILLISECONDS = 1000;
 
 // Constants
+const MILLISECONDS = 1000;
 const LINUX_TIMEOUT_BROWSER = 10;
 const LINUX_TIMEOUT_DESKTOP = 15;
 const CLOUD_TIMEOUT = 100;
@@ -61,9 +65,8 @@ async function runDesktopBuild() {
   return { electronApp, firstWindow };
 }
 
-async function navigateToApp(page, mode) {
+async function navigateToApp(mode, page) {
   console.log(`Testing app in ${mode} mode`);
-
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
@@ -71,7 +74,7 @@ async function navigateToApp(page, mode) {
     console.log("Navigated to", page.url());
     await page.waitForTimeout(TIMEOUTS.browser);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
-    return { nuxtPort };
+    return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 
@@ -84,23 +87,19 @@ async function navigateToApp(page, mode) {
       prefix = "next.";
     }
     await page.goto(`https://${prefix}vease.geode-solutions.com`);
+
     console.log("Navigated to", page.url());
     const button = await page.getByRole("button", { name: "Launch the app" });
     console.log({ button });
     await button.click();
     await page.waitForTimeout(TIMEOUTS.cloud);
+    return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     await firstWindow.waitForTimeout(TIMEOUTS.desktop);
-    return { electronApp };
-  } else {
-    throw new Error(`Unknown mode: ${mode}`);
+    return { window: firstWindow, cleanup: () => electronApp.close() };
   }
-  await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
+  throw new Error(`Unknown mode: ${mode}`);
 }
 
-function cleanupApp() {
-  console.log("cleanupApp");
-}
-
-export { cleanupApp, navigateToApp };
+export { navigateToApp };
