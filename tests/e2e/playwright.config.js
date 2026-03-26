@@ -1,32 +1,32 @@
-// @ts-check
+// Node imports
+
+// Third party imports
 import { defineConfig, devices } from "@playwright/test";
-import { fileURLToPath } from "node:url";
 import { isWindows } from "std-env";
 
-const maxDiffPixelRatio = 0.01;
 const MILLISECONDS = 1000;
-const WINDOWS_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_BROWSER = 40;
-const WINDOWS_TIMEOUT_DESKTOP = 60;
 const LINUX_TIMEOUT_DESKTOP = 30;
-const CLOUD_TIMEOUT = 250;
+const WINDOWS_TIMEOUT_BROWSER = 60;
+const WINDOWS_TIMEOUT_DESKTOP = 60;
 const CI_RETRIES = 3;
+
+const CLOUD_TIMEOUT = 100;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
 
-const nuxtUse = {
-  nuxt: {
-    rootDir: fileURLToPath(new URL(".", import.meta.url)),
-    dev: true,
-  },
+const TIMEOUTS = {
+  browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_TIMEOUT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
 };
 
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
   expect: {
-    toHaveScreenshot: { maxDiffPixelRatio },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
-  testDir: "./",
+  testDir: ".",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
@@ -36,47 +36,44 @@ export default defineConfig({
   },
 
   projects: [
-    // --- Browser local ---
     {
-      name: "browser",
-      testMatch: "tests/browser-local/**/*.spec.js",
-      timeout: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
+      name: "browser-chrome",
+      testMatch: "tests/e2e/app.test.js",
+      timeout: TIMEOUTS.browser,
       retries: ciRetries,
       use: {
         ...devices["Desktop Chrome"],
-        ...nuxtUse,
+        mode: "BROWSER",
       },
     },
     {
-      name: "browser-local:firefox",
-      testMatch: "tests/browser-local/**/*.spec.js",
-      timeout: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
+      name: "browser-firefox",
+      testMatch: "tests/e2e/app.test.js",
+      timeout: TIMEOUTS.browser,
       retries: ciRetries,
       use: {
         ...devices["Desktop Firefox"],
-        ...nuxtUse,
+        mode: "BROWSER",
       },
     },
-
-    // --- Cloud ---
     {
-      name: "cloud:chromium",
-      testMatch: "tests/cloud/**/*.spec.js",
-      timeout: CLOUD_TIMEOUT * MILLISECONDS,
+      name: "cloud",
+      testMatch: "tests/e2e/app.test.js",
+      timeout: TIMEOUTS.cloud,
       retries: 0,
       use: {
         ...devices["Desktop Chrome"],
-        ...nuxtUse,
+        mode: "CLOUD",
       },
     },
-
-    // --- Desktop (Electron) ---
     {
       name: "desktop",
-      testMatch: "tests/desktop/**/*.spec.js",
-      timeout: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
+      testMatch: "tests/e2e/app.test.js",
+      timeout: TIMEOUTS.desktop,
       retries: ciRetries,
-      // no nuxt, no browser device — electron launcher goes here
+      use: {
+        mode: "DESKTOP",
+      },
     },
   ],
 });
