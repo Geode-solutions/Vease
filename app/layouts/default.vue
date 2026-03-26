@@ -38,7 +38,6 @@ watch(
   },
 );
 </script>
-
 <template>
   <v-app>
     <MainNavigation />
@@ -47,12 +46,10 @@ watch(
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
-
       <InfraConnected>
         <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
       </InfraConnected>
     </v-main>
-
     <v-progress-linear
       v-if="infraStore.microservices_busy"
       indeterminate
@@ -60,28 +57,23 @@ watch(
       class="position-fixed top-0"
       style="z-index: 10001"
     />
-
     <FeedBackSnackers />
   </v-app>
 </template>
-
 <style scoped>
 .v-app {
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
 }
-
 .v-main {
   height: 100vh;
 }
-
 :deep(.v-main__wrap) {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 .island-wrapper {
   flex-grow: 1;
   height: 99%;
@@ -91,12 +83,10 @@ watch(
   margin: 0 10px 10px 0;
   padding: 0;
 }
-
 .custom-background {
   position: relative;
   overflow: hidden;
 }
-
 .custom-background::before {
   content: "";
   position: absolute;
@@ -104,7 +94,6 @@ watch(
   opacity: 0.15;
   pointer-events: none;
 }
-
 .drawer-overlay {
   position: fixed;
   inset: 0;

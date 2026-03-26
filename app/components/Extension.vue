@@ -105,6 +105,8 @@ function removeExtension() {
         accept=".vext"
         :loading="loading"
         :show-extensions="true"
+        :fullscreen="false"
+        :show-overlay="false"
         idle-text="Click or Drag & Drop Extension"
         drop-text="Drop to Install"
         loading-text="Loading Extension..."
@@ -448,18 +450,5 @@ function removeExtension() {
   height: 100px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.rotating {
-  animation: rotate 1s linear infinite;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 </style>
