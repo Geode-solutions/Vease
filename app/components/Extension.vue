@@ -452,16 +452,4 @@ function removeExtension() {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.rotating {
-  animation: rotate 1s linear infinite;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 </style>
