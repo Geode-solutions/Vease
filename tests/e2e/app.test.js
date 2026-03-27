@@ -1,4 +1,5 @@
 // Node imports
+import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 // Local imports
@@ -6,7 +7,7 @@ import { expect, test } from "./fixtures.js";
 import { navigateToApp } from "./utils.js";
 
 // Constants
-const __dirname = new URL(".", import.meta.url).pathname;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 let _window = undefined;
 let _cleanup = undefined;
 
