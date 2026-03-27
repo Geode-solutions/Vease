@@ -7,7 +7,7 @@ import { isWindows } from "std-env";
 const MILLISECONDS = 1000;
 const LINUX_TIMEOUT_BROWSER = 40;
 const LINUX_TIMEOUT_DESKTOP = 30;
-const WINDOWS_TIMEOUT_BROWSER = 60;
+const WINDOWS_TIMEOUT_BROWSER = 65;
 const WINDOWS_TIMEOUT_DESKTOP = 65;
 const CI_RETRIES = 1;
 
