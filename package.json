@@ -35,13 +35,15 @@
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "build": "nuxi build",
     "build:browser": "cross-env MODE=BROWSER npm run build",
-    "build:desktop": "cross-env MODE=DESKTOP npm run build && electron-builder --dir",
+    "build:desktop": "npm run package",
+    "build:desktop:unpacked": "cross-env MODE=DESKTOP npm run build && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build && electron-builder build --publish=never",
-    "test:e2e:browser": "npx playwright test --config ./tests/e2e/browser/playwright.config.js",
-    "test:e2e:cloud": "npx playwright test --config ./tests/e2e/cloud/playwright.config.js",
-    "test:e2e:desktop": "npx playwright test --config ./tests/e2e/desktop/playwright.config.js"
+    "test": "npx playwright test --config ./tests/e2e/playwright.config.js",
+    "test:e2e:browser": "npm run test -- --project=browser-chrome --project=browser-firefox",
+    "test:e2e:cloud": "npm run test -- --project=cloud",
+    "test:e2e:desktop": "npm run test -- --project=desktop"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
