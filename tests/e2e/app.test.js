@@ -15,6 +15,7 @@ test.beforeAll(async ({ mode, browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
+  await _window.waitForFunction(() => document.readyState === "complete");
 });
 
 test.afterAll(async () => {
@@ -32,5 +33,7 @@ test("Load data", async () => {
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(path.join(__dirname, "data", "cube.og_brep"));
   await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  const waitTime = 2000;
+  await _window.waitForTimeout(waitTime);
   await expect(_window).toHaveScreenshot();
 });
