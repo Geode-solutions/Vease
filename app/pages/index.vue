@@ -24,12 +24,15 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({ event, itemId }) {
+async function handleTreeMenu({ event, itemId, context_type, modelId }) {
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
 
-  const item = await dataStore.item(itemId);
+  const meta_data =
+    context_type === "model_component"
+      ? { viewer_type: "model_component", geode_object_type: "component", modelId }
+      : await dataStore.item(itemId);
 
   menuStore.openMenu(
     itemId,
@@ -39,7 +42,7 @@ async function handleTreeMenu({ event, itemId }) {
     containerHeight.value,
     rect.top,
     rect.left,
-    item,
+    meta_data,
   );
 }
 
