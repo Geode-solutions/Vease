@@ -72,7 +72,7 @@ async function navigateToApp(mode, page) {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
-    await page.waitForWAIT(WAIT_TIMES.browser);
+    await page.waitForTimeout(WAIT_TIMES.browser);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
@@ -92,11 +92,11 @@ async function navigateToApp(mode, page) {
     const button = await page.getByRole("button", { name: "Launch the app" });
     console.log({ button });
     await button.click();
-    await page.waitForWAIT(WAIT_TIMES.cloud);
+    await page.waitForTimeout(WAIT_TIMES.cloud);
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    await firstWindow.waitForWAIT(WAIT_TIMES.desktop);
+    await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     return { window: firstWindow, cleanup: () => electronApp.close() };
   }
   throw new Error(`Unknown mode: ${mode}`);

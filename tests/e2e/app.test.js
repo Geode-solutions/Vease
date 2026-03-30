@@ -8,6 +8,7 @@ import { navigateToApp } from "./utils.js";
 
 // Constants
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const beforeAllTimeout = 150;
 let _window = undefined;
 let _cleanup = undefined;
 
@@ -16,7 +17,7 @@ test.beforeAll(async ({ mode, browser }) => {
   const page = await context.newPage();
   ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
   await _window.waitForFunction(() => document.readyState === "complete");
-});
+}, beforeAllTimeout);
 
 test.afterAll(async () => {
   await _cleanup();
