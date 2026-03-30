@@ -11,10 +11,10 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 
 // Constants
 const MILLISECONDS = 1000;
-const LINUX_WAIT_BROWSER = 10;
-const LINUX_WAIT_DESKTOP = 15;
+const LINUX_WAIT_BROWSER = 15;
+const LINUX_WAIT_DESKTOP = 20;
 const CLOUD_WAIT = 65;
-const WINDOWS_WAIT_BROWSER = 15;
+const WINDOWS_WAIT_BROWSER = 20;
 const WINDOWS_WAIT_DESKTOP = 30;
 
 const WAIT_TIMES = {
