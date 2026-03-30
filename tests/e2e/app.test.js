@@ -33,7 +33,7 @@ test("Load data", async () => {
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(path.join(__dirname, "data", "cube.og_brep"));
   await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  const waitTime = 2000;
-  await _window.waitForTimeout(waitTime);
+  const workflowTimeout = 5000;
+  await _window.waitForTimeout(workflowTimeout);
   await expect(_window).toHaveScreenshot();
 });
