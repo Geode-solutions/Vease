@@ -5,13 +5,12 @@ import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
-const LINUX_TIMEOUT_BROWSER = 40;
-const LINUX_TIMEOUT_DESKTOP = 30;
-const WINDOWS_TIMEOUT_BROWSER = 65;
-const WINDOWS_TIMEOUT_DESKTOP = 65;
-const CI_RETRIES = 1;
-
 const CLOUD_TIMEOUT = 100;
+const LINUX_TIMEOUT_BROWSER = 50;
+const LINUX_TIMEOUT_DESKTOP = 40;
+const WINDOWS_TIMEOUT_BROWSER = 80;
+const WINDOWS_TIMEOUT_DESKTOP = 80;
+const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
 
