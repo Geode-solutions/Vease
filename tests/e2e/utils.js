@@ -13,7 +13,7 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 const MILLISECONDS = 1000;
 const LINUX_TIMEOUT_BROWSER = 10;
 const LINUX_TIMEOUT_DESKTOP = 15;
-const CLOUD_TIMEOUT = 100;
+const CLOUD_TIMEOUT = 65;
 const WINDOWS_TIMEOUT_BROWSER = 15;
 const WINDOWS_TIMEOUT_DESKTOP = 30;
 
