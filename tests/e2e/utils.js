@@ -93,6 +93,7 @@ async function navigateToApp(mode, page) {
     console.log({ button });
     await button.click();
     await page.waitForTimeout(TIMEOUTS.cloud);
+    await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
