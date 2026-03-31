@@ -11,16 +11,16 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 
 // Constants
 const MILLISECONDS = 1000;
-const LINUX_TIMEOUT_BROWSER = 10;
-const LINUX_TIMEOUT_DESKTOP = 15;
-const CLOUD_TIMEOUT = 65;
-const WINDOWS_TIMEOUT_BROWSER = 15;
-const WINDOWS_TIMEOUT_DESKTOP = 30;
+const LINUX_WAIT_BROWSER = 15;
+const LINUX_WAIT_DESKTOP = 20;
+const CLOUD_WAIT = 65;
+const WINDOWS_WAIT_BROWSER = 20;
+const WINDOWS_WAIT_DESKTOP = 30;
 
-const TIMEOUTS = {
-  browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
-  cloud: CLOUD_TIMEOUT * MILLISECONDS,
-  desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
+const WAIT_TIMES = {
+  browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_WAIT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
 
 const PAGE_WIDTH = 1200;
@@ -38,7 +38,7 @@ async function runDesktopBuild() {
   const electronApp = await electron.launch({
     args: [appInfo.main, "--no-sandbox"],
     executablePath: appInfo.executable,
-    timeout: 20_000,
+    wait: 20_000,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,
@@ -72,7 +72,7 @@ async function navigateToApp(mode, page) {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
-    await page.waitForTimeout(TIMEOUTS.browser);
+    await page.waitForTimeout(WAIT_TIMES.browser);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
@@ -97,7 +97,7 @@ async function navigateToApp(mode, page) {
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    await firstWindow.waitForTimeout(TIMEOUTS.desktop);
+    await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     return { window: firstWindow, cleanup: () => electronApp.close() };
   }
   throw new Error(`Unknown mode: ${mode}`);
