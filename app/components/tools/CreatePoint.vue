@@ -88,7 +88,7 @@ function sanitizeNumberString(str) {
     return "";
   }
   let value = String(str)
-    .replaceAll(/,/g, ".")
+    .replaceAll(",", ".")
     .replaceAll(/[^0-9eE+\-.]/g, "");
   if (/[eE]/.test(value)) {
     const parts = value.split(/[eE]/);
@@ -122,7 +122,8 @@ function assignSanitizedCoordinates(sanitized) {
 }
 
 function handlePaste(event, field) {
-  const pastedText = (event && event.clipboardData && event.clipboardData.getData("text")) || "";
+  const pastedText =
+    (event && event.clipboardData && event.clipboardData.getData("text")) || "";
 
   if (!pastedText) {
     return;
@@ -167,8 +168,14 @@ function sanitizeInput(value, label) {
 
 <template>
   <v-card flat color="transparent" class="pa-0" theme="dark">
-    <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-circle-medium" class="mr-3 text-h4" color="secondary"></v-icon>
+    <v-card-title
+      class="pb-2 text-h5 font-weight-bold d-flex align-center text-white"
+    >
+      <v-icon
+        icon="mdi-circle-medium"
+        class="mr-3 text-h4"
+        color="secondary"
+      ></v-icon>
       Create Specific Point
     </v-card-title>
 
@@ -219,7 +226,9 @@ function sanitizeInput(value, label) {
                 <span class="text-white opacity-100">X</span>
               </template>
               <template v-slot:prepend-inner>
-                <v-icon color="white" class="opacity-100">mdi-axis-x-arrow</v-icon>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-x-arrow</v-icon
+                >
               </template>
             </v-text-field>
           </v-col>
@@ -244,7 +253,9 @@ function sanitizeInput(value, label) {
                 <span class="text-white opacity-100">Y</span>
               </template>
               <template v-slot:prepend-inner>
-                <v-icon color="white" class="opacity-100">mdi-axis-y-arrow</v-icon>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-y-arrow</v-icon
+                >
               </template>
             </v-text-field>
           </v-col>
@@ -269,7 +280,9 @@ function sanitizeInput(value, label) {
                 <span class="text-white opacity-100">Z</span>
               </template>
               <template v-slot:prepend-inner>
-                <v-icon color="white" class="opacity-100">mdi-axis-z-arrow</v-icon>
+                <v-icon color="white" class="opacity-100"
+                  >mdi-axis-z-arrow</v-icon
+                >
               </template>
             </v-text-field>
           </v-col>
@@ -305,7 +318,12 @@ function sanitizeInput(value, label) {
         <v-icon start>mdi-send</v-icon>
         Create Point
         <template #loader>
-          <v-progress-circular indeterminate size="20" color="white" width="3" />
+          <v-progress-circular
+            indeterminate
+            size="20"
+            color="white"
+            width="3"
+          />
         </template>
       </v-btn>
     </v-card-actions>
