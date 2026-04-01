@@ -64,6 +64,7 @@ async function create_new_window() {
       encoding: "utf8",
       env: {
         ...process.env,
+        MODE: "DESKTOP",
         PORT: String(PORT),
         RESOURCES_PATH: process.resourcesPath,
       },
