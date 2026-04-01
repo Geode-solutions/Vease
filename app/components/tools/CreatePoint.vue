@@ -88,8 +88,8 @@ function sanitizeNumberString(str) {
     return "";
   }
   let value = String(str)
-    .replace(/,/g, ".")
-    .replace(/[^0-9eE+\-.]/g, "");
+    .replaceAll(/,/g, ".")
+    .replaceAll(/[^0-9eE+\-.]/g, "");
   if (/[eE]/.test(value)) {
     const parts = value.split(/[eE]/);
     if (parts.length > 2) {
@@ -98,7 +98,7 @@ function sanitizeNumberString(str) {
         parts
           .slice(2)
           .join("")
-          .replace(/[^0-9+\-.]/g, "");
+          .replaceAll(/[^0-9+\-.]/g, "");
     }
   }
   return value;
