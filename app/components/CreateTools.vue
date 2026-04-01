@@ -79,7 +79,6 @@ watch(
                   height="36"
                   width="36"
                   contain
-                  class="svg-white-filter"
                 />
               </v-sheet>
               <div class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white">
@@ -133,10 +132,6 @@ watch(
 
 .custom-tool-card:hover {
   transform: scale(1.03);
-}
-
-.svg-white-filter {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }
 
 .tool-title {
