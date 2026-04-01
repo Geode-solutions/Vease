@@ -1,40 +1,40 @@
 <script setup>
-  import { useUIStore } from "@vease/stores/ui"
+import { useUIStore } from "@vease/stores/ui";
 
-  const UIStore = useUIStore()
+const UIStore = useUIStore();
 
-  const drawer = ref(true)
+const drawer = ref(true);
 
-  const items = ref([
-    {
-      title: "Viewer",
-      icon: "mdi-rotate-orbit",
-      click: () => navigateTo("/"),
-    },
-    {
-      title: "Data Manager",
-      icon: "mdi-database",
-      click: () => navigateTo("/data-manager"),
-    },
-  ])
+const items = ref([
+  {
+    title: "Viewer",
+    icon: "mdi-rotate-orbit",
+    click: () => navigateTo("/"),
+  },
+  {
+    title: "Data Manager",
+    icon: "mdi-database",
+    click: () => navigateTo("/data_manager"),
+  },
+]);
 
-  let draggedItem = undefined
+let draggedItem = undefined;
 
-  function startDrag(event, item) {
-    draggedItem = item
-    event.dataTransfer.setData("text/plain", "sidebar-icon")
+function startDrag(event, item) {
+  draggedItem = item;
+  event.dataTransfer.setData("text/plain", "sidebar-icon");
+}
+
+function onDrop(event, dropIndex) {
+  const dragIndex = items.value.indexOf(draggedItem);
+  if (dragIndex === dropIndex) {
+    return;
   }
 
-  function onDrop(event, dropIndex) {
-    const dragIndex = items.value.indexOf(draggedItem)
-    if (dragIndex === dropIndex) {
-      return
-    }
-
-    items.value.splice(dragIndex, 1)
-    items.value.splice(dropIndex, 0, draggedItem)
-    draggedItem = undefined
-  }
+  items.value.splice(dragIndex, 1);
+  items.value.splice(dropIndex, 0, draggedItem);
+  draggedItem = undefined;
+}
 </script>
 
 <template>
@@ -96,16 +96,16 @@
 </template>
 
 <style scoped>
-  .icon-style {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+.icon-style {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .icon-style:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
+.icon-style:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
-  :deep(.v-navigation-drawer__content) {
-    overflow: visible !important;
-  }
+:deep(.v-navigation-drawer__content) {
+  overflow: visible !important;
+}
 </style>

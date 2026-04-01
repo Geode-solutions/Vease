@@ -2,7 +2,7 @@
   "categories": {
     "correctness": "error",
     "suspicious": "error",
-    "pedantic": "warn",
+    "pedantic": "error",
     "perf": "error",
     "style": "error",
     "restriction": "error"
@@ -25,38 +25,66 @@
     "eslint/id-length": [
       "error",
       {
-        "exceptions": [
-          "x",
-          "y",
-          "z",
-          "i",
-          "j",
-          "k",
-          "r",
-          "g",
-          "b",
-          "id",
-          "ID",
-          "fs",
-          "os",
-          "_"
-        ],
+        "exceptions": ["x", "y", "z", "i", "j", "k", "r", "g", "b", "id", "ID", "fs", "os", "_"],
         "min": 3
       }
     ],
     "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
-    "sort-imports": ["error", { "allowSeparatedGroups": true }],
+    "sort-imports": [
+      "error",
+      {
+        "allowSeparatedGroups": true
+      }
+    ],
     "eslint/no-undefined": "off", // Conflict with unicorn/no-typeof-undefined which prefers direct undefined comparison
     "import/prefer-default-export": "off",
     "import/no-named-export": "off",
-    "import/no-namespace": ["error", { "ignore": ["vuetify/*"] }],
-    "vue/max-props": ["error", { "maxProps": 8 }],
+    "import/no-namespace": [
+      "error",
+      {
+        "ignore": ["vuetify/*"]
+      }
+    ],
+    "import/max-dependencies": [
+      "warn",
+      {
+        "max": 10
+      }
+    ],
+    "max-lines-per-function": [
+      "warn",
+      {
+        "max": 50,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "unicorn/no-useless-undefined": "off",
+    "max-lines": [
+      "error",
+      {
+        "max": 310,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "vue/max-props": [
+      "error",
+      {
+        "maxProps": 8
+      }
+    ],
     "oxc/no-optional-chaining": "off",
     "node/no-process-env": "off",
     "no-continue": "off",
     "vitest/require-hook": "off",
     "import/unambiguous": "off",
-    "max-params": ["warn", { "max": 4 }],
+    "max-params": [
+      "warn",
+      {
+        "max": 4
+      }
+    ],
     "import/no-nodejs-modules": "off",
     "eslint/no-magic-numbers": [
       "error",
@@ -79,12 +107,7 @@
       }
     },
     {
-      "files": [
-        "app/plugins/**",
-        "node_scripts/**",
-        "server/**",
-        "*.config.js"
-      ],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
       "rules": {
         "import/no-default-export": "off"
       }
@@ -94,7 +117,12 @@
       "rules": {
         "vitest/require-hook": "off",
         "vitest/no-hooks": "off",
-        "vitest/no-importing-vitest-globals": "off"
+        "vitest/no-importing-vitest-globals": "off",
+        "max-lines-per-function": "off",
+        "max-statements": "off",
+        "vitest/prefer-to-be-truthy": "off",
+        "vitest/prefer-to-be-falsy": "off",
+        "vitest/require-test-timeout": "warn"
       }
     },
     {

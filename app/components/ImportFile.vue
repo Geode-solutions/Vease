@@ -1,43 +1,38 @@
 <script setup>
-  import { importWorkflow } from "@ogw_front/utils/file_import_workflow"
-  import { useUIStore } from "@vease/stores/ui"
+import { importWorkflow } from "@ogw_front/utils/file_import_workflow";
+import { useUIStore } from "@vease/stores/ui";
 
-  const emit = defineEmits([
-    "update_values",
-    "increment_step",
-    "decrement_step",
-    "reset_values",
-  ])
+const emit = defineEmits(["update_values", "increment_step", "decrement_step", "reset_values"]);
 
-  const { filenames, geode_object_type } = defineProps({
-    filenames: { type: Array, required: true },
-    geode_object_type: { type: String, required: true },
-  })
+const { filenames, geode_object_type } = defineProps({
+  filenames: { type: Array, required: true },
+  geode_object_type: { type: String, required: true },
+});
 
-  const UIStore = useUIStore()
+const UIStore = useUIStore();
 
-  const import_button = useTemplateRef("import_button")
-  useFocus(import_button, { initialValue: true })
+const import_button = useTemplateRef("import_button");
+useFocus(import_button, { initialValue: true });
 
-  const loading = ref(false)
-  const toggle_loading = useToggle(loading)
+const loading = ref(false);
+const toggle_loading = useToggle(loading);
 
-  async function import_files() {
-    toggle_loading()
-    const files_array = filenames.map((filename) => ({
-      filename,
-      geode_object_type,
-    }))
-    await importWorkflow(files_array)
-    emit("reset_values")
-    UIStore.setShowStepper(false)
-    toggle_loading()
-  }
+async function import_files() {
+  toggle_loading();
+  const files_array = filenames.map((filename) => ({
+    filename,
+    geode_object_type,
+  }));
+  await importWorkflow(files_array);
+  emit("reset_values");
+  UIStore.setShowStepper(false);
+  toggle_loading();
+}
 
-  function cancel() {
-    emit("reset_values")
-    UIStore.setShowStepper(false)
-  }
+function cancel() {
+  emit("reset_values");
+  UIStore.setShowStepper(false);
+}
 </script>
 
 <template>

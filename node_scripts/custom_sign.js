@@ -1,7 +1,7 @@
-import child_process from "node:child_process"
+import child_process from "node:child_process";
 
-export default async function customSign(configuration) {
-  console.log("customSign", configuration)
+export default function customSign(configuration) {
+  console.log("customSign", configuration);
 
   child_process.execSync(
     `AzureSignTool sign \
@@ -13,5 +13,5 @@ export default async function customSign(configuration) {
     --timestamp-rfc3161 http://timestamp.digicert.com \
     -v ${configuration.path}`,
     { stdio: "inherit" },
-  )
+  );
 }

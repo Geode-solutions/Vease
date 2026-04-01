@@ -27,12 +27,7 @@ logs
 # Other
 /build
 /dist-electron
-/microservices/back/dist
-/microservices/viewer/dist
-/microservices/back/venv
-/microservices/viewer/venv
 /release
-/uploads
 /vease-back*
 /vease-viewer*
 VTK.txt
