@@ -50,7 +50,12 @@ watch(
 
     <v-card-text class="pt-2 pb-8 flex-1-1 overflow-y-auto px-6">
       <v-row>
-        <v-col v-for="tool in UIStore.activeTools" :key="tool.id" cols="6" class="d-flex pa-2">
+        <v-col
+          v-for="tool in UIStore.activeTools"
+          :key="tool.id"
+          cols="6"
+          class="d-flex pa-2"
+        >
           <GlassCard
             variant="ui"
             class="text-center cursor-pointer flex-grow-1 d-flex flex-column custom-tool-card"
@@ -79,10 +84,11 @@ watch(
                   height="36"
                   width="36"
                   contain
-                  class="svg-white-filter"
                 />
               </v-sheet>
-              <div class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white">
+              <div
+                class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white"
+              >
                 {{ tool.title }}
               </div>
               <div class="text-caption text-wrap text-white opacity-85">
@@ -115,7 +121,8 @@ watch(
         @created="handleToolCreated"
       />
       <v-alert v-else type="error" variant="tonal" class="ma-4">
-        Component not found for **{{ selectedTool }}**. Please check the plugin registration.
+        Component not found for **{{ selectedTool }}**. Please check the plugin
+        registration.
       </v-alert>
     </GlassCard>
   </div>
@@ -133,10 +140,6 @@ watch(
 
 .custom-tool-card:hover {
   transform: scale(1.03);
-}
-
-.svg-white-filter {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
 }
 
 .tool-title {
