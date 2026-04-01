@@ -1,12 +1,14 @@
 // Node imports
 import { execSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 // Third party imports
-import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
 import { isWindows } from "std-env";
 import kill from "kill-port";
+import { parseElectronApp } from "electron-playwright-helpers";
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
 // Constants
@@ -26,12 +28,47 @@ const WAIT_TIMES = {
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
+function latestBuildPath() {
+  const releaseDir = path.join(process.cwd(), "release", "0.0.0");
+
+  let latestBuild = undefined;
+
+  if (process.env.DESKTOP_BUILD_PATH) {
+    // Use pre-extracted build from environment variable
+    latestBuild = process.env.DESKTOP_BUILD_PATH;
+    console.log(`Using pre-extracted build from DESKTOP_BUILD_PATH: ${latestBuild}`);
+  } else {
+    // Extract from zip as usual
+    const platform = os.platform();
+    const zipFile = fs.readdirSync(releaseDir).find((file) => file.endsWith(`_${platform}.zip`));
+    if (!zipFile) {
+      throw new Error(`No ${platform} zip found in ${releaseDir}`);
+    }
+
+    const zipPath = path.join(releaseDir, zipFile);
+    const extractDir = path.join(releaseDir, zipFile.replace(".zip", ""));
+
+    if (!fs.existsSync(extractDir)) {
+      fs.mkdirSync(extractDir, { recursive: true });
+      if (isWindows) {
+        execSync(
+          `powershell -Command "Expand-Archive -Path '${zipPath}' -DestinationPath '${extractDir}' -Force"`,
+        );
+      } else {
+        execSync(`unzip -o "${zipPath}" -d "${extractDir}"`);
+      }
+    }
+    latestBuild = extractDir;
+  }
+  return latestBuild;
+}
+
 async function runDesktopBuild() {
   // Find the latest build in the out directory
-  const latestBuild = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
-  console.log("latestBuild", latestBuild);
+  const pathToApp = latestBuildPath();
+  console.log({ pathToApp });
   // Parse the directory and find paths and other info
-  const appInfo = parseElectronApp(latestBuild);
+  const appInfo = parseElectronApp(pathToApp);
   // Set the CI environment variable to true
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
