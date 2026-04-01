@@ -9,9 +9,6 @@ import { isWindows } from "std-env";
 import kill from "kill-port";
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
-// oxlint-disable-next-line import/no-relative-parent-imports
-import { version } from "../../package.json" with { type: "json" };
-
 // Constants
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 15;
@@ -34,7 +31,7 @@ function findAppExecutable() {
   if (appExecutablePath) {
     return appExecutablePath;
   }
-  return findLatestBuild(path.join(process.cwd(), "release", version));
+  return findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
 }
 
 async function runDesktopBuild() {
