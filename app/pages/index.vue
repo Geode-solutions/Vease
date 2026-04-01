@@ -52,14 +52,21 @@ async function openMenu(event) {
   const yPicking = containerHeight.value - (event.clientY - rect.top);
   const yUI = event.clientY - rect.top;
 
-  await viewerUI.value.get_viewer_id(x, yPicking);
-  if (!id.value) {
+  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(x, yPicking);
+  if (!pickedId) {
     return;
   }
-  const item = await dataStore.item(id.value);
+  const item = await dataStore.item(pickedId);
+
+  if (item.viewer_type === "model" && viewer_id !== undefined) {
+    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
+    if (component) {
+      item.pickedComponentId = component.geode_id;
+    }
+  }
 
   menuStore.openMenu(
-    id.value,
+    pickedId,
     x,
     yUI,
     containerWidth.value,
