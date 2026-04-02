@@ -76,7 +76,6 @@ async function createPoint() {
         };
         await importItem(dataToImport);
         hybridViewerStore.remoteRender();
-        initializeForm();
       },
     });
   } finally {
