@@ -97,11 +97,8 @@ watch([elWidth, elHeight], ([width, height]) => {
         <ViewerUI
           ref="viewerUI"
           :display-menu="display_menu"
-          :menu-store="menuStore"
           :container-width="containerWidth"
           :container-height="containerHeight"
-          :data-style-store="dataStyleStore"
-          :viewer-store="viewerStore"
           @show-menu="handleTreeMenu"
         />
       </template>
