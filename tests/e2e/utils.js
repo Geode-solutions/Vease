@@ -26,12 +26,20 @@ const WAIT_TIMES = {
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
+function findAppExecutable() {
+  const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
+  if (appExecutablePath) {
+    return appExecutablePath;
+  }
+  return findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+}
+
 async function runDesktopBuild() {
   // Find the latest build in the out directory
-  const latestBuild = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
-  console.log("latestBuild", latestBuild);
+  const appPath = findAppExecutable();
+  console.log({ appPath });
   // Parse the directory and find paths and other info
-  const appInfo = parseElectronApp(latestBuild);
+  const appInfo = parseElectronApp(appPath);
   // Set the CI environment variable to true
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
