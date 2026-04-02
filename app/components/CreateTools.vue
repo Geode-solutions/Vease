@@ -79,7 +79,7 @@ watch(
                   height="36"
                   width="36"
                   contain
-                  style="filter: brightness(0) invert(1);"
+                  style="filter: brightness(0) invert(1)"
                 />
               </v-sheet>
               <div class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white">
