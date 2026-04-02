@@ -16,7 +16,6 @@ const menuStore = useMenuStore();
 const dataStore = useDataStore();
 const dataStyleStore = useDataStyleStore();
 
-const id = ref("");
 const containerWidth = ref(0);
 const containerHeight = ref(0);
 const cardContainer = useTemplateRef("cardContainer");
@@ -31,7 +30,7 @@ async function handleTreeMenu({ event, itemId, context_type, modelId }) {
 
   const meta_data =
     context_type === "model_component"
-      ? { viewer_type: "model_component", geode_object_type: "component", modelId }
+      ? { viewer_type: "model_component", geode_object_type: "component", modelId, pickedComponentId: itemId }
       : await dataStore.item(itemId);
 
   menuStore.openMenu(
@@ -92,7 +91,6 @@ watch([elWidth, elHeight], ([width, height]) => {
       <template #ui>
         <ViewerUI
           ref="viewerUI"
-          :id="id"
           :display-menu="display_menu"
           :menu-store="menuStore"
           :container-width="containerWidth"
@@ -100,7 +98,6 @@ watch([elWidth, elHeight], ([width, height]) => {
           :data-style-store="dataStyleStore"
           :viewer-store="viewerStore"
           @show-menu="handleTreeMenu"
-          @set-id="(newId) => (id = newId)"
         />
       </template>
     </HybridRenderingView>
