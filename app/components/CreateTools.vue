@@ -106,7 +106,11 @@ watch(
         <v-icon color="white">mdi-arrow-left</v-icon>
       </v-btn>
     </GlassCard>
-    <GlassCard variant="panel" padding="pa-6" class="mt-4 flex-grow-1 overflow-hidden d-flex flex-column">
+    <GlassCard
+      variant="panel"
+      padding="pa-6"
+      class="mt-4 flex-grow-1 overflow-hidden d-flex flex-column"
+    >
       <component
         v-if="getToolComponent(selectedTool)"
         :is="getToolComponent(selectedTool)"
