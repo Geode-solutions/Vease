@@ -29,7 +29,7 @@ const PAGE_HEIGHT = 800;
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
   if (appExecutablePath) {
-    return appExecutablePath;
+    return findLatestBuild(appExecutablePath);
   }
   return findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
 }
