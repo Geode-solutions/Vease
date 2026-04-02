@@ -187,7 +187,7 @@ function removeExtension() {
                                 :color="
                                   extension.enabled
                                     ? isHovering || expanded
-                                      ? 'white'
+                                      ? 'grey'
                                       : 'white'
                                     : 'grey'
                                 "
@@ -321,7 +321,6 @@ function removeExtension() {
                                 width="20"
                                 height="20"
                                 contain
-                                class="svg-white-filter"
                               />
                             </v-sheet>
 
