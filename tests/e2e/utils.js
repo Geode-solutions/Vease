@@ -1,5 +1,6 @@
 // Node imports
 import { execSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 
 // Third party imports
@@ -28,7 +29,7 @@ const PAGE_HEIGHT = 800;
 
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
-  if (appExecutablePath) {
+  if (appExecutablePath && fs.existsSync(appExecutablePath)) {
     return appExecutablePath;
   }
   return findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
