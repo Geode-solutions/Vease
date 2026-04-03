@@ -79,6 +79,7 @@ watch(
                   height="36"
                   width="36"
                   contain
+                  style="filter: brightness(0) invert(1)"
                 />
               </v-sheet>
               <div class="text-h6 font-weight-bold mb-1 text-wrap tool-title text-white">
@@ -94,7 +95,7 @@ watch(
     </v-card-text>
   </v-card>
 
-  <div v-else class="position-relative tool-component-wrapper pa-4">
+  <div v-else class="position-relative tool-component-wrapper pa-4 d-flex flex-column h-100">
     <GlassCard
       variant="panel"
       padding="pa-0"
@@ -106,7 +107,11 @@ watch(
         <v-icon color="white">mdi-arrow-left</v-icon>
       </v-btn>
     </GlassCard>
-    <GlassCard variant="panel" padding="pa-6" class="mt-4">
+    <GlassCard
+      variant="panel"
+      padding="pa-6"
+      class="mt-4 flex-grow-1 overflow-hidden d-flex flex-column"
+    >
       <component
         v-if="getToolComponent(selectedTool)"
         :is="getToolComponent(selectedTool)"
