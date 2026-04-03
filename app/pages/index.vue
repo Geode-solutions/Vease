@@ -16,7 +16,6 @@ const menuStore = useMenuStore();
 const dataStore = useDataStore();
 const dataStyleStore = useDataStyleStore();
 
-const id = ref("");
 const containerWidth = ref(0);
 const containerHeight = ref(0);
 const cardContainer = useTemplateRef("cardContainer");
@@ -31,7 +30,12 @@ async function handleTreeMenu({ event, itemId, context_type, modelId }) {
 
   const meta_data =
     context_type === "model_component"
-      ? { viewer_type: "model_component", geode_object_type: "component", modelId }
+      ? {
+          viewer_type: "model_component",
+          geode_object_type: "component",
+          modelId,
+          pickedComponentId: itemId,
+        }
       : await dataStore.item(itemId);
 
   menuStore.openMenu(
@@ -52,11 +56,21 @@ async function openMenu(event) {
   const yPicking = containerHeight.value - (event.clientY - rect.top);
   const yUI = event.clientY - rect.top;
 
-  await viewerUI.value.get_viewer_id(x, yPicking);
-  const item = await dataStore.item(id.value);
+  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(x, yPicking);
+  if (!pickedId) {
+    return;
+  }
+  const item = await dataStore.item(pickedId);
+
+  if (item.viewer_type === "model" && viewer_id !== undefined) {
+    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
+    if (component) {
+      item.pickedComponentId = component.geode_id;
+    }
+  }
 
   menuStore.openMenu(
-    id.value,
+    pickedId,
     x,
     yUI,
     containerWidth.value,
@@ -82,15 +96,10 @@ watch([elWidth, elHeight], ([width, height]) => {
       <template #ui>
         <ViewerUI
           ref="viewerUI"
-          :id="id"
           :display-menu="display_menu"
-          :menu-store="menuStore"
           :container-width="containerWidth"
           :container-height="containerHeight"
-          :data-style-store="dataStyleStore"
-          :viewer-store="viewerStore"
           @show-menu="handleTreeMenu"
-          @set-id="(newId) => (id = newId)"
         />
       </template>
     </HybridRenderingView>
