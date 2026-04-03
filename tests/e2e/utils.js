@@ -6,9 +6,13 @@ import path from "node:path";
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
+import { executableName } from "@geode/opengeodeweb-front/app/utils/local/path.js";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
+
+// oxlint-disable-next-line no-relative-parent-imports
+import packageJson from "../../package.json" with { type: "json" };
 
 // Constants
 const MILLISECONDS = 1000;
@@ -30,23 +34,23 @@ const PAGE_HEIGHT = 800;
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
   if (appExecutablePath && fs.existsSync(appExecutablePath)) {
-    return appExecutablePath;
+    console.log({ appExecutablePath });
+    return path.join(appExecutablePath, executableName(packageJson.name));
   }
-  return findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+  const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+  return parseElectronApp(buildPath).executable;
 }
 
 async function runDesktopBuild() {
   // Find the latest build in the out directory
-  const appPath = findAppExecutable();
-  console.log({ appPath });
-  // Parse the directory and find paths and other info
-  const appInfo = parseElectronApp(appPath);
+  const appInfo = findAppExecutable();
+  console.log({ appInfo });
   // Set the CI environment variable to true
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: [appInfo.main, "--no-sandbox"],
-    executablePath: appInfo.executable,
+    args: ["--no-sandbox"],
+    executablePath: appInfo,
     wait: 20_000,
     env: {
       ...process.env,
