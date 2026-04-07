@@ -9,7 +9,7 @@ base = "app"
 publish = "../dist"
 ignore = "exit 0"
 
-[[functions]]
+[functions]
 directory = "../.netlify/functions-internal/server"
 
 [context.production]
