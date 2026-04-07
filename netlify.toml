@@ -5,12 +5,15 @@ status = 301
 force = true
 
 [build]
-base = "."
-publish = "dist"
+base = "app"
+publish = "../dist"
 ignore = "exit 0"
+
+[functions]
+directory = "../.netlify/functions-internal"
 
 [context.production]
 command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run build"
 
 [context.branch-deploy]
-command = "sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build"
+command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build"
