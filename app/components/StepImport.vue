@@ -41,6 +41,7 @@ const stepper_tree = reactive({
           multiple: true,
           files,
           auto_upload,
+          show_overlay: false,
         },
       },
       chips: computed(() => files.value.map((file) => file.name)),
