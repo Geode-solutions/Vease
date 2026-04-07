@@ -1,9 +1,12 @@
 // Node imports
 import path from "node:path";
 
+// Third party imports
+import { afterAll, beforeAll, expect } from "@playwright/test";
+
 // Local imports
-import { expect, test } from "./fixtures.js";
 import { navigateToApp } from "./utils.js";
+import { test } from "./fixtures.js";
 
 // Constants
 const __dirname = import.meta.dirname;
@@ -11,14 +14,14 @@ const beforeAllTimeout = 150;
 let _window = undefined;
 let _cleanup = undefined;
 
-test.beforeAll(async ({ mode, browser }) => {
+beforeAll(async ({ mode, browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
   await _window.waitForFunction(() => document.readyState === "complete");
 }, beforeAllTimeout);
 
-test.afterAll(async () => {
+afterAll(async () => {
   await _cleanup();
 });
 
