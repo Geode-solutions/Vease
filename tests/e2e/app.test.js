@@ -1,13 +1,15 @@
 // Node imports
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
+// Third party imports
+import { expect } from "@playwright/test";
+
 // Local imports
-import { expect, test } from "./fixtures.js";
 import { navigateToApp } from "./utils.js";
+import { test } from "./fixtures.js";
 
 // Constants
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = import.meta.dirname;
 const beforeAllTimeout = 150;
 let _window = undefined;
 let _cleanup = undefined;

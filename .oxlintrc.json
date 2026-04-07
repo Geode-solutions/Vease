@@ -122,7 +122,8 @@
         "max-statements": "off",
         "vitest/prefer-to-be-truthy": "off",
         "vitest/prefer-to-be-falsy": "off",
-        "vitest/require-test-timeout": "warn"
+        "vitest/require-test-timeout": "warn",
+        "vitest/prefer-importing-vitest-globals": "off"
       }
     },
     {
