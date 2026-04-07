@@ -9,11 +9,8 @@ base = "app"
 publish = "../dist"
 ignore = "exit 0"
 
-[functions]
-directory = "../.netlify/functions-internal/server"
-
 [context.production]
 command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run build"
 
 [context.branch-deploy]
-command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build && cat .netlify/functions-internal/server/package.json"
+command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build && mv .netlify app/.netlify"
