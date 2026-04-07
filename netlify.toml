@@ -10,7 +10,7 @@ publish = "../dist"
 ignore = "exit 0"
 
 [functions]
-directory = "../.netlify/functions-internal/server"
+directory = "../.netlify/functions-internal/server/chunks/routes/"
 
 [context.production]
 command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run build"
