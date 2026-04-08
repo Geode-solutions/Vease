@@ -139,7 +139,7 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "@kitware/vtk.js", "xmlbuilder2", "spark-md5"],
+      include: ["@geode/opengeodeweb-front", "@kitware/vtk.js"],
     },
     watch: {
       ignored: ["**"],
