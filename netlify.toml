@@ -4,25 +4,20 @@ to = "https://vease.geode-solutions.com/:splat"
 status = 301
 force = true
 
-[[plugins]]
-package = "@netlify/plugin-functions-install-core"
-
 [build]
 base = "app"
 publish = "../dist"
 ignore = "exit 0"
 
 [functions]
-directory = "../netlify/functions"
+directory = "../.netlify/functions-internal"
 
 [context.production]
-command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run generate"
+command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run build"
 [context.production.environment]
-SITE_BRANCH = ""
-SITE_URL = "https://vease.geode-solutions.com"
+BRANCH = "master"
 
 [context.branch-deploy]
-command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run generate"
+command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build"
 [context.branch-deploy.environment]
-SITE_BRANCH = "/test"
-SITE_URL = "https://next.vease.geode-solutions.com"
+BRANCH = "next"
