@@ -3,10 +3,19 @@ import path from "node:path";
 
 // Local imports
 import package_json from "./package.json";
+import { useNitro } from "@nuxt/kit";
 
 const __dirname = import.meta.dirname;
 
 export default defineNuxtConfig({
+  hooks: {
+    ready: () => {
+      const nitro = useNitro();
+      nitro.hooks.hook("prerender:routes", () => {
+        console.log("Scanned handlers:", nitro.scannedHandlers);
+      });
+    },
+  },
   runtimeConfig: {
     public: {
       VERSION: package_json.version,

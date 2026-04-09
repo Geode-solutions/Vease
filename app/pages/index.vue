@@ -11,10 +11,8 @@ import Launcher from "@ogw_front/components/Launcher";
 import ViewerUI from "@ogw_front/components/Viewer/Ui";
 
 const infraStore = useInfraStore();
-const viewerStore = useViewerStore();
 const menuStore = useMenuStore();
 const dataStore = useDataStore();
-const dataStyleStore = useDataStyleStore();
 
 const containerWidth = ref(0);
 const containerHeight = ref(0);
