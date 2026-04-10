@@ -14,10 +14,6 @@ directory = "../.netlify/functions-internal"
 
 [context.production]
 command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"latest\"/g' package.json && cat package.json && npm i && npm list && npm run build"
-[context.production.environment]
-BRANCH = "master"
 
 [context.branch-deploy]
 command = "cd .. && sed -i 's/\"0\\.0\\.0\"/\"next\"/g' package.json && cat package.json && npm i && npm list && npm run build"
-[context.branch-deploy.environment]
-BRANCH = "next"
