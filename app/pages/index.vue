@@ -48,7 +48,7 @@ async function handleTreeMenu({ event, itemId, context_type, modelId, modelCompo
   }
 
   menuStore.openMenu(
-    modelId,
+    itemId,
     x,
     yUI,
     containerWidth.value,
