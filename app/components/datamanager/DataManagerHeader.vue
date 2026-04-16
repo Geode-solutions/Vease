@@ -69,9 +69,7 @@ defineExpose({ focusSearch: () => searchInput.value?.focus() });
         @click="enterPiP"
       >
         <v-icon size="30">mdi-picture-in-picture-bottom-right</v-icon>
-        <v-tooltip activator="parent" location="top"
-          >Picture in Picture</v-tooltip
-        >
+        <v-tooltip activator="parent" location="top">Picture in Picture</v-tooltip>
       </v-btn>
     </v-tabs>
 

@@ -176,7 +176,10 @@ useEventListener(document, "keydown", (event) => {
 <template>
   <v-container
     fluid
-    :class="['fill-height d-flex flex-column align-stretch overflow-hidden', compact ? 'pa-2' : 'pa-8']"
+    :class="[
+      'fill-height d-flex flex-column align-stretch overflow-hidden',
+      compact ? 'pa-2' : 'pa-8',
+    ]"
     style="min-height: 0"
     theme="dark"
   >
