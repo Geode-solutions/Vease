@@ -90,7 +90,7 @@ watch([elWidth, elHeight], ([width, height]) => {
 </script>
 
 <template>
-  <Launcher v-if="infraStore.status != Status.CREATED" logo="/logo.png" />
+  <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
   <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
     <HybridRenderingView>
       <template #ui>
