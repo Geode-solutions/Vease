@@ -121,11 +121,11 @@ test("BRep object tree model components", async () => {
       .locator('.v-list-item[role="option"]')
       .filter({ hasText: surfaceId })
       .first();
-
+    // oxlint-disable-next-line no-await-in-loop
     await surfaceRow
       .locator('input[type="checkbox"]')
       .uncheck({ force: true });
-
+    // oxlint-disable-next-line no-await-in-loop
     await _window.waitForTimeout(waitAfterActionRender);
   }
   await _window.waitForTimeout(waitAfterActionRender);
