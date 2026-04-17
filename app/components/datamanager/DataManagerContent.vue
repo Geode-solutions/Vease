@@ -176,11 +176,14 @@ useEventListener(document, "keydown", (event) => {
 <template>
   <v-container
     fluid
-    :class="['fill-height d-flex flex-column overflow-hidden', compact ? 'pa-2' : 'pa-8']"
+    :class="[
+      'fill-height d-flex flex-column align-stretch overflow-hidden',
+      compact ? 'pa-2' : 'pa-8',
+    ]"
     style="min-height: 0"
     theme="dark"
   >
-    <v-row no-gutters class="fill-height" style="min-height: 0">
+    <v-row no-gutters class="fill-height w-100" style="min-height: 0">
       <v-col class="d-flex flex-column fill-height overflow-hidden" style="min-height: 0">
         <DataManagerHeader
           v-model:search-value="search"
@@ -216,7 +219,7 @@ useEventListener(document, "keydown", (event) => {
             :value="tab.id"
             class="fill-height overflow-y-auto overflow-x-hidden pa-4"
           >
-            <component :is="tab.component" v-bind="tab.props" />
+            <component :is="tab.component" v-bind="tab.props" :search="search" />
           </v-window-item>
         </v-window>
       </v-col>
