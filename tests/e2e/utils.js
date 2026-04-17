@@ -102,7 +102,7 @@ async function navigateToApp(mode, page) {
     await page.goto(`https://${prefix}vease.geode-solutions.com`);
 
     console.log("Navigated to", page.url());
-    const button = await page.getByRole("button", { name: "Launch the app" });
+    const button = await page.getByRole("button", { name: "Load the app" });
     console.log({ button });
     await button.click();
     await page.waitForTimeout(WAIT_TIMES.cloud);
