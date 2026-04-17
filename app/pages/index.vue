@@ -12,7 +12,6 @@ const infraStore = useInfraStore();
 const menuStore = useMenuStore();
 const dataStore = useDataStore();
 
-
 const containerWidth = ref(0);
 const containerHeight = ref(0);
 const cardContainer = useTemplateRef("cardContainer");

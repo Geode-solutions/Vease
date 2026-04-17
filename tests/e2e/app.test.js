@@ -45,12 +45,12 @@ test("Load BRep", async () => {
 
 test("BRep context menu", async () => {
   console.log("Right click on the BRep");
-  await _window.locator('canvas').click({
-    button: 'right',
+  await _window.locator("canvas").click({
+    button: "right",
     position: {
       x: 583,
-      y: 321
-    }
+      y: 321,
+    },
   });
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
@@ -60,17 +60,21 @@ test("BRep points visibility", async () => {
   const brepPointsMenuButton = await _window.getByTestId("modelPointsMenu");
   console.log("Toggle BRep points visibility", brepPointsMenuButton);
   await brepPointsMenuButton.click();
-  const modelPointsVisibilitySwitch = await _window.getByTestId('modelPointsVisibilitySwitch').getByRole('checkbox')
+  const modelPointsVisibilitySwitch = await _window
+    .getByTestId("modelPointsVisibilitySwitch")
+    .getByRole("checkbox");
   await modelPointsVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
 });
 
 test("BRep edges visibility", async () => {
-  const brepEdgesMenuButton = await _window.getByTestId("modelEdgesMenu")
+  const brepEdgesMenuButton = await _window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
   await brepEdgesMenuButton.click();
-  const modelEdgesVisibilitySwitch = await _window.getByTestId('modelEdgesVisibilitySwitch').getByRole('checkbox')
+  const modelEdgesVisibilitySwitch = await _window
+    .getByTestId("modelEdgesVisibilitySwitch")
+    .getByRole("checkbox");
   console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
   await modelEdgesVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
@@ -81,38 +85,38 @@ test("BRep object tree model components", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
   const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
 
-  const BRepRow = mainObjectTree.locator('#v-list-group--id-BRep');
-  await BRepRow.locator('.v-list-item-action').first().getByRole('button').click();
+  const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
+  await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   await mainObjectTree
     .locator('[role="option"]')
-    .filter({ hasText: 'cube' })
-    .locator('button:has(.mdi-magnify-expand)')
+    .filter({ hasText: "cube" })
+    .locator("button:has(.mdi-magnify-expand)")
     .click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const BlocksRow = modelComponentsObjectTree
     .locator('[role="option"]')
-    .filter({ hasText: 'Blocks' });
+    .filter({ hasText: "Blocks" });
 
   await BlocksRow.locator('input[type="checkbox"]').uncheck();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const SurfacesRow = modelComponentsObjectTree
     .locator('[role="option"]')
-    .filter({ hasText: 'Surfaces' });
+    .filter({ hasText: "Surfaces" });
 
-  await SurfacesRow.locator('.v-list-item-action').first().getByRole('button').click();
+  await SurfacesRow.locator(".v-list-item-action").first().getByRole("button").click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const surfaceIds = [
-    '00000000-8afd-4969-8000-000092a43747',
-    '00000000-1702-4d26-8000-000004d7ea39',
-    '00000000-6732-4f29-8000-00002f66bc93',
-    '00000000-cddf-4c1c-8000-00005ebbcaeb',
-    '00000000-dc1c-420d-8000-000070dcfff5',
-    '00000000-dcfe-400a-8000-0000a72c4f30',
+    "00000000-8afd-4969-8000-000092a43747",
+    "00000000-1702-4d26-8000-000004d7ea39",
+    "00000000-6732-4f29-8000-00002f66bc93",
+    "00000000-cddf-4c1c-8000-00005ebbcaeb",
+    "00000000-dc1c-420d-8000-000070dcfff5",
+    "00000000-dcfe-400a-8000-0000a72c4f30",
   ];
 
   for (const surfaceId of surfaceIds) {
