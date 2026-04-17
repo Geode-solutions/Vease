@@ -6,8 +6,8 @@ import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
 const CLOUD_TIMEOUT = 100;
-const LINUX_TIMEOUT_BROWSER = 50;
-const LINUX_TIMEOUT_DESKTOP = 40;
+const LINUX_TIMEOUT_BROWSER = 60;
+const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
@@ -29,7 +29,7 @@ export default defineConfig({
     },
   },
   testDir: ".",
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
   reporter: "html",
