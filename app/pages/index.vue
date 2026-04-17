@@ -23,20 +23,29 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({ event, itemId, context_type, modelId }) {
+async function handleTreeMenu({ event, itemId, context_type, modelId, modelComponentType }) {
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
 
-  const meta_data =
-    context_type === "model_component"
-      ? {
-          viewer_type: "model_component",
-          geode_object_type: "component",
-          modelId,
-          pickedComponentId: itemId,
-        }
-      : await dataStore.item(itemId);
+  let meta_data = undefined;
+  if (context_type === "model_component") {
+    meta_data = {
+      viewer_type: "model_component",
+      geode_object_type: "component",
+      modelId,
+      pickedComponentId: itemId,
+    };
+  } else if (context_type === "model_component_type") {
+    meta_data = {
+      viewer_type: "model_component_type",
+      geode_object_type: "type",
+      modelId,
+      modelComponentType,
+    };
+  } else {
+    meta_data = await dataStore.item(itemId);
+  }
 
   menuStore.openMenu(
     itemId,
