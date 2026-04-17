@@ -2,12 +2,7 @@
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
 
-const emit = defineEmits([
-  "update_values",
-  "increment_step",
-  "decrement_step",
-  "reset_values",
-]);
+const emit = defineEmits(["update_values", "increment_step", "decrement_step", "reset_values"]);
 
 const { filenames, geode_object_type } = defineProps({
   filenames: { type: Array, required: true },
