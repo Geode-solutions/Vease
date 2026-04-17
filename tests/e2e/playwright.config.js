@@ -48,16 +48,16 @@ export default defineConfig({
         mode: "BROWSER",
       },
     },
-    // {
-    //   name: "browser-firefox",
-    //   testMatch: "tests/e2e/app.test.js",
-    //   timeout: TIMEOUTS.browser,
-    //   retries: ciRetries,
-    //   use: {
-    //     ...devices["Desktop Firefox"],
-    //     mode: "BROWSER",
-    //   },
-    // },
+    {
+      name: "browser-firefox",
+      testMatch: "tests/e2e/app.test.js",
+      timeout: TIMEOUTS.browser,
+      retries: ciRetries,
+      use: {
+        ...devices["Desktop Firefox"],
+        mode: "BROWSER",
+      },
+    },
     {
       name: "cloud",
       testMatch: "tests/e2e/app.test.js",
