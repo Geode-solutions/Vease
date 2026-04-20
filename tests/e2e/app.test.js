@@ -71,8 +71,9 @@ test("BRep points visibility", async () => {
 test("BRep object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = _window.getByTestId("mainObjectTree");
-  await mainObjectTree.getByRole("option", { name: "BRep" }).getByRole("button").click();
-  await _window.getByText("cube.og_brep").click({
+  const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
+  await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
+  await mainObjectTree.getByText("cube").click({
     button: "right",
   });
   await _window.waitForTimeout(waitAfterActionRender);
@@ -90,6 +91,7 @@ test("BRep edges visibility", async () => {
   await modelEdgesVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
+  await _window.keyboard.press("Escape");
 });
 
 test("BRep object tree model components", async () => {
