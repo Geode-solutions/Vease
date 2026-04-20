@@ -75,6 +75,10 @@ test("BRep object tree context menu", async () => {
   await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
   await mainObjectTree.getByText("cube").click({
     button: "right",
+    position: {
+      x: 10,
+      y: 10,
+    },
   });
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
