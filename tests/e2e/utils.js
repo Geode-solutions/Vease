@@ -16,10 +16,10 @@ import packageJson from "../../package.json" with { type: "json" };
 
 // Constants
 const MILLISECONDS = 1000;
-const LINUX_WAIT_BROWSER = 15;
-const LINUX_WAIT_DESKTOP = 20;
+const LINUX_WAIT_BROWSER = 20;
+const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
-const WINDOWS_WAIT_BROWSER = 20;
+const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
 
 const WAIT_TIMES = {
@@ -85,6 +85,7 @@ async function navigateToApp(mode, page) {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
+    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     return { window: page, cleanup: () => kill(nuxtPort) };
@@ -105,11 +106,13 @@ async function navigateToApp(mode, page) {
     const button = await page.getByRole("button", { name: "Load the app" });
     console.log({ button });
     await button.click();
+    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
+    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     return { window: firstWindow, cleanup: () => electronApp.close() };
   }
