@@ -68,13 +68,12 @@ test("BRep points visibility", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
-
 test("BRep object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = _window.getByTestId("mainObjectTree");
   await mainObjectTree.getByRole("option", { name: "BRep" }).getByRole("button").click();
   await _window.getByText("cube.og_brep").click({
-    button: "right"
+    button: "right",
   });
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
