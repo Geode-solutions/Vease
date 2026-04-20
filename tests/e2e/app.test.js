@@ -141,7 +141,3 @@ test("BRep object tree model components", async () => {
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
 });
-
-
-// await page.getByTestId("modelEdgesMenu").getByRole("button").click();
-// await page.locator("#switch-v-0-56").check();
