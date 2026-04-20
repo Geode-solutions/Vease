@@ -1,6 +1,6 @@
 <script setup>
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import { importItem } from "@ogw_front/utils/file_import_workflow";
+import { importItem } from "@ogw_front/utils/import_workflow";
 import { useGeodeStore } from "@ogw_front/stores/geode";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useUIStore } from "@vease/stores/ui";

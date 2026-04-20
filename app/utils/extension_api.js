@@ -1,6 +1,6 @@
 import { Database } from "@geode/opengeodeweb-front/internal/database/database.js";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import { importItem } from "@ogw_front/utils/file_import_workflow.js";
+import { importItem } from "@ogw_front/utils/import_workflow.js";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";

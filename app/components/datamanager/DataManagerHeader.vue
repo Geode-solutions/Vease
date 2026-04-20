@@ -36,7 +36,7 @@ defineExpose({ focusSearch: () => searchInput.value?.focus() });
     >
       <v-tab
         value="data"
-        class="text-none font-weight-medium px-6 rounded-t-lg"
+        class="text-none font-weight-medium text-white px-6 rounded-t-lg"
         :variant="activeTab === 'data' ? 'elevated' : 'text'"
         :elevation="activeTab === 'data' ? 4 : 0"
         :border="activeTab === 'data' ? true : false"
@@ -49,7 +49,7 @@ defineExpose({ focusSearch: () => searchInput.value?.focus() });
         v-for="tab in tabs"
         :key="tab.id"
         :value="tab.id"
-        class="text-none font-weight-medium px-6 rounded-t-lg"
+        class="text-none font-weight-medium text-white px-6 rounded-t-lg"
         :variant="activeTab === tab.id ? 'elevated' : 'text'"
         :elevation="activeTab === tab.id ? 4 : 0"
       >
