@@ -102,25 +102,26 @@ test("BRep object tree model components", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
 
   await mainObjectTree
-    .locator('[role="option"]')
+    .locator('[role="treeitem"]')
     .filter({ hasText: "cube" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
+
   const BlocksRow = modelComponentsObjectTree
-    .locator('[role="option"]')
+    .locator('[role="treeitem"]')
     .filter({ hasText: "Blocks" });
 
   await BlocksRow.locator('input[type="checkbox"]').uncheck();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const SurfacesRow = modelComponentsObjectTree
-    .locator('[role="option"]')
+    .locator('[role="treeitem"]')
     .filter({ hasText: "Surfaces" });
 
-  await SurfacesRow.locator(".v-list-item-action").first().getByRole("button").click();
+  await SurfacesRow.locator("button:has(.mdi-menu-right)").click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const surfaceIds = [
@@ -135,7 +136,7 @@ test("BRep object tree model components", async () => {
   for (const surfaceId of surfaceIds) {
     console.log(`Unchecking surface: ${surfaceId}`);
     const surfaceRow = modelComponentsObjectTree
-      .locator('.v-list-item[role="option"]')
+      .locator('[role="treeitem"]')
       .filter({ hasText: surfaceId })
       .first();
     // oxlint-disable-next-line no-await-in-loop
@@ -143,6 +144,7 @@ test("BRep object tree model components", async () => {
     // oxlint-disable-next-line no-await-in-loop
     await _window.waitForTimeout(waitAfterActionRender);
   }
+
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
 });
