@@ -124,7 +124,8 @@
         "vitest/prefer-to-be-falsy": "off",
         "vitest/require-test-timeout": "warn",
         "vitest/prefer-importing-vitest-globals": "off",
-        "jest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }]
+        "jest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }],
+        "vitest/prefer-spy-on": "off"
       }
     },
     {
