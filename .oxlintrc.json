@@ -123,7 +123,8 @@
         "vitest/prefer-to-be-truthy": "off",
         "vitest/prefer-to-be-falsy": "off",
         "vitest/require-test-timeout": "warn",
-        "vitest/prefer-importing-vitest-globals": "off"
+        "vitest/prefer-importing-vitest-globals": "off",
+        "jest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }]
       }
     },
     {
