@@ -43,8 +43,8 @@ test("Load BRep", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
-test("BRep context menu", async () => {
-  console.log("Right click on the BRep");
+test("BRep viewer context menu", async () => {
+  console.log("Right click on the BRep from viewer");
   await _window.locator("canvas").click({
     button: "right",
     position: {
@@ -68,6 +68,22 @@ test("BRep points visibility", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
+test("BRep object tree context menu", async () => {
+  console.log("Right click on the BRep from object tree");
+  const mainObjectTree = _window.getByTestId("mainObjectTree");
+  const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
+  await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
+  await mainObjectTree.getByText("cube").click({
+    button: "right",
+    position: {
+      x: 10,
+      y: 10,
+    },
+  });
+  await _window.waitForTimeout(waitAfterActionRender);
+  await expect(_window).toHaveScreenshot();
+});
+
 test("BRep edges visibility", async () => {
   const brepEdgesMenuButton = await _window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
@@ -79,15 +95,11 @@ test("BRep edges visibility", async () => {
   await modelEdgesVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();
+  await _window.keyboard.press("Escape");
 });
 
 test("BRep object tree model components", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
-  const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
-
-  const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
-  await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
-  await _window.waitForTimeout(waitAfterActionRender);
 
   await mainObjectTree
     .locator('[role="option"]')
@@ -96,6 +108,7 @@ test("BRep object tree model components", async () => {
     .click();
   await _window.waitForTimeout(waitAfterActionRender);
 
+  const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
   const BlocksRow = modelComponentsObjectTree
     .locator('[role="option"]')
     .filter({ hasText: "Blocks" });
