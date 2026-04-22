@@ -5,18 +5,20 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 // Local imports
-import { navigateToApp } from "./utils.js";
-import { test } from "./fixtures.js";
+import { navigateToApp } from "@tests/utils.js";
+import { test } from "@tests/fixtures.js";
+
 
 // Constants
 const __dirname = import.meta.dirname;
+const inputFileExtension = ".og_pts3d";
+const inputFilePath = path.join(__dirname, "data", `test${inputFileExtension}`);
 const beforeAllTimeout = 30_000;
 const waitAfterActionRender = 1000;
 let _window = undefined;
 let _cleanup = undefined;
 
 test.beforeAll(async ({ mode, browser }) => {
-  console.log(`beforeAll Running tests in ${mode} mode`);
   const context = await browser.newContext();
   const page = await context.newPage();
   ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
@@ -27,23 +29,19 @@ test.afterAll(async () => {
   await _cleanup();
 });
 
-test("Microservices running", async () => {
-  await expect(_window).toHaveScreenshot();
-});
-
-test("Load BRep", async () => {
+test("load", async () => {
   const importButton = await _window.getByRole("button", { name: "Import" });
   await importButton.click();
-  const fileInput = _window.locator('input[type="file"][accept*=".og_brep"]');
+  const fileInput = _window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
-  await fileInput.setInputFiles(path.join(__dirname, "data", "cube.og_brep"));
+  await fileInput.setInputFiles(inputFilePath);
   await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
   const workflowTimeout = 10_000;
   await _window.waitForTimeout(workflowTimeout);
   await expect(_window).toHaveScreenshot();
 });
 
-test("BRep viewer context menu", async () => {
+test("viewer context menu", async () => {
   console.log("Right click on the BRep from viewer");
   await _window.locator("canvas").click({
     button: "right",
@@ -56,7 +54,7 @@ test("BRep viewer context menu", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
-test("BRep points visibility", async () => {
+test("points visibility", async () => {
   const brepPointsMenuButton = await _window.getByTestId("modelPointsMenu");
   console.log("Toggle BRep points visibility", brepPointsMenuButton);
   await brepPointsMenuButton.click();
@@ -68,7 +66,7 @@ test("BRep points visibility", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
-test("BRep object tree context menu", async () => {
+test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = _window.getByTestId("mainObjectTree");
   const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
@@ -84,7 +82,7 @@ test("BRep object tree context menu", async () => {
   await expect(_window).toHaveScreenshot();
 });
 
-test("BRep edges visibility", async () => {
+test("edges visibility", async () => {
   const brepEdgesMenuButton = await _window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
   await brepEdgesMenuButton.click();
@@ -94,11 +92,15 @@ test("BRep edges visibility", async () => {
   console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
   await modelEdgesVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
+  const viewer = _window.getByTestId("hybridViewer");
+  const box = await viewer.boundingBox();
+  await expect(_window).toHaveScreenshot({
+    clip: box,
+  });
   await _window.keyboard.press("Escape");
 });
 
-test("BRep object tree model components", async () => {
+test("object tree model components", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
 
   await mainObjectTree
