@@ -30,7 +30,7 @@ export default defineConfig({
     },
   },
   testDir: ".",
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
   reporter: "html",

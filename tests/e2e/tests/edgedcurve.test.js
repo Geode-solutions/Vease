@@ -5,13 +5,13 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 // Local imports
-import { navigateToApp } from "@tests/utils.js";
+import { loadData, navigateToApp } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 
 // Constants
 const __dirname = import.meta.dirname;
-const inputFileExtension = ".og_brep";
+const inputFileExtension = ".og_edc3d";
 const inputFilePath = path.join(__dirname, "data", `test${inputFileExtension}`);
 const beforeAllTimeout = 30_000;
 const waitAfterActionRender = 1000;
@@ -30,14 +30,7 @@ test.afterAll(async () => {
 });
 
 test("load", async () => {
-  const importButton = await _window.getByRole("button", { name: "Import" });
-  await importButton.click();
-  const fileInput = _window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
-  await fileInput.waitFor({ state: "attached" });
-  await fileInput.setInputFiles(inputFilePath);
-  await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  const workflowTimeout = 10_000;
-  await _window.waitForTimeout(workflowTimeout);
+  await loadData(_window, inputFilePath, inputFileExtension);
   await expect(_window).toHaveScreenshot();
 });
 
@@ -46,9 +39,9 @@ test("viewer context menu", async () => {
   await _window.locator("canvas").click({
     button: "right",
     position: {
-      x: 583,
-      y: 321,
-    },
+      x: 635,
+      y: 225
+    }
   });
   await _window.waitForTimeout(waitAfterActionRender);
   await expect(_window).toHaveScreenshot();

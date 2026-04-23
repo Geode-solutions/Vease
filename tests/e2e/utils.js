@@ -119,4 +119,16 @@ async function navigateToApp(mode, page) {
   throw new Error(`Unknown mode: ${mode}`);
 }
 
-export { navigateToApp };
+async function loadData(window, inputFilePath, inputFileExtension) {
+  const importButton = await window.getByRole("button", { name: "Import" });
+  await importButton.click();
+  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
+  await fileInput.waitFor({ state: "attached" });
+  await fileInput.setInputFiles(inputFilePath);
+  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  const loadWorkflowTimeout = 10_000;
+  await window.waitForTimeout(loadWorkflowTimeout);
+}
+
+
+export { loadData, navigateToApp };

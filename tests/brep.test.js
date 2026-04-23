@@ -30,14 +30,7 @@ test.afterAll(async () => {
 });
 
 test("load", async () => {
-  const importButton = await _window.getByRole("button", { name: "Import" });
-  await importButton.click();
-  const fileInput = _window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
-  await fileInput.waitFor({ state: "attached" });
-  await fileInput.setInputFiles(inputFilePath);
-  await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  const workflowTimeout = 10_000;
-  await _window.waitForTimeout(workflowTimeout);
+  await loadData(_window, inputFilePath, inputFileExtension);
   await expect(_window).toHaveScreenshot();
 });
 
@@ -71,7 +64,7 @@ test("object tree context menu", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
   const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
   await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
-  await mainObjectTree.getByText("cube").click({
+  await mainObjectTree.getByText("test").click({
     button: "right",
     position: {
       x: 10,
@@ -92,11 +85,7 @@ test("edges visibility", async () => {
   console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
   await modelEdgesVisibilitySwitch.check();
   await _window.waitForTimeout(waitAfterActionRender);
-  const viewer = _window.getByTestId("hybridViewer");
-  const box = await viewer.boundingBox();
-  await expect(_window).toHaveScreenshot({
-    clip: box,
-  });
+  await expect(_window).toHaveScreenshot();
   await _window.keyboard.press("Escape");
 });
 
@@ -105,7 +94,7 @@ test("object tree model components", async () => {
 
   await mainObjectTree
     .locator('[role="treeitem"]')
-    .filter({ hasText: "cube" })
+    .filter({ hasText: "test" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
   await _window.waitForTimeout(waitAfterActionRender);
