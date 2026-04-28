@@ -31,7 +31,6 @@ const WAIT_TIMES = {
 
 const beforeAllTimeout = 30_000;
 
-
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
@@ -136,6 +135,5 @@ async function loadData(window, inputFilename) {
   const loadWorkflowTimeout = 8000;
   await window.waitForTimeout(loadWorkflowTimeout);
 }
-
 
 export { beforeAllTimeout, loadData, navigateToApp };

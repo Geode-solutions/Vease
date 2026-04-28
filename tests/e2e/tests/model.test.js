@@ -7,7 +7,6 @@ import { expect } from "@playwright/test";
 import { beforeAllTimeout, loadData, navigateToApp } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
-
 // Constants
 const inputFilename = "test.og_brep";
 let _window = undefined;
