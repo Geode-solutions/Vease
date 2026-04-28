@@ -12,65 +12,65 @@ import { test } from "./fixtures.js";
 const __dirname = import.meta.dirname;
 const beforeAllTimeout = 30_000;
 const waitAfterActionRender = 1000;
-let _window = undefined;
-let _cleanup = undefined;
+let window = undefined;
+let cleanup = undefined;
 
 test.beforeAll(async ({ mode, browser }) => {
   console.log(`beforeAll Running tests in ${mode} mode`);
   const context = await browser.newContext();
   const page = await context.newPage();
-  ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
-  await _window.waitForFunction(() => document.readyState === "complete");
+  ({ window, cleanup } = await navigateToApp(mode, page));
+  await window.waitForFunction(() => document.readyState === "complete");
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await _cleanup();
+  await cleanup();
 });
 
 test("Microservices running", async () => {
-  await expect(_window).toHaveScreenshot();
+  await expect(window).toHaveScreenshot();
 });
 
 test("Load BRep", async () => {
-  const importButton = await _window.getByRole("button", { name: "Import" });
+  const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
-  const fileInput = _window.locator('input[type="file"][accept*=".og_brep"]');
+  const fileInput = window.locator('input[type="file"][accept*=".og_brep"]');
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(path.join(__dirname, "data", "cube.og_brep"));
-  await _window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
   const workflowTimeout = 10_000;
-  await _window.waitForTimeout(workflowTimeout);
-  await expect(_window).toHaveScreenshot();
+  await window.waitForTimeout(workflowTimeout);
+  await expect(window).toHaveScreenshot();
 });
 
 test("BRep viewer context menu", async () => {
   console.log("Right click on the BRep from viewer");
-  await _window.locator("canvas").click({
+  await window.locator("canvas").click({
     button: "right",
     position: {
       x: 583,
       y: 321,
     },
   });
-  await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
+  await window.waitForTimeout(waitAfterActionRender);
+  await expect(window).toHaveScreenshot();
 });
 
 test("BRep points visibility", async () => {
-  const brepPointsMenuButton = await _window.getByTestId("modelPointsMenu");
+  const brepPointsMenuButton = await window.getByTestId("modelPointsMenu");
   console.log("Toggle BRep points visibility", brepPointsMenuButton);
   await brepPointsMenuButton.click();
-  const modelPointsVisibilitySwitch = await _window
+  const modelPointsVisibilitySwitch = await window
     .getByTestId("modelPointsVisibilitySwitch")
     .getByRole("checkbox");
   await modelPointsVisibilitySwitch.check();
-  await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
+  await window.waitForTimeout(waitAfterActionRender);
+  await expect(window).toHaveScreenshot();
 });
 
 test("BRep object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
-  const mainObjectTree = _window.getByTestId("mainObjectTree");
+  const mainObjectTree = window.getByTestId("mainObjectTree");
   const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
   await BRepRow.locator(".mdi-menu-right").first().click();
   await mainObjectTree.getByText("cube").click({
@@ -80,49 +80,49 @@ test("BRep object tree context menu", async () => {
       y: 10,
     },
   });
-  await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
+  await window.waitForTimeout(waitAfterActionRender);
+  await expect(window).toHaveScreenshot();
 });
 
 test("BRep edges visibility", async () => {
-  const brepEdgesMenuButton = await _window.getByTestId("modelEdgesMenu");
+  const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
   await brepEdgesMenuButton.click();
-  const modelEdgesVisibilitySwitch = await _window
+  const modelEdgesVisibilitySwitch = await window
     .getByTestId("modelEdgesVisibilitySwitch")
     .getByRole("checkbox");
   console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
   await modelEdgesVisibilitySwitch.check();
-  await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
-  await _window.keyboard.press("Escape");
+  await window.waitForTimeout(waitAfterActionRender);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("BRep object tree model components", async () => {
-  const mainObjectTree = _window.getByTestId("mainObjectTree");
+  const mainObjectTree = window.getByTestId("mainObjectTree");
 
   await mainObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "cube" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
-  await _window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(waitAfterActionRender);
 
-  const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
   const BlocksRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "Blocks" });
 
   await BlocksRow.locator(".mdi-eye").first().click();
-  await _window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(waitAfterActionRender);
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "Surfaces" });
 
   await SurfacesRow.locator(".mdi-menu-right").first().click();
-  await _window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(waitAfterActionRender);
 
   const surfaceIds = [
     "00000000-8afd-4969-8000-000092a43747",
@@ -142,9 +142,9 @@ test("BRep object tree model components", async () => {
     // oxlint-disable-next-line no-await-in-loop
     await surfaceRow.locator(".mdi-eye").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
-    await _window.waitForTimeout(waitAfterActionRender);
+    await window.waitForTimeout(waitAfterActionRender);
   }
 
-  await _window.waitForTimeout(waitAfterActionRender);
-  await expect(_window).toHaveScreenshot();
+  await window.waitForTimeout(waitAfterActionRender);
+  await expect(window).toHaveScreenshot();
 });
