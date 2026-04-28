@@ -1,0 +1,44 @@
+// Node imports
+
+// Third party imports
+import { expect } from "@playwright/test";
+
+// Local imports
+import { loadData, navigateToApp } from "@tests/utils.js";
+import { test } from "@tests/fixtures.js";
+
+// Constants
+const inputFilename = "test.og_edc3d";
+const beforeAllTimeout = 30_000;
+const waitAfterActionRender = 1000;
+let _window = undefined;
+let _cleanup = undefined;
+
+test.beforeAll(async ({ mode, browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
+  await _window.waitForFunction(() => document.readyState === "complete");
+}, beforeAllTimeout);
+
+test.afterAll(async () => {
+  await _cleanup();
+});
+
+test("load", async () => {
+  await loadData(_window, inputFilename);
+  await expect(_window).toHaveScreenshot();
+});
+
+// test("viewer context menu", async () => {
+//   console.log("Right click on the EdgedCurve from viewer");
+//   await _window.locator("canvas").click({
+//     button: "right",
+//     position: {
+//       x: 442,
+//       y: 330
+//     }
+//   });
+//   await _window.waitForTimeout(waitAfterActionRender);
+//   await expect(_window).toHaveScreenshot();
+// });

@@ -15,6 +15,7 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 import packageJson from "../../package.json" with { type: "json" };
 
 // Constants
+const __dirname = import.meta.dirname;
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 25;
@@ -119,14 +120,17 @@ async function navigateToApp(mode, page) {
   throw new Error(`Unknown mode: ${mode}`);
 }
 
-async function loadData(window, inputFilePath, inputFileExtension) {
+async function loadData(window, inputFilename) {
+  const inputFileExtension = path.extname(inputFilename);
+  console.log("inputFileExtension", inputFileExtension);
+  const inputFilePath = path.join(__dirname, "tests", "data", inputFilename);
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
   await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  const loadWorkflowTimeout = 10_000;
+  const loadWorkflowTimeout = 8000;
   await window.waitForTimeout(loadWorkflowTimeout);
 }
 
