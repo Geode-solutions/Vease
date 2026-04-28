@@ -13,9 +13,7 @@ let window = undefined;
 let cleanup = undefined;
 
 test.beforeAll(async ({ mode, browser }) => {
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  ({ window, cleanup } = await navigateToApp(mode, page));
+  ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
 
 test.afterAll(async () => {

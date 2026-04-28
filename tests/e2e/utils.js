@@ -81,7 +81,9 @@ async function runDesktopBuild() {
   return { electronApp, firstWindow };
 }
 
-async function navigateToApp(mode, page) {
+async function navigateToApp(mode, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
