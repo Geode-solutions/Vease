@@ -4,13 +4,11 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { loadData, navigateToApp } from "@tests/utils.js";
+import { beforeAllTimeout, loadData, navigateToApp } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
-const beforeAllTimeout = 30_000;
-const waitAfterActionRender = 1000;
 let _window = undefined;
 let _cleanup = undefined;
 
@@ -29,16 +27,3 @@ test("load", async () => {
   await loadData(_window, inputFilename);
   await expect(_window).toHaveScreenshot();
 });
-
-// test("viewer context menu", async () => {
-//   console.log("Right click on the EdgedCurve from viewer");
-//   await _window.locator("canvas").click({
-//     button: "right",
-//     position: {
-//       x: 442,
-//       y: 330
-//     }
-//   });
-//   await _window.waitForTimeout(waitAfterActionRender);
-//   await expect(_window).toHaveScreenshot();
-// });

@@ -29,6 +29,9 @@ const WAIT_TIMES = {
   desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
 
+const beforeAllTimeout = 30_000;
+
+
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
@@ -135,4 +138,4 @@ async function loadData(window, inputFilename) {
 }
 
 
-export { loadData, navigateToApp };
+export { beforeAllTimeout, loadData, navigateToApp };

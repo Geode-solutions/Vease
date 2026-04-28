@@ -4,13 +4,11 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { loadData, navigateToApp } from "@tests/utils.js";
+import { beforeAllTimeout, loadData, navigateToApp } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
-const beforeAllTimeout = 30_000;
-const waitAfterActionRender = 1000;
 let _window = undefined;
 let _cleanup = undefined;
 
