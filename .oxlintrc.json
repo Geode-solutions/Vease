@@ -92,6 +92,12 @@
         "ignore": [-1, 0, 1, 2, 3, 4],
         "ignoreArrayIndexes": true
       }
+    ],
+    "eslint/no-underscore-dangle": [
+      "error",
+      {
+        "allow": ["_data", "__dirname"]
+      }
     ]
   },
   "overrides": [
@@ -117,6 +123,7 @@
       "rules": {
         "vitest/require-hook": "off",
         "vitest/no-hooks": "off",
+        "jest/no-hooks": "off",
         "vitest/no-importing-vitest-globals": "off",
         "max-lines-per-function": "off",
         "max-statements": "off",
@@ -124,8 +131,11 @@
         "vitest/prefer-to-be-falsy": "off",
         "vitest/require-test-timeout": "warn",
         "vitest/prefer-importing-vitest-globals": "off",
-        "jest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }],
-        "vitest/prefer-spy-on": "off"
+        "jest/consistent-test-it": "off",
+        "vitest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }],
+        "vitest/prefer-spy-on": "off",
+        "vitest/prefer-expect-assertions": "off",
+        "jest/prefer-expect-assertions": "off"
       }
     },
     {
