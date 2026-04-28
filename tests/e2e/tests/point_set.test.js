@@ -9,21 +9,21 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
-let _window = undefined;
-let _cleanup = undefined;
+let window = undefined;
+let cleanup = undefined;
 
 test.beforeAll(async ({ mode, browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
-  ({ window: _window, cleanup: _cleanup } = await navigateToApp(mode, page));
-  await _window.waitForFunction(() => document.readyState === "complete");
+  ({ window, cleanup } = await navigateToApp(mode, page));
+  await window.waitForFunction(() => document.readyState === "complete");
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await _cleanup();
+  await cleanup();
 });
 
 test("load", async () => {
-  await loadData(_window, inputFilename);
-  await expect(_window).toHaveScreenshot();
+  await loadData(window, inputFilename);
+  await expect(window).toHaveScreenshot();
 });
