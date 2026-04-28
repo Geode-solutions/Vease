@@ -12,7 +12,7 @@ import { create_new_window } from "../utils/desktop.js";
 autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 let projectFolderPath = "";
-let _mainWindow = undefined;
+let mainWindow = undefined;
 
 ipcMain.handle("new_window", () => {
   create_new_window();
@@ -25,7 +25,7 @@ ipcMain.handle("project_folder_path", (_event, args) => {
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
 app.whenReady().then(async function onReady() {
-  _mainWindow = await create_new_window();
+  mainWindow = await create_new_window();
 });
 
 let cleaned = false;
