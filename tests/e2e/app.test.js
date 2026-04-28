@@ -71,8 +71,8 @@ test("BRep points visibility", async () => {
 test("BRep object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = _window.getByTestId("mainObjectTree");
-  const BRepRow = mainObjectTree.locator("#v-list-group--id-BRep");
-  await BRepRow.locator(".v-list-item-action").first().getByRole("button").click();
+  const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
+  await BRepRow.locator(".mdi-menu-right").first().click();
   await mainObjectTree.getByText("cube").click({
     button: "right",
     position: {
@@ -102,7 +102,7 @@ test("BRep object tree model components", async () => {
   const mainObjectTree = _window.getByTestId("mainObjectTree");
 
   await mainObjectTree
-    .locator('[role="treeitem"]')
+    .locator(".tree-row-wrapper")
     .filter({ hasText: "cube" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
@@ -111,17 +111,17 @@ test("BRep object tree model components", async () => {
   const modelComponentsObjectTree = _window.getByTestId("modelComponentsObjectTree");
 
   const BlocksRow = modelComponentsObjectTree
-    .locator('[role="treeitem"]')
+    .locator(".tree-row-wrapper")
     .filter({ hasText: "Blocks" });
 
-  await BlocksRow.locator('input[type="checkbox"]').uncheck();
+  await BlocksRow.locator(".mdi-eye").first().click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const SurfacesRow = modelComponentsObjectTree
-    .locator('[role="treeitem"]')
+    .locator(".tree-row-wrapper")
     .filter({ hasText: "Surfaces" });
 
-  await SurfacesRow.locator("button:has(.mdi-menu-right)").click();
+  await SurfacesRow.locator(".mdi-menu-right").first().click();
   await _window.waitForTimeout(waitAfterActionRender);
 
   const surfaceIds = [
@@ -136,11 +136,11 @@ test("BRep object tree model components", async () => {
   for (const surfaceId of surfaceIds) {
     console.log(`Unchecking surface: ${surfaceId}`);
     const surfaceRow = modelComponentsObjectTree
-      .locator('[role="treeitem"]')
+      .locator(".tree-row-wrapper")
       .filter({ hasText: surfaceId })
       .first();
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceRow.locator('input[type="checkbox"]').uncheck({ force: true });
+    await surfaceRow.locator(".mdi-eye").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await _window.waitForTimeout(waitAfterActionRender);
   }
