@@ -16,7 +16,6 @@ test.beforeAll(async ({ mode, browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   ({ window, cleanup } = await navigateToApp(mode, page));
-  await window.waitForFunction(() => document.readyState === "complete");
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
