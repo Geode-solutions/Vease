@@ -96,7 +96,7 @@
     "eslint/no-underscore-dangle": [
       "error",
       {
-        "allow": ["_data", "__dirname"]
+        "allow": ["_data", "__dirname", "__VEASE_UTILS__", "__VEASE_STORES__", "__VEASE_SCHEMAS__"]
       }
     ]
   },
