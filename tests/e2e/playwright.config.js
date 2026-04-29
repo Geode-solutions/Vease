@@ -13,6 +13,7 @@ const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
+const testMatch = "tests/e2e/tests/**/*.test.js";
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
@@ -25,11 +26,11 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.02,
-      pathTemplate: `./screenshots/{testName}.png`,
+      pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
     },
   },
   testDir: ".",
-  fullyParallel: false,
+  fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
   reporter: "html",
@@ -40,7 +41,7 @@ export default defineConfig({
   projects: [
     {
       name: "browser-chrome",
-      testMatch: "tests/e2e/app.test.js",
+      testMatch,
       timeout: TIMEOUTS.browser,
       retries: ciRetries,
       use: {
@@ -50,7 +51,7 @@ export default defineConfig({
     },
     {
       name: "browser-firefox",
-      testMatch: "tests/e2e/app.test.js",
+      testMatch,
       timeout: TIMEOUTS.browser,
       retries: ciRetries,
       use: {
@@ -60,7 +61,7 @@ export default defineConfig({
     },
     {
       name: "cloud",
-      testMatch: "tests/e2e/app.test.js",
+      testMatch,
       timeout: TIMEOUTS.cloud,
       retries: ciRetries,
       use: {
@@ -70,7 +71,7 @@ export default defineConfig({
     },
     {
       name: "desktop",
-      testMatch: "tests/e2e/app.test.js",
+      testMatch,
       timeout: TIMEOUTS.desktop,
       retries: ciRetries,
       use: {

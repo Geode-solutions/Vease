@@ -15,6 +15,7 @@ import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js
 import packageJson from "../../package.json" with { type: "json" };
 
 // Constants
+const __dirname = import.meta.dirname;
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 25;
@@ -27,6 +28,8 @@ const WAIT_TIMES = {
   cloud: CLOUD_WAIT * MILLISECONDS,
   desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
+
+const beforeAllTimeout = 30_000;
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
@@ -78,7 +81,9 @@ async function runDesktopBuild() {
   return { electronApp, firstWindow };
 }
 
-async function navigateToApp(mode, page) {
+async function navigateToApp(mode, browser) {
+  const context = await browser.newContext();
+  const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
@@ -88,6 +93,7 @@ async function navigateToApp(mode, page) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
+    await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
@@ -109,14 +115,30 @@ async function navigateToApp(mode, page) {
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
+    await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
+    await firstWindow.waitForFunction(() => document.readyState === "complete");
     return { window: firstWindow, cleanup: () => electronApp.close() };
   }
   throw new Error(`Unknown mode: ${mode}`);
 }
 
-export { navigateToApp };
+async function loadData(window, inputFilename) {
+  const inputFileExtension = path.extname(inputFilename);
+  console.log("inputFileExtension", inputFileExtension);
+  const inputFilePath = path.join(__dirname, "tests", "data", inputFilename);
+  const importButton = await window.getByRole("button", { name: "Import" });
+  await importButton.click();
+  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
+  await fileInput.waitFor({ state: "attached" });
+  await fileInput.setInputFiles(inputFilePath);
+  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  const loadWorkflowTimeout = 8000;
+  await window.waitForTimeout(loadWorkflowTimeout);
+}
+
+export { beforeAllTimeout, loadData, navigateToApp };
