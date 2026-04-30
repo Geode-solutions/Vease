@@ -128,6 +128,6 @@ test("object tree model components", async () => {
   }
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.hover();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
