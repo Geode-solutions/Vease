@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { beforeAllTimeout, loadData, navigateToApp } from "@tests/utils.js";
+import { beforeAllTimeout, loadData, navigateToApp, viewerContextMenu } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -22,5 +22,12 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expect(window).toHaveScreenshot();
+});
+
+test("viewer context menu", async () => {
+  const x = 549,
+    y = 210;
+  await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
 });
