@@ -4,12 +4,11 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { beforeAllTimeout, loadData, navigateToApp } from "@tests/utils.js";
+import { afterActionWait, beforeAllTimeout, loadData, navigateToApp, viewerContextMenu } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const waitAfterActionRender = 1000;
 let window = undefined;
 let cleanup = undefined;
 
@@ -27,15 +26,7 @@ test("load", async () => {
 });
 
 test("viewer context menu", async () => {
-  console.log("Right click on the BRep from viewer");
-  await window.locator("canvas").click({
-    button: "right",
-    position: {
-      x: 583,
-      y: 321,
-    },
-  });
-  await window.waitForTimeout(waitAfterActionRender);
+  await viewerContextMenu(window, 588, 324);
   await expect(window).toHaveScreenshot();
 });
 
@@ -47,7 +38,7 @@ test("points visibility", async () => {
     .getByTestId("modelPointsVisibilitySwitch")
     .getByRole("checkbox");
   await modelPointsVisibilitySwitch.check();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
@@ -63,7 +54,7 @@ test("object tree context menu", async () => {
       y: 10,
     },
   });
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
@@ -76,7 +67,7 @@ test("edges visibility", async () => {
     .getByRole("checkbox");
   console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
   await modelEdgesVisibilitySwitch.check();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });
@@ -89,7 +80,7 @@ test("object tree model components", async () => {
     .filter({ hasText: "test" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
@@ -98,14 +89,14 @@ test("object tree model components", async () => {
     .filter({ hasText: "Blocks" });
 
   await BlocksRow.locator(".mdi-eye").first().click();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "Surfaces" });
 
   await SurfacesRow.locator(".mdi-menu-right").first().click();
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
 
   const surfaceIds = [
     "00000000-8afd-4969-8000-000092a43747",
@@ -125,9 +116,9 @@ test("object tree model components", async () => {
     // oxlint-disable-next-line no-await-in-loop
     await surfaceRow.locator(".mdi-eye").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(waitAfterActionRender);
+    await window.waitForTimeout(afterActionWait);
   }
 
-  await window.waitForTimeout(waitAfterActionRender);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
