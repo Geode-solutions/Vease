@@ -147,6 +147,8 @@ async function viewerContextMenu(window, x, y) {
     button: "right",
     position: { x, y },
   });
+  const bbox = await window.locator("canvas").boundingBox();
+  console.log({ bbox });
   await window.waitForTimeout(afterActionWait);
 }
 
