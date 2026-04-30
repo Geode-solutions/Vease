@@ -119,7 +119,8 @@ test("object tree model components", async () => {
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
-
-  await window.waitForTimeout(afterActionWait);
+  const importButton = await window.getByRole("button", { name: "Import" });
+  await importButton.hover();
+  await window.waitForTimeout(waitAfterActionRender);
   await expect(window).toHaveScreenshot();
 });
