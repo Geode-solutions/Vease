@@ -13,7 +13,7 @@ const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
-const testMatch = "tests/e2e/tests/model.test.js";
+const testMatch = "tests/e2e/tests/**/*.test.js";
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
