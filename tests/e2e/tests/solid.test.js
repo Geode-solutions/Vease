@@ -26,7 +26,8 @@ test("load", async () => {
 });
 
 test("viewer context menu", async () => {
-  const x = 549, y = 360;
+  const x = 549,
+    y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
 });
