@@ -30,6 +30,7 @@ const WAIT_TIMES = {
 };
 
 const beforeAllTimeout = 30_000;
+const afterActionWait = 1000;
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
@@ -141,4 +142,12 @@ async function loadData(window, inputFilename) {
   await window.waitForTimeout(loadWorkflowTimeout);
 }
 
-export { beforeAllTimeout, loadData, navigateToApp };
+async function viewerContextMenu(window, x, y) {
+  await window.locator("canvas").click({
+    button: "right",
+    position: { x, y },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
+export { afterActionWait, beforeAllTimeout, loadData, navigateToApp, viewerContextMenu };
