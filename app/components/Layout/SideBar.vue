@@ -5,7 +5,7 @@ const UIStore = useUIStore();
 
 const drawer = ref(true);
 
-const items = ref([
+const topPages = ref([
   {
     title: "Viewer",
     icon: "mdi-rotate-orbit",
@@ -18,6 +18,24 @@ const items = ref([
   },
 ]);
 
+const bottomPages = ref([
+  {
+    title: "Register",
+    icon: "mdi-rotate-orbit",
+    click: () => navigateTo("/register"),
+  },
+  {
+    title: "Login",
+    icon: "mdi-rotate-orbit",
+    click: () => navigateTo("/login"),
+  },
+  {
+    title: "Infos",
+    icon: "mdi-information-outline",
+    click: () => navigateTo("/infos"),
+  },
+]);
+
 let draggedItem = undefined;
 
 function startDrag(event, item) {
@@ -26,13 +44,13 @@ function startDrag(event, item) {
 }
 
 function onDrop(event, dropIndex) {
-  const dragIndex = items.value.indexOf(draggedItem);
+  const dragIndex = topPages.value.indexOf(draggedItem);
   if (dragIndex === dropIndex) {
     return;
   }
 
-  items.value.splice(dragIndex, 1);
-  items.value.splice(dropIndex, 0, draggedItem);
+  topPages.value.splice(dragIndex, 1);
+  topPages.value.splice(dropIndex, 0, draggedItem);
   draggedItem = undefined;
 }
 </script>
@@ -52,7 +70,7 @@ function onDrop(event, dropIndex) {
       style="width: 100%"
       @mousedown.stop
     >
-      <div v-for="(item, index) in items" :key="index" class="mb-3">
+      <div v-for="(item, index) in topPages" :key="index" class="mb-3">
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -76,21 +94,24 @@ function onDrop(event, dropIndex) {
 
       <v-spacer />
 
-      <v-tooltip text="Infos" location="right">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            v-bind="props"
-            flat
-            color="transparent"
-            @click="navigateTo('/infos')"
-            class="icon-style pa-2"
-            width="48"
-            height="48"
-          >
-            <v-icon icon="mdi-information-outline" color="white" size="28" />
-          </v-btn>
-        </template>
-      </v-tooltip>
+      <div v-for="(item, index) in bottomPages" :key="index" class="mb-3">
+        <v-tooltip :text="item.title" location="right">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              flat
+              color="transparent"
+              @click="item.click"
+              class="icon-style pa-2 rounded-lg"
+              width="48"
+              height="48"
+              draggable="false"
+            >
+              <v-icon :icon="item.icon" color="white" size="28" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </div>
     </div>
   </v-navigation-drawer>
 </template>

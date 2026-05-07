@@ -36,6 +36,7 @@ export default defineNuxtConfig({
       },
     ],
     "@vueuse/nuxt",
+    "nuxt-vuefire",
   ].filter(Boolean),
 
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
@@ -102,6 +103,17 @@ export default defineNuxtConfig({
           },
         },
       },
+    },
+  },
+
+  vuefire: {
+    config: {
+      apiKey: "AIzaSyCsPrp1QyFO77ctNk8gMISzXfSV-QqrpOw",
+      authDomain: "project-98b129be-91e9-491b-8ce.firebaseapp.com",
+      projectId: "project-98b129be-91e9-491b-8ce",
+    },
+    auth: {
+      enabled: true,
     },
   },
 
