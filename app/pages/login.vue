@@ -28,8 +28,8 @@ const {
 
     <v-row no-gutters class="fill-height align-center justify-center">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
-        <v-sheet color="transparent" width="100%" class="text-center mb-8">
-          <v-responsive class="mx-auto mb-6" max-width="120">
+        <v-sheet color="transparent" width="100%" class="text-center mb-4">
+          <v-responsive class="mx-auto mb-2" max-width="120">
             <v-img :src="logo" contain />
           </v-responsive>
           <v-card-title class="text-h3 font-weight-black title-text mb-2 px-0 d-flex justify-center">

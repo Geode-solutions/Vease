@@ -102,7 +102,7 @@ const passwordVisible = ref(false);
       size="x-large"
       block
       :loading="loading"
-      class="submit-btn text-none font-weight-black rounded-lg mb-8"
+      class="submit-btn text-none font-weight-black rounded-lg mb-4"
     >
       {{ isLogin ? "Sign In" : "Get Started" }}
     </v-btn>

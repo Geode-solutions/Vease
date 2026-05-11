@@ -89,16 +89,16 @@ function sanitizeNumberString(str) {
   }
   let value = String(str)
     .replaceAll(",", ".")
-    .replaceAll(/[^0-9eE+\-.]/g, "");
-  if (/[eE]/.test(value)) {
-    const parts = value.split(/[eE]/);
+    .replaceAll(/[^0-9eE+\-.]/gu, "");
+  if (/[eE]/u.test(value)) {
+    const parts = value.split(/[eE]/u);
     if (parts.length > 2) {
       value =
         parts.slice(0, 2).join("e") +
         parts
           .slice(2)
           .join("")
-          .replaceAll(/[^0-9+\-.]/g, "");
+          .replaceAll(/[^0-9+\-.]/gu, "");
     }
   }
   return value;
@@ -128,7 +128,7 @@ function handlePaste(event, field) {
     return;
   }
 
-  const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
+  const coordinates = pastedText.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/gu);
   if (!coordinates || coordinates.length === 0) {
     return;
   }

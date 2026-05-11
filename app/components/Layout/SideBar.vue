@@ -23,20 +23,17 @@ const topPages = ref([
 const bottomPages = computed(() => {
   const pages = [];
 
-  if (!user.value) {
+  if (user.value) {
     pages.push({
-      title: "Login",
-      icon: "mdi-account-circle-outline",
-      click: () => navigateTo("/login"),
+      title: "Account",
+      icon: "mdi-account-outline",
+      click: () => navigateTo("/account"),
     });
   } else {
     pages.push({
-      title: "Logout",
-      icon: "mdi-logout",
-      click: () => {
-        logout();
-        navigateTo("/login");
-      },
+      title: "Login",
+      icon: "mdi-account-key-outline",
+      click: () => navigateTo("/login"),
     });
   }
 

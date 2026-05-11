@@ -17,6 +17,40 @@ export function useAuthPage() {
   const forgotPasswordEmail = ref("");
   const forgotPasswordLoading = ref(false);
 
+  function getFriendlyErrorMessage(err) {
+    const code = String(err.code || "").toLowerCase();
+    const message = String(err.message || "").toLowerCase();
+    const fullError = `${code} ${message}`;
+
+    if (
+      fullError.includes("invalid-credential") ||
+      fullError.includes("user-not-found") ||
+      fullError.includes("wrong-password")
+    ) {
+      return "Invalid email address or password.";
+    }
+    if (fullError.includes("email-already-in-use")) {
+      return "This email is already registered.";
+    }
+    if (fullError.includes("weak-password")) {
+      return "Password should be at least 6 characters.";
+    }
+    if (fullError.includes("invalid-email")) {
+      return "Please enter a valid email address.";
+    }
+    if (fullError.includes("user-disabled")) {
+      return "This account has been disabled.";
+    }
+    if (fullError.includes("too-many-requests")) {
+      return "Too many failed attempts. Please try again later.";
+    }
+    if (fullError.includes("network-request-failed")) {
+      return "Network error. Please check your connection.";
+    }
+
+    return err.message || "An error occurred. Please try again.";
+  }
+
   async function onSubmit() {
     error.value = "";
     successMessage.value = "";
@@ -40,7 +74,7 @@ export function useAuthPage() {
       }
     } catch (err) {
       console.error(err);
-      error.value = err.message || "An error occurred";
+      error.value = getFriendlyErrorMessage(err);
     } finally {
       loading.value = false;
     }
@@ -54,7 +88,7 @@ export function useAuthPage() {
       successMessage.value = "Password reset email sent!";
       showForgotPassword.value = false;
     } catch (err) {
-      error.value = err.message || "Failed to send reset email";
+      error.value = getFriendlyErrorMessage(err);
     } finally {
       forgotPasswordLoading.value = false;
     }
