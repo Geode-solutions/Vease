@@ -32,11 +32,17 @@ const {
           <v-responsive class="mx-auto mb-6" max-width="120">
             <v-img :src="logo" contain />
           </v-responsive>
-          <v-card-title class="text-h3 font-weight-black title-text mb-2 px-0 d-flex justify-center">
+          <v-card-title
+            class="text-h3 font-weight-black title-text mb-2 px-0 d-flex justify-center"
+          >
             Vease
           </v-card-title>
           <v-card-subtitle class="text-body-1 text-white opacity-70 px-0 text-center">
-            {{ isLogin ? "Welcome back! Please login to your account" : "Create an account to get started" }}
+            {{
+              isLogin
+                ? "Welcome back! Please login to your account"
+                : "Create an account to get started"
+            }}
           </v-card-subtitle>
         </v-sheet>
 

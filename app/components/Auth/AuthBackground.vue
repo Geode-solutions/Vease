@@ -40,7 +40,11 @@
 }
 
 @keyframes float {
-  from { transform: translate(0, 0) scale(1); }
-  to { transform: translate(60px, 60px) scale(1.1); }
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(60px, 60px) scale(1.1);
+  }
 }
 </style>
