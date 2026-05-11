@@ -11,8 +11,6 @@ export function useAuth() {
   const auth = useFirebaseAuth();
   const user = useCurrentUser();
 
-  const isEmailVerified = computed(() => user.value?.emailVerified === true);
-
   async function register(email, password) {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
     await sendEmailVerification(newUser);
@@ -20,8 +18,14 @@ export function useAuth() {
     return newUser;
   }
 
-  function login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
+  async function login(email, password) {
+    const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
+    await loggedInUser.reload();
+    if (!loggedInUser.emailVerified) {
+      await signOut(auth);
+      throw new Error("Please verify your email address before logging in.");
+    }
+    return loggedInUser;
   }
 
   function logout() {
@@ -32,5 +36,5 @@ export function useAuth() {
     return sendPasswordResetEmail(auth, email);
   }
 
-  return { user, isEmailVerified, register, login, logout, resetPassword };
+  return { user, register, login, logout, resetPassword };
 }
