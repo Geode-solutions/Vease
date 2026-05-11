@@ -35,7 +35,6 @@ function handleFilesDropped(files) {
 
   <v-card
     v-if="uiStore.showStepper || uiStore.showCreateTools"
-    v-show="!viewerStore.picking_mode"
     color="transparent"
     elevation="0"
     :width="548"
@@ -84,7 +83,6 @@ function handleFilesDropped(files) {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   z-index: 98;
   will-change: backdrop-filter;
   transform: translateZ(0);

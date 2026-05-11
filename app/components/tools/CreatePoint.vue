@@ -16,11 +16,12 @@ const pickingActive = ref(false);
 
 function generateName() {
   pointCounter += 1;
-  return pointCounter === 1 ? "New Point" : `New Point ${pointCounter}`;
+  return pointCounter === 1 ? "New PointSet" : `New PointSet ${pointCounter}`;
 }
 
+const setName = ref(generateName());
 function createEmptyPoint() {
-  return { name: generateName(), x: "", y: "", z: "" };
+  return { x: "", y: "", z: "" };
 }
 const points = ref([createEmptyPoint()]);
 
@@ -44,6 +45,7 @@ function handleClose() {
     viewerStore.toggle_picking_mode(false);
   }
   pointCounter = 0;
+  setName.value = generateName();
   points.value = [createEmptyPoint()];
   UIStore.setShowCreateTools(false);
 }
@@ -54,20 +56,16 @@ watch(
     if (!pickingActive.value || newVal.x === undefined || newVal.y === undefined) {
       return;
     }
-    const name = generateName();
-    const pointSchema = back_schemas.opengeodeweb_back.create.point;
+    const point = {
+      x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
+      y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
+      z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
+    };
 
-    try {
-      const resp = await geodeStore.request(pointSchema, {
-        name,
-        x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
-        y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
-        z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
-      });
-      await importItem({ ...resp });
-      await hybridViewerStore.remoteRender();
-    } catch {
-      return undefined;
+    if (points.value.length === 1 && points.value[0].x === "") {
+      points.value[0] = point;
+    } else {
+      points.value.push(point);
     }
   },
   { deep: true },
@@ -99,23 +97,17 @@ onUnmounted(() => {
 
 const loading = ref(false);
 const validPoints = computed(() =>
-  points.value.filter(
-    (point) => point.name !== "" && point.x !== "" && point.y !== "" && point.z !== "",
-  ),
+  points.value.filter((point) => point.x !== "" && point.y !== "" && point.z !== ""),
 );
 const hasValidPoint = computed(() => validPoints.value.length > 0);
 const validPointCount = computed(() => validPoints.value.length);
 
 function sanitizeInput(value, index, field) {
-  if (field === "name") {
-    points.value[index].name = value;
-  } else {
-    const val = String(value)
-      .replaceAll(",", ".")
-      .replaceAll(/[^0-9eE+\-.]/g, "");
-    const parts = val.split(/[eE]/);
-    points.value[index][field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
-  }
+  const val = String(value)
+    .replaceAll(",", ".")
+    .replaceAll(/[^0-9eE+\-.]/g, "");
+  const parts = val.split(/[eE]/);
+  points.value[index][field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
 }
 
 function handlePaste(event, index, field) {
@@ -139,19 +131,18 @@ async function createAllPoints() {
   if (validPoints.value.length === 0) {
     return;
   }
-  const schema = back_schemas.opengeodeweb_back.create.point;
+  const schema = back_schemas.opengeodeweb_back.create.point_set;
   loading.value = true;
   try {
-    const promises = validPoints.value.map(async (point) => {
-      const resp = await geodeStore.request(schema, {
-        name: point.name,
+    const resp = await geodeStore.request(schema, {
+      name: setName.value,
+      points: validPoints.value.map((point) => ({
         x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
         y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
         z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
-      });
-      await importItem({ ...resp });
+      })),
     });
-    await Promise.all(promises);
+    await importItem({ ...resp });
     await hybridViewerStore.remoteRender();
     handleClose();
   } finally {
@@ -192,6 +183,17 @@ async function createAllPoints() {
     </v-card-subtitle>
 
     <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
+      <v-text-field
+        v-model="setName"
+        label="Point Set Name"
+        variant="outlined"
+        color="white"
+        theme="dark"
+        base-color="white"
+        bg-color="rgba(255, 255, 255, 0.15)"
+        class="mb-4 rounded-lg"
+        prepend-inner-icon="mdi-format-title"
+      />
       <v-form class="mt-2">
         <div
           v-for="(point, index) in points"
@@ -199,7 +201,7 @@ async function createAllPoints() {
           class="point-row"
           :class="{ 'mb-4': index < points.length - 1 }"
         >
-          <div class="d-flex align-center mb-2">
+          <div class="d-flex align-center mb-1">
             <v-icon size="small" color="secondary" class="mr-1">mdi-circle-small</v-icon>
             <span class="text-caption text-white opacity-60 font-weight-bold text-uppercase">
               Point {{ index + 1 }}
@@ -216,21 +218,6 @@ async function createAllPoints() {
               <v-icon size="16">mdi-close</v-icon>
             </v-btn>
           </div>
-
-          <v-text-field
-            v-model="point.name"
-            variant="outlined"
-            color="white"
-            :rules="[(v) => !!v || 'Name is required']"
-            theme="dark"
-            base-color="white"
-            bg-color="rgba(255, 255, 255, 0.15)"
-            class="mb-2 rounded-lg"
-            @update:modelValue="(v) => sanitizeInput(v, index, 'name')"
-          >
-            <template #label><span class="text-white">Object Name</span></template>
-            <template #prepend-inner><v-icon color="white">mdi-format-title</v-icon></template>
-          </v-text-field>
 
           <v-row dense>
             <v-col v-for="f in ['x', 'y', 'z']" :key="f" cols="4">
