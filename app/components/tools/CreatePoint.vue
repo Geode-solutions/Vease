@@ -57,19 +57,18 @@ watch(
     const name = generateName();
     const pointSchema = back_schemas.opengeodeweb_back.create.point;
 
-    await geodeStore
-      .request(
-        pointSchema,
-        {
-          name,
-          x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
-          y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
-          z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
-        },
-        { response_function: (resp) => importItem({ ...resp }) },
-      )
-      .then(() => hybridViewerStore.remoteRender())
-      .catch(() => undefined);
+    try {
+      const resp = await geodeStore.request(pointSchema, {
+        name,
+        x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
+        y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
+        z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
+      });
+      await importItem({ ...resp });
+      await hybridViewerStore.remoteRender();
+    } catch {
+      return undefined;
+    }
   },
   { deep: true },
 );
@@ -143,20 +142,17 @@ async function createAllPoints() {
   const schema = back_schemas.opengeodeweb_back.create.point;
   loading.value = true;
   try {
-    const promises = validPoints.value.map((point) =>
-      geodeStore.request(
-        schema,
-        {
-          name: point.name,
-          x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
-          y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
-          z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
-        },
-        { response_function: (resp) => importItem({ ...resp }) },
-      ),
-    );
+    const promises = validPoints.value.map(async (point) => {
+      const resp = await geodeStore.request(schema, {
+        name: point.name,
+        x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
+        y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
+        z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+      });
+      await importItem({ ...resp });
+    });
     await Promise.all(promises);
-    hybridViewerStore.remoteRender();
+    await hybridViewerStore.remoteRender();
     handleClose();
   } finally {
     loading.value = false;
@@ -165,7 +161,7 @@ async function createAllPoints() {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="pa-0" theme="dark">
+  <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
     <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
       <v-icon icon="mdi-circle-medium" class="mr-3 text-h4" color="secondary" />
       Create Point{{ points.length > 1 ? "s" : "" }}
@@ -195,7 +191,7 @@ async function createAllPoints() {
       Enter coordinates, use + to add rows, or enable pick mode.
     </v-card-subtitle>
 
-    <v-card-text class="pt-2">
+    <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
       <v-form class="mt-2">
         <div
           v-for="(point, index) in points"
