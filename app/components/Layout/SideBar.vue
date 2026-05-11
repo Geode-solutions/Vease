@@ -1,6 +1,8 @@
 <script setup>
+import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 
+const { user, logout } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);
@@ -18,23 +20,34 @@ const topPages = ref([
   },
 ]);
 
-const bottomPages = ref([
-  {
-    title: "Register",
-    icon: "mdi-rotate-orbit",
-    click: () => navigateTo("/register"),
-  },
-  {
-    title: "Login",
-    icon: "mdi-rotate-orbit",
-    click: () => navigateTo("/login"),
-  },
-  {
+const bottomPages = computed(() => {
+  const pages = [];
+
+  if (!user.value) {
+    pages.push({
+      title: "Login",
+      icon: "mdi-account-circle-outline",
+      click: () => navigateTo("/login"),
+    });
+  } else {
+    pages.push({
+      title: "Logout",
+      icon: "mdi-logout",
+      click: () => {
+        logout();
+        navigateTo("/login");
+      },
+    });
+  }
+
+  pages.push({
     title: "Infos",
     icon: "mdi-information-outline",
     click: () => navigateTo("/infos"),
-  },
-]);
+  });
+
+  return pages;
+});
 
 let draggedItem = undefined;
 
@@ -123,6 +136,7 @@ function onDrop(event, dropIndex) {
 
 .icon-style:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
