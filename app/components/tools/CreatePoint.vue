@@ -177,15 +177,15 @@ async function createAllPoints() {
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
-            :color="pickingActive ? 'secondary' : 'white'"
+            color="secondary"
             :variant="pickingActive ? 'flat' : 'outlined'"
             size="small"
-            icon
-            class="ml-2"
+            class="ml-2 rounded-lg text-none font-weight-bold"
             :class="{ 'pick-pulse': pickingActive }"
+            prepend-icon="mdi-crosshairs-gps"
             @click="togglePickMode"
           >
-            <v-icon>mdi-eyedropper-variant</v-icon>
+            {{ pickingActive ? "Stop Picking" : "Pick in Viewer" }}
           </v-btn>
         </template>
       </v-tooltip>
