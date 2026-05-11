@@ -67,8 +67,7 @@ export function useAuthPage() {
         router.push("/");
       } else {
         await register(email.value, password.value);
-        successMessage.value =
-          "Account created! Please check your email for verification.";
+        successMessage.value = "Account created! Please check your email for verification.";
         isLogin.value = true;
         password.value = "";
         confirmPassword.value = "";
