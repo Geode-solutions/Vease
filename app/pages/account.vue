@@ -11,27 +11,18 @@ function handleLogout() {
 </script>
 
 <template>
-  <v-container
-    fluid
-    class="pa-0 fill-height position-relative overflow-hidden account-page"
-  >
+  <v-container fluid class="pa-0 fill-height position-relative overflow-hidden account-page">
     <AuthBackground />
 
     <v-row no-gutters class="fill-height align-center justify-center">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
         <div class="d-flex flex-column align-center w-100 px-4">
-          <v-avatar
-            color="rgba(255, 255, 255, 0.1)"
-            size="120"
-            class="mb-8 account-avatar"
-          >
+          <v-avatar color="rgba(255, 255, 255, 0.1)" size="120" class="mb-8 account-avatar">
             <v-icon icon="mdi-account" size="80" color="white" />
           </v-avatar>
 
           <div class="text-center mb-12">
-            <div class="text-h6 text-white opacity-60 mb-1 font-weight-medium">
-              Logged as
-            </div>
+            <div class="text-h6 text-white opacity-60 mb-1 font-weight-medium">Logged as</div>
             <div class="text-h4 text-white font-weight-black">
               {{ user?.email }}
             </div>
