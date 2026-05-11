@@ -105,4 +105,3 @@ export function transformExtensionCode(code) {
   transformedCode = transformGlobalFunctionCalls(transformedCode);
   return transformedCode;
 }
-
