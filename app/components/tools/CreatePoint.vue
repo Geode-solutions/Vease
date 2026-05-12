@@ -52,7 +52,7 @@ function handleClose() {
 
 watch(
   () => viewerStore.picked_point,
-  async (newVal) => {
+  (newVal) => {
     if (!pickingActive.value || newVal.x === undefined || newVal.y === undefined) {
       return;
     }
