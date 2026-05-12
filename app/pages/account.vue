@@ -1,6 +1,6 @@
 <script setup>
-import { useAuth } from "@vease/composables/auth";
 import AuthBackground from "@vease/components/Auth/AuthBackground";
+import { useAuth } from "@vease/composables/auth";
 
 const { user, logout } = useAuth();
 

@@ -1,9 +1,9 @@
 <script setup>
-import { useAuthPage } from "@vease/composables/auth_page";
 import AuthBackground from "@vease/components/Auth/AuthBackground";
-import AuthForm from "@vease/components/Auth/AuthForm";
 import AuthForgotPasswordDialog from "@vease/components/Auth/AuthForgotPasswordDialog";
+import AuthForm from "@vease/components/Auth/AuthForm";
 import logo from "@vease/assets/img/logo.png";
+import { useAuthPage } from "@vease/composables/auth_page";
 
 const {
   isLogin,
