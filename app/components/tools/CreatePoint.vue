@@ -74,9 +74,6 @@ watch(
 watch(
   () => viewerStore.picking_mode,
   (newVal) => {
-    if (!newVal && pickingActive.value) {
-      handleClose();
-    }
     pickingActive.value = newVal;
   },
 );
@@ -154,26 +151,6 @@ async function createAllPoints() {
     <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
       <v-icon icon="mdi-circle-medium" class="mr-3 text-h4" color="secondary" />
       Create Point{{ points.length > 1 ? "s" : "" }}
-      <v-spacer />
-      <v-tooltip
-        :text="pickingActive ? 'Exit pick mode (Esc)' : 'Pick points from viewer'"
-        location="bottom"
-      >
-        <template #activator="{ props }">
-          <v-btn
-            v-bind="props"
-            color="secondary"
-            :variant="pickingActive ? 'flat' : 'outlined'"
-            size="small"
-            class="ml-2 rounded-lg text-none font-weight-bold"
-            :class="{ 'pick-pulse': pickingActive }"
-            prepend-icon="mdi-crosshairs-gps"
-            @click="togglePickMode"
-          >
-            {{ pickingActive ? "Stop Picking" : "Pick in Viewer" }}
-          </v-btn>
-        </template>
-      </v-tooltip>
     </v-card-title>
 
     <v-card-subtitle class="ma-0 pb-2 text-white opacity-80">
@@ -244,17 +221,43 @@ async function createAllPoints() {
           </v-row>
           <v-divider v-if="index < points.length - 1" class="mt-2 opacity-20" />
         </div>
-        <v-btn
-          variant="outlined"
-          color="white"
-          size="small"
-          block
-          class="text-none rounded-lg mt-3"
-          prepend-icon="mdi-plus"
-          @click="addPoint"
-        >
-          Add another point
-        </v-btn>
+        <v-row dense class="mt-3">
+          <v-col cols="6">
+            <v-btn
+              variant="outlined"
+              color="white"
+              size="small"
+              block
+              class="text-none rounded-lg"
+              prepend-icon="mdi-plus"
+              @click="addPoint"
+            >
+              Add point
+            </v-btn>
+          </v-col>
+          <v-col cols="6">
+            <v-tooltip
+              :text="pickingActive ? 'Exit pick mode (Esc)' : 'Pick points from viewer'"
+              location="bottom"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="secondary"
+                  :variant="pickingActive ? 'flat' : 'outlined'"
+                  size="small"
+                  block
+                  class="rounded-lg text-none font-weight-bold"
+                  :class="{ 'pick-pulse': pickingActive }"
+                  prepend-icon="mdi-crosshairs-gps"
+                  @click="togglePickMode"
+                >
+                  {{ pickingActive ? "Stop picking" : "Pick in viewer" }}
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
 
