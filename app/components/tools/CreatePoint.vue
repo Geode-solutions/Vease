@@ -100,14 +100,14 @@ const validPointCount = computed(() => validPoints.value.length);
 function sanitizeInput(value, index, field) {
   const val = String(value)
     .replaceAll(",", ".")
-    .replaceAll(/[^0-9eE+\-.]/g, "");
-  const parts = val.split(/[eE]/);
+    .replaceAll(/[^0-9eE+\-.]/gu, "");
+  const parts = val.split(/[eE]/u);
   points.value[index][field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
 }
 
 function handlePaste(event, index, field) {
   const text = event?.clipboardData?.getData("text") || "";
-  const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
+  const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/gu);
   if (!coords) {
     return;
   }
@@ -115,11 +115,10 @@ function handlePaste(event, index, field) {
   if (coords.length >= 2) {
     [point.x, point.y] = coords;
     point.z = coords[2] || "0";
-    event.preventDefault();
   } else {
     [point[field]] = coords;
-    event.preventDefault();
   }
+  event.preventDefault();
 }
 
 async function createAllPoints() {
