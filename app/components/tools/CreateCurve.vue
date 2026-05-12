@@ -91,13 +91,15 @@ onUnmounted(() => {
 
 const loading = ref(false);
 const validPoints = computed(() =>
-  points.value.filter((p) => p.x !== "" && p.y !== "" && p.z !== ""),
+  points.value.filter((point) => point.x !== "" && point.y !== "" && point.z !== ""),
 );
 const hasValidCurve = computed(() => validPoints.value.length >= 2);
 const validPointCount = computed(() => validPoints.value.length);
 
 function sanitizeInput(value, index, field) {
-  const val = String(value).replaceAll(",", ".").replaceAll(/[^0-9eE+\-.]/g, "");
+  const val = String(value)
+    .replaceAll(",", ".")
+    .replaceAll(/[^0-9eE+\-.]/g, "");
   const parts = val.split(/[eE]/);
   points.value[index][field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
 }
@@ -105,8 +107,9 @@ function sanitizeInput(value, index, field) {
 function handlePaste(event, index, field) {
   const text = event?.clipboardData?.getData("text") || "";
   const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/g);
-  if (!coords) return;
-
+  if (!coords) {
+    return;
+  }
   const point = points.value[index];
   if (coords.length >= 2) {
     [point.x, point.y, point.z] = [coords[0], coords[1], coords[2] || "0"];
