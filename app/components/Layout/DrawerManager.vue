@@ -20,6 +20,11 @@ function closeAllDrawers() {
   uiStore.setShowExtensions(false);
 }
 
+const anyDrawerOpen = computed(
+  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions,
+);
+const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
+
 function handleFilesDropped(files) {
   emit("files-dropped", files);
 }
@@ -27,14 +32,14 @@ function handleFilesDropped(files) {
 
 <template>
   <div
-    v-if="uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions"
+    v-if="anyDrawerOpen"
     v-show="!viewerStore.picking_mode"
     class="drawer-overlay"
     @click="closeAllDrawers"
   />
 
   <v-card
-    v-if="uiStore.showStepper || uiStore.showCreateTools"
+    v-if="showRightDrawer"
     color="transparent"
     elevation="0"
     :width="548"

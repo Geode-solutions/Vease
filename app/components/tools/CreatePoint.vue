@@ -81,15 +81,13 @@ watch(
   },
 );
 
-function handleEscape(event) {
-  if (event.key === "Escape" && pickingActive.value) {
+onKeyStroke("Escape", () => {
+  if (pickingActive.value) {
     viewerStore.toggle_picking_mode(false);
   }
-}
+});
 
-onMounted(() => globalThis.addEventListener("keydown", handleEscape));
 onUnmounted(() => {
-  globalThis.removeEventListener("keydown", handleEscape);
   if (viewerStore.picking_mode) {
     viewerStore.toggle_picking_mode(false);
   }
