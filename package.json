@@ -61,6 +61,7 @@
     "electron-updater": "6.6.2",
     "h3-formidable": "1.0.0",
     "kill-port": "2.0.1",
+    "nuxt-vuefire": "1.1.2",
     "utf-8-validate": "6.0.5"
   },
   "devDependencies": {
