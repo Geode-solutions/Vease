@@ -62,13 +62,7 @@ async function toggleVisibility(item) {
 }
 
 function focusCamera(item) {
-  const data = hybridViewerStore.hybridDb[item.id];
-  if (data?.actor) {
-    const renderer = hybridViewerStore.genericRenderWindow.value.getRenderer();
-    renderer.resetCamera(data.actor.getBounds());
-    hybridViewerStore.genericRenderWindow.value.getRenderWindow().render();
-    hybridViewerStore.syncRemoteCamera();
-  }
+  hybridViewerStore.focusCameraOnObject(item.id);
 }
 
 function openRenameDialog(item) {
