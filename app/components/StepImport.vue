@@ -42,13 +42,10 @@ const stepper_tree = reactive({
           files,
           auto_upload,
           show_overlay: false,
-          allow_csv_config: true,
         },
       },
       chips: computed(() =>
-        files.value
-          .filter((file) => !file.name.endsWith(".json"))
-          .map((file) => file.displayName || file.name),
+        files.value.map((file) => file.displayName || file.name),
       ),
     },
     {
@@ -56,9 +53,7 @@ const stepper_tree = reactive({
       component: {
         component_name: shallowRef(ObjectSelector),
         component_options: {
-          filenames: computed(() =>
-            files.value.filter((file) => !file.name.endsWith(".json")).map((file) => file.name),
-          ),
+          filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
       chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
@@ -70,9 +65,8 @@ const stepper_tree = reactive({
         component_options: {
           multiple: true,
           geode_object_type,
-          filenames: computed(() =>
-            files.value.filter((file) => !file.name.endsWith(".json")).map((file) => file.name),
-          ),
+          files,
+          filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
       chips: computed(() => additional_files.value.map((file) => file.name)),
@@ -83,9 +77,7 @@ const stepper_tree = reactive({
         component_name: shallowRef(ImportFile),
         component_options: {
           geode_object_type,
-          filenames: computed(() =>
-            files.value.filter((file) => !file.name.endsWith(".json")).map((file) => file.name),
-          ),
+          filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
       chips: computed(() => {
