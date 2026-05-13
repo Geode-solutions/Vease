@@ -5,8 +5,8 @@ export default defineNuxtPlugin(() => {
 
   UIStore.registerToolComponent({
     id: "Point",
-    title: "Specific Point",
-    description: "Create a point object with exact coordinates on the viewer.",
+    title: "Points",
+    description: "Create one or more points with exact coordinates from the viewer.",
     iconType: "mdi",
     iconSource: "mdi-circle-medium",
     component: markRaw(

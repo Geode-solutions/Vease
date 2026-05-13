@@ -98,7 +98,6 @@ watch(
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   z-index: 98;
   will-change: backdrop-filter;
   transform: translateZ(0);
