@@ -83,7 +83,9 @@ async function runDesktopBuild() {
 }
 
 async function navigateToApp(mode, browser) {
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+  });
   const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
@@ -93,7 +95,6 @@ async function navigateToApp(mode, browser) {
     console.log("Navigated to", page.url());
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
-    await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
@@ -115,7 +116,6 @@ async function navigateToApp(mode, browser) {
     await button.click();
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
-    await page.setViewportSize({ width: PAGE_WIDTH, height: PAGE_HEIGHT });
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
