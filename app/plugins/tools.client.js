@@ -13,4 +13,15 @@ export default defineNuxtPlugin(() => {
       defineAsyncComponent(() => import("@vease/components/tools/CreatePoint.vue")),
     ),
   });
+
+  UIStore.registerToolComponent({
+    id: "Curve",
+    title: "Curve",
+    description: "Create a curve object by picking points on the viewer.",
+    iconType: "mdi",
+    iconSource: "mdi-vector-polyline",
+    component: markRaw(
+      defineAsyncComponent(() => import("@vease/components/tools/CreateCurve.vue")),
+    ),
+  });
 });
