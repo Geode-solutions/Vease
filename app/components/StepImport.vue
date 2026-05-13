@@ -44,9 +44,7 @@ const stepper_tree = reactive({
           show_overlay: false,
         },
       },
-      chips: computed(() =>
-        files.value.map((file) => file.displayName || file.name),
-      ),
+      chips: computed(() => files.value.map((file) => file.name)),
     },
     {
       step_title: "Confirm data type",
@@ -56,7 +54,9 @@ const stepper_tree = reactive({
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
-      chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
+      chips: computed(() =>
+        geode_object_type.value === "" ? [] : [geode_object_type.value],
+      ),
     },
     {
       step_title: "Add additional files",
@@ -65,7 +65,6 @@ const stepper_tree = reactive({
         component_options: {
           multiple: true,
           geode_object_type,
-          files,
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
@@ -82,7 +81,9 @@ const stepper_tree = reactive({
       },
       chips: computed(() => {
         const output_params = [geode_object_type.value, additional_files.value];
-        return output_params.filter((val) => val !== "" && (!Array.isArray(val) || val.length > 0));
+        return output_params.filter(
+          (val) => val !== "" && (!Array.isArray(val) || val.length > 0),
+        );
       }),
     },
   ],
