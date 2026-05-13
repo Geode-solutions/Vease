@@ -44,9 +44,7 @@ const stepper_tree = reactive({
           show_overlay: false,
         },
       },
-      chips: computed(() =>
-        files.value.map((file) => file.displayName || file.name),
-      ),
+      chips: computed(() => files.value.map((file) => file.displayName || file.name)),
     },
     {
       step_title: "Confirm data type",
