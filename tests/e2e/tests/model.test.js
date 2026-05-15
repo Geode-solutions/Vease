@@ -88,6 +88,7 @@ test("object tree model components", async () => {
     .filter({ hasText: "test" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
+  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
@@ -106,23 +107,16 @@ test("object tree model components", async () => {
   await SurfacesRow.locator(".mdi-menu-right").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  const surfaceIds = [
-    "00000000-8afd-4969-8000-000092a43747",
-    "00000000-1702-4d26-8000-000004d7ea39",
-    "00000000-6732-4f29-8000-00002f66bc93",
-    "00000000-cddf-4c1c-8000-00005ebbcaeb",
-    "00000000-dc1c-420d-8000-000070dcfff5",
-    "00000000-dcfe-400a-8000-0000a72c4f30",
-  ];
+  const surfaceLeafRows = modelComponentsObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: "00000000-" });
 
-  for (const surfaceId of surfaceIds) {
-    console.log(`Unchecking surface: ${surfaceId}`);
-    const surfaceRow = modelComponentsObjectTree
-      .locator(".tree-row-wrapper")
-      .filter({ hasText: surfaceId })
-      .first();
+  const surfaceCount = await surfaceLeafRows.count();
+  console.log(`Found ${surfaceCount} surface leaf rows to uncheck`);
+  for (let i = 0; i < surfaceCount; i += 1) {
+    console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceRow.locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
