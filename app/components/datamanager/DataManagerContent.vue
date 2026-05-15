@@ -41,9 +41,7 @@ const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
 function toggleSelection(item) {
-  const index = selectedIds.value.findIndex(
-    (selected) => selected.id === item.id,
-  );
+  const index = selectedIds.value.findIndex((selected) => selected.id === item.id);
   if (index === -1) {
     selectedIds.value.push(item);
   } else {
@@ -57,12 +55,7 @@ async function toggleVisibility(item) {
   await dataStyleStore.setVisibility(item.id, newVisible, item);
   item.visible = newVisible;
   if (newVisible) {
-    await treeviewStore.addItem(
-      item.geode_object_type,
-      item.name,
-      item.id,
-      item.viewer_type,
-    );
+    await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
   } else {
     treeviewStore.removeItem(item.id);
   }
@@ -130,9 +123,7 @@ async function executeDelete() {
   await hybridViewerStore.removeItem(itemToDelete.value.id);
   treeviewStore.removeItem(itemToDelete.value.id);
   items.value = items.value.filter((i) => i.id !== itemToDelete.value.id);
-  selectedIds.value = selectedIds.value.filter(
-    (selected) => selected.id !== itemToDelete.value.id,
-  );
+  selectedIds.value = selectedIds.value.filter((selected) => selected.id !== itemToDelete.value.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
 }
@@ -169,10 +160,7 @@ whenever(del, () => {
 });
 
 useEventListener(document, "keydown", (event) => {
-  if (
-    (event.ctrlKey || event.metaKey) &&
-    (event.key === "k" || event.key === "K")
-  ) {
+  if ((event.ctrlKey || event.metaKey) && (event.key === "k" || event.key === "K")) {
     event.preventDefault();
     headerRef.value?.focusSearch();
   }
@@ -190,10 +178,7 @@ useEventListener(document, "keydown", (event) => {
     theme="dark"
   >
     <v-row no-gutters class="fill-height w-100" style="min-height: 0">
-      <v-col
-        class="d-flex flex-column fill-height overflow-hidden"
-        style="min-height: 0"
-      >
+      <v-col class="d-flex flex-column fill-height overflow-hidden" style="min-height: 0">
         <DataManagerHeader
           v-model:search-value="search"
           v-model:active-tab="activeTab"
@@ -206,10 +191,7 @@ useEventListener(document, "keydown", (event) => {
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
           <v-window-item
             value="data"
-            :class="[
-              'fill-height overflow-hidden',
-              compact ? 'px-0 py-2' : 'px-0 py-6',
-            ]"
+            :class="['fill-height overflow-hidden', compact ? 'px-0 py-2' : 'px-0 py-6']"
           >
             <DataTable
               v-if="viewMode === 'list'"
@@ -231,21 +213,13 @@ useEventListener(document, "keydown", (event) => {
             :value="tab.id"
             class="fill-height overflow-y-auto overflow-x-hidden pa-4"
           >
-            <component
-              :is="tab.component"
-              v-bind="tab.props"
-              :search="search"
-            />
+            <component :is="tab.component" v-bind="tab.props" :search="search" />
           </v-window-item>
         </v-window>
       </v-col>
     </v-row>
 
-    <DeleteDialog
-      v-model:show="deleteSingleDialog"
-      :item="itemToDelete"
-      @confirm="executeDelete"
-    />
+    <DeleteDialog v-model:show="deleteSingleDialog" :item="itemToDelete" @confirm="executeDelete" />
 
     <DeleteDialog
       v-model:show="deleteSelectedDialog"
@@ -260,12 +234,9 @@ useEventListener(document, "keydown", (event) => {
       @confirm="confirmRename"
     />
 
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      location="bottom right"
-      >{{ snackbar.text }}</v-snackbar
-    >
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="bottom right">{{
+      snackbar.text
+    }}</v-snackbar>
   </v-container>
 </template>
 
