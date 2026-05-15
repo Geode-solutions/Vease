@@ -80,13 +80,7 @@ async function confirmRename(newName) {
     await dataStore.updateItem(itemToRename.value.id, {
       name: newName,
     });
-    treeviewStore.removeItem(itemToRename.value.id);
-    await treeviewStore.addItem(
-      itemToRename.value.geode_object_type,
-      newName,
-      itemToRename.value.id,
-      itemToRename.value.viewer_type,
-    );
+    treeviewStore.renameItem(itemToRename.value.id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
