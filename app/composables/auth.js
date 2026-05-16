@@ -1,19 +1,19 @@
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
 
-export function useAuth() {
+function useAuth() {
   const auth = useFirebaseAuth();
   const user = useCurrentUser();
 
   async function register(email, password) {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
-    await sendEmailVerification(newUser);
+    await $fetch(
+      "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api/auth/send-verification",
+      {
+        method: "POST",
+        body: { email },
+      },
+    );
     await signOut(auth);
     return newUser;
   }
@@ -32,9 +32,17 @@ export function useAuth() {
     signOut(auth);
   }
 
-  function resetPassword(email) {
-    return sendPasswordResetEmail(auth, email);
-  }
-
   return { user, register, login, logout, resetPassword };
 }
+
+function resetPassword(email) {
+  return $fetch(
+    "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api/auth/send-password-reset",
+    {
+      method: "POST",
+      body: { email },
+    },
+  );
+}
+
+export { useAuth, resetPassword };

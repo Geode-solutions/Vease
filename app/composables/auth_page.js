@@ -1,4 +1,4 @@
-import { useAuth } from "@vease/composables/auth";
+import { resetPassword, useAuth } from "@vease/composables/auth";
 
 function getFriendlyErrorMessage(error) {
   const code = String(error.code || "").toLowerCase();
@@ -34,8 +34,9 @@ function getFriendlyErrorMessage(error) {
   return error.message || "An error occurred. Please try again.";
 }
 
+// oxlint-disable-next-line max-lines-per-function
 export function useAuthPage() {
-  const { login, register, resetPassword } = useAuth();
+  const { login, register } = useAuth();
   const router = useRouter();
 
   const isLogin = ref(true);
