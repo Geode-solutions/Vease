@@ -23,9 +23,7 @@ ipcMain.handle("project_folder_path", (_event, args) => {
 });
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
-app.whenReady().then(async function onReady() {
-  await create_new_window();
-});
+app.whenReady().then(() => create_new_window());
 
 let cleaned = false;
 
@@ -36,7 +34,7 @@ async function clean_up() {
   console.log("end clean");
 }
 
-app.on("before-quit", async function onBeforeQuit(event) {
+app.on("before-quit", async (event) => {
   if (!cleaned) {
     event.preventDefault();
     try {

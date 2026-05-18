@@ -93,7 +93,7 @@ async function create_new_window() {
 
   win.webContents.session.clearStorageData();
   win.webContents.session.clearData(["cache"]);
-  win.webContents.session.clearCache(function afterClear() {
+  win.webContents.session.clearCache(() => {
     console.log("Vease cache cleared!");
   });
 
