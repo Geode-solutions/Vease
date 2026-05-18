@@ -1,11 +1,10 @@
 <script setup>
+import { exportProject, importProject } from "@ogw_front/composables/project_manager";
 import GlassCard from "@ogw_front/components/GlassCard";
 import logo from "@vease/assets/img/logo.png";
-import { useProjectManager } from "@ogw_front/composables/project_manager";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
-const { importProjectFile, exportProject } = useProjectManager();
 
 const importFileInput = ref(undefined);
 
@@ -22,7 +21,7 @@ function onImportFileSelected(event) {
     event.target.value = "";
     return;
   }
-  importProjectFile(file);
+  importProject(file);
   event.target.value = "";
 }
 </script>
