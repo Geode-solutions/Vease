@@ -13,15 +13,15 @@ function triggerImport() {
 }
 
 function onImportFileSelected(event) {
-  const file = event.target.files?.[0];
-  if (!file) {
+  const project = event.target.files?.[0];
+  if (!project) {
     return;
   }
-  if (!file.name.toLowerCase().endsWith(".vease")) {
+  if (!project.name.toLowerCase().endsWith(".vease")) {
     event.target.value = "";
     return;
   }
-  importProject(file);
+  importProject(project);
   event.target.value = "";
 }
 </script>
