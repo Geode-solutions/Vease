@@ -10,10 +10,7 @@ const emit = defineEmits(["click"]);
 </script>
 
 <template>
-  <v-tooltip
-    :text="active ? 'Exit pick mode (Esc)' : 'Pick points from viewer'"
-    location="bottom"
-  >
+  <v-tooltip :text="active ? 'Exit pick mode (Esc)' : 'Pick points from viewer'" location="bottom">
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
