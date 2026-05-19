@@ -197,26 +197,26 @@ async function createSurface() {
           </div>
 
           <v-row dense>
-            <v-col v-for="f in ['x', 'y', 'z']" :key="f" cols="4">
+            <v-col v-for="coord in ['x', 'y', 'z']" :key="coord" cols="4">
               <v-text-field
-                v-model="point[f]"
+                v-model="point[coord]"
                 inputmode="decimal"
                 variant="outlined"
                 color="white"
                 density="comfortable"
-                :rules="[(v) => !!v || `${f.toUpperCase()} is required`]"
+                :rules="[(v) => !!v || `${coord.toUpperCase()} is required`]"
                 class="rounded-lg"
                 theme="dark"
                 base-color="white"
                 bg-color="rgba(255, 255, 255, 0.15)"
-                @paste="handlePaste($event, index, f)"
-                @update:modelValue="(v) => sanitizeInput(v, index, f)"
+                @paste="handlePaste($event, index, coord)"
+                @update:modelValue="(v) => sanitizeInput(v, index, coord)"
               >
                 <template #label
-                  ><span class="text-white">{{ f.toUpperCase() }}</span></template
+                  ><span class="text-white">{{ coord.toUpperCase() }}</span></template
                 >
                 <template #prepend-inner
-                  ><v-icon color="white">mdi-axis-{{ f }}-arrow</v-icon></template
+                  ><v-icon color="white">mdi-axis-{{ coord }}-arrow</v-icon></template
                 >
               </v-text-field>
             </v-col>
