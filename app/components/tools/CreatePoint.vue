@@ -5,6 +5,7 @@ import { useGeodeStore } from "@ogw_front/stores/geode";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 const UIStore = useUIStore();
 const geodeStore = useGeodeStore();
@@ -84,18 +85,38 @@ onKeyStroke("Escape", () => {
   }
 });
 
-onUnmounted(() => {
-  if (viewerStore.picking_mode) {
-    viewerStore.toggle_picking_mode(false);
-  }
-});
-
 const loading = ref(false);
 const validPoints = computed(() =>
   points.value.filter((point) => point.x !== "" && point.y !== "" && point.z !== ""),
 );
 const hasValidPoint = computed(() => validPoints.value.length > 0);
 const validPointCount = computed(() => validPoints.value.length);
+
+watch(
+  validPoints,
+  async (newValidPoints) => {
+    const formattedPoints = newValidPoints.map((point) => ({
+      x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
+      y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
+      z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+    }));
+    await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+      points: formattedPoints,
+      style: "points",
+    });
+  },
+  { deep: true, immediate: true },
+);
+
+onUnmounted(async () => {
+  if (viewerStore.picking_mode) {
+    viewerStore.toggle_picking_mode(false);
+  }
+  await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+    points: [],
+    style: "points",
+  });
+});
 
 function sanitizeInput(value, index, field) {
   const val = String(value)
