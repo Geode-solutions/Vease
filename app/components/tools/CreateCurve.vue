@@ -198,11 +198,14 @@ async function createCurve() {
       Create Curve
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 pb-1 text-caption text-white opacity-70">
+    <v-card-subtitle
+      class="ma-0 pb-1 text-caption text-white opacity-70 text-wrap"
+      style="line-height: 1.2"
+    >
       Pick at least 2 points to create a curve.
     </v-card-subtitle>
 
-    <v-card-text class="pt-3 flex-grow-1 overflow-y-auto">
+    <v-card-text class="pt-5 flex-grow-1 overflow-y-auto">
       <v-text-field
         v-model="curveName"
         label="Curve Name"

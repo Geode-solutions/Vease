@@ -173,11 +173,14 @@ async function createAllPoints() {
       Create Point{{ points.length > 1 ? "s" : "" }}
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 pb-1 text-caption text-white opacity-70">
+    <v-card-subtitle
+      class="ma-0 pb-1 text-caption text-white opacity-70 text-wrap"
+      style="line-height: 1.2"
+    >
       Enter coordinates, use + to add rows, or enable pick mode.
     </v-card-subtitle>
 
-    <v-card-text class="pt-3 flex-grow-1 overflow-y-auto">
+    <v-card-text class="pt-5 flex-grow-1 overflow-y-auto">
       <v-text-field
         v-model="setName"
         label="Point Set Name"
