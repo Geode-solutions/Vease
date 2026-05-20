@@ -1,6 +1,6 @@
-export function transformExtensionCode(code) {
+function transformCoreImports(code) {
   let transformedCode = code.replaceAll(
-    /from\s+["']vue["']/g,
+    /from\s+["']vue["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const Vue = globalThis.Vue;
       export default Vue;
@@ -11,7 +11,7 @@ export function transformExtensionCode(code) {
   );
 
   transformedCode = transformedCode.replaceAll(
-    /from\s+["']pinia["']/g,
+    /from\s+["']pinia["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const Pinia = globalThis.Pinia;
       export default Pinia;
@@ -20,19 +20,20 @@ export function transformExtensionCode(code) {
         .join("")}
     `)}"`,
   );
+  return transformedCode;
+}
 
-  // Transform @ogw_front/app/stores/app.js specifically
-  transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/app\/stores\/app\.js["']/g,
+function transformStoreImports(code) {
+  let transformedCode = code.replaceAll(
+    /from\s+["']@ogw_front\/app\/stores\/app\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
         export const useAppStore = globalThis.__VEASE_STORES__.useAppStore;
         export default useAppStore;
       `)}"`,
   );
 
-  // Transform @ogw_front/app/stores/* imports (generic pattern)
   transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/g,
+    /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/gu,
     (match, storePath) => {
       const storeName = storePath.replace(".js", "");
       const capitalizedName = storeName.charAt(0).toUpperCase() + storeName.slice(1);
@@ -42,55 +43,65 @@ export function transformExtensionCode(code) {
       `)}"`;
     },
   );
+  return transformedCode;
+}
 
-  // Transform @ogw_front/app/utils/status.js
-  transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/app\/utils\/status\.js["']/g,
+function transformUtilImports(code) {
+  let transformedCode = code.replaceAll(
+    /from\s+["']@ogw_front\/app\/utils\/status\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const Status = window.__VEASE_UTILS__.Status;
       export { Status };
     `)}"`,
   );
 
-  // Transform @ogw_front/app/utils/local/app_mode.js
   transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/app\/utils\/local\/app_mode\.js["']/g,
+    /from\s+["']@ogw_front\/app\/utils\/local\/app_mode\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       export const appMode = globalThis.__VEASE_UTILS__.appMode;
     `)}"`,
   );
 
-  // Transform @ogw_front/internal/utils/api_fetch.js (actual path in OpenGeodeWeb-Front)
   transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/internal\/utils\/api_fetch\.js["']/g,
+    /from\s+["']@ogw_front\/internal\/utils\/api_fetch\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       export const api_fetch = globalThis.__VEASE_UTILS__.api_fetch;
     `)}"`,
   );
+  return transformedCode;
+}
 
-  // Transform @geode/vease-modeling-back/vease_modeling_back_schemas.json
-  transformedCode = transformedCode.replaceAll(
-    /from\s+["']@geode\/vease-modeling-back\/vease_modeling_back_schemas\.json["']/g,
+function transformSchemaImports(code) {
+  return code.replaceAll(
+    /from\s+["']@geode\/vease-modeling-back\/vease_modeling_back_schemas\.json["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const schemas = globalThis.__VEASE_SCHEMAS__.vease_modeling_back;
       export default schemas;
     `)}"`,
   );
+}
 
-  // Replace direct function calls to use window globals
-  // This handles cases where functions are externalized and called without imports
-  transformedCode = transformedCode.replaceAll(
-    /\buseInfraStore\(/g,
+function transformGlobalFunctionCalls(code) {
+  let transformedCode = code.replaceAll(
+    /\buseInfraStore\(/gu,
     "globalThis.__VEASE_STORES__.useInfraStore(",
   );
   transformedCode = transformedCode.replaceAll(
-    /\buseAppStore\(/g,
+    /\buseAppStore\(/gu,
     "globalThis.__VEASE_STORES__.useAppStore(",
   );
   transformedCode = transformedCode.replaceAll(
-    /\buseFeedbackStore\(/g,
+    /\buseFeedbackStore\(/gu,
     "globalThis.__VEASE_STORES__.useFeedbackStore(",
   );
+  return transformedCode;
+}
 
+export function transformExtensionCode(code) {
+  let transformedCode = transformCoreImports(code);
+  transformedCode = transformStoreImports(transformedCode);
+  transformedCode = transformUtilImports(transformedCode);
+  transformedCode = transformSchemaImports(transformedCode);
+  transformedCode = transformGlobalFunctionCalls(transformedCode);
   return transformedCode;
 }

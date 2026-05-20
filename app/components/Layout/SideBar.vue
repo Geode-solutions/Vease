@@ -1,11 +1,13 @@
 <script setup>
+import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 
+const { user, logout } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);
 
-const items = ref([
+const topPages = ref([
   {
     title: "Viewer",
     icon: "mdi-rotate-orbit",
@@ -18,6 +20,32 @@ const items = ref([
   },
 ]);
 
+const bottomPages = computed(() => {
+  const pages = [];
+
+  if (user.value) {
+    pages.push({
+      title: "Account",
+      icon: "mdi-account-outline",
+      click: () => navigateTo("/account"),
+    });
+  } else {
+    pages.push({
+      title: "Login",
+      icon: "mdi-account-key-outline",
+      click: () => navigateTo("/login"),
+    });
+  }
+
+  pages.push({
+    title: "Infos",
+    icon: "mdi-information-outline",
+    click: () => navigateTo("/infos"),
+  });
+
+  return pages;
+});
+
 let draggedItem = undefined;
 
 function startDrag(event, item) {
@@ -26,13 +54,13 @@ function startDrag(event, item) {
 }
 
 function onDrop(event, dropIndex) {
-  const dragIndex = items.value.indexOf(draggedItem);
+  const dragIndex = topPages.value.indexOf(draggedItem);
   if (dragIndex === dropIndex) {
     return;
   }
 
-  items.value.splice(dragIndex, 1);
-  items.value.splice(dropIndex, 0, draggedItem);
+  topPages.value.splice(dragIndex, 1);
+  topPages.value.splice(dropIndex, 0, draggedItem);
   draggedItem = undefined;
 }
 </script>
@@ -52,7 +80,7 @@ function onDrop(event, dropIndex) {
       style="width: 100%"
       @mousedown.stop
     >
-      <div v-for="(item, index) in items" :key="index" class="mb-3">
+      <div v-for="(item, index) in topPages" :key="index" class="mb-3">
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -76,21 +104,24 @@ function onDrop(event, dropIndex) {
 
       <v-spacer />
 
-      <v-tooltip text="Infos" location="right">
-        <template v-slot:activator="{ props }">
-          <v-btn
-            v-bind="props"
-            flat
-            color="transparent"
-            @click="navigateTo('/infos')"
-            class="icon-style pa-2"
-            width="48"
-            height="48"
-          >
-            <v-icon icon="mdi-information-outline" color="white" size="28" />
-          </v-btn>
-        </template>
-      </v-tooltip>
+      <div v-for="(item, index) in bottomPages" :key="index" class="mb-3">
+        <v-tooltip :text="item.title" location="right">
+          <template v-slot:activator="{ props }">
+            <v-btn
+              v-bind="props"
+              flat
+              color="transparent"
+              @click="item.click"
+              class="icon-style pa-2 rounded-lg"
+              width="48"
+              height="48"
+              draggable="false"
+            >
+              <v-icon :icon="item.icon" color="white" size="28" />
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
@@ -102,6 +133,7 @@ function onDrop(event, dropIndex) {
 
 .icon-style:hover {
   transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 

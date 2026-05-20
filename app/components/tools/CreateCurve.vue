@@ -11,26 +11,26 @@ const geodeStore = useGeodeStore();
 const hybridViewerStore = useHybridViewerStore();
 const viewerStore = useViewerStore();
 
-let pointCounter = 0;
+let curveCounter = 0;
 const pickingActive = ref(false);
 
 function generateName() {
-  pointCounter += 1;
-  return pointCounter === 1 ? "New PointSet" : `New PointSet ${pointCounter}`;
+  curveCounter += 1;
+  return curveCounter === 1 ? "New Curve" : `New Curve ${curveCounter}`;
 }
 
-const setName = ref(generateName());
+const curveName = ref(generateName());
 function createEmptyPoint() {
   return { x: "", y: "", z: "" };
 }
-const points = ref([createEmptyPoint()]);
+const points = ref([createEmptyPoint(), createEmptyPoint()]);
 
 function addPoint() {
   points.value.push(createEmptyPoint());
 }
 
 function removePoint(index) {
-  if (points.value.length > 1) {
+  if (points.value.length > 2) {
     points.value.splice(index, 1);
   }
 }
@@ -44,9 +44,9 @@ function handleClose() {
   if (pickingActive.value) {
     viewerStore.toggle_picking_mode(false);
   }
-  pointCounter = 0;
-  setName.value = generateName();
-  points.value = [createEmptyPoint()];
+  curveCounter = 0;
+  curveName.value = generateName();
+  points.value = [createEmptyPoint(), createEmptyPoint()];
   UIStore.setShowCreateTools(false);
 }
 
@@ -56,16 +56,17 @@ watch(
     if (!pickingActive.value || newVal.x === undefined || newVal.y === undefined) {
       return;
     }
-    const point = {
+    const new_point = {
       x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
       y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
       z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
     };
 
-    if (points.value.length === 1 && points.value[0].x === "") {
-      points.value[0] = point;
+    const firstEmpty = points.value.findIndex((point) => point.x === "");
+    if (firstEmpty === -1) {
+      points.value.push(new_point);
     } else {
-      points.value.push(point);
+      points.value[firstEmpty] = new_point;
     }
   },
   { deep: true },
@@ -73,9 +74,7 @@ watch(
 
 watch(
   () => viewerStore.picking_mode,
-  (newVal) => {
-    pickingActive.value = newVal;
-  },
+  (newVal) => (pickingActive.value = newVal),
 );
 
 onKeyStroke("Escape", () => {
@@ -94,7 +93,7 @@ const loading = ref(false);
 const validPoints = computed(() =>
   points.value.filter((point) => point.x !== "" && point.y !== "" && point.z !== ""),
 );
-const hasValidPoint = computed(() => validPoints.value.length > 0);
+const hasValidCurve = computed(() => validPoints.value.length >= 2);
 const validPointCount = computed(() => validPoints.value.length);
 
 function sanitizeInput(value, index, field) {
@@ -121,20 +120,24 @@ function handlePaste(event, index, field) {
   event.preventDefault();
 }
 
-async function createAllPoints() {
-  if (validPoints.value.length === 0) {
+async function createCurve() {
+  if (validPoints.value.length < 2) {
     return;
   }
-  const schema = back_schemas.opengeodeweb_back.create.point_set;
+  const schema = back_schemas.opengeodeweb_back.create.edged_curve;
   loading.value = true;
+
+  const edges = validPoints.value.slice(0, -1).map((_, i) => [i, i + 1]);
+
   try {
     const resp = await geodeStore.request(schema, {
-      name: setName.value,
+      name: curveName.value,
       points: validPoints.value.map((point) => ({
         x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
         y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
         z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
       })),
+      edges,
     });
     await importItem({ ...resp });
     await hybridViewerStore.remoteRender();
@@ -148,18 +151,18 @@ async function createAllPoints() {
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
     <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-circle-medium" class="mr-3 text-h4" color="secondary" />
-      Create Point{{ points.length > 1 ? "s" : "" }}
+      <v-icon icon="mdi-vector-polyline" class="mr-3 text-h4" color="secondary" />
+      Create Curve
     </v-card-title>
 
     <v-card-subtitle class="ma-0 pb-2 text-white opacity-80">
-      Enter coordinates, use + to add rows, or enable pick mode.
+      Pick at least 2 points to create a curve.
     </v-card-subtitle>
 
     <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
       <v-text-field
-        v-model="setName"
-        label="Point Set Name"
+        v-model="curveName"
+        label="Curve Name"
         variant="outlined"
         color="white"
         theme="dark"
@@ -186,7 +189,7 @@ async function createAllPoints() {
               size="x-small"
               variant="text"
               color="white"
-              :disabled="points.length === 1"
+              :disabled="points.length <= 2"
               @click="removePoint(index)"
             >
               <v-icon size="16">mdi-close</v-icon>
@@ -276,13 +279,13 @@ async function createAllPoints() {
         size="large"
         variant="flat"
         :loading="loading"
-        :disabled="!hasValidPoint"
+        :disabled="!hasValidCurve"
         class="text-none rounded-lg font-weight-bold"
         elevation="4"
-        @click="createAllPoints"
+        @click="createCurve"
       >
         <v-icon start>mdi-send</v-icon>
-        Create {{ validPointCount > 1 ? `${validPointCount} Points` : "Point" }}
+        Create Curve ({{ validPointCount }} pts)
       </v-btn>
     </v-card-actions>
   </v-card>

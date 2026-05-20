@@ -5,12 +5,14 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import Extension from "@vease/components/Extension";
 import GlassCard from "@ogw_front/components/GlassCard";
 import StepImport from "@vease/components/StepImport";
+import { useViewerStore } from "@ogw_front/stores/viewer";
 
 const { uiStore } = defineProps({
   uiStore: { type: Object, required: true },
 });
 
 const emit = defineEmits(["files-dropped"]);
+const viewerStore = useViewerStore();
 
 function closeAllDrawers() {
   uiStore.setShowStepper(false);
@@ -18,42 +20,44 @@ function closeAllDrawers() {
   uiStore.setShowExtensions(false);
 }
 
+const anyDrawerOpen = computed(
+  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions,
+);
+const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
+
 function handleFilesDropped(files) {
   emit("files-dropped", files);
 }
 </script>
 
 <template>
-  <v-fade-transition>
-    <div
-      v-if="uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions"
-      class="drawer-overlay"
-      @click="closeAllDrawers"
-    />
-  </v-fade-transition>
+  <div
+    v-if="anyDrawerOpen"
+    v-show="!viewerStore.picking_mode"
+    class="drawer-overlay"
+    @click="closeAllDrawers"
+  />
 
-  <v-fade-transition>
-    <v-card
-      v-if="uiStore.showStepper || uiStore.showCreateTools"
-      color="transparent"
-      elevation="0"
-      :width="548"
-      class="drawer-container right-0"
+  <v-card
+    v-if="showRightDrawer"
+    color="transparent"
+    elevation="0"
+    :width="548"
+    class="drawer-container right-0"
+  >
+    <GlassCard
+      variant="panel"
+      padding="pa-0"
+      class="fill-height overflow-hidden border-0 d-flex flex-column"
     >
-      <GlassCard
-        variant="panel"
-        padding="pa-0"
-        class="fill-height overflow-hidden border-0 d-flex flex-column"
-      >
-        <StepImport
-          v-if="uiStore.showStepper"
-          :files="uiStore.droppedFiles"
-          @close="uiStore.setShowStepper(false)"
-        />
-        <CreateTools v-if="uiStore.showCreateTools" />
-      </GlassCard>
-    </v-card>
-  </v-fade-transition>
+      <StepImport
+        v-if="uiStore.showStepper"
+        :files="uiStore.droppedFiles"
+        @close="uiStore.setShowStepper(false)"
+      />
+      <CreateTools v-if="uiStore.showCreateTools" />
+    </GlassCard>
+  </v-card>
 
   <v-fade-transition>
     <v-card
@@ -84,7 +88,6 @@ function handleFilesDropped(files) {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
   z-index: 98;
   will-change: backdrop-filter;
   transform: translateZ(0);
