@@ -13,14 +13,27 @@ const confirmPassword = defineModel("confirmPassword");
 const emit = defineEmits(["submit", "toggle-mode", "forgot-password"]);
 
 const passwordVisible = ref(false);
+
+const emailRules = [
+  (val) => Boolean(val) || "Email is required",
+  (val) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(val) || "E-mail must be valid",
+];
+
+async function handleSubmit(event) {
+  const { valid } = await event;
+  if (valid) {
+    emit("submit");
+  }
+}
 </script>
 
 <template>
-  <v-form @submit.prevent="emit('submit')">
+  <v-form @submit.prevent="handleSubmit">
     <v-text-field
       v-model="email"
       label="Email Address"
       type="email"
+      :rules="emailRules"
       variant="outlined"
       prepend-inner-icon="mdi-email-outline"
       required
