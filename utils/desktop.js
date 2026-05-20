@@ -40,6 +40,18 @@ async function create_new_window() {
     return { action: "deny" };
   });
 
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    const responseHeaders = { ...details.responseHeaders };
+    if ((!"Access-Control-Allow-Origin") in details.responseHeaders) {
+      responseHeaders["Access-Control-Allow-Origin"] = ["*"];
+      responseHeaders["Access-Control-Allow-Methods"] = ["*"];
+      responseHeaders["Access-Control-Allow-Headers"] = ["*"];
+    }
+    callback({
+      responseHeaders,
+    });
+  });
+
   console.log("app.isPackaged", app.isPackaged);
   if (app.isPackaged) {
     const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
