@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { beforeAllTimeout, loadData, navigateToApp, viewerContextMenu } from "@tests/utils.js";
+import { beforeAllTimeout, loadData, navigateToApp, pointsVisibility, viewerContextMenu } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -29,5 +29,11 @@ test("viewer context menu", async () => {
   const x = 549,
     y = 210;
   await viewerContextMenu(window, x, y);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points visibility", async () => {
+  const viewerObjectType = "mesh", visibility = false;
+  await pointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
