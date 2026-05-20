@@ -40,7 +40,8 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh", visibility = true;
+  const viewerObjectType = "mesh",
+    visibility = true;
   await pointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });

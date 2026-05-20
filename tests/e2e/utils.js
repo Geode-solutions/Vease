@@ -151,9 +151,10 @@ async function viewerContextMenu(window, x, y) {
 }
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
-  let menuTestId = undefined, switchTestId = undefined;
+  let menuTestId = undefined,
+    switchTestId = undefined;
   if (viewerObjectType === "model") {
-    menuTestId = "modelPointsMenu"
+    menuTestId = "modelPointsMenu";
     switchTestId = "modelPointsVisibilitySwitch";
   } else if (viewerObjectType === "mesh") {
     menuTestId = "meshPointsMenu";
@@ -164,11 +165,16 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
 
   const pointsMenuButton = await window.getByTestId(menuTestId);
   await pointsMenuButton.click();
-  const pointsVisibilitySwitch = await window
-    .getByTestId(switchTestId)
-    .getByRole("checkbox");
+  const pointsVisibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
   await pointsVisibilitySwitch[visibility ? "check" : "uncheck"]();
   await window.waitForTimeout(afterActionWait);
 }
 
-export { afterActionWait, beforeAllTimeout, loadData, navigateToApp, pointsVisibility, viewerContextMenu };
+export {
+  afterActionWait,
+  beforeAllTimeout,
+  loadData,
+  navigateToApp,
+  pointsVisibility,
+  viewerContextMenu,
+};
