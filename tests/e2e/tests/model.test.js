@@ -9,6 +9,7 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
+  pointsVisibility,
   viewerContextMenu,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
@@ -39,14 +40,9 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const brepPointsMenuButton = await window.getByTestId("modelPointsMenu");
-  console.log("Toggle BRep points visibility", brepPointsMenuButton);
-  await brepPointsMenuButton.click();
-  const modelPointsVisibilitySwitch = await window
-    .getByTestId("modelPointsVisibilitySwitch")
-    .getByRole("checkbox");
-  await modelPointsVisibilitySwitch.check();
-  await window.waitForTimeout(afterActionWait);
+  const viewerObjectType = "model",
+    visibility = true;
+  await pointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
