@@ -42,7 +42,7 @@ function handleFilesDropped(files) {
     v-if="showRightDrawer"
     color="transparent"
     elevation="0"
-    :width="548"
+    :width="380"
     class="drawer-container right-0"
   >
     <GlassCard
@@ -64,7 +64,7 @@ function handleFilesDropped(files) {
       v-if="uiStore.showExtensions"
       color="transparent"
       elevation="0"
-      :width="548"
+      :width="380"
       class="drawer-container left-0"
       style="z-index: 9999"
     >
