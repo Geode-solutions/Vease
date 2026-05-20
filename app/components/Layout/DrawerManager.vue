@@ -42,7 +42,7 @@ function handleFilesDropped(files) {
     v-if="showRightDrawer"
     color="transparent"
     elevation="0"
-    :width="380"
+    :width="uiStore.showStepper ? 548 : 380"
     class="drawer-container right-0"
   >
     <GlassCard
@@ -105,5 +105,6 @@ function handleFilesDropped(files) {
   isolation: isolate;
   backface-visibility: hidden;
   transform: translateZ(0);
+  /* transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1); */
 }
 </style>
