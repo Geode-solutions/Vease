@@ -202,7 +202,7 @@ async function createCurve() {
       Pick at least 2 points to create a curve.
     </v-card-subtitle>
 
-    <v-card-text class="pt-1 flex-grow-1 overflow-y-auto">
+    <v-card-text class="pt-3 flex-grow-1 overflow-y-auto">
       <v-text-field
         v-model="curveName"
         label="Curve Name"
