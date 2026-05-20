@@ -1,9 +1,14 @@
 <script setup>
 import { useExtensions } from "@vease/composables/extensions";
 
-useExtensions();
+const { allowedExtensions } = useExtensions();
+const extensions = await allowedExtensions();
 </script>
 
 <template>
-  <p>Extensions</p>
+  <div v-for="extension in extensions">
+    <p>{{ extension.id }}</p>
+    <p>{{ extension.version }}</p>
+    <p>{{ extension.readme }}</p>
+  </div>
 </template>
