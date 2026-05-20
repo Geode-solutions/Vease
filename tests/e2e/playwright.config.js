@@ -13,7 +13,7 @@ const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
-const testMatch = "tests/e2e/tests/grid3d.test.js";
+const testMatch = "tests/e2e/tests/**/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
