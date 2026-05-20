@@ -1,5 +1,6 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
+import { emailRules } from "~/utils/validation.js";
 
 const show = defineModel({ type: Boolean, default: false });
 
@@ -10,11 +11,6 @@ const { loading } = defineProps({
 });
 
 const emit = defineEmits(["submit"]);
-
-const emailRules = [
-  (val) => Boolean(val) || "Email is required",
-  (val) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(val) || "E-mail must be valid",
-];
 
 async function handleSubmit(event) {
   const { valid } = await event;

@@ -1,4 +1,6 @@
 <script setup>
+import { emailRules } from "~/utils/validation.js";
+
 const { isLogin, loading } = defineProps({
   isLogin: { type: Boolean, default: true },
   loading: { type: Boolean, default: false },
@@ -13,11 +15,6 @@ const confirmPassword = defineModel("confirmPassword");
 const emit = defineEmits(["submit", "toggle-mode", "forgot-password"]);
 
 const passwordVisible = ref(false);
-
-const emailRules = [
-  (val) => Boolean(val) || "Email is required",
-  (val) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u.test(val) || "E-mail must be valid",
-];
 
 async function handleSubmit(event) {
   const { valid } = await event;
