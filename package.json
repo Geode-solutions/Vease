@@ -28,7 +28,7 @@
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run dev:browser",
     "dev:browser": "cross-env MODE=BROWSER npm run dev:nuxt",
-    "dev:desktop": "npm run dev:nuxt",
+    "dev:desktop": "cross-env MODE=DESKTOP npm run dev:nuxt",
     "dev:nuxt": "npm run clean_cache && npx nuxi dev --no-fork",
     "build:back": "npx opengeodeweb-microservice-pyinstaller ../Vease-Back",
     "build:viewer": "npx opengeodeweb-microservice-pyinstaller ../Vease-Viewer",
