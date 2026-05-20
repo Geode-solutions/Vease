@@ -12,8 +12,11 @@ const geodeStore = useGeodeStore();
 const hybridViewerStore = useHybridViewerStore();
 const viewerStore = useViewerStore();
 
+const DISTANCE_TOLERANCE = 0.005;
+
 let curveCounter = 0;
 const pickingActive = ref(false);
+const closed = ref(false);
 
 function generateName() {
   curveCounter += 1;
@@ -48,6 +51,7 @@ function handleClose() {
   curveCounter = 0;
   curveName.value = generateName();
   points.value = [createEmptyPoint(), createEmptyPoint()];
+  closed.value = false;
   UIStore.setShowCreateTools(false);
 }
 
@@ -62,6 +66,19 @@ watch(
       y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
       z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
     };
+
+    const [firstPoint] = points.value;
+    if (firstPoint && firstPoint.x !== "") {
+      const distance = Math.hypot(
+        new_point.x - firstPoint.x,
+        new_point.y - firstPoint.y,
+        new_point.z - firstPoint.z,
+      );
+      if (distance < DISTANCE_TOLERANCE) {
+        closed.value = true;
+        return;
+      }
+    }
 
     const firstEmpty = points.value.findIndex((point) => point.x === "");
     if (firstEmpty === -1) {
@@ -92,8 +109,8 @@ const hasValidCurve = computed(() => validPoints.value.length >= 2);
 const validPointCount = computed(() => validPoints.value.length);
 
 watch(
-  validPoints,
-  async (newValidPoints) => {
+  [validPoints, closed],
+  async ([newValidPoints, isClosed]) => {
     const formattedPoints = newValidPoints.map((point) => ({
       x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
       y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
@@ -102,6 +119,7 @@ watch(
     await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
       points: formattedPoints,
       style: "curve",
+      closed: isClosed,
     });
   },
   { deep: true, immediate: true },
@@ -114,6 +132,7 @@ onUnmounted(async () => {
   await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
     points: [],
     style: "curve",
+    closed: false,
   });
 });
 
@@ -149,6 +168,9 @@ async function createCurve() {
   loading.value = true;
 
   const edges = validPoints.value.slice(0, -1).map((_, i) => [i, i + 1]);
+  if (closed.value && validPoints.value.length >= 2) {
+    edges.push([validPoints.value.length - 1, 0]);
+  }
 
   try {
     const resp = await geodeStore.request(schema, {
@@ -279,6 +301,17 @@ async function createCurve() {
                 </v-btn>
               </template>
             </v-tooltip>
+          </v-col>
+        </v-row>
+        <v-row dense class="mt-2">
+          <v-col cols="12">
+            <v-checkbox
+              v-model="closed"
+              label="Closed curve"
+              color="secondary"
+              density="compact"
+              hide-details
+            />
           </v-col>
         </v-row>
       </v-form>
