@@ -28,7 +28,7 @@
     "clean_cache": "npx nuxi cleanup",
     "dev": "npm run dev:browser",
     "dev:browser": "cross-env MODE=BROWSER npm run dev:nuxt",
-    "dev:desktop": "npm run dev:nuxt",
+    "dev:desktop": "cross-env MODE=DESKTOP npm run dev:nuxt",
     "dev:nuxt": "npm run clean_cache && npx nuxi dev --no-fork",
     "build:back": "npx opengeodeweb-microservice-pyinstaller ../Vease-Back",
     "build:viewer": "npx opengeodeweb-microservice-pyinstaller ../Vease-Viewer",
@@ -46,7 +46,7 @@
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop",
-    "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots"
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0 npm run test:e2e:browser:chrome -- --update-snapshots"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
