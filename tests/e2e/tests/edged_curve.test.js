@@ -38,6 +38,12 @@ test("viewer context menu", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("points size", async () => {
+  const size = 20, viewerObjectType = "mesh";
+  await pointsSize(window, viewerObjectType, size);
+  await expect(window).toHaveScreenshot();
+});
+
 test("points visibility", async () => {
   const viewerObjectType = "mesh",
     visibility = false;

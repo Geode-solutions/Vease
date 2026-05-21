@@ -150,23 +150,64 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function pointsVisibility(window, viewerObjectType, visibility) {
-  let menuTestId = undefined,
-    switchTestId = undefined;
+async function pointsMenuClick(window, viewerObjectType) {
+  let menuTestId = undefined
   if (viewerObjectType === "model") {
-    menuTestId = "modelPointsMenu";
-    switchTestId = "modelPointsVisibilitySwitch";
+    menuTestId = "modelPointsMenu"
   } else if (viewerObjectType === "mesh") {
     menuTestId = "meshPointsMenu";
-    switchTestId = "meshPointsVisibilitySwitch";
   } else {
     throw new Error(`Unknown viewer object type: ${viewerObjectType}`);
   }
-
   const pointsMenuButton = await window.getByTestId(menuTestId);
   await pointsMenuButton.click();
-  const pointsVisibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
+}
+
+async function getPointsVisibilitySwitch(window, viewerObjectType) {
+  let menuTestId = undefined
+  if (viewerObjectType === "model") {
+    menuTestId = "modelPointsVisibilitySwitch"
+  } else if (viewerObjectType === "mesh") {
+    menuTestId = "meshPointsVisibilitySwitch";
+  } else {
+    throw new Error(`Unknown viewer object type: ${viewerObjectType}`);
+  }
+  const pointsVisibilitySwitch = await window.getByTestId(menuTestId).getByRole("checkbox");
+  return pointsVisibilitySwitch;
+}
+
+async function getPointsSizeSlider(window, viewerObjectType) {
+  let menuTestId = undefined
+  if (viewerObjectType === "model") {
+    menuTestId = "modelPointsSizeSlider"
+  } else if (viewerObjectType === "mesh") {
+    menuTestId = "meshPointsSizeSlider";
+  } else {
+    throw new Error(`Unknown viewer object type: ${viewerObjectType}`);
+  }
+  const pointsSizeSlider = await window.getByTestId(menuTestId);
+  return pointsSizeSlider;
+}
+
+async function setPointsVisibilitySwitchValue(window, switchTestId, visibility) {
+  const pointsVisibilitySwitch = getPointsVisibilitySwitch(window, switchTestId);
   await pointsVisibilitySwitch[visibility ? "check" : "uncheck"]();
+}
+
+async function setPointsSizeSliderValue(window, sliderTestId, size) {
+  const pointsSizeSlider = getPointsSizeSlider(window, sliderTestId);
+  await pointsSizeSlider.setValue(size);
+}
+
+async function setPointsSize(window, viewerObjectType, size) {
+  await pointsMenuClick(window, viewerObjectType)
+  await setPointsSizeSliderValue(window, sliderTestId, size);
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setPointsVisibility(window, viewerObjectType, visibility) {
+  await pointsMenuClick(window, viewerObjectType)
+  await setPointsVisibilitySwitchValue(window, switchTestId, visibility);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -175,6 +216,7 @@ export {
   beforeAllTimeout,
   loadData,
   navigateToApp,
-  pointsVisibility,
+  setPointsSize,
+  setPointsVisibility,
   viewerContextMenu,
 };

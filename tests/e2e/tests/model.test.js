@@ -9,7 +9,8 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
-  pointsVisibility,
+  setPointsSize,
+  setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
@@ -42,7 +43,13 @@ test("viewer context menu", async () => {
 test("points visibility", async () => {
   const viewerObjectType = "model",
     visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, viewerObjectType, visibility);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points size", async () => {
+  const size = 20, viewerObjectType = "model";
+  await setPointsSize(window, viewerObjectType, size);
   await expect(window).toHaveScreenshot();
 });
 
