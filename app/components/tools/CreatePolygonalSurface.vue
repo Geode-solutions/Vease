@@ -1,19 +1,14 @@
 <script setup>
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import { ref } from "vue";
 import { useCreateObjectTool } from "@vease/composables/create_object";
 
-const DISTANCE_TOLERANCE = 0.005;
-
-const closed = ref(false);
-
 const {
-  name: curveName,
+  name: surfaceName,
   points,
   pickingActive,
   loading,
-  hasValidPoints: hasValidCurve,
+  hasValidPoints: hasValidSurface,
   validPointCount,
   addPoint,
   removePoint,
@@ -21,57 +16,33 @@ const {
   handleClose,
   sanitizeInput,
   handlePaste,
-  createObject: createCurve,
+  createObject: createSurface,
 } = useCreateObjectTool({
-  namePrefix: "New Curve",
-  minPoints: 2,
-  schema: back_schemas.opengeodeweb_back.create.edged_curve,
-  previewStyle: "curve",
-  previewExtraSources: [closed],
-  getPreviewParams: () => ({ closed: closed.value }),
-  onPickedPoint: (newPoint, currentPoints) => {
-    const [firstPoint] = currentPoints;
-    if (firstPoint && firstPoint.x !== "") {
-      const distance = Math.hypot(
-        newPoint.x - firstPoint.x,
-        newPoint.y - firstPoint.y,
-        newPoint.z - firstPoint.z,
-      );
-      if (distance < DISTANCE_TOLERANCE) {
-        closed.value = true;
-        return true;
-      }
-    }
-    return false;
-  },
-  onReset: () => {
-    closed.value = false;
-  },
-  getAdditionalPayload: (validPts) => {
-    const edges = validPts.slice(0, -1).map((_, i) => [i, i + 1]);
-    if (closed.value && validPts.length >= 2) {
-      edges.push([validPts.length - 1, 0]);
-    }
-    return { edges };
-  },
+  namePrefix: "New Surface",
+  minPoints: 3,
+  schema: back_schemas.opengeodeweb_back.create.polygonal_surface,
+  previewStyle: "points",
+  getAdditionalPayload: (validPts) => ({
+    polygons: [Array.from({ length: validPts.length }, (_, i) => i)],
+  }),
 });
 </script>
 
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
     <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-vector-polyline" class="mr-3 text-h4" color="secondary" />
-      Create Curve
+      <v-icon icon="mdi-vector-polygon" class="mr-3 text-h4" color="secondary" />
+      Create Surface
     </v-card-title>
 
     <v-card-subtitle class="ma-0 pb-2 text-white opacity-80">
-      Pick at least 2 points to create a curve.
+      Pick at least 3 points to create a surface.
     </v-card-subtitle>
 
     <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
       <v-text-field
-        v-model="curveName"
-        label="Curve Name"
+        v-model="surfaceName"
+        label="Surface Name"
         variant="outlined"
         color="white"
         theme="dark"
@@ -98,7 +69,7 @@ const {
               size="x-small"
               variant="text"
               color="white"
-              :disabled="points.length <= 2"
+              :disabled="points.length <= 3"
               @click="removePoint(index)"
             >
               <v-icon size="16">mdi-close</v-icon>
@@ -150,17 +121,6 @@ const {
             <PickButton :active="pickingActive" @click="togglePickMode" />
           </v-col>
         </v-row>
-        <v-row dense class="mt-2">
-          <v-col cols="12">
-            <v-checkbox
-              v-model="closed"
-              label="Closed curve"
-              color="secondary"
-              density="compact"
-              hide-details
-            />
-          </v-col>
-        </v-row>
       </v-form>
     </v-card-text>
 
@@ -180,13 +140,13 @@ const {
         size="large"
         variant="flat"
         :loading="loading"
-        :disabled="!hasValidCurve"
+        :disabled="!hasValidSurface"
         class="text-none rounded-lg font-weight-bold"
         elevation="4"
-        @click="createCurve"
+        @click="createSurface"
       >
         <v-icon start>mdi-send</v-icon>
-        Create Curve ({{ validPointCount }} pts)
+        Create Surface ({{ validPointCount }} pts)
       </v-btn>
     </v-card-actions>
   </v-card>
