@@ -1,19 +1,14 @@
 <script setup>
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import { ref } from "vue";
 import { useCreateObjectTool } from "@vease/composables/create_object";
 
-const DISTANCE_TOLERANCE = 0.005;
-
-const closed = ref(false);
-
 const {
-  name: curveName,
+  name: surfaceName,
   points,
   pickingActive,
   loading,
-  hasValidPoints: hasValidCurve,
+  hasValidPoints: hasValidSurface,
   validPointCount,
   addPoint,
   removePoint,
@@ -21,75 +16,47 @@ const {
   handleClose,
   sanitizeInput,
   handlePaste,
-  createObject: createCurve,
+  createObject: createSurface,
 } = useCreateObjectTool({
-  namePrefix: "New Curve",
-  minPoints: 2,
-  schema: back_schemas.opengeodeweb_back.create.edged_curve,
-  previewStyle: "curve",
-  previewExtraSources: [closed],
-  getPreviewParams: () => ({ closed: closed.value }),
-  onPickedPoint: (newPoint, currentPoints) => {
-    const [firstPoint] = currentPoints;
-    if (firstPoint && firstPoint.x !== "") {
-      const distance = Math.hypot(
-        newPoint.x - firstPoint.x,
-        newPoint.y - firstPoint.y,
-        newPoint.z - firstPoint.z,
-      );
-      if (distance < DISTANCE_TOLERANCE) {
-        closed.value = true;
-        return true;
-      }
-    }
-    return false;
-  },
-  onReset: () => {
-    closed.value = false;
-  },
-  getAdditionalPayload: (validPts) => {
-    const edges = validPts.slice(0, -1).map((_, i) => [i, i + 1]);
-    if (closed.value && validPts.length >= 2) {
-      edges.push([validPts.length - 1, 0]);
-    }
-    return { edges };
-  },
+  namePrefix: "New Surface",
+  minPoints: 3,
+  schema: back_schemas.opengeodeweb_back.create.polygonal_surface,
+  previewStyle: "points",
+  getAdditionalPayload: (validPts) => ({
+    polygons: [Array.from({ length: validPts.length }, (_, i) => i)],
+  }),
 });
 </script>
 
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
-    <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-vector-polyline" class="mr-1 text-h5" color="secondary" />
-      Create Curve
+    <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
+      <v-icon icon="mdi-vector-polygon" class="mr-3 text-h4" color="secondary" />
+      Create Surface
     </v-card-title>
 
-    <v-card-subtitle
-      class="ma-0 pb-1 text-caption text-white opacity-70 text-wrap"
-      style="line-height: 1.2"
-    >
-      Pick at least 2 points to create a curve.
+    <v-card-subtitle class="ma-0 pb-2 text-white opacity-80">
+      Pick at least 3 points to create a surface.
     </v-card-subtitle>
 
-    <v-card-text class="pt-5 flex-grow-1 overflow-y-auto">
+    <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
       <v-text-field
-        v-model="curveName"
-        label="Curve Name"
+        v-model="surfaceName"
+        label="Surface Name"
         variant="outlined"
         color="white"
         theme="dark"
-        density="compact"
         base-color="white"
         bg-color="rgba(255, 255, 255, 0.15)"
-        class="mb-2 rounded-lg"
+        class="mb-4 rounded-lg"
         prepend-inner-icon="mdi-format-title"
       />
-      <v-form class="mt-1">
+      <v-form class="mt-2">
         <div
           v-for="(point, index) in points"
           :key="index"
           class="point-row"
-          :class="{ 'mb-2': index < points.length - 1 }"
+          :class="{ 'mb-4': index < points.length - 1 }"
         >
           <div class="d-flex align-center mb-1">
             <v-icon size="small" color="secondary" class="mr-1">mdi-circle-small</v-icon>
@@ -102,10 +69,10 @@ const {
               size="x-small"
               variant="text"
               color="white"
-              :disabled="points.length <= 2"
+              :disabled="points.length <= 3"
               @click="removePoint(index)"
             >
-              <v-icon size="14">mdi-close</v-icon>
+              <v-icon size="16">mdi-close</v-icon>
             </v-btn>
           </div>
 
@@ -116,34 +83,34 @@ const {
                 inputmode="decimal"
                 variant="outlined"
                 color="white"
-                density="compact"
+                density="comfortable"
                 :rules="[(v) => !!v || `${coord.toUpperCase()} is required`]"
-                class="rounded-lg text-caption"
+                class="rounded-lg"
                 theme="dark"
                 base-color="white"
                 bg-color="rgba(255, 255, 255, 0.15)"
                 @paste="handlePaste($event, index, coord)"
                 @update:modelValue="(v) => sanitizeInput(v, index, coord)"
               >
-                <template #label>
-                  <span class="text-white text-caption">{{ coord.toUpperCase() }}</span>
-                </template>
-                <template #prepend-inner>
-                  <v-icon color="white" size="14">mdi-axis-{{ coord }}-arrow</v-icon>
-                </template>
+                <template #label
+                  ><span class="text-white">{{ coord.toUpperCase() }}</span></template
+                >
+                <template #prepend-inner
+                  ><v-icon color="white">mdi-axis-{{ coord }}-arrow</v-icon></template
+                >
               </v-text-field>
             </v-col>
           </v-row>
-          <v-divider v-if="index < points.length - 1" class="mt-1 opacity-20" />
+          <v-divider v-if="index < points.length - 1" class="mt-2 opacity-20" />
         </div>
-        <v-row dense class="mt-2">
+        <v-row dense class="mt-3">
           <v-col cols="6">
             <v-btn
               variant="outlined"
               color="white"
               size="small"
               block
-              class="text-none rounded-lg text-caption"
+              class="text-none rounded-lg"
               prepend-icon="mdi-plus"
               @click="addPoint"
             >
@@ -154,17 +121,6 @@ const {
             <PickButton :active="pickingActive" @click="togglePickMode" />
           </v-col>
         </v-row>
-        <v-row dense class="mt-2">
-          <v-col cols="12">
-            <v-checkbox
-              v-model="closed"
-              label="Closed curve"
-              color="secondary"
-              density="compact"
-              hide-details
-            />
-          </v-col>
-        </v-row>
       </v-form>
     </v-card-text>
 
@@ -172,25 +128,25 @@ const {
       <v-btn
         variant="text"
         color="white"
-        size="small"
+        size="large"
         class="text-none rounded-lg"
         @click="handleClose"
       >
-        <v-icon start size="14">mdi-close-circle</v-icon>Close
+        <v-icon start>mdi-close-circle</v-icon>Close
       </v-btn>
       <v-spacer />
       <v-btn
         color="primary"
-        size="small"
+        size="large"
         variant="flat"
         :loading="loading"
-        :disabled="!hasValidCurve"
+        :disabled="!hasValidSurface"
         class="text-none rounded-lg font-weight-bold"
-        elevation="2"
-        @click="createCurve"
+        elevation="4"
+        @click="createSurface"
       >
-        <v-icon start size="14">mdi-send</v-icon>
-        Create ({{ validPointCount }} pts)
+        <v-icon start>mdi-send</v-icon>
+        Create Surface ({{ validPointCount }} pts)
       </v-btn>
     </v-card-actions>
   </v-card>
