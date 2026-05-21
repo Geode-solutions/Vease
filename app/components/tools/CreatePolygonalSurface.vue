@@ -21,6 +21,7 @@ const {
   namePrefix: "New Surface",
   minPoints: 3,
   schema: back_schemas.opengeodeweb_back.create.polygonal_surface,
+  previewStyle: "points",
   getAdditionalPayload: (validPts) => ({
     polygons: [Array.from({ length: validPts.length }, (_, i) => i)],
   }),

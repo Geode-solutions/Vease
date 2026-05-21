@@ -5,9 +5,18 @@ import { useGeodeStore } from "@ogw_front/stores/geode";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 function createEmptyPoint() {
   return { x: "", y: "", z: "" };
+}
+
+function formatPoints(pts) {
+  return pts.map((point) => ({
+    x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
+    y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
+    z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+  }));
 }
 
 // oxlint-disable-next-line max-lines-per-function
@@ -16,6 +25,11 @@ export function useCreateObjectTool({
   minPoints,
   schema,
   getAdditionalPayload = () => ({}),
+  previewStyle = undefined,
+  previewExtraSources = [],
+  getPreviewParams = () => ({}),
+  onPickedPoint = undefined,
+  onReset = undefined,
 }) {
   const UIStore = useUIStore();
   const geodeStore = useGeodeStore();
@@ -56,6 +70,9 @@ export function useCreateObjectTool({
     counter = 0;
     name.value = generateName();
     points.value = Array.from({ length: minPoints }, () => createEmptyPoint());
+    if (onReset) {
+      onReset();
+    }
     UIStore.setShowCreateTools(false);
   }
 
@@ -70,6 +87,10 @@ export function useCreateObjectTool({
         y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
         z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
       };
+
+      if (onPickedPoint && onPickedPoint(new_point, points.value)) {
+        return;
+      }
 
       const firstEmpty = points.value.findIndex((point) => point.x === "");
       if (firstEmpty === -1) {
@@ -94,9 +115,16 @@ export function useCreateObjectTool({
     }
   });
 
-  onUnmounted(() => {
+  onUnmounted(async () => {
     if (viewerStore.picking_mode) {
       viewerStore.toggle_picking_mode(false);
+    }
+    if (previewStyle) {
+      await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+        points: [],
+        style: previewStyle,
+        ...getPreviewParams(),
+      });
     }
   });
 
@@ -106,6 +134,20 @@ export function useCreateObjectTool({
   );
   const hasValidPoints = computed(() => validPoints.value.length >= minPoints);
   const validPointCount = computed(() => validPoints.value.length);
+
+  if (previewStyle) {
+    watch(
+      [validPoints, ...previewExtraSources],
+      async () => {
+        await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+          points: formatPoints(validPoints.value),
+          style: previewStyle,
+          ...getPreviewParams(),
+        });
+      },
+      { deep: true, immediate: true },
+    );
+  }
 
   function sanitizeInput(value, index, field) {
     const val = String(value)
@@ -137,15 +179,9 @@ export function useCreateObjectTool({
     }
     loading.value = true;
     try {
-      const formattedPoints = validPoints.value.map((point) => ({
-        x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
-        y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
-        z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
-      }));
-
       const payload = {
         name: name.value,
-        points: formattedPoints,
+        points: formatPoints(validPoints.value),
         ...getAdditionalPayload(validPoints.value),
       };
 
