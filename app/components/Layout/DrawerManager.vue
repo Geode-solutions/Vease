@@ -105,6 +105,6 @@ function handleFilesDropped(files) {
   isolation: isolate;
   backface-visibility: hidden;
   transform: translateZ(0);
-  /* transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1); */
+  transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>

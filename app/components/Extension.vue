@@ -200,7 +200,7 @@ function removeExtension() {
 
                             <div class="flex-grow-1 min-w-0">
                               <div
-                                class="text-caption font-weight-semibold mb-0 text-white text-truncate"
+                                class="text-caption font-weight-semibold mb-0 text-white"
                                 :class="extension.enabled ? 'text-white' : 'text-grey'"
                               >
                                 {{ getExtensionName(extension) }}
@@ -330,14 +330,12 @@ function removeExtension() {
 
                             <div class="flex-grow-1 min-w-0">
                               <div class="d-flex align-center ga-1 mb-0">
-                                <span
-                                  class="text-caption font-weight-semibold text-white text-truncate"
-                                >
+                                <span class="text-caption font-weight-semibold text-white">
                                   {{ tool.title }}
                                 </span>
                               </div>
 
-                              <div class="text-caption text-white opacity-70 text-truncate">
+                              <div class="text-caption text-white opacity-70">
                                 {{ tool.description }}
                               </div>
                             </div>
