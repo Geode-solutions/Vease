@@ -52,6 +52,8 @@ run_function_when_microservices_connected(() => {
       store.get_version(vease_back_schemas.vease_back.microservice_version);
     } else if (store.$id === "viewer") {
       store.get_version(vease_viewer_schemas.vease_viewer.microservice_version);
+    } else if (typeof store.get_version === "function") {
+      store.get_version();
     }
   }
 });
