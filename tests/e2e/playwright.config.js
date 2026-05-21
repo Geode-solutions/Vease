@@ -14,6 +14,7 @@ const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
 const testMatch = "tests/e2e/tests/**/*.test.js";
+const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
@@ -25,7 +26,9 @@ const TIMEOUTS = {
 export default defineConfig({
   expect: {
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.02,
+      maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
+        ? Number(process.env.MAX_PIXEL_RATIO)
+        : maxDiffPixelRatio,
       pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
     },
   },

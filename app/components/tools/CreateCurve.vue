@@ -1,30 +1,195 @@
 <script setup>
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
-import { useCreateObjectTool } from "@vease/composables/create_object";
+import { importItem } from "@ogw_front/utils/import_workflow";
+import { useGeodeStore } from "@ogw_front/stores/geode";
+import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
+import { useUIStore } from "@vease/stores/ui";
+import { useViewerStore } from "@ogw_front/stores/viewer";
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
-const {
-  name: curveName,
-  points,
-  pickingActive,
-  loading,
-  hasValidPoints: hasValidCurve,
-  validPointCount,
-  addPoint,
-  removePoint,
-  togglePickMode,
-  handleClose,
-  sanitizeInput,
-  handlePaste,
-  createObject: createCurve,
-} = useCreateObjectTool({
-  namePrefix: "New Curve",
-  minPoints: 2,
-  schema: back_schemas.opengeodeweb_back.create.edged_curve,
-  getAdditionalPayload: (validPts) => ({
-    edges: validPts.slice(0, -1).map((_, i) => [i, i + 1]),
-  }),
+const UIStore = useUIStore();
+const geodeStore = useGeodeStore();
+const hybridViewerStore = useHybridViewerStore();
+const viewerStore = useViewerStore();
+
+const DISTANCE_TOLERANCE = 0.005;
+
+let curveCounter = 0;
+const pickingActive = ref(false);
+const closed = ref(false);
+
+function generateName() {
+  curveCounter += 1;
+  return curveCounter === 1 ? "New Curve" : `New Curve ${curveCounter}`;
+}
+
+const curveName = ref(generateName());
+function createEmptyPoint() {
+  return { x: "", y: "", z: "" };
+}
+const points = ref([createEmptyPoint(), createEmptyPoint()]);
+
+function addPoint() {
+  points.value.push(createEmptyPoint());
+}
+
+function removePoint(index) {
+  if (points.value.length > 2) {
+    points.value.splice(index, 1);
+  }
+}
+
+function togglePickMode() {
+  pickingActive.value = !pickingActive.value;
+  viewerStore.toggle_picking_mode(pickingActive.value);
+}
+
+function handleClose() {
+  if (pickingActive.value) {
+    viewerStore.toggle_picking_mode(false);
+  }
+  curveCounter = 0;
+  curveName.value = generateName();
+  points.value = [createEmptyPoint(), createEmptyPoint()];
+  closed.value = false;
+  UIStore.setShowCreateTools(false);
+}
+
+watch(
+  () => viewerStore.picked_point,
+  (newVal) => {
+    if (!pickingActive.value || newVal.x === undefined || newVal.y === undefined) {
+      return;
+    }
+    const new_point = {
+      x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
+      y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
+      z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
+    };
+
+    const [firstPoint] = points.value;
+    if (firstPoint && firstPoint.x !== "") {
+      const distance = Math.hypot(
+        new_point.x - firstPoint.x,
+        new_point.y - firstPoint.y,
+        new_point.z - firstPoint.z,
+      );
+      if (distance < DISTANCE_TOLERANCE) {
+        closed.value = true;
+        return;
+      }
+    }
+
+    const firstEmpty = points.value.findIndex((point) => point.x === "");
+    if (firstEmpty === -1) {
+      points.value.push(new_point);
+    } else {
+      points.value[firstEmpty] = new_point;
+    }
+  },
+  { deep: true },
+);
+
+watch(
+  () => viewerStore.picking_mode,
+  (newVal) => (pickingActive.value = newVal),
+);
+
+onKeyStroke("Escape", () => {
+  if (pickingActive.value) {
+    viewerStore.toggle_picking_mode(false);
+  }
 });
+
+const loading = ref(false);
+const validPoints = computed(() =>
+  points.value.filter((point) => point.x !== "" && point.y !== "" && point.z !== ""),
+);
+const hasValidCurve = computed(() => validPoints.value.length >= 2);
+const validPointCount = computed(() => validPoints.value.length);
+
+watch(
+  [validPoints, closed],
+  async ([newValidPoints, isClosed]) => {
+    const formattedPoints = newValidPoints.map((point) => ({
+      x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
+      y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
+      z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+    }));
+    await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+      points: formattedPoints,
+      style: "curve",
+      closed: isClosed,
+    });
+  },
+  { deep: true, immediate: true },
+);
+
+onUnmounted(async () => {
+  if (viewerStore.picking_mode) {
+    viewerStore.toggle_picking_mode(false);
+  }
+  await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+    points: [],
+    style: "curve",
+    closed: false,
+  });
+});
+
+function sanitizeInput(value, index, field) {
+  const val = String(value)
+    .replaceAll(",", ".")
+    .replaceAll(/[^0-9eE+\-.]/gu, "");
+  const parts = val.split(/[eE]/u);
+  points.value[index][field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
+}
+
+function handlePaste(event, index, field) {
+  const text = event?.clipboardData?.getData("text") || "";
+  const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/gu);
+  if (!coords) {
+    return;
+  }
+  const point = points.value[index];
+  if (coords.length >= 2) {
+    [point.x, point.y] = coords;
+    point.z = coords[2] || "0";
+  } else {
+    [point[field]] = coords;
+  }
+  event.preventDefault();
+}
+
+async function createCurve() {
+  if (validPoints.value.length < 2) {
+    return;
+  }
+  const schema = back_schemas.opengeodeweb_back.create.edged_curve;
+  loading.value = true;
+
+  const edges = validPoints.value.slice(0, -1).map((_, i) => [i, i + 1]);
+  if (closed.value && validPoints.value.length >= 2) {
+    edges.push([validPoints.value.length - 1, 0]);
+  }
+
+  try {
+    const resp = await geodeStore.request(schema, {
+      name: curveName.value,
+      points: validPoints.value.map((point) => ({
+        x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
+        y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
+        z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+      })),
+      edges,
+    });
+    await importItem({ ...resp });
+    await hybridViewerStore.remoteRender();
+    handleClose();
+  } finally {
+    loading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -117,7 +282,37 @@ const {
             </v-btn>
           </v-col>
           <v-col cols="6">
-            <PickButton :active="pickingActive" @click="togglePickMode" />
+            <v-tooltip
+              :text="pickingActive ? 'Exit pick mode (Esc)' : 'Pick points from viewer'"
+              location="bottom"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  color="secondary"
+                  :variant="pickingActive ? 'flat' : 'outlined'"
+                  size="small"
+                  block
+                  class="rounded-lg text-none font-weight-bold"
+                  :class="{ 'pick-pulse': pickingActive }"
+                  prepend-icon="mdi-crosshairs-gps"
+                  @click="togglePickMode"
+                >
+                  {{ pickingActive ? "Stop picking" : "Pick in viewer" }}
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </v-col>
+        </v-row>
+        <v-row dense class="mt-2">
+          <v-col cols="12">
+            <v-checkbox
+              v-model="closed"
+              label="Closed curve"
+              color="secondary"
+              density="compact"
+              hide-details
+            />
           </v-col>
         </v-row>
       </v-form>
