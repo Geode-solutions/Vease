@@ -27,33 +27,37 @@ const {
 
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
-    <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-circle-medium" class="mr-3 text-h4" color="secondary" />
+    <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center text-white">
+      <v-icon icon="mdi-circle-medium" class="mr-1 text-h5" color="secondary" />
       Create Point{{ points.length > 1 ? "s" : "" }}
     </v-card-title>
 
-    <v-card-subtitle class="ma-0 pb-2 text-white opacity-80">
+    <v-card-subtitle
+      class="ma-0 pb-1 text-caption text-white opacity-70 text-wrap"
+      style="line-height: 1.2"
+    >
       Enter coordinates, use + to add rows, or enable pick mode.
     </v-card-subtitle>
 
-    <v-card-text class="pt-2 flex-grow-1 overflow-y-auto">
+    <v-card-text class="pt-5 flex-grow-1 overflow-y-auto">
       <v-text-field
         v-model="setName"
         label="Point Set Name"
         variant="outlined"
         color="white"
         theme="dark"
+        density="compact"
         base-color="white"
         bg-color="rgba(255, 255, 255, 0.15)"
-        class="mb-4 rounded-lg"
+        class="mb-2 rounded-lg"
         prepend-inner-icon="mdi-format-title"
       />
-      <v-form class="mt-2">
+      <v-form class="mt-1">
         <div
           v-for="(point, index) in points"
           :key="index"
           class="point-row"
-          :class="{ 'mb-4': index < points.length - 1 }"
+          :class="{ 'mb-2': index < points.length - 1 }"
         >
           <div class="d-flex align-center mb-1">
             <v-icon size="small" color="secondary" class="mr-1">mdi-circle-small</v-icon>
@@ -69,7 +73,7 @@ const {
               :disabled="points.length === 1"
               @click="removePoint(index)"
             >
-              <v-icon size="16">mdi-close</v-icon>
+              <v-icon size="14">mdi-close</v-icon>
             </v-btn>
           </div>
 
@@ -80,34 +84,34 @@ const {
                 inputmode="decimal"
                 variant="outlined"
                 color="white"
-                density="comfortable"
+                density="compact"
                 :rules="[(v) => !!v || `${coord.toUpperCase()} is required`]"
-                class="rounded-lg"
+                class="rounded-lg text-caption"
                 theme="dark"
                 base-color="white"
                 bg-color="rgba(255, 255, 255, 0.15)"
                 @paste="handlePaste($event, index, coord)"
                 @update:modelValue="(v) => sanitizeInput(v, index, coord)"
               >
-                <template #label
-                  ><span class="text-white">{{ coord.toUpperCase() }}</span></template
-                >
-                <template #prepend-inner
-                  ><v-icon color="white">mdi-axis-{{ coord }}-arrow</v-icon></template
-                >
+                <template #label>
+                  <span class="text-white text-caption">{{ coord.toUpperCase() }}</span>
+                </template>
+                <template #prepend-inner>
+                  <v-icon color="white" size="14">mdi-axis-{{ coord }}-arrow</v-icon>
+                </template>
               </v-text-field>
             </v-col>
           </v-row>
-          <v-divider v-if="index < points.length - 1" class="mt-2 opacity-20" />
+          <v-divider v-if="index < points.length - 1" class="mt-1 opacity-20" />
         </div>
-        <v-row dense class="mt-3">
+        <v-row dense class="mt-2">
           <v-col cols="6">
             <v-btn
               variant="outlined"
               color="white"
               size="small"
               block
-              class="text-none rounded-lg"
+              class="text-none rounded-lg text-caption"
               prepend-icon="mdi-plus"
               @click="addPoint"
             >
@@ -125,25 +129,25 @@ const {
       <v-btn
         variant="text"
         color="white"
-        size="large"
+        size="small"
         class="text-none rounded-lg"
         @click="handleClose"
       >
-        <v-icon start>mdi-close-circle</v-icon>Close
+        <v-icon start size="14">mdi-close-circle</v-icon>Close
       </v-btn>
       <v-spacer />
       <v-btn
         color="primary"
-        size="large"
+        size="small"
         variant="flat"
         :loading="loading"
         :disabled="!hasValidPoint"
         class="text-none rounded-lg font-weight-bold"
-        elevation="4"
+        elevation="2"
         @click="createAllPoints"
       >
-        <v-icon start>mdi-send</v-icon>
-        Create {{ validPointCount > 1 ? `${validPointCount} Points` : "Point" }}
+        <v-icon start size="14">mdi-send</v-icon>
+        Create {{ validPointCount > 1 ? `${validPointCount} Pts` : "Point" }}
       </v-btn>
     </v-card-actions>
   </v-card>
