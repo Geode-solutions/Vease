@@ -1,4 +1,4 @@
-import { useGeodeStore } from "@ogw_front/stores/geode";
+import { useBackStore } from "@ogw_front/stores/back";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
@@ -9,8 +9,8 @@ export default defineNuxtPlugin(() => {
 
   // Initialize and register geode microservice
   console.log("[PLUGIN] Registering geode microservice");
-  const geodeStore = useGeodeStore();
-  infraStore.register_microservice(geodeStore);
+  const backStore = useBackStore();
+  infraStore.register_microservice(backStore);
 
   // Initialize and register viewer microservice
   console.log("[PLUGIN] Registering viewer microservice");
