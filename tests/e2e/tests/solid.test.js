@@ -8,13 +8,16 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
-  pointsVisibility,
+  pointsMenuClick,
+  setPointsSize,
+  setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
+const viewerObjectType = "mesh";
 let window = undefined;
 let cleanup = undefined;
 
@@ -39,8 +42,15 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await pointsMenuClick(window, viewerObjectType);
+  const visibility = true;
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
+
+test("points size", async () => {
+  const size = 15;
+  await setPointsSize(window, viewerObjectType, size);
+  await expect(window).toHaveScreenshot();
+});
+
