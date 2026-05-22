@@ -24,4 +24,15 @@ export default defineNuxtPlugin(() => {
       defineAsyncComponent(() => import("@vease/components/tools/CreateCurve.vue")),
     ),
   });
+
+  UIStore.registerToolComponent({
+    id: "PolygonalSurface",
+    title: "Surface",
+    description: "Create a polygonal surface object by picking points on the viewer.",
+    iconType: "mdi",
+    iconSource: "mdi-vector-polygon",
+    component: markRaw(
+      defineAsyncComponent(() => import("@vease/components/tools/CreatePolygonalSurface.vue")),
+    ),
+  });
 });

@@ -1,8 +1,8 @@
 import { VeaseExtensionAPI } from "@vease/utils/extension_api.js";
 import { useAppStore } from "@ogw_front/stores/app";
+import { useBackStore } from "@ogw_front/stores/back";
 import { useExtensionsStore } from "@vease/stores/extensions";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useGeodeStore } from "@ogw_front/stores/geode";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
@@ -15,7 +15,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       useAppStore,
       useInfraStore,
       useFeedbackStore,
-      useGeodeStore,
+      useBackStore,
     };
 
     // Expose utilities for extensions
