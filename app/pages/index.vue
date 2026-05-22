@@ -67,6 +67,13 @@ async function openMenu(event) {
   }
   const item = await dataStore.item(pickedId);
 
+  if (item.viewer_type === "model" && viewer_id !== undefined) {
+    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
+    if (component) {
+      item.pickedComponentId = component.geode_id;
+    }
+  }
+
   menuStore.openMenu(
     pickedId,
     x,
