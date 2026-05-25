@@ -48,7 +48,6 @@ const stepper_tree = useStepperTree(
         component_name: shallowRef(ObjectSelector),
         component_options: {
           filenames: computed(() => files.value.map((file) => file.name)),
-          geode_object_type,
         },
       },
       chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
