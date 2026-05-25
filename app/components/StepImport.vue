@@ -85,13 +85,13 @@ const stepper_tree = useStepperTree({
 });
 
 function reset_values() {
-  files.value = [];
   UIStore.setDroppedFiles([]);
-  auto_upload.value = true;
-  geode_object_type.value = "";
-  additional_files.value = [];
-  stepper_tree.state.current_step_index = 0;
-  stepper_tree.state.navigating_back = false;
+  stepper_tree.reset_values({
+    files: [],
+    auto_upload: true,
+    geode_object_type: "",
+    additional_files: [],
+  });
 }
 
 function handleClose() {
