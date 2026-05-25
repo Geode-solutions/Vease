@@ -23,10 +23,15 @@ async function import_files() {
     filename,
     geode_object_type,
   }));
-  await importWorkflow(files_array);
-  emit("reset_values");
-  UIStore.setShowStepper(false);
-  toggle_loading();
+  try {
+    await importWorkflow(files_array);
+  } catch (error) {
+    console.error("Import failed:", error);
+  } finally {
+    emit("reset_values");
+    UIStore.setShowStepper(false);
+    toggle_loading();
+  }
 }
 
 function cancel() {
