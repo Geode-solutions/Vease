@@ -86,12 +86,7 @@ const stepper_tree = useStepperTree({
 
 function reset_values() {
   UIStore.setDroppedFiles([]);
-  stepper_tree.reset_values({
-    files: [],
-    auto_upload: true,
-    geode_object_type: "",
-    additional_files: [],
-  });
+  stepper_tree.reset_values();
 }
 
 function handleClose() {
