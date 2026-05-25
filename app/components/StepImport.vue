@@ -27,11 +27,8 @@ const auto_upload = ref(true);
 const geode_object_type = ref("");
 const additional_files = ref([]);
 
-const stepper_tree = useStepperTree({
-  files,
-  auto_upload,
-  geode_object_type,
-  steps: [
+const stepper_tree = useStepperTree(
+  [
     {
       step_title: "Select files to import",
       component: {
@@ -51,6 +48,7 @@ const stepper_tree = useStepperTree({
         component_name: shallowRef(ObjectSelector),
         component_options: {
           filenames: computed(() => files.value.map((file) => file.name)),
+          geode_object_type,
         },
       },
       chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
@@ -82,7 +80,13 @@ const stepper_tree = useStepperTree({
       }),
     },
   ],
-});
+  {
+    files,
+    auto_upload,
+    geode_object_type,
+    additional_files,
+  }
+);
 
 function reset_values() {
   UIStore.setDroppedFiles([]);
