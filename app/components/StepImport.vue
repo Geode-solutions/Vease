@@ -4,7 +4,7 @@ import ImportFile from "@vease/components/ImportFile";
 import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector";
 import ObjectSelector from "@ogw_front/components/ObjectSelector";
 import Stepper from "@ogw_front/components/Stepper";
-import { useStepperTree } from "@ogw_front/composables/stepper_tree";
+import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
 
 const emit = defineEmits(["close"]);
