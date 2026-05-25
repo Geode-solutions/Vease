@@ -84,7 +84,7 @@ const stepper_tree = useStepperTree(
     auto_upload,
     geode_object_type,
     additional_files,
-  }
+  },
 );
 
 function reset_values() {
