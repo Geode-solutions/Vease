@@ -29,6 +29,7 @@ async function installSelectedExtension() {
 
   try {
     const file = await downloadExtension(extension.id);
+    console.log({ file });
     await importExtensionFile(file);
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
@@ -48,14 +49,17 @@ async function installSelectedExtension() {
     variant="ui"
     padding="pa-0"
     class="d-flex flex-column fill-height border-white border-opacity-10 relative overflow-hidden"
-    style="min-height: 0;"
+    style="min-height: 0"
   >
     <template v-if="extension">
       <v-sheet
         color="rgba(0,0,0,0.2)"
         class="pa-6 pa-sm-8 border-b border-white border-opacity-10"
       >
-        <v-sheet color="transparent" class="d-flex flex-column flex-sm-row align-center align-sm-start text-center text-sm-left">
+        <v-sheet
+          color="transparent"
+          class="d-flex flex-column flex-sm-row align-center align-sm-start text-center text-sm-left"
+        >
           <v-avatar
             color="rgba(255,255,255,0.05)"
             size="96"
@@ -65,9 +69,19 @@ async function installSelectedExtension() {
             <v-icon icon="mdi-puzzle" size="48" color="white"></v-icon>
           </v-avatar>
 
-          <v-sheet color="transparent" class="flex-grow-1 w-100" style="min-width: 0;">
-            <v-sheet color="transparent" class="d-flex flex-column flex-sm-row align-center mb-2 justify-center justify-sm-start">
-              <h1 class="text-h5 text-sm-h4 font-weight-bold text-white mb-2 mb-sm-0 mr-sm-4" style="word-break: break-word;">
+          <v-sheet
+            color="transparent"
+            class="flex-grow-1 w-100"
+            style="min-width: 0"
+          >
+            <v-sheet
+              color="transparent"
+              class="d-flex flex-column flex-sm-row align-center mb-2 justify-center justify-sm-start"
+            >
+              <h1
+                class="text-h5 text-sm-h4 font-weight-bold text-white mb-2 mb-sm-0 mr-sm-4"
+                style="word-break: break-word"
+              >
                 {{ extension.id }}
               </h1>
               <v-chip
@@ -187,12 +201,9 @@ async function installSelectedExtension() {
           class="opacity-80"
         ></v-icon>
       </v-sheet>
-      <h2 class="text-h5 font-weight-medium text-white mb-2">
-        Marketplace
-      </h2>
+      <h2 class="text-h5 font-weight-medium text-white mb-2">Marketplace</h2>
       <p class="text-body-1 text-white opacity-70">
-        Select an extension from the list to view its details and install
-        it.
+        Select an extension from the list to view its details and install it.
       </p>
     </v-sheet>
   </GlassCard>
