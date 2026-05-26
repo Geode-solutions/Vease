@@ -62,7 +62,7 @@ const currentTab = ref("marketplace");
         class="fill-height overflow-y-auto custom-scrollbar"
       >
         <div class="installed-container d-flex flex-column fill-height">
-          <Extension class="flex-grow-1" />
+          <Extension class="flex-grow-1" :hide-header="true" />
         </div>
       </v-window-item>
     </v-window>
@@ -76,12 +76,5 @@ const currentTab = ref("marketplace");
 .extension-window :deep(.v-window__container) {
   flex-grow: 1;
   min-height: 0;
-}
-
-.installed-container :deep(.pa-6 > .d-flex.align-center.mb-2) {
-  display: none !important;
-}
-.installed-container :deep(.pa-6 > p.text-white.opacity-80) {
-  display: none !important;
 }
 </style>

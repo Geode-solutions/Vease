@@ -9,6 +9,13 @@ import { formatRelativeTime } from "@/utils/format_date";
 import { useExtensionMetadata } from "@/composables/extension_metadata";
 import { useExtensionsStore } from "@vease/stores/extensions";
 
+const { hideHeader = false } = defineProps({
+  hideHeader: {
+    type: Boolean,
+    default: false
+  }
+});
+
 const MESSAGE_TIMEOUT = 4000;
 
 const extensionsStore = useExtensionsStore();
@@ -86,7 +93,7 @@ function removeExtension() {
 
 <template>
   <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
-    <div class="pa-4 pb-2">
+    <div v-if="!hideHeader" class="pa-4 pb-2">
       <div class="d-flex align-center mb-1">
         <v-icon icon="mdi-puzzle" class="mr-2 text-secondary" size="24"></v-icon>
         <h2 class="text-h6 font-weight-bold text-white mb-0">Extensions</h2>
@@ -101,7 +108,7 @@ function removeExtension() {
         Feature disabled in cloud mode
       </p>
     </v-card-text>
-    <v-card-text v-else class="px-4 pb-4 overflow-y-auto">
+    <v-card-text v-else class="px-4 pb-4 overflow-y-auto" :class="{ 'pt-4': hideHeader }">
       <DragAndDrop
         :multiple="true"
         accept=".vext"
@@ -109,7 +116,7 @@ function removeExtension() {
         :show-extensions="true"
         :fullscreen="false"
         :show-overlay="false"
-        idle-text="Click or Drag & Drop Extension"
+        idle-text="Click or drag and drop"
         drop-text="Drop to Install"
         loading-text="Loading Extension..."
         @files-selected="processFiles"
@@ -168,6 +175,7 @@ function removeExtension() {
                     :style="{
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       opacity: extension.enabled ? 1 : 0.6,
+                      background: 'rgba(0, 0, 0, 0.2)'
                     }"
                   >
                     <v-expansion-panel-title class="pa-3">
