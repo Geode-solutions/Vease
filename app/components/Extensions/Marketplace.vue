@@ -19,12 +19,13 @@ const selectedExtension = ref(undefined);
 </script>
 
 <template>
-  <v-row class="fill-height ma-0 pt-4">
+  <v-row class="responsive-height-row ma-0 pt-4">
     <v-col
       cols="12"
       md="4"
       lg="3"
-      class="pl-0 py-0 pr-4 d-flex flex-column fill-height"
+      class="d-flex flex-column pa-0 pr-md-4 pb-4 pb-md-0"
+      style="min-height: 0;"
     >
       <MarketplaceSidebar
         v-model="selectedExtension"
@@ -38,9 +39,23 @@ const selectedExtension = ref(undefined);
       cols="12"
       md="8"
       lg="9"
-      class="pr-0 py-0 pl-2 d-flex flex-column fill-height"
+      class="d-flex flex-column pa-0 pl-md-2"
+      style="min-height: 0;"
     >
       <MarketplaceDetails :extension="selectedExtension" />
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+.responsive-height-row {
+  min-height: 0;
+}
+
+/* On desktop (md and up), the row takes exactly 100% height to enable inner scrolling */
+@media (min-width: 960px) {
+  .responsive-height-row {
+    height: 100%;
+  }
+}
+</style>

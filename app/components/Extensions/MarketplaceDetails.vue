@@ -48,25 +48,26 @@ async function installSelectedExtension() {
     variant="ui"
     padding="pa-0"
     class="d-flex flex-column fill-height border-white border-opacity-10 relative overflow-hidden"
+    style="min-height: 0;"
   >
     <template v-if="extension">
       <v-sheet
         color="rgba(0,0,0,0.2)"
-        class="pa-8 border-b border-white border-opacity-10"
+        class="pa-6 pa-sm-8 border-b border-white border-opacity-10"
       >
-        <v-sheet color="transparent" class="d-flex align-start">
+        <v-sheet color="transparent" class="d-flex flex-column flex-sm-row align-center align-sm-start text-center text-sm-left">
           <v-avatar
             color="rgba(255,255,255,0.05)"
             size="96"
             rounded="xl"
-            class="mr-6 border border-white border-opacity-10 shadow-sm glass-icon"
+            class="mb-4 mb-sm-0 mr-sm-6 border border-white border-opacity-10 shadow-sm glass-icon flex-shrink-0"
           >
             <v-icon icon="mdi-puzzle" size="48" color="white"></v-icon>
           </v-avatar>
 
-          <v-sheet color="transparent" class="flex-grow-1">
-            <v-sheet color="transparent" class="d-flex align-center mb-2">
-              <h1 class="text-h4 font-weight-bold text-white mr-4">
+          <v-sheet color="transparent" class="flex-grow-1 w-100" style="min-width: 0;">
+            <v-sheet color="transparent" class="d-flex flex-column flex-sm-row align-center mb-2 justify-center justify-sm-start">
+              <h1 class="text-h5 text-sm-h4 font-weight-bold text-white mb-2 mb-sm-0 mr-sm-4" style="word-break: break-word;">
                 {{ extension.id }}
               </h1>
               <v-chip
@@ -88,7 +89,7 @@ async function installSelectedExtension() {
 
             <v-sheet
               color="transparent"
-              class="d-flex align-center ga-3 mt-4"
+              class="d-flex align-center justify-center justify-sm-start ga-3 mt-4"
             >
               <v-btn
                 color="white"
@@ -133,7 +134,7 @@ async function installSelectedExtension() {
 
       <v-sheet
         color="transparent"
-        class="flex-grow-1 pa-8 overflow-y-auto custom-scrollbar"
+        class="flex-grow-1 pa-6 pa-sm-8 overflow-y-auto custom-scrollbar"
       >
         <h3
           class="text-h6 font-weight-semibold text-white mb-4 d-flex align-center"
