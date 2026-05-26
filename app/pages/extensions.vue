@@ -50,11 +50,17 @@ const currentTab = ref("marketplace");
       class="flex-grow-1 extension-window d-flex flex-column"
       :touch="false"
     >
-      <v-window-item value="marketplace" class="fill-height px-6 pb-6 overflow-y-auto custom-scrollbar">
+      <v-window-item
+        value="marketplace"
+        class="fill-height px-6 pb-6 overflow-y-auto custom-scrollbar"
+      >
         <Marketplace />
       </v-window-item>
 
-      <v-window-item value="installed" class="fill-height overflow-y-auto custom-scrollbar">
+      <v-window-item
+        value="installed"
+        class="fill-height overflow-y-auto custom-scrollbar"
+      >
         <div class="installed-container d-flex flex-column fill-height">
           <Extension class="flex-grow-1" />
         </div>
@@ -64,16 +70,14 @@ const currentTab = ref("marketplace");
 </template>
 
 <style scoped>
-/* Fix Vuetify v-window height for proper scrolling */
 .extension-window {
-  min-height: 0; /* important to allow shrinking flex children */
+  min-height: 0;
 }
 .extension-window :deep(.v-window__container) {
   flex-grow: 1;
   min-height: 0;
 }
 
-/* Hide the duplicate title from Extension.vue when rendered inside Installed tab */
 .installed-container :deep(.pa-6 > .d-flex.align-center.mb-2) {
   display: none !important;
 }

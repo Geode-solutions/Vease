@@ -102,7 +102,6 @@ const selectedExtension = ref(undefined);
   min-height: 0;
 }
 
-/* On desktop (md and up), the row takes exactly 100% height to enable inner scrolling */
 @media (min-width: 960px) {
   .responsive-height-row {
     height: 100%;
