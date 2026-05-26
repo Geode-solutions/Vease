@@ -29,6 +29,7 @@ async function installSelectedExtension() {
 
   try {
     const file = await downloadExtension(extension.id);
+    console.log({ file });
     await importExtensionFile(file);
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
@@ -86,10 +87,7 @@ async function installSelectedExtension() {
               Marketplace Extension
             </v-sheet>
 
-            <v-sheet
-              color="transparent"
-              class="d-flex align-center ga-3 mt-4"
-            >
+            <v-sheet color="transparent" class="d-flex align-center ga-3 mt-4">
               <v-btn
                 color="white"
                 variant="elevated"
@@ -186,12 +184,9 @@ async function installSelectedExtension() {
           class="opacity-80"
         ></v-icon>
       </v-sheet>
-      <h2 class="text-h5 font-weight-medium text-white mb-2">
-        Marketplace
-      </h2>
+      <h2 class="text-h5 font-weight-medium text-white mb-2">Marketplace</h2>
       <p class="text-body-1 text-white opacity-70">
-        Select an extension from the list to view its details and install
-        it.
+        Select an extension from the list to view its details and install it.
       </p>
     </v-sheet>
   </GlassCard>
