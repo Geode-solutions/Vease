@@ -88,11 +88,7 @@ run_function_when_microservices_connected(() => {
         <v-row class="pa-3">
           <p class="text-h4 text-white">Internal dependencies</p>
           <v-divider />
-          <v-table
-            class="pa-3"
-            density="compact"
-            style="background-color: transparent"
-          >
+          <v-table class="pa-3" density="compact" style="background-color: transparent">
             <thead>
               <tr>
                 <th class="text-left text-white" width="400px">Package</th>
@@ -104,13 +100,7 @@ run_function_when_microservices_connected(() => {
                 <td class="text-left text-white">{{ pkg.package }}</td>
                 <td>
                   <a
-                    :href="
-                      'https://pypi.org/project/' +
-                      pkg.package +
-                      '/' +
-                      pkg.version +
-                      '/'
-                    "
+                    :href="'https://pypi.org/project/' + pkg.package + '/' + pkg.version + '/'"
                     target="_blank"
                     class="text-left text-white"
                     >{{ pkg.version }}</a
@@ -125,8 +115,8 @@ run_function_when_microservices_connected(() => {
             <p class="text-white">
               Vease is an open-source project.
               <br />
-              Copyright © 2019 - {{ new Date().getFullYear() }} —
-              Geode-solutions SAS. All rights reserved.
+              Copyright © 2019 - {{ new Date().getFullYear() }} — Geode-solutions SAS. All rights
+              reserved.
             </p>
           </v-col>
         </v-row>
@@ -164,10 +154,7 @@ run_function_when_microservices_connected(() => {
                     </a>
                   </td>
                   <td>
-                    <v-tooltip
-                      :text="`Microservice is ${microservice.status}`"
-                      location="right"
-                    >
+                    <v-tooltip :text="`Microservice is ${microservice.status}`" location="right">
                       <template v-slot:activator="{ props }">
                         <v-icon
                           v-if="microservice.status == Status.NOT_CONNECTED"
@@ -197,9 +184,7 @@ run_function_when_microservices_connected(() => {
         </v-row>
         <v-row class="pa-3">
           <v-col cols="12">
-            <v-btn
-              href="https://github.com/Geode-solutions/Vease/issues/new"
-              target="_blank"
+            <v-btn href="https://github.com/Geode-solutions/Vease/issues/new" target="_blank"
               >Report an issue</v-btn
             >
           </v-col>
