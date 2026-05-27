@@ -23,6 +23,15 @@ export function useExtensions() {
       return [];
     }
     const token = await user.value.getIdToken();
+    const schema = {
+      $id: "/extensions/list",
+      methods: ["GET"],
+      type: "object",
+      properties: { email: { type: "string" } },
+      required: ["email"],
+      additionalProperties: false,
+    };
+    return APIStore.request(schema, { email });
     console.log("[Extensions] Fetched token, calling API...");
     try {
       const res = await $fetch("/extensions/list", {
@@ -50,13 +59,13 @@ export function useExtensions() {
         headers: { Authorization: `Bearer ${token}` },
       },
     );
-
     if (!response.ok) {
       throw new Error(`Failed to download extension ${extensionId}`);
     }
-
-    const blob = await response.blob();
-    return new File([blob], `${extensionId}.vext`);
+    const { url } = await response.json();
+    console.log({ url });
+    const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
+    return new File([fileBuffer], `${extensionId}.vext`);
   }
 
   return {

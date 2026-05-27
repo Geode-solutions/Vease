@@ -1,19 +1,23 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { useAPIStore } from "@vease/stores/api";
 import { useFirebaseAuth } from "vuefire";
 
 function useAuth() {
   const auth = useFirebaseAuth();
   const user = useCurrentUser();
+  const APIStore = useAPIStore();
 
   async function register(email, password) {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
-    await $fetch(
-      "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api/auth/send-verification",
-      {
-        method: "POST",
-        body: { email },
-      },
-    );
+    const schema = {
+      $id: "/auth/send-verification",
+      methods: ["POST"],
+      type: "object",
+      properties: { email: { type: "string" } },
+      required: ["email"],
+      additionalProperties: false,
+    };
+    await APIStore.request({schema, { email }});
     await signOut(auth);
     return newUser;
   }
@@ -36,13 +40,15 @@ function useAuth() {
 }
 
 function resetPassword(email) {
-  return $fetch(
-    "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api/auth/send-password-reset",
-    {
-      method: "POST",
-      body: { email },
-    },
-  );
+  const schema = {
+    $id: "/auth/send-password-reset",
+    methods: ["POST"],
+    type: "object",
+    properties: { email: { type: "string" } },
+    required: ["email"],
+    additionalProperties: false,
+  };
+  return APIStore.request(schema, { email });
 }
 
 export { useAuth, resetPassword };
