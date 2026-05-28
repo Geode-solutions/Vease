@@ -55,7 +55,7 @@ function selectExtension(ext) {
     variant="ui"
     padding="pa-0"
     class="d-flex flex-column fill-height border-white border-opacity-10"
-    style="min-height: 0;"
+    style="min-height: 0"
   >
     <v-sheet
       color="transparent"
@@ -111,7 +111,7 @@ function selectExtension(ext) {
           :key="ext.id"
           :value="ext.id"
           :active="modelValue?.id === ext.id"
-          active-color="white"
+          color="white"
           class="mb-2 rounded-lg ext-item transition-all"
           @click="selectExtension(ext)"
         >

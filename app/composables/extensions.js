@@ -1,4 +1,5 @@
 import Bowser from "bowser";
+import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "./auth";
 
 function getUserPlatform() {
@@ -14,37 +15,32 @@ function getUserPlatform() {
   return "unknown";
 }
 
+// oxlint-disable-next-line max-lines-per-function
 export function useExtensions() {
   const { user } = useAuth();
+  const APIStore = useAPIStore();
 
   async function allowedExtensions() {
     console.log("[Extensions] Checking user...", user.value);
     if (!user.value) {
+      console.log("[Extensions] No user");
       return [];
     }
     const token = await user.value.getIdToken();
+    console.log("[Extensions] Token:", token);
     const schema = {
       $id: "/extensions/list",
       methods: ["GET"],
       type: "object",
-      properties: { email: { type: "string" } },
-      required: ["email"],
+      properties: {},
+      required: [],
       additionalProperties: false,
     };
-    return APIStore.request(schema, { email });
-    console.log("[Extensions] Fetched token, calling API...");
-    try {
-      const res = await $fetch("/extensions/list", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-        baseURL: "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
-      });
-      console.log("[Extensions] API Response:", res);
-      return res;
-    } catch (error) {
-      console.error("[Extensions] API Error:", error);
-      throw error;
-    }
+    console.log({ schema });
+    const headers = { Authorization: `Bearer ${token}` };
+    console.log({ headers });
+    console.log({ APIStore });
+    return APIStore.request({ schema, headers });
   }
 
   async function downloadExtension(extensionId) {
@@ -52,17 +48,17 @@ export function useExtensions() {
       throw new Error("User not authenticated");
     }
     const token = await user.value.getIdToken();
-    const response = await fetch(
-      `https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api/extensions/download/${extensionId}/${getUserPlatform()}`,
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    if (!response.ok) {
-      throw new Error(`Failed to download extension ${extensionId}`);
-    }
-    const { url } = await response.json();
+    const schema = {
+      $id: "/extensions/download",
+      methods: ["POST"],
+      type: "object",
+      properties: { extension: { type: "string" }, platform: { type: "string" } },
+      required: ["extension", "platform"],
+      additionalProperties: false,
+    };
+    const params = { extension: extensionId, platform: getUserPlatform() };
+    const headers = { Authorization: `Bearer ${token}` };
+    const { url } = await APIStore.request({ schema, params, headers });
     console.log({ url });
     const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
     return new File([fileBuffer], `${extensionId}.vext`);

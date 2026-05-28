@@ -16,7 +16,7 @@ export const useAPIStore = defineStore("api", () => {
     request_counter.value -= 1;
   }
 
-  function request(schema, params, callbacks = {}) {
+  function request({ schema, params = {}, headers = {} }, callbacks = {}) {
     console.log("[API] Request:", schema.$id);
     const start = Date.now();
 

@@ -17,7 +17,8 @@ function useAuth() {
       required: ["email"],
       additionalProperties: false,
     };
-    await APIStore.request({schema, { email }});
+    const params = { email };
+    await APIStore.request({ schema, params });
     await signOut(auth);
     return newUser;
   }
@@ -48,7 +49,8 @@ function resetPassword(email) {
     required: ["email"],
     additionalProperties: false,
   };
-  return APIStore.request(schema, { email });
+  const params = { email };
+  return APIStore.request({ schema, params });
 }
 
 export { useAuth, resetPassword };
