@@ -16,13 +16,7 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({
-  event,
-  itemId,
-  context_type,
-  modelId,
-  modelComponentType,
-}) {
+async function handleTreeMenu({ event, itemId, context_type, modelId, modelComponentType }) {
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
@@ -64,20 +58,14 @@ async function openMenu(event) {
   const yPicking = containerHeight.value - (event.clientY - rect.top);
   const yUI = event.clientY - rect.top;
 
-  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(
-    x,
-    yPicking,
-  );
+  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(x, yPicking);
   if (!pickedId) {
     return;
   }
   const item = await dataStore.item(pickedId);
 
   if (item.viewer_type === "model" && viewer_id !== undefined) {
-    const component = await dataStore.getComponentByViewerId(
-      pickedId,
-      viewer_id,
-    );
+    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
     if (component) {
       item.pickedComponentId = component.geode_id;
     }
@@ -105,11 +93,7 @@ watch([elWidth, elHeight], ([width, height]) => {
 
 <template>
   <InfraConnected>
-    <div
-      ref="cardContainer"
-      class="w-100 h-100 fill-height"
-      @contextmenu.prevent="openMenu"
-    >
+    <div ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
       <HybridRenderingView>
         <template #ui>
           <ViewerUI
