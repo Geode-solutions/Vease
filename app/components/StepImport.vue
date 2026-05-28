@@ -4,6 +4,7 @@ import ImportFile from "@vease/components/ImportFile";
 import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector";
 import ObjectSelector from "@ogw_front/components/ObjectSelector";
 import Stepper from "@ogw_front/components/Stepper";
+import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
 
 const emit = defineEmits(["close"]);
@@ -26,13 +27,8 @@ const auto_upload = ref(true);
 const geode_object_type = ref("");
 const additional_files = ref([]);
 
-const stepper_tree = reactive({
-  current_step_index: 0,
-  navigating_back: false,
-  files,
-  auto_upload,
-  geode_object_type,
-  steps: [
+const stepper_tree = useStepperTree(
+  [
     {
       step_title: "Select files to import",
       component: {
@@ -83,18 +79,17 @@ const stepper_tree = reactive({
       }),
     },
   ],
-});
-
-provide("stepper_tree", stepper_tree);
+  {
+    files,
+    auto_upload,
+    geode_object_type,
+    additional_files,
+  },
+);
 
 function reset_values() {
-  files.value = [];
   UIStore.setDroppedFiles([]);
-  auto_upload.value = true;
-  geode_object_type.value = "";
-  additional_files.value = [];
-  stepper_tree.current_step_index = 0;
-  stepper_tree.navigating_back = false;
+  stepper_tree.reset_values();
 }
 
 function handleClose() {
@@ -113,5 +108,5 @@ watch(
 </script>
 
 <template>
-  <Stepper @close="handleClose" @reset_values="reset_values" />
+  <Stepper :stepper_tree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
 </template>
