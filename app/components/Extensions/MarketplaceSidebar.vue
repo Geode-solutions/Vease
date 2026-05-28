@@ -93,7 +93,7 @@ function extensionIcon(ext) {
         color="transparent"
         class="text-white text-center pa-6 opacity-80"
       >
-        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80"></v-icon>
+        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80" />
         <div class="text-body-1">No extensions found</div>
       </v-sheet>
       <v-list v-else bg-color="transparent" class="pa-0">
