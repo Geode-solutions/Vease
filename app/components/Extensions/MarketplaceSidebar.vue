@@ -42,10 +42,7 @@ const filteredExtensions = computed(() => {
   return extensions.filter(
     (ext) =>
       ext.id.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      (ext.description &&
-        ext.description
-          .toLowerCase()
-          .includes(searchQuery.value.toLowerCase())),
+      (ext.description && ext.description.toLowerCase().includes(searchQuery.value.toLowerCase())),
   );
 });
 
@@ -69,10 +66,7 @@ function extensionIcon(ext) {
     class="d-flex flex-column fill-height border-white border-opacity-10"
     style="min-height: 0"
   >
-    <v-sheet
-      color="transparent"
-      class="pa-4 border-b border-white border-opacity-10"
-    >
+    <v-sheet color="transparent" class="pa-4 border-b border-white border-opacity-10">
       <v-text-field
         v-model="searchQuery"
         prepend-inner-icon="mdi-magnify"
@@ -87,22 +81,11 @@ function extensionIcon(ext) {
       ></v-text-field>
     </v-sheet>
 
-    <v-sheet
-      color="transparent"
-      class="flex-grow-1 overflow-y-auto pa-2 custom-scrollbar"
-    >
-      <v-sheet
-        v-if="pending"
-        color="transparent"
-        class="d-flex justify-center pa-6"
-      >
+    <v-sheet color="transparent" class="flex-grow-1 overflow-y-auto pa-2 custom-scrollbar">
+      <v-sheet v-if="pending" color="transparent" class="d-flex justify-center pa-6">
         <v-progress-circular indeterminate color="white"></v-progress-circular>
       </v-sheet>
-      <v-sheet
-        v-else-if="fetchError"
-        color="transparent"
-        class="text-white pa-4 text-center"
-      >
+      <v-sheet v-else-if="fetchError" color="transparent" class="text-white pa-4 text-center">
         Failed to load extensions
       </v-sheet>
       <v-sheet
@@ -110,11 +93,7 @@ function extensionIcon(ext) {
         color="transparent"
         class="text-white text-center pa-6 opacity-80"
       >
-        <v-icon
-          icon="mdi-magnify-close"
-          size="48"
-          class="mb-3 opacity-80"
-        ></v-icon>
+        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80"></v-icon>
         <div class="text-body-1">No extensions found</div>
       </v-sheet>
       <v-list v-else bg-color="transparent" class="pa-0">
@@ -129,11 +108,7 @@ function extensionIcon(ext) {
         >
           <template v-slot:prepend>
             <v-avatar color="rgba(255,255,255,0.08)" rounded="lg" class="mr-3">
-              <v-icon
-                :icon="extensionIcon(ext)"
-                color="white"
-                size="24"
-              ></v-icon>
+              <v-icon :icon="extensionIcon(ext)" color="white" size="24"></v-icon>
             </v-avatar>
           </template>
           <v-list-item-title class="font-weight-semibold text-white mb-1">

@@ -36,21 +36,12 @@ const selectedExtension = ref(undefined);
       />
     </v-col>
 
-    <v-col
-      cols="12"
-      md="8"
-      lg="9"
-      class="d-flex flex-column pa-0 pl-md-2"
-      style="min-height: 0"
-    >
+    <v-col cols="12" md="8" lg="9" class="d-flex flex-column pa-0 pl-md-2" style="min-height: 0">
       <MarketplaceDetails :extension="selectedExtension" />
     </v-col>
   </v-row>
 
-  <v-row
-    v-else
-    class="responsive-height-row ma-0 pt-4 align-center justify-center"
-  >
+  <v-row v-else class="responsive-height-row ma-0 pt-4 align-center justify-center">
     <v-col cols="12" sm="8" md="6" lg="5" class="d-flex justify-center">
       <GlassCard
         variant="ui"
@@ -64,21 +55,14 @@ const selectedExtension = ref(undefined);
           width="96"
           height="96"
         >
-          <v-icon
-            icon="mdi-lock-outline"
-            size="48"
-            color="white"
-            class="opacity-80"
-          ></v-icon>
+          <v-icon icon="mdi-lock-outline" size="48" color="white" class="opacity-80"></v-icon>
         </v-sheet>
 
-        <h2 class="text-h5 font-weight-bold text-white mb-3">
-          Authentication Required
-        </h2>
+        <h2 class="text-h5 font-weight-bold text-white mb-3">Authentication Required</h2>
 
         <p class="text-body-1 text-white opacity-80 mb-8">
-          You must be logged in to access the marketplace, browse available
-          extensions, and install them on your project.
+          You must be logged in to access the marketplace, browse available extensions, and install
+          them on your project.
         </p>
 
         <v-btn

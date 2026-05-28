@@ -62,10 +62,7 @@ async function installSelectedExtension() {
     style="min-height: 0"
   >
     <template v-if="extension">
-      <v-sheet
-        color="rgba(0,0,0,0.2)"
-        class="pa-6 pa-sm-8 border-b border-white border-opacity-10"
-      >
+      <v-sheet color="rgba(0,0,0,0.2)" class="pa-6 pa-sm-8 border-b border-white border-opacity-10">
         <v-sheet
           color="transparent"
           class="d-flex flex-column flex-sm-row align-center align-sm-start text-center text-sm-left"
@@ -79,11 +76,7 @@ async function installSelectedExtension() {
             <v-icon icon="mdi-puzzle" size="48" color="white"></v-icon>
           </v-avatar>
 
-          <v-sheet
-            color="transparent"
-            class="flex-grow-1 w-100"
-            style="min-width: 0"
-          >
+          <v-sheet color="transparent" class="flex-grow-1 w-100" style="min-width: 0">
             <v-sheet
               color="transparent"
               class="d-flex flex-column flex-sm-row align-center mb-2 justify-center justify-sm-start"
@@ -94,20 +87,12 @@ async function installSelectedExtension() {
               >
                 {{ extension.id }}
               </h1>
-              <v-chip
-                size="small"
-                variant="outlined"
-                color="white"
-                class="font-weight-medium"
-              >
+              <v-chip size="small" variant="outlined" color="white" class="font-weight-medium">
                 v{{ extension.version }}
               </v-chip>
             </v-sheet>
 
-            <v-sheet
-              color="transparent"
-              class="text-subtitle-1 text-white opacity-80 mb-4"
-            >
+            <v-sheet color="transparent" class="text-subtitle-1 text-white opacity-80 mb-4">
               Marketplace Extension
             </v-sheet>
 
@@ -162,20 +147,11 @@ async function installSelectedExtension() {
         color="transparent"
         class="flex-grow-1 pa-6 pa-sm-8 overflow-y-auto custom-scrollbar"
       >
-        <h3
-          class="text-h6 font-weight-semibold text-white mb-4 d-flex align-center"
-        >
-          <v-icon
-            icon="mdi-file-document-outline"
-            class="mr-2"
-            size="24"
-          ></v-icon>
+        <h3 class="text-h6 font-weight-semibold text-white mb-4 d-flex align-center">
+          <v-icon icon="mdi-file-document-outline" class="mr-2" size="24"></v-icon>
           Details
         </h3>
-        <v-sheet
-          color="transparent"
-          class="readme-content text-body-1 text-white opacity-80"
-        >
+        <v-sheet color="transparent" class="readme-content text-body-1 text-white opacity-80">
           <v-sheet
             v-if="extension.readme"
             color="transparent"
@@ -183,11 +159,7 @@ async function installSelectedExtension() {
           >
             {{ extension.readme }}
           </v-sheet>
-          <v-sheet
-            v-else
-            color="transparent"
-            class="text-center py-10 opacity-60"
-          >
+          <v-sheet v-else color="transparent" class="text-center py-10 opacity-60">
             <p>No README provided for this extension.</p>
           </v-sheet>
         </v-sheet>
@@ -206,12 +178,7 @@ async function installSelectedExtension() {
         width="120"
         height="120"
       >
-        <v-icon
-          icon="mdi-storefront-outline"
-          size="64"
-          color="white"
-          class="opacity-80"
-        ></v-icon>
+        <v-icon icon="mdi-storefront-outline" size="64" color="white" class="opacity-80"></v-icon>
       </v-sheet>
       <h2 class="text-h5 font-weight-medium text-white mb-2">Marketplace</h2>
       <p class="text-body-1 text-white opacity-70">
