@@ -3,14 +3,14 @@ import GlassCard from "@ogw_front/components/GlassCard";
 import { useAppStore } from "@ogw_front/stores/app";
 
 const {
-  extensions = [],
-  pending = false,
-  fetchError = false,
-  modelValue = undefined,
+  extensions,
+  pending,
+  fetchError,
+  modelValue,
 } = defineProps({
   extensions: {
     type: Array,
-    default: () => [],
+    default: [],
   },
   pending: {
     type: Boolean,

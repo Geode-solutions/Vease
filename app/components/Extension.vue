@@ -9,7 +9,7 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 import { formatRelativeTime } from "@/utils/format_date";
 import { useExtensionMetadata } from "@/composables/extension_metadata";
 
-const { hideHeader = false } = defineProps({
+const { hideHeader } = defineProps({
   hideHeader: {
     type: Boolean,
     default: false,
