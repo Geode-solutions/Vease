@@ -1,6 +1,8 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
 import { importExtensionFile } from "@ogw_front/utils/extension";
+import { useAppStore } from "@ogw_front/stores/app";
+
 import { useExtensions } from "@vease/composables/extensions";
 
 const { extension = undefined } = defineProps({
@@ -13,10 +15,18 @@ const { extension = undefined } = defineProps({
 const MESSAGE_TIMEOUT = 5000;
 
 const { downloadExtension } = useExtensions();
+const appStore = useAppStore();
 
 const installing = ref(false);
 const installError = ref("");
 const installSuccess = ref("");
+const installed = computed(() => {
+  if (!appStore.getExtension(extension.id)) {
+    return false;
+  }
+  return true;
+});
+console.log({ installed });
 
 async function installSelectedExtension() {
   if (!extension) {
@@ -114,8 +124,10 @@ async function installSelectedExtension() {
                 class="text-none px-6 font-weight-bold text-black"
                 :loading="installing"
                 @click="installSelectedExtension"
+                :disabled="installed"
               >
-                Install Extension
+                <span v-if="installed">Already installed</span>
+                <span v-else>Install Extension</span>
               </v-btn>
             </v-sheet>
 

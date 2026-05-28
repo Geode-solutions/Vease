@@ -1,5 +1,6 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
+import { useAppStore } from "@ogw_front/stores/app";
 
 const {
   extensions = [],
@@ -29,6 +30,8 @@ const emit = defineEmits(["update:modelValue"]);
 
 const searchQuery = ref("");
 
+const appStore = useAppStore();
+
 const filteredExtensions = computed(() => {
   if (!extensions) {
     return [];
@@ -49,7 +52,16 @@ const filteredExtensions = computed(() => {
 function selectExtension(ext) {
   emit("update:modelValue", ext);
 }
+
+function extensionIcon(ext) {
+  if (appStore.getExtension(ext.id)) {
+    return "mdi-puzzle-check-outline";
+  }
+
+  return "mdi-puzzle-outline";
+}
 </script>
+
 <template>
   <GlassCard
     variant="ui"
@@ -118,7 +130,7 @@ function selectExtension(ext) {
           <template v-slot:prepend>
             <v-avatar color="rgba(255,255,255,0.08)" rounded="lg" class="mr-3">
               <v-icon
-                icon="mdi-puzzle-outline"
+                :icon="extensionIcon(ext)"
                 color="white"
                 size="24"
               ></v-icon>

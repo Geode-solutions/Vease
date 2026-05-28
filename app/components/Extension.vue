@@ -3,22 +3,22 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
 import { appMode } from "@ogw_front/utils/local/app_mode";
 import { importExtensionFile } from "@ogw_front/utils/extension";
+import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { formatRelativeTime } from "@/utils/format_date";
 import { useExtensionMetadata } from "@/composables/extension_metadata";
-import { useExtensionsStore } from "@vease/stores/extensions";
 
 const { hideHeader = false } = defineProps({
   hideHeader: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const MESSAGE_TIMEOUT = 4000;
 
-const extensionsStore = useExtensionsStore();
+const appStore = useAppStore();
 const infraStore = useInfraStore();
 const loading = ref(false);
 const errorMessage = ref("");
@@ -26,7 +26,7 @@ const successMessage = ref("");
 const showRemoveDialog = ref(false);
 const extensionToRemove = ref(undefined);
 
-const loadedExtensions = computed(() => extensionsStore.getLoadedExtensions());
+const loadedExtensions = computed(() => appStore.getLoadedExtensions());
 
 const {
   getExtensionName,
@@ -37,7 +37,9 @@ const {
 } = useExtensionMetadata();
 
 async function processFiles(filesToProcess) {
-  const validFiles = filesToProcess.filter((file) => file.name.endsWith(".vext"));
+  const validFiles = filesToProcess.filter((file) =>
+    file.name.endsWith(".vext"),
+  );
   if (validFiles.length === 0) {
     errorMessage.value = "Please drop valid extension files (.vext)";
     return;
@@ -49,13 +51,18 @@ async function processFiles(filesToProcess) {
   let successCount = 0;
 
   try {
-    const results = await Promise.allSettled(validFiles.map((file) => importExtensionFile(file)));
+    const results = await Promise.allSettled(
+      validFiles.map((file) => importExtensionFile(file)),
+    );
 
     for (const result of results) {
       if (result.status === "fulfilled") {
         successCount += 1;
       } else {
-        console.error("[Extension.vue] Failed to import extension:", result.reason);
+        console.error(
+          "[Extension.vue] Failed to import extension:",
+          result.reason,
+        );
         errorMessage.value = `${result.reason.message}`;
       }
     }
@@ -70,7 +77,7 @@ async function processFiles(filesToProcess) {
 }
 
 function toggleExtensionState(extension) {
-  extensionsStore.toggleExtension(extension.id);
+  appStore.toggleExtension(extension.id);
 }
 
 function formatDate(dateString) {
@@ -84,7 +91,7 @@ function confirmRemove(extension) {
 
 function removeExtension() {
   if (extensionToRemove.value) {
-    extensionsStore.unloadExtension(extensionToRemove.value.id);
+    appStore.unloadExtension(extensionToRemove.value.id);
     showRemoveDialog.value = false;
     extensionToRemove.value = undefined;
   }
@@ -92,10 +99,19 @@ function removeExtension() {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
+  <v-card
+    flat
+    color="transparent"
+    class="d-flex flex-column fill-height"
+    theme="dark"
+  >
     <div v-if="!hideHeader" class="pa-4 pb-2">
       <div class="d-flex align-center mb-1">
-        <v-icon icon="mdi-puzzle" class="mr-2 text-secondary" size="24"></v-icon>
+        <v-icon
+          icon="mdi-puzzle"
+          class="mr-2 text-secondary"
+          size="24"
+        ></v-icon>
         <h2 class="text-h6 font-weight-bold text-white mb-0">Extensions</h2>
       </div>
       <p class="text-caption text-white opacity-70 mb-0">
@@ -103,12 +119,19 @@ function removeExtension() {
       </p>
     </div>
 
-    <v-card-text v-if="infraStore.app_mode === appMode.CLOUD" class="px-4 pb-4 overflow-y-auto">
+    <v-card-text
+      v-if="infraStore.app_mode === appMode.CLOUD"
+      class="px-4 pb-4 overflow-y-auto"
+    >
       <p class="text-caption text-white font-weight-semibold opacity-80">
         Feature disabled in cloud mode
       </p>
     </v-card-text>
-    <v-card-text v-else class="px-4 pb-4 overflow-y-auto" :class="{ 'pt-4': hideHeader }">
+    <v-card-text
+      v-else
+      class="px-4 pb-4 overflow-y-auto"
+      :class="{ 'pt-4': hideHeader }"
+    >
       <DragAndDrop
         :multiple="true"
         accept=".vext"
@@ -150,7 +173,9 @@ function removeExtension() {
 
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-4">
-          <div class="d-flex align-center mb-2 text-subtitle-2 font-weight-semibold text-white">
+          <div
+            class="d-flex align-center mb-2 text-subtitle-2 font-weight-semibold text-white"
+          >
             <v-icon icon="mdi-puzzle-check" class="mr-1" size="18" />
             Active Extensions
             <v-chip
@@ -165,7 +190,11 @@ function removeExtension() {
           </div>
 
           <v-row dense>
-            <v-col v-for="(extension, index) in loadedExtensions" :key="index" cols="12">
+            <v-col
+              v-for="(extension, index) in loadedExtensions"
+              :key="index"
+              cols="12"
+            >
               <v-scale-transition :delay="index * 50">
                 <v-expansion-panels variant="accordion" class="bg-transparent">
                   <v-expansion-panel
@@ -175,13 +204,16 @@ function removeExtension() {
                     :style="{
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       opacity: extension.enabled ? 1 : 0.6,
-                      background: 'rgba(0, 0, 0, 0.2)'
+                      background: 'rgba(0, 0, 0, 0.2)',
                     }"
                   >
                     <v-expansion-panel-title class="pa-3">
                       <template v-slot:default="{ expanded }">
                         <v-hover v-slot="{ isHovering, props: hoverProps }">
-                          <div v-bind="hoverProps" class="d-flex align-center ga-2 w-100">
+                          <div
+                            v-bind="hoverProps"
+                            class="d-flex align-center ga-2 w-100"
+                          >
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0 extension-icon"
                               :color="
@@ -209,14 +241,18 @@ function removeExtension() {
                             <div class="flex-grow-1 min-w-0">
                               <div
                                 class="text-caption font-weight-semibold mb-0 text-white"
-                                :class="extension.enabled ? 'text-white' : 'text-grey'"
+                                :class="
+                                  extension.enabled ? 'text-white' : 'text-grey'
+                                "
                               >
                                 {{ getExtensionName(extension) }}
                               </div>
 
                               <div
                                 class="text-caption mb-1 text-wrap opacity-70"
-                                :class="extension.enabled ? 'text-white' : 'text-grey'"
+                                :class="
+                                  extension.enabled ? 'text-white' : 'text-grey'
+                                "
                               >
                                 {{ getExtensionDescription(extension) }}
                               </div>
@@ -244,13 +280,17 @@ function removeExtension() {
 
                                 <v-spacer />
 
-                                <span class="text-caption text-white opacity-70 text-no-wrap">
+                                <span
+                                  class="text-caption text-white opacity-70 text-no-wrap"
+                                >
                                   {{ formatDate(extension.loadedAt) }}
                                 </span>
                               </div>
                             </div>
 
-                            <div class="d-flex align-center ga-1 flex-shrink-0 mr-n1">
+                            <div
+                              class="d-flex align-center ga-1 flex-shrink-0 mr-n1"
+                            >
                               <v-switch
                                 :model-value="extension.enabled"
                                 color="success"
@@ -258,7 +298,9 @@ function removeExtension() {
                                 hide-details
                                 inset
                                 @click.stop
-                                @update:model-value="toggleExtensionState(extension)"
+                                @update:model-value="
+                                  toggleExtensionState(extension)
+                                "
                               />
 
                               <v-btn
@@ -278,7 +320,9 @@ function removeExtension() {
                     <v-expansion-panel-text class="px-3 pb-3">
                       <v-divider class="mb-2 opacity-10" />
 
-                      <div class="d-flex align-center justify-space-between mb-2">
+                      <div
+                        class="d-flex align-center justify-space-between mb-2"
+                      >
                         <div
                           class="d-flex align-center text-caption font-weight-semibold text-white"
                         >
@@ -300,7 +344,9 @@ function removeExtension() {
                         class="d-flex flex-column ga-2"
                       >
                         <v-hover
-                          v-for="(tool, toolIndex) in getExtensionTools(extension)"
+                          v-for="(tool, toolIndex) in getExtensionTools(
+                            extension,
+                          )"
                           :key="tool.id"
                           v-slot="{ isHovering, props: toolProps }"
                         >
@@ -311,13 +357,19 @@ function removeExtension() {
                             class="d-flex align-start ga-2 border-white border-opacity-10 active-tool-card"
                             :style="{
                               transitionDelay: `${toolIndex * 30}ms`,
-                              background: isHovering ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                              background: isHovering
+                                ? 'rgba(255, 255, 255, 0.05)'
+                                : 'transparent',
                               opacity: extension.enabled ? 1 : 0.5,
                             }"
                           >
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0 tool-icon"
-                              :color="isHovering ? 'primary' : 'rgba(255, 255, 255, 0.1)'"
+                              :color="
+                                isHovering
+                                  ? 'primary'
+                                  : 'rgba(255, 255, 255, 0.1)'
+                              "
                               rounded="lg"
                             >
                               <v-icon
@@ -338,7 +390,9 @@ function removeExtension() {
 
                             <div class="flex-grow-1 min-w-0">
                               <div class="d-flex align-center ga-1 mb-0">
-                                <span class="text-caption font-weight-semibold text-white">
+                                <span
+                                  class="text-caption font-weight-semibold text-white"
+                                >
                                   {{ tool.title }}
                                 </span>
                               </div>
@@ -382,7 +436,12 @@ function removeExtension() {
               class="mx-auto mb-4 d-flex align-center justify-center empty-icon-wrapper"
               rounded="circle"
             >
-              <v-icon icon="mdi-puzzle-outline" size="36" color="white" class="opacity-30" />
+              <v-icon
+                icon="mdi-puzzle-outline"
+                size="36"
+                color="white"
+                class="opacity-30"
+              />
             </v-sheet>
             <div class="text-subtitle-2 font-weight-bold text-white mb-1">
               No extensions loaded yet
@@ -400,7 +459,12 @@ function removeExtension() {
         <v-card-title
           class="d-flex align-center text-subtitle-1 font-weight-semibold text-warning pa-4 pb-2"
         >
-          <v-icon icon="mdi-alert-circle" size="20" class="mr-2" color="warning" />
+          <v-icon
+            icon="mdi-alert-circle"
+            size="20"
+            class="mr-2"
+            color="warning"
+          />
           Remove Extension?
         </v-card-title>
 
@@ -412,7 +476,13 @@ function removeExtension() {
             }}</span
             >?
           </div>
-          <v-alert type="info" variant="tonal" density="compact" rounded="xl" class="text-caption">
+          <v-alert
+            type="info"
+            variant="tonal"
+            density="compact"
+            rounded="xl"
+            class="text-caption"
+          >
             <template #prepend>
               <v-icon size="14">mdi-information</v-icon>
             </template>
@@ -424,8 +494,15 @@ function removeExtension() {
 
         <v-card-actions class="pa-2">
           <v-spacer />
-          <v-btn variant="text" size="small" @click="showRemoveDialog = false"> Cancel </v-btn>
-          <v-btn color="error" variant="elevated" size="small" @click="removeExtension">
+          <v-btn variant="text" size="small" @click="showRemoveDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="elevated"
+            size="small"
+            @click="removeExtension"
+          >
             <v-icon start size="14">mdi-delete</v-icon>
             Remove
           </v-btn>
