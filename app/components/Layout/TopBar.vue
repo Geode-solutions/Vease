@@ -69,16 +69,6 @@ function onImportFileSelected(event) {
           </v-list>
         </GlassCard>
       </v-menu>
-
-      <v-btn
-        variant="text"
-        color="white"
-        class="text-none font-weight-medium rounded-lg"
-        prepend-icon="mdi-puzzle-outline"
-        @click="UIStore.setShowExtensions(!UIStore.showExtensions)"
-      >
-        Extensions
-      </v-btn>
     </div>
 
     <v-spacer />

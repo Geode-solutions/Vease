@@ -55,6 +55,7 @@
     "@geode/opengeodeweb-viewer": "0.0.0",
     "@geode/vease-back": "0.0.0",
     "@geode/vease-viewer": "0.0.0",
+    "bowser": "2.14.1",
     "broadcast-channel": "7.1.0",
     "bufferutil": "4.0.9",
     "draggable": "4.2.0",

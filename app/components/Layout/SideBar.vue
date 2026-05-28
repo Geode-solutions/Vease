@@ -18,6 +18,11 @@ const topPages = ref([
     icon: "mdi-database",
     click: () => navigateTo("/data_manager"),
   },
+  {
+    title: "Extensions",
+    icon: "mdi-puzzle",
+    click: () => navigateTo("/extensions"),
+  },
 ]);
 
 const bottomPages = computed(() => {
