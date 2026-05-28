@@ -66,7 +66,7 @@ function handleFilesDropped(files) {
       elevation="0"
       :width="380"
       class="drawer-container left-0"
-      style="z-index: 4;"
+      style="z-index: 4"
     >
       <GlassCard
         variant="panel"

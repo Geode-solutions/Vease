@@ -55,7 +55,7 @@ watch(
       indeterminate
       color="white"
       class="position-fixed top-0"
-      style="z-index: 4;"
+      style="z-index: 4"
     />
     <FeedBackSnackers />
   </v-app>
