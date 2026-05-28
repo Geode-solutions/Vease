@@ -1,14 +1,11 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useInfraStore } from "@ogw_front/stores/infra";
 import { useMenuStore } from "@ogw_front/stores/menu";
 
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
 import Launcher from "@ogw_front/components/Launcher";
 import ViewerUI from "@ogw_front/components/Viewer/Ui";
 
-const infraStore = useInfraStore();
 const menuStore = useMenuStore();
 const dataStore = useDataStore();
 
@@ -19,7 +16,13 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({ event, itemId, context_type, modelId, modelComponentType }) {
+async function handleTreeMenu({
+  event,
+  itemId,
+  context_type,
+  modelId,
+  modelComponentType,
+}) {
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
@@ -61,14 +64,20 @@ async function openMenu(event) {
   const yPicking = containerHeight.value - (event.clientY - rect.top);
   const yUI = event.clientY - rect.top;
 
-  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(x, yPicking);
+  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(
+    x,
+    yPicking,
+  );
   if (!pickedId) {
     return;
   }
   const item = await dataStore.item(pickedId);
 
   if (item.viewer_type === "model" && viewer_id !== undefined) {
-    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
+    const component = await dataStore.getComponentByViewerId(
+      pickedId,
+      viewer_id,
+    );
     if (component) {
       item.pickedComponentId = component.geode_id;
     }
@@ -95,18 +104,23 @@ watch([elWidth, elHeight], ([width, height]) => {
 </script>
 
 <template>
-  <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
-  <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
-    <HybridRenderingView>
-      <template #ui>
-        <ViewerUI
-          ref="viewerUI"
-          :display-menu="display_menu"
-          :container-width="containerWidth"
-          :container-height="containerHeight"
-          @show-menu="handleTreeMenu"
-        />
-      </template>
-    </HybridRenderingView>
-  </div>
+  <InfraConnected>
+    <div
+      ref="cardContainer"
+      class="w-100 h-100 fill-height"
+      @contextmenu.prevent="openMenu"
+    >
+      <HybridRenderingView>
+        <template #ui>
+          <ViewerUI
+            ref="viewerUI"
+            :display-menu="display_menu"
+            :container-width="containerWidth"
+            :container-height="containerHeight"
+            @show-menu="handleTreeMenu"
+          />
+        </template>
+      </HybridRenderingView>
+    </div>
+  </InfraConnected>
 </template>
