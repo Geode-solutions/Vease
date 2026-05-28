@@ -66,7 +66,7 @@ function handleFilesDropped(files) {
       elevation="0"
       :width="380"
       class="drawer-container left-0"
-      style="z-index: 9999"
+      style="z-index: 4;"
     >
       <GlassCard
         variant="panel"
@@ -88,7 +88,7 @@ function handleFilesDropped(files) {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 98;
+  z-index: 2;
   will-change: backdrop-filter;
   transform: translateZ(0);
   isolation: isolate;
@@ -101,7 +101,7 @@ function handleFilesDropped(files) {
   height: calc(100vh - 100px) !important;
   margin-top: 84px;
   padding: 16px;
-  z-index: 99;
+  z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;
   transform: translateZ(0);

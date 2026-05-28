@@ -44,7 +44,7 @@ watch(
 
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <NuxtPage style="z-index: 1" class="fill-height" />
+        <NuxtPage z-index="1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
         <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
@@ -55,7 +55,7 @@ watch(
       indeterminate
       color="white"
       class="position-fixed top-0"
-      style="z-index: 10001"
+      style="z-index: 4;"
     />
     <FeedBackSnackers />
   </v-app>
@@ -98,7 +98,7 @@ watch(
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 98;
+  z-index: 2;
   will-change: backdrop-filter;
   transform: translateZ(0);
   isolation: isolate;
@@ -118,7 +118,7 @@ watch(
   height: calc(100vh - 100px) !important;
   margin-top: 84px;
   padding: 16px;
-  z-index: 99;
+  z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;
   transform: translateZ(0);
