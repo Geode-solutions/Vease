@@ -19,7 +19,9 @@ function formatPoints(pts) {
   }));
 }
 
-// oxlint-disable-next-line max-lines-per-function
+const preview_schema = viewer_schemas.opengeodeweb_viewer.viewer.preview_points;
+
+// oxlint-disable-next-line max-lines-per-function, max-statements
 export function useCreateObjectTool({
   namePrefix,
   minPoints,
@@ -120,11 +122,8 @@ export function useCreateObjectTool({
       viewerStore.toggle_picking_mode(false);
     }
     if (previewStyle) {
-      await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
-        points: [],
-        style: previewStyle,
-        ...getPreviewParams(),
-      });
+      const params = { points: [], style: previewStyle, ...getPreviewParams() };
+      await viewerStore.request({ schema: preview_schema, params });
     }
   });
 
@@ -139,11 +138,12 @@ export function useCreateObjectTool({
     watch(
       [validPoints, ...previewExtraSources],
       async () => {
-        await viewerStore.request(viewer_schemas.opengeodeweb_viewer.viewer.preview_points, {
+        const params = {
           points: formatPoints(validPoints.value),
           style: previewStyle,
           ...getPreviewParams(),
-        });
+        };
+        await viewerStore.request({ schema: preview_schema, params });
       },
       { deep: true, immediate: true },
     );
@@ -179,13 +179,12 @@ export function useCreateObjectTool({
     }
     loading.value = true;
     try {
-      const payload = {
+      const params = {
         name: name.value,
         points: formatPoints(validPoints.value),
         ...getAdditionalPayload(validPoints.value),
       };
-
-      const resp = await backStore.request(schema, payload);
+      const resp = await backStore.request({ schema, params });
       await importItem({ ...resp });
       await hybridViewerStore.remoteRender();
       handleClose();

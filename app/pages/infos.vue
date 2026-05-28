@@ -34,9 +34,9 @@ const microservices = computed(() =>
 );
 
 function get_packages_versions() {
+  const schema = vease_back_schemas.vease_back.packages_versions;
   backStore.request(
-    vease_back_schemas.vease_back.packages_versions,
-    {},
+    { schema },
     {
       response_function: (response) => {
         packages_versions.value = response.packages_versions;
