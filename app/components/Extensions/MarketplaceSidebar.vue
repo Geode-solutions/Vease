@@ -2,15 +2,10 @@
 import GlassCard from "@ogw_front/components/GlassCard";
 import { useAppStore } from "@ogw_front/stores/app";
 
-const {
-  extensions = [],
-  pending = false,
-  fetchError = false,
-  modelValue = undefined,
-} = defineProps({
+const { extensions, pending, fetchError, modelValue } = defineProps({
   extensions: {
     type: Array,
-    default: () => [],
+    default: [],
   },
   pending: {
     type: Boolean,
@@ -83,7 +78,7 @@ function extensionIcon(ext) {
 
     <v-sheet color="transparent" class="flex-grow-1 overflow-y-auto pa-2 custom-scrollbar">
       <v-sheet v-if="pending" color="transparent" class="d-flex justify-center pa-6">
-        <v-progress-circular indeterminate color="white"></v-progress-circular>
+        <v-progress-circular indeterminate color="white" />
       </v-sheet>
       <v-sheet v-else-if="fetchError" color="transparent" class="text-white pa-4 text-center">
         Failed to load extensions
@@ -93,7 +88,7 @@ function extensionIcon(ext) {
         color="transparent"
         class="text-white text-center pa-6 opacity-80"
       >
-        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80"></v-icon>
+        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80" />
         <div class="text-body-1">No extensions found</div>
       </v-sheet>
       <v-list v-else bg-color="transparent" class="pa-0">

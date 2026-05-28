@@ -5,7 +5,7 @@ import { useAppStore } from "@ogw_front/stores/app";
 
 import { useExtensions } from "@vease/composables/extensions";
 
-const { extension = undefined } = defineProps({
+const { extension } = defineProps({
   extension: {
     type: Object,
     default: undefined,
