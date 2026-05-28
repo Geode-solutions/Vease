@@ -83,7 +83,7 @@ function extensionIcon(ext) {
 
     <v-sheet color="transparent" class="flex-grow-1 overflow-y-auto pa-2 custom-scrollbar">
       <v-sheet v-if="pending" color="transparent" class="d-flex justify-center pa-6">
-        <v-progress-circular indeterminate color="white"></v-progress-circular>
+        <v-progress-circular indeterminate color="white" />
       </v-sheet>
       <v-sheet v-else-if="fetchError" color="transparent" class="text-white pa-4 text-center">
         Failed to load extensions
