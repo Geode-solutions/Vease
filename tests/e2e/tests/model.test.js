@@ -50,14 +50,16 @@ test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
-  await BRepRow.locator(".mdi-menu-right").first().click();
-  await mainObjectTree.getByText("test").click({
-    button: "right",
-    position: {
-      x: 10,
-      y: 10,
-    },
-  });
+  await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
+  await window.waitForTimeout(afterActionWait);
+
+  const testItem = mainObjectTree.getByText("test").first();
+  const box = await testItem.boundingBox();
+  await testItem.dispatchEvent("contextmenu", {
+    button: 2,
+    clientX: box.x + 10,
+    clientY: box.y + 10,
+  }); 
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
