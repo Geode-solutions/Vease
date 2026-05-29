@@ -40,11 +40,11 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("points visibility", async () => {
   const visibility = true;
-  await pointsMenuClick(window, viewerObjectType)
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
@@ -69,6 +69,7 @@ test("object tree context menu", async () => {
   });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("edges visibility", async () => {

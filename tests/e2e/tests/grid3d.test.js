@@ -39,10 +39,10 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("points visibility", async () => {
-  await pointsMenuClick(window, viewerObjectType)
   const visibility = true;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();

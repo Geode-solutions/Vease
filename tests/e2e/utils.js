@@ -189,25 +189,32 @@ async function getPointsSizeSlider(window, viewerObjectType) {
   return pointsSizeSlider;
 }
 
-async function setPointsVisibilitySwitchValue(window, switchTestId, visibility) {
-  const pointsVisibilitySwitch = getPointsVisibilitySwitch(window, switchTestId);
-  await pointsVisibilitySwitch[visibility ? "check" : "uncheck"]();
+async function setPointsVisibilitySwitchValue(window, viewerObjectType, visibility) {
+  const pointsVisibilitySwitch = await getPointsVisibilitySwitch(window, viewerObjectType);
+  await pointsVisibilitySwitch[visibility ? "check" : "uncheck"]({ force: true });
 }
 
-async function setPointsSizeSliderValue(window, sliderTestId, size) {
-  const pointsSizeSlider = getPointsSizeSlider(window, sliderTestId);
-  await pointsSizeSlider.setValue(size);
+async function setPointsSizeSliderValue(window, viewerObjectType, size) {
+  const pointsSizeSlider = await getPointsSizeSlider(window, viewerObjectType);
+  await pointsSizeSlider.locator('input').first().evaluate((node, val) => {
+    node.value = val;
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, size.toString());
 }
 
 async function setPointsSize(window, viewerObjectType, size) {
-  await pointsMenuClick(window, viewerObjectType)
-  await setPointsSizeSliderValue(window, sliderTestId, size);
+  await pointsMenuClick(window, viewerObjectType);
+  await setPointsVisibilitySwitchValue(window, viewerObjectType, true);
+  await setPointsSizeSliderValue(window, viewerObjectType, size);
+  await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 }
 
 async function setPointsVisibility(window, viewerObjectType, visibility) {
-  await pointsMenuClick(window, viewerObjectType)
-  await setPointsVisibilitySwitchValue(window, switchTestId, visibility);
+  await pointsMenuClick(window, viewerObjectType);
+  await setPointsVisibilitySwitchValue(window, viewerObjectType, visibility);
+  await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -216,6 +223,7 @@ export {
   beforeAllTimeout,
   loadData,
   navigateToApp,
+  pointsMenuClick,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,

@@ -39,11 +39,11 @@ test("viewer context menu", async () => {
     y = 210;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("points size", async () => {
   const size = 15;
-  await pointsMenuClick(window, viewerObjectType)
   await setPointsSize(window, viewerObjectType, size);
   await expect(window).toHaveScreenshot();
 });
