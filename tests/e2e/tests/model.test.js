@@ -59,7 +59,7 @@ test("object tree context menu", async () => {
     button: 2,
     clientX: box.x + 10,
     clientY: box.y + 10,
-  }); 
+  });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
