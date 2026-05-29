@@ -1,14 +1,11 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useInfraStore } from "@ogw_front/stores/infra";
 import { useMenuStore } from "@ogw_front/stores/menu";
 
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
 import Launcher from "@ogw_front/components/Launcher";
 import ViewerUI from "@ogw_front/components/Viewer/Ui";
 
-const infraStore = useInfraStore();
 const menuStore = useMenuStore();
 const dataStore = useDataStore();
 
@@ -95,18 +92,19 @@ watch([elWidth, elHeight], ([width, height]) => {
 </script>
 
 <template>
-  <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
-  <div v-else ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
-    <HybridRenderingView>
-      <template #ui>
-        <ViewerUI
-          ref="viewerUI"
-          :display-menu="display_menu"
-          :container-width="containerWidth"
-          :container-height="containerHeight"
-          @show-menu="handleTreeMenu"
-        />
-      </template>
-    </HybridRenderingView>
-  </div>
+  <InfraConnected>
+    <div ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
+      <HybridRenderingView>
+        <template #ui>
+          <ViewerUI
+            ref="viewerUI"
+            :display-menu="display_menu"
+            :container-width="containerWidth"
+            :container-height="containerHeight"
+            @show-menu="handleTreeMenu"
+          />
+        </template>
+      </HybridRenderingView>
+    </div>
+  </InfraConnected>
 </template>
