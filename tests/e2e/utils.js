@@ -143,7 +143,7 @@ async function loadData(window, inputFilename) {
 }
 
 async function viewerContextMenu(window, x, y) {
-  await window.locator("canvas").click({
+  await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
     position: { x, y },
   });

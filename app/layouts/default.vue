@@ -41,13 +41,24 @@ watch(
 <template>
   <v-app>
     <MainNavigation />
-    <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
     <v-main class="custom-background dropzone">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden"
+      >
+        <Launcher
+          v-if="infraStore.status != Status.CREATED"
+          app-name="Vease"
+          logo="/logo.png"
+        />
         <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
-        <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
+        <DrawerManager
+          :ui-store="UIStore"
+          @files-dropped="handleFilesDropped"
+        />
       </InfraConnected>
     </v-main>
     <v-progress-linear
