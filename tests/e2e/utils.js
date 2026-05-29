@@ -233,8 +233,6 @@ async function vertexAttribute(
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
-
-  await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 }
 
