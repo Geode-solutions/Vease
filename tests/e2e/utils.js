@@ -152,10 +152,15 @@ async function viewerContextMenu(window, x, y) {
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
   const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
-  const switchTestId = viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
+  const switchTestId =
+    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
 
   const pointsMenuButton = window.getByTestId(menuTestId);
-  if (!await pointsMenuButton.locator("button.menu-btn").evaluate(node => node.classList.contains("v-btn--active"))) {
+  if (
+    !(await pointsMenuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
     await pointsMenuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
@@ -163,14 +168,17 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function vertexAttribute(window, menuTestId, {
-  attributeName = "points",
-  colorMap = undefined,
-  min = undefined,
-  max = undefined,
-} = {}) {
+async function vertexAttribute(
+  window,
+  menuTestId,
+  { attributeName = "points", colorMap = undefined, min = undefined, max = undefined } = {},
+) {
   const menuButton = window.getByTestId(menuTestId);
-  if (!await menuButton.locator("button.menu-btn").evaluate(node => node.classList.contains("v-btn--active"))) {
+  if (
+    !(await menuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
@@ -178,13 +186,23 @@ async function vertexAttribute(window, menuTestId, {
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  await window.locator(".v-overlay-container").getByText("Vertex attribute").filter({ visible: true }).first().click();
+  await window
+    .locator(".v-overlay-container")
+    .getByText("Vertex attribute")
+    .filter({ visible: true })
+    .first()
+    .click();
   await window.waitForTimeout(afterActionWait);
 
   await window.getByTestId("attributeSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  await window.locator(".v-overlay-container").getByText(attributeName, { exact: true }).filter({ visible: true }).first().click();
+  await window
+    .locator(".v-overlay-container")
+    .getByText(attributeName, { exact: true })
+    .filter({ visible: true })
+    .first()
+    .click();
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
@@ -194,7 +212,12 @@ async function vertexAttribute(window, menuTestId, {
     await window.getByPlaceholder("Search presets...").fill(colorMap);
     await window.waitForTimeout(afterActionWait);
 
-    await window.getByTestId("colorMapList").getByText(colorMap, { exact: true }).filter({ visible: true }).first().click();
+    await window
+      .getByTestId("colorMapList")
+      .getByText(colorMap, { exact: true })
+      .filter({ visible: true })
+      .first()
+      .click();
     await window.waitForTimeout(afterActionWait);
   }
 

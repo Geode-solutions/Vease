@@ -51,4 +51,3 @@ test("vertex attribute", async () => {
   await vertexAttribute(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
 });
-
