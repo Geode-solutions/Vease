@@ -1,4 +1,5 @@
 // Node imports
+import { builtinModules } from "node:module";
 import path from "node:path";
 
 // Local imports
@@ -52,21 +53,8 @@ export default defineNuxtConfig({
             rollupOptions: {
               external: [
                 "electron",
-                /^node:.*/u,
-                "fs",
-                "path",
-                "os",
-                "crypto",
-                "stream",
-                "http",
-                "https",
-                "net",
-                "tls",
-                "zlib",
-                "events",
-                "util",
-                "url",
-                "assert",
+                ...builtinModules,
+                ...builtinModules.map((module) => `node:${module}`),
               ],
             },
           },
@@ -82,21 +70,8 @@ export default defineNuxtConfig({
             rollupOptions: {
               external: [
                 "electron",
-                /^node:.*/u,
-                "fs",
-                "path",
-                "os",
-                "crypto",
-                "stream",
-                "http",
-                "https",
-                "net",
-                "tls",
-                "zlib",
-                "events",
-                "util",
-                "url",
-                "assert",
+                ...builtinModules,
+                ...builtinModules.map((module) => `node:${module}`),
               ],
             },
           },
