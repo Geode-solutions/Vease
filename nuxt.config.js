@@ -63,7 +63,8 @@ export default defineNuxtConfig({
           external: [
             "electron",
             // All Node.js built-in modules
-            "/^node:.*/u",
+            /^node:.*/u,
+            "fs",
           ],
         },
       },
