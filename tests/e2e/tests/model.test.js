@@ -18,6 +18,7 @@ import { test } from "@tests/fixtures.js";
 const inputFilename = "test.og_brep";
 let window = undefined;
 let cleanup = undefined;
+const OFFSET = 10;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -57,8 +58,8 @@ test("object tree context menu", async () => {
   const box = await testItem.boundingBox();
   await testItem.dispatchEvent("contextmenu", {
     button: 2,
-    clientX: box.x + 10,
-    clientY: box.y + 10,
+    clientX: box.x + OFFSET,
+    clientY: box.y + OFFSET,
   });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
