@@ -57,6 +57,17 @@ export default defineNuxtConfig({
     ],
     // TO REMOVE TEMPORARY
     disableDefaultOptions: true,
+    vite: {
+      build: {
+        rollupOptions: {
+          external: [
+            "electron",
+            // All Node.js built-in modules
+            "/^node:.*/u",
+          ],
+        },
+      },
+    },
   },
 
   vuetify: {
