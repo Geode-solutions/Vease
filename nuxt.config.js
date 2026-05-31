@@ -2,7 +2,7 @@
 import path from "node:path";
 
 // Local imports
-import package_json from "./package.json";
+import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
@@ -155,6 +155,11 @@ export default defineNuxtConfig({
     },
     watch: {
       ignored: ["**"],
+    },
+    build: {
+      rollupOptions: {
+        external: ["node:fs", "node:path", "fs", "path"],
+      },
     },
   },
 
