@@ -50,7 +50,24 @@ export default defineNuxtConfig({
         vite: {
           build: {
             rollupOptions: {
-              external: ["electron", /^node:.*/u],
+              external: [
+                "electron",
+                /^node:.*/u,
+                "fs",
+                "path",
+                "os",
+                "crypto",
+                "stream",
+                "http",
+                "https",
+                "net",
+                "tls",
+                "zlib",
+                "events",
+                "util",
+                "url",
+                "assert",
+              ],
             },
           },
         },
@@ -60,10 +77,34 @@ export default defineNuxtConfig({
         onstart(args) {
           args.reload();
         },
+        vite: {
+          build: {
+            rollupOptions: {
+              external: [
+                "electron",
+                /^node:.*/u,
+                "fs",
+                "path",
+                "os",
+                "crypto",
+                "stream",
+                "http",
+                "https",
+                "net",
+                "tls",
+                "zlib",
+                "events",
+                "util",
+                "url",
+                "assert",
+              ],
+            },
+          },
+        },
       },
     ],
     // TO REMOVE TEMPORARY
-    disableDefaultOptions: false,
+    disableDefaultOptions: true,
   },
 
   vuetify: {
