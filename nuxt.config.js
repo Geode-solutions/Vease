@@ -1,5 +1,4 @@
 // Node imports
-import { builtinModules } from "node:module";
 import path from "node:path";
 
 // Local imports
@@ -48,33 +47,11 @@ export default defineNuxtConfig({
       {
         // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
-        vite: {
-          build: {
-            rollupOptions: {
-              external: [
-                "electron",
-                ...builtinModules,
-                ...builtinModules.map((module) => `node:${module}`),
-              ],
-            },
-          },
-        },
       },
       {
         entry: "electron/preload.js",
         onstart(args) {
           args.reload();
-        },
-        vite: {
-          build: {
-            rollupOptions: {
-              external: [
-                "electron",
-                ...builtinModules,
-                ...builtinModules.map((module) => `node:${module}`),
-              ],
-            },
-          },
         },
       },
     ],
