@@ -47,6 +47,13 @@ export default defineNuxtConfig({
       {
         // Main-Process entry file of the Electron App.
         entry: "electron/main.js",
+        vite: {
+          build: {
+            rollupOptions: {
+              external: ["electron", /^node:.*/u],
+            },
+          },
+        },
       },
       {
         entry: "electron/preload.js",
@@ -56,19 +63,7 @@ export default defineNuxtConfig({
       },
     ],
     // TO REMOVE TEMPORARY
-    disableDefaultOptions: true,
-    vite: {
-      build: {
-        rollupOptions: {
-          external: [
-            "electron",
-            // All Node.js built-in modules
-            /^node:.*/u,
-            "fs",
-          ],
-        },
-      },
-    },
+    disableDefaultOptions: false,
   },
 
   vuetify: {
