@@ -156,11 +156,6 @@ export default defineNuxtConfig({
     watch: {
       ignored: ["**"],
     },
-    build: {
-      rollupOptions: {
-        external: ["node:fs", "node:path", "fs", "path"],
-      },
-    },
   },
 
   router: {
