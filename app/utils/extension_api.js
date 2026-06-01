@@ -63,7 +63,7 @@ export const VeaseExtensionAPI = {
     return Database;
   },
 
-  async register_microservice(store) {
-    await useInfraStore().register_microservice(store);
+  register_microservice(store) {
+    useInfraStore().register_microservice(store);
   },
 };
