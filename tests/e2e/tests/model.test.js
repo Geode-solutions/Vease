@@ -10,6 +10,7 @@ import {
   loadData,
   navigateToApp,
   pointsVisibility,
+  vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
@@ -44,6 +45,12 @@ test("points visibility", async () => {
   const viewerObjectType = "model",
     visibility = true;
   await pointsVisibility(window, viewerObjectType, visibility);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await pointsVisibility(window, "model", false);
+  await vertexAttribute(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
 
