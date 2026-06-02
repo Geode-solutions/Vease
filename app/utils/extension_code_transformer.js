@@ -33,6 +33,7 @@ function transformStoreImports(code) {
   );
 
   transformedCode = transformedCode.replaceAll(
+    // oxlint-disable-next-line prefer-named-capture-group
     /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/gu,
     (match, storePath) => {
       const storeName = storePath.replace(".js", "");
