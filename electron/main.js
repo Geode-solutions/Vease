@@ -9,7 +9,7 @@ import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanu
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { create_new_window } from "../utils/desktop.js";
 
-// autoUpdater.checkForUpdatesAndNotify();
+autoUpdater.checkForUpdatesAndNotify();
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 let projectFolderPath = "";
 

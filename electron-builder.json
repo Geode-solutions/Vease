@@ -17,7 +17,7 @@
     "artifactName": "${productName}_${platform}.${ext}",
     "icon": "./public/256x256.png",
     "category": "Science",
-    "target": ["AppImage"],
+    "target": ["AppImage", "zip"],
     "publish": ["github"]
   },
   "win": {
