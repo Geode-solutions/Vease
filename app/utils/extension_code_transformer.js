@@ -33,8 +33,7 @@ function transformStoreImports(code) {
   );
 
   transformedCode = transformedCode.replaceAll(
-    // oxlint-disable-next-line prefer-named-capture-group
-    /from\s+["']@ogw_front\/app\/stores\/([^"']+)["']/gu,
+    /from\s+["']@ogw_front\/app\/stores\/(?<storePath>[^"']+)["']/gu,
     (match, storePath) => {
       const storeName = storePath.replace(".js", "");
       const capitalizedName = storeName.charAt(0).toUpperCase() + storeName.slice(1);
