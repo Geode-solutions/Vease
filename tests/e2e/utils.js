@@ -143,7 +143,7 @@ async function loadData(window, inputFilename) {
 }
 
 async function viewerContextMenu(window, x, y) {
-  await window.locator("canvas").click({
+  await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
     position: { x, y },
   });
@@ -151,22 +151,88 @@ async function viewerContextMenu(window, x, y) {
 }
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
-  let menuTestId = undefined,
-    switchTestId = undefined;
-  if (viewerObjectType === "model") {
-    menuTestId = "modelPointsMenu";
-    switchTestId = "modelPointsVisibilitySwitch";
-  } else if (viewerObjectType === "mesh") {
-    menuTestId = "meshPointsMenu";
-    switchTestId = "meshPointsVisibilitySwitch";
-  } else {
-    throw new Error(`Unknown viewer object type: ${viewerObjectType}`);
+  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
+  const switchTestId =
+    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
+
+  const pointsMenuButton = window.getByTestId(menuTestId);
+  if (
+    !(await pointsMenuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
+    await pointsMenuButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+  await window.getByTestId(switchTestId).getByRole("checkbox")[visibility ? "check" : "uncheck"]();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function vertexAttribute(
+  window,
+  menuTestId,
+  { attributeName = "points", colorMap = undefined, min = undefined, max = undefined } = {},
+) {
+  const menuButton = window.getByTestId(menuTestId);
+  if (
+    !(await menuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
+    await menuButton.click();
+    await window.waitForTimeout(afterActionWait);
   }
 
-  const pointsMenuButton = await window.getByTestId(menuTestId);
-  await pointsMenuButton.click();
-  const pointsVisibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
-  await pointsVisibilitySwitch[visibility ? "check" : "uncheck"]();
+  await window.getByTestId("coloringStyleSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window
+    .locator(".v-overlay-container")
+    .getByText("Vertex attribute")
+    .filter({ visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window.getByTestId("attributeSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window
+    .locator(".v-overlay-container")
+    .getByText(attributeName, { exact: true })
+    .filter({ visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+
+  if (colorMap) {
+    await window.getByTestId("colorMapPicker").first().click();
+    await window.waitForTimeout(afterActionWait);
+
+    await window.getByPlaceholder("Search presets...").fill(colorMap);
+    await window.waitForTimeout(afterActionWait);
+
+    await window
+      .getByTestId("colorMapList")
+      .getByText(colorMap, { exact: true })
+      .filter({ visible: true })
+      .first()
+      .click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  if (min !== undefined) {
+    const input = window.getByTestId("attributeMinInput").first().locator("input");
+    await input.fill(min.toString());
+    await input.press("Enter");
+    await window.waitForTimeout(afterActionWait);
+  }
+  if (max !== undefined) {
+    const input = window.getByTestId("attributeMaxInput").first().locator("input");
+    await input.fill(max.toString());
+    await input.press("Enter");
+    await window.waitForTimeout(afterActionWait);
+  }
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -177,4 +243,5 @@ export {
   navigateToApp,
   pointsVisibility,
   viewerContextMenu,
+  vertexAttribute,
 };
