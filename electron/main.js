@@ -9,8 +9,8 @@ import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanu
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { createNewWindow, parseArgs } from "../utils/desktop.js";
 
-const appArgs = parseArgs()
-console.log(`App launched with args: ${appArgs}`)
+const appArgs = parseArgs();
+console.log(`App launched with args: ${appArgs}`);
 if (!appArgs.flags.includes("--no-update")) {
   autoUpdater.checkForUpdatesAndNotify();
 }
