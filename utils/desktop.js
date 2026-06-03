@@ -14,7 +14,7 @@ const __dirname = import.meta.dirname;
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
 
-async function create_new_window() {
+function setupBrowserWindow() {
   const win = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
@@ -51,6 +51,11 @@ async function create_new_window() {
       responseHeaders,
     });
   });
+  return win;
+}
+
+async function createNewWindow() {
+  const win = setupBrowserWindow();
 
   console.log("app.isPackaged", app.isPackaged);
   if (app.isPackaged) {
@@ -109,4 +114,13 @@ async function create_new_window() {
   return win;
 }
 
-export { create_new_window };
+function parseArgs() {
+  const args = app.isPackaged ? process.argv.slice(1) : process.argv.slice(2);
+  return {
+    flags: args.filter((argument) => argument.startsWith("--")),
+    files: args.filter((argument) => !argument.startsWith("-")),
+    raw: args,
+  };
+}
+
+export { createNewWindow, parseArgs };

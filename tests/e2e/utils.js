@@ -53,7 +53,7 @@ async function runDesktopBuild() {
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox"],
+    args: ["--no-sandbox", "--no-update"],
     executablePath: appInfo,
     wait: 20_000,
     env: {
