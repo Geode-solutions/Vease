@@ -47,7 +47,7 @@
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop",
-    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0 npm run test:e2e:browser:chrome -- --update-snapshots"
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
