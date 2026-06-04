@@ -18,10 +18,6 @@ body,
   padding: 0;
 }
 
-img {
-  pointer-events: none;
-}
-
 .custom-background {
   background: linear-gradient(
     135deg,

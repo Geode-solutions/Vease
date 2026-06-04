@@ -9,6 +9,7 @@ import {
   loadData,
   navigateToApp,
   pointsVisibility,
+  vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
@@ -23,7 +24,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup();
+  await cleanup?.();
 });
 
 test("load", async () => {
@@ -42,5 +43,11 @@ test("points visibility", async () => {
   const viewerObjectType = "mesh",
     visibility = false;
   await pointsVisibility(window, viewerObjectType, visibility);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await pointsVisibility(window, "mesh", true);
+  await vertexAttribute(window, "meshEdgesMenu");
   await expect(window).toHaveScreenshot();
 });

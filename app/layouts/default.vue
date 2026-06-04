@@ -1,6 +1,6 @@
 <script setup>
+import { Status } from "@ogw_front/utils/status";
 import { useInfraStore } from "@ogw_front/stores/infra";
-
 import { useUIStore } from "@vease/stores/ui";
 
 import DrawerManager from "@vease/components/Layout/DrawerManager";
@@ -9,6 +9,7 @@ import MainNavigation from "@vease/components/Layout/MainNavigation";
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
+import Launcher from "@ogw_front/components/Launcher";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
@@ -41,10 +42,10 @@ watch(
 <template>
   <v-app>
     <MainNavigation />
-
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <NuxtPage z-index="1" class="fill-height" />
+        <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
+        <NuxtPage style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
         <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
