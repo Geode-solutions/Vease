@@ -9,6 +9,7 @@ import MainNavigation from "@vease/components/Layout/MainNavigation";
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
+import Launcher from "@ogw_front/components/Launcher";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
@@ -55,7 +56,7 @@ watch(
       indeterminate
       color="white"
       class="position-fixed top-0"
-      style="z-index: 10001"
+      style="z-index: 4"
     />
     <FeedBackSnackers />
   </v-app>
@@ -98,7 +99,7 @@ watch(
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 98;
+  z-index: 2;
   will-change: backdrop-filter;
   transform: translateZ(0);
   isolation: isolate;
@@ -118,7 +119,7 @@ watch(
   height: calc(100vh - 100px) !important;
   margin-top: 84px;
   padding: 16px;
-  z-index: 99;
+  z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;
   transform: translateZ(0);
