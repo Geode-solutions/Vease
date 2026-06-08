@@ -204,8 +204,8 @@ async function applyAttribute(
   window,
   menuTestId,
   {
-    attributeType = "Vertex attribute",
-    attributeName = "points",
+    attributeType,
+    attributeName,
     colorMap = undefined,
     min = undefined,
     max = undefined,
@@ -285,6 +285,7 @@ async function applyAttribute(
 async function vertexAttribute(window, menuTestId, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
+    attributeName: "points",
     ...options,
   });
 }
@@ -303,6 +304,7 @@ async function changeColor(window, menuTestId) {
   await window
     .getByTestId("colorPicker")
     .locator(".v-color-picker-canvas")
+    .first()
     .click();
   await window.waitForTimeout(afterActionWait);
 }
@@ -311,9 +313,11 @@ async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
   const alphaSlider = window
     .getByTestId("colorPicker")
-    .locator(".v-color-picker__alpha .v-slider__container");
+    .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
+    .first();
   const box = await alphaSlider.boundingBox();
   await alphaSlider.click({
+    force: true,
     position: {
       x: (box.width * percent) / MAX_PERCENTAGE,
       y: box.height / 2,

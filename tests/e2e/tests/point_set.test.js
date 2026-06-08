@@ -20,6 +20,7 @@ import { test } from "@tests/fixtures.js";
 const inputFilename = "test.og_pts3d";
 let window = undefined;
 let cleanup = undefined;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -54,10 +55,12 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color and opacity", async () => {
+test("color", async () => {
   await changeColor(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "meshPointsMenu", 50);
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "meshPointsMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "meshPointsMenu", 100);
 });

@@ -23,6 +23,7 @@ const inputFilename = "test.og_brep";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -66,10 +67,23 @@ test("polyhedron attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("color", async () => {
+  await changeColor(window, "modelStyleMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "modelStyleMenu", OPACITY_50);
+  await expect(window).toHaveScreenshot();
+});
+
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
+  const BRepRow = mainObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: "BRep" })
+    .first();
   await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
   await window.waitForTimeout(afterActionWait);
 
@@ -109,7 +123,9 @@ test("object tree model components", async () => {
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId(
+    "modelComponentsObjectTree",
+  );
 
   const BlocksRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -134,7 +150,11 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows
+      .nth(i)
+      .locator(".mdi-eye")
+      .first()
+      .click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
@@ -142,12 +162,4 @@ test("object tree model components", async () => {
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
-});
-
-test("color and opacity", async () => {
-  await changeColor(window, "modelStyleMenu");
-  await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "modelStyleMenu", 50);
-  await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "modelStyleMenu", 100);
 });

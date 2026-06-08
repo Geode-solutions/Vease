@@ -21,6 +21,7 @@ import { test } from "@tests/fixtures.js";
 const inputFilename = "test.og_rgd2d";
 let window = undefined;
 let cleanup = undefined;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -64,10 +65,12 @@ test("cell attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color and opacity", async () => {
+test("color", async () => {
   await changeColor(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "meshCellsMenu", 50);
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "meshCellsMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
-  await changeOpacity(window, "meshCellsMenu", 100);
 });
