@@ -61,4 +61,3 @@ test("polygon attribute", async () => {
   });
   await expect(window).toHaveScreenshot();
 });
-

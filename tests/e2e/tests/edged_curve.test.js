@@ -61,4 +61,3 @@ test("edge attribute", async () => {
   });
   await expect(window).toHaveScreenshot();
 });
-

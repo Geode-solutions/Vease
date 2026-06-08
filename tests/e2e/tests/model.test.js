@@ -64,7 +64,6 @@ test("polyhedron attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = window.getByTestId("mainObjectTree");
