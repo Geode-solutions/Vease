@@ -6,20 +6,21 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   afterActionWait,
-  applyAttribute,
   beforeAllTimeout,
   changeColor,
   changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
+  polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
+const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
@@ -60,10 +61,7 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await pointsVisibility(window, "model", false);
-  await applyAttribute(window, "modelStyleMenu", {
-    attributeType: "Polyhedron attribute",
-    attributeName: "tetrahedron_vertices",
-  });
+  await polyhedraAttribute(window, "modelStyleMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

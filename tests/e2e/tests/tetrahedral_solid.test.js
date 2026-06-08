@@ -5,20 +5,21 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  applyAttribute,
   beforeAllTimeout,
   changeColor,
   changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
+  polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tso3d";
+const attributeName = "tetrahedron_adjacents";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -58,10 +59,7 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await applyAttribute(window, "meshPolyhedraMenu", {
-    attributeType: "Polyhedron attribute",
-    attributeName: "tetrahedron_adjacents",
-  });
+  await polyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
 
