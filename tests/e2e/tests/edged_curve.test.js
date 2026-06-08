@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   applyAttribute,
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -60,4 +62,12 @@ test("edge attribute", async () => {
     attributeName: "edges",
   });
   await expect(window).toHaveScreenshot();
+});
+
+test("color and opacity", async () => {
+  await changeColor(window, "meshEdgesMenu");
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshEdgesMenu", 50);
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshEdgesMenu", 100);
 });

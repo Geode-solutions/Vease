@@ -24,9 +24,11 @@ const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
 
 const WAIT_TIMES = {
-  browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
+  browser:
+    (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
   cloud: CLOUD_WAIT * MILLISECONDS,
-  desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
+  desktop:
+    (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
 
 const beforeAllTimeout = 30_000;
@@ -34,6 +36,7 @@ const afterActionWait = 1500;
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
+const MAX_PERCENTAGE = 100;
 
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
@@ -41,7 +44,9 @@ function findAppExecutable() {
     console.log({ appExecutablePath });
     return path.join(appExecutablePath, executableName(packageJson.name));
   }
-  const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+  const buildPath = findLatestBuild(
+    path.join(process.cwd(), "release", "0.0.0"),
+  );
   return parseElectronApp(buildPath).executable;
 }
 
@@ -63,8 +68,12 @@ async function runDesktopBuild() {
     },
   });
 
-  electronApp.process().stdout.on("data", (data) => console.log(`stdout: ${data}`));
-  electronApp.process().stderr.on("data", (error) => console.log(`stderr: ${error}`));
+  electronApp
+    .process()
+    .stdout.on("data", (data) => console.log(`stdout: ${data}`));
+  electronApp
+    .process()
+    .stderr.on("data", (error) => console.log(`stderr: ${error}`));
 
   electronApp.on("close", (data) => {
     console.log("electronApp close", data);
@@ -93,7 +102,9 @@ async function navigateToApp(mode, browser) {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
-    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
+    console.log(
+      `Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`,
+    );
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => kill(nuxtPort) };
@@ -114,13 +125,17 @@ async function navigateToApp(mode, browser) {
     const button = await page.getByRole("button", { name: "Load the app" });
     console.log({ button });
     await button.click();
-    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+    console.log(
+      `Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`,
+    );
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+    console.log(
+      `Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`,
+    );
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return { window: firstWindow, cleanup: () => electronApp.close() };
@@ -134,10 +149,15 @@ async function loadData(window, inputFilename) {
   const inputFilePath = path.join(__dirname, "tests", "data", inputFilename);
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
-  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
+  const fileInput = window.locator(
+    `input[type="file"][accept*="${inputFileExtension}"]`,
+  );
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
-  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  await window
+    .getByRole("main")
+    .getByRole("button", { name: "Import", exact: true })
+    .click();
   const loadWorkflowTimeout = 8000;
   await window.waitForTimeout(loadWorkflowTimeout);
 }
@@ -150,21 +170,33 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function pointsVisibility(window, viewerObjectType, visibility) {
-  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
-  const switchTestId =
-    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
-
-  const pointsMenuButton = window.getByTestId(menuTestId);
+async function ensureMenuOpen(window, menuTestId) {
+  const menuButton = window.getByTestId(menuTestId);
   if (
-    !(await pointsMenuButton
+    !(await menuButton
       .locator("button.menu-btn")
       .evaluate((node) => node.classList.contains("v-btn--active")))
   ) {
-    await pointsMenuButton.click();
+    await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
-  await window.getByTestId(switchTestId).getByRole("checkbox")[visibility ? "check" : "uncheck"]();
+}
+
+async function pointsVisibility(window, viewerObjectType, visibility) {
+  const menuTestId =
+    viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
+  const switchTestId =
+    viewerObjectType === "model"
+      ? "modelPointsVisibilitySwitch"
+      : "meshPointsVisibilitySwitch";
+
+  await ensureMenuOpen(window, menuTestId);
+  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
+  if (visibility) {
+    await checkbox.check();
+  } else {
+    await checkbox.uncheck();
+  }
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -179,15 +211,7 @@ async function applyAttribute(
     max = undefined,
   } = {},
 ) {
-  const menuButton = window.getByTestId(menuTestId);
-  if (
-    !(await menuButton
-      .locator("button.menu-btn")
-      .evaluate((node) => node.classList.contains("v-btn--active")))
-  ) {
-    await menuButton.click();
-    await window.waitForTimeout(afterActionWait);
-  }
+  await ensureMenuOpen(window, menuTestId);
 
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
@@ -238,13 +262,19 @@ async function applyAttribute(
   }
 
   if (min !== undefined) {
-    const input = window.getByTestId("attributeMinInput").first().locator("input");
+    const input = window
+      .getByTestId("attributeMinInput")
+      .first()
+      .locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
   if (max !== undefined) {
-    const input = window.getByTestId("attributeMaxInput").first().locator("input");
+    const input = window
+      .getByTestId("attributeMaxInput")
+      .first()
+      .locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
@@ -259,10 +289,45 @@ async function vertexAttribute(window, menuTestId, options = {}) {
   });
 }
 
+async function changeColor(window, menuTestId) {
+  await ensureMenuOpen(window, menuTestId);
+  await window.getByTestId("coloringStyleSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: "Color", visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .getByTestId("colorPicker")
+    .locator(".v-color-picker-canvas")
+    .click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeOpacity(window, menuTestId, percent) {
+  await ensureMenuOpen(window, menuTestId);
+  const alphaSlider = window
+    .getByTestId("colorPicker")
+    .locator(".v-color-picker__alpha .v-slider__container");
+  const box = await alphaSlider.boundingBox();
+  await alphaSlider.click({
+    position: {
+      x: (box.width * percent) / MAX_PERCENTAGE,
+      y: box.height / 2,
+    },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,

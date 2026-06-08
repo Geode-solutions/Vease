@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   applyAttribute,
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -60,4 +62,12 @@ test("polyhedron attribute", async () => {
     attributeName: "test_attribute",
   });
   await expect(window).toHaveScreenshot();
+});
+
+test("color and opacity", async () => {
+  await changeColor(window, "meshPolyhedraMenu");
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshPolyhedraMenu", 50);
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshPolyhedraMenu", 100);
 });

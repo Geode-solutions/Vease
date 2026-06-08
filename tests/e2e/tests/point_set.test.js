@@ -6,6 +6,8 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -50,4 +52,12 @@ test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
+});
+
+test("color and opacity", async () => {
+  await changeColor(window, "meshPointsMenu");
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshPointsMenu", 50);
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshPointsMenu", 100);
 });

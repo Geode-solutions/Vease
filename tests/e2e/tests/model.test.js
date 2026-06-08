@@ -8,6 +8,8 @@ import {
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -140,4 +142,12 @@ test("object tree model components", async () => {
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
+});
+
+test("color and opacity", async () => {
+  await changeColor(window, "modelStyleMenu");
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "modelStyleMenu", 50);
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "modelStyleMenu", 100);
 });

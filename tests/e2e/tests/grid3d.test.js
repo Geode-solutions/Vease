@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   applyAttribute,
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -60,4 +62,12 @@ test("cell attribute", async () => {
     attributeName: "int_attribute",
   });
   await expect(window).toHaveScreenshot();
+});
+
+test("color and opacity", async () => {
+  await changeColor(window, "meshCellsMenu");
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshCellsMenu", 50);
+  await expect(window).toHaveScreenshot();
+  await changeOpacity(window, "meshCellsMenu", 100);
 });
