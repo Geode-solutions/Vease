@@ -9,13 +9,15 @@ import {
   loadData,
   navigateToApp,
   pointsVisibility,
+  polygonAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
+const attributeName = "triangle_adjacents";
 let window = undefined;
 let cleanup = undefined;
 
@@ -49,5 +51,11 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolygonsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygon attribute", async () => {
+  await pointsVisibility(window, "mesh", false);
+  await polygonAttribute(window, "meshPolygonsMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

@@ -6,16 +6,18 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  cellAttribute,
   loadData,
   navigateToApp,
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
+const attributeName = "RGB_data";
 let window = undefined;
 let cleanup = undefined;
 
@@ -49,5 +51,11 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshCellsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("cell attribute", async () => {
+  await pointsVisibility(window, "mesh", false);
+  await cellAttribute(window, "meshCellsMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

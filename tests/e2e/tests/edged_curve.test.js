@@ -6,16 +6,18 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  edgeAttribute,
   loadData,
   navigateToApp,
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
+const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
 
@@ -49,5 +51,11 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshEdgesMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute", async () => {
+  await pointsVisibility(window, "mesh", true);
+  await edgeAttribute(window, "meshEdgesMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

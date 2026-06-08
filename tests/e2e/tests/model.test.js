@@ -10,13 +10,15 @@ import {
   loadData,
   navigateToApp,
   pointsVisibility,
+  polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
+const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
@@ -51,6 +53,12 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "model", false);
   await vertexAttribute(window, "modelStyleMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedron attribute", async () => {
+  await pointsVisibility(window, "model", false);
+  await polyhedraAttribute(window, "modelStyleMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

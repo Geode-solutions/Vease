@@ -9,13 +9,15 @@ import {
   loadData,
   navigateToApp,
   pointsVisibility,
+  polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
+const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 
@@ -49,5 +51,11 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolyhedraMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedron attribute", async () => {
+  await pointsVisibility(window, "mesh", false);
+  await polyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
