@@ -56,6 +56,6 @@ test("vertex attribute", async () => {
 
 test("polygon attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await polygonAttribute(window, "meshPolygonsMenu", attribute_name);
+  await polygonAttribute(window, "meshPolygonsMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

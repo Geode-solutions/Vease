@@ -56,6 +56,6 @@ test("vertex attribute", async () => {
 
 test("cell attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await cellAttribute(window, "meshCellsMenu", attribute_name);
+  await cellAttribute(window, "meshCellsMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

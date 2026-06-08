@@ -56,6 +56,6 @@ test("vertex attribute", async () => {
 
 test("edge attribute", async () => {
   await pointsVisibility(window, "mesh", true);
-  await edgeAttribute(window, "meshEdgesMenu", attribute_name);
+  await edgeAttribute(window, "meshEdgesMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });

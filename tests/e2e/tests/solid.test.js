@@ -56,6 +56,6 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await polyhedraAttribute(window, "meshPolyhedraMenu", attribute_name);
+  await polyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
