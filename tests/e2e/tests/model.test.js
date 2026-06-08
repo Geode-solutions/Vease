@@ -6,6 +6,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   afterActionWait,
+  applyAttribute,
   beforeAllTimeout,
   loadData,
   navigateToApp,
@@ -53,6 +54,16 @@ test("vertex attribute", async () => {
   await vertexAttribute(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
+
+test("polyhedron attribute", async () => {
+  await pointsVisibility(window, "model", false);
+  await applyAttribute(window, "modelStyleMenu", {
+    attributeType: "Polyhedron attribute",
+    attributeName: "tetrahedron_vertices",
+  });
+  await expect(window).toHaveScreenshot();
+});
+
 
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");

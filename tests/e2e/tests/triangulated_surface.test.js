@@ -5,6 +5,7 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  applyAttribute,
   beforeAllTimeout,
   loadData,
   navigateToApp,
@@ -51,3 +52,13 @@ test("vertex attribute", async () => {
   await vertexAttribute(window, "meshPolygonsMenu");
   await expect(window).toHaveScreenshot();
 });
+
+test("polygon attribute", async () => {
+  await pointsVisibility(window, "mesh", false);
+  await applyAttribute(window, "meshPolygonsMenu", {
+    attributeType: "Polygon attribute",
+    attributeName: "triangle_adjacents",
+  });
+  await expect(window).toHaveScreenshot();
+});
+

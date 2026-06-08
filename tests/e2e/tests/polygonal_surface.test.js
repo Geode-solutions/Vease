@@ -5,6 +5,7 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  applyAttribute,
   beforeAllTimeout,
   loadData,
   navigateToApp,
@@ -49,5 +50,14 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolygonsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygon attribute", async () => {
+  await pointsVisibility(window, "mesh", false);
+  await applyAttribute(window, "meshPolygonsMenu", {
+    attributeType: "Polygon attribute",
+    attributeName: "test_attribute",
+  });
   await expect(window).toHaveScreenshot();
 });

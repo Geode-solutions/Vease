@@ -168,10 +168,16 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function vertexAttribute(
+async function applyAttribute(
   window,
   menuTestId,
-  { attributeName = "points", colorMap = undefined, min = undefined, max = undefined } = {},
+  {
+    attributeType = "Vertex attribute",
+    attributeName = "points",
+    colorMap = undefined,
+    min = undefined,
+    max = undefined,
+  } = {},
 ) {
   const menuButton = window.getByTestId(menuTestId);
   if (
@@ -188,7 +194,7 @@ async function vertexAttribute(
 
   await window
     .locator(".v-overlay-container")
-    .getByText("Vertex attribute")
+    .getByText(attributeType)
     .filter({ visible: true })
     .first()
     .click();
@@ -197,12 +203,22 @@ async function vertexAttribute(
   await window.getByTestId("attributeSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  await window
+  const option = window
     .locator(".v-overlay-container")
     .getByText(attributeName, { exact: true })
     .filter({ visible: true })
-    .first()
-    .click();
+    .first();
+
+  if ((await option.count()) > 0) {
+    await option.click();
+  } else {
+    await window
+      .locator(".v-overlay-container")
+      .locator(".v-list-item")
+      .filter({ visible: true })
+      .first()
+      .click();
+  }
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
@@ -236,8 +252,16 @@ async function vertexAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
+async function vertexAttribute(window, menuTestId, options = {}) {
+  await applyAttribute(window, menuTestId, {
+    attributeType: "Vertex attribute",
+    ...options,
+  });
+}
+
 export {
   afterActionWait,
+  applyAttribute,
   beforeAllTimeout,
   loadData,
   navigateToApp,
@@ -245,3 +269,4 @@ export {
   viewerContextMenu,
   vertexAttribute,
 };
+
