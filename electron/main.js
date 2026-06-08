@@ -7,14 +7,19 @@ import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanu
 
 // Local imports
 // oxlint-disable-next-line import/no-relative-parent-imports
-import { create_new_window } from "../utils/desktop.js";
+import { createNewWindow, parseArgs } from "../utils/desktop.js";
 
-autoUpdater.checkForUpdatesAndNotify();
+const appArgs = parseArgs();
+console.log(`App launched with args: ${appArgs}`);
+if (!appArgs.flags.includes("--no-update")) {
+  autoUpdater.checkForUpdatesAndNotify();
+}
+
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 let projectFolderPath = "";
 
 ipcMain.handle("new_window", () => {
-  create_new_window();
+  createNewWindow();
 });
 
 ipcMain.handle("project_folder_path", (_event, args) => {
@@ -23,7 +28,7 @@ ipcMain.handle("project_folder_path", (_event, args) => {
 });
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
-app.whenReady().then(() => create_new_window());
+app.whenReady().then(() => createNewWindow());
 
 let cleaned = false;
 

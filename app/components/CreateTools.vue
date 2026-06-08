@@ -127,7 +127,7 @@ watch(
 <style scoped>
 .back-btn {
   top: 0;
-  z-index: 10;
+  z-index: 2;
 }
 
 .custom-tool-card {
