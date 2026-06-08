@@ -13,7 +13,7 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_inteaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -65,7 +65,10 @@ test("polyhedron attribute", async () => {
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
+  const BRepRow = mainObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: "BRep" })
+    .first();
   await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
   await window.waitForTimeout(afterActionWait);
 
@@ -105,7 +108,9 @@ test("object tree model components", async () => {
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId(
+    "modelComponentsObjectTree",
+  );
 
   const BlocksRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -130,7 +135,11 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows
+      .nth(i)
+      .locator(".mdi-eye")
+      .first()
+      .click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }

@@ -1,5 +1,5 @@
-import { loadData } from "./utils/load.js";
-import { navigateToApp } from "./utils/navigate.js";
+import { loadData } from "./load.js";
+import { navigateToApp } from "./navigate.js";
 
 // Constants
 const beforeAllTimeout = 30_000;
@@ -26,9 +26,12 @@ async function ensureMenuOpen(window, menuTestId) {
 }
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
-  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
+  const menuTestId =
+    viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
   const switchTestId =
-    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
+    viewerObjectType === "model"
+      ? "modelPointsVisibilitySwitch"
+      : "meshPointsVisibilitySwitch";
 
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
@@ -43,7 +46,13 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
 async function applyAttribute(
   window,
   menuTestId,
-  { attributeType, attributeName, colorMap = undefined, min = undefined, max = undefined } = {},
+  {
+    attributeType,
+    attributeName,
+    colorMap = undefined,
+    min = undefined,
+    max = undefined,
+  } = {},
 ) {
   const menuButton = window.getByTestId(menuTestId);
   if (
@@ -104,13 +113,19 @@ async function applyAttribute(
   }
 
   if (min !== undefined) {
-    const input = window.getByTestId("attributeMinInput").first().locator("input");
+    const input = window
+      .getByTestId("attributeMinInput")
+      .first()
+      .locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
   if (max !== undefined) {
-    const input = window.getByTestId("attributeMaxInput").first().locator("input");
+    const input = window
+      .getByTestId("attributeMaxInput")
+      .first()
+      .locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
@@ -118,7 +133,12 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function vertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
+async function vertexAttribute(
+  window,
+  menuTestId,
+  attributeName = "points",
+  options = {},
+) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
     attributeName,
@@ -142,7 +162,12 @@ async function cellAttribute(window, menuTestId, attributeName, options = {}) {
   });
 }
 
-async function polygonAttribute(window, menuTestId, attributeName, options = {}) {
+async function polygonAttribute(
+  window,
+  menuTestId,
+  attributeName,
+  options = {},
+) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Polygon attribute",
     attributeName,
@@ -150,7 +175,12 @@ async function polygonAttribute(window, menuTestId, attributeName, options = {})
   });
 }
 
-async function polyhedraAttribute(window, menuTestId, attributeName, options = {}) {
+async function polyhedraAttribute(
+  window,
+  menuTestId,
+  attributeName,
+  options = {},
+) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Polyhedron attribute",
     attributeName,

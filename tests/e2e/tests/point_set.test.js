@@ -11,7 +11,7 @@ import {
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-} from "@tests/utils.js";
+} from "@tests/utils/viewer_inteaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
