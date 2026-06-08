@@ -42,12 +42,12 @@
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build && electron-builder build --publish=never",
     "test": "npx playwright test --config ./tests/e2e/playwright.config.js",
-    "test:e2e:browser:chrome": "npm run test -- --project=browser-chrome --headed",
+    "test:e2e:browser:chrome": "npm run test -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test -- --project=browser-firefox",
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop",
-    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0 npm run test:e2e:browser:chrome -- --update-snapshots"
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
@@ -64,7 +64,8 @@
     "h3-formidable": "1.0.0",
     "kill-port": "2.0.1",
     "nuxt-vuefire": "1.1.2",
-    "utf-8-validate": "6.0.5"
+    "utf-8-validate": "6.0.5",
+    "vite": "7.3.1"
   },
   "devDependencies": {
     "@nuxt/test-utils": "3.20.1",

@@ -9,10 +9,19 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
+<<<<<<< HEAD
   pointsMenuClick,
   setPointsSize,
   setPointsVisibility,
+=======
+  pointsVisibility,
+  vertexAttribute,
+>>>>>>> 5e02b942b808525db37b3051506ba246cee82ddd
   viewerContextMenu,
+  openFeatureMenu,
+  setFeatureVisibility,
+  setFeatureSizeOrWidth,
+  setFeatureColorRandom,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
@@ -21,6 +30,7 @@ const inputFilename = "test.og_brep";
 const viewerObjectType = "model";
 let window = undefined;
 let cleanup = undefined;
+const OFFSET = 10;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -40,7 +50,7 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
+  await window.mouse.click(0, 0); // close context menu
 });
 
 test("points visibility", async () => {
@@ -55,21 +65,29 @@ test("points size", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("vertex attribute", async () => {
+  await pointsVisibility(window, "model", false);
+  await vertexAttribute(window, "modelStyleMenu");
+  await expect(window).toHaveScreenshot();
+});
+
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
-  await BRepRow.locator(".mdi-menu-right").first().click();
-  await mainObjectTree.getByText("test").click({
-    button: "right",
-    position: {
-      x: 10,
-      y: 10,
-    },
+  await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
+  await window.waitForTimeout(afterActionWait);
+
+  const testItem = mainObjectTree.getByText("test").first();
+  const box = await testItem.boundingBox();
+  await testItem.dispatchEvent("contextmenu", {
+    button: 2,
+    clientX: box.x + OFFSET,
+    clientY: box.y + OFFSET,
   });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
+  await window.mouse.click(0, 0); // close context menu
 });
 
 test("edges visibility", async () => {
@@ -83,7 +101,16 @@ test("edges visibility", async () => {
   await modelEdgesVisibilitySwitch.check();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
+  await brepEdgesMenuButton.click();
+});
+
+test("edges width", async () => {
+  await openFeatureMenu(window, viewerObjectType, "Edges");
+  await setFeatureVisibility(window, viewerObjectType, "Edges", true);
+  await setFeatureSizeOrWidth(window, viewerObjectType, "Edges", 5);
+  await expect(window).toHaveScreenshot();
+  await openFeatureMenu(window, viewerObjectType, "Edges");
+  await window.waitForTimeout(afterActionWait);
 });
 
 test("object tree model components", async () => {
@@ -131,3 +158,67 @@ test("object tree model components", async () => {
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
+
+
+async function toggleModelTreeRow(window, rowName) {
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName });
+  await row.locator(".mdi-eye").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setModelTreeRowColorRandom(window, rowName) {
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName });
+  await row.click();
+  await window.waitForTimeout(afterActionWait);
+  const select = await window.getByLabel('Select a coloring style');
+  await select.click();
+  await window.getByRole('option', { name: 'Random color' }).click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+test("blocks visibility", async () => {
+  await toggleModelTreeRow(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Blocks"); // revert
+});
+
+test("blocks color", async () => {
+  await setModelTreeRowColorRandom(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners visibility", async () => {
+  await toggleModelTreeRow(window, "Corners");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Corners");
+});
+
+test("corners color", async () => {
+  await setModelTreeRowColorRandom(window, "Corners");
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines visibility", async () => {
+  await toggleModelTreeRow(window, "Lines");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Lines");
+});
+
+test("lines color", async () => {
+  await setModelTreeRowColorRandom(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces visibility", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Surfaces");
+});
+
+test("surfaces color", async () => {
+  await setModelTreeRowColorRandom(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+});
+

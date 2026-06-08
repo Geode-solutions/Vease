@@ -5,13 +5,19 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  afterActionWait,
   beforeAllTimeout,
   loadData,
   navigateToApp,
-  pointsMenuClick,
+pointsMenuClick,
   setPointsSize,
   setPointsVisibility,
+  vertexAttribute,
   viewerContextMenu,
+  openFeatureMenu,
+  setFeatureVisibility,
+  setFeatureSizeOrWidth,
+  setFeatureColorRandom,
 } from "@tests/utils.js";
 import { test } from "@tests/fixtures.js";
 
@@ -39,7 +45,7 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
+  await window.mouse.click(0, 0); // close context menu
 });
 
 test("points size", async () => {
@@ -52,4 +58,18 @@ test("points visibility", async () => {
   const visibility = false;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await pointsVisibility(window, "mesh", true);
+  await vertexAttribute(window, "meshPointsMenu");
+  await expect(window).toHaveScreenshot();
+
+test("points color", async () => {
+  await openFeatureMenu(window, viewerObjectType, "Points");
+  await setFeatureVisibility(window, viewerObjectType, "Points", true);
+  await setFeatureColorRandom(window);
+  await expect(window).toHaveScreenshot();
+  await openFeatureMenu(window, viewerObjectType, "Points");
+  await window.waitForTimeout(afterActionWait);
 });

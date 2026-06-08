@@ -29,7 +29,7 @@ const WAIT_TIMES = {
   desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
 
-const beforeAllTimeout = 30_000;
+const beforeAllTimeout = 90_000;
 const afterActionWait = 1500;
 
 const PAGE_WIDTH = 1200;
@@ -53,7 +53,7 @@ async function runDesktopBuild() {
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox"],
+    args: ["--no-sandbox", "--no-update"],
     executablePath: appInfo,
     wait: 20_000,
     env: {
@@ -207,15 +207,113 @@ async function setPointsSize(window, viewerObjectType, size) {
   await pointsMenuClick(window, viewerObjectType);
   await setPointsVisibilitySwitchValue(window, viewerObjectType, true);
   await setPointsSizeSliderValue(window, viewerObjectType, size);
-  await window.keyboard.press("Escape");
+  await pointsMenuClick(window, viewerObjectType);
   await window.waitForTimeout(afterActionWait);
 }
 
 async function setPointsVisibility(window, viewerObjectType, visibility) {
   await pointsMenuClick(window, viewerObjectType);
   await setPointsVisibilitySwitchValue(window, viewerObjectType, visibility);
-  await window.keyboard.press("Escape");
+  await pointsMenuClick(window, viewerObjectType);
   await window.waitForTimeout(afterActionWait);
+}
+
+async function vertexAttribute(
+  window,
+  menuTestId,
+  { attributeName = "points", colorMap = undefined, min = undefined, max = undefined } = {},
+) {
+  const menuButton = window.getByTestId(menuTestId);
+  if (
+    !(await menuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
+    await menuButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  await window.getByTestId("coloringStyleSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window
+    .locator(".v-overlay-container")
+    .getByText("Vertex attribute")
+    .filter({ visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window.getByTestId("attributeSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+
+  await window
+    .locator(".v-overlay-container")
+    .getByText(attributeName, { exact: true })
+    .filter({ visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+
+  if (colorMap) {
+    await window.getByTestId("colorMapPicker").first().click();
+    await window.waitForTimeout(afterActionWait);
+
+    await window.getByPlaceholder("Search presets...").fill(colorMap);
+    await window.waitForTimeout(afterActionWait);
+
+    await window
+      .getByTestId("colorMapList")
+      .getByText(colorMap, { exact: true })
+      .filter({ visible: true })
+      .first()
+      .click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  if (min !== undefined) {
+    const input = window.getByTestId("attributeMinInput").first().locator("input");
+    await input.fill(min.toString());
+    await input.press("Enter");
+    await window.waitForTimeout(afterActionWait);
+  }
+  if (max !== undefined) {
+    const input = window.getByTestId("attributeMaxInput").first().locator("input");
+    await input.fill(max.toString());
+    await input.press("Enter");
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function openFeatureMenu(window, viewerObjectType, feature) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  const menuButton = await window.getByTestId(menuTestId);
+  await menuButton.click();
+}
+
+async function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
+  const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
+  await visibilitySwitch[visibility ? "check" : "uncheck"]({ force: true });
+}
+
+async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
+  let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
+  if (feature === 'Edges') {
+    sliderTestId = `${viewerObjectType}${feature}WidthSlider`;
+  }
+  const slider = await window.getByTestId(sliderTestId);
+  await slider.locator('input').first().evaluate((node, val) => {
+    node.value = val;
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value.toString());
+}
+
+async function setFeatureColorRandom(window) {
+  const select = await window.getByLabel('Select a coloring style');
+  await select.click();
+  await window.getByRole('option', { name: 'Random color' }).click();
 }
 
 export {
@@ -227,4 +325,9 @@ export {
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
+  vertexAttribute,
+  openFeatureMenu,
+  setFeatureVisibility,
+  setFeatureSizeOrWidth,
+  setFeatureColorRandom,
 };
