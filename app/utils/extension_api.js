@@ -68,4 +68,8 @@ export const VeaseExtensionAPI = {
     infraStore.register_microservice(store);
     infraStore.create_connection();
   },
+  unregister_microservice(id) {
+    const infraStore = useInfraStore();
+    infraStore.unregister_microservice(id);
+  },
 };
