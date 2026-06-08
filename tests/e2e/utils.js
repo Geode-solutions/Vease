@@ -172,8 +172,8 @@ async function applyAttribute(
   window,
   menuTestId,
   {
-    attributeType = "Vertex attribute",
-    attributeName = "points",
+    attributeType,
+    attributeName,
     colorMap = undefined,
     min = undefined,
     max = undefined,
@@ -255,6 +255,7 @@ async function applyAttribute(
 async function vertexAttribute(window, menuTestId, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
+    attributeName: "points",
     ...options,
   });
 }
