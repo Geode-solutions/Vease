@@ -171,13 +171,7 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
 async function applyAttribute(
   window,
   menuTestId,
-  {
-    attributeType,
-    attributeName,
-    colorMap = undefined,
-    min = undefined,
-    max = undefined,
-  } = {},
+  { attributeType, attributeName, colorMap = undefined, min = undefined, max = undefined } = {},
 ) {
   const menuButton = window.getByTestId(menuTestId);
   if (
