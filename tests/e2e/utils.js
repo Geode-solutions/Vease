@@ -24,11 +24,9 @@ const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
 
 const WAIT_TIMES = {
-  browser:
-    (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
+  browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
   cloud: CLOUD_WAIT * MILLISECONDS,
-  desktop:
-    (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
 };
 
 const beforeAllTimeout = 30_000;
@@ -44,9 +42,7 @@ function findAppExecutable() {
     console.log({ appExecutablePath });
     return path.join(appExecutablePath, executableName(packageJson.name));
   }
-  const buildPath = findLatestBuild(
-    path.join(process.cwd(), "release", "0.0.0"),
-  );
+  const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
   return parseElectronApp(buildPath).executable;
 }
 
@@ -68,12 +64,8 @@ async function runDesktopBuild() {
     },
   });
 
-  electronApp
-    .process()
-    .stdout.on("data", (data) => console.log(`stdout: ${data}`));
-  electronApp
-    .process()
-    .stderr.on("data", (error) => console.log(`stderr: ${error}`));
+  electronApp.process().stdout.on("data", (data) => console.log(`stdout: ${data}`));
+  electronApp.process().stderr.on("data", (error) => console.log(`stderr: ${error}`));
 
   electronApp.on("close", (data) => {
     console.log("electronApp close", data);
@@ -102,9 +94,7 @@ async function navigateToApp(mode, browser) {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
-    console.log(
-      `Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`,
-    );
+    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => kill(nuxtPort) };
@@ -125,17 +115,13 @@ async function navigateToApp(mode, browser) {
     const button = await page.getByRole("button", { name: "Load the app" });
     console.log({ button });
     await button.click();
-    console.log(
-      `Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`,
-    );
+    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
     return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    console.log(
-      `Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`,
-    );
+    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return { window: firstWindow, cleanup: () => electronApp.close() };
@@ -149,15 +135,10 @@ async function loadData(window, inputFilename) {
   const inputFilePath = path.join(__dirname, "tests", "data", inputFilename);
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
-  const fileInput = window.locator(
-    `input[type="file"][accept*="${inputFileExtension}"]`,
-  );
+  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
-  await window
-    .getByRole("main")
-    .getByRole("button", { name: "Import", exact: true })
-    .click();
+  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
   const loadWorkflowTimeout = 8000;
   await window.waitForTimeout(loadWorkflowTimeout);
 }
@@ -183,12 +164,9 @@ async function ensureMenuOpen(window, menuTestId) {
 }
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
-  const menuTestId =
-    viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
+  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
   const switchTestId =
-    viewerObjectType === "model"
-      ? "modelPointsVisibilitySwitch"
-      : "meshPointsVisibilitySwitch";
+    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
 
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
@@ -203,13 +181,7 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
 async function applyAttribute(
   window,
   menuTestId,
-  {
-    attributeType,
-    attributeName,
-    colorMap = undefined,
-    min = undefined,
-    max = undefined,
-  } = {},
+  { attributeType, attributeName, colorMap = undefined, min = undefined, max = undefined } = {},
 ) {
   await ensureMenuOpen(window, menuTestId);
 
@@ -262,19 +234,13 @@ async function applyAttribute(
   }
 
   if (min !== undefined) {
-    const input = window
-      .getByTestId("attributeMinInput")
-      .first()
-      .locator("input");
+    const input = window.getByTestId("attributeMinInput").first().locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
   if (max !== undefined) {
-    const input = window
-      .getByTestId("attributeMaxInput")
-      .first()
-      .locator("input");
+    const input = window.getByTestId("attributeMaxInput").first().locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
@@ -301,11 +267,7 @@ async function changeColor(window, menuTestId) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await window
-    .getByTestId("colorPicker")
-    .locator(".v-color-picker-canvas")
-    .first()
-    .click();
+  await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
 }
 
