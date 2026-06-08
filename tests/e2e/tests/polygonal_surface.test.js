@@ -5,11 +5,11 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  applyAttribute,
   beforeAllTimeout,
   loadData,
   navigateToApp,
   pointsVisibility,
+  polygonAttribute,
   vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils.js";
@@ -17,6 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";
+const attribute_name = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 
@@ -55,9 +56,6 @@ test("vertex attribute", async () => {
 
 test("polygon attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await applyAttribute(window, "meshPolygonsMenu", {
-    attributeType: "Polygon attribute",
-    attributeName: "test_attribute",
-  });
+  await polygonAttribute(window, "meshPolygonsMenu", attribute_name);
   await expect(window).toHaveScreenshot();
 });

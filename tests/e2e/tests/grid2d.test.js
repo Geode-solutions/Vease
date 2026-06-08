@@ -5,8 +5,8 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  applyAttribute,
   beforeAllTimeout,
+  cellAttribute,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -17,6 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
+const attribute_name = "RGB_data";
 let window = undefined;
 let cleanup = undefined;
 
@@ -55,9 +56,6 @@ test("vertex attribute", async () => {
 
 test("cell attribute", async () => {
   await pointsVisibility(window, "mesh", false);
-  await applyAttribute(window, "meshCellsMenu", {
-    attributeType: "Cell attribute",
-    attributeName: "RGB_data",
-  });
+  await cellAttribute(window, "meshCellsMenu", attribute_name);
   await expect(window).toHaveScreenshot();
 });

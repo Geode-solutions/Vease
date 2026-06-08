@@ -5,8 +5,8 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  applyAttribute,
   beforeAllTimeout,
+  edgeAttribute,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -17,6 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
+const attribute_name = "edges";
 let window = undefined;
 let cleanup = undefined;
 
@@ -55,9 +56,6 @@ test("vertex attribute", async () => {
 
 test("edge attribute", async () => {
   await pointsVisibility(window, "mesh", true);
-  await applyAttribute(window, "meshEdgesMenu", {
-    attributeType: "Edge attribute",
-    attributeName: "edges",
-  });
+  await edgeAttribute(window, "meshEdgesMenu", attribute_name);
   await expect(window).toHaveScreenshot();
 });
