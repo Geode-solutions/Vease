@@ -6,6 +6,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -57,5 +58,10 @@ test("vertex attribute", async () => {
 test("polyhedron attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await polyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, "TetrahedralSolid3D");
   await expect(window).toHaveScreenshot();
 });

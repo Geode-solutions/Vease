@@ -6,6 +6,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -49,5 +50,10 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshPointsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, "PointSet3D");
   await expect(window).toHaveScreenshot();
 });

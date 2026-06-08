@@ -158,6 +158,17 @@ async function polyhedraAttribute(window, menuTestId, attributeName, options = {
   });
 }
 
+async function highlightData(window, category) {
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  const groupRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: category }).first();
+  await groupRow.locator(".mdi-menu-right").first().dispatchEvent("click");
+  await window.waitForTimeout(afterActionWait);
+
+  const testItem = mainObjectTree.getByText("test").first();
+  await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   applyAttribute,
@@ -171,4 +182,5 @@ export {
   cellAttribute,
   polygonAttribute,
   polyhedraAttribute,
+  highlightData,
 };

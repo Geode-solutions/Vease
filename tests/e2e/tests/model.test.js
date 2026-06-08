@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -137,5 +138,10 @@ test("object tree model components", async () => {
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, "BRep");
   await expect(window).toHaveScreenshot();
 });

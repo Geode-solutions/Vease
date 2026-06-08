@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import {
   beforeAllTimeout,
   cellAttribute,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -57,5 +58,10 @@ test("vertex attribute", async () => {
 test("cell attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await cellAttribute(window, "meshCellsMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, "RegularGrid2D");
   await expect(window).toHaveScreenshot();
 });
