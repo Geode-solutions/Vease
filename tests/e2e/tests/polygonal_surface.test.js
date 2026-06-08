@@ -17,7 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";
-const attribute_name = "test_attribute";
+const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 

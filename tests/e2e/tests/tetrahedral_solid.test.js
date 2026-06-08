@@ -17,7 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tso3d";
-const attribute_name = "tetrahedron_adjacents";
+const attributeName = "tetrahedron_adjacents";
 let window = undefined;
 let cleanup = undefined;
 

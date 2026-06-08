@@ -18,7 +18,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const attribute_name = "tetrahedron_vertices";
+const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;

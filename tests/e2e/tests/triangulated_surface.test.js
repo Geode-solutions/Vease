@@ -17,7 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
-const attribute_name = "triangle_adjacents";
+const attributeName = "triangle_adjacents";
 let window = undefined;
 let cleanup = undefined;
 

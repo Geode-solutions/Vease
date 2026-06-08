@@ -17,7 +17,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
-const attribute_name = "edges";
+const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
 
