@@ -158,7 +158,7 @@ test("object tree model components", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("object tree hover Lines category", async () => {
+test("object tree hover Lines", async () => {
   await hoverModelComponentRow(window, "Lines");
   await expect(window).toHaveScreenshot();
 });
