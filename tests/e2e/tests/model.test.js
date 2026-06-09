@@ -9,6 +9,9 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  expandComponentsType,
+  highlightData,
+  hoverModelComponentRow,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -82,11 +85,8 @@ test("opacity", async () => {
 
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
+  await expandComponentsType(window, "mainObjectTree", "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
-  await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
-  await window.waitForTimeout(afterActionWait);
-
   const testItem = mainObjectTree.getByText("test").first();
   const box = await testItem.boundingBox();
   await testItem.dispatchEvent("contextmenu", {
@@ -155,5 +155,15 @@ test("object tree model components", async () => {
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("object tree hover Lines category", async () => {
+  await hoverModelComponentRow(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("object tree hover first Surface", async () => {
+  await hoverModelComponentRow(window, "00000000-");
   await expect(window).toHaveScreenshot();
 });

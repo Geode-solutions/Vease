@@ -160,16 +160,27 @@ async function polyhedraAttribute(window, menuTestId, attributeName, options = {
 }
 
 async function highlightData(window, category) {
+  await expandComponentsType(window, "mainObjectTree", category);
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const groupRow = mainObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: category })
-    .first();
-  await groupRow.locator(".mdi-menu-right").first().dispatchEvent("click");
-  await window.waitForTimeout(afterActionWait);
-
   const testItem = mainObjectTree.getByText("test").first();
   await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function expandComponentsType(window, treeId, categoryName) {
+  const tree = window.getByTestId(treeId);
+  const row = tree.locator(".tree-row-wrapper").filter({ hasText: categoryName }).first();
+  const rightChevron = row.locator(".mdi-menu-right").first();
+  if ((await rightChevron.count()) > 0) {
+    await rightChevron.dispatchEvent("click");
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function hoverModelComponentRow(window, hasText) {
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText }).first();
+  await row.hover();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -221,4 +232,6 @@ export {
   polygonAttribute,
   polyhedraAttribute,
   highlightData,
+  expandComponentsType,
+  hoverModelComponentRow,
 };
