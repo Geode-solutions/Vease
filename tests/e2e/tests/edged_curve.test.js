@@ -35,6 +35,11 @@ test("load", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("highlight", async () => {
+  await highlightData(window, "EdgedCurve3D");
+  await expect(window).toHaveScreenshot();
+});
+
 test("viewer context menu", async () => {
   const x = 549,
     y = 210;
@@ -58,10 +63,5 @@ test("vertex attribute", async () => {
 test("edge attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await edgeAttribute(window, "meshEdgesMenu", attributeName);
-  await expect(window).toHaveScreenshot();
-});
-
-test("highlight", async () => {
-  await highlightData(window, "EdgedCurve3D");
   await expect(window).toHaveScreenshot();
 });

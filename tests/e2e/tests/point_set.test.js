@@ -33,6 +33,11 @@ test("load", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("highlight", async () => {
+  await highlightData(window, "PointSet3D");
+  await expect(window).toHaveScreenshot();
+});
+
 test("viewer context menu", async () => {
   const x = 549,
     y = 360;
@@ -50,10 +55,5 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshPointsMenu");
-  await expect(window).toHaveScreenshot();
-});
-
-test("highlight", async () => {
-  await highlightData(window, "PointSet3D");
   await expect(window).toHaveScreenshot();
 });

@@ -35,6 +35,11 @@ test("load", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("highlight", async () => {
+  await highlightData(window, "RegularGrid3D");
+  await expect(window).toHaveScreenshot();
+});
+
 test("viewer context menu", async () => {
   const x = 549,
     y = 360;
@@ -58,10 +63,5 @@ test("vertex attribute", async () => {
 test("cell attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await cellAttribute(window, "meshCellsMenu", attributeName);
-  await expect(window).toHaveScreenshot();
-});
-
-test("highlight", async () => {
-  await highlightData(window, "RegularGrid3D");
   await expect(window).toHaveScreenshot();
 });

@@ -37,6 +37,11 @@ test("load", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("highlight", async () => {
+  await highlightData(window, "BRep");
+  await expect(window).toHaveScreenshot();
+});
+
 test("viewer context menu", async () => {
   const x = 549,
     y = 360;
@@ -138,10 +143,5 @@ test("object tree model components", async () => {
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
-  await expect(window).toHaveScreenshot();
-});
-
-test("highlight", async () => {
-  await highlightData(window, "BRep");
   await expect(window).toHaveScreenshot();
 });
