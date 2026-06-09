@@ -8,6 +8,7 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,

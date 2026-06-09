@@ -9,6 +9,7 @@ import {
   cellAttribute,
   changeColor,
   changeOpacity,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
