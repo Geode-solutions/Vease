@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   beforeAllTimeout,
   cellAttribute,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -20,6 +22,7 @@ const inputFilename = "test.og_rgd3d";
 const attributeName = "int_attribute";
 let window = undefined;
 let cleanup = undefined;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -57,5 +60,15 @@ test("vertex attribute", async () => {
 test("cell attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await cellAttribute(window, "meshCellsMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("color", async () => {
+  await changeColor(window, "meshCellsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "meshCellsMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
 });

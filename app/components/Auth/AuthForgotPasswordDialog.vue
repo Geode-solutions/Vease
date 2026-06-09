@@ -4,7 +4,7 @@ import { emailRules } from "~/utils/validation.js";
 
 const show = defineModel({ type: Boolean, default: false });
 
-const email = defineModel("email");
+const email = defineModel("email", { type: String });
 
 const { loading } = defineProps({
   loading: { type: Boolean, default: false },

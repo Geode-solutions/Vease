@@ -6,6 +6,8 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -20,6 +22,7 @@ const inputFilename = "test.og_psf3d";
 const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -57,5 +60,15 @@ test("vertex attribute", async () => {
 test("polygon attribute", async () => {
   await pointsVisibility(window, "mesh", false);
   await polygonAttribute(window, "meshPolygonsMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("color", async () => {
+  await changeColor(window, "meshPolygonsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "meshPolygonsMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
