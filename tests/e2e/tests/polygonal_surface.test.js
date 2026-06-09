@@ -24,6 +24,7 @@ const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const geodeObjectType = "PolygonalSurface3D";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -39,7 +40,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, "PolygonalSurface3D");
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 

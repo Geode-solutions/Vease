@@ -24,6 +24,7 @@ const attributeName = "tetrahedron_adjacents";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const geodeObjectType = "TetrahedralSolid3D";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -39,7 +40,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, "TetrahedralSolid3D");
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 

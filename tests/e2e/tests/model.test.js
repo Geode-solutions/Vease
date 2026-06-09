@@ -28,6 +28,7 @@ let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
 const OPACITY_50 = 50;
+const geodeObjectType = "BRep";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -43,7 +44,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, "BRep");
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
@@ -158,12 +159,12 @@ test("object tree model components", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("object tree hover Lines", async () => {
+test("object tree hover lines", async () => {
   await hoverModelComponentRow(window, "Lines");
   await expect(window).toHaveScreenshot();
 });
 
-test("object tree hover first Surface", async () => {
+test("object tree hover first surface", async () => {
   await hoverModelComponentRow(window, "00000000-");
   await expect(window).toHaveScreenshot();
 });
