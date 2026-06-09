@@ -36,8 +36,8 @@ const stepper_tree = useStepperTree(
         component_options: {
           multiple: true,
           files,
-          auto_upload,
-          show_overlay: false,
+          autoUpload: auto_upload,
+          showOverlay: false,
         },
       },
       chips: computed(() => files.value.map((file) => file.name)),
@@ -58,7 +58,7 @@ const stepper_tree = useStepperTree(
         component_name: shallowRef(MissingFilesSelector),
         component_options: {
           multiple: true,
-          geode_object_type,
+          geodeObjectType: geode_object_type,
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
@@ -69,7 +69,7 @@ const stepper_tree = useStepperTree(
       component: {
         component_name: shallowRef(ImportFile),
         component_options: {
-          geode_object_type,
+          geodeObjectType: geode_object_type,
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
@@ -108,5 +108,5 @@ watch(
 </script>
 
 <template>
-  <Stepper :stepper_tree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
+  <Stepper :stepperTree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
 </template>

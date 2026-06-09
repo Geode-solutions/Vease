@@ -4,6 +4,7 @@ import { navigateToApp } from "./navigate.js";
 // Constants
 const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
+const MAX_PERCENTAGE = 100;
 
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
@@ -160,12 +161,47 @@ async function polyhedraAttribute(window, menuTestId, attributeName, options = {
 
 async function highlightData(window, category) {
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const groupRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: category }).first();
+  const groupRow = mainObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: category })
+    .first();
   await groupRow.locator(".mdi-menu-right").first().dispatchEvent("click");
   await window.waitForTimeout(afterActionWait);
 
   const testItem = mainObjectTree.getByText("test").first();
   await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeColor(window, menuTestId) {
+  await ensureMenuOpen(window, menuTestId);
+  await window.getByTestId("coloringStyleSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: "Color", visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeOpacity(window, menuTestId, percent) {
+  await ensureMenuOpen(window, menuTestId);
+  const alphaSlider = window
+    .getByTestId("colorPicker")
+    .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
+    .first();
+  const box = await alphaSlider.boundingBox();
+  await alphaSlider.click({
+    force: true,
+    position: {
+      x: (box.width * percent) / MAX_PERCENTAGE,
+      y: box.height / 2,
+    },
+  });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -175,6 +211,8 @@ export {
   beforeAllTimeout,
   loadData,
   navigateToApp,
+  changeColor,
+  changeOpacity,
   pointsVisibility,
   viewerContextMenu,
   vertexAttribute,

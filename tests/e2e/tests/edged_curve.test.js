@@ -6,6 +6,8 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  changeColor,
+  changeOpacity,
   edgeAttribute,
   highlightData,
   loadData,
@@ -21,6 +23,7 @@ const inputFilename = "test.og_edc3d";
 const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -63,5 +66,15 @@ test("vertex attribute", async () => {
 test("edge attribute", async () => {
   await pointsVisibility(window, "mesh", true);
   await edgeAttribute(window, "meshEdgesMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("color", async () => {
+  await changeColor(window, "meshEdgesMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "meshEdgesMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
 });

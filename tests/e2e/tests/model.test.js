@@ -7,7 +7,8 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  highlightData,
+  changeColor,
+  changeOpacity,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -23,6 +24,7 @@ const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
+const OPACITY_50 = 50;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -65,6 +67,16 @@ test("vertex attribute", async () => {
 test("polyhedron attribute", async () => {
   await pointsVisibility(window, "model", false);
   await polyhedraAttribute(window, "modelStyleMenu", attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("color", async () => {
+  await changeColor(window, "modelStyleMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("opacity", async () => {
+  await changeOpacity(window, "modelStyleMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
