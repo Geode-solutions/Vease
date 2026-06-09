@@ -1,11 +1,11 @@
 <script setup>
 const emit = defineEmits(["close"]);
-const { show_dialog } = defineProps({
-  show_dialog: { type: Boolean, required: true },
+const { showDialog } = defineProps({
+  showDialog: { type: Boolean, required: true },
 });
 
 const isVisible = computed({
-  get: () => show_dialog,
+  get: () => showDialog,
   set: (value) => {
     if (!value) {
       emit("close");

@@ -8,9 +8,9 @@ const { isLogin, loading } = defineProps({
 
 const error = defineModel("error", { type: String, default: "" });
 const successMessage = defineModel("successMessage", { type: String, default: "" });
-const email = defineModel("email");
-const password = defineModel("password");
-const confirmPassword = defineModel("confirmPassword");
+const email = defineModel("email", { type: String });
+const password = defineModel("password", { type: String });
+const confirmPassword = defineModel("confirmPassword", { type: String });
 
 const emit = defineEmits(["submit", "toggle-mode", "forgot-password"]);
 

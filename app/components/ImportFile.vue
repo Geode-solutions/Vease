@@ -4,9 +4,9 @@ import { useUIStore } from "@vease/stores/ui";
 
 const emit = defineEmits(["update_values", "increment_step", "decrement_step", "reset_values"]);
 
-const { filenames, geode_object_type } = defineProps({
+const { filenames, geodeObjectType } = defineProps({
   filenames: { type: Array, required: true },
-  geode_object_type: { type: String, required: true },
+  geodeObjectType: { type: String, required: true },
 });
 
 const UIStore = useUIStore();
@@ -21,7 +21,7 @@ async function import_files() {
   toggle_loading();
   const files_array = filenames.map((filename) => ({
     filename,
-    geode_object_type,
+    geode_object_type: geodeObjectType,
   }));
   try {
     await importWorkflow(files_array);
