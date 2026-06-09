@@ -216,6 +216,20 @@ async function changeOpacity(window, menuTestId, percent) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function dragContextMenu(window, targetX, targetY) {
+  const centerButton = window.getByTestId("circularMenuCenterButton");
+  const box = await centerButton.boundingBox();
+  const startX = box.x + box.width / 2;
+  const startY = box.y + box.height / 2;
+
+  await window.mouse.move(startX, startY);
+  await window.mouse.down();
+  await window.mouse.move(targetX ?? startX, targetY, { steps: 20 });
+  await window.mouse.up();
+
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   applyAttribute,
@@ -226,6 +240,7 @@ export {
   changeOpacity,
   pointsVisibility,
   viewerContextMenu,
+  dragContextMenu,
   vertexAttribute,
   edgeAttribute,
   cellAttribute,
