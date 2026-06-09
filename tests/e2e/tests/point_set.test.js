@@ -9,7 +9,7 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
-pointsMenuClick,
+  pointsMenuClick,
   setPointsSize,
   setPointsVisibility,
   vertexAttribute,
@@ -45,7 +45,6 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.mouse.click(0, 0); // close context menu
 });
 
 test("points size", async () => {
@@ -61,9 +60,10 @@ test("points visibility", async () => {
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", true);
+  await setPointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
+});
 
 test("points color", async () => {
   await openFeatureMenu(window, viewerObjectType, "Points");

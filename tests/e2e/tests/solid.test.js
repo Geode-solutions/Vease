@@ -22,14 +22,17 @@ pointsMenuClick,
 import { test } from "@tests/fixtures.js";
 
 // Constants
+test.describe.configure({ mode: 'serial' });
+
 const inputFilename = "test.og_hso3d";
 const viewerObjectType = "mesh";
 let window = undefined;
 let cleanup = undefined;
 
 test.beforeAll(async ({ mode, browser }) => {
+  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
-}, beforeAllTimeout);
+});
 
 test.afterAll(async () => {
   await cleanup?.();
@@ -45,7 +48,6 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.mouse.click(0, 0); // close context menu
 });
 
 test("points visibility", async () => {
@@ -60,8 +62,11 @@ test("points size", async () => {
   await expect(window).toHaveScreenshot();
   });
   test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
+  await setPointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolyhedraMenu");
+  await expect(window).toHaveScreenshot();
+});
+
 
 test("points color", async () => {
   await openFeatureMenu(window, viewerObjectType, "Points");

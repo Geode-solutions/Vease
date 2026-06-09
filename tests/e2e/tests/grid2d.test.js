@@ -45,7 +45,7 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.mouse.click(0, 0); // close context menu
+  await window.getByTestId("hybridViewer").locator("canvas").click({ position: { x: 10, y: 10 }, force: true });
 });
 
 test("points visibility", async () => {
@@ -61,9 +61,10 @@ test("points size", async () => {
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
+  await setPointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
+});
 
 test("points color", async () => {
   await openFeatureMenu(window, viewerObjectType, "Points");

@@ -9,14 +9,10 @@ import {
   beforeAllTimeout,
   loadData,
   navigateToApp,
-<<<<<<< HEAD
   pointsMenuClick,
   setPointsSize,
   setPointsVisibility,
-=======
-  pointsVisibility,
   vertexAttribute,
->>>>>>> 5e02b942b808525db37b3051506ba246cee82ddd
   viewerContextMenu,
   openFeatureMenu,
   setFeatureVisibility,
@@ -50,7 +46,7 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.mouse.click(0, 0); // close context menu
+  await window.getByTestId("hybridViewer").locator("canvas").click({ position: { x: 10, y: 10 }, force: true });
 });
 
 test("points visibility", async () => {
@@ -66,7 +62,7 @@ test("points size", async () => {
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "model", false);
+  await setPointsVisibility(window, "model", false);
   await vertexAttribute(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
@@ -87,7 +83,7 @@ test("object tree context menu", async () => {
   });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
-  await window.mouse.click(0, 0); // close context menu
+  await window.getByTestId("hybridViewer").locator("canvas").click({ position: { x: 10, y: 10 }, force: true });
 });
 
 test("edges visibility", async () => {

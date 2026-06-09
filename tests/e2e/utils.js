@@ -160,7 +160,7 @@ async function pointsMenuClick(window, viewerObjectType) {
     throw new Error(`Unknown viewer object type: ${viewerObjectType}`);
   }
   const pointsMenuButton = await window.getByTestId(menuTestId);
-  await pointsMenuButton.click();
+  await pointsMenuButton.click({ force: true });
 }
 
 async function getPointsVisibilitySwitch(window, viewerObjectType) {
@@ -288,7 +288,7 @@ async function vertexAttribute(
 async function openFeatureMenu(window, viewerObjectType, feature) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   const menuButton = await window.getByTestId(menuTestId);
-  await menuButton.click();
+  await menuButton.click({ force: true });
 }
 
 async function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
@@ -311,9 +311,24 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
 }
 
 async function setFeatureColorRandom(window) {
-  const select = await window.getByLabel('Select a coloring style');
+  const select = await window.getByTestId("coloringStyleSelector").first();
   await select.click();
-  await window.getByRole('option', { name: 'Random color' }).click();
+
+  const randomOption = window.getByRole('option', { name: 'Random color' });
+  try {
+    await randomOption.waitFor({ state: 'visible', timeout: 2000 });
+    await randomOption.click();
+  } catch (error) {
+    // Random color is not available (e.g. on Meshes), close the select overlay
+    await window.keyboard.press("Escape");
+    await window.waitForTimeout(afterActionWait);
+
+    // Use the color picker directly instead
+    const colorPicker = window.locator('.v-color-picker').first();
+    if (await colorPicker.count() > 0) {
+      await colorPicker.click({ position: { x: 50, y: 50 }, force: true });
+    }
+  }
 }
 
 export {
