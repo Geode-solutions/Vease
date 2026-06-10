@@ -10,6 +10,7 @@ import {
   changeColor,
   changeOpacity,
   expandComponentsType,
+  hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
   loadData,
@@ -126,12 +127,7 @@ test("object tree model components", async () => {
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
-  const BlocksRow = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "Blocks" });
-
-  await BlocksRow.locator(".mdi-eye").first().click();
-  await window.waitForTimeout(afterActionWait);
+  await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
