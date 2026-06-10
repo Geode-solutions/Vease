@@ -79,7 +79,7 @@ test("select RegularGrid3D and change color", async () => {
 });
 
 test("overlapping objects context menu at top", async () => {
-  await dragContextMenu(window, undefined, TARGET_TOP);
+  await dragContextMenu(window, { targetY: TARGET_TOP });
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });

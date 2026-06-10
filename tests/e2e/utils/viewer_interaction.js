@@ -227,7 +227,7 @@ async function dragElement(window, locator, { targetX, targetY, deltaX = 0, delt
   await window.waitForTimeout(afterActionWait);
 }
 
-async function dragContextMenu(window, targetX, targetY) {
+async function dragContextMenu(window, { targetX, targetY } = {}) {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await dragElement(window, centerButton, { targetX, targetY });
 }
