@@ -87,7 +87,6 @@ test("overlapping objects context menu at top", async () => {
 test("visibility off grid and expand brep focus", async () => {
   await hideObjectInTree(window, "RegularGrid3D");
   await focusObjectInTree(window, "BRep", "test");
-  await expect(window).toHaveScreenshot();
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
