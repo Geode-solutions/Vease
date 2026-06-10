@@ -38,7 +38,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup?.();
+  await cleanup();
 });
 
 test("load", async () => {
@@ -66,7 +66,7 @@ test("overlapping objects context menu", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("select RegularGrid3D and change color", async () => {
+test("select regulargrid3d and change color", async () => {
   await window
     .getByTestId("overlappingObjectsPicker")
     .locator(".v-list-item")
@@ -84,7 +84,7 @@ test("overlapping objects context menu at top", async () => {
   await window.keyboard.press("Escape");
 });
 
-test("visibility off grid and expand BRep focus", async () => {
+test("visibility off grid and expand brep focus", async () => {
   await hideObjectInTree(window, "RegularGrid3D");
   await focusObjectInTree(window, "BRep", "test");
   await expect(window).toHaveScreenshot();
