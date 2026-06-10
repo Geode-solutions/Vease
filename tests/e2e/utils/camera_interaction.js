@@ -7,15 +7,14 @@ async function resetCamera(window) {
 
 async function rotateCamera(window, deltaX, deltaY = 0) {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  const box = await canvas.boundingBox();
-  const centerX = box.x + box.width / 2;
-  const centerY = box.y + box.height / 2;
+  const { x, y, width, height } = await canvas.boundingBox();
+  const centerX = x + width / 2;
+  const centerY = y + height / 2;
 
   await window.mouse.move(centerX, centerY);
-  await window.mouse.down({ button: "left" });
+  await window.mouse.down();
   await window.mouse.move(centerX + deltaX, centerY + deltaY, { steps: 20 });
-  await window.mouse.up({ button: "left" });
-
+  await window.mouse.up();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -37,7 +36,6 @@ async function changeZScaling(window, zScaleValue) {
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
-
   await window.getByTestId("toolPanelActionButton").click();
   await window.waitForTimeout(afterActionWait);
 }

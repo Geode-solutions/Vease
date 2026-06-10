@@ -226,7 +226,6 @@ async function dragContextMenu(window, targetX, targetY) {
   await window.mouse.down();
   await window.mouse.move(targetX ?? startX, targetY, { steps: 20 });
   await window.mouse.up();
-
   await window.waitForTimeout(afterActionWait);
 }
 
