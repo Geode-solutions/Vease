@@ -320,7 +320,7 @@ async function setFeatureColorRandom(window) {
     await randomOption.click();
   } catch (error) {
     // Random color is not available (e.g. on Meshes), close the select overlay
-    await window.keyboard.press("Escape");
+    await select.click();
     await window.waitForTimeout(afterActionWait);
 
     // Use the color picker directly instead
