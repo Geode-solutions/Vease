@@ -216,17 +216,20 @@ async function changeOpacity(window, menuTestId, percent) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function dragContextMenu(window, targetX, targetY) {
-  const centerButton = window.getByTestId("circularMenuCenterButton");
-  const box = await centerButton.boundingBox();
-  const startX = box.x + box.width / 2;
-  const startY = box.y + box.height / 2;
-
+async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
+  const { x, y, width, height } = await locator.boundingBox();
+  const startX = x + width / 2;
+  const startY = y + height / 2;
   await window.mouse.move(startX, startY);
   await window.mouse.down();
-  await window.mouse.move(targetX ?? startX, targetY, { steps: 20 });
+  await window.mouse.move(targetX ?? startX + deltaX, targetY ?? startY + deltaY, { steps: 20 });
   await window.mouse.up();
   await window.waitForTimeout(afterActionWait);
+}
+
+async function dragContextMenu(window, targetX, targetY) {
+  const centerButton = window.getByTestId("circularMenuCenterButton");
+  await dragElement(window, centerButton, { targetX, targetY });
 }
 
 async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
@@ -248,21 +251,22 @@ export {
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
-  loadData,
-  navigateToApp,
+  cellAttribute,
   changeColor,
   changeOpacity,
-  pointsVisibility,
-  viewerContextMenu,
   dragContextMenu,
-  hideObjectInTree,
-  focusObjectInTree,
-  vertexAttribute,
+  dragElement,
   edgeAttribute,
-  cellAttribute,
+  expandComponentsType,
+  focusObjectInTree,
+  hideObjectInTree,
+  highlightData,
+  hoverModelComponentRow,
+  loadData,
+  navigateToApp,
+  pointsVisibility,
   polygonAttribute,
   polyhedraAttribute,
-  highlightData,
-  expandComponentsType,
-  hoverModelComponentRow,
+  vertexAttribute,
+  viewerContextMenu,
 };

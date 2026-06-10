@@ -1,4 +1,4 @@
-import { afterActionWait } from "./viewer_interaction.js";
+import { afterActionWait, dragElement } from "./viewer_interaction.js";
 
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
@@ -7,15 +7,7 @@ async function resetCamera(window) {
 
 async function rotateCamera(window, deltaX, deltaY = 0) {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  const { x, y, width, height } = await canvas.boundingBox();
-  const centerX = x + width / 2;
-  const centerY = y + height / 2;
-
-  await window.mouse.move(centerX, centerY);
-  await window.mouse.down();
-  await window.mouse.move(centerX + deltaX, centerY + deltaY, { steps: 20 });
-  await window.mouse.up();
-  await window.waitForTimeout(afterActionWait);
+  await dragElement(window, canvas, { deltaX, deltaY });
 }
 
 async function toggleCenterOnClick(window) {
