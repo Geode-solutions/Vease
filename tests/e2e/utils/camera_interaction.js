@@ -19,6 +19,11 @@ async function rotateCamera(window, deltaX, deltaY = 0) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function toggleCenterOnClick(window) {
+  await window.getByTestId("centerOnClickButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 async function toggleGridScale(window) {
   await window.getByTestId("gridScaleButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -37,4 +42,4 @@ async function changeZScaling(window, zScaleValue) {
   await window.waitForTimeout(afterActionWait);
 }
 
-export { resetCamera, rotateCamera, toggleGridScale, changeZScaling };
+export { changeZScaling, resetCamera, rotateCamera, toggleCenterOnClick, toggleGridScale };

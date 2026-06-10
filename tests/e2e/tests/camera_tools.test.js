@@ -19,6 +19,7 @@ import {
   changeZScaling,
   resetCamera,
   rotateCamera,
+  toggleCenterOnClick,
   toggleGridScale,
 } from "@tests/utils/camera_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -88,6 +89,16 @@ test("visibility off grid and expand BRep focus", async () => {
   await focusObjectInTree(window, "BRep", "test");
   await expect(window).toHaveScreenshot();
   await window.mouse.move(0, 0);
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("center on click", async () => {
+  await toggleCenterOnClick(window);
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  await canvas.click({
+    position: { x: 750, y: 250 },
+  });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
