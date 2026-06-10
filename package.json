@@ -59,6 +59,7 @@
     "bowser": "2.14.1",
     "broadcast-channel": "7.1.0",
     "bufferutil": "4.0.9",
+    "compare-versions": "6.1.1",
     "draggable": "4.2.0",
     "electron-updater": "6.6.2",
     "h3-formidable": "1.0.0",
