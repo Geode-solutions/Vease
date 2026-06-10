@@ -230,6 +230,21 @@ async function dragContextMenu(window, targetX, targetY) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+  const tree = window.getByTestId(treeTestId);
+  const row = tree.locator(".tree-row-wrapper").filter({ hasText: objectName });
+  await row.locator(".mdi-eye").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function focusObjectInTree(window, folderName, objectName) {
+  await expandComponentsType(window, "mainObjectTree", folderName);
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  const row = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: objectName }).first();
+  await row.locator("button:has(.mdi-target)").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   applyAttribute,
@@ -241,6 +256,8 @@ export {
   pointsVisibility,
   viewerContextMenu,
   dragContextMenu,
+  hideObjectInTree,
+  focusObjectInTree,
   vertexAttribute,
   edgeAttribute,
   cellAttribute,

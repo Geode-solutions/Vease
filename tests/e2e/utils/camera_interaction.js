@@ -1,8 +1,3 @@
-// Node imports
-
-// Third party imports
-
-// Local imports
 import { afterActionWait } from "./viewer_interaction.js";
 
 async function resetCamera(window) {
@@ -24,4 +19,22 @@ async function rotateCamera(window, deltaX, deltaY = 0) {
   await window.waitForTimeout(afterActionWait);
 }
 
-export { resetCamera, rotateCamera };
+async function toggleGridScale(window) {
+  await window.getByTestId("gridScaleButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeZScaling(window, zScaleValue) {
+  await window.getByTestId("zScalingButton").click();
+  await window.waitForTimeout(afterActionWait);
+
+  const input = window.getByTestId("zScaleInput").locator("input");
+  await input.fill(zScaleValue.toString());
+  await input.press("Enter");
+  await window.waitForTimeout(afterActionWait);
+
+  await window.getByTestId("toolPanelActionButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+export { resetCamera, rotateCamera, toggleGridScale, changeZScaling };
