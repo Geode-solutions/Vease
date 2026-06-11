@@ -9,6 +9,10 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  expandComponentsType,
+  hideObjectInTree,
+  highlightData,
+  hoverModelComponentRow,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -25,6 +29,7 @@ let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
 const OPACITY_50 = 50;
+const geodeObjectType = "BRep";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -36,6 +41,11 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
@@ -77,11 +87,8 @@ test("opacity", async () => {
 
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
+  await expandComponentsType(window, "mainObjectTree", "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const BRepRow = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "BRep" }).first();
-  await BRepRow.locator(".mdi-menu-right").first().dispatchEvent("click");
-  await window.waitForTimeout(afterActionWait);
-
   const testItem = mainObjectTree.getByText("test").first();
   const box = await testItem.boundingBox();
   await testItem.dispatchEvent("contextmenu", {
@@ -120,12 +127,7 @@ test("object tree model components", async () => {
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
-  const BlocksRow = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "Blocks" });
-
-  await BlocksRow.locator(".mdi-eye").first().click();
-  await window.waitForTimeout(afterActionWait);
+  await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -150,5 +152,15 @@ test("object tree model components", async () => {
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.hover();
   await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("object tree hover lines", async () => {
+  await hoverModelComponentRow(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("object tree hover first surface", async () => {
+  await hoverModelComponentRow(window, "00000000-");
   await expect(window).toHaveScreenshot();
 });

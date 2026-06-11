@@ -8,6 +8,7 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -21,6 +22,7 @@ const inputFilename = "test.og_pts3d";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const geodeObjectType = "PointSet3D";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -32,6 +34,11 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 

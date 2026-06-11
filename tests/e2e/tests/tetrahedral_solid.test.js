@@ -8,6 +8,7 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
@@ -23,6 +24,7 @@ const attributeName = "tetrahedron_adjacents";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const geodeObjectType = "TetrahedralSolid3D";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -34,6 +36,11 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expect(window).toHaveScreenshot();
+});
+
+test("highlight", async () => {
+  await highlightData(window, geodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
