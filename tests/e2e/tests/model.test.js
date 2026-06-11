@@ -19,6 +19,10 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
+
+  featureVisibility,
+  featureSizeOrWidth,
+  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -62,6 +66,12 @@ test("points visibility", async () => {
   await pointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
+    
+test("points size", async () => {
+  await featureSizeOrWidth(window, "model", "Points", 15);
+  await expect(window).toHaveScreenshot();
+});
+
 
 test("vertex attribute", async () => {
   await pointsVisibility(window, "model", false);
@@ -162,5 +172,72 @@ test("object tree hover lines", async () => {
 
 test("object tree hover first surface", async () => {
   await hoverModelComponentRow(window, "00000000-");
+  await expect(window).toHaveScreenshot();
+});
+
+
+async function toggleModelTreeRow(window, rowName) {
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName }).first();
+  await row.locator("button:has([class*='mdi-eye'])").first().click();
+  await window.waitForTimeout(1500);
+}
+
+async function setModelTreeRowColorRandom(window, rowName) {
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName }).first();
+  const label = row.locator('.tree-item-label').first();
+  const box = await label.boundingBox();
+  await label.dispatchEvent("contextmenu", {
+    button: 2,
+    clientX: box.x + 10,
+    clientY: box.y + 10,
+  });
+  await window.waitForTimeout(1500);
+  
+  await changeColor(window, "modelStyleMenu");
+}
+
+test("blocks visibility", async () => {
+  await toggleModelTreeRow(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Blocks"); // revert
+});
+
+test("blocks color", async () => {
+  await setModelTreeRowColorRandom(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners visibility", async () => {
+  await toggleModelTreeRow(window, "Corners");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Corners");
+});
+
+test("corners color", async () => {
+  await setModelTreeRowColorRandom(window, "Corners");
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines visibility", async () => {
+  await toggleModelTreeRow(window, "Lines");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Lines");
+});
+
+test("lines color", async () => {
+  await setModelTreeRowColorRandom(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces visibility", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Surfaces");
+});
+
+test("surfaces color", async () => {
+  await setModelTreeRowColorRandom(window, "Surfaces");
   await expect(window).toHaveScreenshot();
 });

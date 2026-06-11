@@ -14,6 +14,10 @@ import {
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
+
+  featureVisibility,
+  featureSizeOrWidth,
+  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -69,5 +73,10 @@ test("color", async () => {
 
 test("opacity", async () => {
   await changeOpacity(window, "meshPointsMenu", OPACITY_50);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points size", async () => {
+  await featureSizeOrWidth(window, "mesh", "Points", 15);
   await expect(window).toHaveScreenshot();
 });
