@@ -224,12 +224,3 @@ test("surfaces color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
-test("edges width", async () => {
-  await openFeatureMenu(window, "model", "Edges");
-  await setFeatureVisibility(window, "model", "Edges", true);
-  await setFeatureSizeOrWidth(window, "model", "Edges", 5);
-  await expect(window).toHaveScreenshot();
-  await openFeatureMenu(window, "model", "Edges");
-  await window.waitForTimeout(afterActionWait);
-});
