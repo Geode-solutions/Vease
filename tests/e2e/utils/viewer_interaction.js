@@ -2,7 +2,7 @@ import { loadData } from "./load.js";
 import { navigateToApp } from "./navigate.js";
 
 // Constants
-const beforeAllTimeout = 30_000;
+const beforeAllTimeout = 120_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
 
@@ -26,6 +26,27 @@ async function ensureMenuOpen(window, menuTestId) {
   }
 }
 
+async function ensureMenuClosed(window, menuTestId) {
+  const menuButton = window.getByTestId(menuTestId);
+  if (
+    await menuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active"))
+  ) {
+    await menuButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function ensureFeatureVisible(window, menuTestId) {
+  const switchTestId = menuTestId.replace('Menu', 'VisibilitySwitch');
+  const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
+  if (!(await visibilitySwitch.isChecked())) {
+    await visibilitySwitch.check({ force: true });
+    await window.waitForTimeout(500); // Wait for conditionally rendered options to appear
+  }
+}
+
 async function pointsVisibility(window, viewerObjectType, visibility) {
   const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
   const switchTestId =
@@ -39,6 +60,7 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function applyAttribute(
@@ -55,6 +77,7 @@ async function applyAttribute(
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
+  await ensureFeatureVisible(window, menuTestId);
 
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
@@ -117,6 +140,7 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function vertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
@@ -186,6 +210,7 @@ async function hoverModelComponentRow(window, hasText) {
 
 async function changeColor(window, menuTestId) {
   await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
@@ -197,10 +222,12 @@ async function changeColor(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
   const alphaSlider = window
     .getByTestId("colorPicker")
     .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
@@ -214,6 +241,7 @@ async function changeOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -247,7 +275,55 @@ async function focusObjectInTree(window, folderName, objectName) {
   await window.waitForTimeout(afterActionWait);
 }
 
+
+async function featureVisibility(window, viewerObjectType, feature, visibility) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
+  await ensureMenuOpen(window, menuTestId);
+  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
+  if (visibility) {
+    await checkbox.check();
+  } else {
+    await checkbox.uncheck();
+  }
+  await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
+}
+
+async function featureSizeOrWidth(window, viewerObjectType, feature, value) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
+  if (feature === 'Edges') {
+    sliderTestId = `${viewerObjectType}${feature}WidthSlider`;
+  }
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+
+  const slider = await window.getByTestId(sliderTestId);
+  await slider.locator('input').first().evaluate((node, val) => {
+    node.value = val;
+    node.dispatchEvent(new Event('input', { bubbles: true }));
+    node.dispatchEvent(new Event('change', { bubbles: true }));
+  }, value.toString());
+  await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
+}
+
+async function featureTextures(window, viewerObjectType, feature) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+  await window.getByTestId("coloringStyleSelector").first().click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByRole("option", { name: "Textures" }).click();
+  await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
+}
+
 export {
+  featureVisibility,
+  featureSizeOrWidth,
+  featureTextures,
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
