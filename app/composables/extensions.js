@@ -76,10 +76,10 @@ export function useExtensions() {
 
   async function updateExtensions() {
     console.log("[Extensions] Updating extensions...");
-    // if (process.env.NODE_ENV === "development") {
-    //   console.log("[Extensions] Skipping extension update in development mode");
-    //   return;
-    // }
+    if (process.env.NODE_ENV === "development") {
+      console.log("[Extensions] Skipping extension update in development mode");
+      return;
+    }
     const appStore = useAppStore();
     const loadedExtensions = appStore.getLoadedExtensions()
     const extensions = await allowedExtensions();
