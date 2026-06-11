@@ -45,7 +45,6 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.getByTestId("hybridViewer").locator("canvas").click({ position: { x: 10, y: 10 }, force: true });
 });
 
 test("points visibility", async () => {
@@ -63,6 +62,8 @@ test("points size", async () => {
   await setPointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolygonsMenu");
   await expect(window).toHaveScreenshot();
+  await window.getByTestId("meshPolygonsMenu").click();
+  await window.waitForTimeout(afterActionWait);
 });
 
 

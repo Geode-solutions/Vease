@@ -44,7 +44,6 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
-  await window.getByTestId("hybridViewer").locator("canvas").click({ position: { x: 10, y: 10 }, force: true });
 });
 
 test("points visibility", async () => {

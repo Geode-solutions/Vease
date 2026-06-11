@@ -65,6 +65,8 @@ test("vertex attribute", async () => {
   await setPointsVisibility(window, "model", false);
   await vertexAttribute(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
+  await window.getByTestId("modelStyleMenu").click();
+  await window.waitForTimeout(afterActionWait);
 });
 
 test("object tree context menu", async () => {
@@ -100,14 +102,7 @@ test("edges visibility", async () => {
   await brepEdgesMenuButton.click();
 });
 
-test("edges width", async () => {
-  await openFeatureMenu(window, viewerObjectType, "Edges");
-  await setFeatureVisibility(window, viewerObjectType, "Edges", true);
-  await setFeatureSizeOrWidth(window, viewerObjectType, "Edges", 5);
-  await expect(window).toHaveScreenshot();
-  await openFeatureMenu(window, viewerObjectType, "Edges");
-  await window.waitForTimeout(afterActionWait);
-});
+
 
 test("object tree model components", async () => {
   const mainObjectTree = window.getByTestId("mainObjectTree");
@@ -126,7 +121,7 @@ test("object tree model components", async () => {
     .locator(".tree-row-wrapper")
     .filter({ hasText: "Blocks" });
 
-  await BlocksRow.locator(".mdi-eye").first().click();
+  await BlocksRow.locator("button:has([class*='mdi-eye'])").first().click();
   await window.waitForTimeout(afterActionWait);
 
   const SurfacesRow = modelComponentsObjectTree
@@ -145,7 +140,7 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows.nth(i).locator("button:has([class*='mdi-eye'])").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
@@ -159,18 +154,29 @@ test("object tree model components", async () => {
 async function toggleModelTreeRow(window, rowName) {
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName });
-  await row.locator(".mdi-eye").first().click();
+  await row.locator("button:has([class*='mdi-eye'])").first().click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function setModelTreeRowColorRandom(window, rowName) {
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName });
-  await row.click();
+  const label = row.locator('.tree-item-label').first();
+  const box = await label.boundingBox();
+  await label.dispatchEvent("contextmenu", {
+    button: 2,
+    clientX: box.x + 10,
+    clientY: box.y + 10,
+  });
   await window.waitForTimeout(afterActionWait);
-  const select = await window.getByLabel('Select a coloring style');
+  const styleMenu = await window.getByTestId("modelStyleMenu");
+  await styleMenu.click();
+  await window.waitForTimeout(afterActionWait);
+  const select = await window.getByTestId('coloringStyleSelector');
   await select.click();
   await window.getByRole('option', { name: 'Random color' }).click();
+  await window.waitForTimeout(afterActionWait);
+  await styleMenu.click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -218,3 +224,12 @@ test("surfaces color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+
+test("edges width", async () => {
+  await openFeatureMenu(window, "model", "Edges");
+  await setFeatureVisibility(window, "model", "Edges", true);
+  await setFeatureSizeOrWidth(window, "model", "Edges", 5);
+  await expect(window).toHaveScreenshot();
+  await openFeatureMenu(window, "model", "Edges");
+  await window.waitForTimeout(afterActionWait);
+});

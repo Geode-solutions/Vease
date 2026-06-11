@@ -65,6 +65,8 @@ test("points size", async () => {
   await setPointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshPolyhedraMenu");
   await expect(window).toHaveScreenshot();
+  await window.getByTestId("meshPolyhedraMenu").click();
+  await window.waitForTimeout(afterActionWait);
 });
 
 

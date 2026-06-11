@@ -64,6 +64,8 @@ test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
   await vertexAttribute(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
+  await window.getByTestId("meshCellsMenu").click();
+  await window.waitForTimeout(afterActionWait);
 });
 
 test("points color", async () => {
@@ -110,3 +112,14 @@ test("cells color", async () => {
   await window.waitForTimeout(afterActionWait);
 });
 
+
+test("cells textures", async () => {
+  await openFeatureMenu(window, viewerObjectType, "Cells");
+  await setFeatureVisibility(window, viewerObjectType, "Cells", true);
+  const select = await window.getByTestId('coloringStyleSelector').first();
+  await select.click();
+  await window.getByRole('option', { name: 'Textures' }).click();
+  await expect(window).toHaveScreenshot();
+  await openFeatureMenu(window, viewerObjectType, "Cells");
+  await window.waitForTimeout(afterActionWait);
+});

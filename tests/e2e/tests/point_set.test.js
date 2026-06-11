@@ -63,6 +63,8 @@ test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", true);
   await vertexAttribute(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
+  await window.getByTestId("meshPointsMenu").click();
+  await window.waitForTimeout(afterActionWait);
 });
 
 test("points color", async () => {
