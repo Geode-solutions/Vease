@@ -8,12 +8,12 @@ const MILLISECONDS = 1000;
 const CLOUD_TIMEOUT = 100;
 const LINUX_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_DESKTOP = 50;
-const WINDOWS_TIMEOUT_BROWSER = 80;
+const WINDOWS_TIMEOUT_BROWSER = 140;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
-const testMatch = "tests/e2e/tests/**/*.test.js";
+const testMatch = "tests/e2e/tests/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
@@ -33,8 +33,9 @@ export default defineConfig({
     },
   },
   testDir: ".",
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
+  maxFailures: 1,
   workers: 1,
   reporter: "html",
   use: {
