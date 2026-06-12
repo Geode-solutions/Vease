@@ -262,7 +262,6 @@ async function focusObjectInTree(window, folderName, objectName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-
 function setEdgesVisibility(window, viewerObjectType, visibility) {
   return setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
 }
@@ -276,7 +275,6 @@ function setCellsVisibility(window, viewerObjectType, visibility) {
   return setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
 }
 async function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
-
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
   await ensureMenuOpen(window, menuTestId);
@@ -289,7 +287,6 @@ async function setFeatureVisibility(window, viewerObjectType, feature, visibilit
   await window.waitForTimeout(afterActionWait);
 }
 
-
 function setPointsSize(window, viewerObjectType, value) {
   return setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
 }
@@ -297,7 +294,6 @@ function setEdgesWidth(window, viewerObjectType, value) {
   return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
 }
 async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
-
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
   if (feature === "Edges") {
@@ -318,12 +314,10 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
   await window.waitForTimeout(afterActionWait);
 }
 
-
 function setPolygonsTextures(window, viewerObjectType) {
   return setFeatureTextures(window, viewerObjectType, "Polygons");
 }
 async function setFeatureTextures(window, viewerObjectType, feature) {
-
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
