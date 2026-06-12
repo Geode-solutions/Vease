@@ -10,9 +10,13 @@ import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
+import { useAuth } from "@vease/composables/auth";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
+
+const { autoLogin } = useAuth();
+autoLogin();
 
 function handleFilesDropped(files) {
   if (!UIStore.showStepper && !UIStore.showExtensions) {

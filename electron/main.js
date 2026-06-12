@@ -7,7 +7,7 @@ import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanu
 
 // Local imports
 // oxlint-disable-next-line import/no-relative-parent-imports
-import { createNewWindow, parseArgs } from "../utils/desktop.js";
+import { createNewWindow, deleteCredentials, getCredentials, parseArgs, saveCredentials } from "../utils/desktop.js";
 
 const appArgs = parseArgs();
 console.log(`App launched with args: ${appArgs}`);
@@ -25,6 +25,24 @@ ipcMain.handle("new_window", () => {
 ipcMain.handle("project_folder_path", (_event, args) => {
   ({ projectFolderPath } = args);
   console.log(`[Electron] Updated projectFolderPath: ${projectFolderPath}`);
+});
+
+ipcMain.handle("save_credentials", (_event, args) => {
+  const { email, password } = args;
+  console.log("Saving credentials", { email, password });
+  return saveCredentials(email, password);
+});
+
+ipcMain.handle("get_credentials", () => {
+  console.log("Getting credentials");
+  const credentials = getCredentials();
+  console.log("Retrieved credentials", credentials);
+  return credentials;
+});
+
+ipcMain.handle("delete_credentials", () => {
+  console.log("Deleting credentials");
+  return deleteCredentials();
 });
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
