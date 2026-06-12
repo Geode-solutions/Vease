@@ -12,9 +12,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     return ipcRenderer.invoke("save_credentials", args);
   },
   get_credentials: () => {
-    const credentials = ipcRenderer.invoke("get_credentials");
-    console.log("Credentials in preload", credentials);
-    return credentials;
+    return ipcRenderer.invoke("get_credentials");
   },
   delete_credentials: () => {
     return ipcRenderer.invoke("delete_credentials");
