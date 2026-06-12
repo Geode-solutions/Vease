@@ -28,18 +28,6 @@ async function ensureMenuOpen(window, menuTestId) {
   }
 }
 
-async function ensureMenuClosed(window, menuTestId) {
-  const menuButton = window.getByTestId(menuTestId);
-  if (
-    await menuButton
-      .locator("button.menu-btn")
-      .evaluate((node) => node.classList.contains("v-btn--active"))
-  ) {
-    await menuButton.click();
-    await window.waitForTimeout(afterActionWait);
-  }
-}
-
 async function ensureFeatureVisible(window, menuTestId) {
   const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
   const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
@@ -50,7 +38,7 @@ async function ensureFeatureVisible(window, menuTestId) {
   }
 }
 
-async function pointsVisibility(window, viewerObjectType, visibility) {
+async function setPointsVisibility(window, viewerObjectType, visibility) {
   const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
   const switchTestId =
     viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
@@ -63,7 +51,6 @@ async function pointsVisibility(window, viewerObjectType, visibility) {
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 async function applyAttribute(
@@ -143,10 +130,9 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
-async function vertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
+async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
     attributeName,
@@ -154,7 +140,7 @@ async function vertexAttribute(window, menuTestId, attributeName = "points", opt
   });
 }
 
-async function edgeAttribute(window, menuTestId, attributeName, options = {}) {
+async function setEdgeAttribute(window, menuTestId, attributeName, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Edge attribute",
     attributeName,
@@ -162,7 +148,7 @@ async function edgeAttribute(window, menuTestId, attributeName, options = {}) {
   });
 }
 
-async function cellAttribute(window, menuTestId, attributeName, options = {}) {
+async function setCellAttribute(window, menuTestId, attributeName, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Cell attribute",
     attributeName,
@@ -170,7 +156,7 @@ async function cellAttribute(window, menuTestId, attributeName, options = {}) {
   });
 }
 
-async function polygonAttribute(window, menuTestId, attributeName, options = {}) {
+async function setPolygonAttribute(window, menuTestId, attributeName, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Polygon attribute",
     attributeName,
@@ -178,7 +164,7 @@ async function polygonAttribute(window, menuTestId, attributeName, options = {})
   });
 }
 
-async function polyhedraAttribute(window, menuTestId, attributeName, options = {}) {
+async function setPolyhedraAttribute(window, menuTestId, attributeName, options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Polyhedron attribute",
     attributeName,
@@ -225,7 +211,6 @@ async function changeColor(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -244,7 +229,6 @@ async function changeOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -278,7 +262,21 @@ async function focusObjectInTree(window, folderName, objectName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function featureVisibility(window, viewerObjectType, feature, visibility) {
+
+function setEdgesVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
+}
+function setPolygonsVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Polygons", visibility);
+}
+function setPolyhedraVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Polyhedra", visibility);
+}
+function setCellsVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
+}
+async function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
   await ensureMenuOpen(window, menuTestId);
@@ -289,10 +287,17 @@ async function featureVisibility(window, viewerObjectType, feature, visibility) 
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
-async function featureSizeOrWidth(window, viewerObjectType, feature, value) {
+
+function setPointsSize(window, viewerObjectType, value) {
+  return setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
+}
+function setEdgesWidth(window, viewerObjectType, value) {
+  return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
+}
+async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
+
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
   if (feature === "Edges") {
@@ -311,10 +316,14 @@ async function featureSizeOrWidth(window, viewerObjectType, feature, value) {
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
-async function featureTextures(window, viewerObjectType, feature) {
+
+function setPolygonsTextures(window, viewerObjectType) {
+  return setFeatureTextures(window, viewerObjectType, "Polygons");
+}
+async function setFeatureTextures(window, viewerObjectType, feature) {
+
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
@@ -322,22 +331,25 @@ async function featureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
   await window.getByRole("option", { name: "Textures" }).click();
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 export {
-  featureVisibility,
-  featureSizeOrWidth,
-  featureTextures,
+  setEdgesVisibility,
+  setPolygonsVisibility,
+  setPolyhedraVisibility,
+  setCellsVisibility,
+  setPointsSize,
+  setEdgesWidth,
+  setPolygonsTextures,
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
-  cellAttribute,
+  setCellAttribute,
   changeColor,
   changeOpacity,
   dragContextMenu,
   dragElement,
-  edgeAttribute,
+  setEdgeAttribute,
   expandComponentsType,
   focusObjectInTree,
   hideObjectInTree,
@@ -345,9 +357,9 @@ export {
   hoverModelComponentRow,
   loadData,
   navigateToApp,
-  pointsVisibility,
-  polygonAttribute,
-  polyhedraAttribute,
-  vertexAttribute,
+  setPointsVisibility,
+  setPolygonAttribute,
+  setPolyhedraAttribute,
+  setVertexAttribute,
   viewerContextMenu,
 };
