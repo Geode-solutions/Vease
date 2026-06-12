@@ -8,15 +8,13 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  featureSizeOrWidth,
   highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-  featureVisibility,
-  featureSizeOrWidth,
-  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -25,6 +23,7 @@ const inputFilename = "test.og_pts3d";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
 const geodeObjectType = "PointSet3D";
 
 test.beforeAll(async ({ mode, browser }) => {
@@ -76,6 +75,6 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "mesh", "Points", 15);
+  await featureSizeOrWidth(window, "mesh", "Points", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
