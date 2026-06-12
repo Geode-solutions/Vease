@@ -8,12 +8,13 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
-  featureSizeOrWidth,
+  setPointsSize,
+  setEdgesWidth,
   highlightData,
   loadData,
   navigateToApp,
-  pointsVisibility,
-  vertexAttribute,
+  setPointsVisibility,
+  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -54,13 +55,13 @@ test("viewer context menu", async () => {
 test("points visibility", async () => {
   const viewerObjectType = "mesh",
     visibility = false;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", true);
-  await vertexAttribute(window, "meshPointsMenu");
+  await setPointsVisibility(window, "mesh", true);
+  await setVertexAttribute(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
 });
 
@@ -75,6 +76,6 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "mesh", "Points", POINTS_SIZE);
+  await setPointsSize(window, "mesh", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });

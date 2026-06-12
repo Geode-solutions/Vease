@@ -10,15 +10,16 @@ import {
   changeColor,
   changeOpacity,
   expandComponentsType,
-  featureSizeOrWidth,
+  setPointsSize,
+  setEdgesWidth,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
   loadData,
   navigateToApp,
-  pointsVisibility,
-  polyhedraAttribute,
-  vertexAttribute,
+  setPointsVisibility,
+  setPolyhedraAttribute,
+  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -61,24 +62,24 @@ test("viewer context menu", async () => {
 test("points visibility", async () => {
   const viewerObjectType = "model",
     visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "model", "Points", POINTS_SIZE);
+  await setPointsSize(window, "model", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "model", false);
-  await vertexAttribute(window, "modelStyleMenu");
+  await setPointsVisibility(window, "model", false);
+  await setVertexAttribute(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
-  await pointsVisibility(window, "model", false);
-  await polyhedraAttribute(window, "modelStyleMenu", attributeName);
+  await setPointsVisibility(window, "model", false);
+  await setPolyhedraAttribute(window, "modelStyleMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

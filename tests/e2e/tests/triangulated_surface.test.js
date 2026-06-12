@@ -8,15 +8,19 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
-  featureSizeOrWidth,
-  featureTextures,
-  featureVisibility,
+  setPointsSize,
+  setEdgesWidth,
+  setPolygonsTextures,
+  setEdgesVisibility,
+  setPolygonsVisibility,
+  setPolyhedraVisibility,
+  setCellsVisibility,
   highlightData,
   loadData,
   navigateToApp,
-  pointsVisibility,
-  polygonAttribute,
-  vertexAttribute,
+  setPointsVisibility,
+  setPolygonAttribute,
+  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -59,19 +63,19 @@ test("viewer context menu", async () => {
 test("points visibility", async () => {
   const viewerObjectType = "mesh",
     visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
-  await vertexAttribute(window, "meshPolygonsMenu");
+  await setPointsVisibility(window, "mesh", false);
+  await setVertexAttribute(window, "meshPolygonsMenu");
   await expect(window).toHaveScreenshot();
 });
 
 test("polygon attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
-  await polygonAttribute(window, "meshPolygonsMenu", attributeName);
+  await setPointsVisibility(window, "mesh", false);
+  await setPolygonAttribute(window, "meshPolygonsMenu", attributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -86,28 +90,28 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "mesh", "Points", POINTS_SIZE);
+  await setPointsSize(window, "mesh", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await featureSizeOrWidth(window, "mesh", "Edges", EDGES_WIDTH);
+  await setEdgesWidth(window, "mesh", EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await featureVisibility(window, "mesh", "Edges", false);
+  await setEdgesVisibility(window, "mesh", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Edges", true);
+  await setEdgesVisibility(window, "mesh", true);
 });
 
 test("polygons visibility", async () => {
-  await featureVisibility(window, "mesh", "Polygons", false);
+  await setPolygonsVisibility(window, "mesh", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Polygons", true);
+  await setPolygonsVisibility(window, "mesh", true);
 });
 
 test("polygons textures", async () => {
-  await featureTextures(window, "mesh", "Polygons");
+  await setPolygonsTextures(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
