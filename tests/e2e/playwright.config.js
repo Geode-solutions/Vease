@@ -35,7 +35,6 @@ export default defineConfig({
   testDir: ".",
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
-  maxFailures: 1,
   workers: 1,
   reporter: "html",
   use: {
