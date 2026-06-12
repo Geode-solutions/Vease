@@ -15,7 +15,6 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-
   featureVisibility,
   featureSizeOrWidth,
   featureTextures,

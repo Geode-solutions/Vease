@@ -19,7 +19,6 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-
   featureVisibility,
   featureSizeOrWidth,
   featureTextures,
@@ -66,12 +65,11 @@ test("points visibility", async () => {
   await pointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
-    
+
 test("points size", async () => {
   await featureSizeOrWidth(window, "model", "Points", 15);
   await expect(window).toHaveScreenshot();
 });
-
 
 test("vertex attribute", async () => {
   await pointsVisibility(window, "model", false);
@@ -175,18 +173,23 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
 async function toggleModelTreeRow(window, rowName) {
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
-  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName }).first();
+  const row = modelComponentsObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: rowName })
+    .first();
   await row.locator("button:has([class*='mdi-eye'])").first().click();
   await window.waitForTimeout(1500);
 }
 
 async function setModelTreeRowColorRandom(window, rowName) {
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
-  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText: rowName }).first();
-  const label = row.locator('.tree-item-label').first();
+  const row = modelComponentsObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: rowName })
+    .first();
+  const label = row.locator(".tree-item-label").first();
   const box = await label.boundingBox();
   await label.dispatchEvent("contextmenu", {
     button: 2,
@@ -194,7 +197,7 @@ async function setModelTreeRowColorRandom(window, rowName) {
     clientY: box.y + 10,
   });
   await window.waitForTimeout(1500);
-  
+
   await changeColor(window, "modelStyleMenu");
 }
 

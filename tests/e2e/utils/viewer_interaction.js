@@ -39,7 +39,7 @@ async function ensureMenuClosed(window, menuTestId) {
 }
 
 async function ensureFeatureVisible(window, menuTestId) {
-  const switchTestId = menuTestId.replace('Menu', 'VisibilitySwitch');
+  const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
   const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
@@ -275,7 +275,6 @@ async function focusObjectInTree(window, folderName, objectName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-
 async function featureVisibility(window, viewerObjectType, feature, visibility) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
@@ -293,18 +292,21 @@ async function featureVisibility(window, viewerObjectType, feature, visibility) 
 async function featureSizeOrWidth(window, viewerObjectType, feature, value) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
-  if (feature === 'Edges') {
+  if (feature === "Edges") {
     sliderTestId = `${viewerObjectType}${feature}WidthSlider`;
   }
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
   const slider = await window.getByTestId(sliderTestId);
-  await slider.locator('input').first().evaluate((node, val) => {
-    node.value = val;
-    node.dispatchEvent(new Event('input', { bubbles: true }));
-    node.dispatchEvent(new Event('change', { bubbles: true }));
-  }, value.toString());
+  await slider
+    .locator("input")
+    .first()
+    .evaluate((node, val) => {
+      node.value = val;
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(new Event("change", { bubbles: true }));
+    }, value.toString());
   await window.waitForTimeout(afterActionWait);
   await ensureMenuClosed(window, menuTestId);
 }

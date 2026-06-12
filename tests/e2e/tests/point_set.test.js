@@ -14,7 +14,6 @@ import {
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-
   featureVisibility,
   featureSizeOrWidth,
   featureTextures,

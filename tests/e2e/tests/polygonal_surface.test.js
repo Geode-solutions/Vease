@@ -15,7 +15,6 @@ import {
   polygonAttribute,
   vertexAttribute,
   viewerContextMenu,
-
   featureVisibility,
   featureSizeOrWidth,
   featureTextures,
