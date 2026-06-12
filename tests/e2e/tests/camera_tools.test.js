@@ -219,4 +219,3 @@ test("screenshot clipboard with background", async () => {
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
-
