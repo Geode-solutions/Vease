@@ -9,15 +9,14 @@ import {
   cellAttribute,
   changeColor,
   changeOpacity,
+  featureSizeOrWidth,
+  featureVisibility,
   highlightData,
   loadData,
   navigateToApp,
   pointsVisibility,
   vertexAttribute,
   viewerContextMenu,
-  featureVisibility,
-  featureSizeOrWidth,
-  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -27,6 +26,8 @@ const attributeName = "RGB_data";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
+const EDGES_WIDTH = 5;
 const geodeObjectType = "RegularGrid2D";
 
 test.beforeAll(async ({ mode, browser }) => {
@@ -84,23 +85,25 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "mesh", "Points", 15);
+  await featureSizeOrWidth(window, "mesh", "Points", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await featureSizeOrWidth(window, "mesh", "Edges", 5);
+  await featureSizeOrWidth(window, "mesh", "Edges", EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
   await featureVisibility(window, "mesh", "Edges", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Edges", true); // revert
+  // Revert
+  await featureVisibility(window, "mesh", "Edges", true);
 });
 
 test("cells visibility", async () => {
   await featureVisibility(window, "mesh", "Cells", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Cells", true); // revert
+  // Revert
+  await featureVisibility(window, "mesh", "Cells", true);
 });

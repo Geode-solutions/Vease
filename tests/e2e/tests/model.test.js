@@ -10,6 +10,7 @@ import {
   changeColor,
   changeOpacity,
   expandComponentsType,
+  featureSizeOrWidth,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
@@ -19,9 +20,6 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-  featureVisibility,
-  featureSizeOrWidth,
-  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -32,6 +30,7 @@ let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";
 
 test.beforeAll(async ({ mode, browser }) => {
@@ -67,7 +66,7 @@ test("points visibility", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "model", "Points", 15);
+  await featureSizeOrWidth(window, "model", "Points", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
@@ -173,18 +172,18 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-async function toggleModelTreeRow(window, rowName) {
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+async function toggleModelTreeRow(appWindow, rowName) {
+  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
     .first();
   await row.locator("button:has([class*='mdi-eye'])").first().click();
-  await window.waitForTimeout(1500);
+  await appWindow.waitForTimeout(afterActionWait);
 }
 
-async function setModelTreeRowColorRandom(window, rowName) {
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+async function setModelTreeRowColorRandom(appWindow, rowName) {
+  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
@@ -193,18 +192,19 @@ async function setModelTreeRowColorRandom(window, rowName) {
   const box = await label.boundingBox();
   await label.dispatchEvent("contextmenu", {
     button: 2,
-    clientX: box.x + 10,
-    clientY: box.y + 10,
+    clientX: box.x + OFFSET,
+    clientY: box.y + OFFSET,
   });
-  await window.waitForTimeout(1500);
+  await appWindow.waitForTimeout(afterActionWait);
 
-  await changeColor(window, "modelStyleMenu");
+  await changeColor(appWindow, "modelStyleMenu");
 }
 
 test("blocks visibility", async () => {
   await toggleModelTreeRow(window, "Blocks");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Blocks"); // revert
+  // Revert
+  await toggleModelTreeRow(window, "Blocks");
 });
 
 test("blocks color", async () => {
