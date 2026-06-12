@@ -3,7 +3,7 @@ import { loadData } from "./load.js";
 import { navigateToApp } from "./navigate.js";
 
 // Constants
-const beforeAllTimeout = 120_000;
+const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
