@@ -79,5 +79,3 @@ export {
   selectCameraOrientation,
   restoreCameraPosition,
 };
-
-
