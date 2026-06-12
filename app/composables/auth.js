@@ -1,4 +1,3 @@
-
 // Third-party imports
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { appMode } from "@ogw_front/utils/local/app_mode";
@@ -7,8 +6,6 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
-
-
 
 function useAuth() {
   const auth = useFirebaseAuth();
@@ -69,7 +66,8 @@ function useAuth() {
     if (infraStore.app_mode === appMode.DESKTOP) {
       console.log("Saving credentials for desktop mode");
       globalThis.electronAPI.save_credentials({
-        email, password
+        email,
+        password,
       });
     }
     return loggedInUser;

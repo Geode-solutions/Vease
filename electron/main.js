@@ -7,7 +7,13 @@ import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanu
 
 // Local imports
 // oxlint-disable-next-line import/no-relative-parent-imports
-import { createNewWindow, deleteCredentials, getCredentials, parseArgs, saveCredentials } from "../utils/desktop.js";
+import {
+  createNewWindow,
+  deleteCredentials,
+  getCredentials,
+  parseArgs,
+  saveCredentials,
+} from "../utils/desktop.js";
 
 const appArgs = parseArgs();
 console.log(`App launched with args: ${appArgs}`);
