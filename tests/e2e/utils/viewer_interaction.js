@@ -191,7 +191,7 @@ async function changeColor(window, menuTestId) {
   await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
-    .filter({ hasText: "Color", visible: true })
+    .filter({ hasText: "Constant", visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
