@@ -22,7 +22,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 5
+const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -106,10 +106,10 @@ async function navigateToApp(mode, browser) {
     if (branch === "next") {
       prefix = "next.";
     }
-    
+
     const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
     await page.goto(`https://${prefix}vease.geode-solutions.com`, {
-      waitUntil: 'domcontentloaded',
+      waitUntil: "domcontentloaded",
       timeout: navigationTimeout,
     });
 
