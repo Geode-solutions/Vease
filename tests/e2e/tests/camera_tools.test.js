@@ -11,14 +11,22 @@ import {
   dragContextMenu,
   focusObjectInTree,
   hideObjectInTree,
+  hoverViewerCenter,
   loadData,
   navigateToApp,
+  showObjectInTree,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
+  closeCameraManager,
   resetCamera,
+  restoreCameraPosition,
   rotateCamera,
+  saveCameraPosition,
+  selectCameraOrientation,
+  toggleCameraManager,
+  toggleCameraOrientation,
   toggleCenterOnClick,
   toggleGridScale,
 } from "@tests/utils/camera_interaction.js";
@@ -111,4 +119,79 @@ test("z scaling value 6.6", async () => {
   await changeZScaling(window, ZSCALE_VALUE);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
+});
+
+test("save camera position", async () => {
+  await toggleCameraManager(window);
+  await saveCameraPosition(window, "angle 1");
+  await expect(window).toHaveScreenshot();
+  await closeCameraManager(window);
+});
+
+test("camera orientation", async () => {
+  await toggleCameraOrientation(window);
+  await selectCameraOrientation(window, "X+");
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("z scaling value 1", async () => {
+  await changeZScaling(window, 1);
+  await resetCamera(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cells hover highlight on brep", async () => {
+  await window.getByTestId("highlightOnHoverButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("highlightOnHoverButtonCells").click();
+  await window.waitForTimeout(afterActionWait);
+  await hoverViewerCenter(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("points hover highlight on brep", async () => {
+  await window.getByTestId("highlightOnHoverButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("highlightOnHoverButtonPoints").click();
+  await window.waitForTimeout(afterActionWait);
+  await hoverViewerCenter(window);
+  await expect(window).toHaveScreenshot();
+  await window.getByTestId("hoverHighlightChip").click();
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("highlight cells on grid", async () => {
+  await showObjectInTree(window, "RegularGrid3D");
+  await hideObjectInTree(window, "BRep");
+  await resetCamera(window);
+  await window.getByTestId("highlightOnHoverButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("highlightOnHoverButtonCells").click();
+  await window.waitForTimeout(afterActionWait);
+  await hoverViewerCenter(window);
+  await expect(window).toHaveScreenshot();
+  await window.getByTestId("highlightOnHoverButton").click();
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("highlight points on grid", async () => {
+  await window.getByTestId("highlightOnHoverButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("highlightOnHoverButtonPoints").click();
+  await window.waitForTimeout(afterActionWait);
+  await hoverViewerCenter(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("restore camera position", async () => {
+  await toggleCameraManager(window);
+  await restoreCameraPosition(window, "angle 1");
+  await expect(window).toHaveScreenshot();
+  await closeCameraManager(window);
 });
