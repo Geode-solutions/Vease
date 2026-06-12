@@ -12,7 +12,9 @@ async function loadData(window, inputFilename) {
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
-  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  const finalizeButton = window.getByTestId("finalizeImportButton");
+  await finalizeButton.waitFor({ state: "visible", timeout: 15_000 });
+  await finalizeButton.click();
   const loadWorkflowTimeout = 8000;
   await window.waitForTimeout(loadWorkflowTimeout);
 }

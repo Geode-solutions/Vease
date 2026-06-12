@@ -16,12 +16,59 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function findOverlappingObjectsPicker(window) {
+  let found = false;
+  const points = [
+    {x: 440, y: 530}, {x: 600, y: 400}, {x: 600, y: 500}, {x: 600, y: 300},
+    {x: 500, y: 400}, {x: 700, y: 400}, {x: 550, y: 450}, {x: 650, y: 350},
+    {x: 650, y: 450}, {x: 550, y: 350}, {x: 400, y: 400}, {x: 800, y: 400},
+    {x: 450, y: 550}, {x: 500, y: 500},
+  ];
+
+  for (const {x, y} of points) {
+    // oxlint-disable-next-line no-await-in-loop
+    await window.getByTestId("hybridViewer").locator("canvas").click({
+      button: "right",
+      position: { x, y },
+    });
+    // oxlint-disable-next-line no-await-in-loop
+    await window.waitForTimeout(afterActionWait);
+    
+    // oxlint-disable-next-line no-await-in-loop
+    const items = await window.locator(".intermediate-picker-item").count();
+    if (items >= 2) {
+      found = true;
+      break;
+    }
+    // oxlint-disable-next-line no-await-in-loop
+    await window.keyboard.press("Escape");
+    // oxlint-disable-next-line no-await-in-loop
+    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
+  }
+
+  if (!found) {
+    throw new Error("Could not find overlapping objects picker anywhere! The test data might not be loaded or the picker is broken.");
+  }
+}
+
 async function ensureMenuOpen(window, menuTestId) {
   const menuButton = window.getByTestId(menuTestId);
   if (
     !(await menuButton
       .locator("button.menu-btn")
       .evaluate((node) => node.classList.contains("v-btn--active")))
+  ) {
+    await menuButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function ensureMenuClosed(window, menuTestId) {
+  const menuButton = window.getByTestId(menuTestId);
+  if (
+    await menuButton
+      .locator("button.menu-btn")
+      .evaluate((node) => node.classList.contains("v-btn--active"))
   ) {
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
@@ -51,6 +98,7 @@ async function setPointsVisibility(window, viewerObjectType, visibility) {
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function applyAttribute(
@@ -130,6 +178,7 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
@@ -211,6 +260,7 @@ async function changeColor(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -229,6 +279,7 @@ async function changeOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -285,6 +336,7 @@ async function setFeatureVisibility(window, viewerObjectType, feature, visibilit
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 function setPointsSize(window, viewerObjectType, value) {
@@ -312,6 +364,7 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 function setPolygonsTextures(window, viewerObjectType) {
@@ -325,6 +378,7 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
   await window.getByRole("option", { name: "Textures" }).click();
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 export {
@@ -346,6 +400,7 @@ export {
   setEdgeAttribute,
   expandComponentsType,
   focusObjectInTree,
+  findOverlappingObjectsPicker,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,

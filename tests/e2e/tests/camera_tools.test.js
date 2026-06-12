@@ -9,11 +9,11 @@ import {
   beforeAllTimeout,
   changeColor,
   dragContextMenu,
+  findOverlappingObjectsPicker,
   focusObjectInTree,
   hideObjectInTree,
   loadData,
   navigateToApp,
-  viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
@@ -60,16 +60,14 @@ test("rotate camera 180 degrees", async () => {
 });
 
 test("overlapping objects context menu", async () => {
-  const x = 440,
-    y = 530;
-  await viewerContextMenu(window, x, y);
+  await resetCamera(window);
+  await findOverlappingObjectsPicker(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("select regulargrid3d and change color", async () => {
   await window
-    .getByTestId("overlappingObjectsPicker")
-    .locator(".v-list-item")
+    .locator(".intermediate-picker-item")
     .filter({ hasText: "RegularGrid3D" })
     .first()
     .click();

@@ -198,6 +198,8 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await appWindow.waitForTimeout(afterActionWait);
 
   await changeColor(appWindow, "modelStyleMenu");
+  await appWindow.keyboard.press("Escape");
+  await appWindow.waitForTimeout(afterActionWait);
 }
 
 test("blocks visibility", async () => {
