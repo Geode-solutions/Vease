@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { loadData } from "./load.js";
 import { navigateToApp } from "./navigate.js";
 
@@ -5,6 +6,7 @@ import { navigateToApp } from "./navigate.js";
 const beforeAllTimeout = 120_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
+const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
@@ -43,7 +45,8 @@ async function ensureFeatureVisible(window, menuTestId) {
   const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
-    await window.waitForTimeout(500); // Wait for conditionally rendered options to appear
+    // Wait for conditionally rendered options to appear
+    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
   }
 }
 

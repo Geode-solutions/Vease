@@ -8,6 +8,9 @@ import {
   beforeAllTimeout,
   changeColor,
   changeOpacity,
+  featureSizeOrWidth,
+  featureTextures,
+  featureVisibility,
   highlightData,
   loadData,
   navigateToApp,
@@ -15,9 +18,6 @@ import {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
-  featureVisibility,
-  featureSizeOrWidth,
-  featureTextures,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -27,6 +27,8 @@ const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
+const EDGES_WIDTH = 5;
 const geodeObjectType = "HybridSolid3D";
 
 test.beforeAll(async ({ mode, browser }) => {
@@ -84,25 +86,27 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await featureSizeOrWidth(window, "mesh", "Points", 15);
+  await featureSizeOrWidth(window, "mesh", "Points", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await featureSizeOrWidth(window, "mesh", "Edges", 5);
+  await featureSizeOrWidth(window, "mesh", "Edges", EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
   await featureVisibility(window, "mesh", "Edges", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Edges", true); // revert
+  // Revert
+  await featureVisibility(window, "mesh", "Edges", true);
 });
 
 test("polygons visibility", async () => {
   await featureVisibility(window, "mesh", "Polygons", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Polygons", true); // revert
+  // Revert
+  await featureVisibility(window, "mesh", "Polygons", true);
 });
 
 test("polygons textures", async () => {
@@ -113,5 +117,6 @@ test("polygons textures", async () => {
 test("polyhedra visibility", async () => {
   await featureVisibility(window, "mesh", "Polyhedra", false);
   await expect(window).toHaveScreenshot();
-  await featureVisibility(window, "mesh", "Polyhedra", true); // revert
+  // Revert
+  await featureVisibility(window, "mesh", "Polyhedra", true);
 });
