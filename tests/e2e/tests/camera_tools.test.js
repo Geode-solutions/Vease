@@ -195,3 +195,28 @@ test("restore camera position", async () => {
   await expect(window).toHaveScreenshot();
   await closeCameraManager(window);
 });
+
+test("screenshot file without background", async () => {
+  await window.getByTestId("screenshotButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotActionButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("screenshot clipboard with background", async () => {
+  await window.getByTestId("screenshotButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotClipboardButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("screenshotActionButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
