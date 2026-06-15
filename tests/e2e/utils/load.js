@@ -9,14 +9,18 @@ async function loadData(window, inputFilename) {
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
-  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
+  
+  const dialogTitle = window.getByText("Select files to import");
   try {
-    await fileInput.waitFor({ state: "attached", timeout: 5000 });
+    await dialogTitle.waitFor({ state: "visible", timeout: 5000 });
   } catch {
-    console.log("Input not attached, retrying click (hydration delay?)");
+    console.log("Dialog not open, retrying click (hydration delay?)");
     await importButton.click();
-    await fileInput.waitFor({ state: "attached" });
+    await dialogTitle.waitFor({ state: "visible" });
   }
+
+  const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
+  await fileInput.waitFor({ state: "attached", timeout: 30_000 });
   await fileInput.setInputFiles(inputFilePath);
   const finalizeButton = window.getByTestId("finalizeImportButton");
   await finalizeButton.waitFor({ state: "visible", timeout: 15_000 });
