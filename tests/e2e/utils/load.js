@@ -9,7 +9,7 @@ async function loadData(window, inputFilename) {
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
   const importButton = await window.getByRole("button", { name: "Import" });
   await importButton.click();
-  
+
   const dialogTitle = window.getByText("Select files to import");
   try {
     await dialogTitle.waitFor({ state: "visible", timeout: 5000 });
