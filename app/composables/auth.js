@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useAPIStore } from "@vease/stores/api";
-import { useFirebaseAuth } from "vuefire";
+import { useCurrentUser, useFirebaseAuth } from "vuefire";
 
 function useAuth() {
   const auth = useFirebaseAuth();
