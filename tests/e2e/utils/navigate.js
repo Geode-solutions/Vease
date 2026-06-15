@@ -8,6 +8,7 @@ import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
 import { executableName } from "@geode/opengeodeweb-front/app/utils/local/path.js";
 import { isWindows } from "std-env";
+import kill from "kill-port";
 
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
@@ -94,11 +95,15 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => {
+    return { window: page, cleanup: async () => {
       try {
-        const pid = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim();
-        if (pid) {
-          execSync(`kill -15 ${pid}`);
+        if (isWindows) {
+          await kill(nuxtPort);
+        } else {
+          const pid = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim();
+          if (pid) {
+            execSync(`kill -15 ${pid}`);
+          }
         }
       } catch (error) {
         console.error(`Failed to kill process on port ${nuxtPort}:`, error);
