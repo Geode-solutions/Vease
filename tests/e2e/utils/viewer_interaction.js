@@ -190,14 +190,14 @@ async function changeColor(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColoringStyle(window, menuTestId, styleName) {
+async function changeColoringStyle(window, menuTestId, coloringStyle) {
   await ensureMenuOpen(window, menuTestId);
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
-    .filter({ hasText: styleName, visible: true })
+    .filter({ hasText: coloringStyle, visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
