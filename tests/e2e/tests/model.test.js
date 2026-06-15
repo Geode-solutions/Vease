@@ -8,6 +8,7 @@ import {
   afterActionWait,
   beforeAllTimeout,
   changeColor,
+  changeComponentColorToBlue,
   changeOpacity,
   expandComponentsType,
   hideObjectInTree,
@@ -15,8 +16,10 @@ import {
   hoverModelComponentRow,
   loadData,
   navigateToApp,
+  openObjectTreeContextMenu,
   pointsVisibility,
   polyhedraAttribute,
+  showObjectInTree,
   vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
@@ -162,5 +165,12 @@ test("object tree hover lines", async () => {
 
 test("object tree hover first surface", async () => {
   await hoverModelComponentRow(window, "00000000-");
+  await expect(window).toHaveScreenshot();
+});
+
+test("change first surface color via context menu", async () => {
+  await showObjectInTree(window, "00000000-", "modelComponentsObjectTree");
+  await openObjectTreeContextMenu(window, "00000000-", "modelComponentsObjectTree");
+  await changeComponentColorToBlue(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });

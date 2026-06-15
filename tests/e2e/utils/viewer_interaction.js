@@ -5,6 +5,7 @@ import { navigateToApp } from "./navigate.js";
 const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
+const SLIDER_BLUE = 0.7;
 
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
@@ -46,15 +47,7 @@ async function applyAttribute(
   menuTestId,
   { attributeType, attributeName, colorMap = undefined, min = undefined, max = undefined } = {},
 ) {
-  const menuButton = window.getByTestId(menuTestId);
-  if (
-    !(await menuButton
-      .locator("button.menu-btn")
-      .evaluate((node) => node.classList.contains("v-btn--active")))
-  ) {
-    await menuButton.click();
-    await window.waitForTimeout(afterActionWait);
-  }
+  await ensureMenuOpen(window, menuTestId);
 
   await window.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
@@ -76,16 +69,7 @@ async function applyAttribute(
     .filter({ visible: true })
     .first();
 
-  if ((await option.count()) > 0) {
-    await option.click();
-  } else {
-    await window
-      .locator(".v-overlay-container")
-      .locator(".v-list-item")
-      .filter({ visible: true })
-      .first()
-      .click();
-  }
+  await option.click();
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
@@ -167,10 +151,18 @@ async function highlightData(window, category) {
   await window.waitForTimeout(afterActionWait);
 }
 
+function getTreeRowByText(window, treeTestId, text) {
+  return window
+    .getByTestId(treeTestId)
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: text })
+    .first();
+}
+
 async function expandComponentsType(window, treeId, categoryName) {
-  const tree = window.getByTestId(treeId);
-  const row = tree.locator(".tree-row-wrapper").filter({ hasText: categoryName }).first();
-  const rightChevron = row.locator(".mdi-menu-right").first();
+  const rightChevron = getTreeRowByText(window, treeId, categoryName)
+    .locator(".mdi-menu-right")
+    .first();
   if ((await rightChevron.count()) > 0) {
     await rightChevron.dispatchEvent("click");
     await window.waitForTimeout(afterActionWait);
@@ -178,15 +170,13 @@ async function expandComponentsType(window, treeId, categoryName) {
 }
 
 async function hoverModelComponentRow(window, hasText) {
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
-  const row = modelComponentsObjectTree.locator(".tree-row-wrapper").filter({ hasText }).first();
-  await row.hover();
+  await getTreeRowByText(window, "modelComponentsObjectTree", hasText).hover();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColor(window, menuTestId) {
+async function changeColor(window, menuTestId, container = window) {
   await ensureMenuOpen(window, menuTestId);
-  await window.getByTestId("coloringStyleSelector").first().click();
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
     .locator(".v-overlay-container")
@@ -195,7 +185,17 @@ async function changeColor(window, menuTestId) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeComponentColorToBlue(window, menuTestId) {
+  const container = window.locator(".options-section", { hasText: "Component Options" });
+  await changeColor(window, menuTestId, container);
+
+  const hueSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
+  const hueBox = await hueSlider.boundingBox();
+  await hueSlider.click({ position: { x: hueBox.width * SLIDER_BLUE, y: hueBox.height / 2 } });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -233,17 +233,28 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
 }
 
 async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  const tree = window.getByTestId(treeTestId);
-  const row = tree.locator(".tree-row-wrapper").filter({ hasText: objectName });
-  await row.locator(".mdi-eye").first().click();
+  await getTreeRowByText(window, treeTestId, objectName).locator(".mdi-eye").first().click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function focusObjectInTree(window, folderName, objectName) {
   await expandComponentsType(window, "mainObjectTree", folderName);
-  const mainObjectTree = window.getByTestId("mainObjectTree");
-  const row = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: objectName }).first();
-  await row.locator("button:has(.mdi-target)").click();
+  await getTreeRowByText(window, "mainObjectTree", objectName)
+    .locator("button:has(.mdi-target)")
+    .click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+  await getTreeRowByText(window, treeTestId, objectName)
+    .locator(".mdi-eye-off-outline")
+    .first()
+    .click({ force: true });
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
+  await getTreeRowByText(window, treeTestId, objectName).click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -253,6 +264,7 @@ export {
   beforeAllTimeout,
   cellAttribute,
   changeColor,
+  changeComponentColorToBlue,
   changeOpacity,
   dragContextMenu,
   dragElement,
@@ -260,6 +272,8 @@ export {
   expandComponentsType,
   focusObjectInTree,
   hideObjectInTree,
+  showObjectInTree,
+  openObjectTreeContextMenu,
   highlightData,
   hoverModelComponentRow,
   loadData,
