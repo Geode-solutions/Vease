@@ -1,5 +1,5 @@
 // Third-party imports
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { appMode } from "@ogw_front/utils/local/app_mode";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
@@ -73,10 +73,43 @@ function useAuth() {
     return loggedInUser;
   }
 
+  async function deleteAccount() {
+    if (!user.value) throw new Error('No user logged in')
+    await deleteUser(user.value)
+    await signOut(auth)
+  }
   function logout() {
+    try {
+      const { success } = await globalThis.electronAPI.delete_credentials();
+      if (!success) {
+        console.error("Failed to delete credentials:", error);
+        return;
+      }
+      console.log("Credentials deletion successful");
+    } catch (error) {
+      console.error("Failed to delete credentials:", error);
+    }
     signOut(auth);
   }
-  return { user, autoLogin, register, login, logout, resetPassword };
+  return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
+
+}
+try {
+  console.log("Attempting auto-login with retrieved credentials", { email, password });
+  return login(email, password);
+} catch (loginError) {
+  console.error("Auto-login failed:", loginError);
+  return globalThis.electronAPI.delete_credentials();
+}
+      }
+    } catch (error) {
+  console.error("Failed to get credentials:", error);
+}
+signOut(auth);
+  }
+return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
+
+
 }
 
 function resetPassword(email) {
