@@ -21,7 +21,7 @@
     "unicorn/prefer-ternary": "off",
     "oxc/no-async-await": "off",
     "oxc/no-rest-spread-properties": "off", // Enable if older browser support is needed
-    "eslint/max-statements": ["warn", 20],
+    "eslint/max-statements": ["off", 20],
     "eslint/id-length": [
       "error",
       {
@@ -29,7 +29,7 @@
         "min": 3
       }
     ],
-    "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
+    "eslint/no-console": "off", // Disable for debugging. Disable later to not have browser logs
     "sort-imports": [
       "error",
       {
@@ -46,13 +46,13 @@
       }
     ],
     "import/max-dependencies": [
-      "warn",
+      "off",
       {
         "max": 10
       }
     ],
     "max-lines-per-function": [
-      "warn",
+      "off",
       {
         "max": 50,
         "skipBlankLines": true,
@@ -80,7 +80,7 @@
     "vitest/require-hook": "off",
     "import/unambiguous": "off",
     "max-params": [
-      "warn",
+      "off",
       {
         "max": 4
       }
@@ -129,7 +129,7 @@
         "max-statements": "off",
         "vitest/prefer-to-be-truthy": "off",
         "vitest/prefer-to-be-falsy": "off",
-        "vitest/require-test-timeout": "warn",
+        "vitest/require-test-timeout": "off",
         "vitest/prefer-importing-vitest-globals": "off",
         "jest/consistent-test-it": "off",
         "vitest/consistent-test-it": ["error", { "fn": "test", "withinDescribe": "test" }],
