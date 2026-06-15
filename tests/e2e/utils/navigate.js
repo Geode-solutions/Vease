@@ -95,20 +95,23 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: async () => {
-      try {
-        if (isWindows) {
-          await kill(nuxtPort);
-        } else {
-          const pid = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim();
-          if (pid) {
-            execSync(`kill -15 ${pid}`);
+    return {
+      window: page,
+      cleanup: async () => {
+        try {
+          if (isWindows) {
+            await kill(nuxtPort);
+          } else {
+            const pid = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim();
+            if (pid) {
+              execSync(`kill -15 ${pid}`);
+            }
           }
+        } catch (error) {
+          console.error(`Failed to kill process on port ${nuxtPort}:`, error);
         }
-      } catch (error) {
-        console.error(`Failed to kill process on port ${nuxtPort}:`, error);
-      }
-    } };
+      },
+    };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 

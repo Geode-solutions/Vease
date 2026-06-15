@@ -19,13 +19,23 @@ async function viewerContextMenu(window, x, y) {
 async function findOverlappingObjectsPicker(window) {
   let found = false;
   const points = [
-    {x: 440, y: 530}, {x: 600, y: 400}, {x: 600, y: 500}, {x: 600, y: 300},
-    {x: 500, y: 400}, {x: 700, y: 400}, {x: 550, y: 450}, {x: 650, y: 350},
-    {x: 650, y: 450}, {x: 550, y: 350}, {x: 400, y: 400}, {x: 800, y: 400},
-    {x: 450, y: 550}, {x: 500, y: 500},
+    { x: 440, y: 530 },
+    { x: 600, y: 400 },
+    { x: 600, y: 500 },
+    { x: 600, y: 300 },
+    { x: 500, y: 400 },
+    { x: 700, y: 400 },
+    { x: 550, y: 450 },
+    { x: 650, y: 350 },
+    { x: 650, y: 450 },
+    { x: 550, y: 350 },
+    { x: 400, y: 400 },
+    { x: 800, y: 400 },
+    { x: 450, y: 550 },
+    { x: 500, y: 500 },
   ];
 
-  for (const {x, y} of points) {
+  for (const { x, y } of points) {
     // oxlint-disable-next-line no-await-in-loop
     await window.getByTestId("hybridViewer").locator("canvas").click({
       button: "right",
@@ -33,7 +43,7 @@ async function findOverlappingObjectsPicker(window) {
     });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
-    
+
     // oxlint-disable-next-line no-await-in-loop
     const items = await window.locator(".intermediate-picker-item").count();
     if (items >= 2) {
@@ -47,7 +57,9 @@ async function findOverlappingObjectsPicker(window) {
   }
 
   if (!found) {
-    throw new Error("Could not find overlapping objects picker anywhere! The test data might not be loaded or the picker is broken.");
+    throw new Error(
+      "Could not find overlapping objects picker anywhere! The test data might not be loaded or the picker is broken.",
+    );
   }
 }
 
