@@ -145,7 +145,7 @@ test("z scaling value 1", async () => {
 test("cells hover highlight on brep", async () => {
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("highlightOnHoverButtonCells").click();
+  await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();
@@ -156,7 +156,7 @@ test("cells hover highlight on brep", async () => {
 test("points hover highlight on brep", async () => {
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("highlightOnHoverButtonPoints").click();
+  await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();
@@ -170,7 +170,7 @@ test("highlight cells on grid", async () => {
   await resetCamera(window);
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("highlightOnHoverButtonCells").click();
+  await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();
@@ -181,7 +181,7 @@ test("highlight cells on grid", async () => {
 test("highlight points on grid", async () => {
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("highlightOnHoverButtonPoints").click();
+  await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();

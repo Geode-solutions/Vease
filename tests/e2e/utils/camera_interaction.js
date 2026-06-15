@@ -62,7 +62,7 @@ async function selectCameraOrientation(window, label) {
 }
 
 async function restoreCameraPosition(window, name) {
-  await window.getByTestId(`restoreCameraPositionButton_${name}`).click();
+  await window.getByTestId(`restoreCameraPosition${name}Button`).click();
   await window.waitForTimeout(afterActionWait);
 }
 
