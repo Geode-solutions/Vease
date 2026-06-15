@@ -1,6 +1,3 @@
-import { loadData } from "./load.js";
-import { navigateToApp } from "./navigate.js";
-
 // Constants
 const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
@@ -276,11 +273,12 @@ export {
   openObjectTreeContextMenu,
   highlightData,
   hoverModelComponentRow,
-  loadData,
-  navigateToApp,
   pointsVisibility,
   polygonAttribute,
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
 };
+
+export { loadData } from "./load.js";
+export { navigateToApp } from "./navigate.js";

@@ -168,7 +168,7 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("change first surface color via context menu", async () => {
+test("color blue first surface only", async () => {
   await showObjectInTree(window, "00000000-", "modelComponentsObjectTree");
   await openObjectTreeContextMenu(window, "00000000-", "modelComponentsObjectTree");
   await changeComponentColorToBlue(window, "modelStyleMenu");
