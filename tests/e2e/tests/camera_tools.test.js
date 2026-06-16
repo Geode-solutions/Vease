@@ -16,6 +16,8 @@ import {
   navigateToApp,
   showObjectInTree,
   viewerContextMenu,
+  expandComponentsType,
+  getTreeRowByText,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
@@ -93,7 +95,13 @@ test("overlapping objects context menu at top", async () => {
 });
 
 test("visibility off grid and expand brep focus", async () => {
-  await hideObjectInTree(window, "RegularGrid3D");
+  await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
+  await getTreeRowByText(window, "mainObjectTree", "test")
+    .locator(".mdi-eye")
+    .first()
+    .click({ force: true });
+  await window.waitForTimeout(afterActionWait);
+
   await focusObjectInTree(window, "BRep", "test");
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);

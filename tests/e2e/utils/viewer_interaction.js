@@ -247,7 +247,10 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
 }
 
 async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByText(window, treeTestId, objectName).locator(".mdi-eye").first().click();
+  await getTreeRowByText(window, treeTestId, objectName)
+    .locator(".mdi-eye")
+    .first()
+    .click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -307,6 +310,7 @@ export {
   hoverViewerCenter,
   showObjectInTree,
   changeColoringStyle,
+  getTreeRowByText,
 };
 
 export { loadData } from "./load.js";
