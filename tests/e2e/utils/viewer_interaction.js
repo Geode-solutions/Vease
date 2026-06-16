@@ -184,20 +184,33 @@ async function changeColoringStyle(window, menuTestId, coloringStyle, container 
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColor(window, menuTestId, container = window) {
-  await changeColoringStyle(window, menuTestId, "Constant", container);
+async function clickColorPickerCanvas(window, container = window) {
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
+}
+
+async function clickColorPickerSlider(window, container = window) {
+  const rgbaSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
+  const rgbaBox = await rgbaSlider.boundingBox();
+  await rgbaSlider.click({ position: { x: rgbaBox.width * SLIDER_BLUE, y: rgbaBox.height / 2 } });
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeColor(window, menuTestId, container = window) {
+  await changeColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerCanvas(window, container);
+}
+
+async function changeColorWithSlider(window, menuTestId, container = window) {
+  await changeColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerSlider(window, container);
+  await clickColorPickerCanvas(window, container);
 }
 
 async function changeComponentColorToBlue(window, menuTestId) {
   const container = window.locator(".options-section", { hasText: "Component Options" });
   await changeColor(window, menuTestId, container);
-
-  const hueSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
-  const hueBox = await hueSlider.boundingBox();
-  await hueSlider.click({ position: { x: hueBox.width * SLIDER_BLUE, y: hueBox.height / 2 } });
-  await window.waitForTimeout(afterActionWait);
+  await clickColorPickerSlider(window, container);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -281,6 +294,7 @@ export {
   beforeAllTimeout,
   cellAttribute,
   changeColor,
+  changeColorWithSlider,
   changeComponentColorToBlue,
   changeOpacity,
   dragContextMenu,

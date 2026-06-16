@@ -7,7 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
+  changeColorWithSlider,
   changeColoringStyle,
   changeComponentColorToBlue,
   changeOpacity,
@@ -80,7 +80,7 @@ test("polyhedron attribute", async () => {
 });
 
 test("color", async () => {
-  await changeColor(window, "modelStyleMenu");
+  await changeColorWithSlider(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
 
