@@ -1,6 +1,3 @@
-import { loadData } from "./load.js";
-import { navigateToApp } from "./navigate.js";
-
 // Constants
 const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
@@ -243,11 +240,27 @@ async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree
   await window.waitForTimeout(afterActionWait);
 }
 
+async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+  const tree = window.getByTestId(treeTestId);
+  const row = tree.locator(".tree-row-wrapper").filter({ hasText: objectName });
+  await row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 async function focusObjectInTree(window, folderName, objectName) {
   await expandComponentsType(window, "mainObjectTree", folderName);
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const row = mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: objectName }).first();
   await row.locator("button:has(.mdi-target)").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function hoverViewerCenter(window) {
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const box = await canvas.boundingBox();
+  await canvas.hover({
+    position: { x: box.width / 2, y: box.height / 2 },
+  });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -266,12 +279,15 @@ export {
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
-  loadData,
-  navigateToApp,
   pointsVisibility,
   polygonAttribute,
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
+  hoverViewerCenter,
+  showObjectInTree,
   changeColoringStyle,
 };
+
+export { loadData } from "./load.js";
+export { navigateToApp } from "./navigate.js";
