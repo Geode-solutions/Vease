@@ -6,7 +6,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColor,
+  changeColorWithSlider,
   changeOpacity,
   highlightData,
   loadData,
@@ -78,7 +78,7 @@ test("edge attribute", async () => {
 });
 
 test("color", async () => {
-  await changeColor(window, "meshEdgesMenu");
+  await changeColorWithSlider(window, "meshEdgesMenu");
   await expect(window).toHaveScreenshot();
 });
 

@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   beforeAllTimeout,
   changeColor,
+  cellAttribute,
+  changeColorWithSlider,
   changeOpacity,
   highlightData,
   loadData,
@@ -79,7 +81,7 @@ test("cell attribute", async () => {
 });
 
 test("color", async () => {
-  await changeColor(window, "meshCellsMenu");
+  await changeColorWithSlider(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
 });
 

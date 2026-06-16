@@ -7,6 +7,7 @@ const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
+const SLIDER_BLUE = 0.7;
 
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
@@ -258,19 +259,10 @@ async function hoverModelComponentRow(window, hasText) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColor(window, menuTestId) {
-  await changeColoringStyle(window, menuTestId, "Constant");
-  const menu = window.getByTestId(menuTestId);
-  await menu.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
-  await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
-}
-
-async function changeColoringStyle(window, menuTestId, coloringStyle) {
+async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  const menu = window.getByTestId(menuTestId);
-  await menu.getByTestId("coloringStyleSelector").first().click();
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
     .locator(".v-overlay-container")
@@ -279,6 +271,36 @@ async function changeColoringStyle(window, menuTestId, coloringStyle) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+}
+
+async function clickColorPickerCanvas(window, container = window) {
+  await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function clickColorPickerSlider(window, container = window) {
+  const rgbaSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
+  const rgbaBox = await rgbaSlider.boundingBox();
+  await rgbaSlider.click({ position: { x: rgbaBox.width * SLIDER_BLUE, y: rgbaBox.height / 2 } });
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function changeColor(window, menuTestId, container = window) {
+  await changeColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerCanvas(window, container);
+  await ensureMenuClosed(window, menuTestId);
+}
+
+async function changeColorWithSlider(window, menuTestId, container = window) {
+  await changeColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerSlider(window, container);
+  await clickColorPickerCanvas(window, container);
+}
+
+async function changeComponentColorToBlue(window, menuTestId) {
+  const container = window.locator(".options-section", { hasText: "Component Options" });
+  await changeColor(window, menuTestId, container);
+  await clickColorPickerSlider(window, container);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -430,6 +452,8 @@ export {
   setCellAttribute,
   changeColor,
   changeColoringStyle,
+  changeColorWithSlider,
+  changeComponentColorToBlue,
   changeOpacity,
   dragContextMenu,
   dragElement,
