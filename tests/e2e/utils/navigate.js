@@ -89,63 +89,85 @@ async function navigateToApp(mode, browser) {
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
-    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
-    await page.goto(`http://localhost:${nuxtPort}`);
-    console.log("Navigated to", page.url());
-    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
-    await page.waitForTimeout(WAIT_TIMES.browser);
-    await page.waitForFunction(() => document.readyState === "complete");
-    return {
-      window: page,
-      cleanup: async () => {
-        try {
-          if (isWindows) {
-            await kill(nuxtPort);
-          } else {
-            const pids = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" })
-              .trim()
-              .replaceAll("\n", " ");
-            if (pids) {
-              execSync(`kill -15 ${pids}`);
-            }
+    // oxlint-disable-next-line func-style
+    const cleanup = async () => {
+      try {
+        if (isWindows) {
+          await kill(nuxtPort);
+        } else {
+          const pids = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" })
+            .trim()
+            .replaceAll("\n", " ");
+          if (pids) {
+            execSync(`kill -9 ${pids}`);
           }
-        } catch (error) {
-          console.error(`Failed to kill process on port ${nuxtPort}:`, error);
         }
-      },
+      } catch (error) {
+        console.error(`Failed to kill process on port ${nuxtPort}:`, error);
+      }
     };
-  } else if (mode === "CLOUD") {
-    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 
-    let prefix = "";
-    const branch = execSync("git branch --show-current", {
-      encoding: "utf8",
-    }).trim();
-    console.log("Current branch:", branch);
-    if (branch === "next") {
-      prefix = "next.";
+    try {
+      page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+      await page.goto(`http://localhost:${nuxtPort}`);
+      console.log("Navigated to", page.url());
+      console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
+      await page.waitForTimeout(WAIT_TIMES.browser);
+      await page.waitForFunction(() => document.readyState === "complete");
+      return {
+        window: page,
+        cleanup,
+      };
+    } catch (error) {
+      await cleanup();
+      throw error;
     }
+  } else if (mode === "CLOUD") {
+    // oxlint-disable-next-line func-style
+    const cleanup = () => page.close();
+    try {
+      page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 
-    const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-    await page.goto(`https://${prefix}vease.geode-solutions.com`, {
-      waitUntil: "domcontentloaded",
-      timeout: navigationTimeout,
-    });
+      let prefix = "";
+      const branch = execSync("git branch --show-current", {
+        encoding: "utf8",
+      }).trim();
+      console.log("Current branch:", branch);
+      if (branch === "next") {
+        prefix = "next.";
+      }
 
-    console.log("Navigated to", page.url());
-    const button = await page.getByRole("button", { name: "Load the app" });
-    console.log({ button });
-    await button.click();
-    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
-    await page.waitForTimeout(WAIT_TIMES.cloud);
-    await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => page.close() };
+      const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
+      await page.goto(`https://${prefix}vease.geode-solutions.com`, {
+        waitUntil: "domcontentloaded",
+        timeout: navigationTimeout,
+      });
+
+      console.log("Navigated to", page.url());
+      const button = await page.getByRole("button", { name: "Load the app" });
+      console.log({ button });
+      await button.click();
+      console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+      await page.waitForTimeout(WAIT_TIMES.cloud);
+      await page.waitForFunction(() => document.readyState === "complete");
+      return { window: page, cleanup };
+    } catch (error) {
+      await cleanup();
+      throw error;
+    }
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
-    await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
-    await firstWindow.waitForFunction(() => document.readyState === "complete");
-    return { window: firstWindow, cleanup: () => electronApp.close() };
+    // oxlint-disable-next-line func-style
+    const cleanup = () => electronApp.close();
+    try {
+      console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+      await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
+      await firstWindow.waitForFunction(() => document.readyState === "complete");
+      return { window: firstWindow, cleanup };
+    } catch (error) {
+      await cleanup();
+      throw error;
+    }
   }
   throw new Error(`Unknown mode: ${mode}`);
 }
