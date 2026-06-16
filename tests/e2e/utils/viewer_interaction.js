@@ -251,13 +251,6 @@ async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree
   await window.waitForTimeout(afterActionWait);
 }
 
-async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  const tree = window.getByTestId(treeTestId);
-  const row = tree.locator(".tree-row-wrapper").filter({ hasText: objectName });
-  await row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first().click();
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function focusObjectInTree(window, folderName, objectName) {
   await expandComponentsType(window, "mainObjectTree", folderName);
   await getTreeRowByText(window, "mainObjectTree", objectName)
@@ -303,7 +296,6 @@ export {
   expandComponentsType,
   focusObjectInTree,
   hideObjectInTree,
-  showObjectInTree,
   openObjectTreeContextMenu,
   highlightData,
   hoverModelComponentRow,
