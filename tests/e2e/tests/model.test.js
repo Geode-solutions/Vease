@@ -17,13 +17,13 @@ import {
   hoverModelComponentRow,
   loadData,
   navigateToApp,
-  openObjectTreeContextMenu,
   pointsVisibility,
   polyhedraAttribute,
   showObjectInTree,
   vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { rotateCamera } from "@tests/utils/camera_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -174,9 +174,22 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color blue first surface only", async () => {
+test("toggle object tree main", async () => {
+  await window.getByTestId("toggleObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("context menu through non visible surface", async () => {
   await showObjectInTree(window, "00000000-", "modelComponentsObjectTree");
-  await openObjectTreeContextMenu(window, "00000000-", "modelComponentsObjectTree");
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const box = await canvas.boundingBox();
+  await rotateCamera(window, -box.width);
+  await viewerContextMenu(window, box.width / 2, box.height / 2);
+  await expect(window).toHaveScreenshot();
+});
+
+test("color blue on one surface", async () => {
   await changeComponentColorToBlue(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
