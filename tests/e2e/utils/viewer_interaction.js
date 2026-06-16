@@ -286,7 +286,6 @@ async function clickColorPickerSlider(window, container = window) {
 async function changeColor(window, menuTestId, container = window) {
   await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerCanvas(window, container);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeColorWithSlider(window, menuTestId, container = window) {
