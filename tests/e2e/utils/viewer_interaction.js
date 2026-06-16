@@ -424,5 +424,7 @@ export {
   setPolygonAttribute,
   setPolyhedraAttribute,
   setVertexAttribute,
+  showObjectInTree,
   viewerContextMenu,
+  hoverViewerCenter,
 };
