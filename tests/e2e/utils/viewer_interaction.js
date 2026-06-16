@@ -261,7 +261,8 @@ async function hoverModelComponentRow(window, hasText) {
 async function changeColor(window, menuTestId) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  await window.getByTestId("coloringStyleSelector").first().click();
+  const menu = window.getByTestId(menuTestId);
+  await menu.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
     .locator(".v-overlay-container")
@@ -270,7 +271,7 @@ async function changeColor(window, menuTestId) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await menu.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
   await ensureMenuClosed(window, menuTestId);
 }
@@ -278,7 +279,8 @@ async function changeColor(window, menuTestId) {
 async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  const alphaSlider = window
+  const menu = window.getByTestId(menuTestId);
+  const alphaSlider = menu
     .getByTestId("colorPicker")
     .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
     .first();

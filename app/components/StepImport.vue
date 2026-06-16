@@ -58,7 +58,7 @@ const stepper_tree = useStepperTree(
         component_name: shallowRef(MissingFilesSelector),
         component_options: {
           multiple: true,
-          geode_object_type,
+          geodeObjectType: geode_object_type,
           filenames: computed(() => files.value.map((file) => file.name)),
         },
       },
@@ -108,5 +108,5 @@ watch(
 </script>
 
 <template>
-  <Stepper :stepper_tree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
+  <Stepper :stepper-tree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
 </template>

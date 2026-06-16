@@ -102,9 +102,9 @@ async function navigateToApp(mode, browser) {
           if (isWindows) {
             await kill(nuxtPort);
           } else {
-            const pid = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim();
-            if (pid) {
-              execSync(`kill -15 ${pid}`);
+            const pids = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" }).trim().replaceAll("\n", " ");
+            if (pids) {
+              execSync(`kill -15 ${pids}`);
             }
           }
         } catch (error) {

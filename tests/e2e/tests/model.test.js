@@ -38,7 +38,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup();
+  if (typeof cleanup === "function") {await cleanup();}
 });
 
 test("load", async () => {
@@ -97,12 +97,7 @@ test("object tree context menu", async () => {
   await expandComponentsType(window, "mainObjectTree", "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const testItem = mainObjectTree.getByText("test").first();
-  const box = await testItem.boundingBox();
-  await testItem.dispatchEvent("contextmenu", {
-    button: 2,
-    clientX: box.x + OFFSET,
-    clientY: box.y + OFFSET,
-  });
+  await testItem.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
@@ -189,12 +184,7 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
     .filter({ hasText: rowName })
     .first();
   const label = row.locator(".tree-item-label").first();
-  const box = await label.boundingBox();
-  await label.dispatchEvent("contextmenu", {
-    button: 2,
-    clientX: box.x + OFFSET,
-    clientY: box.y + OFFSET,
-  });
+  await label.click({ button: "right", force: true });
   await appWindow.waitForTimeout(afterActionWait);
 
   await changeColor(appWindow, "modelStyleMenu");
