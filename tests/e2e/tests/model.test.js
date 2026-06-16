@@ -8,6 +8,7 @@ import {
   afterActionWait,
   beforeAllTimeout,
   changeColor,
+  changeColoringStyle,
   changeComponentColorToBlue,
   changeOpacity,
   expandComponentsType,
@@ -85,6 +86,11 @@ test("color", async () => {
 
 test("opacity", async () => {
   await changeOpacity(window, "modelStyleMenu", OPACITY_50);
+  await expect(window).toHaveScreenshot();
+});
+
+test("random coloring", async () => {
+  await changeColoringStyle(window, "modelStyleMenu", "Random");
   await expect(window).toHaveScreenshot();
 });
 

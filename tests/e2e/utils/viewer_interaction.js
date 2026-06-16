@@ -171,17 +171,21 @@ async function hoverModelComponentRow(window, hasText) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColor(window, menuTestId, container = window) {
+async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
   await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
-    .filter({ hasText: "Constant", visible: true })
+    .filter({ hasText: coloringStyle, visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+}
+
+async function changeColor(window, menuTestId, container = window) {
+  await changeColoringStyle(window, menuTestId, "Constant", container);
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
 }
@@ -278,6 +282,7 @@ export {
   polyhedraAttribute,
   vertexAttribute,
   viewerContextMenu,
+  changeColoringStyle,
 };
 
 export { loadData } from "./load.js";
