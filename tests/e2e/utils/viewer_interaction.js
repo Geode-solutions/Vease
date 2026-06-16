@@ -271,6 +271,5 @@ export {
   changeColoringStyle,
 };
 
-
 export { loadData } from "./load.js";
 export { navigateToApp } from "./navigate.js";
