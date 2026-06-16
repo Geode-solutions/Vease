@@ -41,6 +41,7 @@ function useAuth() {
 }
 
 function resetPassword(email) {
+  const APIStore = useAPIStore();
   const schema = {
     $id: "/auth/send-password-reset",
     methods: ["POST"],
