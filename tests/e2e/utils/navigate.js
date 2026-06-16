@@ -111,7 +111,9 @@ async function navigateToApp(mode, browser) {
       page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
       await page.goto(`http://localhost:${nuxtPort}`);
       console.log("Navigated to", page.url());
-      console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
+      console.log(
+        `Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`,
+      );
       await page.waitForTimeout(WAIT_TIMES.browser);
       await page.waitForFunction(() => document.readyState === "complete");
       return {
@@ -160,7 +162,9 @@ async function navigateToApp(mode, browser) {
     // oxlint-disable-next-line func-style
     const cleanup = () => electronApp.close();
     try {
-      console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+      console.log(
+        `Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`,
+      );
       await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
       await firstWindow.waitForFunction(() => document.readyState === "complete");
       return { window: firstWindow, cleanup };
