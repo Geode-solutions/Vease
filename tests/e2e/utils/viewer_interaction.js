@@ -201,9 +201,9 @@ async function clickColorPickerCanvas(window, container = window) {
 }
 
 async function clickColorPickerSlider(window, container = window) {
-  const hueSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
-  const hueBox = await hueSlider.boundingBox();
-  await hueSlider.click({ position: { x: hueBox.width * SLIDER_BLUE, y: hueBox.height / 2 } });
+  const rgbaSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
+  const rgbaBox = await rgbaSlider.boundingBox();
+  await rgbaSlider.click({ position: { x: rgbaBox.width * SLIDER_BLUE, y: rgbaBox.height / 2 } });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -223,6 +223,7 @@ async function changeComponentColorToBlue(window, menuTestId) {
   await changeColor(window, menuTestId, container);
   await clickColorPickerSlider(window, container);
 }
+
 async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
   const alphaSlider = window
