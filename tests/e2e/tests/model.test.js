@@ -29,7 +29,6 @@ const inputFilename = "test.og_brep";
 const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
-const OFFSET = 10;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";

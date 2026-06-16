@@ -395,6 +395,23 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await ensureMenuClosed(window, menuTestId);
 }
 
+async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+  const tree = window.getByTestId(treeTestId);
+  const row = tree.locator(".tree-row-wrapper").filter({ hasText: objectName });
+  await row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first().click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+
+async function hoverViewerCenter(window) {
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const box = await canvas.boundingBox();
+  await canvas.hover({
+    position: { x: box.width / 2, y: box.height / 2 },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   setEdgesVisibility,
   setPolygonsVisibility,

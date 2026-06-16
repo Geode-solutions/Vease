@@ -16,7 +16,6 @@ import {
   loadData,
   navigateToApp,
   showObjectInTree,
-  viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
