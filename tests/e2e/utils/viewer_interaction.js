@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-
 // Constants
 const beforeAllTimeout = 30_000;
 const afterActionWait = 1500;
