@@ -6,8 +6,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColor,
-  cellAttribute,
   changeColorWithSlider,
   changeOpacity,
   highlightData,

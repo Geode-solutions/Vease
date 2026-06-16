@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
-import { loadData } from "./load.js";
-import { navigateToApp } from "./navigate.js";
+
 
 // Constants
 const beforeAllTimeout = 30_000;
@@ -464,8 +463,6 @@ export {
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
-  loadData,
-  navigateToApp,
   setPointsVisibility,
   setPolygonAttribute,
   setPolyhedraAttribute,
@@ -474,3 +471,5 @@ export {
   viewerContextMenu,
   hoverViewerCenter,
 };
+export { loadData } from "./load.js";
+export { navigateToApp } from "./navigate.js";
