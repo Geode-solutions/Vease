@@ -13,7 +13,7 @@ async function loadData(window, inputFilename) {
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
   await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  
+
   const baseName = path.basename(inputFilename, inputFileExtension);
   const treeItem = window.getByTestId("mainObjectTree").getByText(baseName).first();
   await treeItem.waitFor({ state: "attached", timeout: 60_000 });
