@@ -47,7 +47,9 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {await cleanup();}
+  if (typeof cleanup === "function") {
+    await cleanup();
+  }
 });
 
 test("load", async () => {
