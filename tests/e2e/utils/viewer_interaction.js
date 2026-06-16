@@ -402,7 +402,6 @@ async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree
   await window.waitForTimeout(afterActionWait);
 }
 
-
 async function hoverViewerCenter(window) {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
