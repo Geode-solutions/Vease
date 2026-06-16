@@ -259,6 +259,14 @@ async function hoverModelComponentRow(window, hasText) {
 }
 
 async function changeColor(window, menuTestId) {
+  await changeColoringStyle(window, menuTestId, "Constant");
+  const menu = window.getByTestId(menuTestId);
+  await menu.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await window.waitForTimeout(afterActionWait);
+  await ensureMenuClosed(window, menuTestId);
+}
+
+async function changeColoringStyle(window, menuTestId, coloringStyle) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
   const menu = window.getByTestId(menuTestId);
@@ -267,13 +275,10 @@ async function changeColor(window, menuTestId) {
   await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
-    .filter({ hasText: "Constant", visible: true })
+    .filter({ hasText: coloringStyle, visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await menu.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
-  await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -424,6 +429,7 @@ export {
   beforeAllTimeout,
   setCellAttribute,
   changeColor,
+  changeColoringStyle,
   changeOpacity,
   dragContextMenu,
   dragElement,
