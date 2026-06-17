@@ -113,6 +113,7 @@ return { user, autoLogin, deleteAccount, register, login, logout, resetPassword 
 }
 
 function resetPassword(email) {
+  const APIStore = useAPIStore();
   const schema = {
     $id: "/auth/send-password-reset",
     methods: ["POST"],
