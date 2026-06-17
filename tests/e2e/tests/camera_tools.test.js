@@ -9,15 +9,15 @@ import {
   beforeAllTimeout,
   changeColor,
   dragContextMenu,
+  expandComponentsType,
   focusObjectInTree,
+  getTreeRowByText,
   hideObjectInTree,
   hoverViewerCenter,
   loadData,
   navigateToApp,
   showObjectInTree,
   viewerContextMenu,
-  expandComponentsType,
-  getTreeRowByText,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
