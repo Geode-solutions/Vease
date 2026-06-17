@@ -421,9 +421,13 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  await window.getByTestId("coloringStyleSelector").first().click();
+  const container = window.getByTestId(menuTestId);
+  const selector = container.getByTestId("coloringStyleSelector").first();
+  await selector.click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByRole("option", { name: "Textures" }).click();
+  
+  const listItem = window.locator(".v-overlay-container").locator(".v-list-item").filter({ hasText: "Textures", visible: true }).first();
+  await listItem.click();
   await window.waitForTimeout(afterActionWait);
   await ensureMenuClosed(window, menuTestId);
 }
