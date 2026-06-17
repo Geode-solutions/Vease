@@ -17,13 +17,15 @@ async function loadData(window, inputFilename) {
   const baseName = path.basename(inputFilename, inputFileExtension);
   const mainTree = window.getByTestId("mainObjectTree");
   await mainTree.waitFor({ state: "attached" });
-  
-  const collapseButton = window.locator('.tree-view-container button:has(.mdi-collapse-all-outline)');
+
+  const collapseButton = window.locator(
+    ".tree-view-container button:has(.mdi-collapse-all-outline)",
+  );
   if (await collapseButton.isVisible()) {
     await collapseButton.click();
   }
 
-  const expandButton = window.locator('.tree-view-container button:has(.mdi-expand-all-outline)');
+  const expandButton = window.locator(".tree-view-container button:has(.mdi-expand-all-outline)");
   if (await expandButton.isVisible()) {
     await expandButton.click();
   }

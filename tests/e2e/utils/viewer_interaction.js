@@ -249,17 +249,21 @@ async function hoverModelComponentRow(window, hasText) {
 async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  
+
   const selector = container.getByTestId("coloringStyleSelector").first();
   await selector.waitFor({ state: "visible", timeout: 15_000 });
   await selector.click();
-  
+
   await window.waitForTimeout(afterActionWait);
-  
-  const listItem = window.locator(".v-overlay-container").locator(".v-list-item").filter({ hasText: coloringStyle, visible: true }).first();
+
+  const listItem = window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: coloringStyle, visible: true })
+    .first();
   await listItem.waitFor({ state: "visible", timeout: 15_000 });
   await listItem.click();
-  
+
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -431,8 +435,6 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
   await ensureMenuClosed(window, menuTestId);
 }
-
-
 
 async function hoverViewerCenter(window) {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");

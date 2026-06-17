@@ -176,7 +176,6 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
 async function toggleModelTreeRow(appWindow, rowName) {
   const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
@@ -246,7 +245,6 @@ test("surfaces color", async () => {
   await setModelTreeRowColorRandom(window, "Surfaces");
   await expect(window).toHaveScreenshot();
 });
-
 
 test("toggle object tree main", async () => {
   await window.getByTestId("toggleObjectsButton").click();
