@@ -429,8 +429,12 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   const selector = container.getByTestId("coloringStyleSelector").first();
   await selector.click();
   await window.waitForTimeout(afterActionWait);
-  
-  const listItem = window.locator(".v-overlay-container").locator(".v-list-item").filter({ hasText: "Textures", visible: true }).first();
+
+  const listItem = window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: "Textures", visible: true })
+    .first();
   await listItem.click();
   await window.waitForTimeout(afterActionWait);
   await ensureMenuClosed(window, menuTestId);
