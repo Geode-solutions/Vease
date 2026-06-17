@@ -19,11 +19,9 @@ import {
   navigateToApp,
   pointsVisibility,
   polyhedraAttribute,
-  showObjectInTree,
   vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
-import { rotateCamera } from "@tests/utils/camera_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -34,8 +32,6 @@ let cleanup = undefined;
 const OFFSET = 10;
 const OPACITY_50 = 50;
 const geodeObjectType = "BRep";
-
-test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -183,10 +179,16 @@ test("toggle object tree main", async () => {
 });
 
 test("context menu through non visible surface", async () => {
-  await showObjectInTree(window, "00000000-", "modelComponentsObjectTree");
+  await window
+    .getByTestId("modelComponentsObjectTree")
+    .locator(".tree-row-wrapper", { hasText: "00000000-" })
+    .nth(4)
+    .locator(".mdi-eye-off-outline")
+    .first()
+    .click({ force: true });
+  await window.waitForTimeout(afterActionWait);
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
-  await rotateCamera(window, -box.width);
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await changeComponentColorToBlue(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
