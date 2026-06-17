@@ -10,6 +10,7 @@ import {
   changeColor,
   changeColorWithSlider,
   changeColoringStyle,
+  changeComponentColorToBlue,
   changeOpacity,
   expandComponentsType,
   hideObjectInTree,
@@ -175,6 +176,7 @@ test("object tree hover first surface", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+
 async function toggleModelTreeRow(appWindow, rowName) {
   const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
@@ -242,5 +244,29 @@ test("surfaces visibility", async () => {
 
 test("surfaces color", async () => {
   await setModelTreeRowColorRandom(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+});
+
+
+test("toggle object tree main", async () => {
+  await window.getByTestId("toggleObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("context menu through non visible surface", async () => {
+  await window
+    .getByTestId("modelComponentsObjectTree")
+    .locator(".tree-row-wrapper", { hasText: "00000000-" })
+    .nth(4)
+    .locator(".mdi-eye-off-outline")
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const box = await canvas.boundingBox();
+  await viewerContextMenu(window, box.width / 2, box.height / 2);
+  await changeComponentColorToBlue(window, "modelStyleMenu");
+
   await expect(window).toHaveScreenshot();
 });
