@@ -185,7 +185,7 @@ test("context menu through non visible surface", async () => {
     .nth(4)
     .locator(".mdi-eye-off-outline")
     .first()
-    .click({ force: true });
+    .click();
   await window.waitForTimeout(afterActionWait);
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
