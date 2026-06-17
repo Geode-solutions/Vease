@@ -120,7 +120,8 @@ async function applyAttribute(
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
-  await window.getByTestId("coloringStyleSelector").first().click();
+  const container = window.getByTestId(menuTestId);
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
   await window
@@ -131,7 +132,7 @@ async function applyAttribute(
     .click();
   await window.waitForTimeout(afterActionWait);
 
-  await window.getByTestId("attributeSelector").first().click();
+  await container.getByTestId("attributeSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
   const option = window
@@ -144,10 +145,10 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
-    await window.getByTestId("colorMapPicker").first().click();
+    await container.getByTestId("colorMapPicker").first().click();
     await window.waitForTimeout(afterActionWait);
 
-    await window.getByPlaceholder("Search presets...").fill(colorMap);
+    await window.locator(".v-overlay-container").getByPlaceholder("Search presets...").fill(colorMap);
     await window.waitForTimeout(afterActionWait);
 
     await window
@@ -160,13 +161,13 @@ async function applyAttribute(
   }
 
   if (min !== undefined) {
-    const input = window.getByTestId("attributeMinInput").first().locator("input");
+    const input = container.getByTestId("attributeMinInput").first().locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
   if (max !== undefined) {
-    const input = window.getByTestId("attributeMaxInput").first().locator("input");
+    const input = container.getByTestId("attributeMaxInput").first().locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
