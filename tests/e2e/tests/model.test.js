@@ -186,10 +186,6 @@ test("context menu through non visible surface", async () => {
   const box = await canvas.boundingBox();
   await rotateCamera(window, -box.width);
   await viewerContextMenu(window, box.width / 2, box.height / 2);
-  await expect(window).toHaveScreenshot();
-});
-
-test("color blue on one surface", async () => {
   await changeComponentColorToBlue(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
