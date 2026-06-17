@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
+  changeColor,
   changeColorWithSlider,
   changeColoringStyle,
   changeOpacity,

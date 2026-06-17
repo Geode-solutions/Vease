@@ -260,14 +260,17 @@ async function hoverModelComponentRow(window, hasText) {
 async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  await container.getByTestId("coloringStyleSelector").first().click();
+  
+  const selector = container.getByTestId("coloringStyleSelector").first();
+  await selector.waitFor({ state: "visible", timeout: 15_000 });
+  await selector.click();
+  
   await window.waitForTimeout(afterActionWait);
-  await window
-    .locator(".v-overlay-container")
-    .locator(".v-list-item")
-    .filter({ hasText: coloringStyle, visible: true })
-    .first()
-    .click();
+  
+  const listItem = window.locator(".v-overlay-container").locator(".v-list-item").filter({ hasText: coloringStyle, visible: true }).first();
+  await listItem.waitFor({ state: "visible", timeout: 15_000 });
+  await listItem.click();
+  
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -286,18 +289,21 @@ async function clickColorPickerSlider(window, container = window) {
 async function changeColor(window, menuTestId, container = window) {
   await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerCanvas(window, container);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeColorWithSlider(window, menuTestId, container = window) {
   await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerSlider(window, container);
   await clickColorPickerCanvas(window, container);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeComponentColorToBlue(window, menuTestId) {
   const container = window.locator(".options-section", { hasText: "Component Options" });
   await changeColor(window, menuTestId, container);
   await clickColorPickerSlider(window, container);
+  await ensureMenuClosed(window, menuTestId);
 }
 
 async function changeOpacity(window, menuTestId, percent) {

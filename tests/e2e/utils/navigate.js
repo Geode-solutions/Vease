@@ -99,7 +99,16 @@ async function navigateToApp(mode, browser) {
             .trim()
             .replaceAll("\n", " ");
           if (pids) {
-            execSync(`kill -9 ${pids}`);
+            execSync(`kill -15 ${pids}`);
+            // Fallback to kill -9 if it didn't exit after a short delay
+            const KILL_TIMEOUT_MS = 2000;
+            setTimeout(() => {
+              try {
+                execSync(`kill -0 ${pids} && kill -9 ${pids}`);
+              } catch {
+                // Ignore errors if the process has already exited
+              }
+            }, KILL_TIMEOUT_MS);
           }
         }
       } catch (error) {
