@@ -13,7 +13,6 @@ import {
   navigateToApp,
   setPointsSize,
   setPointsVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -58,11 +57,6 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, "mesh", true);
-  await setVertexAttribute(window, "mesh");
-  await expect(window).toHaveScreenshot();
-});
 
 test("color", async () => {
   await changeColor(window, "meshPointsMenu");

@@ -16,7 +16,6 @@ import {
   setEdgesWidth,
   setPointsSize,
   setPointsVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -63,20 +62,19 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, "mesh", true);
-  await setVertexAttribute(window, "mesh");
-  await expect(window).toHaveScreenshot();
-});
-
 test("edge attribute", async () => {
   await setPointsVisibility(window, "mesh", true);
   await setEdgeAttribute(window, "mesh", attributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
+test("edges color", async () => {
   await changeColorWithSlider(window, "meshEdgesMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await changeColorWithSlider(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();
 });
 

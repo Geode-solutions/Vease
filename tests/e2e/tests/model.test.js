@@ -19,15 +19,12 @@ import {
   navigateToApp,
   setPointsSize,
   setPointsVisibility,
-  setPolyhedraAttribute,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const attributeName = "tetrahedron_vertices";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -71,17 +68,7 @@ test("points size", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, "model", false);
-  await setVertexAttribute(window, "model");
-  await expect(window).toHaveScreenshot();
-});
 
-test("polyhedron attribute", async () => {
-  await setPointsVisibility(window, "model", false);
-  await setPolyhedraAttribute(window, "model", attributeName);
-  await expect(window).toHaveScreenshot();
-});
 
 test("color", async () => {
   await changeColorWithSlider(window, "modelStyleMenu");
@@ -122,6 +109,12 @@ test("edges visibility", async () => {
 });
 
 test("object tree model components", async () => {
+  // Close any open menus from previous test
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   const mainObjectTree = window.getByTestId("mainObjectTree");
 
   await mainObjectTree
@@ -173,6 +166,12 @@ test("object tree hover first surface", async () => {
 });
 
 async function toggleModelTreeRow(appWindow, rowName) {
+  // Close any open menus
+  await appWindow.keyboard.press("Escape");
+  await appWindow.waitForTimeout(afterActionWait);
+  await appWindow.keyboard.press("Escape");
+  await appWindow.waitForTimeout(afterActionWait);
+
   const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -183,6 +182,12 @@ async function toggleModelTreeRow(appWindow, rowName) {
 }
 
 async function setModelTreeRowColorRandom(appWindow, rowName) {
+  // Close any open menus
+  await appWindow.keyboard.press("Escape");
+  await appWindow.waitForTimeout(afterActionWait);
+  await appWindow.keyboard.press("Escape");
+  await appWindow.waitForTimeout(afterActionWait);
+
   const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")

@@ -67,8 +67,8 @@ test("points visibility", async () => {
 });
 
 test("vertex attribute", async () => {
-  await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "mesh");
+  await setPointsVisibility(window, "mesh", true);
+  await setVertexAttribute(window, "meshPolyhedraMenu");
   await expect(window).toHaveScreenshot();
 });
 
@@ -78,8 +78,23 @@ test("polyhedron attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
+test("polyhedra color", async () => {
   await changeColor(window, "meshPolyhedraMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await changeColor(window, "meshPointsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges color", async () => {
+  await changeColor(window, "meshEdgesMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons color", async () => {
+  await changeColor(window, "meshPolygonsMenu");
   await expect(window).toHaveScreenshot();
 });
 

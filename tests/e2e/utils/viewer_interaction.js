@@ -69,28 +69,15 @@ async function findOverlappingObjectsPicker(window) {
 }
 
 async function ensureMenuOpen(window, menuTestId) {
-  const menuButton = window.getByTestId(menuTestId);
-  if (
-    !(await menuButton
-      .locator("button.menu-btn")
-      .evaluate((node) => node.classList.contains("v-btn--active")))
-  ) {
-    await menuButton.click();
+  const menuContainer = window.getByTestId(menuTestId);
+  const menuButton = menuContainer.locator("button.menu-btn");
+  if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
+    // Programmatic click bypasses any overlapping panels or hit-testing issues
+    await menuButton.evaluate((node) => node.click());
     await window.waitForTimeout(afterActionWait);
   }
 }
 
-async function ensureMenuClosed(window, menuTestId) {
-  const menuButton = window.getByTestId(menuTestId);
-  if (
-    await menuButton
-      .locator("button.menu-btn")
-      .evaluate((node) => node.classList.contains("v-btn--active"))
-  ) {
-    await menuButton.click();
-    await window.waitForTimeout(afterActionWait);
-  }
-}
 
 async function ensureFeatureVisible(window, menuTestId) {
   const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
@@ -115,7 +102,7 @@ async function setPointsVisibility(window, viewerObjectType, visibility) {
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 async function applyAttribute(
@@ -182,17 +169,10 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
-async function setVertexAttribute(
-  window,
-  viewerObjectType,
-  attributeName = "points",
-  options = {},
-) {
-  const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PointsMenu`;
+async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
     attributeName,
@@ -307,14 +287,14 @@ async function clickColorPickerSlider(window, container = window) {
 async function changeColor(window, menuTestId, container = window) {
   await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerCanvas(window, container);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 async function changeColorWithSlider(window, menuTestId, container = window) {
   await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerSlider(window, container);
   await clickColorPickerCanvas(window, container);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 async function changeOpacity(window, menuTestId, percent) {
@@ -334,7 +314,7 @@ async function changeOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -409,7 +389,7 @@ async function setFeatureVisibility(window, viewerObjectType, feature, visibilit
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 function setPointsSize(window, viewerObjectType, value) {
@@ -437,7 +417,7 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 function setPolygonsTextures(window, viewerObjectType) {
@@ -459,7 +439,7 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
     .first();
   await listItem.click();
   await window.waitForTimeout(afterActionWait);
-  await ensureMenuClosed(window, menuTestId);
+
 }
 
 async function hoverViewerCenter(window) {

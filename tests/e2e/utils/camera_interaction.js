@@ -1,5 +1,7 @@
 import { afterActionWait, dragElement } from "./viewer_interaction.js";
 
+const BACKEND_PROCESSING_WAIT = 2000;
+
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -16,20 +18,31 @@ async function toggleCenterOnClick(window) {
 }
 
 async function toggleGridScale(window) {
-  await window.getByTestId("gridScaleButton").click();
+  await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("gridScaleButton").click();
+  await window.waitForTimeout(BACKEND_PROCESSING_WAIT);
 }
 
 async function changeZScaling(window, zScaleValue) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  
   await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
-  const input = window.getByTestId("zScaleInput").locator("input");
+  const panel = window.getByTestId("zScaleInput");
+  if (!(await panel.isVisible())) {
+    await window.getByTestId("zScalingButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  const input = panel.locator("input");
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("toolPanelActionButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await window.waitForTimeout(BACKEND_PROCESSING_WAIT);
 }
 
 async function toggleCameraManager(window) {
@@ -66,6 +79,17 @@ async function restoreCameraPosition(window, name) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function ensureHighlightMenuOpen(window, childButtonTestId) {
+  if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+    await window.getByTestId("highlightOnHoverButton").click();
+    await window.waitForTimeout(afterActionWait);
+    if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+      await window.getByTestId("highlightOnHoverButton").click();
+      await window.waitForTimeout(afterActionWait);
+    }
+  }
+}
+
 export {
   changeZScaling,
   resetCamera,
@@ -78,4 +102,5 @@ export {
   toggleCameraOrientation,
   selectCameraOrientation,
   restoreCameraPosition,
+  ensureHighlightMenuOpen,
 };

@@ -21,6 +21,7 @@ import {
 import {
   changeZScaling,
   closeCameraManager,
+  ensureHighlightMenuOpen,
   resetCamera,
   restoreCameraPosition,
   rotateCamera,
@@ -91,6 +92,11 @@ test("overlapping objects context menu at top", async () => {
 });
 
 test("visibility off grid and expand brep focus", async () => {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
   await hideObjectInTree(window, "test", "mainObjectTree");
 
@@ -141,8 +147,7 @@ test("z scaling value 1", async () => {
 });
 
 test("cells hover highlight", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
@@ -150,8 +155,7 @@ test("cells hover highlight", async () => {
 });
 
 test("points hover highlight", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
@@ -164,8 +168,7 @@ test("highlight cells on grid", async () => {
   await showObjectInTree(window, "RegularGrid3D");
   await hideObjectInTree(window, "BRep");
   await resetCamera(window);
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
@@ -175,8 +178,7 @@ test("highlight cells on grid", async () => {
 });
 
 test("highlight points on grid", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
@@ -191,12 +193,15 @@ test("restore camera position", async () => {
 });
 
 test("screenshot file without background", async () => {
+  // Close any open menus from previous test
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   await window.getByTestId("screenshotButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
@@ -204,11 +209,8 @@ test("screenshot file without background", async () => {
 
 test("screenshot clipboard with background", async () => {
   await window.getByTestId("screenshotButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotClipboardButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();

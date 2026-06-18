@@ -66,7 +66,7 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "mesh");
+  await setVertexAttribute(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
 });
 
@@ -76,8 +76,18 @@ test("cell attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
+test("cells color", async () => {
   await changeColorWithSlider(window, "meshCellsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await changeColorWithSlider(window, "meshPointsMenu");
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges color", async () => {
+  await changeColorWithSlider(window, "meshEdgesMenu");
   await expect(window).toHaveScreenshot();
 });
 
