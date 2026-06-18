@@ -1,13 +1,16 @@
 <script setup>
 import AuthBackground from "@vease/components/Auth/AuthBackground";
+import AuthDeleteAccountDialog from "@vease/components/Auth/AuthDeleteAccountDialog";
 import { useAuth } from "@vease/composables/auth";
 
-const { user, logout } = useAuth();
+const { logout, user } = useAuth();
 
 function handleLogout() {
   logout();
   navigateTo("/login");
 }
+
+const showDeleteAccount = ref(false);
 </script>
 
 <template>
@@ -17,7 +20,7 @@ function handleLogout() {
     <v-row no-gutters class="fill-height align-center justify-center">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
         <div class="d-flex flex-column align-center w-100 px-4">
-          <v-avatar color="rgba(255, 255, 255, 0.1)" size="120" class="mb-8 account-avatar">
+          <v-avatar color="rgba(0, 0, 0, 0.1)" size="120" class="mb-8 account-avatar">
             <v-icon icon="mdi-account" size="80" color="white" />
           </v-avatar>
 
@@ -38,19 +41,32 @@ function handleLogout() {
           >
             Logout
           </v-btn>
+          <v-row>
+            <v-btn
+              text="Back to Viewer"
+              variant="text"
+              color="white"
+              class="text-none opacity-70"
+              @click="navigateTo('/')"
+              prepend-icon="mdi-arrow-left"
+            />
+          </v-row>
 
-          <v-btn
-            variant="text"
-            color="white"
-            class="text-none opacity-70"
-            @click="navigateTo('/')"
-            prepend-icon="mdi-arrow-left"
-          >
-            Back to Viewer
-          </v-btn>
+          <v-row class="pa-15">
+            <v-btn
+              text="Delete my account"
+              variant="text"
+              color="white"
+              class="text-none opacity-70"
+              @click="showDeleteAccount = true"
+              prepend-icon="mdi-delete"
+            />
+          </v-row>
         </div>
       </v-col>
     </v-row>
+
+    <AuthDeleteAccountDialog v-model="showDeleteAccount" />
   </v-container>
 </template>
 

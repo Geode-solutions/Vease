@@ -2,7 +2,7 @@
 import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 
-const { user, logout } = useAuth();
+const { user } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);

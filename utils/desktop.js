@@ -1,10 +1,11 @@
 // oxlint-disable promise/prefer-await-to-callbacks
 
 // Node imports
+import fs from "node:fs";
 import path from "node:path";
 
 // Third party imports
-import { BrowserWindow, app, shell, utilityProcess } from "electron";
+import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
 import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js";
 
 // Local constants
@@ -114,6 +115,53 @@ async function createNewWindow() {
   return win;
 }
 
+const credentialsFilePath = path.join(app.getPath("userData"), "credentials.dat");
+
+function saveCredentials(email, password) {
+  if (!safeStorage.isEncryptionAvailable()) {
+    console.error("[Electron] Encryption is not available on this system");
+    return { success: false, error: "Encryption not available" };
+  }
+
+  try {
+    const payload = JSON.stringify({ email, password });
+    const encrypted = safeStorage.encryptString(payload);
+    fs.writeFileSync(credentialsFilePath, encrypted);
+    return { success: true };
+  } catch (error) {
+    console.error("[Electron] Failed to save credentials", error);
+    return { success: false, error: error.message };
+  }
+}
+
+function getCredentials() {
+  if (!fs.existsSync(credentialsFilePath)) {
+    return { success: true, credentials: undefined };
+  }
+  try {
+    const encrypted = fs.readFileSync(credentialsFilePath);
+    const payload = safeStorage.decryptString(encrypted);
+    const credentials = JSON.parse(payload);
+    console.log("Retrieved credentials", credentials);
+    return { success: true, credentials };
+  } catch (error) {
+    console.error("[Electron] Failed to read credentials", error);
+    return { success: false, error: error.message };
+  }
+}
+
+function deleteCredentials() {
+  try {
+    if (fs.existsSync(credentialsFilePath)) {
+      fs.unlinkSync(credentialsFilePath);
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("[Electron] Failed to delete credentials", error);
+    return { success: false, error: error.message };
+  }
+}
+
 function parseArgs() {
   const args = app.isPackaged ? process.argv.slice(1) : process.argv.slice(2);
   return {
@@ -123,4 +171,4 @@ function parseArgs() {
   };
 }
 
-export { createNewWindow, parseArgs };
+export { createNewWindow, parseArgs, saveCredentials, getCredentials, deleteCredentials };
