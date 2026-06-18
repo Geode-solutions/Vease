@@ -12,7 +12,6 @@ import {
   expandComponentsType,
   findOverlappingObjectsPicker,
   focusObjectInTree,
-  getTreeRowByText,
   hideObjectInTree,
   hoverViewerCenter,
   loadData,

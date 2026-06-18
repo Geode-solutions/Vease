@@ -296,13 +296,6 @@ async function changeColorWithSlider(window, menuTestId, container = window) {
   await ensureMenuClosed(window, menuTestId);
 }
 
-async function changeComponentColorToBlue(window, menuTestId) {
-  const container = window.locator(".options-section", { hasText: "Component Options" });
-  await changeColoringStyle(window, menuTestId, "Constant", container);
-  await clickColorPickerSlider(window, container);
-  await clickColorPickerCanvas(window, container);
-  await ensureMenuClosed(window, menuTestId);
-}
 
 async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
@@ -473,7 +466,6 @@ export {
   changeColor,
   changeColoringStyle,
   changeColorWithSlider,
-  changeComponentColorToBlue,
   changeOpacity,
   dragContextMenu,
   dragElement,

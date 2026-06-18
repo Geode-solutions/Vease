@@ -10,7 +10,6 @@ import {
   changeColor,
   changeColorWithSlider,
   changeColoringStyle,
-  changeComponentColorToBlue,
   changeOpacity,
   expandComponentsType,
   hideObjectInTree,
@@ -264,7 +263,7 @@ test("context menu through non visible surface", async () => {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
-  await changeComponentColorToBlue(window, "modelStyleMenu");
+  await changeColor(window, "modelStyleMenu");
 
   await expect(window).toHaveScreenshot();
 });
