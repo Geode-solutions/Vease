@@ -16,9 +16,9 @@ async function viewerContextMenu(window, x, y) {
 }
 
 /**
- * In CI environments, clicking at the center of the canvas on overlapping objects 
+ * In CI environments, clicking at the center of the canvas on overlapping objects
  * can lead to non-deterministic selection (sometimes BRep, sometimes Grid) due to rendering/depth issues.
- * This function systematically searches a list of points to reliably trigger and open the 
+ * This function systematically searches a list of points to reliably trigger and open the
  * "overlapping objects picker" menu, ensuring test stability.
  */
 async function findOverlappingObjectsPicker(window) {
@@ -185,8 +185,14 @@ async function applyAttribute(
   await ensureMenuClosed(window, menuTestId);
 }
 
-async function setVertexAttribute(window, viewerObjectType, attributeName = "points", options = {}) {
-  const menuTestId = viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PointsMenu`;
+async function setVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  const menuTestId =
+    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PointsMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
     attributeName,
@@ -195,7 +201,8 @@ async function setVertexAttribute(window, viewerObjectType, attributeName = "poi
 }
 
 async function setEdgeAttribute(window, viewerObjectType, attributeName, options = {}) {
-  const menuTestId = viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}EdgesMenu`;
+  const menuTestId =
+    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}EdgesMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Edge attribute",
     attributeName,
@@ -204,7 +211,8 @@ async function setEdgeAttribute(window, viewerObjectType, attributeName, options
 }
 
 async function setCellAttribute(window, viewerObjectType, attributeName, options = {}) {
-  const menuTestId = viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}CellsMenu`;
+  const menuTestId =
+    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}CellsMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Cell attribute",
     attributeName,
@@ -213,7 +221,8 @@ async function setCellAttribute(window, viewerObjectType, attributeName, options
 }
 
 async function setPolygonAttribute(window, viewerObjectType, attributeName, options = {}) {
-  const menuTestId = viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolygonsMenu`;
+  const menuTestId =
+    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolygonsMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Polygon attribute",
     attributeName,
@@ -222,7 +231,8 @@ async function setPolygonAttribute(window, viewerObjectType, attributeName, opti
 }
 
 async function setPolyhedraAttribute(window, viewerObjectType, attributeName, options = {}) {
-  const menuTestId = viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolyhedraMenu`;
+  const menuTestId =
+    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolyhedraMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Polyhedron attribute",
     attributeName,
