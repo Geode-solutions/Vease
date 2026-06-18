@@ -296,7 +296,6 @@ async function changeColorWithSlider(window, menuTestId, container = window) {
   await ensureMenuClosed(window, menuTestId);
 }
 
-
 async function changeOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
