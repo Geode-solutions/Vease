@@ -8,7 +8,7 @@ const MILLISECONDS = 1000;
 const CLOUD_TIMEOUT = 100;
 const LINUX_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_DESKTOP = 50;
-const WINDOWS_TIMEOUT_BROWSER = 140;
+const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
 
@@ -34,6 +34,7 @@ export default defineConfig({
   },
   testDir: ".",
   fullyParallel: true,
+  workers: 1,
   forbidOnly: Boolean(process.env.CI),
   reporter: "html",
   use: {
