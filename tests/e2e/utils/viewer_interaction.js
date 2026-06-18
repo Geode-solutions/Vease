@@ -15,8 +15,6 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
-
-
 async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
   const menuButton = menuContainer.locator("button.menu-btn");
