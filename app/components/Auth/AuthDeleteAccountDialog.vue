@@ -7,20 +7,24 @@ const feedbackStore = useFeedbackStore();
 const { deleteAccount } = useAuth();
 const showDeleteAccount = defineModel({ type: Boolean, default: false });
 const loading = ref(false);
+const password = ref("");
+const passwordVisible = ref(false);
 
 const emit = defineEmits(["submit"]);
 
 async function handleDeleteAccount() {
   loading.value = true;
   try {
-    await deleteAccount();
+    await deleteAccount(password.value);
     feedbackStore.add_success("Account successfully deleted");
+    await navigateTo("/login");
   } catch (error) {
     const code = 500;
     feedbackStore.add_error(code, "/delete-account", "Delete account", error);
+  } finally {
+    loading.value = false;
+    password.value = "";
   }
-  loading.value = false;
-  await navigateTo("/login");
 }
 </script>
 
@@ -31,9 +35,23 @@ async function handleDeleteAccount() {
         Delete Account
       </v-card-title>
       <v-card-text class="text-body-1 text-white opacity-80 mb-8 px-0">
-        Are you sure you want to delete your account? This action is irreversible and will
-        permanently remove all your data from our servers.
+        Are you sure you want to delete your account? This action is irreversible. Please enter your
+        password to confirm.
       </v-card-text>
+
+      <v-text-field
+        v-model="password"
+        label="Password"
+        :type="passwordVisible ? 'text' : 'password'"
+        variant="outlined"
+        prepend-inner-icon="mdi-lock-outline"
+        :append-inner-icon="passwordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+        @click:append-inner="passwordVisible = !passwordVisible"
+        class="mb-4"
+        color="white"
+        autocomplete="current-password"
+        hide-details="auto"
+      />
 
       <v-card-actions class="px-0 ga-4">
         <v-btn
@@ -48,6 +66,7 @@ async function handleDeleteAccount() {
           type="submit"
           color="primary"
           :loading="loading"
+          :disabled="!password"
           variant="flat"
           class="flex-grow-1 text-none font-weight-black"
           @click="handleDeleteAccount"

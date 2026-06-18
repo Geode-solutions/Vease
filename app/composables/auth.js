@@ -1,5 +1,12 @@
 // Third-party imports
-import { createUserWithEmailAndPassword, deleteUser, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  reauthenticateWithCredential,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { appMode } from "@ogw_front/utils/local/app_mode";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
@@ -73,13 +80,20 @@ function useAuth() {
     return loggedInUser;
   }
 
-  async function deleteAccount() {
+
+  async function deleteAccount(password) {
     if (!user.value) {
-      throw new Error('No user logged in')
+      throw new Error('No user logged in');
     }
+
+    // Re-authenticate before deleting (required by Identity Platform)
+    const credential = EmailAuthProvider.credential(user.value.email, password);
+    await reauthenticateWithCredential(user.value, credential);
+
     await deleteUser(user.value);
     await logout();
   }
+
   async function logout() {
     if (infraStore.app_mode === appMode.DESKTOP) {
       try {
