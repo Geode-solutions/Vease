@@ -1,9 +1,14 @@
 // Third-party imports
 import {
+<<<<<<< HEAD
   EmailAuthProvider,
   createUserWithEmailAndPassword,
   deleteUser,
   reauthenticateWithCredential,
+=======
+  createUserWithEmailAndPassword,
+  deleteUser,
+>>>>>>> 34e708a6307ed449d11664b9380ab14c343b969f
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
