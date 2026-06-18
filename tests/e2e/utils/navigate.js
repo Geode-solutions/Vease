@@ -9,7 +9,6 @@ import { _electron as electron } from "playwright";
 import { executableName } from "@geode/opengeodeweb-front/app/utils/local/path.js";
 import { isWindows } from "std-env";
 import kill from "kill-port";
-
 import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
 // Local imports
@@ -89,98 +88,45 @@ async function navigateToApp(mode, browser) {
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
-    // oxlint-disable-next-line func-style
-    const cleanup = async () => {
-      try {
-        if (isWindows) {
-          await kill(nuxtPort);
-        } else {
-          const pids = execSync(`lsof -t -i tcp:${nuxtPort}`, { encoding: "utf8" })
-            .trim()
-            .replaceAll("\n", " ");
-          if (pids) {
-            execSync(`kill -15 ${pids}`);
-            // Fallback to kill -9 if it didn't exit after a short delay
-            const KILL_TIMEOUT_MS = 2000;
-            setTimeout(() => {
-              try {
-                execSync(`kill -0 ${pids} && kill -9 ${pids}`);
-              } catch {
-                // Ignore errors if the process has already exited
-              }
-            }, KILL_TIMEOUT_MS);
-          }
-        }
-      } catch (error) {
-        console.error(`Failed to kill process on port ${nuxtPort}:`, error);
-      }
-    };
-
-    try {
-      page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
-      await page.goto(`http://localhost:${nuxtPort}`);
-      console.log("Navigated to", page.url());
-      console.log(
-        `Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`,
-      );
-      await page.waitForTimeout(WAIT_TIMES.browser);
-      await page.waitForFunction(() => document.readyState === "complete");
-      return {
-        window: page,
-        cleanup,
-      };
-    } catch (error) {
-      await cleanup();
-      throw error;
-    }
+    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+    await page.goto(`http://localhost:${nuxtPort}`);
+    console.log("Navigated to", page.url());
+    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
+    await page.waitForTimeout(WAIT_TIMES.browser);
+    await page.waitForFunction(() => document.readyState === "complete");
+    return { window: page, cleanup: () => kill(nuxtPort) };
   } else if (mode === "CLOUD") {
-    // oxlint-disable-next-line func-style
-    const cleanup = () => page.close();
-    try {
-      page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 
-      let prefix = "";
-      const branch = execSync("git branch --show-current", {
-        encoding: "utf8",
-      }).trim();
-      console.log("Current branch:", branch);
-      if (branch === "next") {
-        prefix = "next.";
-      }
-
-      const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-      await page.goto(`https://${prefix}vease.geode-solutions.com`, {
-        waitUntil: "domcontentloaded",
-        timeout: navigationTimeout,
-      });
-
-      console.log("Navigated to", page.url());
-      const button = await page.getByRole("button", { name: "Load the app" });
-      console.log({ button });
-      await button.click();
-      console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
-      await page.waitForTimeout(WAIT_TIMES.cloud);
-      await page.waitForFunction(() => document.readyState === "complete");
-      return { window: page, cleanup };
-    } catch (error) {
-      await cleanup();
-      throw error;
+    let prefix = "";
+    const branch = execSync("git branch --show-current", {
+      encoding: "utf8",
+    }).trim();
+    console.log("Current branch:", branch);
+    if (branch === "next") {
+      prefix = "next.";
     }
+
+    const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
+    await page.goto(`https://${prefix}vease.geode-solutions.com`, {
+      waitUntil: "domcontentloaded",
+      timeout: navigationTimeout,
+    });
+
+    console.log("Navigated to", page.url());
+    const button = await page.getByRole("button", { name: "Load the app" });
+    console.log({ button });
+    await button.click();
+    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+    await page.waitForTimeout(WAIT_TIMES.cloud);
+    await page.waitForFunction(() => document.readyState === "complete");
+    return { window: page, cleanup: () => page.close() };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    // oxlint-disable-next-line func-style
-    const cleanup = () => electronApp.close();
-    try {
-      console.log(
-        `Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`,
-      );
-      await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
-      await firstWindow.waitForFunction(() => document.readyState === "complete");
-      return { window: firstWindow, cleanup };
-    } catch (error) {
-      await cleanup();
-      throw error;
-    }
+    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+    await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
+    await firstWindow.waitForFunction(() => document.readyState === "complete");
+    return { window: firstWindow, cleanup: () => electronApp.close() };
   }
   throw new Error(`Unknown mode: ${mode}`);
 }

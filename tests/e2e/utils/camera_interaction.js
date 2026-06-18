@@ -1,7 +1,7 @@
 import { afterActionWait, dragElement } from "./viewer_interaction.js";
 
 async function resetCamera(window) {
-  await window.locator("button:has(.mdi-cube-scan)").click();
+  await window.getByTestId("resetCameraButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -11,24 +11,24 @@ async function rotateCamera(window, deltaX, deltaY = 0) {
 }
 
 async function toggleCenterOnClick(window) {
-  await window.locator("button:has(.mdi-crosshairs-question)").click();
+  await window.getByTestId("centerOnClickButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function toggleGridScale(window) {
-  await window.locator("button:has(.mdi-ruler-square)").click();
+  await window.getByTestId("gridScaleButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function changeZScaling(window, zScaleValue) {
-  await window.locator("button:has(.mdi-sort)").click();
+  await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
-  const input = window.getByLabel("Z Scale Value");
+  const input = window.getByTestId("zScaleInput").locator("input");
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
-  await window.getByRole("button", { name: "Apply" }).click();
+  await window.getByTestId("toolPanelActionButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 

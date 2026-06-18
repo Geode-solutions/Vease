@@ -108,5 +108,5 @@ watch(
 </script>
 
 <template>
-  <Stepper :stepper-tree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
+  <Stepper :stepperTree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
 </template>
