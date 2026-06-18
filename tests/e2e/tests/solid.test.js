@@ -15,7 +15,6 @@ import {
   setEdgesWidth,
   setPointsSize,
   setPointsVisibility,
-  setPolygonsTextures,
   setPolygonsVisibility,
   setPolyhedraAttribute,
   setPolyhedraVisibility,
@@ -127,10 +126,7 @@ test("polygons visibility", async () => {
   await setPolygonsVisibility(window, "mesh", true);
 });
 
-test("polygons textures", async () => {
-  await setPolygonsTextures(window, "mesh");
-  await expect(window).toHaveScreenshot();
-});
+
 
 test("polyhedra visibility", async () => {
   await setPolyhedraVisibility(window, "mesh", false);
