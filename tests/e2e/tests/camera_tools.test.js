@@ -96,11 +96,7 @@ test("overlapping objects context menu at top", async () => {
 
 test("visibility off grid and expand brep focus", async () => {
   await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
-  await getTreeRowByText(window, "mainObjectTree", "test")
-    .locator(".mdi-eye")
-    .first()
-    .click({ force: true });
-  await window.waitForTimeout(afterActionWait);
+  await hideObjectInTree(window, "test", "mainObjectTree");
 
   await focusObjectInTree(window, "BRep", "test");
   await window.mouse.move(0, 0);

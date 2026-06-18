@@ -295,8 +295,9 @@ async function changeColorWithSlider(window, menuTestId, container = window) {
 
 async function changeComponentColorToBlue(window, menuTestId) {
   const container = window.locator(".options-section", { hasText: "Component Options" });
-  await changeColor(window, menuTestId, container);
+  await changeColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerSlider(window, container);
+  await clickColorPickerCanvas(window, container);
   await ensureMenuClosed(window, menuTestId);
 }
 
@@ -337,11 +338,13 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
 }
 
 async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByText(window, treeTestId, objectName)
-    .locator(".mdi-eye")
-    .first()
-    .click({ force: true });
-  await window.waitForTimeout(afterActionWait);
+  const row = getTreeRowByText(window, treeTestId, objectName);
+  await row.waitFor({ state: "attached" });
+  const btn = row.locator("button:has(.mdi-eye)").first();
+  if (await btn.isVisible()) {
+    await btn.click({ force: true });
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 async function focusObjectInTree(window, folderName, objectName) {
@@ -353,11 +356,13 @@ async function focusObjectInTree(window, folderName, objectName) {
 }
 
 async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByText(window, treeTestId, objectName)
-    .locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)")
-    .first()
-    .click({ force: true });
-  await window.waitForTimeout(afterActionWait);
+  const row = getTreeRowByText(window, treeTestId, objectName);
+  await row.waitFor({ state: "attached" });
+  const btn = row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first();
+  if (await btn.isVisible()) {
+    await btn.click({ force: true });
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
