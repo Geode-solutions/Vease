@@ -63,8 +63,8 @@ test("points visibility", async () => {
 });
 
 test("edge attribute", async () => {
-  await setPointsVisibility(window, "mesh", true);
-  await setEdgeAttribute(window, "mesh", attributeName);
+  await setPointsVisibility(window, viewerObjectType, true);
+  await setEdgeAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -84,18 +84,17 @@ test("opacity", async () => {
 });
 
 test("points size", async () => {
-  await setPointsSize(window, "mesh", POINTS_SIZE);
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, "mesh", EDGES_WIDTH);
+  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await setEdgesVisibility(window, "mesh", false);
+  await setEdgesVisibility(window, viewerObjectType, false);
   await expect(window).toHaveScreenshot();
-  // Revert
-  await setEdgesVisibility(window, "mesh", true);
+  await setEdgesVisibility(window, viewerObjectType, true);
 });

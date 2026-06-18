@@ -10,7 +10,6 @@ import {
   changeColor,
   dragContextMenu,
   expandComponentsType,
-  findOverlappingObjectsPicker,
   focusObjectInTree,
   hideObjectInTree,
   hoverViewerCenter,
@@ -71,7 +70,10 @@ test("rotate camera 180 degrees", async () => {
 
 test("overlapping objects context menu", async () => {
   await resetCamera(window);
-  await findOverlappingObjectsPicker(window);
+  await window.getByTestId("hybridViewer").locator("canvas").click({
+    position: { x: 600, y: 400 },
+  });
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 

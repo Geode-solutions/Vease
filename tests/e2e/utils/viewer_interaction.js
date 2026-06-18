@@ -15,58 +15,7 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
-/**
- * In CI environments, clicking at the center of the canvas on overlapping objects
- * can lead to non-deterministic selection (sometimes BRep, sometimes Grid) due to rendering/depth issues.
- * This function systematically searches a list of points to reliably trigger and open the
- * "overlapping objects picker" menu, ensuring test stability.
- */
-async function findOverlappingObjectsPicker(window) {
-  let found = false;
-  const points = [
-    { x: 440, y: 530 },
-    { x: 600, y: 400 },
-    { x: 600, y: 500 },
-    { x: 600, y: 300 },
-    { x: 500, y: 400 },
-    { x: 700, y: 400 },
-    { x: 550, y: 450 },
-    { x: 650, y: 350 },
-    { x: 650, y: 450 },
-    { x: 550, y: 350 },
-    { x: 400, y: 400 },
-    { x: 800, y: 400 },
-    { x: 450, y: 550 },
-    { x: 500, y: 500 },
-  ];
 
-  for (const { x, y } of points) {
-    // oxlint-disable-next-line no-await-in-loop
-    await window.getByTestId("hybridViewer").locator("canvas").click({
-      button: "right",
-      position: { x, y },
-    });
-    // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(afterActionWait);
-
-    // oxlint-disable-next-line no-await-in-loop
-    const items = await window.locator(".intermediate-picker-item").count();
-    if (items >= 2) {
-      found = true;
-      break;
-    }
-    // oxlint-disable-next-line no-await-in-loop
-    await window.keyboard.press("Escape");
-    // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
-  }
-
-  if (!found) {
-    throw new Error(
-      "Could not find overlapping objects picker anywhere! The test data might not be loaded or the picker is broken.",
-    );
-  }
-}
 
 async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
@@ -463,7 +412,6 @@ export {
   setEdgeAttribute,
   expandComponentsType,
   focusObjectInTree,
-  findOverlappingObjectsPicker,
   hideObjectInTree,
   openObjectTreeContextMenu,
   highlightData,
