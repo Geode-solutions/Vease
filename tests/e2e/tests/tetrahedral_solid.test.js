@@ -126,8 +126,6 @@ test("polygons visibility", async () => {
   await setPolygonsVisibility(window, "mesh", true);
 });
 
-
-
 test("polyhedra visibility", async () => {
   await setPolyhedraVisibility(window, "mesh", false);
   await expect(window).toHaveScreenshot();
