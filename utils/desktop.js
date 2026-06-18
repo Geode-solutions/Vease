@@ -118,8 +118,6 @@ async function createNewWindow() {
 const credentialsFilePath = path.join(app.getPath("userData"), "credentials.dat");
 
 function saveCredentials(email, password) {
-  console.log("Saving credentials", { email, password });
-
   if (!safeStorage.isEncryptionAvailable()) {
     console.error("[Electron] Encryption is not available on this system");
     return { success: false, error: "Encryption not available" };

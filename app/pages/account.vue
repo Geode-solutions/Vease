@@ -1,17 +1,16 @@
 <script setup>
 import AuthBackground from "@vease/components/Auth/AuthBackground";
+import AuthDeleteAccountDialog from "@vease/components/Auth/AuthDeleteAccountDialog";
 import { useAuth } from "@vease/composables/auth";
 
-const { deleteAccount, logout, user } = useAuth();
+const { logout, user } = useAuth();
 
 function handleLogout() {
   logout();
   navigateTo("/login");
 }
 
-function handleDeleteAccount() {
-  deleteAccount();
-}
+const showDeleteAccount = ref(false);
 </script>
 
 <template>
@@ -59,13 +58,15 @@ function handleDeleteAccount() {
               variant="text"
               color="white"
               class="text-none opacity-70"
-              @click="handleDeleteAccount"
+              @click="showDeleteAccount = true"
               prepend-icon="mdi-delete"
             />
           </v-row>
         </div>
       </v-col>
     </v-row>
+
+    <AuthDeleteAccountDialog v-model="showDeleteAccount" />
   </v-container>
 </template>
 

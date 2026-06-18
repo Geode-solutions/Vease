@@ -8,13 +8,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   new_window: (args) => {
     ipcRenderer.invoke("new_window", args);
   },
-  save_credentials: (args) => {
-    return ipcRenderer.invoke("save_credentials", args);
-  },
-  get_credentials: () => {
-    return ipcRenderer.invoke("get_credentials");
-  },
-  delete_credentials: () => {
-    return ipcRenderer.invoke("delete_credentials");
-  },
+  save_credentials: (args) => ipcRenderer.invoke("save_credentials", args),
+  get_credentials: () => ipcRenderer.invoke("get_credentials"),
+  delete_credentials: () => ipcRenderer.invoke("delete_credentials"),
 });

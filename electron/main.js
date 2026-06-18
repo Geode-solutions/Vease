@@ -35,14 +35,12 @@ ipcMain.handle("project_folder_path", (_event, args) => {
 
 ipcMain.handle("save_credentials", (_event, args) => {
   const { email, password } = args;
-  console.log("Saving credentials", { email, password });
   return saveCredentials(email, password);
 });
 
 ipcMain.handle("get_credentials", () => {
   console.log("Getting credentials");
   const credentials = getCredentials();
-  console.log("Retrieved credentials", credentials);
   return credentials;
 });
 

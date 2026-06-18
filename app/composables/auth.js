@@ -7,6 +7,7 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
 
+//oxlint-disable max-lines-per-function
 function useAuth() {
   const auth = useFirebaseAuth();
   const user = useCurrentUser();
@@ -44,7 +45,6 @@ function useAuth() {
       if (credentials) {
         const { email, password } = credentials;
         try {
-          console.log("Attempting auto-login with retrieved credentials", { email, password });
           return login(email, password);
         } catch (loginError) {
           console.error("Auto-login failed:", loginError);
@@ -74,42 +74,28 @@ function useAuth() {
   }
 
   async function deleteAccount() {
-    if (!user.value) throw new Error('No user logged in')
-    await deleteUser(user.value)
-    await signOut(auth)
-  }
-  function logout() {
-    try {
-      const { success } = await globalThis.electronAPI.delete_credentials();
-      if (!success) {
-        console.error("Failed to delete credentials:", error);
-        return;
-      }
-      console.log("Credentials deletion successful");
-    } catch (error) {
-      console.error("Failed to delete credentials:", error);
+    if (!user.value) {
+      throw new Error('No user logged in')
     }
-    signOut(auth);
+    await deleteUser(user.value);
+    await logout();
+  }
+  async function logout() {
+    if (infraStore.app_mode === appMode.DESKTOP) {
+      try {
+        const { success } = await globalThis.electronAPI.delete_credentials();
+        if (!success) {
+          console.error("Failed to delete credentials:", error);
+          return;
+        }
+        console.log("Credentials deletion successful");
+      } catch (error) {
+        console.error("Failed to delete credentials:", error);
+      }
+    }
+    await signOut(auth);
   }
   return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
-
-}
-try {
-  console.log("Attempting auto-login with retrieved credentials", { email, password });
-  return login(email, password);
-} catch (loginError) {
-  console.error("Auto-login failed:", loginError);
-  return globalThis.electronAPI.delete_credentials();
-}
-      }
-    } catch (error) {
-  console.error("Failed to get credentials:", error);
-}
-signOut(auth);
-  }
-return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
-
-
 }
 
 function resetPassword(email) {
