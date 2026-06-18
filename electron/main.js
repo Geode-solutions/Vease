@@ -6,13 +6,13 @@ import { autoUpdater } from "electron-updater";
 import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanup.js";
 
 // Local imports
-// oxlint-disable-next-line import/no-relative-parent-imports
 import {
   createNewWindow,
   deleteCredentials,
   getCredentials,
   parseArgs,
   saveCredentials,
+  // oxlint-disable-next-line import/no-relative-parent-imports
 } from "../utils/desktop.js";
 
 const appArgs = parseArgs();
