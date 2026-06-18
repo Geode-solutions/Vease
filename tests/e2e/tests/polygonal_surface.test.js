@@ -38,9 +38,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -69,13 +67,13 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "meshPolygonsMenu");
+  await setVertexAttribute(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
 
 test("polygon attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setPolygonAttribute(window, "meshPolygonsMenu", attributeName);
+  await setPolygonAttribute(window, "mesh", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

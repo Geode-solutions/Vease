@@ -39,9 +39,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -70,13 +68,13 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "meshPolyhedraMenu");
+  await setVertexAttribute(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setPolyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
+  await setPolyhedraAttribute(window, "mesh", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

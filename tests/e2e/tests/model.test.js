@@ -33,15 +33,14 @@ let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";
+const viewerObjectType = "model";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -62,8 +61,7 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "model",
-    visibility = true;
+  const visibility = true;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
@@ -75,13 +73,13 @@ test("points size", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "model", false);
-  await setVertexAttribute(window, "modelStyleMenu");
+  await setVertexAttribute(window, "model");
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, "model", false);
-  await setPolyhedraAttribute(window, "modelStyleMenu", attributeName);
+  await setPolyhedraAttribute(window, "model", attributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -121,7 +119,6 @@ test("edges visibility", async () => {
   await modelEdgesVisibilitySwitch.check();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
 });
 
 test("object tree model components", async () => {
@@ -196,14 +193,11 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await appWindow.waitForTimeout(afterActionWait);
 
   await changeColor(appWindow, "modelStyleMenu");
-  await appWindow.keyboard.press("Escape");
-  await appWindow.waitForTimeout(afterActionWait);
 }
 
 test("blocks visibility", async () => {
   await toggleModelTreeRow(window, "Blocks");
   await expect(window).toHaveScreenshot();
-  // Revert
   await toggleModelTreeRow(window, "Blocks");
 });
 

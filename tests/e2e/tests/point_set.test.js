@@ -31,9 +31,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -62,7 +60,7 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", true);
-  await setVertexAttribute(window, "meshPointsMenu");
+  await setVertexAttribute(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
 

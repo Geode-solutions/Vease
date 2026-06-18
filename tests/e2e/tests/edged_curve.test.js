@@ -30,15 +30,14 @@ const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 const geodeObjectType = "EdgedCurve3D";
+const viewerObjectType = "mesh";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -59,21 +58,20 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = false;
+  const visibility = false;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", true);
-  await setVertexAttribute(window, "meshEdgesMenu");
+  await setVertexAttribute(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
 
 test("edge attribute", async () => {
   await setPointsVisibility(window, "mesh", true);
-  await setEdgeAttribute(window, "meshEdgesMenu", attributeName);
+  await setEdgeAttribute(window, "mesh", attributeName);
   await expect(window).toHaveScreenshot();
 });
 

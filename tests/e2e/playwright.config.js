@@ -14,7 +14,7 @@ const CI_RETRIES = 1;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
 const testMatch = "tests/e2e/tests/**/*.test.js";
-const maxDiffPixelRatio = 0.05;
+const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
@@ -36,6 +36,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   workers: 1,
+  maxFailures:1,
   reporter: "html",
   use: {
     trace: "on-first-retry",

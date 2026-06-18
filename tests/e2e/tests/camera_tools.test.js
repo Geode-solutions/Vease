@@ -47,9 +47,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -90,7 +88,6 @@ test("select regulargrid3d and change color", async () => {
 test("overlapping objects context menu at top", async () => {
   await dragContextMenu(window, { targetY: TARGET_TOP });
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
 });
 
 test("visibility off grid and expand brep focus", async () => {
@@ -135,8 +132,6 @@ test("camera orientation", async () => {
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X+");
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
 test("z scaling value 1", async () => {
@@ -145,18 +140,16 @@ test("z scaling value 1", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("cells hover highlight on brep", async () => {
+test("cells hover highlight", async () => {
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("points hover highlight on brep", async () => {
+test("points hover highlight", async () => {
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("highlightOnHoverPointsButton").click();
@@ -188,8 +181,6 @@ test("highlight points on grid", async () => {
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
 test("restore camera position", async () => {

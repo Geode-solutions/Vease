@@ -84,7 +84,7 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         prepend-icon="mdi-file-upload-outline"
-        :disabled="infraStore.status !== Status.CREATED || !infraStore.microservices_connected"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
       >
         Import
@@ -95,7 +95,7 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         prepend-icon="mdi-shape-plus-outline"
-        :disabled="infraStore.status !== Status.CREATED || !infraStore.microservices_connected"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
         Create

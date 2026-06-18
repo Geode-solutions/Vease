@@ -37,9 +37,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (typeof cleanup === "function") {
-    await cleanup();
-  }
+  await cleanup();
 });
 
 test("load", async () => {
@@ -68,13 +66,13 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "meshCellsMenu");
+  await setVertexAttribute(window, "mesh");
   await expect(window).toHaveScreenshot();
 });
 
 test("cell attribute", async () => {
   await setPointsVisibility(window, "mesh", false);
-  await setCellAttribute(window, "meshCellsMenu", attributeName);
+  await setCellAttribute(window, "mesh", attributeName);
   await expect(window).toHaveScreenshot();
 });
 
