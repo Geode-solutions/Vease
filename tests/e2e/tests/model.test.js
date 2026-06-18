@@ -68,8 +68,6 @@ test("points size", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
-
 test("color", async () => {
   await changeColorWithSlider(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
