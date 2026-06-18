@@ -35,7 +35,6 @@ export default defineConfig({
   testDir: ".",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
-  maxFailures:1,
   reporter: "html",
   use: {
     trace: "on-first-retry",
