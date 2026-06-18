@@ -57,7 +57,6 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-
 test("color", async () => {
   await changeColor(window, "meshPointsMenu");
   await expect(window).toHaveScreenshot();

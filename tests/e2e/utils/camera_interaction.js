@@ -27,7 +27,7 @@ async function toggleGridScale(window) {
 async function changeZScaling(window, zScaleValue) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  
+
   await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
