@@ -80,10 +80,9 @@ function useAuth() {
     return loggedInUser;
   }
 
-
   async function deleteAccount(password) {
     if (!user.value) {
-      throw new Error('No user logged in');
+      throw new Error("No user logged in");
     }
 
     // Re-authenticate before deleting (required by Identity Platform)
