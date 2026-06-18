@@ -148,7 +148,10 @@ async function applyAttribute(
     await container.getByTestId("colorMapPicker").first().click();
     await window.waitForTimeout(afterActionWait);
 
-    await window.locator(".v-overlay-container").getByPlaceholder("Search presets...").fill(colorMap);
+    await window
+      .locator(".v-overlay-container")
+      .getByPlaceholder("Search presets...")
+      .fill(colorMap);
     await window.waitForTimeout(afterActionWait);
 
     await window
