@@ -1,5 +1,10 @@
 // Third-party imports
-import { createUserWithEmailAndPassword, deleteUser, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  deleteUser,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { appMode } from "@ogw_front/utils/local/app_mode";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
@@ -75,7 +80,7 @@ function useAuth() {
 
   async function deleteAccount() {
     if (!user.value) {
-      throw new Error('No user logged in')
+      throw new Error("No user logged in");
     }
     await deleteUser(user.value);
     await logout();
