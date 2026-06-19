@@ -437,6 +437,10 @@ async function hoverViewerCenter(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function stabilizeHoverTooltip(window) {
+  await window.addStyleTag({ content: ".tooltip-value-dim { visibility: hidden !important; }" });
+}
+
 export {
   setEdgesVisibility,
   setPolygonsVisibility,
@@ -470,6 +474,7 @@ export {
   showObjectInTree,
   viewerContextMenu,
   hoverViewerCenter,
+  stabilizeHoverTooltip,
   getTreeRowByText,
 };
 export { loadData } from "./load.js";

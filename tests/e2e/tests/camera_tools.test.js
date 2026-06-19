@@ -17,6 +17,7 @@ import {
   loadData,
   navigateToApp,
   showObjectInTree,
+  stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
   changeZScaling,
@@ -147,11 +148,15 @@ test("z scaling value 1", async () => {
 });
 
 test("cells hover highlight", async () => {
+  await showObjectInTree(window, "BRep");
+  await hideObjectInTree(window, "RegularGrid3D");
+  await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
+  await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
 });
 
 test("points hover highlight", async () => {
@@ -159,7 +164,8 @@ test("points hover highlight", async () => {
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
+  await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
   await window.getByTestId("hoverHighlightChip").click();
   await window.waitForTimeout(afterActionWait);
 });
@@ -172,7 +178,8 @@ test("highlight cells on grid", async () => {
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
+  await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
 });
@@ -182,7 +189,8 @@ test("highlight points on grid", async () => {
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
+  await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
 });
 
 test("restore camera position", async () => {

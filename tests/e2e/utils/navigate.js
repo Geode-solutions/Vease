@@ -104,7 +104,6 @@ async function navigateToApp(mode, browser) {
             execSync("taskkill /F /IM opengeodeweb* /T");
           } else {
             execSync("pkill -f vease-");
-            execSync("pkill -f opengeodeweb");
           }
         } catch {
           // Ignore errors if no process is found
