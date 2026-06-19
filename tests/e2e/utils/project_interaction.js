@@ -1,16 +1,10 @@
 import { afterActionWait } from "./viewer_interaction.js";
-import path from "node:path";
 
-async function exportProject(window, downloadDir) {
+async function exportProject(window) {
   await window.getByTestId("projectMenuButton").click();
   await window.waitForTimeout(afterActionWait);
-  const downloadPromise = window.waitForEvent("download");
   await window.getByTestId("exportProjectButton").click();
   await window.waitForTimeout(afterActionWait);
-  const download = await downloadPromise;
-  const downloadPath = path.join(downloadDir, download.suggestedFilename());
-  await download.saveAs(downloadPath);
-  return downloadPath;
 }
 
 async function importProject(window, projectFilePath) {

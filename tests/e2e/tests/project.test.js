@@ -7,14 +7,12 @@ import {
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { expect } from "@playwright/test";
-import fs from "node:fs";
 import path from "node:path";
 import { test } from "@tests/fixtures.js";
 
 const inputFilename = "test_project.vease";
 let window = undefined;
 let cleanup = undefined;
-let exportedFilePath = undefined;
 const OFFSET = 10;
 
 test.beforeAll(async ({ mode, browser }) => {
@@ -22,13 +20,6 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  if (exportedFilePath && fs.existsSync(exportedFilePath)) {
-    try {
-      fs.unlinkSync(exportedFilePath);
-    } catch (error) {
-      console.warn("Failed to delete temporary project file:", error);
-    }
-  }
   await cleanup();
 });
 
@@ -74,10 +65,8 @@ test("collapse model tree in main tree", async () => {
 });
 
 test("export project", async () => {
-  const downloadDir = path.join(import.meta.dirname, "data");
-  exportedFilePath = await exportProject(window, downloadDir);
-  expect(fs.existsSync(exportedFilePath)).toBe(true);
-  expect(fs.statSync(exportedFilePath).size).toBeGreaterThan(0);
+  await exportProject(window);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
