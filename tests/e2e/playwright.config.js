@@ -40,12 +40,8 @@ export default defineConfig({
   use: {
     trace: "on-first-retry",
     launchOptions: {
-      args: [
-        "--enable-unsafe-swiftshader",
-        "--use-gl=angle",
-        "--use-angle=swiftshader"
-      ]
-    }
+      args: ["--enable-unsafe-swiftshader", "--use-gl=angle", "--use-angle=swiftshader"],
+    },
   },
 
   projects: [
