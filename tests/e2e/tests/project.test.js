@@ -1,7 +1,8 @@
 import {
+  afterActionWait,
   beforeAllTimeout,
+  changeColor,
   hideObjectInTree,
-  loadData,
   navigateToApp,
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
@@ -10,10 +11,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { test } from "@tests/fixtures.js";
 
-const inputFilename = "test.og_pts3d";
+const inputFilename = "test_project.vease";
 let window = undefined;
 let cleanup = undefined;
 let exportedFilePath = undefined;
+const OFFSET = 10;
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -30,30 +32,52 @@ test.afterAll(async () => {
   await cleanup();
 });
 
-test("load", async () => {
-  await loadData(window, inputFilename);
-  await expect(window).toHaveScreenshot("initial-state.png");
+test("import project", async () => {
+  const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
+  await importProject(window, projectFilePath);
+  await expect(window).toHaveScreenshot("imported-project.png");
+});
+
+test("toggle surfaces visibility", async () => {
+  await hideObjectInTree(window, "Surfaces", "modelComponentsObjectTree");
+  await expect(window).toHaveScreenshot("hide-surfaces.png");
+});
+
+test("change lines color", async () => {
+  const tree = window.getByTestId("modelComponentsObjectTree");
+  const item = tree.getByText("Lines").first();
+  const box = await item.boundingBox();
+  await item.dispatchEvent("contextmenu", {
+    button: 2,
+    clientX: box.x + OFFSET,
+    clientY: box.y + OFFSET,
+  });
+  await window.waitForTimeout(afterActionWait);
+
+  const container = window.locator(".options-section", { hasText: "Lines Options" });
+  await changeColor(window, "modelStyleMenu", container);
+  await window.mouse.move(0, 0);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+});
+
+test("collapse model tree in main tree", async () => {
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  await mainObjectTree
+    .locator(".tree-row-wrapper")
+    .filter({ hasText: "surface_cube" })
+    .locator("button:has(.mdi-magnify-expand)")
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
+  await expect(window).toHaveScreenshot();
 });
 
 test("export project", async () => {
-  const downloadDir = path.join(import.meta.dirname, "..", "tests", "data");
+  const downloadDir = path.join(import.meta.dirname, "data");
   exportedFilePath = await exportProject(window, downloadDir);
   expect(fs.existsSync(exportedFilePath)).toBe(true);
   expect(fs.statSync(exportedFilePath).size).toBeGreaterThan(0);
-});
-
-test("import project and restore visibility", async () => {
-  await hideObjectInTree(window, "test");
-  await expect(window).toHaveScreenshot("modified-state.png");
-  await importProject(window, exportedFilePath);
-  await expect(window).toHaveScreenshot("initial-state.png");
-});
-
-test("import project on reload", async () => {
-  await window.reload();
-  await window.waitForFunction(() => document.readyState === "complete");
-  const appLoadWait = 8000;
-  await window.waitForTimeout(appLoadWait);
-  await importProject(window, exportedFilePath);
-  await expect(window).toHaveScreenshot("initial-state.png");
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
 });
