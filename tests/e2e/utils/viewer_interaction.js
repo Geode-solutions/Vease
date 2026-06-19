@@ -128,6 +128,7 @@ async function applyAttribute(
     .first();
 
   await option.click();
+  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
