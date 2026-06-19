@@ -39,6 +39,13 @@ export default defineConfig({
   reporter: "html",
   use: {
     trace: "on-first-retry",
+    launchOptions: {
+      args: [
+        "--enable-unsafe-swiftshader",
+        "--use-gl=angle",
+        "--use-angle=swiftshader"
+      ]
+    }
   },
 
   projects: [
