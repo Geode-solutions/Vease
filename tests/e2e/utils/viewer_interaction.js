@@ -39,6 +39,7 @@ async function findOverlappingObjectsPicker(window) {
     await window.getByTestId("hybridViewer").locator("canvas").click({
       button: "right",
       position: { x, y },
+      delay: 100,
     });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
