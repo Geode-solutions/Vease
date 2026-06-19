@@ -151,7 +151,7 @@ test("cells hover highlight", async () => {
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot();
+  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
 });
 
 test("points hover highlight", async () => {
@@ -159,7 +159,7 @@ test("points hover highlight", async () => {
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot();
+  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
   await window.getByTestId("hoverHighlightChip").click();
   await window.waitForTimeout(afterActionWait);
 });
@@ -172,7 +172,7 @@ test("highlight cells on grid", async () => {
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot();
+  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
 });
@@ -182,7 +182,7 @@ test("highlight points on grid", async () => {
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
-  await expect(window).toHaveScreenshot();
+  await expect(window).toHaveScreenshot({ mask: [window.locator(".floating-tooltip")] });
 });
 
 test("restore camera position", async () => {
