@@ -101,7 +101,6 @@ async function navigateToApp(mode, browser) {
         try {
           if (isWindows) {
             execSync("taskkill /F /IM vease-* /T");
-            execSync("taskkill /F /IM opengeodeweb* /T");
           } else {
             execSync("pkill -f vease-");
           }

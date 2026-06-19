@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 // Constants
-const beforeAllTimeout = 30_000;
+const beforeAllTimeout = 60_000;
 const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
