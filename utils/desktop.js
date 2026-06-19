@@ -76,8 +76,12 @@ async function createNewWindow() {
       shell: true,
     });
 
-    server.stdout.on("data", (data) => { console.log(`[NITRO] ${data.toString()}`) });
-    server.stderr.on("data", (data) => { console.log(`[NITRO] ${data.toString()}`) });
+    server.stdout.on("data", (data) => {
+      console.log(`[NITRO] ${data.toString()}`);
+    });
+    server.stderr.on("data", (data) => {
+      console.log(`[NITRO] ${data.toString()}`);
+    });
 
     const controller = new AbortController();
     const expectedResponse = `Listening on http://[::]:${PORT}`;
