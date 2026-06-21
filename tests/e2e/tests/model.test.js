@@ -17,6 +17,7 @@ import {
   hoverModelComponentRow,
   loadData,
   navigateToApp,
+  setEdgesVisibility,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
