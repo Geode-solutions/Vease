@@ -94,15 +94,7 @@ test("object tree context menu", async () => {
 });
 
 test("edges visibility", async () => {
-  const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
-  console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
-  await brepEdgesMenuButton.click();
-  const modelEdgesVisibilitySwitch = await window
-    .getByTestId("modelEdgesVisibilitySwitch")
-    .getByRole("checkbox");
-  console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
-  await modelEdgesVisibilitySwitch.check();
-  await window.waitForTimeout(afterActionWait);
+  await setEdgesVisibility(window, "model", true);
   await expect(window).toHaveScreenshot();
 });
 
