@@ -38,7 +38,9 @@ export default defineConfig({
   workers: 1,
   reporter: "html",
   use: {
+    screenshot: 'only-on-failure',
     trace: "on-first-retry",
+    video: 'on-first-retry'
   },
 
   projects: [
