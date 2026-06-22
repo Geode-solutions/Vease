@@ -12,9 +12,9 @@ function createEmptyPoint() {
 
 function formatPoints(pts) {
   return pts.map((point) => ({
-    x: Number.parseFloat(String(point.x).replaceAll(",", ".")),
-    y: Number.parseFloat(String(point.y).replaceAll(",", ".")),
-    z: Number.parseFloat(String(point.z).replaceAll(",", ".")),
+    x: Number(String(point.x).replaceAll(",", ".")),
+    y: Number(String(point.y).replaceAll(",", ".")),
+    z: Number(String(point.z).replaceAll(",", ".")),
   }));
 }
 
@@ -84,9 +84,9 @@ export function useCreateObjectTool({
         return;
       }
       const new_point = {
-        x: Number.parseFloat(String(newVal.x).replaceAll(",", ".")),
-        y: Number.parseFloat(String(newVal.y).replaceAll(",", ".")),
-        z: Number.parseFloat(String(newVal.z).replaceAll(",", ".")),
+        x: Number(String(newVal.x).replaceAll(",", ".")),
+        y: Number(String(newVal.y).replaceAll(",", ".")),
+        z: Number(String(newVal.z).replaceAll(",", ".")),
       };
 
       if (onPickedPoint && onPickedPoint(new_point, points.value)) {
