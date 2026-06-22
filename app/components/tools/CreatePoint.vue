@@ -147,7 +147,7 @@ const {
         @click="createAllPoints"
       >
         <v-icon start size="14">mdi-send</v-icon>
-        Create {{ validPointCount > 1 ? `${validPointCount} Pts` : "Point" }}
+        Create {{ validPointCount > 1 ? `${validPointCount} Points` : "Point" }}
       </v-btn>
     </v-card-actions>
   </v-card>
