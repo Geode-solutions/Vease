@@ -79,6 +79,7 @@
     "no-continue": "off",
     "vitest/require-hook": "off",
     "import/unambiguous": "off",
+    "node/no-sync": "off",
     "max-params": [
       "warn",
       {
