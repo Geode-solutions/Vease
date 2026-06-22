@@ -116,9 +116,7 @@ test("object tree model components", async () => {
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = window.getByTestId(
-    "modelComponentsObjectTree",
-  );
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
   await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
 
@@ -138,11 +136,7 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows
-      .nth(i)
-      .locator(".mdi-eye")
-      .first()
-      .click({ force: true });
+    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
@@ -169,9 +163,7 @@ async function toggleModelTreeRow(appWindow, rowName) {
   await appWindow.keyboard.press("Escape");
   await appWindow.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = appWindow.getByTestId(
-    "modelComponentsObjectTree",
-  );
+  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
@@ -187,9 +179,7 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await appWindow.keyboard.press("Escape");
   await appWindow.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = appWindow.getByTestId(
-    "modelComponentsObjectTree",
-  );
+  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
