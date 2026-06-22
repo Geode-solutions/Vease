@@ -80,7 +80,7 @@ const {
             </v-btn>
           </div>
 
-          <v-row dense>
+          <v-row dense :data-testid="'point-' + index">
             <v-col v-for="coord in ['x', 'y', 'z']" :key="coord" cols="4">
               <v-text-field
                 v-model="point[coord]"
@@ -116,6 +116,7 @@ const {
               block
               class="text-none rounded-lg text-caption"
               prepend-icon="mdi-plus"
+              data-testid="addPointButton"
               @click="addPoint"
             >
               Add point
@@ -147,6 +148,7 @@ const {
         :disabled="!hasValidSurface"
         class="text-none rounded-lg font-weight-bold"
         elevation="2"
+        data-testid="submitButton"
         @click="createSurface"
       >
         <v-icon start size="14">mdi-send</v-icon>

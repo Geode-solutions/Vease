@@ -91,6 +91,7 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         prepend-icon="mdi-shape-plus-outline"
+        data-testid="createButton"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
         Create
