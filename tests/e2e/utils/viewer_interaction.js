@@ -163,6 +163,7 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
@@ -263,6 +264,7 @@ async function changeColoringStyle(window, menuTestId, coloringStyle, container 
   await listItem.click();
 
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 async function clickColorPickerCanvas(window, container = window) {
@@ -305,6 +307,7 @@ async function changeOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -379,6 +382,7 @@ async function setFeatureVisibility(window, viewerObjectType, feature, visibilit
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 function setPointsSize(window, viewerObjectType, value) {
@@ -406,6 +410,7 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 function setPolygonsTextures(window, viewerObjectType) {
@@ -427,6 +432,7 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
     .first();
   await listItem.click();
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
 }
 
 async function hoverViewerCenter(window) {
