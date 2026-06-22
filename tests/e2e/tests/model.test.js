@@ -20,7 +20,6 @@ import {
   setOpacity,
   setPointsSize,
   setPointsVisibility,
-  showObjectInTree,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
