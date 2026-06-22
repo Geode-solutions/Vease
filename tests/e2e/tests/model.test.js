@@ -181,7 +181,7 @@ test("toggle object tree main", async () => {
 test("context menu through non visible surface", async () => {
   await window
     .getByTestId("modelComponentsObjectTree")
-    .locator(".tree-row-wrapper", { hasText: "00000000-" })
+    .locator(".tree-row-wrapper", { hasText: /^.*00000000-/u })
     .nth(4)
     .locator(".mdi-eye-off-outline")
     .first()
