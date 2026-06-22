@@ -66,7 +66,11 @@ async function findOverlappingObjectsPicker(window) {
 async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
   const menuButton = menuContainer.locator("button.menu-btn");
-  if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
+  if (
+    !(await menuButton.evaluate((node) =>
+      node.classList.contains("v-btn--active"),
+    ))
+  ) {
     // Programmatic click bypasses any overlapping panels or hit-testing issues
     await menuButton.evaluate((node) => node.click());
     await window.waitForTimeout(afterActionWait);
@@ -75,7 +79,9 @@ async function ensureMenuOpen(window, menuTestId) {
 
 async function ensureFeatureVisible(window, menuTestId) {
   const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
-  const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
+  const visibilitySwitch = await window
+    .getByTestId(switchTestId)
+    .getByRole("checkbox");
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
     // Wait for conditionally rendered options to appear
@@ -83,24 +89,18 @@ async function ensureFeatureVisible(window, menuTestId) {
   }
 }
 
-async function setPointsVisibility(window, viewerObjectType, visibility) {
-  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
-  const switchTestId = `${viewerObjectType}PointsVisibilitySwitch`;
 
-  await ensureMenuOpen(window, menuTestId);
-  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
-  if (visibility) {
-    await checkbox.check();
-  } else {
-    await checkbox.uncheck();
-  }
-  await window.waitForTimeout(afterActionWait);
-}
 
 async function applyAttribute(
   window,
   menuTestId,
-  { attributeType, attributeName, colorMap = undefined, min = undefined, max = undefined } = {},
+  {
+    attributeType,
+    attributeName,
+    colorMap = undefined,
+    min = undefined,
+    max = undefined,
+  } = {},
 ) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
@@ -150,13 +150,19 @@ async function applyAttribute(
   }
 
   if (min !== undefined) {
-    const input = container.getByTestId("attributeMinInput").first().locator("input");
+    const input = container
+      .getByTestId("attributeMinInput")
+      .first()
+      .locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
   if (max !== undefined) {
-    const input = container.getByTestId("attributeMaxInput").first().locator("input");
+    const input = container
+      .getByTestId("attributeMaxInput")
+      .first()
+      .locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
@@ -164,7 +170,12 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
+async function setVertexAttribute(
+  window,
+  menuTestId,
+  attributeName = "points",
+  options = {},
+) {
   await applyAttribute(window, menuTestId, {
     attributeType: "Vertex attribute",
     attributeName,
@@ -172,9 +183,16 @@ async function setVertexAttribute(window, menuTestId, attributeName = "points", 
   });
 }
 
-async function setEdgeAttribute(window, viewerObjectType, attributeName, options = {}) {
+async function setEdgeAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
   const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}EdgesMenu`;
+    viewerObjectType === "model"
+      ? "modelStyleMenu"
+      : `${viewerObjectType}EdgesMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Edge attribute",
     attributeName,
@@ -182,9 +200,16 @@ async function setEdgeAttribute(window, viewerObjectType, attributeName, options
   });
 }
 
-async function setCellAttribute(window, viewerObjectType, attributeName, options = {}) {
+async function setCellAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
   const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}CellsMenu`;
+    viewerObjectType === "model"
+      ? "modelStyleMenu"
+      : `${viewerObjectType}CellsMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Cell attribute",
     attributeName,
@@ -192,9 +217,16 @@ async function setCellAttribute(window, viewerObjectType, attributeName, options
   });
 }
 
-async function setPolygonAttribute(window, viewerObjectType, attributeName, options = {}) {
+async function setPolygonAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
   const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolygonsMenu`;
+    viewerObjectType === "model"
+      ? "modelStyleMenu"
+      : `${viewerObjectType}PolygonsMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Polygon attribute",
     attributeName,
@@ -202,9 +234,16 @@ async function setPolygonAttribute(window, viewerObjectType, attributeName, opti
   });
 }
 
-async function setPolyhedraAttribute(window, viewerObjectType, attributeName, options = {}) {
+async function setPolyhedraAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
   const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}PolyhedraMenu`;
+    viewerObjectType === "model"
+      ? "modelStyleMenu"
+      : `${viewerObjectType}PolyhedraMenu`;
   await applyAttribute(window, menuTestId, {
     attributeType: "Polyhedron attribute",
     attributeName,
@@ -243,76 +282,42 @@ async function hoverModelComponentRow(window, hasText) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
-
-  const selector = container.getByTestId("coloringStyleSelector").first();
-  await selector.waitFor({ state: "visible", timeout: 15_000 });
-  await selector.click();
-
-  await window.waitForTimeout(afterActionWait);
-
-  const listItem = window
-    .locator(".v-overlay-container")
-    .locator(".v-list-item")
-    .filter({ hasText: coloringStyle, visible: true })
-    .first();
-  await listItem.waitFor({ state: "visible", timeout: 15_000 });
-  await listItem.click();
-
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function clickColorPickerCanvas(window, container = window) {
-  await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await container
+    .getByTestId("colorPicker")
+    .locator(".v-color-picker-canvas")
+    .first()
+    .click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function clickColorPickerSlider(window, container = window) {
-  const rgbaSlider = container.getByTestId("colorPicker").locator(".v-slider").first();
-  const rgbaBox = await rgbaSlider.boundingBox();
-  await rgbaSlider.click({ position: { x: rgbaBox.width * SLIDER_BLUE, y: rgbaBox.height / 2 } });
-  await window.waitForTimeout(afterActionWait);
-}
-
-async function setColor(window, menuTestId, container = window) {
-  await setColoringStyle(window, menuTestId, "Constant", container);
-  await clickColorPickerCanvas(window, container);
-}
-
-async function setColorWithSlider(window, menuTestId, container = window) {
-  await setColoringStyle(window, menuTestId, "Constant", container);
-  await clickColorPickerSlider(window, container);
-  await clickColorPickerCanvas(window, container);
-}
-
-async function setOpacity(window, menuTestId, percent) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
-  const menu = window.getByTestId(menuTestId);
-  const alphaSlider = menu
+  const rgbaSlider = container
     .getByTestId("colorPicker")
-    .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
+    .locator(".v-slider")
     .first();
-  const box = await alphaSlider.boundingBox();
-  await alphaSlider.click({
-    force: true,
-    position: {
-      x: (box.width * percent) / MAX_PERCENTAGE,
-      y: box.height / 2,
-    },
+  const rgbaBox = await rgbaSlider.boundingBox();
+  await rgbaSlider.click({
+    position: { x: rgbaBox.width * SLIDER_BLUE, y: rgbaBox.height / 2 },
   });
   await window.waitForTimeout(afterActionWait);
 }
 
-async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
+async function dragElement(
+  window,
+  locator,
+  { targetX, targetY, deltaX = 0, deltaY = 0 } = {},
+) {
   const { x, y, width, height } = await locator.boundingBox();
   const startX = x + width / 2;
   const startY = y + height / 2;
   await window.mouse.move(startX, startY);
   await window.mouse.down();
-  await window.mouse.move(targetX ?? startX + deltaX, targetY ?? startY + deltaY, { steps: 20 });
+  await window.mouse.move(
+    targetX ?? startX + deltaX,
+    targetY ?? startY + deltaY,
+    { steps: 20 },
+  );
   await window.mouse.up();
   await window.waitForTimeout(afterActionWait);
 }
@@ -322,7 +327,11 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+async function hideObjectInTree(
+  window,
+  objectName,
+  treeTestId = "mainObjectTree",
+) {
   const row = getTreeRowByText(window, treeTestId, objectName);
   await row.waitFor({ state: "attached" });
   const btn = row.locator("button:has(.mdi-eye)").first();
@@ -340,72 +349,34 @@ async function focusObjectInTree(window, folderName, objectName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
+async function showObjectInTree(
+  window,
+  objectName,
+  treeTestId = "mainObjectTree",
+) {
   const row = getTreeRowByText(window, treeTestId, objectName);
   await row.waitFor({ state: "attached" });
-  const btn = row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first();
+  const btn = row
+    .locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)")
+    .first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
     await window.waitForTimeout(afterActionWait);
   }
 }
 
-async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByText(window, treeTestId, objectName).click({ button: "right" });
+async function openObjectTreeContextMenu(
+  window,
+  objectName,
+  treeTestId = "mainObjectTree",
+) {
+  await getTreeRowByText(window, treeTestId, objectName).click({
+    button: "right",
+  });
   await window.waitForTimeout(afterActionWait);
 }
 
-function setEdgesVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
-}
-function setPolygonsVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Polygons", visibility);
-}
-function setPolyhedraVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Polyhedra", visibility);
-}
-function setCellsVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
-}
-async function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
-  const menuTestId = `${viewerObjectType}${feature}Menu`;
-  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
-  await ensureMenuOpen(window, menuTestId);
-  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
-  if (visibility) {
-    await checkbox.check();
-  } else {
-    await checkbox.uncheck();
-  }
-  await window.waitForTimeout(afterActionWait);
-}
 
-function setPointsSize(window, viewerObjectType, value) {
-  return setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
-}
-function setEdgesWidth(window, viewerObjectType, value) {
-  return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
-}
-async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
-  const menuTestId = `${viewerObjectType}${feature}Menu`;
-  let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
-  if (feature === "Edges") {
-    sliderTestId = `${viewerObjectType}${feature}WidthSlider`;
-  }
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
-
-  const slider = await window.getByTestId(sliderTestId);
-  await slider
-    .locator("input")
-    .first()
-    .evaluate((node, val) => {
-      node.value = val;
-      node.dispatchEvent(new Event("input", { bubbles: true }));
-      node.dispatchEvent(new Event("change", { bubbles: true }));
-    }, value.toString());
-  await window.waitForTimeout(afterActionWait);
-}
 
 function setPolygonsTextures(window, viewerObjectType) {
   return setFeatureTextures(window, viewerObjectType, "Polygons");
@@ -438,44 +409,323 @@ async function hoverViewerCenter(window) {
 }
 
 async function stabilizeHoverTooltip(window) {
-  await window.addStyleTag({ content: ".tooltip-value-dim { visibility: hidden !important; }" });
+  await window.addStyleTag({
+    content: ".tooltip-value-dim { visibility: hidden !important; }",
+  });
+}
+
+
+
+
+
+
+function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
+  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
+}
+
+async function setVisibilityGeneric(
+  window,
+  menuTestId,
+  switchTestId,
+  visibility,
+) {
+  await ensureMenuOpen(window, menuTestId);
+  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
+  if (visibility) {
+    await checkbox.check();
+  } else {
+    await checkbox.uncheck();
+  }
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
+  if (feature === "Edges") {
+    sliderTestId = `${viewerObjectType}${feature}WidthSlider`;
+  }
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+
+  const slider = await window.getByTestId(sliderTestId);
+  await slider
+    .locator("input")
+    .first()
+    .evaluate((node, val) => {
+      node.value = val;
+      node.dispatchEvent(new Event("input", { bubbles: true }));
+      node.dispatchEvent(new Event("change", { bubbles: true }));
+    }, value.toString());
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setOpacity(window, menuTestId, percent) {
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+  const menu = window.getByTestId(menuTestId);
+  const alphaSlider = menu
+    .getByTestId("colorPicker")
+    .locator(".v-color-picker-preview__alpha, .v-color-picker__alpha")
+    .first();
+  const box = await alphaSlider.boundingBox();
+  await alphaSlider.click({
+    force: true,
+    position: {
+      x: (box.width * percent) / MAX_PERCENTAGE,
+      y: box.height / 2,
+    },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
+function setFeatureOpacity(window, viewerObjectType, feature, percent) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  return setOpacity(window, menuTestId, percent);
+}
+
+async function setColor(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerCanvas(window, container);
+}
+
+function setFeatureColor(
+  window,
+  viewerObjectType,
+  feature,
+  container = window,
+) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  return setColor(window, menuTestId, container);
+}
+
+async function setColorWithSlider(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await clickColorPickerSlider(window, container);
+  await clickColorPickerCanvas(window, container);
+}
+
+function setFeatureColorWithSlider(
+  window,
+  viewerObjectType,
+  feature,
+  container = window,
+) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  return setColorWithSlider(window, menuTestId, container);
+}
+
+async function setColoringStyle(
+  window,
+  menuTestId,
+  coloringStyle,
+  container = window,
+) {
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+
+  const selector = container.getByTestId("coloringStyleSelector").first();
+  await selector.waitFor({ state: "visible", timeout: 15_000 });
+  await selector.click();
+
+  await window.waitForTimeout(afterActionWait);
+
+  const listItem = window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: coloringStyle, visible: true })
+    .first();
+  await listItem.waitFor({ state: "visible", timeout: 15_000 });
+  await listItem.click();
+
+  await window.waitForTimeout(afterActionWait);
+}
+
+function setFeatureColoringStyle(
+  window,
+  viewerObjectType,
+  feature,
+  coloringStyle,
+  container = window,
+) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  return setColoringStyle(window, menuTestId, coloringStyle, container);
+}
+
+// Specific feature functions
+function setPointsVisibility(window, viewerObjectType, visibility) {
+  if (viewerObjectType === "model") {
+    return setVisibilityGeneric(
+      window,
+      "modelPointsMenu",
+      "modelPointsVisibilitySwitch",
+      visibility,
+    );
+  }
+  return setFeatureVisibility(window, viewerObjectType, "Points", visibility);
+}
+function setEdgesVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
+}
+function setPolygonsVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Polygons", visibility);
+}
+function setPolyhedraVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(
+    window,
+    viewerObjectType,
+    "Polyhedra",
+    visibility,
+  );
+}
+function setCellsVisibility(window, viewerObjectType, visibility) {
+  return setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
+}
+
+function setPointsSize(window, viewerObjectType, value) {
+  return setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
+}
+function setEdgesWidth(window, viewerObjectType, value) {
+  return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
+}
+
+function setPointsOpacity(window, viewerObjectType, percent) {
+  return setFeatureOpacity(window, viewerObjectType, "Points", percent);
+}
+function setEdgesOpacity(window, viewerObjectType, percent) {
+  return setFeatureOpacity(window, viewerObjectType, "Edges", percent);
+}
+function setPolygonsOpacity(window, viewerObjectType, percent) {
+  return setFeatureOpacity(window, viewerObjectType, "Polygons", percent);
+}
+function setPolyhedraOpacity(window, viewerObjectType, percent) {
+  return setFeatureOpacity(window, viewerObjectType, "Polyhedra", percent);
+}
+function setCellsOpacity(window, viewerObjectType, percent) {
+  return setFeatureOpacity(window, viewerObjectType, "Cells", percent);
+}
+function setModelOpacity(window, percent) {
+  return setOpacity(window, "modelStyleMenu", percent);
+}
+
+function setPointsColor(window, viewerObjectType) {
+  return setFeatureColor(window, viewerObjectType, "Points");
+}
+function setEdgesColor(window, viewerObjectType) {
+  return setFeatureColor(window, viewerObjectType, "Edges");
+}
+function setPolygonsColor(window, viewerObjectType) {
+  return setFeatureColor(window, viewerObjectType, "Polygons");
+}
+function setPolyhedraColor(window, viewerObjectType) {
+  return setFeatureColor(window, viewerObjectType, "Polyhedra");
+}
+function setCellsColor(window, viewerObjectType) {
+  return setFeatureColor(window, viewerObjectType, "Cells");
+}
+function setModelColor(window) {
+  return setColor(window, "modelStyleMenu");
+}
+
+function setPointsColorWithSlider(window, viewerObjectType) {
+  return setFeatureColorWithSlider(window, viewerObjectType, "Points");
+}
+function setEdgesColorWithSlider(window, viewerObjectType) {
+  return setFeatureColorWithSlider(window, viewerObjectType, "Edges");
+}
+function setPolygonsColorWithSlider(window, viewerObjectType) {
+  return setFeatureColorWithSlider(window, viewerObjectType, "Polygons");
+}
+function setPolyhedraColorWithSlider(window, viewerObjectType) {
+  return setFeatureColorWithSlider(window, viewerObjectType, "Polyhedra");
+}
+function setCellsColorWithSlider(window, viewerObjectType) {
+  return setFeatureColorWithSlider(window, viewerObjectType, "Cells");
+}
+function setModelColorWithSlider(window) {
+  return setColorWithSlider(window, "modelStyleMenu");
+}
+
+function setPointsColoringStyle(window, viewerObjectType, style) {
+  return setFeatureColoringStyle(window, viewerObjectType, "Points", style);
+}
+function setEdgesColoringStyle(window, viewerObjectType, style) {
+  return setFeatureColoringStyle(window, viewerObjectType, "Edges", style);
+}
+function setPolygonsColoringStyle(window, viewerObjectType, style) {
+  return setFeatureColoringStyle(window, viewerObjectType, "Polygons", style);
+}
+function setPolyhedraColoringStyle(window, viewerObjectType, style) {
+  return setFeatureColoringStyle(window, viewerObjectType, "Polyhedra", style);
+}
+function setCellsColoringStyle(window, viewerObjectType, style) {
+  return setFeatureColoringStyle(window, viewerObjectType, "Cells", style);
+}
+function setModelColoringStyle(window, style) {
+  return setColoringStyle(window, "modelStyleMenu", style);
 }
 
 export {
-  setEdgesVisibility,
-  setPolygonsVisibility,
-  setPolyhedraVisibility,
-  setCellsVisibility,
-  setPointsSize,
-  setEdgesWidth,
-  setPolygonsTextures,
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,
-  setCellAttribute,
-  setColor,
-  setColoringStyle,
-  setColorWithSlider,
-  setOpacity,
   dragContextMenu,
   dragElement,
-  setEdgeAttribute,
   expandComponentsType,
-  focusObjectInTree,
   findOverlappingObjectsPicker,
+  focusObjectInTree,
+  getTreeRowByText,
   hideObjectInTree,
-  openObjectTreeContextMenu,
   highlightData,
   hoverModelComponentRow,
+  hoverViewerCenter,
+  openObjectTreeContextMenu,
+  setCellAttribute,
+  setCellsColor,
+  setCellsColorWithSlider,
+  setCellsColoringStyle,
+  setCellsOpacity,
+  setCellsVisibility,
+  setColor,
+  setColorWithSlider,
+  setColoringStyle,
+  setEdgeAttribute,
+  setEdgesColor,
+  setEdgesColorWithSlider,
+  setEdgesColoringStyle,
+  setEdgesOpacity,
+  setEdgesVisibility,
+  setEdgesWidth,
+  setModelColor,
+  setModelColorWithSlider,
+  setModelColoringStyle,
+  setModelOpacity,
+  setOpacity,
+  setPointsColor,
+  setPointsColorWithSlider,
+  setPointsColoringStyle,
+  setPointsOpacity,
+  setPointsSize,
   setPointsVisibility,
   setPolygonAttribute,
+  setPolygonsColor,
+  setPolygonsColorWithSlider,
+  setPolygonsColoringStyle,
+  setPolygonsOpacity,
+  setPolygonsTextures,
+  setPolygonsVisibility,
   setPolyhedraAttribute,
+  setPolyhedraColor,
+  setPolyhedraColorWithSlider,
+  setPolyhedraColoringStyle,
+  setPolyhedraOpacity,
+  setPolyhedraVisibility,
   setVertexAttribute,
   showObjectInTree,
-  viewerContextMenu,
-  hoverViewerCenter,
   stabilizeHoverTooltip,
-  getTreeRowByText,
+  viewerContextMenu,
 };
 export { loadData } from "./load.js";
 export { navigateToApp } from "./navigate.js";

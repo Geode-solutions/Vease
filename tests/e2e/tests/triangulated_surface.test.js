@@ -9,13 +9,15 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setColor,
+  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setOpacity,
+  setPointsColor,
   setPointsSize,
   setPointsVisibility,
   setPolygonAttribute,
+  setPolygonsColor,
+  setPolygonsOpacity,
   setPolygonsTextures,
   setPolygonsVisibility,
   setVertexAttribute,
@@ -78,22 +80,22 @@ test("polygon attribute", async () => {
 });
 
 test("polygons color", async () => {
-  await setColor(window, `${viewerObjectType}PolygonsMenu`);
+  await setPolygonsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setColor(window, `${viewerObjectType}PointsMenu`);
+  await setPointsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setColor(window, `${viewerObjectType}EdgesMenu`);
+  await setEdgesColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, `${viewerObjectType}PolygonsMenu`, OPACITY_50);
+  await setPolygonsOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

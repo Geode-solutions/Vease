@@ -9,11 +9,12 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setColorWithSlider,
   setEdgeAttribute,
+  setEdgesColorWithSlider,
+  setEdgesOpacity,
   setEdgesVisibility,
   setEdgesWidth,
-  setOpacity,
+  setPointsColorWithSlider,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
@@ -69,17 +70,17 @@ test("edge attribute", async () => {
 });
 
 test("edges color", async () => {
-  await setColorWithSlider(window, `${viewerObjectType}EdgesMenu`);
+  await setEdgesColorWithSlider(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setColorWithSlider(window, `${viewerObjectType}PointsMenu`);
+  await setPointsColorWithSlider(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, `${viewerObjectType}EdgesMenu`, OPACITY_50);
+  await setEdgesOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

@@ -9,8 +9,8 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setColor,
-  setOpacity,
+  setPointsColor,
+  setPointsOpacity,
   setPointsSize,
   setPointsVisibility,
   setVertexAttribute,
@@ -65,12 +65,12 @@ test("vertex attribute", async () => {
 });
 
 test("color", async () => {
-  await setColor(window, `${viewerObjectType}PointsMenu`);
+  await setPointsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, `${viewerObjectType}PointsMenu`, OPACITY_50);
+  await setPointsOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
