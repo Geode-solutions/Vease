@@ -113,6 +113,6 @@ watch([elWidth, elHeight], ([width, height]) => {
 <style scoped>
 :deep(.viewer-ui-layer),
 :deep(.viewer-ui-layer .v-navigation-drawer) {
-  z-index: 4 !important;
+  z-index: 5 !important;
 }
 </style>

@@ -127,7 +127,7 @@ async function applyAttribute(
     .first();
 
   await option.click();
-  await window.mouse.move(0, 0);
+
   await window.waitForTimeout(afterActionWait);
 
   if (colorMap) {
@@ -262,7 +262,7 @@ async function setColoringStyle(window, menuTestId, coloringStyle, container = w
   await listItem.click();
 
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+
 }
 
 async function clickColorPickerCanvas(window, container = window) {
@@ -305,7 +305,7 @@ async function setOpacity(window, menuTestId, percent) {
     },
   });
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+
 }
 
 async function dragElement(window, locator, { targetX, targetY, deltaX = 0, deltaY = 0 } = {}) {
@@ -380,7 +380,7 @@ async function setFeatureVisibility(window, viewerObjectType, feature, visibilit
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+
 }
 
 function setPointsSize(window, viewerObjectType, value) {
@@ -408,7 +408,7 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+
 }
 
 function setPolygonsTextures(window, viewerObjectType) {
