@@ -190,7 +190,7 @@ const {
         @click="createCurve"
       >
         <v-icon start size="14">mdi-send</v-icon>
-        Create ({{ validPointCount }} points)
+        Create ({{ validPointCount }} pts)
       </v-btn>
     </v-card-actions>
   </v-card>
