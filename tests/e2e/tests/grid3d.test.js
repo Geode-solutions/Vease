@@ -10,11 +10,13 @@ import {
   loadData,
   navigateToApp,
   setCellAttribute,
+  setCellsColor,
+  setCellsOpacity,
   setCellsVisibility,
-  setColor,
+  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setOpacity,
+  setPointsColor,
   setPointsSize,
   setPointsVisibility,
   setVertexAttribute,
@@ -77,22 +79,22 @@ test("cell attribute", async () => {
 });
 
 test("cells color", async () => {
-  await setColor(window, `${viewerObjectType}CellsMenu`);
+  await setCellsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setColor(window, `${viewerObjectType}PointsMenu`);
+  await setPointsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setColor(window, `${viewerObjectType}EdgesMenu`);
+  await setEdgesColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, `${viewerObjectType}CellsMenu`, OPACITY_50);
+  await setCellsOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

@@ -9,14 +9,17 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setColor,
+  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setOpacity,
+  setPointsColor,
   setPointsSize,
   setPointsVisibility,
+  setPolygonsColor,
   setPolygonsVisibility,
   setPolyhedraAttribute,
+  setPolyhedraColor,
+  setPolyhedraOpacity,
   setPolyhedraVisibility,
   setVertexAttribute,
   viewerContextMenu,
@@ -78,27 +81,27 @@ test("polyhedron attribute", async () => {
 });
 
 test("polyhedra color", async () => {
-  await setColor(window, `${viewerObjectType}PolyhedraMenu`);
+  await setPolyhedraColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setColor(window, `${viewerObjectType}PointsMenu`);
+  await setPointsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setColor(window, `${viewerObjectType}EdgesMenu`);
+  await setEdgesColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygons color", async () => {
-  await setColor(window, `${viewerObjectType}PolygonsMenu`);
+  await setPolygonsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, `${viewerObjectType}PolyhedraMenu`, OPACITY_50);
+  await setPolyhedraOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

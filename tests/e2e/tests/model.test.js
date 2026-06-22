@@ -13,11 +13,11 @@ import {
   hoverModelComponentRow,
   loadData,
   navigateToApp,
-  setColor,
-  setColorWithSlider,
-  setColoringStyle,
   setEdgesVisibility,
-  setOpacity,
+  setModelColor,
+  setModelColorWithSlider,
+  setModelColoringStyle,
+  setModelOpacity,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
@@ -70,17 +70,17 @@ test("points size", async () => {
 });
 
 test("color", async () => {
-  await setColorWithSlider(window, "modelStyleMenu");
+  await setModelColorWithSlider(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setOpacity(window, "modelStyleMenu", OPACITY_50);
+  await setModelOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("random coloring", async () => {
-  await setColoringStyle(window, "modelStyleMenu", "Random");
+  await setModelColoringStyle(window, "Random");
   await expect(window).toHaveScreenshot();
 });
 
@@ -116,7 +116,9 @@ test("object tree model components", async () => {
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId(
+    "modelComponentsObjectTree",
+  );
 
   await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
 
@@ -136,7 +138,11 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows
+      .nth(i)
+      .locator(".mdi-eye")
+      .first()
+      .click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
@@ -163,7 +169,9 @@ async function toggleModelTreeRow(appWindow, rowName) {
   await appWindow.keyboard.press("Escape");
   await appWindow.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = appWindow.getByTestId(
+    "modelComponentsObjectTree",
+  );
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
@@ -179,7 +187,9 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await appWindow.keyboard.press("Escape");
   await appWindow.waitForTimeout(afterActionWait);
 
-  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = appWindow.getByTestId(
+    "modelComponentsObjectTree",
+  );
   const row = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: rowName })
@@ -188,7 +198,7 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await label.click({ button: "right", force: true });
   await appWindow.waitForTimeout(afterActionWait);
 
-  await setColor(appWindow, "modelStyleMenu");
+  await setModelColor(appWindow);
 }
 
 test("blocks visibility", async () => {
@@ -257,7 +267,7 @@ test("context menu through non visible surface", async () => {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
-  await setColor(window, "modelStyleMenu");
+  await setModelColor(window);
 
   await expect(window).toHaveScreenshot();
 });
