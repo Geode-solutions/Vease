@@ -6,13 +6,13 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColor,
-  changeOpacity,
   highlightData,
   loadData,
   navigateToApp,
+  setColor,
   setEdgesVisibility,
   setEdgesWidth,
+  setOpacity,
   setPointsSize,
   setPointsVisibility,
   setPolygonAttribute,
@@ -32,6 +32,7 @@ const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 const geodeObjectType = "PolygonalSurface3D";
+const viewerObjectType = "mesh";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -59,69 +60,68 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = true;
+  const visibility = true;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await setPointsVisibility(window, "mesh", true);
-  await setVertexAttribute(window, "meshPolygonsMenu");
+  await setPointsVisibility(window, viewerObjectType, true);
+  await setVertexAttribute(window, `${viewerObjectType}PolygonsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygon attribute", async () => {
-  await setPointsVisibility(window, "mesh", false);
-  await setPolygonAttribute(window, "mesh", attributeName);
+  await setPointsVisibility(window, viewerObjectType, false);
+  await setPolygonAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygons color", async () => {
-  await changeColor(window, "meshPolygonsMenu");
+  await setColor(window, `${viewerObjectType}PolygonsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await changeColor(window, "meshPointsMenu");
+  await setColor(window, `${viewerObjectType}PointsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await changeColor(window, "meshEdgesMenu");
+  await setColor(window, `${viewerObjectType}EdgesMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshPolygonsMenu", OPACITY_50);
+  await setOpacity(window, `${viewerObjectType}PolygonsMenu`, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, "mesh", POINTS_SIZE);
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, "mesh", EDGES_WIDTH);
+  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await setEdgesVisibility(window, "mesh", false);
+  await setEdgesVisibility(window, viewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setEdgesVisibility(window, "mesh", true);
+  await setEdgesVisibility(window, viewerObjectType, true);
 });
 
 test("polygons visibility", async () => {
-  await setPolygonsVisibility(window, "mesh", false);
+  await setPolygonsVisibility(window, viewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setPolygonsVisibility(window, "mesh", true);
+  await setPolygonsVisibility(window, viewerObjectType, true);
 });
 
 test("polygons textures", async () => {
-  await setPolygonsTextures(window, "mesh");
+  await setPolygonsTextures(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });

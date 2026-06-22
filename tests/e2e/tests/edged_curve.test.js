@@ -6,14 +6,14 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColorWithSlider,
-  changeOpacity,
   highlightData,
   loadData,
   navigateToApp,
+  setColorWithSlider,
   setEdgeAttribute,
   setEdgesVisibility,
   setEdgesWidth,
+  setOpacity,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
@@ -69,17 +69,17 @@ test("edge attribute", async () => {
 });
 
 test("edges color", async () => {
-  await changeColorWithSlider(window, "meshEdgesMenu");
+  await setColorWithSlider(window, `${viewerObjectType}EdgesMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await changeColorWithSlider(window, "meshPointsMenu");
+  await setColorWithSlider(window, `${viewerObjectType}PointsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshEdgesMenu", OPACITY_50);
+  await setOpacity(window, `${viewerObjectType}EdgesMenu`, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

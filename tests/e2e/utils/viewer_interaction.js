@@ -2,7 +2,7 @@
 
 // Constants
 const beforeAllTimeout = 60_000;
-const afterActionWait = 1500;
+const afterActionWait = 2000;
 const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
@@ -85,8 +85,7 @@ async function ensureFeatureVisible(window, menuTestId) {
 
 async function setPointsVisibility(window, viewerObjectType, visibility) {
   const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
-  const switchTestId =
-    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
+  const switchTestId = `${viewerObjectType}PointsVisibilitySwitch`;
 
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
@@ -163,7 +162,6 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
 }
 
 async function setVertexAttribute(window, menuTestId, attributeName = "points", options = {}) {
@@ -245,7 +243,7 @@ async function hoverModelComponentRow(window, hasText) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
+async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
@@ -279,18 +277,18 @@ async function clickColorPickerSlider(window, container = window) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeColor(window, menuTestId, container = window) {
-  await changeColoringStyle(window, menuTestId, "Constant", container);
+async function setColor(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerCanvas(window, container);
 }
 
-async function changeColorWithSlider(window, menuTestId, container = window) {
-  await changeColoringStyle(window, menuTestId, "Constant", container);
+async function setColorWithSlider(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
   await clickColorPickerSlider(window, container);
   await clickColorPickerCanvas(window, container);
 }
 
-async function changeOpacity(window, menuTestId, percent) {
+async function setOpacity(window, menuTestId, percent) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
   const menu = window.getByTestId(menuTestId);
@@ -432,7 +430,6 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
     .first();
   await listItem.click();
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
 }
 
 async function hoverViewerCenter(window) {
@@ -460,10 +457,10 @@ export {
   applyAttribute,
   beforeAllTimeout,
   setCellAttribute,
-  changeColor,
-  changeColoringStyle,
-  changeColorWithSlider,
-  changeOpacity,
+  setColor,
+  setColoringStyle,
+  setColorWithSlider,
+  setOpacity,
   dragContextMenu,
   dragElement,
   setEdgeAttribute,

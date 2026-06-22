@@ -6,15 +6,15 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColorWithSlider,
-  changeOpacity,
   highlightData,
   loadData,
   navigateToApp,
   setCellAttribute,
   setCellsVisibility,
+  setColorWithSlider,
   setEdgesVisibility,
   setEdgesWidth,
+  setOpacity,
   setPointsSize,
   setPointsVisibility,
   setVertexAttribute,
@@ -31,6 +31,7 @@ const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 const geodeObjectType = "RegularGrid2D";
+const viewerObjectType = "mesh";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -58,64 +59,63 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = true;
+  const visibility = true;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await setPointsVisibility(window, "mesh", false);
-  await setVertexAttribute(window, "meshCellsMenu");
+  await setPointsVisibility(window, viewerObjectType, false);
+  await setVertexAttribute(window, `${viewerObjectType}CellsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("cell attribute", async () => {
-  await setPointsVisibility(window, "mesh", false);
-  await setCellAttribute(window, "mesh", attributeName);
+  await setPointsVisibility(window, viewerObjectType, false);
+  await setCellAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
 test("cells color", async () => {
-  await changeColorWithSlider(window, "meshCellsMenu");
+  await setColorWithSlider(window, `${viewerObjectType}CellsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await changeColorWithSlider(window, "meshPointsMenu");
+  await setColorWithSlider(window, `${viewerObjectType}PointsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await changeColorWithSlider(window, "meshEdgesMenu");
+  await setColorWithSlider(window, `${viewerObjectType}EdgesMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshCellsMenu", OPACITY_50);
+  await setOpacity(window, `${viewerObjectType}CellsMenu`, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, "mesh", POINTS_SIZE);
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, "mesh", EDGES_WIDTH);
+  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await setEdgesVisibility(window, "mesh", false);
+  await setEdgesVisibility(window, viewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setEdgesVisibility(window, "mesh", true);
+  await setEdgesVisibility(window, viewerObjectType, true);
 });
 
 test("cells visibility", async () => {
-  await setCellsVisibility(window, "mesh", false);
+  await setCellsVisibility(window, viewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setCellsVisibility(window, "mesh", true);
+  await setCellsVisibility(window, viewerObjectType, true);
 });

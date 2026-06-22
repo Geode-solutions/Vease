@@ -7,19 +7,20 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
-  changeColorWithSlider,
-  changeColoringStyle,
-  changeOpacity,
   expandComponentsType,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
   loadData,
   navigateToApp,
+  setColor,
+  setColorWithSlider,
+  setColoringStyle,
   setEdgesVisibility,
+  setOpacity,
   setPointsSize,
   setPointsVisibility,
+  showObjectInTree,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -70,17 +71,17 @@ test("points size", async () => {
 });
 
 test("color", async () => {
-  await changeColorWithSlider(window, "modelStyleMenu");
+  await setColorWithSlider(window, "modelStyleMenu");
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "modelStyleMenu", OPACITY_50);
+  await setOpacity(window, "modelStyleMenu", OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("random coloring", async () => {
-  await changeColoringStyle(window, "modelStyleMenu", "Random");
+  await setColoringStyle(window, "modelStyleMenu", "Random");
   await expect(window).toHaveScreenshot();
 });
 
@@ -188,7 +189,7 @@ async function setModelTreeRowColorRandom(appWindow, rowName) {
   await label.click({ button: "right", force: true });
   await appWindow.waitForTimeout(afterActionWait);
 
-  await changeColor(appWindow, "modelStyleMenu");
+  await setColor(appWindow, "modelStyleMenu");
 }
 
 test("blocks visibility", async () => {
@@ -198,8 +199,10 @@ test("blocks visibility", async () => {
 });
 
 test("blocks color", async () => {
+  await toggleModelTreeRow(window, "Blocks");
   await setModelTreeRowColorRandom(window, "Blocks");
   await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Blocks");
 });
 
 test("corners visibility", async () => {
@@ -231,8 +234,10 @@ test("surfaces visibility", async () => {
 });
 
 test("surfaces color", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
   await setModelTreeRowColorRandom(window, "Surfaces");
   await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Surfaces");
 });
 
 test("toggle object tree main", async () => {
@@ -253,7 +258,7 @@ test("context menu through non visible surface", async () => {
   const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
-  await changeColor(window, "modelStyleMenu");
+  await setColor(window, "modelStyleMenu");
 
   await expect(window).toHaveScreenshot();
 });

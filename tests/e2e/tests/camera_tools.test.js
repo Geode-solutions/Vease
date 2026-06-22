@@ -7,7 +7,6 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
   dragContextMenu,
   expandComponentsType,
   findOverlappingObjectsPicker,
@@ -16,11 +15,11 @@ import {
   hoverViewerCenter,
   loadData,
   navigateToApp,
+  setColor,
   showObjectInTree,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
-  changeZScaling,
   closeCameraManager,
   ensureHighlightMenuOpen,
   resetCamera,
@@ -28,6 +27,7 @@ import {
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
+  setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
@@ -83,7 +83,7 @@ test("select regulargrid3d and change color", async () => {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await changeColor(window, "meshCellsMenu");
+  await setColor(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
 });
 
@@ -123,7 +123,7 @@ test("toggle grid scale tool", async () => {
 });
 
 test("z scaling value 6.6", async () => {
-  await changeZScaling(window, ZSCALE_VALUE);
+  await setZScaling(window, ZSCALE_VALUE);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });
@@ -142,7 +142,7 @@ test("camera orientation", async () => {
 });
 
 test("z scaling value 1", async () => {
-  await changeZScaling(window, 1);
+  await setZScaling(window, 1);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });

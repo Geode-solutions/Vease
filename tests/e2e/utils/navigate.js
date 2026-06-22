@@ -135,13 +135,13 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => page.close() };
+    return { window: page, cleanup: async () => { await page.close(); } };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
-    return { window: firstWindow, cleanup: () => electronApp.close() };
+    return { window: firstWindow, cleanup: async () => { await electronApp.close(); } };
   }
   throw new Error(`Unknown mode: ${mode}`);
 }

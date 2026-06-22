@@ -1,7 +1,5 @@
 import { afterActionWait, dragElement } from "./viewer_interaction.js";
 
-const BACKEND_PROCESSING_WAIT = 2000;
-
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -21,10 +19,10 @@ async function toggleGridScale(window) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("gridScaleButton").click();
-  await window.waitForTimeout(BACKEND_PROCESSING_WAIT);
+  await window.waitForTimeout(afterActionWait);
 }
 
-async function changeZScaling(window, zScaleValue) {
+async function setZScaling(window, zScaleValue) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 
@@ -42,7 +40,7 @@ async function changeZScaling(window, zScaleValue) {
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("toolPanelActionButton").click();
-  await window.waitForTimeout(BACKEND_PROCESSING_WAIT);
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function toggleCameraManager(window) {
@@ -91,7 +89,7 @@ async function ensureHighlightMenuOpen(window, childButtonTestId) {
 }
 
 export {
-  changeZScaling,
+  setZScaling,
   resetCamera,
   rotateCamera,
   toggleCenterOnClick,

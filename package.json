@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
+    "@fontsource/roboto": "^5.2.10",
     "@geode/opengeodeweb-back": "0.0.0",
     "@geode/opengeodeweb-front": "0.0.0",
     "@geode/opengeodeweb-viewer": "0.0.0",

@@ -6,13 +6,14 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColor,
-  changeOpacity,
   highlightData,
   loadData,
   navigateToApp,
+  setColor,
+  setOpacity,
   setPointsSize,
   setPointsVisibility,
+  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -24,6 +25,7 @@ let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const geodeObjectType = "PointSet3D";
+const viewerObjectType = "mesh";
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -51,23 +53,28 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = false;
+  const visibility = false;
   await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
+test("vertex attribute", async () => {
+  await setPointsVisibility(window, viewerObjectType, true);
+  await setVertexAttribute(window, `${viewerObjectType}PointsMenu`);
+  await expect(window).toHaveScreenshot();
+});
+
 test("color", async () => {
-  await changeColor(window, "meshPointsMenu");
+  await setColor(window, `${viewerObjectType}PointsMenu`);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshPointsMenu", OPACITY_50);
+  await setOpacity(window, `${viewerObjectType}PointsMenu`, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, "mesh", POINTS_SIZE);
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
