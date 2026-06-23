@@ -15,12 +15,12 @@ import {
   setPointsColor,
   setPointsSize,
   setPointsVisibility,
-  setPolygonAttribute,
   setPolygonsColor,
   setPolygonsOpacity,
+  setPolygonsPolygonAttribute,
   setPolygonsTextures,
+  setPolygonsVertexAttribute,
   setPolygonsVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -69,13 +69,13 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, true);
-  await setVertexAttribute(window, `${viewerObjectType}PolygonsMenu`);
+  await setPolygonsVertexAttribute(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygon attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, false);
-  await setPolygonAttribute(window, viewerObjectType, attributeName);
+  await setPolygonsPolygonAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

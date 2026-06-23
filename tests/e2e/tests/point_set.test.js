@@ -12,8 +12,8 @@ import {
   setPointsColor,
   setPointsOpacity,
   setPointsSize,
+  setPointsVertexAttribute,
   setPointsVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -60,7 +60,7 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, true);
-  await setVertexAttribute(window, `${viewerObjectType}PointsMenu`);
+  await setPointsVertexAttribute(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 

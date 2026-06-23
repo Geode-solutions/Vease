@@ -9,9 +9,10 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setCellAttribute,
+  setCellsCellAttribute,
   setCellsColorWithSlider,
   setCellsOpacity,
+  setCellsVertexAttribute,
   setCellsVisibility,
   setEdgesColorWithSlider,
   setEdgesVisibility,
@@ -19,7 +20,6 @@ import {
   setPointsColorWithSlider,
   setPointsSize,
   setPointsVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -68,13 +68,13 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, false);
-  await setVertexAttribute(window, `${viewerObjectType}CellsMenu`);
+  await setCellsVertexAttribute(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("cell attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, false);
-  await setCellAttribute(window, viewerObjectType, attributeName);
+  await setCellsCellAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

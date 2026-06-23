@@ -17,11 +17,11 @@ import {
   setPointsVisibility,
   setPolygonsColor,
   setPolygonsVisibility,
-  setPolyhedraAttribute,
   setPolyhedraColor,
   setPolyhedraOpacity,
+  setPolyhedraPolyhedronAttribute,
+  setPolyhedraVertexAttribute,
   setPolyhedraVisibility,
-  setVertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -70,13 +70,17 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, true);
-  await setVertexAttribute(window, `${viewerObjectType}PolyhedraMenu`);
+  await setPolyhedraVertexAttribute(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, false);
-  await setPolyhedraAttribute(window, viewerObjectType, attributeName);
+  await setPolyhedraPolyhedronAttribute(
+    window,
+    viewerObjectType,
+    attributeName,
+  );
   await expect(window).toHaveScreenshot();
 });
 

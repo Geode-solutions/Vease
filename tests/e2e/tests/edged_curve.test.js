@@ -9,8 +9,8 @@ import {
   highlightData,
   loadData,
   navigateToApp,
-  setEdgeAttribute,
   setEdgesColorWithSlider,
+  setEdgesEdgeAttribute,
   setEdgesOpacity,
   setEdgesVisibility,
   setEdgesWidth,
@@ -65,7 +65,7 @@ test("points visibility", async () => {
 
 test("edge attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, true);
-  await setEdgeAttribute(window, viewerObjectType, attributeName);
+  await setEdgesEdgeAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

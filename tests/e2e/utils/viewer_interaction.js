@@ -89,8 +89,6 @@ async function ensureFeatureVisible(window, menuTestId) {
   }
 }
 
-
-
 async function applyAttribute(
   window,
   menuTestId,
@@ -170,86 +168,6 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function setVertexAttribute(
-  window,
-  menuTestId,
-  attributeName = "points",
-  options = {},
-) {
-  await applyAttribute(window, menuTestId, {
-    attributeType: "Vertex attribute",
-    attributeName,
-    ...options,
-  });
-}
-
-async function setEdgeAttribute(
-  window,
-  viewerObjectType,
-  attributeName,
-  options = {},
-) {
-  const menuTestId =
-    viewerObjectType === "model"
-      ? "modelStyleMenu"
-      : `${viewerObjectType}EdgesMenu`;
-  await applyAttribute(window, menuTestId, {
-    attributeType: "Edge attribute",
-    attributeName,
-    ...options,
-  });
-}
-
-async function setCellAttribute(
-  window,
-  viewerObjectType,
-  attributeName,
-  options = {},
-) {
-  const menuTestId =
-    viewerObjectType === "model"
-      ? "modelStyleMenu"
-      : `${viewerObjectType}CellsMenu`;
-  await applyAttribute(window, menuTestId, {
-    attributeType: "Cell attribute",
-    attributeName,
-    ...options,
-  });
-}
-
-async function setPolygonAttribute(
-  window,
-  viewerObjectType,
-  attributeName,
-  options = {},
-) {
-  const menuTestId =
-    viewerObjectType === "model"
-      ? "modelStyleMenu"
-      : `${viewerObjectType}PolygonsMenu`;
-  await applyAttribute(window, menuTestId, {
-    attributeType: "Polygon attribute",
-    attributeName,
-    ...options,
-  });
-}
-
-async function setPolyhedraAttribute(
-  window,
-  viewerObjectType,
-  attributeName,
-  options = {},
-) {
-  const menuTestId =
-    viewerObjectType === "model"
-      ? "modelStyleMenu"
-      : `${viewerObjectType}PolyhedraMenu`;
-  await applyAttribute(window, menuTestId, {
-    attributeType: "Polyhedron attribute",
-    attributeName,
-    ...options,
-  });
-}
 
 async function highlightData(window, category) {
   await expandComponentsType(window, "mainObjectTree", category);
@@ -376,8 +294,6 @@ async function openObjectTreeContextMenu(
   await window.waitForTimeout(afterActionWait);
 }
 
-
-
 function setPolygonsTextures(window, viewerObjectType) {
   return setFeatureTextures(window, viewerObjectType, "Polygons");
 }
@@ -413,11 +329,6 @@ async function stabilizeHoverTooltip(window) {
     content: ".tooltip-value-dim { visibility: hidden !important; }",
   });
 }
-
-
-
-
-
 
 function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
@@ -667,6 +578,162 @@ function setModelColoringStyle(window, style) {
   return setColoringStyle(window, "modelStyleMenu", style);
 }
 
+function setFeatureAttribute(
+  window,
+  viewerObjectType,
+  feature,
+  attributeType,
+  attributeName,
+  options = {},
+) {
+  const menuTestId =
+    viewerObjectType === "model"
+      ? "modelStyleMenu"
+      : `${viewerObjectType}${feature}Menu`;
+  return applyAttribute(window, menuTestId, {
+    attributeType,
+    attributeName,
+    ...options,
+  });
+}
+
+function setPointsVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Points",
+    "Vertex attribute",
+    attributeName,
+    options,
+  );
+}
+function setEdgesVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Edges",
+    "Vertex attribute",
+    attributeName,
+    options,
+  );
+}
+function setPolygonsVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Polygons",
+    "Vertex attribute",
+    attributeName,
+    options,
+  );
+}
+function setPolyhedraVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Polyhedra",
+    "Vertex attribute",
+    attributeName,
+    options,
+  );
+}
+function setCellsVertexAttribute(
+  window,
+  viewerObjectType,
+  attributeName = "points",
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Cells",
+    "Vertex attribute",
+    attributeName,
+    options,
+  );
+}
+
+function setEdgesEdgeAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Edges",
+    "Edge attribute",
+    attributeName,
+    options,
+  );
+}
+function setPolygonsPolygonAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Polygons",
+    "Polygon attribute",
+    attributeName,
+    options,
+  );
+}
+function setPolyhedraPolyhedronAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Polyhedra",
+    "Polyhedron attribute",
+    attributeName,
+    options,
+  );
+}
+function setCellsCellAttribute(
+  window,
+  viewerObjectType,
+  attributeName,
+  options = {},
+) {
+  return setFeatureAttribute(
+    window,
+    viewerObjectType,
+    "Cells",
+    "Cell attribute",
+    attributeName,
+    options,
+  );
+}
+
 export {
   afterActionWait,
   applyAttribute,
@@ -682,20 +749,22 @@ export {
   hoverModelComponentRow,
   hoverViewerCenter,
   openObjectTreeContextMenu,
-  setCellAttribute,
+  setCellsCellAttribute,
   setCellsColor,
   setCellsColorWithSlider,
   setCellsColoringStyle,
   setCellsOpacity,
+  setCellsVertexAttribute,
   setCellsVisibility,
   setColor,
   setColorWithSlider,
   setColoringStyle,
-  setEdgeAttribute,
   setEdgesColor,
   setEdgesColorWithSlider,
   setEdgesColoringStyle,
+  setEdgesEdgeAttribute,
   setEdgesOpacity,
+  setEdgesVertexAttribute,
   setEdgesVisibility,
   setEdgesWidth,
   setModelColor,
@@ -708,24 +777,27 @@ export {
   setPointsColoringStyle,
   setPointsOpacity,
   setPointsSize,
+  setPointsVertexAttribute,
   setPointsVisibility,
-  setPolygonAttribute,
   setPolygonsColor,
   setPolygonsColorWithSlider,
   setPolygonsColoringStyle,
   setPolygonsOpacity,
+  setPolygonsPolygonAttribute,
   setPolygonsTextures,
+  setPolygonsVertexAttribute,
   setPolygonsVisibility,
-  setPolyhedraAttribute,
   setPolyhedraColor,
   setPolyhedraColorWithSlider,
   setPolyhedraColoringStyle,
   setPolyhedraOpacity,
+  setPolyhedraPolyhedronAttribute,
+  setPolyhedraVertexAttribute,
   setPolyhedraVisibility,
-  setVertexAttribute,
   showObjectInTree,
   stabilizeHoverTooltip,
   viewerContextMenu,
 };
+
 export { loadData } from "./load.js";
 export { navigateToApp } from "./navigate.js";
