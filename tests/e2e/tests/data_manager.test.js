@@ -78,13 +78,13 @@ test("toggle visibility off", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("open picture in picture", async () => {
+test("open picture in picture and expand objects", async () => {
   await openDataManagerPiP(window);
+  await expandObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
-test("expand objects and focus object from pip", async () => {
-  await expandObjectTree(window);
+test("focus object from pip", async () => {
   await focusRowItem(window, RENAMED_BREP);
   await expect(window).toHaveScreenshot();
 });
