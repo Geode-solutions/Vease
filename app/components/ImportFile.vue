@@ -44,6 +44,7 @@ function cancel() {
   <v-card-actions class="mt-4">
     <v-btn
       ref="import_button"
+      data-testid="finalizeImportButton"
       :loading="loading"
       color="primary"
       variant="elevated"
