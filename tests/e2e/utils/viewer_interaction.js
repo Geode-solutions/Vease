@@ -30,17 +30,24 @@ async function ensureMenuOpen(window, menuTestId) {
 }
 
 async function pointsVisibility(window, viewerObjectType, visibility) {
-  const menuTestId = viewerObjectType === "model" ? "modelPointsMenu" : "meshPointsMenu";
-  const switchTestId =
-    viewerObjectType === "model" ? "modelPointsVisibilitySwitch" : "meshPointsVisibilitySwitch";
+  const menuTestId = `${viewerObjectType}PointsMenu`
+  const switchTestId = `${viewerObjectType}PointsVisibilitySwitch`
 
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
-  if (visibility) {
-    await checkbox.check();
-  } else {
-    await checkbox.uncheck();
-  }
+  if (visibility) { await checkbox.check() }
+  else { await checkbox.uncheck() }
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setEdgesVisibility(window, viewerObjectType, visibility) {
+  const menuTestId = `${viewerObjectType}PointsMenu`
+  const switchTestId = `${viewerObjectType}PointsVisibilitySwitch`
+
+  await ensureMenuOpen(window, menuTestId);
+  const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
+  if (visibility) { await checkbox.check() }
+  else { await checkbox.uncheck() }
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -159,7 +166,6 @@ function getTreeRowByText(window, treeTestId, text) {
     .locator(".tree-row-wrapper")
     .filter({ hasText: text })
     .first()
-    .locator(".tree-item-label");
 }
 
 async function expandComponentsType(window, treeId, categoryName) {
@@ -180,6 +186,8 @@ async function hoverModelComponentRow(window, hasText) {
   await modelComponentRow.locator(".tree-item-label").hover();
   await window.waitForTimeout(afterActionWait);
 }
+
+
 
 async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
@@ -322,6 +330,7 @@ export {
   showObjectInTree,
   changeColoringStyle,
   getTreeRowByText,
+  setEdgesVisibility,
 };
 
 export { loadData } from "./load.js";

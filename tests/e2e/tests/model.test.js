@@ -20,6 +20,7 @@ import {
   navigateToApp,
   pointsVisibility,
   polyhedraAttribute,
+  setEdgesVisibility,
   vertexAttribute,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
@@ -33,6 +34,7 @@ let cleanup = undefined;
 const OFFSET = 10;
 const OPACITY_50 = 50;
 const geodeObjectType = "BRep";
+const viewerObjectType = "model";
 
 test.describe.configure({ mode: "serial" });
 
@@ -62,9 +64,7 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "model",
-    visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  await pointsVisibility(window, viewerObjectType, true);
   await expect(window).toHaveScreenshot();
 });
 
@@ -114,12 +114,7 @@ test("edges visibility", async () => {
   const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
   await brepEdgesMenuButton.click();
-  const modelEdgesVisibilitySwitch = await window
-    .getByTestId("modelEdgesVisibilitySwitch")
-    .getByRole("checkbox");
-  console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
-  await modelEdgesVisibilitySwitch.check();
-  await window.waitForTimeout(afterActionWait);
+  await setEdgesVisibility(window, viewerObjectType, true)
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });
@@ -130,6 +125,8 @@ test("object tree model components", async () => {
   await mainObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "test" })
+    .locator("button:has(.mdi-magnify-expand)")
+    .click();
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
