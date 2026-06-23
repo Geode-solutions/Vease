@@ -4,6 +4,10 @@ const afterActionWait = 1500;
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;
 
+function hybridViewerCanvas(window) {
+  return window.getByTestId("hybridViewer").locator("canvas");
+}
+
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
@@ -13,6 +17,7 @@ async function viewerContextMenu(window, x, y) {
 }
 
 async function ensureMenuOpen(window, menuTestId) {
+  console.log({ menuTestId })
   const menuButton = window.getByTestId(menuTestId);
   if (
     !(await menuButton
@@ -276,7 +281,7 @@ async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainO
 }
 
 async function hoverViewerCenter(window) {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const canvas = hybridViewerCanvas(window)
   const box = await canvas.boundingBox();
   await canvas.hover({
     position: { x: box.width / 2, y: box.height / 2 },
@@ -285,6 +290,7 @@ async function hoverViewerCenter(window) {
 }
 
 export {
+  hybridViewerCanvas,
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,

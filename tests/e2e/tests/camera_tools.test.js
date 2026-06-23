@@ -14,6 +14,7 @@ import {
   getTreeRowByText,
   hideObjectInTree,
   hoverViewerCenter,
+  hybridViewerCanvas,
   loadData,
   navigateToApp,
   showObjectInTree,
@@ -63,7 +64,7 @@ test("reset camera", async () => {
 });
 
 test("rotate camera 180 degrees", async () => {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const canvas = hybridViewerCanvas(window)
   const box = await canvas.boundingBox();
   await rotateCamera(window, -box.width);
   await expect(window).toHaveScreenshot();
@@ -110,7 +111,7 @@ test("visibility off grid and expand brep focus", async () => {
 
 test("center on click", async () => {
   await toggleCenterOnClick(window);
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const canvas = hybridViewerCanvas(window)
   await canvas.click({
     position: { x: 750, y: 250 },
   });
