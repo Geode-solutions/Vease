@@ -57,6 +57,7 @@ function handleConfirm() {
           base-color="white"
           bg-color="rgba(255, 255, 255, 0.15)"
           class="mb-4 rounded-lg"
+          data-testid="renameInput"
           @keydown.enter="handleConfirm"
           hide-details
           clearable
@@ -88,6 +89,7 @@ function handleConfirm() {
           color="primary"
           size="large"
           variant="flat"
+          data-testid="renameConfirmButton"
           @click="handleConfirm"
           class="text-none rounded-lg font-weight-bold"
           elevation="4"
