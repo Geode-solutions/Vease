@@ -208,14 +208,8 @@ test("screenshot file without background", async () => {
   await window.waitForTimeout(afterActionWait);
 
   await window.getByTestId("screenshotButton").click();
-  await window
-    .getByTestId("screenshotFileNameInput")
-    .locator("input")
-    .fill("screenshot 1");
-  await window
-    .getByTestId("screenshotIncludeBackgroundSwitch")
-    .getByRole("checkbox")
-    .uncheck();
+  await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
+  await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
@@ -224,10 +218,7 @@ test("screenshot file without background", async () => {
 test("screenshot clipboard with background", async () => {
   await window.getByTestId("screenshotButton").click();
   await window.getByTestId("screenshotClipboardButton").click();
-  await window
-    .getByTestId("screenshotIncludeBackgroundSwitch")
-    .getByRole("checkbox")
-    .check();
+  await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
