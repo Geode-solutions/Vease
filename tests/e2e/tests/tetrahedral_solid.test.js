@@ -76,11 +76,7 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, viewerObjectType, false);
-  await setPolyhedraPolyhedronAttribute(
-    window,
-    viewerObjectType,
-    attributeName,
-  );
+  await setPolyhedraPolyhedronAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
