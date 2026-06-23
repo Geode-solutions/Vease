@@ -168,7 +168,7 @@ test("object tree hover lines", async () => {
 });
 
 test("object tree hover first surface", async () => {
-  await hoverModelComponentRow(window, "00000000-8afd-4969-8000-000092a43747");
+  await hoverModelComponentRow(window, "00000000-8af...2a43747");
   await expect(window).toHaveScreenshot();
 });
 
