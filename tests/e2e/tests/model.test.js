@@ -127,9 +127,7 @@ test("edges visibility", async () => {
 test("object tree model components", async () => {
   const mainObjectTree = window.getByTestId("mainObjectTree");
 
-  await mainObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "test" })
+  await mainObjectTree.locator(".tree-row-wrapper").filter({ hasText: "test" });
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 
