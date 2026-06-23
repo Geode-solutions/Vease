@@ -158,7 +158,8 @@ function getTreeRowByText(window, treeTestId, text) {
     .getByTestId(treeTestId)
     .locator(".tree-row-wrapper")
     .filter({ hasText: text })
-    .first();
+    .first()
+    .locator(".tree-item-label")
 }
 
 async function expandComponentsType(window, treeId, categoryName) {
@@ -172,7 +173,15 @@ async function expandComponentsType(window, treeId, categoryName) {
 }
 
 async function hoverModelComponentRow(window, hasText) {
-  await getTreeRowByText(window, "modelComponentsObjectTree", hasText).hover();
+  await window.mouse.move(0, 0);
+  await window.waitForTimeout(afterActionWait);
+  const modelComponentRow = await getTreeRowByText(
+    window,
+    "modelComponentsObjectTree",
+    hasText
+  );
+  console.log({ modelComponentRow });
+  await modelComponentRow.locator(".tree-item-label").hover();
   await window.waitForTimeout(afterActionWait);
 }
 
