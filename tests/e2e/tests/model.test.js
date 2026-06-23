@@ -34,6 +34,8 @@ const OFFSET = 10;
 const OPACITY_50 = 50;
 const geodeObjectType = "BRep";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
@@ -128,8 +130,6 @@ test("object tree model components", async () => {
   await mainObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "test" })
-    .locator("button:has(.mdi-magnify-expand)")
-    .click();
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 

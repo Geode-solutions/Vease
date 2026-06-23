@@ -159,7 +159,6 @@ function getTreeRowByText(window, treeTestId, text) {
     .locator(".tree-row-wrapper")
     .filter({ hasText: text })
     .first()
-    .locator(".tree-item-label")
 }
 
 async function expandComponentsType(window, treeId, categoryName) {
