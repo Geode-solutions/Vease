@@ -24,6 +24,8 @@ let cleanup = undefined;
 const OPACITY_50 = 50;
 const geodeObjectType = "PointSet3D";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
