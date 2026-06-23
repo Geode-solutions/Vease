@@ -173,6 +173,8 @@ test("object tree hover first surface", async () => {
 });
 
 test("toggle object tree main", async () => {
+  await window.mouse.move(0, 0);
+  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("toggleObjectsButton").click();
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
