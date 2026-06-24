@@ -7,12 +7,11 @@ const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
 
-
 async function expandMainObjectTree(window) {
   const mainObjectTree = window.getByTestId("mainObjectTree");
   await mainObjectTree.waitFor({ state: "attached" });
   const collapseOrExpandAll = window.getByTestId("CollapseOrExpandAll");
-  await collapseOrExpandAll.isVisible()
+  await collapseOrExpandAll.isVisible();
   await collapseOrExpandAll.click({ force: true });
 }
 
@@ -703,4 +702,3 @@ export {
   stabilizeHoverTooltip,
   viewerContextMenu,
 };
-
