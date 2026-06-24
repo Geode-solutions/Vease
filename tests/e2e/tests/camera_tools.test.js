@@ -57,7 +57,7 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, brepFilename);
-  await window.waitForTimeout(afterActionWait)
+  await window.waitForTimeout(afterActionWait);
   await loadData(window, rgd3dFilename);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
