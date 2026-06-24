@@ -13,7 +13,8 @@ async function loadData(window, inputFilename) {
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
   const dataImportStepper = window.getByTestId("DataImportStepper");
-  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
+  const finalizeImportButton = window.getByTestId("finalizeImportButton");
+  await finalizeImportButton.click()
   await dataImportStepper.waitFor({ state: "detached" });
 }
 
