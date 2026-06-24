@@ -67,8 +67,7 @@ async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
   const menuButton = menuContainer.locator("button.menu-btn");
   if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
-    // Programmatic click bypasses any overlapping panels or hit-testing issues
-    await menuButton.evaluate((node) => node.click());
+    await menuButton.click({ force: true });
     await window.waitForTimeout(afterActionWait);
   }
 }
