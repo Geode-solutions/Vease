@@ -7,9 +7,6 @@ const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
 
-function hybridViewerCanvas(window) {
-  return window.getByTestId("hybridViewer").locator("canvas");
-}
 
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
@@ -289,7 +286,7 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
 }
 
 async function hoverViewerCenter(window) {
-  const canvas = hybridViewerCanvas(window);
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
   await canvas.hover({
     position: { x: box.width / 2, y: box.height / 2 },
@@ -651,7 +648,6 @@ function setCellsCellAttribute(window, viewerObjectType, attributeName, options 
 }
 
 export {
-  hybridViewerCanvas,
   afterActionWait,
   applyAttribute,
   beforeAllTimeout,

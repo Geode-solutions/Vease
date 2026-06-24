@@ -10,7 +10,6 @@ import {
   expandComponentsType,
   hideObjectInTree,
   highlightData,
-  hybridViewerCanvas,
   hoverModelComponentRow,
   loadData,
   navigateToApp,
@@ -33,8 +32,6 @@ const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";
 const viewerObjectType = "model";
-
-test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -62,12 +59,13 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  await setPointsVisibility(window, viewerObjectType, true);
+  const visibility = true;
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, "model", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
@@ -97,10 +95,7 @@ test("object tree context menu", async () => {
 });
 
 test("edges visibility", async () => {
-  const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
-  console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
-  await brepEdgesMenuButton.click();
-  await setEdgesVisibility(window, viewerObjectType, true);
+  await setEdgesVisibility(window, "model", true);
   await expect(window).toHaveScreenshot();
 });
 
@@ -157,7 +152,7 @@ test("object tree hover lines", async () => {
 });
 
 test("object tree hover first surface", async () => {
-  await hoverModelComponentRow(window, "00000000-8af...2a43747");
+  await hoverModelComponentRow(window, "00000000-");
   await expect(window).toHaveScreenshot();
 });
 
@@ -245,10 +240,7 @@ test("surfaces color", async () => {
 });
 
 test("toggle object tree main", async () => {
-  await window.mouse.move(0, 0);
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("toggleObjectsButton").click();
-  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
@@ -262,7 +254,7 @@ test("context menu through non visible surface", async () => {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  const canvas = hybridViewerCanvas(window);
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
   const box = await canvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await setModelColor(window);
