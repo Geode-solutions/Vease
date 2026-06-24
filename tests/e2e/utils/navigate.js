@@ -51,7 +51,7 @@ async function runDesktopBuild() {
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox", "--no-update"],
+    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
     executablePath: appInfo,
     wait: 20_000,
     env: {
@@ -83,6 +83,7 @@ async function runDesktopBuild() {
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+    permissions: ["clipboard-read", "clipboard-write"],
   });
   const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
@@ -94,7 +95,21 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => kill(nuxtPort) };
+    return {
+      window: page,
+      cleanup: async () => {
+        try {
+          if (isWindows) {
+            execSync("taskkill /F /IM vease-* /T");
+          } else {
+            execSync("pkill -f vease-");
+          }
+        } catch {
+          // Ignore errors if no process is found
+        }
+        await kill(nuxtPort);
+      },
+    };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
 
@@ -120,13 +135,23 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => page.close() };
+    return {
+      window: page,
+      cleanup: async () => {
+        await page.close();
+      },
+    };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
-    return { window: firstWindow, cleanup: () => electronApp.close() };
+    return {
+      window: firstWindow,
+      cleanup: async () => {
+        await electronApp.close();
+      },
+    };
   }
   throw new Error(`Unknown mode: ${mode}`);
 }

@@ -1,10 +1,13 @@
 <script setup>
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
 import GlassCard from "@ogw_front/components/GlassCard";
+import { Status } from "@ogw_front/utils/status";
 import logo from "@vease/assets/img/logo.png";
+import { useInfraStore } from "@ogw_front/stores/infra";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
+const infraStore = useInfraStore();
 
 const importFileInput = ref(undefined);
 
@@ -81,6 +84,7 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         prepend-icon="mdi-file-upload-outline"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
       >
         Import
@@ -91,6 +95,7 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         prepend-icon="mdi-shape-plus-outline"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
         Create
