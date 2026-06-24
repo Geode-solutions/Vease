@@ -190,6 +190,7 @@ test("highlight points on grid", async () => {
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
   await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });
 
