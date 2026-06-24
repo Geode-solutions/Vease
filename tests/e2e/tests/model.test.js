@@ -100,7 +100,7 @@ test("edges visibility", async () => {
   const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
   console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
   await brepEdgesMenuButton.click();
-  await setEdgesVisibility(window, viewerObjectType, true)
+  await setEdgesVisibility(window, viewerObjectType, true);
   await expect(window).toHaveScreenshot();
 });
 

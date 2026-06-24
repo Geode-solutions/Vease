@@ -167,7 +167,7 @@ function getTreeRowByText(window, treeTestId, text) {
     .getByTestId(treeTestId)
     .locator(".tree-row-wrapper")
     .filter({ hasText: text })
-    .first()
+    .first();
 }
 
 async function expandComponentsType(window, treeId, categoryName) {
@@ -188,8 +188,6 @@ async function hoverModelComponentRow(window, hasText) {
   await modelComponentRow.locator(".tree-item-label").hover();
   await window.waitForTimeout(afterActionWait);
 }
-
-
 
 async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
