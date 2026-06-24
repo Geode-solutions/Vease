@@ -39,7 +39,7 @@ export default defineConfig({
   reporter: "html",
   use: {
     screenshot: "only-on-failure",
-    trace: "on-first-retry",
+    trace: "on",
     video: "on-first-retry",
   },
 

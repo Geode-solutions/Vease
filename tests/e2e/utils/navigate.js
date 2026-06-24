@@ -95,6 +95,8 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => document.fonts.ready);
     return {
       window: page,
       cleanup: async () => {
@@ -135,6 +137,7 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
+
     return {
       window: page,
       cleanup: async () => {
