@@ -32,6 +32,8 @@ const EDGES_WIDTH = 5;
 const geodeObjectType = "EdgedCurve3D";
 const viewerObjectType = "mesh";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);

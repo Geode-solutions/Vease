@@ -33,6 +33,8 @@ const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";
 const viewerObjectType = "model";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
