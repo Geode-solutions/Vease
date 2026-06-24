@@ -44,6 +44,8 @@ const ZSCALE_VALUE = 6.6;
 
 const TARGET_TOP = 100;
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);

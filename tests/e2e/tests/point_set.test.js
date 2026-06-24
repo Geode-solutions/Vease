@@ -27,6 +27,8 @@ const POINTS_SIZE = 15;
 const geodeObjectType = "PointSet3D";
 const viewerObjectType = "mesh";
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
