@@ -7,27 +7,28 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
   dragContextMenu,
   expandComponentsType,
+  findOverlappingObjectsPicker,
   focusObjectInTree,
-  getTreeRowByText,
   hideObjectInTree,
   hoverViewerCenter,
   hybridViewerCanvas,
   loadData,
   navigateToApp,
+  setColor,
   showObjectInTree,
-  viewerContextMenu,
+  stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
-  changeZScaling,
   closeCameraManager,
+  ensureHighlightMenuOpen,
   resetCamera,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
+  setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
@@ -71,37 +72,35 @@ test("rotate camera 180 degrees", async () => {
 });
 
 test("overlapping objects context menu", async () => {
-  const x = 440,
-    y = 530;
-  await viewerContextMenu(window, x, y);
+  await resetCamera(window);
+  await findOverlappingObjectsPicker(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("select regulargrid3d and change color", async () => {
   await window
-    .getByTestId("overlappingObjectsPicker")
-    .locator(".v-list-item")
+    .locator(".intermediate-picker-item")
     .filter({ hasText: "RegularGrid3D" })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  await changeColor(window, "meshCellsMenu");
+  await setColor(window, "meshCellsMenu");
   await expect(window).toHaveScreenshot();
 });
 
 test("overlapping objects context menu at top", async () => {
   await dragContextMenu(window, { targetY: TARGET_TOP });
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
 });
 
 test("visibility off grid and expand brep focus", async () => {
-  await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
-  await getTreeRowByText(window, "mainObjectTree", "test")
-    .locator(".mdi-eye")
-    .first()
-    .click({ force: true });
+  await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
+  await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
+  await hideObjectInTree(window, "test", "mainObjectTree");
 
   await focusObjectInTree(window, "BRep", "test");
   await window.mouse.move(0, 0);
@@ -125,7 +124,7 @@ test("toggle grid scale tool", async () => {
 });
 
 test("z scaling value 6.6", async () => {
-  await changeZScaling(window, ZSCALE_VALUE);
+  await setZScaling(window, ZSCALE_VALUE);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });
@@ -141,33 +140,32 @@ test("camera orientation", async () => {
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X+");
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
 test("z scaling value 1", async () => {
-  await changeZScaling(window, 1);
+  await setZScaling(window, 1);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });
 
-test("cells hover highlight on brep", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+test("cells hover highlight", async () => {
+  await showObjectInTree(window, "BRep");
+  await hideObjectInTree(window, "RegularGrid3D");
+  await resetCamera(window);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
+  await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("points hover highlight on brep", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+test("points hover highlight", async () => {
+  await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
+  await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("hoverHighlightChip").click();
   await window.waitForTimeout(afterActionWait);
@@ -177,25 +175,23 @@ test("highlight cells on grid", async () => {
   await showObjectInTree(window, "RegularGrid3D");
   await hideObjectInTree(window, "BRep");
   await resetCamera(window);
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
+  await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("highlightOnHoverButton").click();
   await window.waitForTimeout(afterActionWait);
 });
 
 test("highlight points on grid", async () => {
-  await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
   await hoverViewerCenter(window);
+  await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
 test("restore camera position", async () => {
@@ -206,12 +202,15 @@ test("restore camera position", async () => {
 });
 
 test("screenshot file without background", async () => {
+  // Close any open menus from previous test
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   await window.getByTestId("screenshotButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
@@ -219,11 +218,8 @@ test("screenshot file without background", async () => {
 
 test("screenshot clipboard with background", async () => {
   await window.getByTestId("screenshotButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotClipboardButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
-  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();

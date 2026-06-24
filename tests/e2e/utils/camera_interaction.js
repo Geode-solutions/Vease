@@ -16,15 +16,26 @@ async function toggleCenterOnClick(window) {
 }
 
 async function toggleGridScale(window) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("gridScaleButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeZScaling(window, zScaleValue) {
+async function setZScaling(window, zScaleValue) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
-  const input = window.getByTestId("zScaleInput").locator("input");
+  const panel = window.getByTestId("zScaleInput");
+  if (!(await panel.isVisible())) {
+    await window.getByTestId("zScalingButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  const input = panel.locator("input");
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
@@ -66,8 +77,19 @@ async function restoreCameraPosition(window, name) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function ensureHighlightMenuOpen(window, childButtonTestId) {
+  if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+    await window.getByTestId("highlightOnHoverButton").click();
+    await window.waitForTimeout(afterActionWait);
+    if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+      await window.getByTestId("highlightOnHoverButton").click();
+      await window.waitForTimeout(afterActionWait);
+    }
+  }
+}
+
 export {
-  changeZScaling,
+  setZScaling,
   resetCamera,
   rotateCamera,
   toggleCenterOnClick,
@@ -78,4 +100,5 @@ export {
   toggleCameraOrientation,
   selectCameraOrientation,
   restoreCameraPosition,
+  ensureHighlightMenuOpen,
 };

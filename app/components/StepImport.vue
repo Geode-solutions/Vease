@@ -36,8 +36,8 @@ const stepper_tree = useStepperTree(
         component_options: {
           multiple: true,
           files,
-          autoUpload: auto_upload,
-          showOverlay: false,
+          auto_upload,
+          show_overlay: false,
         },
       },
       chips: computed(() => files.value.map((file) => file.name)),
