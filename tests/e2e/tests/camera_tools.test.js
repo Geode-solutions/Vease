@@ -9,12 +9,11 @@ import {
   beforeAllTimeout,
   dragContextMenu,
   expandComponentsType,
+  expandMainObjectTree,
   findOverlappingObjectsPicker,
   focusObjectInTree,
   hideObjectInTree,
   hoverViewerCenter,
-  loadData,
-  navigateToApp,
   setColor,
   showObjectInTree,
   stabilizeHoverTooltip,
@@ -33,6 +32,8 @@ import {
   toggleCenterOnClick,
   toggleGridScale,
 } from "@tests/utils/camera_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -57,6 +58,7 @@ test.afterAll(async () => {
 test("load", async () => {
   await loadData(window, brepFilename);
   await loadData(window, rgd3dFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 

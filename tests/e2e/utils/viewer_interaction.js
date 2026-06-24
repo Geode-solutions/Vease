@@ -7,6 +7,15 @@ const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
 
+
+async function expandMainObjectTree(window) {
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  await mainObjectTree.waitFor({ state: "attached" });
+  const collapseOrExpandAll = window.getByTestId("CollapseOrExpandAll");
+  await collapseOrExpandAll.isVisible()
+  await collapseOrExpandAll.click({ force: true });
+}
+
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
@@ -635,6 +644,7 @@ export {
   beforeAllTimeout,
   dragContextMenu,
   dragElement,
+  expandMainObjectTree,
   expandComponentsType,
   findOverlappingObjectsPicker,
   focusObjectInTree,
@@ -694,5 +704,3 @@ export {
   viewerContextMenu,
 };
 
-export { loadData } from "./load.js";
-export { navigateToApp } from "./navigate.js";
