@@ -1,9 +1,9 @@
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
   hideObjectInTree,
   navigateToApp,
+  setColor,
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { expect } from "@playwright/test";
@@ -46,7 +46,7 @@ test("change lines color", async () => {
   await window.waitForTimeout(afterActionWait);
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });
-  await changeColor(window, "modelStyleMenu", container);
+  await setColor(window, "modelStyleMenu", container);
   await window.mouse.move(0, 0);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
