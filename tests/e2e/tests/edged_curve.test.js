@@ -6,14 +6,17 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColorWithSlider,
-  changeOpacity,
-  edgeAttribute,
   highlightData,
   loadData,
   navigateToApp,
-  pointsVisibility,
-  vertexAttribute,
+  setEdgesColorWithSlider,
+  setEdgesEdgeAttribute,
+  setEdgesOpacity,
+  setEdgesVisibility,
+  setEdgesWidth,
+  setPointsColorWithSlider,
+  setPointsSize,
+  setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -24,7 +27,10 @@ const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
+const EDGES_WIDTH = 5;
 const geodeObjectType = "EdgedCurve3D";
+const viewerObjectType = "mesh";
 
 test.describe.configure({ mode: "serial" });
 
@@ -54,30 +60,44 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = false;
-  await pointsVisibility(window, viewerObjectType, visibility);
-  await expect(window).toHaveScreenshot();
-});
-
-test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", true);
-  await vertexAttribute(window, "meshEdgesMenu");
+  const visibility = false;
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("edge attribute", async () => {
-  await pointsVisibility(window, "mesh", true);
-  await edgeAttribute(window, "meshEdgesMenu", attributeName);
+  await setPointsVisibility(window, viewerObjectType, true);
+  await setEdgesEdgeAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
-  await changeColorWithSlider(window, "meshEdgesMenu");
+test("edges color", async () => {
+  await setEdgesColorWithSlider(window, viewerObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await setPointsColorWithSlider(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshEdgesMenu", OPACITY_50);
+  await setEdgesOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
+});
+
+test("points size", async () => {
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges width", async () => {
+  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges visibility", async () => {
+  await setEdgesVisibility(window, viewerObjectType, false);
+  await expect(window).toHaveScreenshot();
+  await setEdgesVisibility(window, viewerObjectType, true);
 });
