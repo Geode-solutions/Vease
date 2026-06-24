@@ -7,7 +7,6 @@ const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
 
-
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
@@ -178,24 +177,7 @@ async function expandComponentsType(window, treeId, categoryName) {
 }
 
 async function hoverModelComponentRow(window, hasText) {
-  await window.mouse.move(0, 0);
-  await window.waitForTimeout(afterActionWait);
-  const modelComponentRow = await getTreeRowByText(window, "modelComponentsObjectTree", hasText);
-  console.log({ modelComponentRow });
-  await modelComponentRow.locator(".tree-item-label").hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
-async function changeColoringStyle(window, menuTestId, coloringStyle, container = window) {
-  await ensureMenuOpen(window, menuTestId);
-  await container.getByTestId("coloringStyleSelector").first().click();
-  await window.waitForTimeout(afterActionWait);
-  await window
-    .locator(".v-overlay-container")
-    .locator(".v-list-item")
-    .filter({ hasText: coloringStyle, visible: true })
-    .first()
-    .click();
+  await getTreeRowByText(window, "modelComponentsObjectTree", hasText).hover();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -708,7 +690,6 @@ export {
   setPolyhedraVertexAttribute,
   setPolyhedraVisibility,
   showObjectInTree,
-  changeColoringStyle,
   stabilizeHoverTooltip,
   viewerContextMenu,
 };
