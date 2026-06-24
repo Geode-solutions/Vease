@@ -67,7 +67,12 @@ async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
   const menuButton = menuContainer.locator("button.menu-btn");
   if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
-    await menuButton.click({ force: true });
+    const activeMenuButton = window.locator(".menu-btn.v-btn--active");
+    if (await activeMenuButton.isVisible()) {
+      await activeMenuButton.click();
+      await window.waitForTimeout(afterActionWait);
+    }
+    await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }

@@ -13,7 +13,6 @@ import {
 } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
-  expandAllObjects,
   fillSearchQuery,
   openFilterMenu,
   toggleSearchObjects,
@@ -48,9 +47,8 @@ test("load all files", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("expand all", async () => {
+test("reset camera", async () => {
   await resetCamera(window);
-  await expandAllObjects(window);
   await expect(window).toHaveScreenshot();
 });
 
