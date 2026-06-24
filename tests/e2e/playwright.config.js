@@ -34,8 +34,8 @@ export default defineConfig({
   },
   testDir: ".",
   fullyParallel: true,
-  forbidOnly: Boolean(process.env.CI),
   workers: 1,
+  forbidOnly: Boolean(process.env.CI),
   reporter: "html",
   use: {
     trace: "on-first-retry",
