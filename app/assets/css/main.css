@@ -109,3 +109,9 @@ body,
 .v-field--variant-outlined:hover .v-field__outline .v-field-outline__end {
   border-color: currentColor !important;
 }
+
+.v-app-bar .v-btn--disabled {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  opacity: 0.35 !important;
+}
