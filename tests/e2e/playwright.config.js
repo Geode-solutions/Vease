@@ -11,10 +11,10 @@ const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
-const CI_WORKERS = 1;
+const CI_WORKERS = 2;
 
 const retries = process.env.CI ? CI_RETRIES : 0;
-const workers = process.env.CI ? CI_WORKERS : 0;
+const workers = process.env.CI ? CI_WORKERS : 1;
 const testMatch = "tests/e2e/tests/**/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
