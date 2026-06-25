@@ -27,6 +27,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
+const dataName = "test"
 const attributeName = "RGB_data";
 let window = undefined;
 let cleanup = undefined;
@@ -53,7 +54,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 

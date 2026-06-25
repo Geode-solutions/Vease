@@ -28,6 +28,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
+const dataName = "test";
 const attributeName = "triangle_adjacents";
 let window = undefined;
 let cleanup = undefined;
@@ -54,7 +55,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 

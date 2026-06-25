@@ -7,7 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  expandComponentsType,
+  expandGeodeObjectType,
   expandMainObjectTree,
   hideObjectInTree,
   highlightData,
@@ -17,8 +17,10 @@ import {
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
+  setModelTreeRowColorRandom,
   setPointsSize,
   setPointsVisibility,
+  toggleModelTreeRow,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { loadData } from "@tests/utils/load.js";
@@ -27,6 +29,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
+const dataName = "test"
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -51,7 +54,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -90,7 +93,7 @@ test("random coloring", async () => {
 
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
-  await expandComponentsType(window, "mainObjectTree", "BRep");
+  await expandGeodeObjectType(window, "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const testItem = mainObjectTree.getByText("test").first();
   await testItem.click({ button: "right", force: true });
@@ -122,7 +125,7 @@ test("object tree model components", async () => {
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
-  await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -156,44 +159,9 @@ test("object tree hover lines", async () => {
 });
 
 test("object tree hover first surface", async () => {
-  await hoverModelComponentRow(window, "00000000-");
+  await hoverModelComponentRow(window, "Surfaces", "00000000-");
   await expect(window).toHaveScreenshot();
 });
-
-async function toggleModelTreeRow(appWindow, rowName) {
-  // Close any open menus
-  await appWindow.keyboard.press("Escape");
-  await appWindow.waitForTimeout(afterActionWait);
-  await appWindow.keyboard.press("Escape");
-  await appWindow.waitForTimeout(afterActionWait);
-
-  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
-  const row = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: rowName })
-    .first();
-  await row.locator("button:has([class*='mdi-eye'])").first().click();
-  await appWindow.waitForTimeout(afterActionWait);
-}
-
-async function setModelTreeRowColorRandom(appWindow, rowName) {
-  // Close any open menus
-  await appWindow.keyboard.press("Escape");
-  await appWindow.waitForTimeout(afterActionWait);
-  await appWindow.keyboard.press("Escape");
-  await appWindow.waitForTimeout(afterActionWait);
-
-  const modelComponentsObjectTree = appWindow.getByTestId("modelComponentsObjectTree");
-  const row = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: rowName })
-    .first();
-  const label = row.locator(".tree-item-label").first();
-  await label.click({ button: "right", force: true });
-  await appWindow.waitForTimeout(afterActionWait);
-
-  await setModelColor(appWindow);
-}
 
 test("blocks visibility", async () => {
   await toggleModelTreeRow(window, "Blocks");

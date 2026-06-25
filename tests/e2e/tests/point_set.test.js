@@ -21,6 +21,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
+const dataName = "test"
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -45,7 +46,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 
