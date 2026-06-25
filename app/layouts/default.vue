@@ -47,7 +47,7 @@ watch(
   <v-app
     :class="{
       'splash-screen-active': !infraStore.microservices_connected,
-      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions
+      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions,
     }"
   >
     <MainNavigation />
