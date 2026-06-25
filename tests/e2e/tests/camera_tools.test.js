@@ -39,10 +39,10 @@ import { test } from "@tests/fixtures.js";
 // Constants
 const brepFilename = "test.og_brep";
 const brepDataName = "test";
-const brepGeodeObjectType = "BRep"
+const brepGeodeObjectType = "BRep";
 const rgd3dFilename = "test.og_rgd3d";
 const rgd3dDataName = "test";
-const rgd3dGeodeObjectType = "RegularGrid3D"
+const rgd3dGeodeObjectType = "RegularGrid3D";
 let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;

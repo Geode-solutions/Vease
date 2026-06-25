@@ -27,7 +27,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
-const dataName = "test"
+const dataName = "test";
 const attributeName = "RGB_data";
 let window = undefined;
 let cleanup = undefined;

@@ -166,7 +166,12 @@ async function highlightData(window, geodeObjectType, dataName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function getTreeRowByTextAndParent(window, geodeObjectType, dataName = undefined, treeTestId = "mainObjectTree") {
+async function getTreeRowByTextAndParent(
+  window,
+  geodeObjectType,
+  dataName = undefined,
+  treeTestId = "mainObjectTree",
+) {
   const tree = window.getByTestId(treeTestId);
   const allRows = tree.locator(".tree-row-wrapper");
   const count = await allRows.count();
@@ -183,39 +188,46 @@ async function getTreeRowByTextAndParent(window, geodeObjectType, dataName = und
       !(await row.evaluate(element => element.classList.contains("leaf-row")))) {
 
       if (!dataName) {
-        console.log("getTreeRowByTextAndParent", { row })
-        return row
+        console.log("getTreeRowByTextAndParent", { row });
+        return row;
       }
       for (let j = i + 1; j < count; j += 1) {
         const childRow = allRows.nth(j);
         //oxlint-disable-next-line no-await-in-loop
-        const isLeaf = await childRow.evaluate(element => element.classList.contains("leaf-row"));
-        if (!isLeaf) { break };
+        const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
+        if (!isLeaf) {
+          break;
+        }
         //oxlint-disable-next-line no-await-in-loop
         const childRowText = await childRow.textContent();
         if (childRowText.includes(dataName)) {
-          console.log("getTreeRowByTextAndParent", { childRow })
+          console.log("getTreeRowByTextAndParent", { childRow });
           return childRow;
         }
       }
     }
   }
 
-  throw new Error(`Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`);
+  throw new Error(
+    `Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`,
+  );
 }
 
 async function expandGeodeObjectType(window, geodeObjectType) {
-  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType)
-  const rightChevron = treeRow
-    .locator(".mdi-menu-right")
-    .first();
+  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType);
+  const rightChevron = treeRow.locator(".mdi-menu-right").first();
   if ((await rightChevron.count()) > 0) {
     await rightChevron.dispatchEvent("click");
   }
 }
 
 async function hoverModelComponentRow(window, modelComponentType, modelComponentName = undefined) {
-  const modelComponentRow = await getTreeRowByTextAndParent(window, modelComponentType, modelComponentName, "modelComponentsObjectTree")
+  const modelComponentRow = await getTreeRowByTextAndParent(
+    window,
+    modelComponentType,
+    modelComponentName,
+    "modelComponentsObjectTree",
+  );
   await modelComponentRow.hover();
   await window.waitForTimeout(afterActionWait);
 }
@@ -250,9 +262,12 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-
-
-async function hideObjectInTree(window, parentName, objectName = undefined, treeTestId = "mainObjectTree") {
+async function hideObjectInTree(
+  window,
+  parentName,
+  objectName = undefined,
+  treeTestId = "mainObjectTree",
+) {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
 
   await row.waitFor({ state: "attached" });
@@ -669,8 +684,6 @@ function setCellsCellAttribute(window, viewerObjectType, attributeName, options 
     options,
   );
 }
-
-
 
 async function toggleModelTreeRow(window, rowName) {
   // Close any open menus
