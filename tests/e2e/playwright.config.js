@@ -37,10 +37,13 @@ export default defineConfig({
   testDir: ".",
   fullyParallel: true,
   workers,
+  workers,
   forbidOnly: Boolean(process.env.CI),
   reporter: "html",
   use: {
+    screenshot: "only-on-failure",
     trace: "on-first-retry",
+    video: "on-first-retry",
   },
 
   projects: [
@@ -48,7 +51,7 @@ export default defineConfig({
       name: "browser-chrome",
       testMatch,
       timeout: TIMEOUTS.browser,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Chrome"],
         mode: "BROWSER",
@@ -58,7 +61,7 @@ export default defineConfig({
       name: "browser-firefox",
       testMatch,
       timeout: TIMEOUTS.browser,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Firefox"],
         mode: "BROWSER",
@@ -68,7 +71,7 @@ export default defineConfig({
       name: "cloud",
       testMatch,
       timeout: TIMEOUTS.cloud,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",
@@ -78,7 +81,7 @@ export default defineConfig({
       name: "desktop",
       testMatch,
       timeout: TIMEOUTS.desktop,
-      retries: ciRetries,
+      retries,
       use: {
         mode: "DESKTOP",
       },

@@ -6,7 +6,10 @@ import path from "node:path";
 
 // Third party imports
 import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
-import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js";
+import {
+  getAvailablePort,
+  waitForReady,
+} from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
 // Isolate userData folder for concurrent Playwright workers during E2E tests
 if (process.env.CI === "e2e") {
@@ -16,8 +19,6 @@ if (process.env.CI === "e2e") {
 }
 
 // Local constants
-const PROCESS_WIN32_TIMEOUT = 4000;
-const PROCESS_LINUX_TIMEOUT = 1000;
 const __dirname = import.meta.dirname;
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
@@ -84,15 +85,18 @@ async function createNewWindow() {
       shell: true,
     });
 
-    server.stdout.on("data", (data) => console.log(`[NITRO] ${data.toString()}`));
-    server.stderr.on("data", (data) => console.log(`[NITRO] ${data.toString()}`));
+    server.stdout.on("data", (data) => {
+      console.log(`[NITRO] ${data.toString()}`);
+    });
+    server.stderr.on("data", (data) => {
+      console.log(`[NITRO] ${data.toString()}`);
+    });
 
-    await setTimeout(
-      () => {
-        win.loadURL(`http://localhost:${PORT}`);
-      },
-      process.platform === "win32" ? PROCESS_WIN32_TIMEOUT : PROCESS_LINUX_TIMEOUT,
-    );
+    const controller = new AbortController();
+    const expectedResponse = `Listening on http://[::]:${PORT}`;
+    await waitForReady(server, expectedResponse, controller.signal);
+    win.loadURL(`http://localhost:${PORT}`);
+
     app.on("before-quit", async () => {
       console.log("Killing server process", { PORT });
       await fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
