@@ -7,22 +7,24 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  expandGeodeObjectType,
-  expandMainObjectTree,
-  hideObjectInTree,
-  highlightData,
-  hoverModelComponentRow,
   setEdgesVisibility,
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
-  setModelTreeRowColorRandom,
   setPointsSize,
   setPointsVisibility,
-  toggleModelTreeRow,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  expandGeodeObjectType,
+  expandMainObjectTree,
+  hideObjectInTree,
+  highlightData,
+  hoverModelComponentRow,
+  setModelTreeRowColorRandom,
+  toggleModelTreeRow,
+} from "@tests/utils/object_tree_interaction.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";

@@ -7,18 +7,20 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  hideObjectInTree,
-  loadData,
-  navigateToApp,
 } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
+  collapseAllObjects,
+  expandAllObjects,
   fillSearchQuery,
+  hideObjectInTree,
   openFilterMenu,
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
 } from "@tests/utils/object_tree_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { resetCamera } from "@tests/utils/camera_interaction.js";
 import { test } from "@tests/fixtures.js";
 
@@ -114,8 +116,7 @@ test("collapse main object tree", async () => {
     .locator("button:has(.mdi-magnify-expand)")
     .click();
   await window.waitForTimeout(afterActionWait);
-  await window.getByTestId("mainObjectTree").getByTestId("collapseAllObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await collapseAllObjects(window, "mainObjectTree");
   await expect(window).toHaveScreenshot();
 });
 
@@ -126,11 +127,7 @@ test("toggle objects", async () => {
 });
 
 test("expand model components", async () => {
-  await window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("expandAllObjectsButton")
-    .click();
-  await window.waitForTimeout(afterActionWait);
+  await expandAllObjects(window, "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();
 });
 
@@ -186,10 +183,6 @@ test("clear searchbar", async () => {
 });
 
 test("collapse all model components", async () => {
-  await window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("collapseAllObjectsButton")
-    .click();
-  await window.waitForTimeout(afterActionWait);
+  await collapseAllObjects(window, "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();
 });
