@@ -6,8 +6,7 @@ import path from "node:path";
 
 // Third party imports
 import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
-import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js";
-import { waitForReady } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
+import { getAvailablePort, waitForReady } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
 // Local constants
 const __dirname = import.meta.dirname;
