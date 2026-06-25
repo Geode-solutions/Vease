@@ -8,6 +8,13 @@ import path from "node:path";
 import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
 import { getAvailablePort } from "@geode/opengeodeweb-front/app/utils/local/microservices.js";
 
+// Isolate userData folder for concurrent Playwright workers during E2E tests
+if (process.env.CI === "e2e") {
+  const workerIndex = process.env.TEST_WORKER_INDEX || "0";
+  const defaultUserDataPath = app.getPath("userData");
+  app.setPath("userData", `${defaultUserDataPath}-e2e-worker-${workerIndex}`);
+}
+
 // Local constants
 const PROCESS_WIN32_TIMEOUT = 4000;
 const PROCESS_LINUX_TIMEOUT = 1000;

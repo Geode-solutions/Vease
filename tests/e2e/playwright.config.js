@@ -11,8 +11,10 @@ const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
+const CI_WORKERS = 2;
 
 const ciRetries = process.env.CI ? CI_RETRIES : 0;
+const workers = process.env.CI ? CI_WORKERS : 1;
 const testMatch = "tests/e2e/tests/**/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
@@ -34,7 +36,7 @@ export default defineConfig({
   },
   testDir: ".",
   fullyParallel: true,
-  workers: 1,
+  workers,
   forbidOnly: Boolean(process.env.CI),
   reporter: "html",
   use: {
