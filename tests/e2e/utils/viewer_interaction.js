@@ -178,7 +178,9 @@ async function getTreeRowByTextAndParent(window, geodeObjectType, dataName = und
     const rowText = await row.textContent();
 
     //oxlint-disable-next-line no-await-in-loop
-    if (rowText.includes(geodeObjectType) && !(await row.evaluate(element => element.classList.contains("leaf-row")))) {
+    if (rowText.includes(geodeObjectType) &&
+      //oxlint-disable-next-line no-await-in-loop
+      !(await row.evaluate(element => element.classList.contains("leaf-row")))) {
 
       if (!dataName) {
         console.log("getTreeRowByTextAndParent", { row })
