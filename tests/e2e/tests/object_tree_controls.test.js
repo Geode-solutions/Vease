@@ -4,10 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  afterActionWait,
-  beforeAllTimeout,
-} from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
   collapseAllObjects,

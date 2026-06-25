@@ -7,8 +7,6 @@ const MAX_PERCENTAGE = 100;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 const SLIDER_BLUE = 0.7;
 
-
-
 async function viewerContextMenu(window, x, y) {
   await window.getByTestId("hybridViewer").locator("canvas").click({
     button: "right",
@@ -156,8 +154,6 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
-
-
 async function clickColorPickerCanvas(window, container = window) {
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
@@ -187,8 +183,6 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await dragElement(window, centerButton, { targetX, targetY });
 }
-
-
 
 function setPolygonsTextures(window, viewerObjectType) {
   return setFeatureTextures(window, viewerObjectType, "Polygons");
@@ -572,8 +566,6 @@ function setCellsCellAttribute(window, viewerObjectType, attributeName, options 
     options,
   );
 }
-
-
 
 export {
   afterActionWait,
