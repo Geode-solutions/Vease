@@ -17,6 +17,7 @@ if (process.env.CI === "e2e") {
   const defaultUserDataPath = app.getPath("userData");
   app.setPath("userData", `${defaultUserDataPath}-e2e-worker-${workerIndex}`);
 }
+console.log(`[Electron] userData path: ${app.getPath("userData")}`);
 
 // Local constants
 const __dirname = import.meta.dirname;
