@@ -6,19 +6,24 @@ import { test as base } from "@playwright/test";
 
 // Local imports
 
+const MILLISECONDS_PER_SECOND = 1000;
+
 const test = base.extend({
   mode: ["DEFAULT", { option: true }],
 
   logTestProgress: [
+    // oxlint-disable-next-line no-empty-pattern
     async ({}, use, testInfo) => {
       const name = `${path.basename(testInfo.file)} › ${testInfo.title}`;
-      console.log(`\x1b[33m[START]\x1b[0m ${name}`);
+      console.log(`\u001B[33m[START]\u001B[0m ${name}`);
       const start = Date.now();
       await use();
-      const statusColor = testInfo.status === "passed" ? "\x1b[32m" : "\x1b[31m";
+      const statusColor = testInfo.status === "passed" ? "\u001B[32m" : "\u001B[31m";
       const status = (testInfo.status || "done").toUpperCase();
-      const duration = ((Date.now() - start) / 1000).toFixed(2);
-      console.log(`\x1b[35m[END]\x1b[0m ${name} : ${statusColor}${status}\x1b[0m (${duration}s)`);
+      const duration = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
+      console.log(
+        `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}${status}\u001B[0m (${duration}s)`,
+      );
     },
     { auto: true },
   ],
