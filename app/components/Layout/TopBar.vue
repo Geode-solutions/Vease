@@ -83,6 +83,7 @@ function onImportFileSelected(event) {
         variant="tonal"
         rounded="lg"
         class="text-none px-6 font-weight-bold"
+        :class="{ 'v-btn--active': UIStore.showStepper }"
         prepend-icon="mdi-file-upload-outline"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
@@ -90,10 +91,11 @@ function onImportFileSelected(event) {
         Import
       </v-btn>
       <v-btn
-        color="primary"
-        variant="flat"
+        color="white"
+        variant="tonal"
         rounded="lg"
         class="text-none px-6 font-weight-bold"
+        :class="{ 'v-btn--active': UIStore.showCreateTools }"
         prepend-icon="mdi-shape-plus-outline"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
