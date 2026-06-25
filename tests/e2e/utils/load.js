@@ -1,20 +1,24 @@
 // Node imports
 import path from "node:path";
 
+import { afterActionWait } from "./viewer_interaction.js";
+
 const __dirname = import.meta.dirname;
 
 async function loadData(window, inputFilename) {
   const inputFileExtension = path.extname(inputFilename);
-  console.log("inputFileExtension", inputFileExtension);
+  console.log("loadData", { inputFilename, inputFileExtension });
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
-  const importButton = await window.getByRole("button", { name: "Import" });
-  await importButton.click();
+  const layoutImportButton = window.getByTestId("layoutImportButton");
+  await layoutImportButton.click({ force: true });
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
-  await window.getByRole("main").getByRole("button", { name: "Import", exact: true }).click();
-  const loadWorkflowTimeout = 8000;
-  await window.waitForTimeout(loadWorkflowTimeout);
+  const dataImportStepper = window.getByTestId("DataImportStepper");
+  const finalizeImportButton = window.getByTestId("finalizeImportButton");
+  await finalizeImportButton.click();
+  await dataImportStepper.waitFor({ state: "detached" });
+  await window.waitForTimeout(afterActionWait);
 }
 
 export { loadData };
