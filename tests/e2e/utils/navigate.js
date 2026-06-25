@@ -100,15 +100,6 @@ async function navigateToApp(mode, browser) {
     return {
       window: page,
       cleanup: async () => {
-        try {
-          if (isWindows) {
-            execSync("taskkill /F /IM vease-* /T");
-          } else {
-            execSync("pkill -f vease-");
-          }
-        } catch {
-          // Ignore errors if no process is found
-        }
         await kill(nuxtPort);
       },
     };

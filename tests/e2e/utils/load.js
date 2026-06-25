@@ -1,6 +1,8 @@
 // Node imports
 import path from "node:path";
 
+import { afterActionWait } from "./viewer_interaction.js"
+
 const __dirname = import.meta.dirname;
 
 async function loadData(window, inputFilename) {
@@ -16,6 +18,7 @@ async function loadData(window, inputFilename) {
   const finalizeImportButton = window.getByTestId("finalizeImportButton");
   await finalizeImportButton.click();
   await dataImportStepper.waitFor({ state: "detached" });
+  await window.waitForTimeout(afterActionWait)
 }
 
 export { loadData };
