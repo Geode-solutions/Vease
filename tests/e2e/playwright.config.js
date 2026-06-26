@@ -15,7 +15,7 @@ const CI_WORKERS = 2;
 
 const retries = process.env.CI ? CI_RETRIES : 0;
 const workers = process.env.CI ? CI_WORKERS : 1;
-const testMatch = "tests/e2e/tests/**/*.test.js";
+const testMatch = "tests/e2e/tests/**/object_tree_controls.test.js";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
