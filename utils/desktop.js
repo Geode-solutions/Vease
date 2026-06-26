@@ -11,6 +11,14 @@ import {
   waitForReady,
 } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
 
+// Isolate userData folder for concurrent Playwright workers during E2E tests
+if (process.env.CI === "e2e") {
+  const workerIndex = process.env.TEST_WORKER_INDEX || "0";
+  const defaultUserDataPath = app.getPath("userData");
+  app.setPath("userData", `${defaultUserDataPath}-e2e-worker-${workerIndex}`);
+}
+console.log(`[Electron] userData path: ${app.getPath("userData")}`);
+
 // Local constants
 const __dirname = import.meta.dirname;
 const MIN_WINDOW_WIDTH = 1000;
