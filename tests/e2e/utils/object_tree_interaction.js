@@ -22,19 +22,24 @@ async function toggleSortObjects(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function openFilterMenu(window) {
-  await window.getByTestId("filterObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+async function openFilterMenu(window, treeTestId = "mainObjectTree") {
+  await window.getByTestId(treeTestId).getByTestId("filterObjectsButton").click();
+  await window
+    .locator(".v-overlay-container [data-testid^='filterCheckbox-']")
+    .first()
+    .waitFor({ state: "attached" });
 }
 
 async function checkFilterCategory(window, categoryId) {
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
+  await checkbox.waitFor({ state: "attached" });
   await checkbox.check();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function uncheckFilterCategory(window, categoryId) {
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
+  await checkbox.waitFor({ state: "attached" });
   await checkbox.uncheck();
   await window.waitForTimeout(afterActionWait);
 }
