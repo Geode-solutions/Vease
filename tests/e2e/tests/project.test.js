@@ -1,19 +1,23 @@
-import {
-  afterActionWait,
-  beforeAllTimeout,
-  hideObjectInTree,
-  navigateToApp,
-  setColor,
-} from "@tests/utils/viewer_interaction.js";
-import { exportProject, importProject } from "@tests/utils/project_interaction.js";
-import { expect } from "@playwright/test";
+// Node imports
 import path from "node:path";
+
+// Third party imports
+import { expect } from "@playwright/test";
+
+// Local imports
+import { afterActionWait, beforeAllTimeout, setColor } from "@tests/utils/viewer_interaction.js";
+import { exportProject, importProject } from "@tests/utils/project_interaction.js";
+import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
+// Constants
 const inputFilename = "test_project.vease";
 let window = undefined;
 let cleanup = undefined;
 const OFFSET = 10;
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -30,7 +34,7 @@ test("import project", async () => {
 });
 
 test("toggle surfaces visibility", async () => {
-  await hideObjectInTree(window, "Surfaces", "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Surfaces", undefined, "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot("hide-surfaces.png");
 });
 
@@ -53,12 +57,13 @@ test("change lines color", async () => {
 });
 
 test("collapse model tree in main tree", async () => {
-  const mainObjectTree = window.getByTestId("mainObjectTree");
-  await mainObjectTree
+  await window
+    .getByTestId("mainObjectTree")
     .locator(".tree-row-wrapper")
     .filter({ hasText: "surface_cube" })
+    .first()
     .locator("button:has(.mdi-magnify-expand)")
-    .click();
+    .click({ force: true });
   await window.waitForTimeout(afterActionWait);
   await window.mouse.move(0, 0);
   await expect(window).toHaveScreenshot();
