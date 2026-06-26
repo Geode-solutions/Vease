@@ -8,14 +8,9 @@ import {
   afterActionWait,
   beforeAllTimeout,
   dragContextMenu,
-  expandGeodeObjectType,
-  expandMainObjectTree,
   findOverlappingObjectsPicker,
-  focusObjectInTree,
-  hideObjectInTree,
   hoverViewerCenter,
   setColor,
-  showObjectInTree,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
@@ -32,6 +27,13 @@ import {
   toggleCenterOnClick,
   toggleGridScale,
 } from "@tests/utils/camera_interaction.js";
+import {
+  expandGeodeObjectType,
+  expandMainObjectTree,
+  focusObjectInTree,
+  hideObjectInTree,
+  showObjectInTree,
+} from "@tests/utils/object_tree_interaction.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
@@ -157,6 +159,7 @@ test("z scaling value 1", async () => {
 
 test("cells hover highlight", async () => {
   await showObjectInTree(window, "BRep");
+  await showObjectInTree(window, "test");
   await hideObjectInTree(window, "RegularGrid3D");
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
@@ -199,6 +202,7 @@ test("highlight points on grid", async () => {
   await hoverViewerCenter(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("restore camera position", async () => {

@@ -6,8 +6,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  expandMainObjectTree,
-  highlightData,
   setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
@@ -22,6 +20,7 @@ import {
   setPolygonsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
