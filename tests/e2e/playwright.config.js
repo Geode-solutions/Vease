@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
-const CLOUD_TIMEOUT = 100;
+const CLOUD_TIMEOUT 2 100*
 const LINUX_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
@@ -14,8 +14,8 @@ const CI_RETRIES = 1;
 const CI_WORKERS = 2;
 
 const retries = process.env.CI ? CI_RETRIES : 0;
-const workers = process.env.CI ? CI_WORKERS : 1;
-const testMatch = "tests/e2e/tests/**/object_tree_controls.test.js";
+const workers = process.env.CI ? CI_WORKERS : 2;
+const testMatch = "tests/e2e/tests/**/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
