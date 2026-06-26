@@ -52,6 +52,7 @@ function handleFilesDropped(files) {
     >
       <StepImport
         v-if="uiStore.showStepper"
+        data-testid="DataImportStepper"
         :files="uiStore.droppedFiles"
         @close="uiStore.setShowStepper(false)"
       />

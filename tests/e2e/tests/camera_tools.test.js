@@ -8,13 +8,12 @@ import {
   afterActionWait,
   beforeAllTimeout,
   dragContextMenu,
-  expandComponentsType,
+  expandGeodeObjectType,
+  expandMainObjectTree,
   findOverlappingObjectsPicker,
   focusObjectInTree,
   hideObjectInTree,
   hoverViewerCenter,
-  loadData,
-  navigateToApp,
   setColor,
   showObjectInTree,
   stabilizeHoverTooltip,
@@ -33,16 +32,24 @@ import {
   toggleCenterOnClick,
   toggleGridScale,
 } from "@tests/utils/camera_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
+const brepDataName = "test";
+const brepGeodeObjectType = "BRep";
 const rgd3dFilename = "test.og_rgd3d";
+const rgd3dDataName = "test";
+const rgd3dGeodeObjectType = "RegularGrid3D";
 let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;
 
 const TARGET_TOP = 100;
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -55,6 +62,7 @@ test.afterAll(async () => {
 test("load", async () => {
   await loadData(window, brepFilename);
   await loadData(window, rgd3dFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -79,7 +87,7 @@ test("overlapping objects context menu", async () => {
 test("select regulargrid3d and change color", async () => {
   await window
     .locator(".intermediate-picker-item")
-    .filter({ hasText: "RegularGrid3D" })
+    .filter({ hasText: rgd3dGeodeObjectType })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
@@ -98,10 +106,10 @@ test("visibility off grid and expand brep focus", async () => {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 
-  await expandComponentsType(window, "mainObjectTree", "RegularGrid3D");
-  await hideObjectInTree(window, "test", "mainObjectTree");
+  await expandGeodeObjectType(window, rgd3dGeodeObjectType);
+  await hideObjectInTree(window, rgd3dGeodeObjectType, rgd3dDataName);
 
-  await focusObjectInTree(window, "BRep", "test");
+  await focusObjectInTree(window, brepGeodeObjectType, brepDataName);
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();

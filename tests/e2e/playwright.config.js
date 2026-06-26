@@ -11,8 +11,10 @@ const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 80;
 const CI_RETRIES = 1;
+const CI_WORKERS = 2;
 
-const ciRetries = process.env.CI ? CI_RETRIES : 0;
+const retries = process.env.CI ? CI_RETRIES : 0;
+const workers = process.env.CI ? CI_WORKERS : 1;
 const testMatch = "tests/e2e/tests/**/*.test.js";
 const maxDiffPixelRatio = 0.02;
 
@@ -34,11 +36,13 @@ export default defineConfig({
   },
   testDir: ".",
   fullyParallel: true,
-  workers: 1,
+  workers,
   forbidOnly: Boolean(process.env.CI),
   reporter: "html",
   use: {
+    screenshot: "only-on-failure",
     trace: "on-first-retry",
+    video: "on-first-retry",
   },
 
   projects: [
@@ -46,7 +50,7 @@ export default defineConfig({
       name: "browser-chrome",
       testMatch,
       timeout: TIMEOUTS.browser,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Chrome"],
         mode: "BROWSER",
@@ -56,7 +60,7 @@ export default defineConfig({
       name: "browser-firefox",
       testMatch,
       timeout: TIMEOUTS.browser,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Firefox"],
         mode: "BROWSER",
@@ -66,7 +70,7 @@ export default defineConfig({
       name: "cloud",
       testMatch,
       timeout: TIMEOUTS.cloud,
-      retries: ciRetries,
+      retries,
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",
@@ -76,7 +80,7 @@ export default defineConfig({
       name: "desktop",
       testMatch,
       timeout: TIMEOUTS.desktop,
-      retries: ciRetries,
+      retries,
       use: {
         mode: "DESKTOP",
       },
