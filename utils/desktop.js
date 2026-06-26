@@ -146,7 +146,6 @@ function getCredentials() {
     const encrypted = fs.readFileSync(credentialsFilePath);
     const payload = safeStorage.decryptString(encrypted);
     const credentials = JSON.parse(payload);
-    console.log("Retrieved credentials", credentials);
     return { success: true, credentials };
   } catch (error) {
     console.error("[Electron] Failed to read credentials", error);
