@@ -159,7 +159,6 @@ test("z scaling value 1", async () => {
 
 test("cells hover highlight", async () => {
   await showObjectInTree(window, "BRep");
-  await showObjectInTree(window, "test");
   await hideObjectInTree(window, "RegularGrid3D");
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
