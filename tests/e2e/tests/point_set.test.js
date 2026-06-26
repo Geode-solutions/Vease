@@ -6,9 +6,8 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
+  expandMainObjectTree,
   highlightData,
-  loadData,
-  navigateToApp,
   setPointsColor,
   setPointsOpacity,
   setPointsSize,
@@ -16,10 +15,13 @@ import {
   setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
+const dataName = "test";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -39,11 +41,12 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 

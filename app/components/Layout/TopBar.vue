@@ -79,6 +79,7 @@ function onImportFileSelected(event) {
     <!-- Action Buttons -->
     <div class="d-flex align-center ga-3">
       <v-btn
+        data-testid="layoutImportButton"
         color="white"
         variant="tonal"
         rounded="lg"
