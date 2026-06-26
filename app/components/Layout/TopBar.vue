@@ -85,7 +85,6 @@ function onImportFileSelected(event) {
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showStepper }"
-        data-testid="importButton"
         prepend-icon="mdi-file-upload-outline"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
