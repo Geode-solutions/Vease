@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
-const CLOUD_TIMEOUT 2 100*
+const CLOUD_TIMEOUT = 100;
 const LINUX_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
