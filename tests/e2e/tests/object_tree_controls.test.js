@@ -30,6 +30,8 @@ const hso3dFilename = "test.og_hso3d";
 let window = undefined;
 let cleanup = undefined;
 
+test.describe.configure({ mode: "serial" });
+
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);

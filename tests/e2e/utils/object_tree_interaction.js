@@ -2,7 +2,7 @@ import { afterActionWait, setModelColor } from "./viewer_interaction.js";
 
 async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
   const btn = window.getByTestId(treeTestId).getByTestId("CollapseOrExpandAll");
-  const targetIcon = btn.locator(".v-icon", { hasText: expectedIcon });
+  const targetIcon = btn.locator(`.${expectedIcon}`);
   if (await targetIcon.isVisible()) {
     await btn.click({ force: true });
     await window.waitForTimeout(afterActionWait);
