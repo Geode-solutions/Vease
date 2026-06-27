@@ -109,3 +109,28 @@ body,
 .v-field--variant-outlined:hover .v-field__outline .v-field-outline__end {
   border-color: currentColor !important;
 }
+
+.v-app-bar .v-btn--active {
+  opacity: 1 !important;
+}
+
+.v-app-bar .v-btn--disabled {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.v-app-bar .v-btn--disabled .v-btn__overlay,
+.v-app-bar .v-btn--disabled .v-btn__underlay {
+  display: none !important;
+}
+
+.splash-screen-active .v-app-bar .v-img,
+.splash-screen-active .v-app-bar .title-text,
+.splash-screen-active .v-app-bar .v-btn,
+.splash-screen-active .v-navigation-drawer .v-btn,
+.drawer-active .v-app-bar .v-img,
+.drawer-active .v-app-bar .title-text,
+.drawer-active .v-app-bar .v-btn:not(.v-btn--active),
+.drawer-active .v-navigation-drawer .v-btn {
+  opacity: 0.35 !important;
+}

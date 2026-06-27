@@ -66,6 +66,7 @@ defineExpose({ focusSearch: () => searchInput.value?.focus() });
         variant="text"
         color="white"
         class="align-self-center mr-2"
+        data-testid="dataManagerPiPButton"
         @click="enterPiP"
       >
         <v-icon size="30">mdi-picture-in-picture-bottom-right</v-icon>

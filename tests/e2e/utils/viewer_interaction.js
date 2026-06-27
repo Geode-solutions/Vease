@@ -67,8 +67,12 @@ async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
   const menuButton = menuContainer.locator("button.menu-btn");
   if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
-    // Programmatic click bypasses any overlapping panels or hit-testing issues
-    await menuButton.evaluate((node) => node.click());
+    const activeMenuButton = window.locator(".menu-btn.v-btn--active");
+    if (await activeMenuButton.isVisible()) {
+      await activeMenuButton.click();
+      await window.waitForTimeout(afterActionWait);
+    }
+    await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -150,37 +154,6 @@ async function applyAttribute(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function highlightData(window, category) {
-  await expandComponentsType(window, "mainObjectTree", category);
-  const mainObjectTree = window.getByTestId("mainObjectTree");
-  const testItem = mainObjectTree.getByText("test").first();
-  await testItem.hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
-function getTreeRowByText(window, treeTestId, text) {
-  return window
-    .getByTestId(treeTestId)
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: text })
-    .first();
-}
-
-async function expandComponentsType(window, treeId, categoryName) {
-  const rightChevron = getTreeRowByText(window, treeId, categoryName)
-    .locator(".mdi-menu-right")
-    .first();
-  if ((await rightChevron.count()) > 0) {
-    await rightChevron.dispatchEvent("click");
-    await window.waitForTimeout(afterActionWait);
-  }
-}
-
-async function hoverModelComponentRow(window, hasText) {
-  await getTreeRowByText(window, "modelComponentsObjectTree", hasText).hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function clickColorPickerCanvas(window, container = window) {
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await window.waitForTimeout(afterActionWait);
@@ -209,41 +182,6 @@ async function dragElement(window, locator, { targetX, targetY, deltaX = 0, delt
 async function dragContextMenu(window, { targetX, targetY } = {}) {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await dragElement(window, centerButton, { targetX, targetY });
-}
-
-async function hideObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  const row = getTreeRowByText(window, treeTestId, objectName);
-  await row.waitFor({ state: "attached" });
-  const btn = row.locator("button:has(.mdi-eye)").first();
-  if (await btn.isVisible()) {
-    await btn.click({ force: true });
-    await window.waitForTimeout(afterActionWait);
-  }
-}
-
-async function focusObjectInTree(window, folderName, objectName) {
-  await expandComponentsType(window, "mainObjectTree", folderName);
-  await getTreeRowByText(window, "mainObjectTree", objectName)
-    .locator("button:has(.mdi-target)")
-    .click();
-  await window.waitForTimeout(afterActionWait);
-}
-
-async function showObjectInTree(window, objectName, treeTestId = "mainObjectTree") {
-  const row = getTreeRowByText(window, treeTestId, objectName);
-  await row.waitFor({ state: "attached" });
-  const btn = row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first();
-  if (await btn.isVisible()) {
-    await btn.click({ force: true });
-    await window.waitForTimeout(afterActionWait);
-  }
-}
-
-async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByText(window, treeTestId, objectName).click({
-    button: "right",
-  });
-  await window.waitForTimeout(afterActionWait);
 }
 
 function setPolygonsTextures(window, viewerObjectType) {
@@ -635,15 +573,8 @@ export {
   beforeAllTimeout,
   dragContextMenu,
   dragElement,
-  expandComponentsType,
   findOverlappingObjectsPicker,
-  focusObjectInTree,
-  getTreeRowByText,
-  hideObjectInTree,
-  highlightData,
-  hoverModelComponentRow,
   hoverViewerCenter,
-  openObjectTreeContextMenu,
   setCellsCellAttribute,
   setCellsColor,
   setCellsColorWithSlider,
@@ -689,10 +620,6 @@ export {
   setPolyhedraPolyhedronAttribute,
   setPolyhedraVertexAttribute,
   setPolyhedraVisibility,
-  showObjectInTree,
   stabilizeHoverTooltip,
   viewerContextMenu,
 };
-
-export { loadData } from "./load.js";
-export { navigateToApp } from "./navigate.js";

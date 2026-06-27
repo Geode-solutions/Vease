@@ -49,6 +49,7 @@ watch(
             variant="ui"
             class="cursor-pointer flex-grow-1 custom-tool-card"
             padding="pa-2"
+            :data-testid="'createToolCard-' + tool.id"
             @click="handleSelectTool(tool.id)"
           >
             <div class="d-flex align-center ga-2 w-100">
