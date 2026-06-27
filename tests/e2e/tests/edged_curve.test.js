@@ -6,9 +6,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  highlightData,
-  loadData,
-  navigateToApp,
   setEdgesColorWithSlider,
   setEdgesEdgeAttribute,
   setEdgesOpacity,
@@ -19,10 +16,14 @@ import {
   setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
+const dataName = "test";
 const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
@@ -44,11 +45,12 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 

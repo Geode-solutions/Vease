@@ -31,7 +31,14 @@ function close() {
         <v-icon size="18" color="primary" class="mr-2">mdi-database</v-icon>
         <span class="text-subtitle-2 font-weight-bold text-white">Data Manager</span>
         <v-spacer />
-        <v-btn icon size="x-small" variant="text" color="white" @click="expandToFullPage">
+        <v-btn
+          icon
+          size="x-small"
+          variant="text"
+          color="white"
+          data-testid="dataManagerPiPExpandButton"
+          @click="expandToFullPage"
+        >
           <v-icon size="16">mdi-arrow-expand</v-icon>
           <v-tooltip activator="parent" location="top">Full screen</v-tooltip>
         </v-btn>

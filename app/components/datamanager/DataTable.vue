@@ -90,6 +90,7 @@ function formatSmartDate(dateStr) {
         <span
           class="font-weight-medium cursor-pointer text-truncate pb-1"
           style="min-width: 0; flex: 1 1 auto"
+          data-testid="itemName"
           @click="emit('rename', item)"
         >
           {{ item.name }}
@@ -120,6 +121,7 @@ function formatSmartDate(dateStr) {
         size="small"
         variant="text"
         color="white"
+        data-testid="dataVisibilityButton"
         @click.stop="emit('toggle-visibility', item)"
       >
         <v-icon size="20">{{ item.visible ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
@@ -133,23 +135,45 @@ function formatSmartDate(dateStr) {
           size="small"
           variant="text"
           color="white"
+          data-testid="focusDataButton"
           @click.stop="emit('focus-camera', item)"
         >
           <v-icon size="18">mdi-target</v-icon>
           <v-tooltip activator="parent" location="top">Focus</v-tooltip>
         </v-btn>
 
-        <v-btn icon size="small" variant="text" color="white" @click.stop="emit('isolate', item)">
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="white"
+          data-testid="isolateDataButton"
+          @click.stop="emit('isolate', item)"
+        >
           <v-icon size="18">mdi-filter-variant</v-icon>
           <v-tooltip activator="parent" location="top">Isolate</v-tooltip>
         </v-btn>
 
-        <v-btn icon size="small" variant="text" color="white" @click.stop="emit('rename', item)">
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="white"
+          data-testid="renameDataButton"
+          @click.stop="emit('rename', item)"
+        >
           <v-icon size="18">mdi-pencil</v-icon>
           <v-tooltip activator="parent" location="top">Rename</v-tooltip>
         </v-btn>
 
-        <v-btn icon size="small" variant="text" color="error" @click.stop="emit('delete', item)">
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          color="error"
+          data-testid="deleteDataButton"
+          @click.stop="emit('delete', item)"
+        >
           <v-icon size="18">mdi-delete</v-icon>
           <v-tooltip activator="parent" location="top">Delete</v-tooltip>
         </v-btn>
