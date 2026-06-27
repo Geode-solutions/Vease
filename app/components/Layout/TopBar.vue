@@ -50,6 +50,7 @@ function onImportFileSelected(event) {
             v-bind="props"
             class="text-none font-weight-medium rounded-lg"
             prepend-icon="mdi-folder-star-outline"
+            data-testid="projectMenuButton"
           >
             Project
             <v-icon end size="18">mdi-chevron-down</v-icon>
@@ -61,12 +62,14 @@ function onImportFileSelected(event) {
               prepend-icon="mdi-download"
               title="Import Project"
               class="rounded-md"
+              data-testid="importProjectButton"
               @click="triggerImport"
             />
             <v-list-item
               prepend-icon="mdi-upload"
               title="Export Project"
               class="rounded-md"
+              data-testid="exportProjectButton"
               @click="exportProject()"
             />
           </v-list>
@@ -79,6 +82,7 @@ function onImportFileSelected(event) {
     <!-- Action Buttons -->
     <div class="d-flex align-center ga-3">
       <v-btn
+        data-testid="layoutImportButton"
         color="white"
         variant="tonal"
         rounded="lg"
@@ -108,6 +112,7 @@ function onImportFileSelected(event) {
       type="file"
       accept=".vease"
       class="d-none"
+      data-testid="importProjectInput"
       @change="onImportFileSelected"
     />
   </v-app-bar>

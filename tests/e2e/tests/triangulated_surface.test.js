@@ -6,9 +6,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  highlightData,
-  loadData,
-  navigateToApp,
   setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
@@ -23,10 +20,14 @@ import {
   setPolygonsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
+const dataName = "test";
 const attributeName = "triangle_adjacents";
 let window = undefined;
 let cleanup = undefined;
@@ -35,6 +36,8 @@ const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 const geodeObjectType = "TriangulatedSurface3D";
 const viewerObjectType = "mesh";
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
@@ -46,11 +49,12 @@ test.afterAll(async () => {
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 
