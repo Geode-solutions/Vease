@@ -4,12 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  afterActionWait,
-  beforeAllTimeout,
-  loadData,
-  navigateToApp,
-} from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
 import {
   clickdeleteDataButton,
   confirmDelete,
@@ -24,6 +19,8 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -38,6 +35,8 @@ const RENAMED_POLYGONAL_SURFACE = "surface vease";
 
 let window = undefined;
 let cleanup = undefined;
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
