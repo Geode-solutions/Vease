@@ -11,11 +11,13 @@ const topPages = ref([
   {
     title: "Viewer",
     icon: "mdi-rotate-orbit",
+    testId: "viewerNavButton",
     click: () => navigateTo("/"),
   },
   {
     title: "Data Manager",
     icon: "mdi-database",
+    testId: "dataManagerNavButton",
     click: () => navigateTo("/data_manager"),
   },
   {
@@ -92,6 +94,7 @@ function onDrop(event, dropIndex) {
               v-bind="props"
               flat
               color="transparent"
+              :data-testid="item.testId"
               @click="item.click"
               class="icon-style pa-2 rounded-lg"
               width="48"
