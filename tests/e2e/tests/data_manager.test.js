@@ -100,6 +100,7 @@ test("rename object via button", async () => {
 
 test("isolate object", async () => {
   await isolateRowItem(window, POINTSET_TYPE);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
