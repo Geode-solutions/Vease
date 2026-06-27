@@ -26,6 +26,22 @@ async function addPointRow(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function fillPointsCoords(window, coords) {
+  async function fillNext(index) {
+    if (index >= coords.length) {
+      return;
+    }
+    const row = window.getByTestId(`point-${index}`);
+    if ((await row.count()) === 0) {
+      await addPointRow(window);
+    }
+    const { x, y, z } = coords[index];
+    await fillPointCoords(window, index, x, y, z);
+    await fillNext(index + 1);
+  }
+  await fillNext(0);
+}
+
 async function clickPickButton(window) {
   await window.getByTestId("pickButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -58,6 +74,7 @@ export {
   openCreateToolsPanel,
   selectCreateTool,
   fillPointCoords,
+  fillPointsCoords,
   addPointRow,
   clickPickButton,
   pickPointInViewer,

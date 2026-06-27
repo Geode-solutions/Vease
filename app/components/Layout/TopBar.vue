@@ -102,7 +102,6 @@ function onImportFileSelected(event) {
         :class="{ 'v-btn--active': UIStore.showCreateTools }"
         data-testid="createButton"
         prepend-icon="mdi-shape-plus-outline"
-        data-testid="createButton"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
