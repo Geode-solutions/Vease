@@ -95,8 +95,8 @@ function onImportFileSelected(event) {
         Import
       </v-btn>
       <v-btn
-        color="primary"
-        variant="flat"
+        color="white"
+        variant="tonal"
         rounded="lg"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showCreateTools }"
