@@ -25,17 +25,19 @@ function getDataTableRow(window, itemName) {
 }
 
 async function toggleRowVisibility(window, itemName) {
-  await getDataTableRow(window, itemName).getByTestId("visibilityButton").click({ force: true });
+  await getDataTableRow(window, itemName)
+    .getByTestId("dataVisibilityButton")
+    .click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
 async function focusRowItem(window, itemName) {
-  await getDataTableRow(window, itemName).getByTestId("focusButton").click({ force: true });
+  await getDataTableRow(window, itemName).getByTestId("focusDataButton").click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
 async function isolateRowItem(window, itemName) {
-  await getDataTableRow(window, itemName).getByTestId("isolateButton").click({ force: true });
+  await getDataTableRow(window, itemName).getByTestId("isolateDataButton").click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -45,20 +47,20 @@ async function openRenameByName(window, itemName) {
 }
 
 async function openRenameByButton(window, itemName) {
-  await getDataTableRow(window, itemName).getByTestId("renameButton").click({ force: true });
+  await getDataTableRow(window, itemName).getByTestId("renameDataButton").click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
 async function confirmRename(window, newName) {
-  const input = window.getByTestId("renameInput").locator("input");
+  const input = window.getByTestId("renameDataInput").locator("input");
   await input.clear();
   await input.fill(newName);
-  await window.getByTestId("renameConfirmButton").click();
+  await window.getByTestId("renameDataConfirmButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function clickDeleteButton(window, itemName) {
-  await getDataTableRow(window, itemName).getByTestId("deleteButton").click({ force: true });
+async function clickdeleteDataButton(window, itemName) {
+  await getDataTableRow(window, itemName).getByTestId("deleteDataButton").click({ force: true });
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -73,7 +75,7 @@ async function expandObjectTree(window) {
 }
 
 export {
-  clickDeleteButton,
+  clickdeleteDataButton,
   confirmDelete,
   confirmRename,
   expandDataManagerPiP,

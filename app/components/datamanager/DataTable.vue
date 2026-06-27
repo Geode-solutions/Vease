@@ -121,7 +121,7 @@ function formatSmartDate(dateStr) {
         size="small"
         variant="text"
         color="white"
-        data-testid="visibilityButton"
+        data-testid="dataVisibilityButton"
         @click.stop="emit('toggle-visibility', item)"
       >
         <v-icon size="20">{{ item.visible ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
@@ -135,7 +135,7 @@ function formatSmartDate(dateStr) {
           size="small"
           variant="text"
           color="white"
-          data-testid="focusButton"
+          data-testid="focusDataButton"
           @click.stop="emit('focus-camera', item)"
         >
           <v-icon size="18">mdi-target</v-icon>
@@ -147,7 +147,7 @@ function formatSmartDate(dateStr) {
           size="small"
           variant="text"
           color="white"
-          data-testid="isolateButton"
+          data-testid="isolateDataButton"
           @click.stop="emit('isolate', item)"
         >
           <v-icon size="18">mdi-filter-variant</v-icon>
@@ -159,7 +159,7 @@ function formatSmartDate(dateStr) {
           size="small"
           variant="text"
           color="white"
-          data-testid="renameButton"
+          data-testid="renameDataButton"
           @click.stop="emit('rename', item)"
         >
           <v-icon size="18">mdi-pencil</v-icon>
@@ -171,7 +171,7 @@ function formatSmartDate(dateStr) {
           size="small"
           variant="text"
           color="error"
-          data-testid="deleteButton"
+          data-testid="deleteDataButton"
           @click.stop="emit('delete', item)"
         >
           <v-icon size="18">mdi-delete</v-icon>

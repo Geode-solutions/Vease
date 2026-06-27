@@ -11,7 +11,7 @@ import {
   navigateToApp,
 } from "@tests/utils/viewer_interaction.js";
 import {
-  clickDeleteButton,
+  clickdeleteDataButton,
   confirmDelete,
   confirmRename,
   expandDataManagerPiP,
@@ -111,7 +111,7 @@ test("expand pip", async () => {
 });
 
 test("delete object", async () => {
-  await clickDeleteButton(window, RENAMED_POLYGONAL_SURFACE);
+  await clickdeleteDataButton(window, RENAMED_POLYGONAL_SURFACE);
   await expect(window).toHaveScreenshot();
 });
 
