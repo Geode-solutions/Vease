@@ -21,6 +21,7 @@ const emit = defineEmits(["click"]);
         class="rounded-lg text-none font-weight-bold"
         :class="{ 'pick-pulse': active }"
         prepend-icon="mdi-crosshairs-gps"
+        data-testid="pickButton"
         @click="emit('click')"
       >
         {{ active ? "Stop picking" : "Pick in viewer" }}
