@@ -104,7 +104,9 @@ async function navigateToApp(mode, browser) {
       },
     };
   } else if (mode === "CLOUD") {
-    page.on("console", (msg) => { console.log(`Browser console: ${msg.text()}`) });
+    page.on("console", (msg) => {
+      console.log(`Browser console: ${msg.text()}`);
+    });
 
     let prefix = "";
     const branch = execSync("git branch --show-current", {
