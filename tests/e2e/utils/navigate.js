@@ -22,7 +22,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 5;
+const SECONDS_NAVIGATION_TIMEOUT = 30;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -104,7 +104,9 @@ async function navigateToApp(mode, browser) {
       },
     };
   } else if (mode === "CLOUD") {
-    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+    page.on("console", (msg) => {
+      console.log(`Browser console: ${msg.text()}`);
+    });
 
     let prefix = "";
     const branch = execSync("git branch --show-current", {
@@ -114,12 +116,17 @@ async function navigateToApp(mode, browser) {
     if (branch === "next") {
       prefix = "next.";
     }
-
+    const url = `https://${prefix}vease.geode-solutions.com`;
+    console.log(`Navigating to: ${url}`);
     const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-    await page.goto(`https://${prefix}vease.geode-solutions.com`, {
-      waitUntil: "domcontentloaded",
-      timeout: navigationTimeout,
-    });
+    try {
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: navigationTimeout,
+      });
+    } catch (error) {
+      throw new Error(`Failed to reach ${url}`, { cause: error });
+    }
 
     console.log("Navigated to", page.url());
     const button = await page.getByRole("button", { name: "Load the app" });
