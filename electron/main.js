@@ -22,6 +22,7 @@ if (!appArgs.flags.includes("--no-update")) {
 }
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+let serverCleanup = undefined
 let projectFolderPath = "";
 
 ipcMain.handle("new_window", () => {
@@ -50,13 +51,17 @@ ipcMain.handle("delete_credentials", () => {
 });
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
-app.whenReady().then(() => createNewWindow());
+app.whenReady().then(async () => {
+  const { cleanup } = await createNewWindow();
+  serverCleanup = cleanup;
+});
 
 let cleaned = false;
 
 async function clean_up() {
   console.log("Shutting down microservices");
   await cleanupBackend(projectFolderPath);
+  serverCleanup();
   cleaned = true;
   console.log("end clean");
 }
