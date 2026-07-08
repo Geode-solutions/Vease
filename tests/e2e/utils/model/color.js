@@ -3,7 +3,7 @@ import {
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
-} from "@tests/utils/coloring_style/mesh/color.js";
+} from "@tests/utils/helpers/color.js";
 
 function setModelOpacity(window, percent) {
   return setOpacity(window, "modelStyleMenu", percent);

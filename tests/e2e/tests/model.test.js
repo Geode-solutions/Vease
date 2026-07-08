@@ -13,6 +13,11 @@ import {
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  brepGeodeObjectType,
+  defaultDataName,
+  modelViewerObjectType,
+} from "@tests/utils/constants";
+import {
   expandGeodeObjectType,
   expandMainObjectTree,
   hideObjectInTree,
@@ -26,20 +31,17 @@ import {
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
-} from "@tests/utils/coloring_style/model/color.js";
+} from "@tests/utils/model/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const dataName = "test";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
-const geodeObjectType = "BRep";
-const viewerObjectType = "model";
 
 test.describe.configure({ mode: "serial" });
 
@@ -58,7 +60,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType, dataName);
+  await highlightData(window, brepGeodeObjectType, defaultDataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -71,7 +73,7 @@ test("viewer context menu", async () => {
 
 test("points visibility", async () => {
   const visibility = true;
-  await setPointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, modelViewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 

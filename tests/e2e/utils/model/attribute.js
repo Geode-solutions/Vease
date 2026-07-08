@@ -1,4 +1,4 @@
-import { applyAttribute } from "@tests/utils/coloring_style/mesh/attribute.js";
+import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 
 // All model attribute functions call applyAttribute with "modelStyleMenu"
 function setModelPointsVertexAttribute(window, attributeName = "points", options = {}) {

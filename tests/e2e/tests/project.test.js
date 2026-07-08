@@ -9,7 +9,7 @@ import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interacti
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
-import { setColor } from "@tests/utils/coloring_style/mesh/color.js";
+import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
