@@ -10,7 +10,6 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   hoverViewerCenter,
-  setColor,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
@@ -36,6 +35,7 @@ import {
 } from "@tests/utils/object_tree_interaction.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setColor } from "@tests/utils/coloring_style/mesh/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants

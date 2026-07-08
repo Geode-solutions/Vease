@@ -6,21 +6,25 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setPointsColor,
   setPointsSize,
   setPointsVisibility,
-  setPolygonsColor,
-  setPolygonsOpacity,
-  setPolygonsPolygonAttribute,
   setPolygonsTextures,
-  setPolygonsVertexAttribute,
   setPolygonsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  setEdgesColor,
+  setPointsColor,
+  setPolygonsColor,
+  setPolygonsOpacity,
+} from "@tests/utils/coloring_style/mesh/color.js";
+import {
+  setPolygonsPolygonAttribute,
+  setPolygonsVertexAttribute,
+} from "@tests/utils/coloring_style/mesh/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";

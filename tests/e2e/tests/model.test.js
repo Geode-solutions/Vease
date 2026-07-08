@@ -8,10 +8,6 @@ import {
   afterActionWait,
   beforeAllTimeout,
   setEdgesVisibility,
-  setModelColor,
-  setModelColorWithSlider,
-  setModelColoringStyle,
-  setModelOpacity,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
@@ -25,6 +21,12 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
 } from "@tests/utils/object_tree_interaction.js";
+import {
+  setModelColor,
+  setModelColorWithSlider,
+  setModelColoringStyle,
+  setModelOpacity,
+} from "@tests/utils/coloring_style/model/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";

@@ -6,16 +6,15 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  setPointsColor,
-  setPointsOpacity,
   setPointsSize,
-  setPointsVertexAttribute,
   setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { setPointsColor, setPointsOpacity } from "@tests/utils/coloring_style/mesh/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setPointsVertexAttribute } from "@tests/utils/coloring_style/mesh/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants

@@ -1,4 +1,5 @@
-import { afterActionWait, setModelColor } from "./viewer_interaction.js";
+import { afterActionWait } from "./viewer_interaction.js";
+import { setModelColor } from "./coloring_style/model/color.js";
 
 async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
   const btn = window.getByTestId(treeTestId).getByTestId("CollapseOrExpandAll");
