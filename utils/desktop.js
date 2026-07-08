@@ -25,7 +25,7 @@ const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
 
 function setupBrowserWindow() {
-  const win = new BrowserWindow({
+  const window = new BrowserWindow({
     title: "Vease - New project",
     icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
     center: true,
@@ -37,20 +37,20 @@ function setupBrowserWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  win.setMenuBarVisibility(false);
-  win.maximize();
-  win.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
+  window.setMenuBarVisibility(false);
+  window.maximize();
+  window.setMinimumSize(MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
 
-  win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+  window.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
     callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
   });
 
-  win.webContents.setWindowOpenHandler(({ url }) => {
+  window.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: "deny" };
   });
 
-  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     const responseHeaders = { ...details.responseHeaders };
     if ((!"Access-Control-Allow-Origin") in details.responseHeaders) {
       responseHeaders["Access-Control-Allow-Origin"] = ["*"];
@@ -61,62 +61,14 @@ function setupBrowserWindow() {
       responseHeaders,
     });
   });
-  return win;
-}
 
-async function createNewWindow() {
-  const win = setupBrowserWindow();
-
-  console.log("app.isPackaged", app.isPackaged);
-  if (app.isPackaged) {
-    const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
-
-    console.log(`Starting server ${serverPath}`);
-
-    const PORT = await getAvailablePort();
-    const server = utilityProcess.fork(serverPath, {
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        MODE: "DESKTOP",
-        PORT: String(PORT),
-        RESOURCES_PATH: process.resourcesPath,
-      },
-      stdio: "pipe",
-      shell: true,
-    });
-
-    server.stdout.on("data", (data) => {
-      console.log(`[NITRO] ${data.toString()}`);
-    });
-    server.stderr.on("data", (data) => {
-      console.log(`[NITRO] ${data.toString()}`);
-    });
-
-    const controller = new AbortController();
-    const expectedResponse = `Listening on http://[::]:${PORT}`;
-    await waitForReady(server, expectedResponse, controller.signal);
-    win.loadURL(`http://localhost:${PORT}`);
-
-    app.on("before-quit", async () => {
-      console.log("Killing server process", { PORT });
-      await fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
-    });
-  } else {
-    console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    win.on("ready-to-show", () => {
-      win.webContents.openDevTools();
-    });
-  }
-
-  win.webContents.session.clearStorageData();
-  win.webContents.session.clearData(["cache"]);
-  win.webContents.session.clearCache(() => {
+  window.webContents.session.clearStorageData();
+  window.webContents.session.clearData(["cache"]);
+  window.webContents.session.clearCache(() => {
     console.log("Vease cache cleared!");
   });
 
-  win.webContents.on("console-message", (...args) => {
+  window.webContents.on("console-message", (...args) => {
     const [_event, level, message, line, sourceId] = args;
     // Map log levels to readable names
     const logLevels = ["VERBOSE", "INFO", "ERROR"];
@@ -124,7 +76,68 @@ async function createNewWindow() {
     // Print the console message to the terminal
     console.log(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`);
   });
-  return win;
+  return window;
+}
+
+async function createServer() {
+  const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
+
+  console.log(`Starting server ${serverPath}`);
+
+  const PORT = await getAvailablePort();
+  const server = utilityProcess.fork(serverPath, {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      MODE: "DESKTOP",
+      PORT: String(PORT),
+      RESOURCES_PATH: process.resourcesPath,
+    },
+    stdio: "pipe",
+    shell: true,
+  });
+
+  server.stdout.on("data", (data) => {
+    console.log(`[NITRO] ${data.toString()}`);
+  });
+  server.stderr.on("data", (data) => {
+    console.log(`[NITRO] ${data.toString()}`);
+  });
+  return { server, PORT };
+}
+
+async function createNewWindow() {
+  const window = setupBrowserWindow();
+
+  // oxlint-disable-next-line eslint/func-names, eslint/func-style, unicorn/consistent-function-scoping
+  let cleanup = function () {
+    console.log("No cleanup function defined");
+  };
+
+  console.log("app.isPackaged", app.isPackaged);
+
+  if (app.isPackaged) {
+    const { server, PORT } = await createServer();
+
+    const controller = new AbortController();
+    const expectedResponse = `Listening on http://[::]:${PORT}`;
+    await waitForReady(server, expectedResponse, controller.signal);
+    window.loadURL(`http://localhost:${PORT}`);
+
+    // oxlint-disable-next-line eslint/func-names
+    cleanup = function () {
+      console.log("Killing server process", { PORT });
+      return fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
+    };
+  } else {
+    console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
+    window.loadURL(process.env.VITE_DEV_SERVER_URL);
+    window.on("ready-to-show", () => {
+      window.webContents.openDevTools();
+    });
+  }
+
+  return { window, cleanup };
 }
 
 const credentialsFilePath = path.join(app.getPath("userData"), "credentials.dat");
