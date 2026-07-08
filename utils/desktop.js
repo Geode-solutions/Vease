@@ -79,38 +79,40 @@ function setupBrowserWindow() {
   return window;
 }
 
-async function createServer ()  {
-   const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
+async function createServer() {
+  const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
 
-    console.log(`Starting server ${serverPath}`);
+  console.log(`Starting server ${serverPath}`);
 
-    const PORT = await getAvailablePort();
-    const server = utilityProcess.fork(serverPath, {
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        MODE: "DESKTOP",
-        PORT: String(PORT),
-        RESOURCES_PATH: process.resourcesPath,
-      },
-      stdio: "pipe",
-      shell: true,
-    });
+  const PORT = await getAvailablePort();
+  const server = utilityProcess.fork(serverPath, {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      MODE: "DESKTOP",
+      PORT: String(PORT),
+      RESOURCES_PATH: process.resourcesPath,
+    },
+    stdio: "pipe",
+    shell: true,
+  });
 
-    server.stdout.on("data", (data) => {
-      console.log(`[NITRO] ${data.toString()}`);
-    });
-    server.stderr.on("data", (data) => {
-      console.log(`[NITRO] ${data.toString()}`);
-    });
-    return { server, PORT };
-};
+  server.stdout.on("data", (data) => {
+    console.log(`[NITRO] ${data.toString()}`);
+  });
+  server.stderr.on("data", (data) => {
+    console.log(`[NITRO] ${data.toString()}`);
+  });
+  return { server, PORT };
+}
 
 async function createNewWindow() {
   const window = setupBrowserWindow();
- 
+
   // oxlint-disable-next-line eslint/func-names, eslint/func-style, unicorn/consistent-function-scoping
-  let cleanup = function() { console.log("No cleanup function defined"); };
+  let cleanup = function () {
+    console.log("No cleanup function defined");
+  };
 
   console.log("app.isPackaged", app.isPackaged);
 
@@ -122,10 +124,10 @@ async function createNewWindow() {
     await waitForReady(server, expectedResponse, controller.signal);
     window.loadURL(`http://localhost:${PORT}`);
 
-  // oxlint-disable-next-line eslint/func-names
-    cleanup = function() {
+    // oxlint-disable-next-line eslint/func-names
+    cleanup = function () {
       console.log("Killing server process", { PORT });
-      return  fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
+      return fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
     };
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
@@ -135,7 +137,6 @@ async function createNewWindow() {
     });
   }
 
- 
   return { window, cleanup };
 }
 

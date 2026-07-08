@@ -22,7 +22,7 @@ if (!appArgs.flags.includes("--no-update")) {
 }
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
-let serverCleanup = undefined
+let serverCleanup = undefined;
 let projectFolderPath = "";
 
 ipcMain.handle("new_window", () => {
