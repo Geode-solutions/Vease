@@ -24,6 +24,9 @@ const TIMEOUTS = {
   desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
 };
 
+const CLOUD_SECONDS_SCREENSHOT_TIMEOUT = 5;
+const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS;
+
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
   expect: {
@@ -71,6 +74,11 @@ export default defineConfig({
       testMatch,
       timeout: TIMEOUTS.cloud,
       retries,
+      expect: {
+        toHaveScreenshot: {
+          timeout: CLOUD_SCREENSHOT_TIMEOUT,
+        },
+      },
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",
