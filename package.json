@@ -31,8 +31,8 @@
     "dev:cloud": "cross-env MODE=CLOUD npm run dev:nuxt",
     "dev:desktop": "cross-env MODE=DESKTOP npm run dev:nuxt",
     "dev:nuxt": "npm run clean_cache && npx nuxi dev --no-fork",
-    "build:back": "npx opengeodeweb-microservice-pyinstaller ../Vease-Back",
-    "build:viewer": "npx opengeodeweb-microservice-pyinstaller ../Vease-Viewer",
+    "build:back": "npx opengeodeweb-microservice-pyinstaller ../Vease-Back ../../OpenGeodeWeb/OpenGeodeWeb-Back",
+    "build:viewer": "npx opengeodeweb-microservice-pyinstaller ../Vease-Viewer ../../OpenGeodeWeb/OpenGeodeWeb-Viewer",
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "build": "nuxi build",
     "build:browser": "cross-env MODE=BROWSER npm run build",
@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
+    "@fontsource/roboto": "5.2.10",
     "@geode/opengeodeweb-back": "0.0.0",
     "@geode/opengeodeweb-front": "0.0.0",
     "@geode/opengeodeweb-viewer": "0.0.0",

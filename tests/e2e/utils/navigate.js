@@ -22,6 +22,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
+const SECONDS_NAVIGATION_TIMEOUT = 30;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -50,7 +51,7 @@ async function runDesktopBuild() {
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox", "--no-update"],
+    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
     executablePath: appInfo,
     wait: 20_000,
     env: {
@@ -82,6 +83,7 @@ async function runDesktopBuild() {
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+    permissions: ["clipboard-read", "clipboard-write"],
   });
   const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
@@ -93,9 +95,18 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => kill(nuxtPort) };
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => document.fonts.ready);
+    return {
+      window: page,
+      cleanup: async () => {
+        await kill(nuxtPort);
+      },
+    };
   } else if (mode === "CLOUD") {
-    page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
+    page.on("console", (msg) => {
+      console.log(`Browser console: ${msg.text()}`);
+    });
 
     let prefix = "";
     const branch = execSync("git branch --show-current", {
@@ -105,7 +116,17 @@ async function navigateToApp(mode, browser) {
     if (branch === "next") {
       prefix = "next.";
     }
-    await page.goto(`https://${prefix}vease.geode-solutions.com`);
+    const url = `https://${prefix}vease.geode-solutions.com`;
+    console.log(`Navigating to: ${url}`);
+    const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
+    try {
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: navigationTimeout,
+      });
+    } catch (error) {
+      throw new Error(`Failed to reach ${url}`, { cause: error });
+    }
 
     console.log("Navigated to", page.url());
     const button = await page.getByRole("button", { name: "Load the app" });
@@ -114,13 +135,24 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");
-    return { window: page, cleanup: () => page.close() };
+
+    return {
+      window: page,
+      cleanup: async () => {
+        await page.close();
+      },
+    };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
-    return { window: firstWindow, cleanup: () => electronApp.close() };
+    return {
+      window: firstWindow,
+      cleanup: async () => {
+        await electronApp.close();
+      },
+    };
   }
   throw new Error(`Unknown mode: ${mode}`);
 }

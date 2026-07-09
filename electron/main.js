@@ -6,8 +6,14 @@ import { autoUpdater } from "electron-updater";
 import { cleanupBackend } from "@geode/opengeodeweb-front/app/utils/local/cleanup.js";
 
 // Local imports
-// oxlint-disable-next-line import/no-relative-parent-imports
-import { createNewWindow, parseArgs } from "../utils/desktop.js";
+import {
+  createNewWindow,
+  deleteCredentials,
+  getCredentials,
+  parseArgs,
+  saveCredentials,
+  // oxlint-disable-next-line import/no-relative-parent-imports
+} from "../utils/desktop.js";
 
 const appArgs = parseArgs();
 console.log(`App launched with args: ${appArgs}`);
@@ -16,6 +22,7 @@ if (!appArgs.flags.includes("--no-update")) {
 }
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+let serverCleanup = undefined;
 let projectFolderPath = "";
 
 ipcMain.handle("new_window", () => {
@@ -27,14 +34,34 @@ ipcMain.handle("project_folder_path", (_event, args) => {
   console.log(`[Electron] Updated projectFolderPath: ${projectFolderPath}`);
 });
 
+ipcMain.handle("save_credentials", (_event, args) => {
+  const { email, password } = args;
+  return saveCredentials(email, password);
+});
+
+ipcMain.handle("get_credentials", () => {
+  console.log("Getting credentials");
+  const credentials = getCredentials();
+  return credentials;
+});
+
+ipcMain.handle("delete_credentials", () => {
+  console.log("Deleting credentials");
+  return deleteCredentials();
+});
+
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
-app.whenReady().then(() => createNewWindow());
+app.whenReady().then(async () => {
+  const { cleanup } = await createNewWindow();
+  serverCleanup = cleanup;
+});
 
 let cleaned = false;
 
 async function clean_up() {
   console.log("Shutting down microservices");
   await cleanupBackend(projectFolderPath);
+  serverCleanup();
   cleaned = true;
   console.log("end clean");
 }

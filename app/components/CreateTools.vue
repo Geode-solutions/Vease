@@ -49,6 +49,7 @@ watch(
             variant="ui"
             class="cursor-pointer flex-grow-1 custom-tool-card"
             padding="pa-2"
+            :data-testid="'createToolCard-' + tool.id"
             @click="handleSelectTool(tool.id)"
           >
             <div class="d-flex align-center ga-2 w-100">
@@ -73,7 +74,7 @@ watch(
                   height="18"
                   width="18"
                   contain
-                  style="filter: brightness(0) invert(1)"
+                  class="white-svg-filter"
                 />
               </v-sheet>
               <div class="min-w-0 flex-grow-1 text-left">
@@ -145,5 +146,9 @@ watch(
 
 .tool-component-wrapper {
   min-height: 400px;
+}
+
+.white-svg-filter :deep(.v-img__img) {
+  filter: brightness(0) invert(1) !important;
 }
 </style>

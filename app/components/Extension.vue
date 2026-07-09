@@ -333,6 +333,7 @@ function removeExtension() {
                                 width="14"
                                 height="14"
                                 contain
+                                class="white-svg-filter"
                               />
                             </v-sheet>
 
@@ -461,5 +462,9 @@ function removeExtension() {
   height: 60px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.white-svg-filter :deep(.v-img__img) {
+  filter: brightness(0) invert(1) !important;
 }
 </style>

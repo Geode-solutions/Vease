@@ -6,41 +6,56 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  changeColor,
-  changeOpacity,
-  highlightData,
-  loadData,
-  navigateToApp,
-  pointsVisibility,
-  polyhedraAttribute,
-  vertexAttribute,
+  setEdgesColor,
+  setEdgesVisibility,
+  setEdgesWidth,
+  setPointsColor,
+  setPointsSize,
+  setPointsVisibility,
+  setPolygonsColor,
+  setPolygonsVisibility,
+  setPolyhedraColor,
+  setPolyhedraOpacity,
+  setPolyhedraPolyhedronAttribute,
+  setPolyhedraVertexAttribute,
+  setPolyhedraVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
+const dataName = "test";
 const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
+const EDGES_WIDTH = 5;
 const geodeObjectType = "HybridSolid3D";
+const viewerObjectType = "mesh";
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup?.();
+  await cleanup();
 });
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -52,30 +67,75 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "mesh",
-    visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  const visibility = true;
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
-  await vertexAttribute(window, "meshPolyhedraMenu");
+  await setPointsVisibility(window, viewerObjectType, true);
+  await setPolyhedraVertexAttribute(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
-  await pointsVisibility(window, "mesh", false);
-  await polyhedraAttribute(window, "meshPolyhedraMenu", attributeName);
+  await setPointsVisibility(window, viewerObjectType, false);
+  await setPolyhedraPolyhedronAttribute(window, viewerObjectType, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
-  await changeColor(window, "meshPolyhedraMenu");
+test("polyhedra color", async () => {
+  await setPolyhedraColor(window, viewerObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await setPointsColor(window, viewerObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges color", async () => {
+  await setEdgesColor(window, viewerObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons color", async () => {
+  await setPolygonsColor(window, viewerObjectType);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "meshPolyhedraMenu", OPACITY_50);
+  await setPolyhedraOpacity(window, viewerObjectType, OPACITY_50);
   await expect(window).toHaveScreenshot();
+});
+
+test("points size", async () => {
+  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges width", async () => {
+  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges visibility", async () => {
+  await setEdgesVisibility(window, viewerObjectType, false);
+  await expect(window).toHaveScreenshot();
+  // Revert
+  await setEdgesVisibility(window, viewerObjectType, true);
+});
+
+test("polygons visibility", async () => {
+  await setPolygonsVisibility(window, viewerObjectType, false);
+  await expect(window).toHaveScreenshot();
+  // Revert
+  await setPolygonsVisibility(window, viewerObjectType, true);
+});
+
+test("polyhedra visibility", async () => {
+  await setPolyhedraVisibility(window, viewerObjectType, false);
+  await expect(window).toHaveScreenshot();
+  // Revert
+  await setPolyhedraVisibility(window, viewerObjectType, true);
 });

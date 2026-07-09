@@ -1,23 +1,24 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
-import { useAuth } from "@vease/composables/auth";
-import { useInfraStore } from "@ogw_front/stores/infra";
-import { useUIStore } from "@vease/stores/ui";
-
-import DrawerManager from "@vease/components/Layout/DrawerManager";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
-import { useExtensions } from "@vease/composables/extensions";
-
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
+import { Status } from "@ogw_front/utils/status";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
+import { useInfraStore } from "@ogw_front/stores/infra";
+
+import DrawerManager from "@vease/components/Layout/DrawerManager";
+import MainNavigation from "@vease/components/Layout/MainNavigation";
+import { useAuth } from "@vease/composables/auth";
+import { useExtensions } from "@vease/composables/extensions";
+import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 
 const { updateExtensions } = useExtensions();
+const { autoLogin } = useAuth();
+autoLogin();
 
 function handleFilesDropped(files) {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
@@ -56,7 +57,12 @@ watch(
 );
 </script>
 <template>
-  <v-app>
+  <v-app
+    :class="{
+      'splash-screen-active': !infraStore.microservices_connected,
+      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions,
+    }"
+  >
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">

@@ -7,45 +7,56 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  changeColor,
-  changeOpacity,
-  expandComponentsType,
+  setEdgesVisibility,
+  setModelColor,
+  setModelColorWithSlider,
+  setModelColoringStyle,
+  setModelOpacity,
+  setPointsSize,
+  setPointsVisibility,
+  viewerContextMenu,
+} from "@tests/utils/viewer_interaction.js";
+import {
+  expandGeodeObjectType,
+  expandMainObjectTree,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
-  loadData,
-  navigateToApp,
-  pointsVisibility,
-  polyhedraAttribute,
-  vertexAttribute,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
+  setModelTreeRowColorRandom,
+  toggleModelTreeRow,
+} from "@tests/utils/object_tree_interaction.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const attributeName = "tetrahedron_vertices";
+const dataName = "test";
 let window = undefined;
 let cleanup = undefined;
-const OFFSET = 10;
 const OPACITY_50 = 50;
+const POINTS_SIZE = 15;
 const geodeObjectType = "BRep";
+const viewerObjectType = "model";
+
+test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
   ({ window, cleanup } = await navigateToApp(mode, browser));
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup?.();
+  await cleanup();
 });
 
 test("load", async () => {
   await loadData(window, inputFilename);
+  await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType);
+  await highlightData(window, geodeObjectType, dataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -57,64 +68,53 @@ test("viewer context menu", async () => {
 });
 
 test("points visibility", async () => {
-  const viewerObjectType = "model",
-    visibility = true;
-  await pointsVisibility(window, viewerObjectType, visibility);
+  const visibility = true;
+  await setPointsVisibility(window, viewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await pointsVisibility(window, "model", false);
-  await vertexAttribute(window, "modelStyleMenu");
-  await expect(window).toHaveScreenshot();
-});
-
-test("polyhedron attribute", async () => {
-  await pointsVisibility(window, "model", false);
-  await polyhedraAttribute(window, "modelStyleMenu", attributeName);
+test("points size", async () => {
+  await setPointsSize(window, "model", POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("color", async () => {
-  await changeColor(window, "modelStyleMenu");
+  await setModelColorWithSlider(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await changeOpacity(window, "modelStyleMenu", OPACITY_50);
+  await setModelOpacity(window, OPACITY_50);
+  await expect(window).toHaveScreenshot();
+});
+
+test("random coloring", async () => {
+  await setModelColoringStyle(window, "Random");
   await expect(window).toHaveScreenshot();
 });
 
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
-  await expandComponentsType(window, "mainObjectTree", "BRep");
+  await expandGeodeObjectType(window, "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const testItem = mainObjectTree.getByText("test").first();
-  const box = await testItem.boundingBox();
-  await testItem.dispatchEvent("contextmenu", {
-    button: 2,
-    clientX: box.x + OFFSET,
-    clientY: box.y + OFFSET,
-  });
+  await testItem.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  const brepEdgesMenuButton = await window.getByTestId("modelEdgesMenu");
-  console.log("Toggle BRep edges visibility", brepEdgesMenuButton);
-  await brepEdgesMenuButton.click();
-  const modelEdgesVisibilitySwitch = await window
-    .getByTestId("modelEdgesVisibilitySwitch")
-    .getByRole("checkbox");
-  console.log("Toggle BRep edges visibility", modelEdgesVisibilitySwitch);
-  await modelEdgesVisibilitySwitch.check();
-  await window.waitForTimeout(afterActionWait);
+  await setEdgesVisibility(window, "model", true);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
 });
 
 test("object tree model components", async () => {
+  // Close any open menus from previous test
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   const mainObjectTree = window.getByTestId("mainObjectTree");
 
   await mainObjectTree
@@ -127,7 +127,7 @@ test("object tree model components", async () => {
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
 
-  await hideObjectInTree(window, "Blocks", "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
 
   const SurfacesRow = modelComponentsObjectTree
     .locator(".tree-row-wrapper")
@@ -161,6 +161,77 @@ test("object tree hover lines", async () => {
 });
 
 test("object tree hover first surface", async () => {
-  await hoverModelComponentRow(window, "00000000-");
+  await hoverModelComponentRow(window, "Surfaces", "00000000-");
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks visibility", async () => {
+  await toggleModelTreeRow(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Blocks");
+});
+
+test("blocks color", async () => {
+  await toggleModelTreeRow(window, "Blocks");
+  await setModelTreeRowColorRandom(window, "Blocks");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Blocks");
+});
+
+test("corners visibility", async () => {
+  await toggleModelTreeRow(window, "Corners");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Corners");
+});
+
+test("corners color", async () => {
+  await setModelTreeRowColorRandom(window, "Corners");
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines visibility", async () => {
+  await toggleModelTreeRow(window, "Lines");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Lines");
+});
+
+test("lines color", async () => {
+  await setModelTreeRowColorRandom(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces visibility", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Surfaces");
+});
+
+test("surfaces color", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
+  await setModelTreeRowColorRandom(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Surfaces");
+});
+
+test("toggle object tree main", async () => {
+  await window.getByTestId("toggleObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("context menu through non visible surface", async () => {
+  await window
+    .getByTestId("modelComponentsObjectTree")
+    .locator(".tree-row-wrapper", { hasText: "00000000-" })
+    .nth(4)
+    .locator(".mdi-eye-off-outline")
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  const canvas = window.getByTestId("hybridViewer").locator("canvas");
+  const box = await canvas.boundingBox();
+  await viewerContextMenu(window, box.width / 2, box.height / 2);
+  await setModelColor(window);
+
   await expect(window).toHaveScreenshot();
 });

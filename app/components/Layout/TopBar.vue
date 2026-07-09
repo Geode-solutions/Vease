@@ -1,10 +1,13 @@
 <script setup>
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
 import GlassCard from "@ogw_front/components/GlassCard";
+import { Status } from "@ogw_front/utils/status";
 import logo from "@vease/assets/img/logo.png";
+import { useInfraStore } from "@ogw_front/stores/infra";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
+const infraStore = useInfraStore();
 
 const importFileInput = ref(undefined);
 
@@ -47,6 +50,7 @@ function onImportFileSelected(event) {
             v-bind="props"
             class="text-none font-weight-medium rounded-lg"
             prepend-icon="mdi-folder-star-outline"
+            data-testid="projectMenuButton"
           >
             Project
             <v-icon end size="18">mdi-chevron-down</v-icon>
@@ -58,12 +62,14 @@ function onImportFileSelected(event) {
               prepend-icon="mdi-download"
               title="Import Project"
               class="rounded-md"
+              data-testid="importProjectButton"
               @click="triggerImport"
             />
             <v-list-item
               prepend-icon="mdi-upload"
               title="Export Project"
               class="rounded-md"
+              data-testid="exportProjectButton"
               @click="exportProject()"
             />
           </v-list>
@@ -76,21 +82,27 @@ function onImportFileSelected(event) {
     <!-- Action Buttons -->
     <div class="d-flex align-center ga-3">
       <v-btn
+        data-testid="layoutImportButton"
         color="white"
         variant="tonal"
         rounded="lg"
         class="text-none px-6 font-weight-bold"
+        :class="{ 'v-btn--active': UIStore.showStepper }"
         prepend-icon="mdi-file-upload-outline"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
       >
         Import
       </v-btn>
       <v-btn
-        color="primary"
-        variant="flat"
+        color="white"
+        variant="tonal"
         rounded="lg"
         class="text-none px-6 font-weight-bold"
+        :class="{ 'v-btn--active': UIStore.showCreateTools }"
+        data-testid="createButton"
         prepend-icon="mdi-shape-plus-outline"
+        :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
         Create
@@ -102,6 +114,7 @@ function onImportFileSelected(event) {
       type="file"
       accept=".vease"
       class="d-none"
+      data-testid="importProjectInput"
       @change="onImportFileSelected"
     />
   </v-app-bar>

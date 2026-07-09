@@ -16,15 +16,26 @@ async function toggleCenterOnClick(window) {
 }
 
 async function toggleGridScale(window) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   await window.getByTestId("gridScaleButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function changeZScaling(window, zScaleValue) {
+async function setZScaling(window, zScaleValue) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+
   await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
-  const input = window.getByTestId("zScaleInput").locator("input");
+  const panel = window.getByTestId("zScaleInput");
+  if (!(await panel.isVisible())) {
+    await window.getByTestId("zScalingButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+
+  const input = panel.locator("input");
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
   await window.waitForTimeout(afterActionWait);
@@ -32,4 +43,62 @@ async function changeZScaling(window, zScaleValue) {
   await window.waitForTimeout(afterActionWait);
 }
 
-export { changeZScaling, resetCamera, rotateCamera, toggleCenterOnClick, toggleGridScale };
+async function toggleCameraManager(window) {
+  await window.getByTestId("cameraManagerButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function saveCameraPosition(window, name) {
+  const input = window.getByTestId("cameraPositionNameInput").locator("input");
+  await input.fill(name);
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("saveCameraPositionButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function closeCameraManager(window) {
+  await window.getByTestId("closeCameraManagerButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleCameraOrientation(window) {
+  await window.getByTestId("cameraOrientationButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function selectCameraOrientation(window, label) {
+  const vtkKey = label.replace("+", "Plus").replace("-", "Minus");
+  await window.getByTestId(`cameraOrientation${vtkKey}Button`).click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function restoreCameraPosition(window, name) {
+  await window.getByTestId(`restoreCameraPosition${name}Button`).click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function ensureHighlightMenuOpen(window, childButtonTestId) {
+  if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+    await window.getByTestId("highlightOnHoverButton").click();
+    await window.waitForTimeout(afterActionWait);
+    if (!(await window.getByTestId(childButtonTestId).isVisible())) {
+      await window.getByTestId("highlightOnHoverButton").click();
+      await window.waitForTimeout(afterActionWait);
+    }
+  }
+}
+
+export {
+  setZScaling,
+  resetCamera,
+  rotateCamera,
+  toggleCenterOnClick,
+  toggleGridScale,
+  toggleCameraManager,
+  saveCameraPosition,
+  closeCameraManager,
+  toggleCameraOrientation,
+  selectCameraOrientation,
+  restoreCameraPosition,
+  ensureHighlightMenuOpen,
+};
