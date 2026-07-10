@@ -151,7 +151,27 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "@kitware/vtk.js", "xmlbuilder2", "spark-md5"],
+      include: ["@geode/opengeodeweb-front", "@kitware/vtk.js", "xmlbuilder2", "spark-md5",
+
+        "@kitware/vtk.js/IO/Core/WSLinkClient",
+        "@kitware/vtk.js/Rendering/OpenGL/Profiles/Geometry",
+        "@kitware/vtk.js/Rendering/Misc/RemoteView",
+        "@kitware/vtk.js/Rendering/Core/Actor",
+        "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow",
+        "@kitware/vtk.js/Rendering/Core/Mapper",
+        "@kitware/vtk.js/IO/XML/XMLPolyDataReader",
+        "@kitware/vtk.js/Common/Core/Math",
+        "@kitware/vtk.js/Rendering/Core/ColorTransferFunction",
+        "@kitware/vtk.js/Rendering/Core/AnnotatedCubeActor",
+        "vuefire",
+        "dexie",
+        "broadcast-channel",
+        "uuid",
+        "bowser",
+        "lodash/merge",
+        "@vue/devtools-core", "@vue/devtools-kit", "wslink/src/SmartConnect", "p-timeout",
+
+      ],
     },
     watch: {
       ignored: ["**"],

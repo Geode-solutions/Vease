@@ -108,21 +108,19 @@ function useAuth() {
     }
     await signOut(auth);
   }
+
+  function resetPassword(email) {
+    const schema = {
+      $id: "/auth/send-password-reset",
+      methods: ["POST"],
+      type: "object",
+      properties: { email: { type: "string" } },
+      required: ["email"],
+      additionalProperties: false,
+    };
+    const params = { email };
+    return APIStore.request({ schema, params });
+  }
   return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
 }
-
-function resetPassword(email) {
-  const APIStore = useAPIStore();
-  const schema = {
-    $id: "/auth/send-password-reset",
-    methods: ["POST"],
-    type: "object",
-    properties: { email: { type: "string" } },
-    required: ["email"],
-    additionalProperties: false,
-  };
-  const params = { email };
-  return APIStore.request({ schema, params });
-}
-
-export { useAuth, resetPassword };
+export { useAuth };

@@ -1,6 +1,5 @@
 <script setup>
-import AuthBackground from "@vease/components/Auth/AuthBackground";
-import AuthDeleteAccountDialog from "@vease/components/Auth/AuthDeleteAccountDialog";
+import AuthDeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog";
 import { useAuth } from "@vease/composables/auth";
 
 const { logout, user } = useAuth();
@@ -15,8 +14,6 @@ const showDeleteAccount = ref(false);
 
 <template>
   <v-container fluid class="pa-0 fill-height position-relative overflow-hidden account-page">
-    <AuthBackground />
-
     <v-row no-gutters class="fill-height align-center justify-center">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
         <div class="d-flex flex-column align-center w-100 px-4">

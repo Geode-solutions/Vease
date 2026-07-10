@@ -10,8 +10,6 @@ const loading = ref(false);
 const password = ref("");
 const passwordVisible = ref(false);
 
-const emit = defineEmits(["submit"]);
-
 async function handleDeleteAccount() {
   loading.value = true;
   try {

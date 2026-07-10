@@ -1,31 +1,37 @@
 <script setup>
-import { emailRules } from "~/utils/validation.js";
+import AuthForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog";
+import { emailRules } from "@vease/utils/validation";
+import { useAuthPage } from "@vease/composables/auth_page";
 
-const { isLogin, loading } = defineProps({
-  isLogin: { type: Boolean, default: true },
-  loading: { type: Boolean, default: false },
-});
-
-const error = defineModel("error", { type: String, default: "" });
-const successMessage = defineModel("successMessage", { type: String, default: "" });
-const email = defineModel("email", { type: String });
-const password = defineModel("password", { type: String });
-const confirmPassword = defineModel("confirmPassword", { type: String });
-
-const emit = defineEmits(["submit", "toggle-mode", "forgot-password"]);
+const {
+  isLogin,
+  loading,
+  error,
+  successMessage,
+  email,
+  password,
+  confirmPassword,
+  showForgotPassword,
+  forgotPasswordEmail,
+  forgotPasswordLoading,
+  onSubmit,
+  handleForgotPassword,
+  toggleMode,
+} = useAuthPage();
 
 const passwordVisible = ref(false);
 
 async function handleSubmit(event) {
   const { valid } = await event;
   if (valid) {
-    emit("submit");
+    onSubmit();
   }
 }
 </script>
 
 <template>
-  <v-form @submit.prevent="handleSubmit">
+  <v-form @submit.prevent="handleSubmit"
+    >{{ email }}
     <v-text-field
       v-model="email"
       label="Email Address"
@@ -39,7 +45,7 @@ async function handleSubmit(event) {
       autocomplete="email"
       hide-details="auto"
     />
-
+    {{ password }}
     <v-text-field
       v-model="password"
       label="Password"
@@ -78,7 +84,7 @@ async function handleSubmit(event) {
         color="white"
         size="small"
         class="text-none font-weight-medium opacity-90"
-        @click="emit('forgot-password')"
+        @click="showForgotPassword = true"
       >
         Forgot your password?
       </v-btn>
@@ -124,13 +130,20 @@ async function handleSubmit(event) {
           variant="text"
           color="white"
           class="text-none px-2 font-weight-black text-decoration-underline"
-          @click="emit('toggle-mode')"
+          @click="toggleMode"
         >
           {{ isLogin ? "Create an account" : "Log in" }}
         </v-btn>
       </v-card-subtitle>
     </v-sheet>
   </v-form>
+
+  <AuthForgotPasswordDialog
+    v-model="showForgotPassword"
+    v-model:email="forgotPasswordEmail"
+    :loading="forgotPasswordLoading"
+    @submit="handleForgotPassword"
+  />
 </template>
 
 <style scoped>

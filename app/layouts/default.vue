@@ -3,6 +3,10 @@ import { Status } from "@ogw_front/utils/status";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useUIStore } from "@vease/stores/ui";
 
+import { useAuth } from "@vease/composables/auth";
+
+import AuthPage from "@vease/components/Auth/Page";
+import Background from "@vease/components/Layout/Background";
 import DrawerManager from "@vease/components/Layout/DrawerManager";
 import MainNavigation from "@vease/components/Layout/MainNavigation";
 
@@ -10,7 +14,6 @@ import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
-import { useAuth } from "@vease/composables/auth";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
@@ -53,8 +56,18 @@ watch(
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
-        <NuxtPage style="z-index: 1" class="fill-height" />
+        <Background />
+        <Launcher
+          v-if="infraStore.status != Status.CREATED"
+          app-name="Vease"
+          logo="/logo.png"
+          :authenticated="user"
+        >
+          <template #auth>
+            <AuthPage />
+          </template>
+        </Launcher>
+        <NuxtPage v-else style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
         <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
