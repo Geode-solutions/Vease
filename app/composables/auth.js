@@ -21,6 +21,8 @@ function useAuth() {
   const APIStore = useAPIStore();
   const infraStore = useInfraStore();
 
+  const isUserAuthenticated = computed(() => Boolean(user.value));
+
   async function register(email, password) {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
     const schema = {
@@ -121,6 +123,6 @@ function useAuth() {
     const params = { email };
     return APIStore.request({ schema, params });
   }
-  return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
+  return { user, isUserAuthenticated, autoLogin, deleteAccount, register, login, logout, resetPassword };
 }
 export { useAuth };

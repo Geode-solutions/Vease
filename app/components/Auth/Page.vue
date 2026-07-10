@@ -4,8 +4,6 @@ import logo from "@vease/assets/img/logo.png";
 import { useAuthPage } from "@vease/composables/auth_page";
 
 const { email, isLogin, password } = useAuthPage();
-
-defineExpose({ email });
 </script>
 
 <template>

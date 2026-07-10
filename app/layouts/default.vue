@@ -18,7 +18,7 @@ import Launcher from "@ogw_front/components/Launcher";
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 
-const { autoLogin } = useAuth();
+const { isUserAuthenticated, autoLogin, user } = useAuth();
 autoLogin();
 
 function handleFilesDropped(files) {
@@ -56,12 +56,12 @@ watch(
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <Background />
+        <!-- <Background /> -->
         <Launcher
           v-if="infraStore.status != Status.CREATED"
           app-name="Vease"
           logo="/logo.png"
-          :authenticated="user"
+          :isUserAuthenticated
         >
           <template #auth>
             <AuthPage />

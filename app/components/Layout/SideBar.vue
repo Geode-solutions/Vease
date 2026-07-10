@@ -2,7 +2,7 @@
 import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 
-const { user } = useAuth();
+const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);
@@ -30,7 +30,7 @@ const topPages = ref([
 const bottomPages = computed(() => {
   const pages = [];
 
-  if (user.value) {
+  if (isUserAuthenticated.value) {
     pages.push({
       title: "Account",
       icon: "mdi-account-outline",

@@ -78,6 +78,8 @@ export function useAuthPage() {
       errorMessage.value = getFriendlyErrorMessage(error);
     } finally {
       loading.value = false;
+      password.value = "";
+      confirmPassword.value = "";
     }
   }
 

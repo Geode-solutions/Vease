@@ -30,8 +30,7 @@ async function handleSubmit(event) {
 </script>
 
 <template>
-  <v-form @submit.prevent="handleSubmit"
-    >{{ email }}
+  <v-form @submit.prevent="handleSubmit">
     <v-text-field
       v-model="email"
       label="Email Address"
@@ -45,7 +44,6 @@ async function handleSubmit(event) {
       autocomplete="email"
       hide-details="auto"
     />
-    {{ password }}
     <v-text-field
       v-model="password"
       label="Password"
