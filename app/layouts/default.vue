@@ -6,7 +6,6 @@ import { useUIStore } from "@vease/stores/ui";
 import { useAuth } from "@vease/composables/auth";
 
 import AuthPage from "@vease/components/Auth/Page";
-import Background from "@vease/components/Layout/Background";
 import DrawerManager from "@vease/components/Layout/DrawerManager";
 import MainNavigation from "@vease/components/Layout/MainNavigation";
 
@@ -56,7 +55,6 @@ watch(
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <!-- <Background /> -->
         <Launcher
           v-if="infraStore.status != Status.CREATED"
           app-name="Vease"

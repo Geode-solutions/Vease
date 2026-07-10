@@ -13,7 +13,7 @@ const showDeleteAccount = ref(false);
 </script>
 
 <template>
-  <v-container fluid class="pa-0 fill-height position-relative overflow-hidden account-page">
+  <v-container>
     <v-row no-gutters class="fill-height align-center justify-center">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
         <div class="d-flex flex-column align-center w-100 px-4">
@@ -68,10 +68,6 @@ const showDeleteAccount = ref(false);
 </template>
 
 <style scoped>
-.account-page {
-  background: rgba(0, 0, 0, 0.1);
-}
-
 .account-avatar {
   border: 2px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
