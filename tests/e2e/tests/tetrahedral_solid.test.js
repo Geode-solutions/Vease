@@ -17,7 +17,6 @@ import {
 import {
   defaultDataName,
   meshViewerObjectType,
-  tetrahedralSolidAttributeName,
   tetrahedralSolidGeodeObjectType,
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
@@ -26,8 +25,8 @@ import {
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
 import {
-  setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
+  setMeshTetrahedralSolidPolyhedronAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
@@ -80,42 +79,38 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshPolyhedraVertexAttribute(window, meshViewerObjectType);
+  await setMeshPolyhedraVertexAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolyhedraPolyhedronAttribute(
-    window,
-    meshViewerObjectType,
-    tetrahedralSolidAttributeName,
-  );
+  await setMeshTetrahedralSolidPolyhedronAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedra color", async () => {
-  await setMeshPolyhedraColor(window, meshViewerObjectType);
+  await setMeshPolyhedraColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setMeshPointsColor(window, meshViewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setMeshEdgesColor(window, meshViewerObjectType);
+  await setMeshEdgesColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygons color", async () => {
-  await setMeshPolygonsColor(window, meshViewerObjectType);
+  await setMeshPolygonsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setMeshPolyhedraOpacity(window, meshViewerObjectType, OPACITY_50);
+  await setMeshPolyhedraOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

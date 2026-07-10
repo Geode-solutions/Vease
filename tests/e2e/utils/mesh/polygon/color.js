@@ -1,3 +1,4 @@
+import { meshViewerObjectType, polygonsFeatureName } from "@tests/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
@@ -5,20 +6,20 @@ import {
   setFeatureOpacity,
 } from "@tests/utils/helpers/color";
 
-function setMeshPolygonsOpacity(window, viewerObjectType, percent) {
-  return setFeatureOpacity(window, viewerObjectType, "Polygons", percent);
+function setMeshPolygonsOpacity(window, percent) {
+  return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);
 }
 
-function setMeshPolygonsColor(window, viewerObjectType) {
-  return setFeatureColor(window, viewerObjectType, "Polygons");
+function setMeshPolygonsColor(window) {
+  return setFeatureColor(window, meshViewerObjectType, polygonsFeatureName);
 }
 
-function setMeshPolygonsColorWithSlider(window, viewerObjectType) {
-  return setFeatureColorWithSlider(window, viewerObjectType, "Polygons");
+function setMeshPolygonsColorWithSlider(window) {
+  return setFeatureColorWithSlider(window, meshViewerObjectType, polygonsFeatureName);
 }
 
-function setMeshPolygonsColoringStyle(window, viewerObjectType, style) {
-  return setFeatureColoringStyle(window, viewerObjectType, "Polygons", style);
+function setMeshPolygonsColoringStyle(window, style) {
+  return setFeatureColoringStyle(window, meshViewerObjectType, polygonsFeatureName, style);
 }
 
 export {

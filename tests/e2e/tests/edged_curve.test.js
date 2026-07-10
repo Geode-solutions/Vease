@@ -14,7 +14,6 @@ import {
 } from "@tests/utils/viewer_interaction.js";
 import {
   defaultDataName,
-  edgedCurveAttributeName,
   edgedCurveGeodeObjectType,
   meshViewerObjectType,
 } from "@tests/utils/constants.js";
@@ -70,22 +69,22 @@ test("points visibility", async () => {
 
 test("edge attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshEdgesEdgeAttribute(window, meshViewerObjectType, edgedCurveAttributeName);
+  await setMeshEdgesEdgeAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setMeshEdgesColorWithSlider(window, meshViewerObjectType);
+  await setMeshEdgesColorWithSlider(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setMeshPointsColorWithSlider(window, meshViewerObjectType);
+  await setMeshPointsColorWithSlider(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setMeshEdgesOpacity(window, meshViewerObjectType, OPACITY_50);
+  await setMeshEdgesOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

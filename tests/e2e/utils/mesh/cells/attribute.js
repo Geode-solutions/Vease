@@ -1,30 +1,52 @@
+import {
+  cellAttributeType,
+  cellsFeatureName,
+  meshViewerObjectType,
+  rgd2dAttributeName,
+  rgd3dAttributeName,
+  vertexAttributeType,
+} from "@tests/utils/constants.js";
 import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
 
-function setMeshCellsVertexAttribute(
-  window,
-  viewerObjectType,
-  attributeName = "points",
-  options = {},
-) {
+// Constants
+const rgd2dAttribute = rgd2dAttributeName;
+const rgd3dAttribute = rgd3dAttributeName;
+
+function setMeshCellsVertexAttribute(window, options = {}) {
   return setFeatureAttribute(
     window,
-    viewerObjectType,
-    "Cells",
-    "Vertex attribute",
-    attributeName,
+    meshViewerObjectType,
+    cellsFeatureName,
+    vertexAttributeType,
+    "points",
     options,
   );
 }
 
-function setMeshCellsCellAttribute(window, viewerObjectType, attributeName, options = {}) {
+function setMeshRegularGrid2DCellAttribute(window, options = {}) {
   return setFeatureAttribute(
     window,
-    viewerObjectType,
-    "Cells",
-    "Cell attribute",
-    attributeName,
+    meshViewerObjectType,
+    cellsFeatureName,
+    cellAttributeType,
+    rgd2dAttribute,
     options,
   );
 }
 
-export { setMeshCellsCellAttribute, setMeshCellsVertexAttribute };
+function setMeshRegularGrid3DCellAttribute(window, options = {}) {
+  return setFeatureAttribute(
+    window,
+    meshViewerObjectType,
+    cellsFeatureName,
+    cellAttributeType,
+    rgd3dAttribute,
+    options,
+  );
+}
+
+export {
+  setMeshRegularGrid2DCellAttribute,
+  setMeshRegularGrid3DCellAttribute,
+  setMeshCellsVertexAttribute,
+};

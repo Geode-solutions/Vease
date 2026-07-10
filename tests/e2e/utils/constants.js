@@ -25,6 +25,20 @@ const triangulatedSurfaceAttributeName = "triangle_adjacents";
 // Default Data Name
 const defaultDataName = "test";
 
+// Feature Names
+const cellsFeatureName = "Cells";
+const edgesFeatureName = "Edges";
+const pointsFeatureName = "Points";
+const polygonsFeatureName = "Polygons";
+const polyhedraFeatureName = "Polyhedra";
+
+// Attribute Types
+const vertexAttributeType = "Vertex attribute";
+const edgeAttributeType = "Edge attribute";
+const polygonAttributeType = "Polygon attribute";
+const polyhedronAttributeType = "Polyhedron attribute";
+const cellAttributeType = "Cell attribute";
+
 export {
   meshViewerObjectType,
   modelViewerObjectType,
@@ -45,4 +59,14 @@ export {
   tetrahedralSolidAttributeName,
   triangulatedSurfaceAttributeName,
   defaultDataName,
+  cellsFeatureName,
+  edgesFeatureName,
+  pointsFeatureName,
+  polygonsFeatureName,
+  polyhedraFeatureName,
+  vertexAttributeType,
+  edgeAttributeType,
+  polygonAttributeType,
+  polyhedronAttributeType,
+  cellAttributeType,
 };

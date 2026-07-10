@@ -1,3 +1,4 @@
+import { meshViewerObjectType, pointsFeatureName } from "@tests/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
@@ -5,20 +6,20 @@ import {
   setFeatureOpacity,
 } from "@tests/utils/helpers/color";
 
-function setMeshPointsOpacity(window, viewerObjectType, percent) {
-  return setFeatureOpacity(window, viewerObjectType, "Points", percent);
+function setMeshPointsOpacity(window, percent) {
+  return setFeatureOpacity(window, meshViewerObjectType, pointsFeatureName, percent);
 }
 
-function setMeshPointsColor(window, viewerObjectType) {
-  return setFeatureColor(window, viewerObjectType, "Points");
+function setMeshPointsColor(window) {
+  return setFeatureColor(window, meshViewerObjectType, pointsFeatureName);
 }
 
-function setMeshPointsColorWithSlider(window, viewerObjectType) {
-  return setFeatureColorWithSlider(window, viewerObjectType, "Points");
+function setMeshPointsColorWithSlider(window) {
+  return setFeatureColorWithSlider(window, meshViewerObjectType, pointsFeatureName);
 }
 
-function setMeshPointsColoringStyle(window, viewerObjectType, style) {
-  return setFeatureColoringStyle(window, viewerObjectType, "Points", style);
+function setMeshPointsColoringStyle(window, style) {
+  return setFeatureColoringStyle(window, meshViewerObjectType, pointsFeatureName, style);
 }
 
 export {

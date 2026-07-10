@@ -4,7 +4,13 @@
   "directories": {
     "output": "release/${version}"
   },
-  "files": ["dist-electron"],
+  "files": [
+    "dist-electron",
+    "!**/.venv",
+    "!**/venv",
+    "!**/node_modules/**/*.venv",
+    "!**/node_modules/**/venv"
+  ],
   "extraResources": [
     {
       "from": ".output/",

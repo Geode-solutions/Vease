@@ -16,15 +16,14 @@ import {
 import {
   defaultDataName,
   meshViewerObjectType,
-  rgd3dAttributeName,
   rgd3dGeodeObjectType,
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import {
-  setMeshCellsCellAttribute,
-  setMeshCellsVertexAttribute,
-} from "@tests/utils/mesh/cells/attribute.js";
 import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
+import {
+  setMeshCellsVertexAttribute,
+  setMeshRegularGrid3DCellAttribute,
+} from "@tests/utils/mesh/cells/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -75,33 +74,33 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshCellsVertexAttribute(window, meshViewerObjectType);
+  await setMeshCellsVertexAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("cell attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshCellsCellAttribute(window, meshViewerObjectType, rgd3dAttributeName);
+  await setMeshRegularGrid3DCellAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("cells color", async () => {
-  await setMeshCellsColor(window, meshViewerObjectType);
+  await setMeshCellsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setMeshPointsColor(window, meshViewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setMeshEdgesColor(window, meshViewerObjectType);
+  await setMeshEdgesColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setMeshCellsOpacity(window, meshViewerObjectType, OPACITY_50);
+  await setMeshCellsOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 

@@ -1,3 +1,4 @@
+import { cellsFeatureName, meshViewerObjectType } from "@tests/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
@@ -5,20 +6,20 @@ import {
   setFeatureOpacity,
 } from "@tests/utils/helpers/color";
 
-function setMeshCellsOpacity(window, viewerObjectType, percent) {
-  return setFeatureOpacity(window, viewerObjectType, "Cells", percent);
+function setMeshCellsOpacity(window, percent) {
+  return setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);
 }
 
-function setMeshCellsColor(window, viewerObjectType) {
-  return setFeatureColor(window, viewerObjectType, "Cells");
+function setMeshCellsColor(window) {
+  return setFeatureColor(window, meshViewerObjectType, cellsFeatureName);
 }
 
-function setMeshCellsColorWithSlider(window, viewerObjectType) {
-  return setFeatureColorWithSlider(window, viewerObjectType, "Cells");
+function setMeshCellsColorWithSlider(window) {
+  return setFeatureColorWithSlider(window, meshViewerObjectType, cellsFeatureName);
 }
 
-function setMeshCellsColoringStyle(window, viewerObjectType, style) {
-  return setFeatureColoringStyle(window, viewerObjectType, "Cells", style);
+function setMeshCellsColoringStyle(window, style) {
+  return setFeatureColoringStyle(window, meshViewerObjectType, cellsFeatureName, style);
 }
 
 export {

@@ -1,35 +1,52 @@
+import {
+  hybridSolidAttributeName,
+  meshViewerObjectType,
+  polyhedraFeatureName,
+  polyhedronAttributeType,
+  tetrahedralSolidAttributeName,
+  vertexAttributeType,
+} from "@tests/utils/constants.js";
 import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
 
-function setMeshPolyhedraVertexAttribute(
-  window,
-  viewerObjectType,
-  attributeName = "points",
-  options = {},
-) {
+// Constants
+const hybridAttribute = hybridSolidAttributeName;
+const tetrahedralAttribute = tetrahedralSolidAttributeName;
+
+function setMeshPolyhedraVertexAttribute(window, options = {}) {
   return setFeatureAttribute(
     window,
-    viewerObjectType,
-    "Polyhedra",
-    "Vertex attribute",
-    attributeName,
+    meshViewerObjectType,
+    polyhedraFeatureName,
+    vertexAttributeType,
+    "points",
     options,
   );
 }
 
-function setMeshPolyhedraPolyhedronAttribute(
-  window,
-  viewerObjectType,
-  attributeName,
-  options = {},
-) {
+function setMeshHybridSolidPolyhedronAttribute(window, options = {}) {
   return setFeatureAttribute(
     window,
-    viewerObjectType,
-    "Polyhedra",
-    "Polyhedron attribute",
-    attributeName,
+    meshViewerObjectType,
+    polyhedraFeatureName,
+    polyhedronAttributeType,
+    hybridAttribute,
     options,
   );
 }
 
-export { setMeshPolyhedraVertexAttribute, setMeshPolyhedraPolyhedronAttribute };
+function setMeshTetrahedralSolidPolyhedronAttribute(window, options = {}) {
+  return setFeatureAttribute(
+    window,
+    meshViewerObjectType,
+    polyhedraFeatureName,
+    polyhedronAttributeType,
+    tetrahedralAttribute,
+    options,
+  );
+}
+
+export {
+  setMeshPolyhedraVertexAttribute,
+  setMeshHybridSolidPolyhedronAttribute,
+  setMeshTetrahedralSolidPolyhedronAttribute,
+};

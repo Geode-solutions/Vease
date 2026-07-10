@@ -65,17 +65,17 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshPointsVertexAttribute(window, meshViewerObjectType);
+  await setMeshPointsVertexAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("color", async () => {
-  await setMeshPointsColor(window, meshViewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setMeshPointsOpacity(window, meshViewerObjectType, OPACITY_50);
+  await setMeshPointsOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
