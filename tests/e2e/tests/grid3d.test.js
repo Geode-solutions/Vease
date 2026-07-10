@@ -19,11 +19,11 @@ import {
   rgd3dGeodeObjectType,
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import {
+  setMeshCellsCellAttribute,
   setMeshCellsVertexAttribute,
-  setMeshRegularGrid3DCellAttribute,
 } from "@tests/utils/mesh/cells/attribute.js";
+import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -32,6 +32,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd3d";
+const attributeName = "int_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -80,7 +81,7 @@ test("vertex attribute", async () => {
 
 test("cell attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshRegularGrid3DCellAttribute(window);
+  await setMeshCellsCellAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

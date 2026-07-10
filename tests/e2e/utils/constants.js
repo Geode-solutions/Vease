@@ -13,15 +13,6 @@ const tetrahedralSolidGeodeObjectType = "TetrahedralSolid3D";
 const triangulatedSurfaceGeodeObjectType = "TriangulatedSurface3D";
 const brepGeodeObjectType = "BRep";
 
-// Attribute Names
-const edgedCurveAttributeName = "edges";
-const rgd2dAttributeName = "RGB_data";
-const rgd3dAttributeName = "int_attribute";
-const polygonalSurfaceAttributeName = "test_attribute";
-const hybridSolidAttributeName = "test_attribute";
-const tetrahedralSolidAttributeName = "tetrahedron_adjacents";
-const triangulatedSurfaceAttributeName = "triangle_adjacents";
-
 // Default Data Name
 const defaultDataName = "test";
 
@@ -51,13 +42,6 @@ export {
   tetrahedralSolidGeodeObjectType,
   triangulatedSurfaceGeodeObjectType,
   brepGeodeObjectType,
-  edgedCurveAttributeName,
-  rgd2dAttributeName,
-  rgd3dAttributeName,
-  polygonalSurfaceAttributeName,
-  hybridSolidAttributeName,
-  tetrahedralSolidAttributeName,
-  triangulatedSurfaceAttributeName,
   defaultDataName,
   cellsFeatureName,
   edgesFeatureName,

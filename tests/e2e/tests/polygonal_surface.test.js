@@ -20,11 +20,11 @@ import {
   polygonalSurfaceGeodeObjectType,
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import {
-  setMeshPolygonalSurfacePolygonAttribute,
+  setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -33,6 +33,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";
+const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -81,7 +82,7 @@ test("vertex attribute", async () => {
 
 test("polygon attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolygonalSurfacePolygonAttribute(window);
+  await setMeshPolygonsPolygonAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

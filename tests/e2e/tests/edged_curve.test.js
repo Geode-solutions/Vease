@@ -27,6 +27,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
+const attributeName = "edges";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -69,7 +70,7 @@ test("points visibility", async () => {
 
 test("edge attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshEdgesEdgeAttribute(window);
+  await setMeshEdgesEdgeAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

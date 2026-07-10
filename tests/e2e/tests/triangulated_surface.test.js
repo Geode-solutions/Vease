@@ -22,8 +22,8 @@ import {
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import {
+  setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-  setMeshTriangulatedSurfacePolygonAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
@@ -33,6 +33,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
+const attributeName = "triangle_adjacents";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -81,7 +82,7 @@ test("vertex attribute", async () => {
 
 test("polygon attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshTriangulatedSurfacePolygonAttribute(window);
+  await setMeshPolygonsPolygonAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

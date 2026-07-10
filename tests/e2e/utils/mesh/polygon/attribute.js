@@ -1,16 +1,10 @@
 import {
   meshViewerObjectType,
   polygonAttributeType,
-  polygonalSurfaceAttributeName,
   polygonsFeatureName,
-  triangulatedSurfaceAttributeName,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
 import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
-
-// Constants
-const polygonalAttribute = polygonalSurfaceAttributeName;
-const triangulatedAttribute = triangulatedSurfaceAttributeName;
 
 function setMeshPolygonsVertexAttribute(window, options = {}) {
   return setFeatureAttribute(
@@ -23,30 +17,15 @@ function setMeshPolygonsVertexAttribute(window, options = {}) {
   );
 }
 
-function setMeshPolygonalSurfacePolygonAttribute(window, options = {}) {
+function setMeshPolygonsPolygonAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
     window,
     meshViewerObjectType,
     polygonsFeatureName,
     polygonAttributeType,
-    polygonalAttribute,
+    attributeName,
     options,
   );
 }
 
-function setMeshTriangulatedSurfacePolygonAttribute(window, options = {}) {
-  return setFeatureAttribute(
-    window,
-    meshViewerObjectType,
-    polygonsFeatureName,
-    polygonAttributeType,
-    triangulatedAttribute,
-    options,
-  );
-}
-
-export {
-  setMeshPolygonsVertexAttribute,
-  setMeshPolygonalSurfacePolygonAttribute,
-  setMeshTriangulatedSurfacePolygonAttribute,
-};
+export { setMeshPolygonsVertexAttribute, setMeshPolygonsPolygonAttribute };

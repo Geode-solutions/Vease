@@ -1,14 +1,10 @@
 import {
   edgeAttributeType,
-  edgedCurveAttributeName,
   edgesFeatureName,
   meshViewerObjectType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
 import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
-
-// Constants
-const attributeName = edgedCurveAttributeName;
 
 function setMeshEdgesVertexAttribute(window, options = {}) {
   return setFeatureAttribute(
@@ -21,7 +17,7 @@ function setMeshEdgesVertexAttribute(window, options = {}) {
   );
 }
 
-function setMeshEdgesEdgeAttribute(window, options = {}) {
+function setMeshEdgesEdgeAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
     window,
     meshViewerObjectType,

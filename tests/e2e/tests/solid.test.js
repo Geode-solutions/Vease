@@ -21,13 +21,13 @@ import {
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
-  setMeshHybridSolidPolyhedronAttribute,
-  setMeshPolyhedraVertexAttribute,
-} from "@tests/utils/mesh/polyhedra/attribute.js";
-import {
   setMeshPolyhedraColor,
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
+import {
+  setMeshPolyhedraPolyhedronAttribute,
+  setMeshPolyhedraVertexAttribute,
+} from "@tests/utils/mesh/polyhedra/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -37,6 +37,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
+const attributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -85,7 +86,7 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshHybridSolidPolyhedronAttribute(window);
+  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 

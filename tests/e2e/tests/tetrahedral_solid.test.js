@@ -25,8 +25,8 @@ import {
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
 import {
+  setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
-  setMeshTetrahedralSolidPolyhedronAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
@@ -37,6 +37,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tso3d";
+const attributeName = "tetrahedron_adjacents";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -85,7 +86,7 @@ test("vertex attribute", async () => {
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshTetrahedralSolidPolyhedronAttribute(window);
+  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
   await expect(window).toHaveScreenshot();
 });
 
