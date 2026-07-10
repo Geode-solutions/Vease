@@ -27,16 +27,26 @@ const TIMEOUTS = {
 const CLOUD_SECONDS_SCREENSHOT_TIMEOUT = 5;
 const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS;
 
+const defaultExpect = {
+  toHaveScreenshot: {
+    maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
+      ? Number(process.env.MAX_PIXEL_RATIO)
+      : maxDiffPixelRatio,
+    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
+  },
+}
+
+const cloudExpect = {
+  ...defaultExpect,
+  toHaveScreenshot: {
+    ...defaultExpect.toHaveScreenshot,
+    timeout: CLOUD_SCREENSHOT_TIMEOUT,
+  },
+};
+
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
-  expect: {
-    toHaveScreenshot: {
-      maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
-        ? Number(process.env.MAX_PIXEL_RATIO)
-        : maxDiffPixelRatio,
-      pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
-    },
-  },
+  expect: defaultExpect,
   testDir: ".",
   fullyParallel: true,
   workers,
@@ -74,11 +84,7 @@ export default defineConfig({
       testMatch,
       timeout: TIMEOUTS.cloud,
       retries,
-      expect: {
-        toHaveScreenshot: {
-          timeout: CLOUD_SCREENSHOT_TIMEOUT,
-        },
-      },
+      expect: cloudExpect,
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",
