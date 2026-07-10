@@ -34,7 +34,7 @@ const defaultExpect = {
       : maxDiffPixelRatio,
     pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
   },
-}
+};
 
 const cloudExpect = {
   ...defaultExpect,
