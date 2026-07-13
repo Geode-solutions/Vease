@@ -32,6 +32,7 @@ async function handleSubmit(event) {
 <template>
   <v-form @submit.prevent="handleSubmit">
     <v-text-field
+      data-testid="eMailInput"
       v-model="email"
       label="Email Address"
       type="email"
@@ -45,6 +46,7 @@ async function handleSubmit(event) {
       hide-details="auto"
     />
     <v-text-field
+      data-testid="passwordInput"
       v-model="password"
       label="Password"
       :type="passwordVisible ? 'text' : 'password'"
@@ -111,6 +113,7 @@ async function handleSubmit(event) {
     </v-alert>
 
     <v-btn
+      data-testid="SignInButton"
       type="submit"
       color="primary"
       size="x-large"
