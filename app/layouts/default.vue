@@ -5,7 +5,7 @@ import { useUIStore } from "@vease/stores/ui";
 
 import { useAuth } from "@vease/composables/auth";
 
-import AuthPage from "@vease/components/Auth/Page";
+import AuthWrapper from "@vease/components/Auth/Wrapper";
 import DrawerManager from "@vease/components/Layout/DrawerManager";
 import MainNavigation from "@vease/components/Layout/MainNavigation";
 
@@ -59,10 +59,11 @@ watch(
           v-if="infraStore.status != Status.CREATED"
           app-name="Vease"
           logo="/logo.png"
-          :isUserAuthenticated
+          :isUserAuthenticated="isUserAuthenticated"
+          :email="user?.email"
         >
           <template #auth>
-            <AuthPage />
+            <AuthWrapper />
           </template>
         </Launcher>
         <NuxtPage v-else style="z-index: 1" class="fill-height" />

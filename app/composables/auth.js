@@ -40,7 +40,7 @@ function useAuth() {
   }
 
   async function autoLogin() {
-    console.log("Attempting to retrieve credentials for auto-login");
+    console.log("Attempting to retrieve credentials for auto-login", infraStore.app_mode);
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
     }
