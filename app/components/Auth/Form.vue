@@ -113,7 +113,7 @@ async function handleSubmit(event) {
     </v-alert>
 
     <v-btn
-      data-testid="SignInButton"
+      data-testid="signInButton"
       type="submit"
       color="primary"
       size="x-large"
