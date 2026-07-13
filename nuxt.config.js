@@ -175,7 +175,7 @@ export default defineNuxtConfig({
         "uuid",
         "vuefire",
         "wslink/src/SmartConnect",
-        "xmlbuilder2"
+        "xmlbuilder2",
       ],
     },
     watch: {

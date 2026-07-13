@@ -123,6 +123,15 @@ function useAuth() {
     const params = { email };
     return APIStore.request({ schema, params });
   }
-  return { user, isUserAuthenticated, autoLogin, deleteAccount, register, login, logout, resetPassword };
+  return {
+    user,
+    isUserAuthenticated,
+    autoLogin,
+    deleteAccount,
+    register,
+    login,
+    logout,
+    resetPassword,
+  };
 }
 export { useAuth };
