@@ -18,16 +18,24 @@ import {
   meshViewerObjectType,
 } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  setMeshEdgesColorMap,
+  setMeshEdgesEdgeAttribute,
+  setMeshEdgesItem,
+  setMeshEdgesVertexAttribute,
+} from "@tests/utils/mesh/edges/attribute.js";
 import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/mesh/edges/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
-import { setMeshEdgesEdgeAttribute } from "@tests/utils/mesh/edges/attribute.js";
 import { setMeshPointsColorWithSlider } from "@tests/utils/mesh/points/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
 const attributeName = "edges";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "edges_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -70,7 +78,40 @@ test("points visibility", async () => {
 
 test("edge attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshEdgesEdgeAttribute(window, attributeName);
+  await setMeshEdgesEdgeAttribute(window, attributeName, { item: 1 });
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute -change colormap", async () => {
+  await setMeshEdgesColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute - change item to 1", async () => {
+  await setMeshEdgesItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute - change item to 2", async () => {
+  await setMeshEdgesItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshEdgesVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
