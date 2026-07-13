@@ -1,5 +1,6 @@
 <script setup>
 import { Status } from "@ogw_front/utils/status";
+import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -14,6 +15,17 @@ import { useAuth } from "@vease/composables/auth";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
+const appStore = useAppStore();
+
+const allGlobalComponents = computed(() => {
+  const components = [];
+  appStore.globalComponents.forEach((extensionComponents) => {
+    extensionComponents.forEach((component) => {
+      components.push(component);
+    });
+  });
+  return components;
+});
 
 const { autoLogin } = useAuth();
 autoLogin();
@@ -68,6 +80,13 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
+    
+    <!-- Global Extension Components (e.g. Modals) -->
+    <component 
+      v-for="(comp, index) in allGlobalComponents" 
+      :is="comp" 
+      :key="`global-ext-${index}`" 
+    />
   </v-app>
 </template>
 <style scoped>
