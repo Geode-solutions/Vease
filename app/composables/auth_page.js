@@ -50,7 +50,6 @@ const forgotPasswordLoading = ref(false);
 // oxlint-disable-next-line max-lines-per-function
 export function useAuthPage() {
   const { login, register, resetPassword } = useAuth();
-  const router = useRouter();
 
   async function onSubmit() {
     errorMessage.value = "";
@@ -66,7 +65,6 @@ export function useAuthPage() {
       console.log("isLogin.value:", isLogin.value);
       if (isLogin.value) {
         await login(email.value, password.value);
-        router.push("/account");
       } else {
         await register(email.value, password.value);
         successMessage.value = "Account created! Please check your email for verification.";
