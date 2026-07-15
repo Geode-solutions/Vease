@@ -134,7 +134,7 @@ async function navigateToApp(mode, browser) {
     await eMailInput.fill(process.env.GEODE_USER_EMAIL);
     await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
 
-    const signInSecondsWait = 1;
+    const signInSecondsWait = 2;
     const signInTimeout = signInSecondsWait * MILLISECONDS;
     await page.waitForTimeout(signInTimeout);
     const signInButton = await page.getByTestId("signInButton");
