@@ -9,6 +9,7 @@ import MainNavigation from "@vease/components/Layout/MainNavigation";
 
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
+import GlobalComponents from "@vease/components/Extensions/GlobalComponents";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
 import { useAuth } from "@vease/composables/auth";
@@ -17,15 +18,6 @@ const UIStore = useUIStore();
 const infraStore = useInfraStore();
 const appStore = useAppStore();
 
-const allGlobalComponents = computed(() => {
-  const components = [];
-  appStore.globalComponents.forEach((extensionComponents) => {
-    extensionComponents.forEach((component) => {
-      components.push(component);
-    });
-  });
-  return components;
-});
 
 const { autoLogin } = useAuth();
 autoLogin();
@@ -82,11 +74,7 @@ watch(
     <FeedBackSnackers />
     
     <!-- Global Extension Components (e.g. Modals) -->
-    <component 
-      v-for="(comp, index) in allGlobalComponents" 
-      :is="comp" 
-      :key="`global-ext-${index}`" 
-    />
+    <GlobalComponents />
   </v-app>
 </template>
 <style scoped>
