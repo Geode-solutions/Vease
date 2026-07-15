@@ -41,11 +41,13 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .getByTestId("colorMapList")
     .locator(".text-white.font-weight-bold")
     .filter({ visible: true });
-  const count = await groups.count();
-  for (let i = 0; i < count; i += 1) {
-    await groups.nth(i).click();
+  const allGroups = await groups.all();
+  // oxlint-disable no-await-in-loop
+  for (const group of allGroups) {
+    await group.click();
     await window.waitForTimeout(afterActionWait);
   }
+  // oxlint-enable no-await-in-loop
 
   await window
     .getByTestId("colorMapList")
