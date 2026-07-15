@@ -10,12 +10,10 @@ const { loading } = defineProps({
   loading: { type: Boolean, default: false },
 });
 
-const emit = defineEmits(["submit"]);
-
 async function handleSubmit(event) {
   const { valid } = await event;
   if (valid) {
-    emit("submit");
+    submit();
   }
 }
 </script>

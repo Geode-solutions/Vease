@@ -2,7 +2,7 @@
 import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 
-const { user } = useAuth();
+const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);
@@ -28,27 +28,19 @@ const topPages = ref([
 ]);
 
 const bottomPages = computed(() => {
-  const pages = [];
-
-  if (user.value) {
-    pages.push({
-      title: "Account",
-      icon: "mdi-account-outline",
+  const pages = [
+    {
+      title: isUserAuthenticated.value ? "Account" : "Login",
+      icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
       click: () => navigateTo("/account"),
-    });
-  } else {
-    pages.push({
-      title: "Login",
-      icon: "mdi-account-key-outline",
-      click: () => navigateTo("/login"),
-    });
-  }
+    },
 
-  pages.push({
-    title: "Infos",
-    icon: "mdi-information-outline",
-    click: () => navigateTo("/infos"),
-  });
+    {
+      title: "Infos",
+      icon: "mdi-information-outline",
+      click: () => navigateTo("/infos"),
+    },
+  ];
 
   return pages;
 });

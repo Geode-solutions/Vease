@@ -21,6 +21,8 @@ function useAuth() {
   const APIStore = useAPIStore();
   const infraStore = useInfraStore();
 
+  const isUserAuthenticated = computed(() => Boolean(user.value));
+
   async function register(email, password) {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
     const schema = {
@@ -38,7 +40,7 @@ function useAuth() {
   }
 
   async function autoLogin() {
-    console.log("Attempting to retrieve credentials for auto-login");
+    console.log("Attempting to retrieve credentials for auto-login", infraStore.app_mode);
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
     }
@@ -108,21 +110,28 @@ function useAuth() {
     }
     await signOut(auth);
   }
-  return { user, autoLogin, deleteAccount, register, login, logout, resetPassword };
-}
 
-function resetPassword(email) {
-  const APIStore = useAPIStore();
-  const schema = {
-    $id: "/auth/send-password-reset",
-    methods: ["POST"],
-    type: "object",
-    properties: { email: { type: "string" } },
-    required: ["email"],
-    additionalProperties: false,
+  function resetPassword(email) {
+    const schema = {
+      $id: "/auth/send-password-reset",
+      methods: ["POST"],
+      type: "object",
+      properties: { email: { type: "string" } },
+      required: ["email"],
+      additionalProperties: false,
+    };
+    const params = { email };
+    return APIStore.request({ schema, params });
+  }
+  return {
+    user,
+    isUserAuthenticated,
+    autoLogin,
+    deleteAccount,
+    register,
+    login,
+    logout,
+    resetPassword,
   };
-  const params = { email };
-  return APIStore.request({ schema, params });
 }
-
-export { useAuth, resetPassword };
+export { useAuth };
