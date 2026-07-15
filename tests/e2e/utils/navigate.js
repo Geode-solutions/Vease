@@ -129,18 +129,18 @@ async function navigateToApp(mode, browser) {
     }
     console.log("Navigated to", page.url());
 
-    const eMailInput = await page.getByDataTestId("eMailInput");
-    const passwordInput = await page.getByDataTestId("passwordInput");
+    const eMailInput = await page.getByTestId("eMailInput");
+    const passwordInput = await page.getByTestId("passwordInput");
     await eMailInput.fill(process.env.GEODE_USER_EMAIL);
     await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
 
     const signInSecondsWait = 1;
     const signInTimeout = signInSecondsWait * MILLISECONDS;
     await page.waitForTimeout(signInTimeout);
-    const signInButton = await page.getByDataTestId("signInButton");
+    const signInButton = await page.getByTestId("signInButton");
     await signInButton.click();
 
-    const loadAppButton = await page.getByDataTestId("loadAppButton");
+    const loadAppButton = await page.getByTestId("loadAppButton");
     await loadAppButton.click();
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
