@@ -3,7 +3,7 @@ import { Status } from "@ogw_front/utils/status";
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
 
-import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/runFunctionWhenMicroservicesConnected";
+import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
