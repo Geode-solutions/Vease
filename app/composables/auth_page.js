@@ -66,7 +66,6 @@ export function useAuthPage() {
       console.log("isLogin.value:", isLogin.value);
       if (isLogin.value) {
         await login(email.value, password.value);
-        router.push("/account");
       } else {
         await register(email.value, password.value);
         successMessage.value = "Account created! Please check your email for verification.";
