@@ -6,8 +6,8 @@ import {
 } from "@tests/utils/constants.js";
 import {
   setFeatureAttribute,
-  setFeatureItem,
   setFeatureColorMap,
+  setFeatureItem,
 } from "@tests/utils/helpers/attribute";
 
 function setMeshEdgesVertexAttribute(window, attributeName, options = {}) {

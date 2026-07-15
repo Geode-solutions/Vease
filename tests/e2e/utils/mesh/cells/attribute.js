@@ -4,15 +4,19 @@ import {
   meshViewerObjectType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
-import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
+import {
+  setFeatureAttribute,
+  setFeatureColorMap,
+  setFeatureItem,
+} from "@tests/utils/helpers/attribute";
 
-function setMeshCellsVertexAttribute(window, options = {}) {
+function setMeshCellsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
     window,
     meshViewerObjectType,
     cellsFeatureName,
     vertexAttributeType,
-    "points",
+    attributeName,
     options,
   );
 }
@@ -28,4 +32,19 @@ function setMeshCellsCellAttribute(window, attributeName, options = {}) {
   );
 }
 
-export { setMeshCellsCellAttribute, setMeshCellsVertexAttribute };
+function setMeshCellsItem(window, item) {
+  const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
+  return setFeatureItem(window, menuTestId, item);
+}
+
+function setMeshCellsColorMap(window, colorMap) {
+  const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
+  return setFeatureColorMap(window, menuTestId, colorMap);
+}
+
+export {
+  setMeshCellsCellAttribute,
+  setMeshCellsVertexAttribute,
+  setMeshCellsItem,
+  setMeshCellsColorMap,
+};

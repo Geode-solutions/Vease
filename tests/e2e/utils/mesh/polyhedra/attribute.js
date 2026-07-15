@@ -4,15 +4,19 @@ import {
   polyhedronAttributeType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
-import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
+import {
+  setFeatureAttribute,
+  setFeatureColorMap,
+  setFeatureItem,
+} from "@tests/utils/helpers/attribute";
 
-function setMeshPolyhedraVertexAttribute(window, options = {}) {
+function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
     window,
     meshViewerObjectType,
     polyhedraFeatureName,
     vertexAttributeType,
-    "points",
+    attributeName,
     options,
   );
 }
@@ -28,4 +32,19 @@ function setMeshPolyhedraPolyhedronAttribute(window, attributeName, options = {}
   );
 }
 
-export { setMeshPolyhedraVertexAttribute, setMeshPolyhedraPolyhedronAttribute };
+function setMeshPolyhedraItem(window, item) {
+  const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
+  return setFeatureItem(window, menuTestId, item);
+}
+
+function setMeshPolyhedraColorMap(window, colorMap) {
+  const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
+  return setFeatureColorMap(window, menuTestId, colorMap);
+}
+
+export {
+  setMeshPolyhedraVertexAttribute,
+  setMeshPolyhedraPolyhedronAttribute,
+  setMeshPolyhedraItem,
+  setMeshPolyhedraColorMap,
+};

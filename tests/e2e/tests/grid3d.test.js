@@ -21,6 +21,8 @@ import {
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   setMeshCellsCellAttribute,
+  setMeshCellsColorMap,
+  setMeshCellsItem,
   setMeshCellsVertexAttribute,
 } from "@tests/utils/mesh/cells/attribute.js";
 import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
@@ -33,6 +35,9 @@ import { test } from "@tests/fixtures.js";
 // Constants
 const inputFilename = "test.og_rgd3d";
 const attributeName = "int_attribute";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "polyhedra_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -73,15 +78,42 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshCellsVertexAttribute(window);
-  await expect(window).toHaveScreenshot();
-});
-
 test("cell attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
   await setMeshCellsCellAttribute(window, attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cell attribute -change colormap", async () => {
+  await setMeshCellsColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName, {
+    item: 1,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 1", async () => {
+  await setMeshCellsItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 2", async () => {
+  await setMeshCellsItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshCellsVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 

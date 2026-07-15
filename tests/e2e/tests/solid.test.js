@@ -25,6 +25,8 @@ import {
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
 import {
+  setMeshPolyhedraColorMap,
+  setMeshPolyhedraItem,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
@@ -38,6 +40,9 @@ import { test } from "@tests/fixtures.js";
 // Constants
 const inputFilename = "test.og_hso3d";
 const attributeName = "test_attribute";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "polyhedra_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -78,15 +83,42 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshPolyhedraVertexAttribute(window);
-  await expect(window).toHaveScreenshot();
-});
-
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
   await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedron attribute -change colormap", async () => {
+  await setMeshPolyhedraColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 1", async () => {
+  await setMeshPolyhedraItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 2", async () => {
+  await setMeshPolyhedraItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 

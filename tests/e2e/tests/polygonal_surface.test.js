@@ -22,6 +22,8 @@ import {
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import {
+  setMeshPolygonsColorMap,
+  setMeshPolygonsItem,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
@@ -34,6 +36,9 @@ import { test } from "@tests/fixtures.js";
 // Constants
 const inputFilename = "test.og_psf3d";
 const attributeName = "test_attribute";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "polygons_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -74,15 +79,42 @@ test("points visibility", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshPolygonsVertexAttribute(window);
-  await expect(window).toHaveScreenshot();
-});
-
 test("polygon attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
   await setMeshPolygonsPolygonAttribute(window, attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygon attribute -change colormap", async () => {
+  await setMeshPolygonsColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 1", async () => {
+  await setMeshPolygonsItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 2", async () => {
+  await setMeshPolygonsItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshPolygonsVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
