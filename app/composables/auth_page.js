@@ -1,4 +1,4 @@
-import { resetPassword, useAuth } from "@vease/composables/auth";
+import { useAuth } from "@vease/composables/auth";
 
 function getFriendlyErrorMessage(error) {
   const code = String(error.code || "").toLowerCase();
@@ -34,23 +34,22 @@ function getFriendlyErrorMessage(error) {
   return error.message || "An error occurred. Please try again.";
 }
 
+const isLogin = ref(true);
+const loading = ref(false);
+const errorMessage = ref("");
+const successMessage = ref("");
+
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+
+const showForgotPassword = ref(false);
+const forgotPasswordEmail = ref("");
+const forgotPasswordLoading = ref(false);
+
 // oxlint-disable-next-line max-lines-per-function
 export function useAuthPage() {
-  const { login, register } = useAuth();
-  const router = useRouter();
-
-  const isLogin = ref(true);
-  const loading = ref(false);
-  const errorMessage = ref("");
-  const successMessage = ref("");
-
-  const email = ref("");
-  const password = ref("");
-  const confirmPassword = ref("");
-
-  const showForgotPassword = ref(false);
-  const forgotPasswordEmail = ref("");
-  const forgotPasswordLoading = ref(false);
+  const { login, register, resetPassword } = useAuth();
 
   async function onSubmit() {
     errorMessage.value = "";
@@ -63,9 +62,9 @@ export function useAuthPage() {
 
     loading.value = true;
     try {
+      console.log("isLogin.value:", isLogin.value);
       if (isLogin.value) {
         await login(email.value, password.value);
-        router.push("/");
       } else {
         await register(email.value, password.value);
         successMessage.value = "Account created! Please check your email for verification.";
@@ -77,6 +76,8 @@ export function useAuthPage() {
       errorMessage.value = getFriendlyErrorMessage(error);
     } finally {
       loading.value = false;
+      password.value = "";
+      confirmPassword.value = "";
     }
   }
 

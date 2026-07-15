@@ -127,11 +127,21 @@ async function navigateToApp(mode, browser) {
     } catch (error) {
       throw new Error(`Failed to reach ${url}`, { cause: error });
     }
-
     console.log("Navigated to", page.url());
-    const button = await page.getByRole("button", { name: "Load the app" });
-    console.log({ button });
-    await button.click();
+
+    const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
+    const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
+    await eMailInput.fill(process.env.GEODE_USER_EMAIL);
+    await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
+
+    const signInSecondsWait = 2;
+    const signInTimeout = signInSecondsWait * MILLISECONDS;
+    await page.waitForTimeout(signInTimeout);
+    const signInButton = await page.getByTestId("signInButton");
+    await signInButton.click();
+
+    const loadAppButton = await page.getByTestId("loadAppButton");
+    await loadAppButton.click();
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");

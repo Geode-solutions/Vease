@@ -22,13 +22,12 @@ function getUserPlatform() {
 
 // oxlint-disable-next-line max-lines-per-function
 export function useExtensions() {
-  const { user } = useAuth();
+  const { isUserAuthenticated } = useAuth();
   const APIStore = useAPIStore();
   const { getExtensionVersion } = useExtensionMetadata();
 
   async function allowedExtensions() {
-    console.log("[Extensions] Checking user...", user.value);
-    if (!user.value) {
+    if (!isUserAuthenticated.value) {
       console.log("[Extensions] No user");
       return [];
     }
@@ -50,7 +49,7 @@ export function useExtensions() {
   }
 
   async function downloadExtension(extensionId) {
-    if (!user.value) {
+    if (!isUserAuthenticated.value) {
       throw new Error("User not authenticated");
     }
     const token = await user.value.getIdToken();
