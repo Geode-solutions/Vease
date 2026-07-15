@@ -50,7 +50,6 @@ const forgotPasswordLoading = ref(false);
 // oxlint-disable-next-line max-lines-per-function
 export function useAuthPage() {
   const { login, register, resetPassword } = useAuth();
-  const router = useRouter();
 
   async function onSubmit() {
     errorMessage.value = "";
