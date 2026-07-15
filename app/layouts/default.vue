@@ -1,23 +1,24 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
-import { useInfraStore } from "@ogw_front/stores/infra";
-import { useUIStore } from "@vease/stores/ui";
-
-import { useAuth } from "@vease/composables/auth";
-
-import AuthWrapper from "@vease/components/Auth/Wrapper";
-import DrawerManager from "@vease/components/Layout/DrawerManager";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
-
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
+import { Status } from "@ogw_front/utils/status";
+import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
+import { useInfraStore } from "@ogw_front/stores/infra";
+
+import AuthWrapper from "@vease/components/Auth/Wrapper";
+import DrawerManager from "@vease/components/Layout/DrawerManager";
+import MainNavigation from "@vease/components/Layout/MainNavigation";
+import { useAuth } from "@vease/composables/auth";
+import { useExtensions } from "@vease/composables/extensions";
+import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 
-const { isUserAuthenticated, autoLogin, user } = useAuth();
+const { updateExtensions } = useExtensions();
+const { isUserAuthenticated, autoLogin } = useAuth();
 autoLogin();
 
 function handleFilesDropped(files) {
@@ -43,6 +44,17 @@ watch(
       UIStore.setShowCreateTools(false);
     }
   },
+);
+
+const { user } = useAuth();
+watch(
+  user,
+  (newUser) => {
+    if (newUser) {
+      runFunctionWhenMicroservicesConnected(updateExtensions);
+    }
+  },
+  { immediate: true },
 );
 </script>
 <template>
