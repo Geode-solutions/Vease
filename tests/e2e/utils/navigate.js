@@ -129,8 +129,8 @@ async function navigateToApp(mode, browser) {
     }
     console.log("Navigated to", page.url());
 
-    const eMailInput = await page.getByTestId("eMailInput");
-    const passwordInput = await page.getByTestId("passwordInput");
+    const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
+    const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
     await eMailInput.fill(process.env.GEODE_USER_EMAIL);
     await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
 
