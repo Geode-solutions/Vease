@@ -1,8 +1,8 @@
 // Node imports
 import { execSync } from "node:child_process";
-import { setTimeout as delay } from "node:timers/promises";
 import fs from "node:fs";
 import path from "node:path";
+import { setTimeout } from "node:timers/promises";
 
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
@@ -103,7 +103,7 @@ async function navigateToCloudApp(page, url, maxRetries) {
       console.log(`Attempt ${attempt} failed: ${error.message}`);
       if (attempt < maxRetries) {
         // oxlint-disable-next-line no-await-in-loop
-        await delay(MILLISECONDS);
+        await setTimeout(MILLISECONDS);
       }
     }
   }
