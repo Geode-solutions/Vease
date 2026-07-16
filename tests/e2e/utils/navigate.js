@@ -2,6 +2,7 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
 
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
@@ -83,12 +84,13 @@ async function runDesktopBuild() {
 async function navigateToCloudApp(page, url, maxRetries) {
   console.log(`Navigating to: ${url}`);
   const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-  let lastError;
+  let lastError = null;
   let succeeded = false;
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     try {
       console.log(`Navigation attempt ${attempt}/${maxRetries}`);
+      // oxlint-disable-next-line no-await-in-loop
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: navigationTimeout,
@@ -100,7 +102,8 @@ async function navigateToCloudApp(page, url, maxRetries) {
       lastError = error;
       console.log(`Attempt ${attempt} failed: ${error.message}`);
       if (attempt < maxRetries) {
-        await new Promise((resolve) => setTimeout(resolve, MILLISECONDS));
+        // oxlint-disable-next-line no-await-in-loop
+        await delay(MILLISECONDS);
       }
     }
   }
