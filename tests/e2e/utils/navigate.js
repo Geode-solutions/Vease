@@ -93,6 +93,7 @@ async function navigateToCloudApp(page, url, maxRetries) {
         waitUntil: "domcontentloaded",
         timeout: navigationTimeout,
       });
+      console.log(`Attempt ${attempt} succeeded`);
       succeeded = true;
       break;
     } catch (error) {
