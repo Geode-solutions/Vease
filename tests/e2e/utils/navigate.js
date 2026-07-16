@@ -22,7 +22,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 30;
+const SECONDS_NAVIGATION_TIMEOUT = 10;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -80,6 +80,38 @@ async function runDesktopBuild() {
   return { electronApp, firstWindow };
 }
 
+async function navigateToCloudApp(page, url, maxRetries) {
+  console.log(`Navigating to: ${url}`);
+  const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
+  let lastError;
+  let succeeded = false;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Navigation attempt ${attempt}/${maxRetries}`);
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: navigationTimeout,
+      });
+      succeeded = true;
+      break;
+    } catch (error) {
+      lastError = error;
+      console.log(`Attempt ${attempt} failed: ${error.message}`);
+      if (attempt < maxRetries) {
+        await new Promise((resolve) => setTimeout(resolve, MILLISECONDS));
+      }
+    }
+  }
+
+  if (!succeeded) {
+    throw new Error(`Failed to reach ${url} after ${maxRetries} attempts`, {
+      cause: lastError,
+    });
+  }
+  console.log("Navigated to", page.url());
+}
+
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
@@ -117,17 +149,8 @@ async function navigateToApp(mode, browser) {
       prefix = "next.";
     }
     const url = `https://${prefix}vease.geode-solutions.com`;
-    console.log(`Navigating to: ${url}`);
-    const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-    try {
-      await page.goto(url, {
-        waitUntil: "domcontentloaded",
-        timeout: navigationTimeout,
-      });
-    } catch (error) {
-      throw new Error(`Failed to reach ${url}`, { cause: error });
-    }
-    console.log("Navigated to", page.url());
+    const maxRetries = 5;
+    await navigateToCloudApp(page, url, maxRetries);
 
     const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
     const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
