@@ -1,8 +1,8 @@
 // Node imports
 import { execSync } from "node:child_process";
+import { setTimeout as delay } from "node:timers/promises";
 import fs from "node:fs";
 import path from "node:path";
-import { setTimeout as delay } from "node:timers/promises";
 
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
@@ -84,7 +84,7 @@ async function runDesktopBuild() {
 async function navigateToCloudApp(page, url, maxRetries) {
   console.log(`Navigating to: ${url}`);
   const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-  let lastError = null;
+  let lastError = undefined;
   let succeeded = false;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
