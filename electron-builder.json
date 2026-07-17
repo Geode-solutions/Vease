@@ -10,7 +10,7 @@
       "from": ".output/",
       "to": "web/"
     },
-    "vease-*",
+    "vease-*/",
     "!*.spec"
   ],
   "linux": {
