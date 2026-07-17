@@ -19,7 +19,6 @@ const UIStore = useUIStore();
 const infraStore = useInfraStore();
 const appStore = useAppStore();
 
-
 const { updateExtensions } = useExtensions();
 const { isUserAuthenticated, autoLogin } = useAuth();
 autoLogin();
@@ -95,7 +94,7 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
-    
+
     <!-- Global Extension Components (e.g. Modals) -->
     <GlobalComponents />
   </v-app>
