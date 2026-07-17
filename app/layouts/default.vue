@@ -93,7 +93,7 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
-    
+
     <!-- Global Extension Components (e.g. Modals) -->
     <GlobalComponents />
   </v-app>

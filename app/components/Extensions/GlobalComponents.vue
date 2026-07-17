@@ -15,9 +15,5 @@ const allGlobalComponents = computed(() => {
 </script>
 
 <template>
-  <component
-    v-for="(comp, index) in allGlobalComponents"
-    :is="comp"
-    :key="`global-ext-${index}`"
-  />
+  <component v-for="(comp, index) in allGlobalComponents" :is="comp" :key="`global-ext-${index}`" />
 </template>
