@@ -17,8 +17,6 @@ import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
-const appStore = useAppStore();
-
 
 const { updateExtensions } = useExtensions();
 const { isUserAuthenticated, autoLogin } = useAuth();
