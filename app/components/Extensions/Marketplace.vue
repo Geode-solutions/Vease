@@ -72,7 +72,7 @@ const selectedExtension = ref(undefined);
           elevation="4"
           rounded="pill"
           class="text-none px-8 font-weight-bold text-black"
-          to="/login"
+          to="/account"
         >
           Sign In
         </v-btn>

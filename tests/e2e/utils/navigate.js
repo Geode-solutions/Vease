@@ -2,6 +2,7 @@
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { setTimeout } from "node:timers/promises";
 
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
@@ -22,7 +23,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 30;
+const SECONDS_NAVIGATION_TIMEOUT = 10;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -80,6 +81,41 @@ async function runDesktopBuild() {
   return { electronApp, firstWindow };
 }
 
+async function navigateToCloudApp(page, url, maxRetries) {
+  console.log(`Navigating to: ${url}`);
+  const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
+  let lastError = undefined;
+  let succeeded = false;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
+    try {
+      console.log(`Navigation attempt ${attempt}/${maxRetries}`);
+      // oxlint-disable-next-line no-await-in-loop
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: navigationTimeout,
+      });
+      console.log(`Attempt ${attempt} succeeded`);
+      succeeded = true;
+      break;
+    } catch (error) {
+      lastError = error;
+      console.log(`Attempt ${attempt} failed: ${error.message}`);
+      if (attempt < maxRetries) {
+        // oxlint-disable-next-line no-await-in-loop
+        await setTimeout(MILLISECONDS);
+      }
+    }
+  }
+
+  if (!succeeded) {
+    throw new Error(`Failed to reach ${url} after ${maxRetries} attempts`, {
+      cause: lastError,
+    });
+  }
+  console.log("Navigated to", page.url());
+}
+
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
@@ -117,21 +153,22 @@ async function navigateToApp(mode, browser) {
       prefix = "next.";
     }
     const url = `https://${prefix}vease.geode-solutions.com`;
-    console.log(`Navigating to: ${url}`);
-    const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-    try {
-      await page.goto(url, {
-        waitUntil: "domcontentloaded",
-        timeout: navigationTimeout,
-      });
-    } catch (error) {
-      throw new Error(`Failed to reach ${url}`, { cause: error });
-    }
+    const maxRetries = 5;
+    await navigateToCloudApp(page, url, maxRetries);
 
-    console.log("Navigated to", page.url());
-    const button = await page.getByRole("button", { name: "Load the app" });
-    console.log({ button });
-    await button.click();
+    const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
+    const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
+    await eMailInput.fill(process.env.GEODE_USER_EMAIL);
+    await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
+
+    const signInSecondsWait = 2;
+    const signInTimeout = signInSecondsWait * MILLISECONDS;
+    await page.waitForTimeout(signInTimeout);
+    const signInButton = await page.getByTestId("signInButton");
+    await signInButton.click();
+
+    const loadAppButton = await page.getByTestId("loadAppButton");
+    await loadAppButton.click();
     console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.cloud);
     await page.waitForFunction(() => document.readyState === "complete");

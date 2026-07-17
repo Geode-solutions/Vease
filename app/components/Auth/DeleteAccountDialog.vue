@@ -10,14 +10,11 @@ const loading = ref(false);
 const password = ref("");
 const passwordVisible = ref(false);
 
-const emit = defineEmits(["submit"]);
-
 async function handleDeleteAccount() {
   loading.value = true;
   try {
     await deleteAccount(password.value);
     feedbackStore.add_success("Account successfully deleted");
-    await navigateTo("/login");
   } catch (error) {
     const code = 500;
     feedbackStore.add_error(code, "/delete-account", "Delete account", error);

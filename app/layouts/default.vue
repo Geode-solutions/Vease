@@ -1,25 +1,27 @@
 <script setup>
-import { Status } from "@ogw_front/utils/status";
-import { useAppStore } from "@ogw_front/stores/app";
-import { useInfraStore } from "@ogw_front/stores/infra";
-import { useUIStore } from "@vease/stores/ui";
-
-import DrawerManager from "@vease/components/Layout/DrawerManager";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
-
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
 import GlobalComponents from "@vease/components/Extensions/GlobalComponents";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
+import { Status } from "@ogw_front/utils/status";
+import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
+import { useInfraStore } from "@ogw_front/stores/infra";
+
+import AuthWrapper from "@vease/components/Auth/Wrapper";
+import DrawerManager from "@vease/components/Layout/DrawerManager";
+import MainNavigation from "@vease/components/Layout/MainNavigation";
 import { useAuth } from "@vease/composables/auth";
+import { useExtensions } from "@vease/composables/extensions";
+import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 const appStore = useAppStore();
 
 
-const { autoLogin } = useAuth();
+const { updateExtensions } = useExtensions();
+const { isUserAuthenticated, autoLogin } = useAuth();
 autoLogin();
 
 function handleFilesDropped(files) {
@@ -46,6 +48,17 @@ watch(
     }
   },
 );
+
+const { user } = useAuth();
+watch(
+  user,
+  (newUser) => {
+    if (newUser) {
+      runFunctionWhenMicroservicesConnected(updateExtensions);
+    }
+  },
+  { immediate: true },
+);
 </script>
 <template>
   <v-app
@@ -57,8 +70,18 @@ watch(
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <Launcher v-if="infraStore.status != Status.CREATED" app-name="Vease" logo="/logo.png" />
-        <NuxtPage style="z-index: 1" class="fill-height" />
+        <Launcher
+          v-if="infraStore.status != Status.CREATED"
+          app-name="Vease"
+          logo="/logo.png"
+          :isUserAuthenticated="isUserAuthenticated"
+          :email="user?.email"
+        >
+          <template #auth>
+            <AuthWrapper />
+          </template>
+        </Launcher>
+        <NuxtPage v-else style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
         <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
