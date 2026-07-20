@@ -5,6 +5,7 @@ async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
   const targetIcon = btn.locator(`.${expectedIcon}`);
   if (await targetIcon.isVisible()) {
     await btn.click({ force: true });
+    await window.mouse.move(0, 0);
     await window.waitForTimeout(afterActionWait);
   }
 }
