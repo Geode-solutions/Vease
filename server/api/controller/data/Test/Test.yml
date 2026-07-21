@@ -1,0 +1,31 @@
+info:
+  name: Test
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/controller/data/load
+  headers:
+    - name: accept
+      value: text/event-stream
+  body:
+    type: multipart-form
+    data:
+      - name: file
+        type: file
+        value:
+          - test.og_brep
+      - name: backPort
+        type: text
+        value: "36799"
+      - name: ""
+        type: text
+        value: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

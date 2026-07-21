@@ -6,74 +6,86 @@ import { useRuntimeConfig } from "#imports";
 
 // Local imports
 
-export default defineEventHandler(async (event) => {
-  try {
-    const config = useRuntimeConfig(event)
-    console.log(`Config: ${JSON.stringify(config)}`)
-    const formData = await readMultipartFormData(event)
 
-    if (!formData) {
-      throw createError({ statusCode: 400, statusMessage: 'No form data received' })
-    }
+async function getAllowedGeodeObjectTypes(filename, backPort) {
+  const body = { filename };
+  const request_options = {
+    method: "POST",
+    body: JSON.stringify(body),
+  }
 
-    // formData is an array of parts, each with: name, filename, type, data (Buffer)
-    const filePart = formData.find(part => part.name === 'file')
-    const backPort = formData.find(part => part.name === 'backPort')
-    const viewerPort = formData.find(part => part.name === 'viewerPort')
+  const response = await fetch(`http://localhost:${backPort}/opengeodeweb_back/allowed_objects`, {
+    ...request_options
+  });
+  const allowedGeodeObjectTypes = response.allowed_objects
+  if (!allowedGeodeObjectTypes) {
+    throw createError({ statusCode: 500, statusMessage: 'Failed to get allowed geode object types' })
+  }
+  if (allowedGeodeObjectTypes.length > 1) {
+    throw createError({ statusCode: 500, statusMessage: 'Data loadable with multiple geode object types' })
+  }
+  return allowedGeodeObjectTypes[0]
+}
+
+function uploadFile(file, backPort) {
+  if (!file) { throw createError({ statusCode: 400, statusMessage: 'No file field found' }) }
+  const { filename, type, data } = file
+  console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`)
+  const formData = new FormData()
+  formData.append('file', new Blob([data], { type }), filename)
+
+  const request_options = {
+    method: "PUT",
+    body: formData,
+  };
+
+  return fetch(`http://localhost:${backPort}/opengeodeweb_back/upload_file`, {
+    ...request_options
+  });
+}
+
+function saveViewableFile(filename, geode_object_type, backPort) {
+  const body = {
+    filename,
+    geode_object_type
+  };
+  const request_options = {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Accept": "text/event-stream" },
+  }
+
+  return fetch(`http://localhost:${backPort}/opengeodeweb_back/save_viewable_file`, {
+    ...request_options
+  });
+}
 
 
-    if (!filePart) {
-      throw createError({ statusCode: 400, statusMessage: 'No file field found' })
-    }
+export default defineEventHandler(
+  // oxlint-disable-next-line max-statements, max-lines-per-function
+  async (event) => {
+    try {
+      const config = useRuntimeConfig(event)
+      console.log(`Config: ${JSON.stringify(config)}`)
+      const formData = await readMultipartFormData(event)
 
-    const content = filePart.data.toString('utf-8') // or keep as Buffer for binary
-    console.log(`Received file: ${filePart.filename}, type: ${filePart.type}, size: ${filePart.data.length} bytes`)
-    const filename = filePart.filename
-    console.log(`Received file: ${filename}`)
-    // console.log(`Received file content: ${content}`)
-
-    const mimeType = filePart.type
-
-    async function uploadFile() {
-      const formData = new FormData()
-      formData.append('file', new Blob([filePart.data], { type: filePart.type }), filePart.filename)
-
-
-      const request_options = {
-        method: "PUT",
-        body: formData,
-      };
-      return fetch(`http://localhost:${backPort.data.toString('utf-8')}/opengeodeweb_back/upload_file`, {
-        ...request_options
-      });
-
-    }
-    async function saveViewableFile() {
-      const body = {
-        filename,
-        geode_object_type: "BRep"
-      };
-      const request_options = {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: { "Accept": "text/event-stream" },
+      if (!formData) {
+        throw createError({ statusCode: 400, statusMessage: 'No form data received' })
       }
 
-      return fetch(`http://localhost:${backPort.data.toString('utf-8')}/opengeodeweb_back/save_viewable_file`, {
-        ...request_options
+      const filePart = formData.find(part => part.name === 'file')
+      const backPort = formData.find(part => part.name === 'backPort').data.toString('utf8')
+
+      await uploadFile(filePart, backPort);
+      const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename, backPort);
+      await saveViewableFile(filename, allowedGeodeObjectType, backPort);
+
+      return { statusCode: 200, filename, mimeType, size: filePart.data.length }
+    } catch (error) {
+      console.log(error);
+      throw createError({
+        statusCode: 500,
+        statusMessage: error.message,
       });
-
     }
-
-    await uploadFile();
-    await saveViewableFile();
-
-    return { statusCode: 200, filename, mimeType, size: filePart.data.length }
-  } catch (error) {
-    console.log(error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: error.message,
-    });
-  }
-});
+  });

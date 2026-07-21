@@ -1,8 +1,13 @@
-import { useEventSource } from '@vueuse/core'
 import { useBackStore } from "@ogw_front/stores/back.js";
+import { useEventSource } from '@vueuse/core'
+import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer.js";
+
+import { importItem } from "@ogw_front/utils/import_workflow.js";
+
 
 
 function connectToEventSource() {
+  const hybridViewerStore = useHybridViewerStore();
   const backStore = useBackStore();
   console.log("[PLUGIN] Connecting to EventSource...");
   const url = computed(() => `${backStore.base_url}/events`);
@@ -10,7 +15,7 @@ function connectToEventSource() {
 
   const { event, data, status, error } = useEventSource(
     url,
-    ["save_viewable_file", "update"],
+    ["opengeodeweb_back.save_viewable_file", "update"],
     {
       autoReconnect: {
         retries: 3,
@@ -24,17 +29,17 @@ function connectToEventSource() {
 
   console.log("[PLUGIN]", { event, data, status, error });
 
-
-
   const eventHandlers = {
-    save_viewable_file: (payload) => {
+    "opengeodeweb_back.save_viewable_file": async (payload) => {
       console.log("[GEODE] save_viewable_file:", payload);
-      // e.g. refresh viewer, update store state
+      await importItem(payload)
+      hybridViewerStore.remoteRender();
     },
   };
 
   watch([event, data], ([eventName, rawData]) => {
-    if (!eventName) return;
+    console.log("[GEODE] Event received:", eventName, rawData);
+    if (!eventName) { return };
 
     const handler = eventHandlers[eventName];
     if (!handler) {
