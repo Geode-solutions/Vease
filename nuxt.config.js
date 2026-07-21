@@ -22,9 +22,9 @@ export default defineNuxtConfig({
     "@vease": path.resolve(__dirname, "app"),
   },
 
-  imports: {
-    scan: false,
-  },
+  // imports: {
+  //   scan: false,
+  // },
 
   modules: [
     process.env.MODE && process.env.MODE === "DESKTOP" ? "nuxt-electron" : undefined,
@@ -168,6 +168,7 @@ export default defineNuxtConfig({
         "@vue/devtools-kit",
         "bowser",
         "broadcast-channel",
+        "compare-versions",
         "dexie",
         "lodash/merge",
         "p-timeout",

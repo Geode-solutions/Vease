@@ -2,7 +2,9 @@ import { useBackStore } from "@ogw_front/stores/back";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
-export default defineNuxtPlugin(() => {
+import { connectToEventSource } from "../../shared/index.js";
+
+export default defineNuxtPlugin(async () => {
   console.log("[PLUGIN] Initializing microservices plugin...");
 
   const infraStore = useInfraStore();
@@ -15,9 +17,13 @@ export default defineNuxtPlugin(() => {
   // Initialize and register viewer microservice
   console.log("[PLUGIN] Registering viewer microservice");
   const viewerStore = useViewerStore();
-  infraStore.register_microservice(viewerStore);
 
+  await Promise.all([
+    infraStore.register_microservice(backStore),
+    infraStore.register_microservice(viewerStore)
+  ]);
   console.log(infraStore.microservices);
+  await connectToEventSource();
 
   console.log("[PLUGIN] All microservices registered and stores initialized");
 });
