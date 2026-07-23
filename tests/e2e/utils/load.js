@@ -18,6 +18,7 @@ async function loadData(window, inputFilename) {
   await finalizeImportButton.click();
   await dataImportStepper.waitFor({ state: "detached" });
   await window.waitForTimeout(loadTimeout);
+  await window.evaluate(() => document.fonts.ready);
 }
 
 export { loadData };
