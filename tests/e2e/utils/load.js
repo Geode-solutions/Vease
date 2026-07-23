@@ -9,7 +9,10 @@ async function loadData(window, inputFilename) {
   console.log("loadData", { inputFilename, inputFileExtension });
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
   const layoutImportButton = window.getByTestId("layoutImportButton");
-  await layoutImportButton.click({ force: true });
+  await layoutImportButton.waitFor({ state: "visible" });
+  const layoutImportButtonTimeout = 30_000;
+  await expect(layoutImportButton).toBeEnabled({ timeout: layoutImportButtonTimeout });
+  await layoutImportButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
