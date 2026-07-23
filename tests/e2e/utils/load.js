@@ -1,6 +1,9 @@
 // Node imports
 import path from "node:path";
 
+// Third party imports
+import { expect } from "@playwright/test";
+
 const __dirname = import.meta.dirname;
 const loadTimeout = 4000;
 
@@ -9,7 +12,10 @@ async function loadData(window, inputFilename) {
   console.log("loadData", { inputFilename, inputFileExtension });
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
   const layoutImportButton = window.getByTestId("layoutImportButton");
-  await layoutImportButton.click({ force: true });
+  await layoutImportButton.waitFor({ state: "visible" });
+  const layoutImportButtonTimeout = 30_000;
+  await expect(layoutImportButton).toBeEnabled({ timeout: layoutImportButtonTimeout });
+  await layoutImportButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputFilePath);
@@ -18,6 +24,7 @@ async function loadData(window, inputFilename) {
   await finalizeImportButton.click();
   await dataImportStepper.waitFor({ state: "detached" });
   await window.waitForTimeout(loadTimeout);
+  await window.evaluate(() => document.fonts.ready);
 }
 
 export { loadData };
