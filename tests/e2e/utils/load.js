@@ -1,6 +1,9 @@
 // Node imports
 import path from "node:path";
 
+// Third party imports
+import { expect } from "@playwright/test";
+
 const __dirname = import.meta.dirname;
 const loadTimeout = 4000;
 
