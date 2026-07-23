@@ -6,35 +6,43 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  setCellsCellAttribute,
-  setCellsColor,
-  setCellsOpacity,
-  setCellsVertexAttribute,
   setCellsVisibility,
-  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setPointsColor,
   setPointsSize,
   setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  defaultDataName,
+  meshViewerObjectType,
+  rgd3dGeodeObjectType,
+} from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  setMeshCellsCellAttribute,
+  setMeshCellsColorMap,
+  setMeshCellsItem,
+  setMeshCellsVertexAttribute,
+} from "@tests/utils/mesh/cells/attribute.js";
+import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd3d";
-const dataName = "test";
 const attributeName = "int_attribute";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "polyhedra_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
-const geodeObjectType = "RegularGrid3D";
-const viewerObjectType = "mesh";
 
 test.describe.configure({ mode: "serial" });
 
@@ -53,7 +61,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType, dataName);
+  await highlightData(window, rgd3dGeodeObjectType, defaultDataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -66,62 +74,89 @@ test("viewer context menu", async () => {
 
 test("points visibility", async () => {
   const visibility = true;
-  await setPointsVisibility(window, viewerObjectType, visibility);
-  await expect(window).toHaveScreenshot();
-});
-
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, viewerObjectType, false);
-  await setCellsVertexAttribute(window, viewerObjectType);
+  await setPointsVisibility(window, meshViewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("cell attribute", async () => {
-  await setPointsVisibility(window, viewerObjectType, false);
-  await setCellsCellAttribute(window, viewerObjectType, attributeName);
+  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshCellsCellAttribute(window, attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cell attribute -change colormap", async () => {
+  await setMeshCellsColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName, {
+    item: 1,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 1", async () => {
+  await setMeshCellsItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 2", async () => {
+  await setMeshCellsItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshCellsVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
 test("cells color", async () => {
-  await setCellsColor(window, viewerObjectType);
+  await setMeshCellsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setPointsColor(window, viewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setEdgesColor(window, viewerObjectType);
+  await setMeshEdgesColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setCellsOpacity(window, viewerObjectType, OPACITY_50);
+  await setMeshCellsOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await setEdgesVisibility(window, viewerObjectType, false);
+  await setEdgesVisibility(window, meshViewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setEdgesVisibility(window, viewerObjectType, true);
+  await setEdgesVisibility(window, meshViewerObjectType, true);
 });
 
 test("cells visibility", async () => {
-  await setCellsVisibility(window, viewerObjectType, false);
+  await setCellsVisibility(window, meshViewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setCellsVisibility(window, viewerObjectType, true);
+  await setCellsVisibility(window, meshViewerObjectType, true);
 });

@@ -6,27 +6,28 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  setPointsColor,
-  setPointsOpacity,
   setPointsSize,
-  setPointsVertexAttribute,
   setPointsVisibility,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  defaultDataName,
+  meshViewerObjectType,
+  pointSetGeodeObjectType,
+} from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setMeshPointsVertexAttribute } from "@tests/utils/mesh/points/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
-const dataName = "test";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
-const geodeObjectType = "PointSet3D";
-const viewerObjectType = "mesh";
 
 test.describe.configure({ mode: "serial" });
 
@@ -45,7 +46,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType, dataName);
+  await highlightData(window, pointSetGeodeObjectType, defaultDataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -58,27 +59,27 @@ test("viewer context menu", async () => {
 
 test("points visibility", async () => {
   const visibility = false;
-  await setPointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, meshViewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute", async () => {
-  await setPointsVisibility(window, viewerObjectType, true);
-  await setPointsVertexAttribute(window, viewerObjectType);
+  await setPointsVisibility(window, meshViewerObjectType, true);
+  await setMeshPointsVertexAttribute(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("color", async () => {
-  await setPointsColor(window, viewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setPointsOpacity(window, viewerObjectType, OPACITY_50);
+  await setMeshPointsOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
