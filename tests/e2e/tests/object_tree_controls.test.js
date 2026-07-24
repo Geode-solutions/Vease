@@ -151,11 +151,13 @@ test("filter model components", async () => {
 test("sort model components by id", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
   await expect(window).toHaveScreenshot();
 });
 
 test("sort model components by name", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
