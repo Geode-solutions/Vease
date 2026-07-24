@@ -178,7 +178,6 @@ test("search model components by text", async () => {
   await window.waitForTimeout(afterActionWait);
 });
 
-
 test("hide filtered corners", async () => {
   await hideObjectInTree(window, "Corners", undefined, "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();

@@ -16,7 +16,14 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({ event, itemId, context_type, modelId, modelComponentType, targetComponentIds }) {
+async function handleTreeMenu({
+  event,
+  itemId,
+  context_type,
+  modelId,
+  modelComponentType,
+  targetComponentIds,
+}) {
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
