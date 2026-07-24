@@ -12,6 +12,7 @@ import {
   fillSearchQuery,
   hideObjectInTree,
   openFilterMenu,
+  setModelTreeRowColorRandom,
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
@@ -55,7 +56,7 @@ test("reset camera", async () => {
 
 test("filter objects", async () => {
   await openFilterMenu(window);
-  await uncheckFilterCategory(window, "HybridSolid3D");
+  await uncheckFilterCategory(window, "EdgedCurve3D");
   await uncheckFilterCategory(window, "PolygonalSurface3D");
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
@@ -72,8 +73,8 @@ test("sort by name", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("hide edgedcurve3d objects", async () => {
-  await hideObjectInTree(window, "EdgedCurve3D");
+test("hide HybridSolid3D objects", async () => {
+  await hideObjectInTree(window, "HybridSolid3D");
   await expect(window).toHaveScreenshot();
 });
 
@@ -130,6 +131,11 @@ test("expand model components", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("hide model blocks", async () => {
+  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
+  await expect(window).toHaveScreenshot();
+});
+
 test("filter model components", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("filterObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -145,11 +151,13 @@ test("filter model components", async () => {
 test("sort model components by id", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
+  await window.mouse.move(0, 0);
   await expect(window).toHaveScreenshot();
 });
 
 test("sort model components by name", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
@@ -170,6 +178,12 @@ test("search model components by text", async () => {
 test("hide filtered corners", async () => {
   await hideObjectInTree(window, "Corners", undefined, "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();
+});
+
+test("color filtered surfaces", async () => {
+  await setModelTreeRowColorRandom(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
 });
 
 test("clear searchbar", async () => {
