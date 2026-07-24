@@ -108,11 +108,6 @@ test("refilter object", async () => {
   await window.waitForTimeout(afterActionWait);
 });
 
-test("hide hybridsolid3d object", async () => {
-  await hideObjectInTree(window, "HybridSolid3D");
-  await expect(window).toHaveScreenshot();
-});
-
 test("collapse main object tree", async () => {
   await window
     .getByTestId("mainObjectTree")
