@@ -1,6 +1,7 @@
 <script setup>
 import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
 import GlassCard from "@ogw_front/components/GlassCard";
+import GlobalComponents from "@vease/components/Extensions/GlobalComponents";
 import InfraConnected from "@ogw_front/components/InfraConnected";
 import Launcher from "@ogw_front/components/Launcher";
 import { Status } from "@ogw_front/utils/status";
@@ -92,6 +93,9 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
+
+    <!-- Global Extension Components (e.g. Modals) -->
+    <GlobalComponents />
   </v-app>
 </template>
 <style scoped>

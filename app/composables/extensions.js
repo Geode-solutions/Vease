@@ -28,11 +28,9 @@ export function useExtensions() {
 
   async function allowedExtensions() {
     if (!isUserAuthenticated.value) {
-      console.log("[Extensions] No user");
       return [];
     }
     const token = await user.value.getIdToken();
-    console.log("[Extensions] Token:", token);
     const schema = {
       $id: "/extensions/list",
       methods: ["GET"],
@@ -41,10 +39,7 @@ export function useExtensions() {
       required: [],
       additionalProperties: false,
     };
-    console.log({ schema });
     const headers = { Authorization: `Bearer ${token}` };
-    console.log({ headers });
-    console.log({ APIStore });
     return APIStore.request({ schema, headers });
   }
 
@@ -65,7 +60,6 @@ export function useExtensions() {
     const params = { extension: extensionId, platform };
     const headers = { Authorization: `Bearer ${token}` };
     const { url } = await APIStore.request({ schema, params, headers });
-    console.log({ url });
     const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
     return new File([fileBuffer], `${extensionId}-${platform}.vext`);
   }
