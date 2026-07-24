@@ -8,14 +8,16 @@ import {
   afterActionWait,
   beforeAllTimeout,
   setEdgesVisibility,
-  setModelColor,
-  setModelColorWithSlider,
-  setModelColoringStyle,
-  setModelOpacity,
   setPointsSize,
   setPointsVisibility,
+  toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  modelViewerObjectType,
+} from "@tests/utils/constants";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -25,19 +27,22 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
 } from "@tests/utils/object_tree_interaction.js";
+import {
+  setModelColor,
+  setModelColorWithSlider,
+  setModelColoringStyle,
+  setModelOpacity,
+} from "@tests/utils/model/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_brep";
-const dataName = "test";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
-const geodeObjectType = "BRep";
-const viewerObjectType = "model";
 
 test.describe.configure({ mode: "serial" });
 
@@ -56,7 +61,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType, dataName);
+  await highlightData(window, brepGeodeObjectType, defaultDataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -67,9 +72,15 @@ test("viewer context menu", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("info card", async () => {
+  await toggleInfoCard(window);
+  await expect(window).toHaveScreenshot();
+  await toggleInfoCard(window);
+});
+
 test("points visibility", async () => {
   const visibility = true;
-  await setPointsVisibility(window, viewerObjectType, visibility);
+  await setPointsVisibility(window, modelViewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
