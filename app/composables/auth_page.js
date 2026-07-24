@@ -62,7 +62,6 @@ export function useAuthPage() {
 
     loading.value = true;
     try {
-      console.log("isLogin.value:", isLogin.value);
       if (isLogin.value) {
         await login(email.value, password.value);
       } else {
