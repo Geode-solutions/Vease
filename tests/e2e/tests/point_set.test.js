@@ -8,6 +8,7 @@ import {
   beforeAllTimeout,
   setPointsSize,
   setPointsVisibility,
+  toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
@@ -55,6 +56,12 @@ test("viewer context menu", async () => {
     y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
+});
+
+test("info card", async () => {
+  await toggleInfoCard(window);
+  await expect(window).toHaveScreenshot();
+  await toggleInfoCard(window);
 });
 
 test("points visibility", async () => {

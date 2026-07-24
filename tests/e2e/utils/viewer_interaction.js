@@ -205,6 +205,12 @@ function setEdgesWidth(window, viewerObjectType, value) {
   return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
 }
 
+async function toggleInfoCard(window) {
+  const centerButton = window.getByTestId("circularMenuCenterButton");
+  await centerButton.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   beforeAllTimeout,
@@ -223,5 +229,6 @@ export {
   setPolygonsVisibility,
   setPolyhedraVisibility,
   stabilizeHoverTooltip,
+  toggleInfoCard,
   viewerContextMenu,
 };
