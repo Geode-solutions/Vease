@@ -21,6 +21,7 @@ async function collapseAllObjects(window, treeTestId = "mainObjectTree") {
 
 async function toggleSortObjects(window) {
   await window.getByTestId("sortObjectsButton").click();
+  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -54,6 +55,7 @@ async function toggleSearchObjects(window) {
 async function fillSearchQuery(window, query) {
   const searchInput = window.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
+  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -148,6 +150,7 @@ async function hideObjectInTree(
   const btn = row.locator("button:has(.mdi-eye)").first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
+    await window.mouse.move(0, 0);
     await window.waitForTimeout(afterActionWait);
   }
 }
