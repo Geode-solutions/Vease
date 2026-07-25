@@ -2,6 +2,7 @@ import { afterActionWait, dragElement } from "./viewer_interaction.js";
 
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
+  await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
 }
 
