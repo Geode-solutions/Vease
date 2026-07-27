@@ -16,7 +16,6 @@ import { test } from "@tests/fixtures.js";
 const inputFilename = "test_project.vease";
 let window = undefined;
 let cleanup = undefined;
-const OFFSET = 10;
 
 test.describe.configure({ mode: "serial" });
 
@@ -42,12 +41,7 @@ test("toggle surfaces visibility", async () => {
 test("change lines color", async () => {
   const tree = window.getByTestId("modelComponentsObjectTree");
   const item = tree.getByText("Lines").first();
-  const box = await item.boundingBox();
-  await item.dispatchEvent("contextmenu", {
-    button: 2,
-    clientX: box.x + OFFSET,
-    clientY: box.y + OFFSET,
-  });
+  await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });
