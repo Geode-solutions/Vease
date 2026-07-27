@@ -24,12 +24,32 @@ RUN chmod +x /usr/local/bin/cleanup.bash
 RUN apt-get install -y libgomp1
 COPY --from=back /usr/local/bin/vease-back /usr/local/bin/vease-back
 RUN chmod +x /usr/local/bin/vease-back
+COPY <<'EOT' /etc/supervisor/conf.d/vease-back.conf
+[program:vease-back]
+command=/usr/local/bin/vease-back --project_folder_path /project --timeout 2
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+EOT
 
 # Setup viewer
 RUN apt-get install -y libosmesa6-dev libx11-dev libxrender-dev
 COPY --from=viewer /usr/local/bin/vease-viewer /usr/local/bin/vease-viewer
 RUN chmod +x /usr/local/bin/vease-viewer
 RUN mkdir www && touch www/healthcheck
+COPY <<'EOT' /etc/supervisor/conf.d/vease-viewer.conf
+[program:vease-viewer]
+command=/usr/local/bin/vease-viewer --project_folder_path /project --content ./www --host 0.0.0.0
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+EOT
 
 ENV PYTHON_ENV=prod
 ENV DISPLAY=:0
