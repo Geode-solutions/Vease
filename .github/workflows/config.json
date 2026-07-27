@@ -2,5 +2,6 @@
   "node": false,
   "browser": true,
   "cloud": true,
-  "desktop": true
+  "desktop": true,
+  "dcoker": true
 }
