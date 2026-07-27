@@ -12,6 +12,8 @@ export default defineNuxtConfig({
       VERSION: package_json.version,
       COMMAND_BACK: "vease-back",
       COMMAND_VIEWER: "vease-viewer",
+      BACK_BASE_URL: "",
+      VIEWER_BASE_URL: "",
       NUXT_ROOT_PATH: __dirname,
       PROJECT: package_json.name,
     },
@@ -20,11 +22,12 @@ export default defineNuxtConfig({
 
   alias: {
     "@vease": path.resolve(__dirname, "app"),
+    "@vease_server": path.resolve(__dirname, "server"),
   },
 
-  // imports: {
-  //   scan: false,
-  // },
+  imports: {
+    scan: false,
+  },
 
   modules: [
     process.env.MODE && process.env.MODE === "DESKTOP" ? "nuxt-electron" : undefined,
