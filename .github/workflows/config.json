@@ -3,5 +3,5 @@
   "browser": true,
   "cloud": true,
   "desktop": true,
-  "dcoker": true
+  "docker": true
 }
