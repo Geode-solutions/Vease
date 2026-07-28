@@ -129,7 +129,6 @@ async function navigateToApp(mode, browser) {
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
-    function cleanup() { return kill(nuxtPort) }
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
@@ -139,10 +138,11 @@ async function navigateToApp(mode, browser) {
     await page.waitForLoadState("networkidle");
     return {
       window: page,
-      cleanup
+      cleanup: () => {
+        return kill(nuxtPort);
+      },
     };
   } else if (mode === "CLOUD") {
-    function cleanup() { return page.close() }
     page.on("console", (msg) => {
       console.log(`Browser console: ${msg.text()}`);
     });
@@ -178,17 +178,20 @@ async function navigateToApp(mode, browser) {
 
     return {
       window: page,
-      cleanup
+      cleanup: () => {
+        return page.close()
+      }
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    function cleanup() { return electronApp.close(); }
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
-      cleanup
+      cleanup: () => {
+        electronApp.close();
+      },
     };
   }
   throw new Error(`Unknown mode: ${mode}`);
