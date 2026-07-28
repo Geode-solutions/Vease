@@ -1,1 +1,7 @@
-*
+.*
+package-lock.json
+build
+dist-electron
+node_modules
+release
+test*

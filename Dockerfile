@@ -6,9 +6,37 @@ FROM ghcr.io/geode-solutions/vease-back:$BRANCH AS back
 
 FROM ghcr.io/geode-solutions/vease-viewer:$BRANCH AS viewer
 
-FROM debian:12-slim
+FROM node:24 AS builder
+
+RUN node -v
+RUN npm -v
+COPY . .
+RUN if [ "$BRANCH" = "master" ]; then \
+    sed -i 's/"0\.0\.0"/"latest"/g' package.json; \
+    else \
+    sed -i 's/"0\.0\.0"/"next"/g' package.json; \
+    fi
+RUN cat package.json
+RUN npm install && npm list --depth=0
+RUN npm run build:cloud_server
+
+FROM node:24-slim
 
 RUN apt-get update
+
+# Setup vease microservice
+RUN mkdir -p /etc/vease/server
+COPY --from=builder .output/server /etc/vease/server
+COPY <<'EOT' /etc/supervisor/conf.d/vease-server.conf
+[program:vease-server]
+command=node /etc/vease/server/index.mjs
+autostart=true
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+EOT
 
 # Setup router
 RUN apt-get install -y curl jq bash supervisor nginx
@@ -51,7 +79,6 @@ stderr_logfile=/dev/stderr
 stderr_logfile_maxbytes=0
 EOT
 
-ENV PYTHON_ENV=prod
 ENV DISPLAY=:0
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
