@@ -3,8 +3,13 @@ const beforeAllTimeout = 60_000;
 const afterActionWait = 2000;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
+function getHybridViewerCanvas(window) {
+  return window.getByTestId("hybridViewer").locator("canvas");
+}
+
 async function viewerContextMenu(window, x, y) {
-  await window.getByTestId("hybridViewer").locator("canvas").click({
+  const hybridViewerCanvas = await getHybridViewerCanvas(window);
+  await hybridViewerCanvas.click({
     button: "right",
     position: { x, y },
   });

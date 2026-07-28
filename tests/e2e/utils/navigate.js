@@ -23,7 +23,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 10;
+const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -129,6 +129,7 @@ async function navigateToApp(mode, browser) {
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
+    function cleanup() { return kill(nuxtPort) }
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
     await page.goto(`http://localhost:${nuxtPort}`);
     console.log("Navigated to", page.url());
@@ -136,14 +137,12 @@ async function navigateToApp(mode, browser) {
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
     await page.waitForLoadState("networkidle");
-    await page.evaluate(() => document.fonts.ready);
     return {
       window: page,
-      cleanup: async () => {
-        await kill(nuxtPort);
-      },
+      cleanup
     };
   } else if (mode === "CLOUD") {
+    function cleanup() { return page.close() }
     page.on("console", (msg) => {
       console.log(`Browser console: ${msg.text()}`);
     });
@@ -157,7 +156,7 @@ async function navigateToApp(mode, browser) {
       prefix = "next.";
     }
     const url = `https://${prefix}vease.geode-solutions.com`;
-    const maxRetries = 5;
+    const maxRetries = 10;
     await navigateToCloudApp(page, url, maxRetries);
 
     const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
@@ -179,20 +178,17 @@ async function navigateToApp(mode, browser) {
 
     return {
       window: page,
-      cleanup: async () => {
-        await page.close();
-      },
+      cleanup
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
+    function cleanup() { return electronApp.close(); }
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
-      cleanup: async () => {
-        await electronApp.close();
-      },
+      cleanup
     };
   }
   throw new Error(`Unknown mode: ${mode}`);
