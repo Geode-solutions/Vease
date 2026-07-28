@@ -11,7 +11,7 @@ function nitroIgnoreConfig() {
   if (!mode) {
     throw Error("No mode provided");
   }
-  if (mode in ["DESKTOP", "BROWSER"]) {
+  if (mode === "DESKTOP" || mode === "BROWSER") {
     return ["api/serverless/**"];
   }
   if (mode === "CLOUD") {
