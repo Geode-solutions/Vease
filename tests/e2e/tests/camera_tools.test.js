@@ -10,8 +10,8 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   hoverViewerCenter,
+  moveMouseOutOfTheWay,
   stabilizeHoverTooltip,
-  removeMouseOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
@@ -113,7 +113,7 @@ test("visibility off grid and expand brep focus", async () => {
   await hideObjectInTree(window, rgd3dGeodeObjectType, defaultDataName);
 
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });

@@ -1,4 +1,4 @@
-import { afterActionWait, removeMouseOfTheWay } from "./viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "./viewer_interaction.js";
 import { setModelColor } from "./model/color.js";
 
 async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
@@ -6,7 +6,7 @@ async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
   const targetIcon = btn.locator(`.${expectedIcon}`);
   if (await targetIcon.isVisible()) {
     await btn.click({ force: true });
-    await removeMouseOfTheWay(window);
+    await moveMouseOutOfTheWay(window);
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -21,7 +21,7 @@ async function collapseAllObjects(window, treeTestId = "mainObjectTree") {
 
 async function toggleSortObjects(window) {
   await window.getByTestId("sortObjectsButton").click();
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -55,7 +55,7 @@ async function toggleSearchObjects(window) {
 async function fillSearchQuery(window, query) {
   const searchInput = window.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -150,7 +150,7 @@ async function hideObjectInTree(
   const btn = row.locator("button:has(.mdi-eye)").first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
-    await removeMouseOfTheWay(window);
+    await moveMouseOutOfTheWay(window);
     await window.waitForTimeout(afterActionWait);
   }
 }

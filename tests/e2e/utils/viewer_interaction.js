@@ -7,7 +7,7 @@ function getHybridViewerCanvas(window) {
   return window.getByTestId("hybridViewer").locator("canvas");
 }
 
-function removeMouseOfTheWay(window) {
+function moveMouseOutOfTheWay(window) {
   return window.mouse.move(0, 0)
 }
 
@@ -230,7 +230,7 @@ export {
   findOverlappingObjectsPicker,
   hoverViewerCenter,
   getHybridViewerCanvas,
-  removeMouseOfTheWay,
+  moveMouseOutOfTheWay,
   setCellsVisibility,
   setEdgesVisibility,
   setEdgesWidth,

@@ -1,8 +1,8 @@
-import { afterActionWait, dragElement, removeMouseOfTheWay } from "./viewer_interaction.js";
+import { afterActionWait, dragElement, moveMouseOutOfTheWay } from "./viewer_interaction.js";
 
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 

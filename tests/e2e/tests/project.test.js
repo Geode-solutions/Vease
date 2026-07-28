@@ -8,7 +8,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  removeMouseOfTheWay
+  moveMouseOutOfTheWay
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
@@ -50,7 +50,7 @@ test("change lines color", async () => {
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });
   await setColor(window, "modelStyleMenu", container);
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });
@@ -64,7 +64,7 @@ test("collapse model tree in main tree", async () => {
     .locator("button:has(.mdi-magnify-expand)")
     .click({ force: true });
   await window.waitForTimeout(afterActionWait);
-  await removeMouseOfTheWay(window);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
