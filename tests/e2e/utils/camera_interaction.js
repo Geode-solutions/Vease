@@ -1,4 +1,9 @@
-import { afterActionWait, dragElement, getHybridViewerCanvas, moveMouseOutOfTheWay } from "./viewer_interaction.js";
+import {
+  afterActionWait,
+  dragElement,
+  getHybridViewerCanvas,
+  moveMouseOutOfTheWay,
+} from "./viewer_interaction.js";
 
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
