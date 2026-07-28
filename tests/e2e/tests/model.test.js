@@ -224,6 +224,17 @@ test("surfaces color", async () => {
   await toggleModelTreeRow(window, "Surfaces");
 });
 
+test("hide points in model tree", async () => {
+  await window
+    .getByTestId("modelComponentsObjectTree")
+    .locator(".tree-row-wrapper", { hasText: "Surfaces" })
+    .locator(".tree-item-label")
+    .first()
+    .click({ button: "right" });
+  await setPointsVisibility(window, "model", false);
+  await expect(window).toHaveScreenshot();
+});
+
 test("toggle object tree main", async () => {
   await window.getByTestId("toggleObjectsButton").click();
   await window.waitForTimeout(afterActionWait);

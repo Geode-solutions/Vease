@@ -30,13 +30,10 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .filter({ visible: true })
     .first()
     .fill(colorMap);
+
+  await window.locator(".v-progress-circular").waitFor({ state: "detached" });
   await window.waitForTimeout(afterActionWait);
 
-  // Wait for the loading spinner to disappear
-  await window.locator(".v-progress-circular").first().waitFor({ state: "hidden" });
-  await window.waitForTimeout(afterActionWait);
-
-  // Expand all visible list groups to reveal search results
   const groups = window
     .getByTestId("colorMapList")
     .locator(".text-white.font-weight-bold")

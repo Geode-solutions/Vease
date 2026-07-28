@@ -121,6 +121,10 @@ async function navigateToApp(mode, browser) {
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
     permissions: ["clipboard-read", "clipboard-write"],
   });
+  context.on("page", (newPage) => {
+    console.log("NEW PAGE CREATED:", newPage.url());
+    newPage.on("close", () => console.log("PAGE CLOSED:", newPage.url()));
+  });
   const page = await context.newPage();
   console.log(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
