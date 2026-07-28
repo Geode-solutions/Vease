@@ -7,6 +7,10 @@ function getHybridViewerCanvas(window) {
   return window.getByTestId("hybridViewer").locator("canvas");
 }
 
+function removeMouseOfTheWay(window) {
+  return window.mouse.move(0, 0)
+}
+
 async function viewerContextMenu(window, x, y) {
   const hybridViewerCanvas = await getHybridViewerCanvas(window);
   await hybridViewerCanvas.click({
@@ -225,6 +229,8 @@ export {
   ensureMenuOpen,
   findOverlappingObjectsPicker,
   hoverViewerCenter,
+  getHybridViewerCanvas,
+  removeMouseOfTheWay,
   setCellsVisibility,
   setEdgesVisibility,
   setEdgesWidth,

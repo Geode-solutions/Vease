@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
+  removeMouseOfTheWay,
   setEdgesVisibility,
   setPointsSize,
   setPointsVisibility,
@@ -133,7 +134,7 @@ test("object tree model components", async () => {
     .filter({ hasText: "test" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
-  await window.mouse.move(0, 0);
+  await removeMouseOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");

@@ -4,7 +4,11 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
+import {
+  afterActionWait,
+  beforeAllTimeout,
+  removeMouseOfTheWay
+} from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
   collapseAllObjects,
@@ -151,7 +155,7 @@ test("filter model components", async () => {
 test("sort model components by id", async () => {
   await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+  await removeMouseOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
