@@ -8,7 +8,7 @@ function getHybridViewerCanvas(window) {
 }
 
 function moveMouseOutOfTheWay(window) {
-  return window.mouse.move(0, 0)
+  return window.mouse.move(0, 0);
 }
 
 async function viewerContextMenu(window, x, y) {
@@ -130,7 +130,7 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
 }
 
 async function hoverViewerCenter(window) {
-  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
   await hybridViewerCanvas.hover({
     position: { x: box.width / 2, y: box.height / 2 },

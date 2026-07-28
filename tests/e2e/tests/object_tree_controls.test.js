@@ -7,7 +7,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  moveMouseOutOfTheWay
+  moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,

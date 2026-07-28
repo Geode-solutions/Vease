@@ -252,7 +252,7 @@ test("context menu through non visible surface", async () => {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await setModelColor(window);

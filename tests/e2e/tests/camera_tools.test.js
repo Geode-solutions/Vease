@@ -75,7 +75,7 @@ test("reset camera", async () => {
 });
 
 test("rotate camera 180 degrees", async () => {
-  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
   await rotateCamera(window, -box.width);
   await expect(window).toHaveScreenshot();
@@ -120,7 +120,7 @@ test("visibility off grid and expand brep focus", async () => {
 
 test("center on click", async () => {
   await toggleCenterOnClick(window);
-  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   await hybridViewerCanvas.click({
     position: { x: 750, y: 250 },
   });

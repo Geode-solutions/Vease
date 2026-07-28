@@ -24,10 +24,7 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
   await container.getByTestId("colorMapPicker").first().click();
   await window.waitForTimeout(afterActionWait);
   const colorMapListFilter = await container.getByTestId("colorMapListFilter");
-  await colorMapListFilter
-    .filter({ visible: true })
-    .first()
-    .fill(colorMap);
+  await colorMapListFilter.filter({ visible: true }).first().fill(colorMap);
   const colorMapListLoading = container.getByTestId("colorMapListLoading");
   await colorMapListLoading.getByTestId("colorMapListLoading").waitFor({ state: "detached" });
 

@@ -7,7 +7,7 @@ async function resetCamera(window) {
 }
 
 async function rotateCamera(window, deltaX, deltaY = 0) {
-  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   await dragElement(window, hybridViewerCanvas, { deltaX, deltaY });
 }
 

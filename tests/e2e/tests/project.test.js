@@ -8,7 +8,7 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
-  moveMouseOutOfTheWay
+  moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";

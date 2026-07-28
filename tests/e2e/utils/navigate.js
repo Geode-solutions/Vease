@@ -179,8 +179,8 @@ async function navigateToApp(mode, browser) {
     return {
       window: page,
       cleanup: () => {
-        return page.close()
-      }
+        return page.close();
+      },
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
