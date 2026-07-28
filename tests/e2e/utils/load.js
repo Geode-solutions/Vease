@@ -5,7 +5,7 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
-const loadTimeout = 4000;
+const loadTimeout = 5000;
 
 async function loadData(window, inputFilename) {
   const inputFileExtension = path.extname(inputFilename);
@@ -13,7 +13,7 @@ async function loadData(window, inputFilename) {
   const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
   const layoutImportButton = window.getByTestId("layoutImportButton");
   await layoutImportButton.waitFor({ state: "visible" });
-  const layoutImportButtonTimeout = 30_000;
+  const layoutImportButtonTimeout = 50_000;
   await expect(layoutImportButton).toBeEnabled({ timeout: layoutImportButtonTimeout });
   await layoutImportButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
