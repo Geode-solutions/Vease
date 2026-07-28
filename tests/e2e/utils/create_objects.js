@@ -48,8 +48,8 @@ async function clickPickButton(window) {
 }
 
 async function pickPointInViewer(window, x, y) {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  await canvas.click({
+  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  await hybridViewerCanvas.click({
     position: { x, y },
   });
   await window.waitForTimeout(afterActionWait);

@@ -4,7 +4,7 @@ const afterActionWait = 2000;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
 function getHybridViewerCanvas(window) {
-  return window.getByTestId("hybridViewer").locator("canvas");
+  return getHybridViewerCanvas(window)
 }
 
 async function viewerContextMenu(window, x, y) {
@@ -126,9 +126,9 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
 }
 
 async function hoverViewerCenter(window) {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  const box = await canvas.boundingBox();
-  await canvas.hover({
+  const hybridViewerCanvas = getHybridViewerCanvas(window)
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.hover({
     position: { x: box.width / 2, y: box.height / 2 },
   });
   await window.waitForTimeout(afterActionWait);
