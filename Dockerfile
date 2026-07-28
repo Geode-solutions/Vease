@@ -18,6 +18,7 @@ RUN if [ "$BRANCH" = "master" ]; then \
     fi
 RUN cat package.json
 RUN npm install && npm list --depth=0
+ENV NODE_OPTIONS="--max-old-space-size=10240"
 RUN npm run build:cloud_server
 
 FROM node:24-slim
