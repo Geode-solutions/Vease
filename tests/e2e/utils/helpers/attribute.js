@@ -10,7 +10,7 @@ async function setFeatureItem(window, menuTestId, item) {
   await window.waitForTimeout(afterActionWait);
 
   const itemText = `Item ${item + 1}`;
-  await container
+  await window
     .locator(".v-overlay-container")
     .getByText(itemText, { exact: true })
     .filter({ visible: true })
@@ -23,9 +23,13 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
   const container = window.getByTestId(menuTestId);
   await container.getByTestId("colorMapPicker").first().click();
   await window.waitForTimeout(afterActionWait);
-  const colorMapListFilter = await container.getByTestId("colorMapListFilter");
-  await colorMapListFilter.filter({ visible: true }).first().fill(colorMap);
-  const colorMapListLoading = container.getByTestId("colorMapListLoading");
+  const colorMapListFilter = await window.getByTestId("colorMapListFilter");
+  await colorMapListFilter
+    .filter({ visible: true })
+    .first()
+    .locator("input")
+    .fill(colorMap);
+  const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.getByTestId("colorMapListLoading").waitFor({ state: "detached" });
 
   await window.waitForTimeout(afterActionWait);
