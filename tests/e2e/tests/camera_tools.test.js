@@ -10,9 +10,13 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   hoverViewerCenter,
-  setColor,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  rgd3dGeodeObjectType,
+} from "@tests/utils/constants.js";
 import {
   closeCameraManager,
   ensureHighlightMenuOpen,
@@ -36,19 +40,15 @@ import {
 } from "@tests/utils/object_tree_interaction.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
-const brepDataName = "test";
-const brepGeodeObjectType = "BRep";
 const rgd3dFilename = "test.og_rgd3d";
-const rgd3dDataName = "test";
-const rgd3dGeodeObjectType = "RegularGrid3D";
 let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;
-
 const TARGET_TOP = 100;
 
 test.describe.configure({ mode: "serial" });
@@ -109,9 +109,9 @@ test("visibility off grid and expand brep focus", async () => {
   await window.waitForTimeout(afterActionWait);
 
   await expandGeodeObjectType(window, rgd3dGeodeObjectType);
-  await hideObjectInTree(window, rgd3dGeodeObjectType, rgd3dDataName);
+  await hideObjectInTree(window, rgd3dGeodeObjectType, defaultDataName);
 
-  await focusObjectInTree(window, brepGeodeObjectType, brepDataName);
+  await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await window.mouse.move(0, 0);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();

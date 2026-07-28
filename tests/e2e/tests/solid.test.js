@@ -6,37 +6,49 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   beforeAllTimeout,
-  setEdgesColor,
   setEdgesVisibility,
   setEdgesWidth,
-  setPointsColor,
   setPointsSize,
   setPointsVisibility,
-  setPolygonsColor,
   setPolygonsVisibility,
-  setPolyhedraColor,
-  setPolyhedraOpacity,
-  setPolyhedraPolyhedronAttribute,
-  setPolyhedraVertexAttribute,
   setPolyhedraVisibility,
+  toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  defaultDataName,
+  hybridSolidGeodeObjectType,
+  meshViewerObjectType,
+} from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  setMeshPolyhedraColor,
+  setMeshPolyhedraOpacity,
+} from "@tests/utils/mesh/polyhedra/color.js";
+import {
+  setMeshPolyhedraColorMap,
+  setMeshPolyhedraItem,
+  setMeshPolyhedraPolyhedronAttribute,
+  setMeshPolyhedraVertexAttribute,
+} from "@tests/utils/mesh/polyhedra/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
+import { setMeshPolygonsColor } from "@tests/utils/mesh/polygon/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
-const dataName = "test";
 const attributeName = "test_attribute";
+const vertexAttributeName = "points";
+const colorMapName = "vikO";
+const otherVertexAttributeName = "polyhedra_around_vertex";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
-const geodeObjectType = "HybridSolid3D";
-const viewerObjectType = "mesh";
 
 test.describe.configure({ mode: "serial" });
 
@@ -55,7 +67,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, geodeObjectType, dataName);
+  await highlightData(window, hybridSolidGeodeObjectType, defaultDataName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -66,76 +78,109 @@ test("viewer context menu", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("points visibility", async () => {
-  const visibility = true;
-  await setPointsVisibility(window, viewerObjectType, visibility);
+test("info card", async () => {
+  await toggleInfoCard(window);
   await expect(window).toHaveScreenshot();
+  await toggleInfoCard(window);
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, viewerObjectType, true);
-  await setPolyhedraVertexAttribute(window, viewerObjectType);
+test("points visibility", async () => {
+  const visibility = true;
+  await setPointsVisibility(window, meshViewerObjectType, visibility);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedron attribute", async () => {
-  await setPointsVisibility(window, viewerObjectType, false);
-  await setPolyhedraPolyhedronAttribute(window, viewerObjectType, attributeName);
+  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedron attribute -change colormap", async () => {
+  await setMeshPolyhedraColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute", async () => {
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 1", async () => {
+  await setMeshPolyhedraItem(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change item to 2", async () => {
+  await setMeshPolyhedraItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - change attribute name", async () => {
+  await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - switch back to points", async () => {
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedra color", async () => {
-  await setPolyhedraColor(window, viewerObjectType);
+  await setMeshPolyhedraColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("points color", async () => {
-  await setPointsColor(window, viewerObjectType);
+  await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges color", async () => {
-  await setEdgesColor(window, viewerObjectType);
+  await setMeshEdgesColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("polygons color", async () => {
-  await setPolygonsColor(window, viewerObjectType);
+  await setMeshPolygonsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("opacity", async () => {
-  await setPolyhedraOpacity(window, viewerObjectType, OPACITY_50);
+  await setMeshPolyhedraOpacity(window, OPACITY_50);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, viewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, viewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async () => {
-  await setEdgesVisibility(window, viewerObjectType, false);
+  await setEdgesVisibility(window, meshViewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setEdgesVisibility(window, viewerObjectType, true);
+  await setEdgesVisibility(window, meshViewerObjectType, true);
 });
 
 test("polygons visibility", async () => {
-  await setPolygonsVisibility(window, viewerObjectType, false);
+  await setPolygonsVisibility(window, meshViewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setPolygonsVisibility(window, viewerObjectType, true);
+  await setPolygonsVisibility(window, meshViewerObjectType, true);
 });
 
 test("polyhedra visibility", async () => {
-  await setPolyhedraVisibility(window, viewerObjectType, false);
+  await setPolyhedraVisibility(window, meshViewerObjectType, false);
   await expect(window).toHaveScreenshot();
   // Revert
-  await setPolyhedraVisibility(window, viewerObjectType, true);
+  await setPolyhedraVisibility(window, meshViewerObjectType, true);
 });

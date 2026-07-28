@@ -5,17 +5,17 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, beforeAllTimeout, setColor } from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test_project.vease";
 let window = undefined;
 let cleanup = undefined;
-const OFFSET = 10;
 
 test.describe.configure({ mode: "serial" });
 
@@ -41,12 +41,7 @@ test("toggle surfaces visibility", async () => {
 test("change lines color", async () => {
   const tree = window.getByTestId("modelComponentsObjectTree");
   const item = tree.getByText("Lines").first();
-  const box = await item.boundingBox();
-  await item.dispatchEvent("contextmenu", {
-    button: 2,
-    clientX: box.x + OFFSET,
-    clientY: box.y + OFFSET,
-  });
+  await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });

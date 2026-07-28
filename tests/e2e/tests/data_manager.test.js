@@ -6,6 +6,11 @@ import { expect } from "@playwright/test";
 // Local imports
 import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
 import {
+  brepGeodeObjectType,
+  pointSetGeodeObjectType,
+  polygonalSurfaceGeodeObjectType,
+} from "@tests/utils/constants.js";
+import {
   clickdeleteDataButton,
   confirmDelete,
   confirmRename,
@@ -27,9 +32,6 @@ import { test } from "@tests/fixtures.js";
 const BREP_FILE = "test.og_brep";
 const POLYGONAL_SURFACE_FILE = "test.og_psf3d";
 const POINTSET_FILE = "test.og_pts3d";
-const BREP_TYPE = "BRep";
-const POLYGONAL_SURFACE_TYPE = "PolygonalSurface3D";
-const POINTSET_TYPE = "PointSet3D";
 const RENAMED_BREP = "cube vease";
 const RENAMED_POLYGONAL_SURFACE = "surface vease";
 
@@ -63,7 +65,7 @@ test("import data from data manager", async () => {
 });
 
 test("rename object by clicking item name", async () => {
-  await openRenameByName(window, BREP_TYPE);
+  await openRenameByName(window, brepGeodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
@@ -73,7 +75,7 @@ test("rename object", async () => {
 });
 
 test("toggle visibility off", async () => {
-  await toggleRowVisibility(window, POINTSET_TYPE);
+  await toggleRowVisibility(window, pointSetGeodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
@@ -89,7 +91,7 @@ test("focus object from pip", async () => {
 });
 
 test("rename dialog via button", async () => {
-  await openRenameByButton(window, POLYGONAL_SURFACE_TYPE);
+  await openRenameByButton(window, polygonalSurfaceGeodeObjectType);
   await expect(window).toHaveScreenshot();
 });
 
@@ -99,7 +101,7 @@ test("rename object via button", async () => {
 });
 
 test("isolate object", async () => {
-  await isolateRowItem(window, POINTSET_TYPE);
+  await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
