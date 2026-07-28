@@ -29,8 +29,8 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .first()
     .locator("input")
     .fill(colorMap);
-  const colorMapListLoading = window.getByTestId("colorMapListLoading");
-  await colorMapListLoading.getByTestId("colorMapListLoading").waitFor({ state: "detached" });
+  const colorMapListLoading = await window.getByTestId("colorMapListLoading");
+  await colorMapListLoading.waitFor({ state: "detached" });
 
   await window.waitForTimeout(afterActionWait);
 
