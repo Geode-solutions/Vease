@@ -23,15 +23,14 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
   const container = window.getByTestId(menuTestId);
   await container.getByTestId("colorMapPicker").first().click();
   await window.waitForTimeout(afterActionWait);
-
-  await container
-    .locator(".v-overlay-container")
-    .getByPlaceholder("Search presets...")
+  const colorMapListFilter = await container.getByTestId("colorMapListFilter");
+  await colorMapListFilter
     .filter({ visible: true })
     .first()
     .fill(colorMap);
+  const colorMapListLoading = container.getByTestId("colorMapListLoading");
+  await colorMapListLoading.getByTestId("colorMapListLoading").waitFor({ state: "detached" });
 
-  await container.locator(".v-progress-circular").waitFor({ state: "detached" });
   await window.waitForTimeout(afterActionWait);
 
   const groups = window
