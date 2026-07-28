@@ -4,7 +4,7 @@ const afterActionWait = 2000;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
 function getHybridViewerCanvas(window) {
-  return getHybridViewerCanvas(window)
+  return window.getByTestId("hybridViewer").locator("canvas");
 }
 
 async function viewerContextMenu(window, x, y) {
