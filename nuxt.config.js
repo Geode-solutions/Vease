@@ -9,7 +9,7 @@ const __dirname = import.meta.dirname;
 function nitroIgnoreConfig() {
   const mode = process.env.MODE;
   if (!mode) {
-    throw Error("No mode provided");
+    throw new Error("No mode provided");
   }
   if (mode === "DESKTOP" || mode === "BROWSER") {
     return ["api/serverless/**"];
@@ -20,7 +20,7 @@ function nitroIgnoreConfig() {
   if (mode === "CLOUD_SERVER") {
     return ["api/local/**", "api/serverless/**"];
   }
-  throw Error("Unknown mode provided: " + mode);
+  throw new Error("Unknown mode provided: " + mode);
 }
 
 export default defineNuxtConfig({
