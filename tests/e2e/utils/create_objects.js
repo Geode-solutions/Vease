@@ -1,4 +1,4 @@
-import { afterActionWait } from "./viewer_interaction.js";
+import { afterActionWait, getHybridViewerCanvas } from "./viewer_interaction.js";
 
 async function openCreateToolsPanel(window) {
   await window.getByTestId("createButton").click();

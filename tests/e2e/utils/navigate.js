@@ -138,9 +138,7 @@ async function navigateToApp(mode, browser) {
     await page.waitForLoadState("networkidle");
     return {
       window: page,
-      cleanup: () => {
-        return kill(nuxtPort);
-      },
+      cleanup: () => kill(nuxtPort),
     };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => {
@@ -178,9 +176,7 @@ async function navigateToApp(mode, browser) {
 
     return {
       window: page,
-      cleanup: () => {
-        return page.close();
-      },
+      cleanup: () => page.close()
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
@@ -189,9 +185,7 @@ async function navigateToApp(mode, browser) {
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
-      cleanup: () => {
-        electronApp.close();
-      },
+      cleanup: () => electronApp.close()
     };
   }
   throw new Error(`Unknown mode: ${mode}`);

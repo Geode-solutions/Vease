@@ -9,6 +9,7 @@ import {
   beforeAllTimeout,
   dragContextMenu,
   findOverlappingObjectsPicker,
+  getHybridViewerCanvas,
   hoverViewerCenter,
   moveMouseOutOfTheWay,
   stabilizeHoverTooltip,
