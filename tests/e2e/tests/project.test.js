@@ -5,7 +5,11 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
+import {
+  afterActionWait,
+  beforeAllTimeout,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
 import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
@@ -46,7 +50,7 @@ test("change lines color", async () => {
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });
   await setColor(window, "modelStyleMenu", container);
-  await window.mouse.move(0, 0);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
 });
@@ -60,7 +64,7 @@ test("collapse model tree in main tree", async () => {
     .locator("button:has(.mdi-magnify-expand)")
     .click({ force: true });
   await window.waitForTimeout(afterActionWait);
-  await window.mouse.move(0, 0);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 

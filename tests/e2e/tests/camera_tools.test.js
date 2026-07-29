@@ -9,7 +9,9 @@ import {
   beforeAllTimeout,
   dragContextMenu,
   findOverlappingObjectsPicker,
+  getHybridViewerCanvas,
   hoverViewerCenter,
+  moveMouseOutOfTheWay,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
 import {
@@ -74,8 +76,8 @@ test("reset camera", async () => {
 });
 
 test("rotate camera 180 degrees", async () => {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  const box = await canvas.boundingBox();
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
   await rotateCamera(window, -box.width);
   await expect(window).toHaveScreenshot();
 });
@@ -112,15 +114,15 @@ test("visibility off grid and expand brep focus", async () => {
   await hideObjectInTree(window, rgd3dGeodeObjectType, defaultDataName);
 
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
-  await window.mouse.move(0, 0);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
 test("center on click", async () => {
   await toggleCenterOnClick(window);
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  await canvas.click({
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  await hybridViewerCanvas.click({
     position: { x: 750, y: 250 },
   });
   await window.waitForTimeout(afterActionWait);

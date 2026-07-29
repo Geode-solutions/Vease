@@ -127,7 +127,7 @@ async function createNewWindow() {
     // oxlint-disable-next-line eslint/func-names
     cleanup = function () {
       console.log("Killing server process", { PORT });
-      return fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
+      return fetch(`http://localhost:${PORT}/api/local/kill`, { method: "POST" });
     };
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);

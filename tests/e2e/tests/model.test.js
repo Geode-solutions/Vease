@@ -7,6 +7,8 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   beforeAllTimeout,
+  getHybridViewerCanvas,
+  moveMouseOutOfTheWay,
   setEdgesVisibility,
   setPointsSize,
   setPointsVisibility,
@@ -133,7 +135,7 @@ test("object tree model components", async () => {
     .filter({ hasText: "test" })
     .locator("button:has(.mdi-magnify-expand)")
     .click();
-  await window.mouse.move(0, 0);
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
@@ -250,8 +252,8 @@ test("context menu through non visible surface", async () => {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  const box = await canvas.boundingBox();
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await setModelColor(window);
 

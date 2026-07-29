@@ -1,4 +1,4 @@
-import { afterActionWait } from "./viewer_interaction.js";
+import { afterActionWait, getHybridViewerCanvas } from "./viewer_interaction.js";
 
 async function openCreateToolsPanel(window) {
   await window.getByTestId("createButton").click();
@@ -48,8 +48,8 @@ async function clickPickButton(window) {
 }
 
 async function pickPointInViewer(window, x, y) {
-  const canvas = window.getByTestId("hybridViewer").locator("canvas");
-  await canvas.click({
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  await hybridViewerCanvas.click({
     position: { x, y },
   });
   await window.waitForTimeout(afterActionWait);
