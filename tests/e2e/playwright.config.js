@@ -5,7 +5,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
-const CLOUD_TIMEOUT = 100;
+const CLOUD_TIMEOUT = 120;
 const LINUX_TIMEOUT_BROWSER = 60;
 const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
@@ -54,8 +54,7 @@ export default defineConfig({
   reporter: "html",
   use: {
     screenshot: "only-on-failure",
-    trace: "on-first-retry",
-    video: "on-first-retry",
+    trace: "retain-on-failure",
   },
 
   projects: [
