@@ -23,7 +23,7 @@ const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 25;
 const WINDOWS_WAIT_DESKTOP = 30;
-const SECONDS_NAVIGATION_TIMEOUT = 10;
+const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
   browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
@@ -136,12 +136,9 @@ async function navigateToApp(mode, browser) {
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
     await page.waitForLoadState("networkidle");
-    await page.evaluate(() => document.fonts.ready);
     return {
       window: page,
-      cleanup: async () => {
-        await kill(nuxtPort);
-      },
+      cleanup: () => kill(nuxtPort),
     };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => {
@@ -157,7 +154,7 @@ async function navigateToApp(mode, browser) {
       prefix = "next.";
     }
     const url = `https://${prefix}vease.geode-solutions.com`;
-    const maxRetries = 5;
+    const maxRetries = 10;
     await navigateToCloudApp(page, url, maxRetries);
 
     const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
@@ -179,9 +176,7 @@ async function navigateToApp(mode, browser) {
 
     return {
       window: page,
-      cleanup: async () => {
-        await page.close();
-      },
+      cleanup: () => page.close(),
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
@@ -190,9 +185,7 @@ async function navigateToApp(mode, browser) {
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
-      cleanup: async () => {
-        await electronApp.close();
-      },
+      cleanup: () => electronApp.close(),
     };
   }
   throw new Error(`Unknown mode: ${mode}`);
