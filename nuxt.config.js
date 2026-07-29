@@ -20,7 +20,7 @@ function nitroIgnoreConfig() {
   if (mode === "CLOUD_SERVER") {
     return ["api/local/**", "api/serverless/**"];
   }
-  throw new Error("Unknown mode provided: " + mode);
+  throw new Error(`Unknown mode provided: ${mode}`);
 }
 
 export default defineNuxtConfig({
