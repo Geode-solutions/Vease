@@ -94,7 +94,6 @@ watch(
     />
     <FeedBackSnackers />
 
-    <!-- Global Extension Components (e.g. Modals) -->
     <GlobalComponents />
   </v-app>
 </template>
