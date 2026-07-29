@@ -6,6 +6,23 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
+function nitroIgnoreConfig() {
+  const mode = process.env.MODE;
+  if (!mode) {
+    throw new Error("No mode provided");
+  }
+  if (mode === "DESKTOP" || mode === "BROWSER") {
+    return ["api/serverless/**"];
+  }
+  if (mode === "CLOUD") {
+    return ["api/local/**", "api/microservice/**"];
+  }
+  if (mode === "CLOUD_SERVER") {
+    return ["api/local/**", "api/serverless/**"];
+  }
+  throw new Error(`Unknown mode provided: ${mode}`);
+}
+
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -40,6 +57,10 @@ export default defineNuxtConfig({
   ].filter(Boolean),
 
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
+
+  nitro: {
+    ignore: nitroIgnoreConfig(),
+  },
 
   ssr: false,
   electron: {
