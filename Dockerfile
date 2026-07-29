@@ -31,6 +31,7 @@ COPY --from=builder .output/server /etc/vease/server
 COPY <<'EOT' /etc/supervisor/conf.d/vease-server.conf
 [program:vease-server]
 command=node /etc/vease/server/index.mjs
+environment=PORT="3000"
 autostart=true
 autorestart=true
 stdout_logfile=/dev/stdout
