@@ -6,10 +6,7 @@ import path from "node:path";
 
 // Third party imports
 import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
-import {
-  getAvailablePort,
-  waitForReady,
-} from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
+import { getAvailablePort, waitForReady } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 
 // Isolate userData folder for concurrent Playwright workers during E2E tests
 if (process.env.CI === "e2e") {

@@ -7,10 +7,10 @@ import { setTimeout } from "node:timers/promises";
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
-import { executableName } from "@geode/opengeodeweb-front/app/utils/local/path.js";
+import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
 import { isWindows } from "std-env";
 import kill from "kill-port";
-import { runBrowser } from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
+import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 
 // Local imports
 // oxlint-disable-next-line no-relative-parent-imports
