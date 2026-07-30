@@ -1,56 +1,16 @@
 // Third party imports
 import { createError, defineEventHandler, readMultipartFormData } from "h3";
-import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 
 // Local imports
-import { getBackBaseUrl } from "@vease_server/utils/config.js";
+import {
+  getAllowedFileExtensions,
+  getAllowedGeodeObjectTypes,
+  saveViewableFile,
+  uploadFile
+} from "@vease_server/utils/fetch_functions.js";
 
-async function getAllowedGeodeObjectTypes(filename) {
-  const backBaseUrl = await getBackBaseUrl();
+import { getFileExtension } from "@ogw_shared/utils/utils.js";
 
-  const schema = back_schemas.opengeodeweb_back.allowed_objects;
-  params = { filename };
-  return fetchSchema({
-    schema,
-    params,
-    baseURL: backBaseUrl
-  }, {
-    onResponse: (response) => {
-      const allowedGeodeObjectTypes = Object.keys(response.allowed_objects);
-      console.log(`Allowed geode object types: ${allowedGeodeObjectTypes}`);
-      return allowedGeodeObjectTypes[0];
-    }
-  })
-}
-
-async function uploadFile(file) {
-  const backBaseUrl = await getBackBaseUrl();
-  const schema = back_schemas.opengeodeweb_back.upload_file;
-  const { filename, type, data } = file;
-  console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
-
-  const params = new FormData();
-  params.append("file", new Blob([data], { type }), filename);
-  return fetchSchema({
-    schema,
-    params,
-    baseURL: backBaseUrl
-  })
-
-}
-
-async function saveViewableFile(filename, geode_object_type) {
-  const backBaseUrl = await getBackBaseUrl();
-  const schema = back_schemas.opengeodeweb_back.save_viewable_file;
-  const params = { filename, geode_object_type }
-  return fetchSchema({
-    schema,
-    params,
-    baseURL: backBaseUrl,
-    expectEvent: true,
-  })
-}
 
 export default defineEventHandler(
   async (event) => {
@@ -61,6 +21,15 @@ export default defineEventHandler(
         throw createError({ statusCode: 400, statusMessage: "No file field found" });
       }
       const { filename, type: mimeType } = filePart;
+
+      const allowedFileExtensions = await getAllowedFileExtensions();
+      console.log(`Allowed files: ${allowedFileExtensions}`);
+      console.log(`Allowed files: ${allowedFileExtensions.values()}`);
+      console.log(`typeof Allowed files: ${typeof allowedFileExtensions.values()}`);
+
+      if (!allowedFileExtensions.includes(getFileExtension(filename))) {
+        throw createError({ statusCode: 400, statusMessage: "File type not allowed" });
+      }
 
       await uploadFile(filePart);
       const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename);
