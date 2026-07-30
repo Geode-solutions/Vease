@@ -116,7 +116,7 @@ test("visibility off grid and expand brep focus", async () => {
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
-  await window.evaluate(() => document.fonts.ready);
+
   await expect(window).toHaveScreenshot();
 });
 
