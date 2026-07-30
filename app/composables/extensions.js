@@ -22,7 +22,7 @@ function getUserPlatform() {
 
 // oxlint-disable-next-line max-lines-per-function
 export function useExtensions() {
-  const { isUserAuthenticated } = useAuth();
+  const { isUserAuthenticated, user } = useAuth();
   const APIStore = useAPIStore();
   const { getExtensionVersion } = useExtensionMetadata();
 
@@ -48,7 +48,7 @@ export function useExtensions() {
     return APIStore.request({ schema, headers });
   }
 
-  async function downloadExtension(extensionId) {
+  async function downloadExtensionURL(extensionId) {
     if (!isUserAuthenticated.value) {
       throw new Error("User not authenticated");
     }
@@ -66,8 +66,14 @@ export function useExtensions() {
     const headers = { Authorization: `Bearer ${token}` };
     const { url } = await APIStore.request({ schema, params, headers });
     console.log({ url });
+    const extensionFileName = `${extensionId}-${platform}.vext`;
+    return { url, extensionFileName };
+  }
+
+  async function downloadExtension(extensionId) {
+    const { url, extensionFileName } = await downloadExtensionURL(extensionId);
     const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
-    return new File([fileBuffer], `${extensionId}-${platform}.vext`);
+    return new File([fileBuffer], extensionFileName);
   }
 
   async function updateExtensions() {
@@ -102,6 +108,7 @@ export function useExtensions() {
   return {
     allowedExtensions,
     downloadExtension,
+    downloadExtensionURL,
     updateExtensions,
   };
 }
