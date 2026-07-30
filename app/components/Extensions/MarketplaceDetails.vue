@@ -19,7 +19,7 @@ const { extension } = defineProps({
 
 const MESSAGE_TIMEOUT = 5000;
 
-const { downloadExtension, downloadExtensionURL } = useExtensions();
+const { downloadExtension } = useExtensions();
 const appStore = useAppStore();
 const infraStore = useInfraStore();
 
@@ -44,15 +44,9 @@ async function installSelectedExtension() {
   installing.value = true;
 
   try {
-    if (infraStore.app_mode !== appMode.CLOUD) {
-      const file = await downloadExtension(extension.id);
-      console.log({ file });
-      await importExtensionFile(file);
-    } else {
-      const urlHandler = await downloadExtensionURL(extension.id);
-      console.log({ urlHandler });
-      await importExtensionURL(urlHandler);
-    }
+    const urlHandler = await downloadExtension(extension.id);
+    console.log({ urlHandler });
+    await importExtensionURL(urlHandler);
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
     console.error(error);

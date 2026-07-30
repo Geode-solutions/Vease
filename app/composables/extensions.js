@@ -48,7 +48,7 @@ export function useExtensions() {
     return APIStore.request({ schema, headers });
   }
 
-  async function downloadExtensionURL(extensionId) {
+  async function downloadExtension(extensionId) {
     if (!isUserAuthenticated.value) {
       throw new Error("User not authenticated");
     }
@@ -68,12 +68,6 @@ export function useExtensions() {
     console.log({ url });
     const extensionFileName = `${extensionId}-${platform}.vext`;
     return { url, extensionFileName };
-  }
-
-  async function downloadExtension(extensionId) {
-    const { url, extensionFileName } = await downloadExtensionURL(extensionId);
-    const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
-    return new File([fileBuffer], extensionFileName);
   }
 
   async function updateExtensions() {
@@ -108,7 +102,6 @@ export function useExtensions() {
   return {
     allowedExtensions,
     downloadExtension,
-    downloadExtensionURL,
     updateExtensions,
   };
 }
