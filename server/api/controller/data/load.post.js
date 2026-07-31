@@ -23,10 +23,6 @@ export default defineEventHandler(
       const { filename, type: mimeType } = filePart;
 
       const allowedFileExtensions = await getAllowedFileExtensions();
-      console.log(`Allowed files: ${allowedFileExtensions}`);
-      console.log(`Allowed files: ${allowedFileExtensions.values()}`);
-      console.log(`typeof Allowed files: ${typeof allowedFileExtensions.values()}`);
-
       if (!allowedFileExtensions.includes(getFileExtension(filename))) {
         throw createError({ statusCode: 400, statusMessage: "File type not allowed" });
       }
@@ -40,7 +36,7 @@ export default defineEventHandler(
     } catch (error) {
       console.log(error);
       throw createError({
-        statusCode: error.statusCode ?? 500,
+        statusCode: error.statusCode,
         statusMessage: error.statusMessage ?? error.message,
       });
     }
