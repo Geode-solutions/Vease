@@ -6,30 +6,30 @@ async function toggleClippingPlanes(window) {
 }
 
 async function invertPlaneNormal(window, planeIndex = 0) {
-  const planeCard = window.getByTestId("planeCard").nth(planeIndex);
-  await planeCard.getByTestId("invertNormalButton").click();
-  await window.waitForTimeout(afterActionWait);
-}
-
-async function setPlaneValues(window, testId, planeIndex, values) {
-  const planeCard = window.getByTestId("planeCard").nth(planeIndex);
-  const inputs = planeCard.getByTestId(testId).locator("input");
-  await Promise.all(
-    values.map(async (value, axis) => {
-      const input = inputs.nth(axis);
-      await input.fill(value.toString());
-      await input.press("Enter");
-    }),
-  );
+  await window.getByTestId("invertNormalButton").nth(planeIndex).click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function setPlaneOrigin(window, planeIndex, origin) {
-  await setPlaneValues(window, "planeOriginInput", planeIndex, origin);
+  const card = window.getByTestId("planeCard").nth(planeIndex);
+  for (let axis = 0; axis < origin.length; axis += 1) {
+    const input = card.getByTestId("planeOriginInput").nth(axis).locator("input");
+    // oxlint-disable no-await-in-loop
+    await input.fill(origin[axis].toString());
+    await input.press("Enter");
+  }
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function setPlaneNormal(window, planeIndex, normal) {
-  await setPlaneValues(window, "planeNormalInput", planeIndex, normal);
+  const card = window.getByTestId("planeCard").nth(planeIndex);
+  for (let axis = 0; axis < normal.length; axis += 1) {
+    const input = card.getByTestId("planeNormalInput").nth(axis).locator("input");
+    await input.fill(normal[axis].toString());
+    await input.press("Enter");
+    // oxlint-enable no-await-in-loop
+  }
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function addClippingPlane(window) {
