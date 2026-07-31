@@ -3,7 +3,7 @@ import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.jso
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
 import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
 
-import { deriveAllowedObjects } from "@ogw_shared/utils/utils";
+import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load.js";
 
 // Local imports
 import { getBackBaseUrl } from "./config.js";
@@ -29,9 +29,9 @@ async function getAllowedGeodeObjectTypes(filename) {
     params,
     baseURL: backBaseUrl
   })
-  const derived = deriveAllowedObjects([filename], [response.allowed_objects]);
-  if (derived.selectedGeodeObject) {
-    return derived.selectedGeodeObject
+  const resolved = resolveAllowedObjects([filename], [response.allowed_objects]);
+  if (resolved.selectedGeodeObject) {
+    return resolved.selectedGeodeObject
   }
 }
 
