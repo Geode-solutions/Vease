@@ -5,6 +5,14 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  addClippingPlane,
+  invertPlaneNormal,
+  selectClippingDatasets,
+  setPlaneNormal,
+  toggleClippingPlanes,
+  toggleTargetAllVisible,
+} from "@tests/utils/clipping_planes_interaction.js";
+import {
   afterActionWait,
   beforeAllTimeout,
   dragContextMenu,
@@ -52,6 +60,10 @@ let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;
 const TARGET_TOP = 100;
+const CUSTOM_NORMAL_VALUE = -0.2;
+const CUSTOM_NORMAL_VALUE_X = -0.15;
+const CUSTOM_NORMAL_VALUE_Y = -0.9;
+const CUSTOM_NORMAL_VALUE_Z = 0.41;
 
 test.describe.configure({ mode: "serial" });
 
@@ -234,5 +246,68 @@ test("screenshot clipboard with background", async () => {
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
   await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("open clipping planes tool", async () => {
+  await toggleGridScale(window);
+  await resetCamera(window);
+  await showObjectInTree(window, "BRep");
+  await toggleClippingPlanes(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes invert normal", async () => {
+  await invertPlaneNormal(window, 0);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes custom origin and normal values", async () => {
+  await setPlaneNormal(window, 0, [CUSTOM_NORMAL_VALUE, 1, CUSTOM_NORMAL_VALUE]);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes target specific brep dataset", async () => {
+  await toggleTargetAllVisible(window);
+  await selectClippingDatasets(window, "test", 1);
+  await hideObjectInTree(window, "RegularGrid3D");
+  await toggleClippingPlanes(window);
+  await resetCamera(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes hover highlight on cell", async () => {
+  await toggleCameraOrientation(window);
+  await selectCameraOrientation(window, "Y+");
+  await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
+  await window.getByTestId("highlightOnHoverCellsButton").click();
+  await window.waitForTimeout(afterActionWait);
+  await hoverViewerCenter(window);
+  await stabilizeHoverTooltip(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+});
+
+test("clipping planes add second plane", async () => {
+  await toggleClippingPlanes(window);
+  await addClippingPlane(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes multiple planes and datas", async () => {
+  await toggleClippingPlanes(window);
+  await toggleCameraOrientation(window);
+  await selectCameraOrientation(window, "X-");
+  await showObjectInTree(window, "RegularGrid3D");
+  await resetCamera(window);
+  await toggleClippingPlanes(window);
+  await selectClippingDatasets(window, "test", 0);
+  await setPlaneNormal(window, 0, [1, 0, 0]);
+  await setPlaneNormal(window, 1, [
+    CUSTOM_NORMAL_VALUE_X,
+    CUSTOM_NORMAL_VALUE_Y,
+    CUSTOM_NORMAL_VALUE_Z,
+  ]);
+  await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });
