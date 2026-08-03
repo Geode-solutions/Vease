@@ -285,10 +285,10 @@ test("clipping planes hover highlight on cell", async () => {
   await hoverViewerCenter(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
 });
 
 test("clipping planes add second plane", async () => {
+  await window.keyboard.press("Escape");
   await toggleClippingPlanes(window);
   await addClippingPlane(window);
   await expect(window).toHaveScreenshot();
