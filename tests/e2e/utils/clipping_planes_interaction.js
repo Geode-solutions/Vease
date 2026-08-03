@@ -47,7 +47,7 @@ async function selectClippingDatasets(window, datasetName, index = 0) {
   await window.waitForTimeout(afterActionWait);
   await window.getByRole("option", { name: datasetName }).nth(index).click();
   await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
+  await window.getByTestId("selectedDatasetsSelect").click();
   await window.waitForTimeout(afterActionWait);
 }
 

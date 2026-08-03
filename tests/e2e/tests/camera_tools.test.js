@@ -271,12 +271,12 @@ test("clipping planes target specific brep dataset", async () => {
   await toggleTargetAllVisible(window);
   await selectClippingDatasets(window, "test", 1);
   await hideObjectInTree(window, "RegularGrid3D");
-  await toggleClippingPlanes(window);
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("clipping planes hover highlight on cell", async () => {
+  await toggleClippingPlanes(window);
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "Y+");
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
