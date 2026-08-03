@@ -2,6 +2,7 @@ import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
+  moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 
 async function setFeatureItem(window, menuTestId, item) {
@@ -17,6 +18,7 @@ async function setFeatureItem(window, menuTestId, item) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
 }
 
 async function setFeatureColorMap(window, menuTestId, colorMap) {
@@ -49,6 +51,7 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
 }
 
 async function applyAttribute(
@@ -110,6 +113,7 @@ async function applyAttribute(
     await window.waitForTimeout(afterActionWait);
   }
   await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
 }
 
 function setFeatureAttribute(
