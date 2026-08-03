@@ -189,6 +189,7 @@ export default defineNuxtConfig({
         "@vue/devtools-kit",
         "bowser",
         "broadcast-channel",
+        "compare-versions",
         "dexie",
         "lodash/merge",
         "p-timeout",
