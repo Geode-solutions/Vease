@@ -1,7 +1,8 @@
 <script setup>
+import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
 import GlassCard from "@ogw_front/components/GlassCard";
-import { importExtensionFile } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
+import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { useExtensions } from "@vease/composables/extensions";
 
@@ -16,6 +17,7 @@ const MESSAGE_TIMEOUT = 5000;
 
 const { downloadExtension } = useExtensions();
 const appStore = useAppStore();
+const infraStore = useInfraStore();
 
 const installing = ref(false);
 const installError = ref("");
@@ -38,9 +40,9 @@ async function installSelectedExtension() {
   installing.value = true;
 
   try {
-    const file = await downloadExtension(extension.id);
-    console.log({ file });
-    await importExtensionFile(file);
+    const urlHandler = await downloadExtension(extension.id);
+    console.log({ urlHandler });
+    await importExtensionURL(urlHandler);
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
     console.error(error);
