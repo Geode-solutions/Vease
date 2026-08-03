@@ -22,7 +22,7 @@ function getUserPlatform() {
 
 // oxlint-disable-next-line max-lines-per-function
 export function useExtensions() {
-  const { isUserAuthenticated } = useAuth();
+  const { isUserAuthenticated, user } = useAuth();
   const APIStore = useAPIStore();
   const { getExtensionVersion } = useExtensionMetadata();
 
@@ -66,8 +66,8 @@ export function useExtensions() {
     const headers = { Authorization: `Bearer ${token}` };
     const { url } = await APIStore.request({ schema, params, headers });
     console.log({ url });
-    const fileBuffer = await fetch(url).then((file) => file.arrayBuffer());
-    return new File([fileBuffer], `${extensionId}-${platform}.vext`);
+    const extensionFileName = `${extensionId}-${platform}.vext`;
+    return { url, extensionFileName };
   }
 
   async function updateExtensions() {
