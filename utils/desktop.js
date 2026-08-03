@@ -6,10 +6,8 @@ import path from "node:path";
 
 // Third party imports
 import { BrowserWindow, app, safeStorage, shell, utilityProcess } from "electron";
-import {
-  getAvailablePort,
-  waitForReady,
-} from "@geode/opengeodeweb-front/app/utils/local/scripts.js";
+import { getAvailablePort, waitForReady } from "@geode/opengeodeweb-front/server/utils/scripts.js";
+import { setAppBaseUrl } from "@geode/opengeodeweb-front/shared/scripts.js";
 
 // Isolate userData folder for concurrent Playwright workers during E2E tests
 if (process.env.CI === "e2e") {
@@ -123,11 +121,12 @@ async function createNewWindow() {
     const expectedResponse = `Listening on http://[::]:${PORT}`;
     await waitForReady(server, expectedResponse, controller.signal);
     window.loadURL(`http://localhost:${PORT}`);
+    await setAppBaseUrl(`http://localhost:${PORT}`);
 
     // oxlint-disable-next-line eslint/func-names
     cleanup = function () {
       console.log("Killing server process", { PORT });
-      return fetch(`http://localhost:${PORT}/api/app/kill`, { method: "POST" });
+      return fetch(`http://localhost:${PORT}/api/local/app/kill`, { method: "POST" });
     };
   } else {
     console.log("VITE_DEV_SERVER_URL", process.env.VITE_DEV_SERVER_URL);
@@ -135,6 +134,7 @@ async function createNewWindow() {
     window.on("ready-to-show", () => {
       window.webContents.openDevTools();
     });
+    await setAppBaseUrl(process.env.VITE_DEV_SERVER_URL);
   }
 
   return { window, cleanup };

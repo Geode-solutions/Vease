@@ -36,6 +36,8 @@
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "build": "nuxi build",
     "build:browser": "cross-env MODE=BROWSER npm run build",
+    "build:cloud": "cross-env MODE=CLOUD npm run build",
+    "build:cloud_server": "cross-env MODE=CLOUD_SERVER npm run build",
     "build:desktop": "npm run package",
     "build:desktop:unpacked": "cross-env MODE=DESKTOP npm run build && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
