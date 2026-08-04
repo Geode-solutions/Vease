@@ -24,7 +24,8 @@ const copied = ref(false);
 function copy_url() {
   navigator.clipboard.writeText(appStore.base_url);
   copied.value = true;
-  setTimeout(() => (copied.value = false), 1500);
+  const timeout = 1500;
+  setTimeout(() => (copied.value = false), timeout);
 }
 
 const microservices = computed(() =>
