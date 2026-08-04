@@ -9,6 +9,7 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/helpers/attribute";
+import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 
 function setMeshPolygonsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -42,7 +43,13 @@ function setMeshPolygonsColorMap(window, colorMap) {
   return setFeatureColorMap(window, menuTestId, colorMap);
 }
 
+function openMeshPolygonsMenu(window) {
+  const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
+  return openStyleMenu(window, menuTestId);
+}
+
 export {
+  openMeshPolygonsMenu,
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsItem,

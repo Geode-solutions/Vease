@@ -27,21 +27,7 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
   await colorMapListFilter.filter({ visible: true }).first().locator("input").fill(colorMap);
   const colorMapListLoading = await window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
-
   await window.waitForTimeout(afterActionWait);
-
-  const groups = window
-    .getByTestId("colorMapList")
-    .locator(".text-white.font-weight-bold")
-    .filter({ visible: true });
-  const allGroups = await groups.all();
-  // oxlint-disable no-await-in-loop
-  for (const group of allGroups) {
-    await group.click();
-    await window.waitForTimeout(afterActionWait);
-  }
-  // oxlint-enable no-await-in-loop
-
   await window
     .getByTestId("colorMapList")
     .getByText(colorMap, { exact: true })

@@ -70,13 +70,14 @@ async function findOverlappingObjectsPicker(window) {
 
 async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
-  const menuButton = menuContainer.locator("button.menu-btn");
-  if (!(await menuButton.evaluate((node) => node.classList.contains("v-btn--active")))) {
-    const activeMenuButton = window.locator(".menu-btn.v-btn--active");
+  const isAlreadyActive = (await menuContainer.getByTestId("activeCircularMenuItemButton").count()) > 0;
+  if (!isAlreadyActive) {
+    const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
     if (await activeMenuButton.isVisible()) {
       await activeMenuButton.click();
       await window.waitForTimeout(afterActionWait);
     }
+    const menuButton = menuContainer.getByTestId("circularMenuItemButton").first();
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
@@ -220,6 +221,17 @@ async function toggleInfoCard(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function openStyleMenu(window, menuTestId) {
+  const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
+  if (await activeMenuButton.isVisible()) {
+    await activeMenuButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+  await ensureMenuOpen(window, menuTestId);
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   beforeAllTimeout,
@@ -231,6 +243,7 @@ export {
   hoverViewerCenter,
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
+  openStyleMenu,
   setCellsVisibility,
   setEdgesVisibility,
   setEdgesWidth,

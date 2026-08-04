@@ -9,6 +9,7 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/helpers/attribute";
+import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 
 function setMeshCellsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -42,7 +43,13 @@ function setMeshCellsColorMap(window, colorMap) {
   return setFeatureColorMap(window, menuTestId, colorMap);
 }
 
+function openMeshCellsMenu(window) {
+  const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
+  return openStyleMenu(window, menuTestId);
+}
+
 export {
+  openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsVertexAttribute,
   setMeshCellsItem,

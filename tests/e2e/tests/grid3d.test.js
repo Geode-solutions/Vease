@@ -21,6 +21,7 @@ import {
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
+  openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
   setMeshCellsItem,
@@ -96,6 +97,11 @@ test("cell attribute -change colormap", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("cell attribute - reopen menu", async () => {
+  await openMeshCellsMenu(window);
+  await expect(window).toHaveScreenshot();
+});
+
 test("vertex attribute", async () => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName, {
     item: 1,
@@ -121,6 +127,11 @@ test("vertex attribute - change attribute name", async () => {
 
 test("vertex attribute - switch back to points", async () => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - reopen menu", async () => {
+  await openMeshCellsMenu(window);
   await expect(window).toHaveScreenshot();
 });
 

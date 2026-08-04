@@ -17,10 +17,13 @@ import {
   pointSetGeodeObjectType,
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  openMeshPointsMenu,
+  setMeshPointsVertexAttribute,
+} from "@tests/utils/mesh/points/attribute.js";
 import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
-import { setMeshPointsVertexAttribute } from "@tests/utils/mesh/points/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -73,6 +76,11 @@ test("points visibility", async () => {
 test("vertex attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
   await setMeshPointsVertexAttribute(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute - reopen menu", async () => {
+  await openMeshPointsMenu(window);
   await expect(window).toHaveScreenshot();
 });
 
