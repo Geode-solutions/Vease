@@ -74,11 +74,11 @@ async function highlightData(window, geodeObjectType, dataName) {
 async function getTreeRowByTextAndParent(
   window,
   geodeObjectType,
-  dataName = undefined,
+  dataName,
   treeTestId = "mainObjectTree",
 ) {
   const tree = window.getByTestId(treeTestId);
-  const allRows = tree.locator(".tree-row-wrapper");
+  const allRows = tree.getByTestId("treeRowWrapper");
   const count = await allRows.count();
 
   for (let i = 0; i < count; i += 1) {
@@ -127,7 +127,7 @@ async function expandGeodeObjectType(window, geodeObjectType) {
   }
 }
 
-async function hoverModelComponentRow(window, modelComponentType, modelComponentName = undefined) {
+async function hoverModelComponentRow(window, modelComponentType, modelComponentName) {
   const modelComponentRow = await getTreeRowByTextAndParent(
     window,
     modelComponentType,
@@ -138,14 +138,8 @@ async function hoverModelComponentRow(window, modelComponentType, modelComponent
   await window.waitForTimeout(afterActionWait);
 }
 
-async function hideObjectInTree(
-  window,
-  parentName,
-  objectName = undefined,
-  treeTestId = "mainObjectTree",
-) {
+async function hideObjectInTree(window, parentName, objectName, treeTestId = "mainObjectTree") {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
-
   await row.waitFor({ state: "attached" });
   const btn = row.locator("button:has(.mdi-eye)").first();
   if (await btn.isVisible()) {
@@ -179,39 +173,68 @@ async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainO
   await window.waitForTimeout(afterActionWait);
 }
 
-async function toggleModelTreeRow(window, rowName) {
-  // Close any open menus
+async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
+    .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
-    .first();
+    .nth(rowIndex);
   await row.locator("button:has([class*='mdi-eye'])").first().click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function setModelTreeRowColorRandom(window, rowName) {
-  // Close any open menus
+async function openModelComponentContextMenu(window, rowName, rowIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-
   const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
   const row = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
+    .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
-    .first();
+    .nth(rowIndex);
   const label = row.locator(".tree-item-label").first();
   await label.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
+}
 
+async function setModelTreeRowColorRandom(window, rowName, rowIndex = 0) {
+  await openModelComponentContextMenu(window, rowName, rowIndex);
   await setModelColor(window);
+}
+
+async function toggleObjectsTree(window) {
+  await window.getByTestId("toggleObjectsButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function openModelComponentsTree(window, geodeObjectType, dataName) {
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
+  await row.getByTestId("expandModelComponentsButton").click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function expandTreeCategory(window, categoryName, treeTestId = "mainObjectTree") {
+  const treeRow = await getTreeRowByTextAndParent(window, categoryName, undefined, treeTestId);
+  const rightChevron = treeRow.locator(".mdi-menu-right").first();
+  if ((await rightChevron.count()) > 0) {
+    await rightChevron.click();
+  }
+}
+
+async function hideAllComponentLeafRows(window, categoryName) {
+  const treeTestId = "modelComponentsObjectTree";
+  await expandTreeCategory(window, categoryName, treeTestId);
+  const tree = window.getByTestId(treeTestId);
+  const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
+  const count = await leafRows.count();
+  for (let i = 0; i < count; i += 1) {
+    // oxlint-disable-next-line no-await-in-loop
+    await leafRows.nth(i).locator("button").first().click({ force: true });
+    // oxlint-disable-next-line no-await-in-loop
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 export {
@@ -234,4 +257,9 @@ export {
   openObjectTreeContextMenu,
   toggleModelTreeRow,
   setModelTreeRowColorRandom,
+  openModelComponentContextMenu,
+  toggleObjectsTree,
+  openModelComponentsTree,
+  expandTreeCategory,
+  hideAllComponentLeafRows,
 };

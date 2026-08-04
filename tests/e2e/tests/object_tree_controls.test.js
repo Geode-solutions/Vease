@@ -17,6 +17,7 @@ import {
   hideObjectInTree,
   openFilterMenu,
   setModelTreeRowColorRandom,
+  toggleObjectsTree,
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
@@ -125,8 +126,7 @@ test("collapse main object tree", async () => {
 });
 
 test("toggle objects", async () => {
-  await window.getByTestId("toggleObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await toggleObjectsTree(window);
   await expect(window).toHaveScreenshot();
 });
 
