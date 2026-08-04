@@ -135,7 +135,7 @@ async function navigateToApp(mode, browser) {
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await page.waitForTimeout(WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
-    await page.waitForLoadState("networkidle");
+
     return {
       window: page,
       cleanup: () => kill(nuxtPort),
