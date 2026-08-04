@@ -8,29 +8,30 @@ export default defineNuxtPlugin(() => {
   const backStore = useBackStore();
   const viewerStore = useViewerStore();
 
-  backStore.$onAction(({ name, after, }) => {
-    if (name !== "launch") { return; }
+  backStore.$onAction(({ name, after }) => {
+    if (name !== "launch") {
+      return;
+    }
     after(async () => {
       try {
         await setBackBaseUrl(backStore.base_url);
         connectToEventSource();
-      }
-      catch (error) {
+      } catch (error) {
         console.error("[SYNC] back launch failed", error);
       }
     });
   });
 
-  viewerStore.$onAction(({ name, after, }) => {
-    if (name !== "launch") { return; }
+  viewerStore.$onAction(({ name, after }) => {
+    if (name !== "launch") {
+      return;
+    }
     after(async () => {
       try {
         await setViewerBaseUrl(viewerStore.base_url);
-      }
-      catch (error) {
+      } catch (error) {
         console.error("[SYNC] viewer launch failed", error);
       }
     });
-
   });
 });

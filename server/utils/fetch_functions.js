@@ -7,16 +7,13 @@ import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load.
 
 // Local imports
 
-
 async function getAllowedFileExtensions() {
   const backBaseUrl = await getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.allowed_files;
-  const response = await fetchSchema(
-    {
-      schema,
-      baseURL: backBaseUrl
-    },
-  );
+  const response = await fetchSchema({
+    schema,
+    baseURL: backBaseUrl,
+  });
   return response.extensions;
 }
 
@@ -27,11 +24,11 @@ async function getAllowedGeodeObjectTypes(filename) {
   const response = await fetchSchema({
     schema,
     params,
-    baseURL: backBaseUrl
-  })
+    baseURL: backBaseUrl,
+  });
   const resolved = resolveAllowedObjects([filename], [response.allowed_objects]);
   if (resolved.selectedGeodeObject) {
-    return resolved.selectedGeodeObject
+    return resolved.selectedGeodeObject;
   }
 }
 
@@ -43,32 +40,24 @@ async function uploadFile(file) {
 
   const params = new FormData();
   params.append("file", new Blob([data], { type }), filename);
-  return fetchRaw(
-    {
-      route: schema.$id,
-      method: schema.methods.find((method) => method !== "OPTIONS"),
-      params,
-      baseURL: backBaseUrl
-    })
-
+  return fetchRaw({
+    route: schema.$id,
+    method: schema.methods.find((method) => method !== "OPTIONS"),
+    params,
+    baseURL: backBaseUrl,
+  });
 }
 
 async function saveViewableFile(filename, geode_object_type) {
   const backBaseUrl = await getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.save_viewable_file;
-  const params = { filename, geode_object_type }
+  const params = { filename, geode_object_type };
   return fetchSchema({
     schema,
     params,
     baseURL: backBaseUrl,
     expectEvent: true,
-  })
+  });
 }
 
-
-export {
-  getAllowedFileExtensions,
-  getAllowedGeodeObjectTypes,
-  uploadFile,
-  saveViewableFile
-}
+export { getAllowedFileExtensions, getAllowedGeodeObjectTypes, uploadFile, saveViewableFile };

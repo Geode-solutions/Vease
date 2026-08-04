@@ -1,5 +1,5 @@
 import { useBackStore } from "@ogw_front/stores/back.js";
-import { useEventSource } from '@vueuse/core'
+import { useEventSource } from "@vueuse/core";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer.js";
 
 import { importItem } from "@ogw_front/utils/import_workflow.js";
@@ -39,7 +39,9 @@ function connectToEventSource() {
 
   watch([event, data], ([eventName, rawData]) => {
     console.log("[GEODE] Event received:", eventName, rawData);
-    if (!eventName) { return };
+    if (!eventName) {
+      return;
+    }
 
     const handler = eventHandlers[eventName];
     if (!handler) {
