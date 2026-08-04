@@ -40,7 +40,6 @@ function useAuth() {
   }
 
   async function autoLogin() {
-    console.log("Attempting to retrieve credentials for auto-login", infraStore.app_mode);
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
     }
@@ -50,7 +49,6 @@ function useAuth() {
         console.error("Failed to get credentials:", error);
         return;
       }
-      console.log("Credentials retrieval successful", { credentials });
       if (credentials) {
         const { email, password } = credentials;
         try {
@@ -73,7 +71,6 @@ function useAuth() {
       throw new Error("Please verify your email address before logging in.");
     }
     if (infraStore.app_mode === appMode.DESKTOP) {
-      console.log("Saving credentials for desktop mode");
       globalThis.electronAPI.save_credentials({
         email,
         password,
@@ -103,7 +100,6 @@ function useAuth() {
           console.error("Failed to delete credentials:", error);
           return;
         }
-        console.log("Credentials deletion successful");
       } catch (error) {
         console.error("Failed to delete credentials:", error);
       }
