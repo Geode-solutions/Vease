@@ -9,6 +9,7 @@ import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load.
 
 async function getAllowedFileExtensions() {
   const backBaseUrl = await getBackBaseUrl();
+  console.log(`Fetching allowed file extensions from ${backBaseUrl}`);
   const schema = back_schemas.opengeodeweb_back.allowed_files;
   const response = await fetchSchema({
     schema,

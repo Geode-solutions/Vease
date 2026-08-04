@@ -19,7 +19,7 @@ function connectToEventSource() {
   const url = computed(() => `${backStore.base_url}/events`);
   console.log("[PLUGIN] EventSource URL:", url.value);
 
-  const { event, data, status, error } = useEventSource(url, [...events.keys()], {
+  const { event, data, status, error } = useEventSource(url, [Object.keys(eventHandlers)], {
     autoReconnect: {
       retries: 3,
       delay: 1000,

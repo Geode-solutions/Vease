@@ -186,6 +186,8 @@ export default defineNuxtConfig({
         "@kitware/vtk.js/Rendering/Misc/GenericRenderWindow",
         "@kitware/vtk.js/Rendering/Misc/RemoteView",
         "@kitware/vtk.js/Rendering/OpenGL/Profiles/Geometry",
+        "@kitware/vtk.js/Widgets/Widgets3D/ImplicitPlaneWidget",
+        "@kitware/vtk.js/Widgets/Core/WidgetManager",
         "@vue/devtools-core",
         "@vue/devtools-kit",
         "bowser",
