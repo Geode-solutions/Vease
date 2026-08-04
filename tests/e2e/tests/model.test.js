@@ -158,7 +158,7 @@ test("object tree model components", async () => {
   for (let i = 0; i < surfaceCount; i += 1) {
     console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
     // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator(".mdi-eye").first().click({ force: true });
+    await surfaceLeafRows.nth(i).locator("button").first().click({ force: true });
     // oxlint-disable-next-line no-await-in-loop
     await window.waitForTimeout(afterActionWait);
   }
