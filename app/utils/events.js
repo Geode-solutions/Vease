@@ -4,7 +4,7 @@ import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer.js";
 
 import { importItem } from "@ogw_front/utils/import_workflow.js";
 
-const events = {
+const eventHandlers = {
   "opengeodeweb_back.save_viewable_file": async (payload) => {
     const hybridViewerStore = useHybridViewerStore();
     console.log("[GEODE] save_viewable_file:", payload);
@@ -21,7 +21,7 @@ function connectToEventSource() {
 
   const { event, data, status, error } = useEventSource(
     url,
-    [...events.keys()],
+    [...eventHandlers.keys()],
     {
       autoReconnect: {
         retries: 3,
@@ -34,8 +34,6 @@ function connectToEventSource() {
   );
 
   console.log("[PLUGIN]", { event, data, status, error });
-
-  const eventHandlers = { ...events };
 
   watch([event, data], ([eventName, rawData]) => {
     console.log("[GEODE] Event received:", eventName, rawData);
