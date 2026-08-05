@@ -100,15 +100,15 @@ async function getTreeRowByTextAndParent(
       for (let j = i + 1; j < count; j += 1) {
         const childRow = allRows.nth(j);
         //oxlint-disable-next-line no-await-in-loop
-        const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
-        if (!isLeaf) {
-          break;
-        }
-        //oxlint-disable-next-line no-await-in-loop
         const childRowText = await childRow.textContent();
         if (childRowText.includes(dataName)) {
           console.log("getTreeRowByTextAndParent", { childRow });
           return childRow;
+        }
+        //oxlint-disable-next-line no-await-in-loop
+        const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
+        if (!isLeaf) {
+          break;
         }
       }
     }
