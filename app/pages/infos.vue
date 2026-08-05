@@ -4,11 +4,13 @@ import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
 
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
+import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 const version = useRuntimeConfig().public.VERSION;
+const appStore = useAppStore();
 const backStore = useBackStore();
 const viewerStore = useViewerStore();
 
@@ -17,6 +19,14 @@ const viewer_version = ref("");
 
 const infraStore = useInfraStore();
 const packages_versions = ref([]);
+
+const copied = ref(false);
+function copy_url() {
+  navigator.clipboard.writeText(appStore.base_url);
+  copied.value = true;
+  const timeout = 1500;
+  setTimeout(() => (copied.value = false), timeout);
+}
 
 const microservices = computed(() =>
   infraStore.microservices.map((store) => {
@@ -64,26 +74,45 @@ runFunctionWhenMicroservicesConnected(() => {
     <v-row>
       <v-col cols="6">
         <v-row class="pa-3">
-          <p class="text-h4 text-white">App version</p>
-          <v-divider />
-          <v-row class="pa-3">
-            <v-col cols="12">
-              <p class="text-white text-no-wrap">
-                The current version of the app is
-                <a
-                  :href="
-                    'https://github.com/Geode-solutions/Vease/releases/' +
-                    (version !== 'latest' ? 'tag/v' : '') +
-                    version
-                  "
-                  target="_blank"
-                  class="text-left text-white"
-                >
-                  {{ version }}</a
-                >
-              </p>
-            </v-col>
-          </v-row>
+          <v-col cols="12">
+            <p class="text-h4 text-white">App infos</p>
+            <v-divider />
+            <v-row class="pa-3 pb-0">
+              <v-col cols="12" class="d-flex align-center">
+                <p class="text-white text-no-wrap mb-0">
+                  Version:
+                  <a
+                    :href="
+                      'https://github.com/Geode-solutions/Vease/releases/' +
+                      (version !== 'latest' ? 'tag/v' : '') +
+                      version
+                    "
+                    target="_blank"
+                    class="text-left text-white"
+                    >{{ version }}</a
+                  >
+                </p>
+              </v-col>
+            </v-row>
+            <v-row class="pa-3 pt-0">
+              <v-col cols="12" class="d-flex align-center">
+                <p class="text-white text-no-wrap mb-0">URL: {{ appStore.base_url }}</p>
+                <v-tooltip :text="copied ? 'Copied!' : 'Copy URL'" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-icon
+                      v-bind="props"
+                      icon="mdi-content-copy"
+                      size="20"
+                      class="ml-1"
+                      color="white"
+                      style="cursor: pointer"
+                      @click="copy_url"
+                    />
+                  </template>
+                </v-tooltip>
+              </v-col>
+            </v-row>
+          </v-col>
         </v-row>
         <v-row class="pa-3">
           <p class="text-h4 text-white">Internal dependencies</p>

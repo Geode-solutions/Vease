@@ -34,12 +34,12 @@ test.afterAll(async () => {
 test("import project", async () => {
   const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
   await importProject(window, projectFilePath);
-  await expect(window).toHaveScreenshot("imported-project.png");
+  await expect(window).toHaveScreenshot();
 });
 
 test("toggle surfaces visibility", async () => {
   await hideObjectInTree(window, "Surfaces", undefined, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot("hide-surfaces.png");
+  await expect(window).toHaveScreenshot();
 });
 
 test("change lines color", async () => {
