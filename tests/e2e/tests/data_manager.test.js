@@ -108,6 +108,7 @@ test("rename object via button", async () => {
 test("isolate object", async () => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
