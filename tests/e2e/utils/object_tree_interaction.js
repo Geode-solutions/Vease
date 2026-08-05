@@ -119,11 +119,12 @@ async function getTreeRowByTextAndParent(
   );
 }
 
-async function expandGeodeObjectType(window, geodeObjectType) {
-  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType);
-  const rightChevron = treeRow.locator(".mdi-menu-right").first();
-  if ((await rightChevron.count()) > 0) {
-    await rightChevron.dispatchEvent("click");
+async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
+  const expandButton = treeRow.getByTestId("expandTreeRowButton").or(treeRow.locator(".mdi-menu-right")).first();
+  if (await expandButton.isVisible()) {
+    await expandButton.click();
+    await window.waitForTimeout(afterActionWait);
   }
 }
 
@@ -216,23 +217,16 @@ async function toggleObjectsTree(window) {
 }
 
 async function openModelComponentsTree(window, geodeObjectType, dataName) {
+  await expandGeodeObjectType(window, geodeObjectType, "mainObjectTree");
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
   await row.getByTestId("expandModelComponentsButton").click();
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
-async function expandTreeCategory(window, categoryName, treeTestId = "mainObjectTree") {
-  const treeRow = await getTreeRowByTextAndParent(window, categoryName, undefined, treeTestId);
-  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
-  if (await expandButton.isVisible()) {
-    await expandButton.click();
-  }
-}
-
 async function hideAllComponentLeafRows(window, categoryName) {
   const treeTestId = "modelComponentsObjectTree";
-  await expandTreeCategory(window, categoryName, treeTestId);
+  await expandGeodeObjectType(window, categoryName, treeTestId);
   const tree = window.getByTestId(treeTestId);
   const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
   const count = await leafRows.count();
@@ -270,6 +264,5 @@ export {
   openModelComponentContextMenu,
   toggleObjectsTree,
   openModelComponentsTree,
-  expandTreeCategory,
   hideAllComponentLeafRows,
 };
