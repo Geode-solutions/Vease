@@ -101,13 +101,13 @@ test("rename dialog via button", async () => {
 
 test("rename object via button", async () => {
   await confirmRename(window, RENAMED_POLYGONAL_SURFACE);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("isolate object", async () => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
-  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
