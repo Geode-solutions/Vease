@@ -230,10 +230,13 @@ async function hideAllComponentLeafRows(window, categoryName) {
   const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
   const count = await leafRows.count();
   for (let i = 0; i < count; i += 1) {
-    // oxlint-disable-next-line no-await-in-loop
-    await leafRows.nth(i).locator("button").first().click({ force: true });
-    // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(afterActionWait);
+    const eyeBtn = leafRows.nth(i).locator("button:has(.mdi-eye)").first();
+    // oxlint-disable no-await-in-loop
+    if ((await eyeBtn.count()) > 0) {
+      await eyeBtn.click({ force: true });
+      await window.waitForTimeout(afterActionWait);
+      // oxlint-enable no-await-in-loop
+    }
   }
 }
 
