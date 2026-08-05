@@ -3,7 +3,7 @@ import { useBackStore } from "@ogw_front/stores/back";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 import { setBackBaseUrl, setViewerBaseUrl } from "@ogw_shared/scripts";
-import { connectToEventSource } from "@vease/utils/events";
+import { connectToEventSource, connectToWebSocket } from "@vease/utils/events";
 
 export default defineNuxtPlugin(() => {
   const appStore = useAppStore();
@@ -31,6 +31,7 @@ export default defineNuxtPlugin(() => {
     after(async () => {
       try {
         await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
+        connectToWebSocket();
       } catch (error) {
         console.error("[SYNC] viewer launch failed", error);
       }
