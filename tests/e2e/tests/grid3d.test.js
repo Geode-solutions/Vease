@@ -34,7 +34,7 @@ import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
-const inputFilename = "test.og_rgd3d";
+const inputFilename = "grid.og_rgd3d";
 const attributeName = "int_attribute";
 const vertexAttributeName = "points";
 const colorMapName = "vikO";
@@ -62,7 +62,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, rgd3dGeodeObjectType, defaultDataName);
+  await highlightData(window, rgd3dGeodeObjectType, "grid");
   await expect(window).toHaveScreenshot();
 });
 
