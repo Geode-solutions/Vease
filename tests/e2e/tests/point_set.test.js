@@ -79,7 +79,7 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - reopen menu", async () => {
+test("vertex attribute reopen menu", async () => {
   await openMeshPointsMenu(window);
   await expect(window).toHaveScreenshot();
 });
