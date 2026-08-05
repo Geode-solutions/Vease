@@ -141,7 +141,7 @@ async function hoverModelComponentRow(window, modelComponentType, modelComponent
 async function hideObjectInTree(window, parentName, objectName, treeTestId = "mainObjectTree") {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
   await row.waitFor({ state: "attached" });
-  const btn = row.locator("button:has(.mdi-eye)").first();
+  const btn = row.getByTestId("visibleObjectEyeButton").first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
     await moveMouseOutOfTheWay(window);
@@ -159,7 +159,10 @@ async function focusObjectInTree(window, geodeObjectType, dataName) {
 async function showObjectInTree(window, objectName) {
   const row = await getTreeRowByTextAndParent(window, objectName);
   await row.waitFor({ state: "attached" });
-  const btn = row.locator("button:has(.mdi-eye-off-outline, .mdi-eye-minus-outline)").first();
+  const btn = row
+    .getByTestId("hiddenObjectEyeButton")
+    .or(row.getByTestId("indeterminateObjectEyeButton"))
+    .first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
     await window.waitForTimeout(afterActionWait);
@@ -181,7 +184,11 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
     .nth(rowIndex);
-  await row.locator("button:has([class*='mdi-eye'])").first().click();
+  const btn = row
+    .getByTestId("visibleObjectEyeButton")
+    .or(row.getByTestId("hiddenObjectEyeButton"))
+    .first();
+  await btn.click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -217,9 +224,9 @@ async function openModelComponentsTree(window, geodeObjectType, dataName) {
 
 async function expandTreeCategory(window, categoryName, treeTestId = "mainObjectTree") {
   const treeRow = await getTreeRowByTextAndParent(window, categoryName, undefined, treeTestId);
-  const rightChevron = treeRow.locator(".mdi-menu-right").first();
-  if ((await rightChevron.count()) > 0) {
-    await rightChevron.click();
+  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
+  if (await expandButton.isVisible()) {
+    await expandButton.click();
   }
 }
 
@@ -230,9 +237,9 @@ async function hideAllComponentLeafRows(window, categoryName) {
   const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
   const count = await leafRows.count();
   for (let i = 0; i < count; i += 1) {
-    const eyeBtn = leafRows.nth(i).locator("button:has(.mdi-eye)").first();
+    const eyeBtn = leafRows.nth(i).getByTestId("visibleObjectEyeButton").first();
     // oxlint-disable no-await-in-loop
-    if ((await eyeBtn.count()) > 0) {
+    if (await eyeBtn.isVisible()) {
       await eyeBtn.click({ force: true });
       await window.waitForTimeout(afterActionWait);
       // oxlint-enable no-await-in-loop
