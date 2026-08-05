@@ -14,12 +14,8 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  rgd3dGeodeObjectType,
-} from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
