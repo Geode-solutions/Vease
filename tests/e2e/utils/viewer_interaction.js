@@ -70,9 +70,7 @@ async function findOverlappingObjectsPicker(window) {
 
 async function ensureMenuOpen(window, menuTestId) {
   const menuContainer = window.getByTestId(menuTestId);
-  const activeCircularMenuItemButton = menuContainer.getByTestId(
-    "activeCircularMenuItemButton",
-  );
+  const activeCircularMenuItemButton = menuContainer.getByTestId("activeCircularMenuItemButton");
   if (!(await activeCircularMenuItemButton.isVisible())) {
     const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
     if (await activeMenuButton.isVisible()) {
