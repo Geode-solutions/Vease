@@ -8,8 +8,8 @@ FROM ghcr.io/geode-solutions/vease-viewer:$BRANCH AS viewer
 
 FROM node:24 AS builder
 
-RUN node -v
-RUN npm -v
+WORKDIR /app
+
 COPY . .
 RUN if [ "$BRANCH" = "master" ]; then \
     sed -i 's/"0\.0\.0"/"latest"/g' package.json; \
@@ -27,7 +27,7 @@ RUN apt-get update
 
 # Setup vease microservice
 RUN mkdir -p /etc/vease/server
-COPY --from=builder .output/server /etc/vease/server
+COPY --from=builder /app/.output/server /etc/vease/server
 COPY <<'EOT' /etc/supervisor/conf.d/vease-server.conf
 [program:vease-server]
 command=node /etc/vease/server/index.mjs
