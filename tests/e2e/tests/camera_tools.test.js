@@ -55,7 +55,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
-const rgd3dFilename = "test.og_rgd3d";
+const rgd3dFilename = "grid.og_rgd3d";
 let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;
@@ -123,7 +123,7 @@ test("visibility off grid and expand brep focus", async () => {
   await window.waitForTimeout(afterActionWait);
 
   await expandGeodeObjectType(window, rgd3dGeodeObjectType);
-  await hideObjectInTree(window, rgd3dGeodeObjectType, defaultDataName);
+  await hideObjectInTree(window, rgd3dGeodeObjectType, "grid");
 
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
@@ -270,7 +270,7 @@ test("clipping planes custom origin and normal values", async () => {
 
 test("clipping planes target specific brep dataset", async () => {
   await toggleTargetAllVisible(window);
-  await selectClippingDatasets(window, "test", 1);
+  await selectClippingDatasets(window, "test");
   await hideObjectInTree(window, "RegularGrid3D");
   await resetCamera(window);
   await expect(window).toHaveScreenshot();
@@ -302,7 +302,7 @@ test("clipping planes multiple planes and datas", async () => {
   await showObjectInTree(window, "RegularGrid3D");
   await resetCamera(window);
   await toggleClippingPlanes(window);
-  await selectClippingDatasets(window, "test", 0);
+  await selectClippingDatasets(window, "grid");
   await setPlaneNormal(window, 0, [1, 0, 0]);
   await setPlaneNormal(window, 1, [
     CUSTOM_NORMAL_VALUE_X,
