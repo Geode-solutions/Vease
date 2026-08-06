@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 import requests
 
 
 class VeaseClient:
     def __init__(self, base_url: str):
+        print(f"VeaseClient: {base_url}")
         self.base_url = base_url.rstrip("/") + "/api/controller"
         self.session = requests.Session()
 
@@ -27,19 +28,19 @@ class VeaseClient:
 
         return data
 
-    def get(self, path: str, params: Optional[dict] = None) -> Any:
+    def get(self, path: str, params: dict | None = None) -> Any:
         return self._request("GET", path, params=params)
 
     def post(
-        self, path: str, json: Optional[dict] = None, files: Optional[dict] = None
+        self, path: str, json: dict | None = None, files: dict | None = None
     ) -> Any:
         return self._request("POST", path, json=json, files=files)
 
-    def put(self, path: str, json: Optional[dict] = None) -> Any:
+    def put(self, path: str, json: dict | None = None) -> Any:
         return self._request("PUT", path, json=json)
 
-    def patch(self, path: str, json: Optional[dict] = None) -> Any:
+    def patch(self, path: str, json: dict | None = None) -> Any:
         return self._request("PATCH", path, json=json)
 
-    def delete(self, path: str, params: Optional[dict] = None) -> Any:
+    def delete(self, path: str, params: dict | None = None) -> Any:
         return self._request("DELETE", path, params=params)
