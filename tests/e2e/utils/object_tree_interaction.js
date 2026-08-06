@@ -78,38 +78,33 @@ async function getTreeRowByTextAndParent(
   treeTestId = "mainObjectTree",
 ) {
   const tree = window.getByTestId(treeTestId);
+  const parentRow = tree.getByTestId("treeRowWrapper").filter({ hasText: geodeObjectType }).first();
+  await parentRow.waitFor({ state: "attached" });
+  if (!dataName) {
+    return parentRow;
+  }
   const allRows = tree.getByTestId("treeRowWrapper");
-  await allRows.first().waitFor({ state: "attached" });
-  const count = await allRows.count();
-
-  for (let i = 0; i < count; i += 1) {
-    const row = allRows.nth(i);
-    //oxlint-disable no-await-in-loop
-    const rowText = await row.textContent();
-    if (rowText.includes(geodeObjectType)) {
-      if (!dataName) {
-        console.log("getTreeRowByTextAndParent", { row });
-        return row;
-      }
-      for (let j = i + 1; j < count; j += 1) {
-        const childRow = allRows.nth(j);
-        const childRowText = await childRow.textContent();
-        if (childRowText.includes(dataName)) {
-          console.log("getTreeRowByTextAndParent", { childRow });
-          return childRow;
+  const childIndex = await allRows.evaluateAll(
+    (rows, { type, name }) => {
+      const parentIndex = rows.findIndex((row) => row.textContent.includes(type));
+      for (let j = parentIndex + 1; j < rows.length; j += 1) {
+        if (rows[j].textContent.includes(name)) {
+          return j;
         }
-        const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
-        //oxlint-enable no-await-in-loop
-        if (!isLeaf) {
+        if (!rows[j].classList.contains("leaf-row")) {
           break;
         }
       }
-    }
-  }
-
-  throw new Error(
-    `Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`,
+      return -1;
+    },
+    { type: geodeObjectType, name: dataName },
   );
+  if (childIndex === -1) {
+    throw new Error(
+      `Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`,
+    );
+  }
+  return allRows.nth(childIndex);
 }
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
