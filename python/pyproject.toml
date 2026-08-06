@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vease-scripting"
+name = "vease_scripting"
 version = "0.0.0"
 dynamic = ["dependencies"]
 authors = [{ name = "Geode-solutions", email = "team-web@geode-solutions.com" }]

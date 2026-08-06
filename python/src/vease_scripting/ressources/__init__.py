@@ -8,5 +8,5 @@ class Resource:
         self.client = client
         self.base_path = base_path.rstrip("/")
 
-    def _path(self, suffix: str = "") -> str:
+    def route(self, suffix: str = "") -> str:
         return f"{self.base_path}/{suffix.lstrip('/')}" if suffix else self.base_path

@@ -7,7 +7,7 @@ import requests
 
 class VeaseClient:
     def __init__(self, base_url: str):
-        self.base_url = base_url.rstrip("/")
+        self.base_url = base_url.rstrip("/") + "/api/controller"
         self.session = requests.Session()
 
     def _url(self, path: str) -> str:
@@ -15,7 +15,7 @@ class VeaseClient:
 
     def _request(self, method: str, path: str, **kwargs) -> Any:
         response = self.session.request(method, self._url(path), **kwargs)
-
+        print(f"Request: {method} {self._url(path)} => {response}")
         try:
             data = response.json()
         except ValueError:
@@ -23,7 +23,7 @@ class VeaseClient:
 
         if not response.ok:
             message = data.get("message") if isinstance(data, dict) else str(data)
-            raise NitroError(response.status_code, message or "Vease API error", data)
+            raise RuntimeError(response.status_code, message or "Vease API error", data)
 
         return data
 

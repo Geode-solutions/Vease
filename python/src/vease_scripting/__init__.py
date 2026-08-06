@@ -1,5 +1,5 @@
 from .client import VeaseClient
-from .resources import DataResource
+from .ressources.data import DataResource
 
 
 class VeaseScripting:
