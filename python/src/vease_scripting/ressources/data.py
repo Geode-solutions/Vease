@@ -14,11 +14,11 @@ class DataResource(Resource):
 
     def load(self, filename: str) -> None:
         mime_type, _ = mimetypes.guess_type(filename)
-        with open(filename, "rb") as f:
+        with open(filename, "rb") as file:
             files = {
                 "file": (
                     os.path.basename(filename),
-                    f,
+                    file,
                     mime_type or "application/octet-stream",
                 )
             }
