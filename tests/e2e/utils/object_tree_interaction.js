@@ -107,11 +107,16 @@ async function getTreeRowByTextAndParent(
   return allRows.nth(childIndex);
 }
 
-async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+async function expandGeodeObjectType(
+  window,
+  geodeObjectType,
+  treeTestId = "mainObjectTree",
+  { force = false } = {},
+) {
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
-    await expandButton.click();
+    await expandButton.click({ force });
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -214,7 +219,7 @@ async function openModelComponentsTree(window, geodeObjectType, dataName) {
 
 async function hideAllComponentLeafRows(window, categoryName) {
   const treeTestId = "modelComponentsObjectTree";
-  await expandGeodeObjectType(window, categoryName, treeTestId);
+  await expandGeodeObjectType(window, categoryName, treeTestId, { force: true });
   const tree = window.getByTestId(treeTestId);
   const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
   const count = await leafRows.count();
