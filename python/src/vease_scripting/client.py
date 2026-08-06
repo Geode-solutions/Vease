@@ -30,8 +30,10 @@ class VeaseClient:
     def get(self, path: str, params: Optional[dict] = None) -> Any:
         return self._request("GET", path, params=params)
 
-    def post(self, path: str, json: Optional[dict] = None) -> Any:
-        return self._request("POST", path, json=json)
+    def post(
+        self, path: str, json: Optional[dict] = None, files: Optional[dict] = None
+    ) -> Any:
+        return self._request("POST", path, json=json, files=files)
 
     def put(self, path: str, json: Optional[dict] = None) -> Any:
         return self._request("PUT", path, json=json)
