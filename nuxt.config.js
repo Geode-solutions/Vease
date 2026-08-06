@@ -1,10 +1,21 @@
 // Node imports
 import path from "node:path";
 
+// Third party imports
+import { searchForWorkspaceRoot } from "vite";
+
 // Local imports
 import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
+
+const serverDirectories = ["local, microservice, serverless, cloud"];
+
+function getIgnoredDirectories(directoriesToKeep) {
+  return serverDirectories
+    .filter((directory) => !directoriesToKeep.includes(directory))
+    .map((directory) => `api/${directory}/**`);
+}
 
 function nitroIgnoreConfig() {
   const mode = process.env.MODE;
@@ -12,13 +23,13 @@ function nitroIgnoreConfig() {
     throw new Error("No mode provided");
   }
   if (mode === "DESKTOP" || mode === "BROWSER") {
-    return ["api/serverless/**"];
+    return getIgnoredDirectories(["local", "microservice"]);
   }
   if (mode === "CLOUD") {
-    return ["api/local/**", "api/microservice/**"];
+    return getIgnoredDirectories(["serverless"]);
   }
   if (mode === "CLOUD_SERVER") {
-    return ["api/local/**", "api/serverless/**"];
+    return getIgnoredDirectories(["cloud", "microservice"]);
   }
   throw new Error(`Unknown mode provided: ${mode}`);
 }
@@ -166,10 +177,7 @@ export default defineNuxtConfig({
   vite: {
     server: {
       fs: {
-        allow: [
-          path.resolve(__dirname, "../../node_modules/@fontsource"),
-          path.resolve(__dirname, "../../node_modules/@mdi/font"),
-        ],
+        allow: [searchForWorkspaceRoot(process.cwd())],
       },
     },
     optimizeDeps: {

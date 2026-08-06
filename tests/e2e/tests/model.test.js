@@ -19,15 +19,20 @@ import {
   brepGeodeObjectType,
   defaultDataName,
   modelViewerObjectType,
+  structuralModelGeodeObjectType,
 } from "@tests/utils/constants";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
+  hideAllComponentLeafRows,
   hideObjectInTree,
   highlightData,
   hoverModelComponentRow,
+  openModelComponentContextMenu,
+  openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
+  toggleObjectsTree,
 } from "@tests/utils/object_tree_interaction.js";
 import {
   setModelColor,
@@ -37,10 +42,13 @@ import {
 } from "@tests/utils/model/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
+import { resetCamera } from "@tests/utils/camera_interaction";
+import { setModelPolygonsVertexAttribute } from "@tests/utils/model/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
-const inputFilename = "test.og_brep";
+const brepFilename = "test.og_brep";
+const structuralModelFilename = "test.og_strm";
 let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
@@ -56,8 +64,8 @@ test.afterAll(async () => {
   await cleanup();
 });
 
-test("load", async () => {
-  await loadData(window, inputFilename);
+test("load brep", async () => {
+  await loadData(window, brepFilename);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
@@ -122,48 +130,14 @@ test("edges visibility", async () => {
 });
 
 test("object tree model components", async () => {
-  // Close any open menus from previous test
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-
-  const mainObjectTree = window.getByTestId("mainObjectTree");
-
-  await mainObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "test" })
-    .locator("button:has(.mdi-magnify-expand)")
-    .click();
-  await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
-
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
-
+  await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
   await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
-
-  const SurfacesRow = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "Surfaces" });
-
-  await SurfacesRow.locator(".mdi-menu-right").first().click();
-  await window.waitForTimeout(afterActionWait);
-
-  const surfaceLeafRows = modelComponentsObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "00000000-" });
-
-  const surfaceCount = await surfaceLeafRows.count();
-  console.log(`Found ${surfaceCount} surface leaf rows to uncheck`);
-  for (let i = 0; i < surfaceCount; i += 1) {
-    console.log(`Unchecking surface ${i + 1}/${surfaceCount}`);
-    // oxlint-disable-next-line no-await-in-loop
-    await surfaceLeafRows.nth(i).locator("button").first().click({ force: true });
-    // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(afterActionWait);
-  }
-  const importButton = await window.getByRole("button", { name: "Import" });
-  await importButton.hover();
+  await hideAllComponentLeafRows(window, "Surfaces");
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
@@ -238,8 +212,7 @@ test("hide points in model tree", async () => {
 });
 
 test("toggle object tree main", async () => {
-  await window.getByTestId("toggleObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await toggleObjectsTree(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -257,5 +230,28 @@ test("context menu through non visible surface", async () => {
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await setModelColor(window);
 
+  await expect(window).toHaveScreenshot();
+});
+
+test("load structural model", async () => {
+  await toggleObjectsTree(window);
+  await loadData(window, structuralModelFilename);
+  await expandMainObjectTree(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("toggle both model component trees", async () => {
+  await hideObjectInTree(window, "BRep");
+  await resetCamera(window);
+  await openModelComponentsTree(window, structuralModelGeodeObjectType, defaultDataName);
+  await resetCamera(window);
+  await toggleObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks vertex attribute", async () => {
+  await openModelComponentContextMenu(window, "Blocks", 1);
+  await setModelPolygonsVertexAttribute(window, "points", { colorMap: "implicit" });
   await expect(window).toHaveScreenshot();
 });
