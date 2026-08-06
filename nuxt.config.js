@@ -1,6 +1,9 @@
 // Node imports
 import path from "node:path";
 
+// Third party imports
+import { searchForWorkspaceRoot } from "vite";
+
 // Local imports
 import package_json from "./package.json" with { type: "json" };
 
@@ -166,10 +169,7 @@ export default defineNuxtConfig({
   vite: {
     server: {
       fs: {
-        allow: [
-          path.resolve(__dirname, "../../node_modules/@fontsource"),
-          path.resolve(__dirname, "../../node_modules/@mdi/font"),
-        ],
+        allow: [searchForWorkspaceRoot(process.cwd())],
       },
     },
     optimizeDeps: {
