@@ -79,34 +79,27 @@ async function getTreeRowByTextAndParent(
 ) {
   const tree = window.getByTestId(treeTestId);
   const allRows = tree.getByTestId("treeRowWrapper");
+  await allRows.first().waitFor({ state: "attached" });
   const count = await allRows.count();
 
   for (let i = 0; i < count; i += 1) {
     const row = allRows.nth(i);
-
-    //oxlint-disable-next-line no-await-in-loop
+    //oxlint-disable no-await-in-loop
     const rowText = await row.textContent();
-
-    //oxlint-disable-next-line no-await-in-loop
-    if (
-      rowText.includes(geodeObjectType) &&
-      //oxlint-disable-next-line no-await-in-loop
-      !(await row.evaluate((element) => element.classList.contains("leaf-row")))
-    ) {
+    if (rowText.includes(geodeObjectType)) {
       if (!dataName) {
         console.log("getTreeRowByTextAndParent", { row });
         return row;
       }
       for (let j = i + 1; j < count; j += 1) {
         const childRow = allRows.nth(j);
-        //oxlint-disable-next-line no-await-in-loop
         const childRowText = await childRow.textContent();
         if (childRowText.includes(dataName)) {
           console.log("getTreeRowByTextAndParent", { childRow });
           return childRow;
         }
-        //oxlint-disable-next-line no-await-in-loop
         const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
+        //oxlint-enable no-await-in-loop
         if (!isLeaf) {
           break;
         }
@@ -121,10 +114,7 @@ async function getTreeRowByTextAndParent(
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
-  const expandButton = treeRow
-    .getByTestId("expandTreeRowButton")
-    .or(treeRow.locator(".mdi-menu-right"))
-    .first();
+  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
     await expandButton.click();
     await window.waitForTimeout(afterActionWait);
@@ -174,7 +164,7 @@ async function showObjectInTree(window, objectName) {
 }
 
 async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByTextAndParent(window, treeTestId, objectName).click({
+  await getTreeRowByTextAndParent(window, objectName, undefined, treeTestId).click({
     button: "right",
   });
   await window.waitForTimeout(afterActionWait);
