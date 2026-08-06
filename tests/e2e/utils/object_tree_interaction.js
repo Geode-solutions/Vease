@@ -208,7 +208,7 @@ async function openModelComponentsTree(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType, "mainObjectTree");
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
   await row.getByTestId("expandModelComponentsButton").first().click();
-  await window.getByTestId("modelComponentsObjectTree").waitFor({ state: "visible" });
+  await window.getByTestId("modelComponentsObjectTree").last().waitFor({ state: "visible" });
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
