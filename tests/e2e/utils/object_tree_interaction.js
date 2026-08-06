@@ -111,7 +111,7 @@ async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "main
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
-    await expandButton.click({ force: true });
+    await expandButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -161,7 +161,6 @@ async function showObjectInTree(window, objectName) {
 async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
   await getTreeRowByTextAndParent(window, objectName, undefined, treeTestId).click({
     button: "right",
-    force: true,
   });
   await window.waitForTimeout(afterActionWait);
 }
@@ -178,7 +177,7 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
     .getByTestId("visibleObjectEyeButton")
     .or(row.getByTestId("hiddenObjectEyeButton"))
     .first();
-  await btn.click({ force: true });
+  await btn.click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -201,14 +200,15 @@ async function setModelTreeRowColorRandom(window, rowName, rowIndex = 0) {
 }
 
 async function toggleObjectsTree(window) {
-  await window.getByTestId("toggleObjectsButton").click({ force: true });
+  await window.getByTestId("toggleObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function openModelComponentsTree(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType, "mainObjectTree");
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
-  await row.getByTestId("expandModelComponentsButton").click({ force: true });
+  await row.getByTestId("expandModelComponentsButton").first().click();
+  await window.getByTestId("modelComponentsObjectTree").waitFor({ state: "visible" });
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
