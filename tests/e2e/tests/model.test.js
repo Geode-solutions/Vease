@@ -131,6 +131,9 @@ test("edges visibility", async () => {
 
 test("object tree model components", async () => {
   await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
   await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
   await hideAllComponentLeafRows(window, "Surfaces");

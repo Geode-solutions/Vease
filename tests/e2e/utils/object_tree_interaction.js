@@ -78,7 +78,10 @@ async function getTreeRowByTextAndParent(
   treeTestId = "mainObjectTree",
 ) {
   const tree = window.getByTestId(treeTestId);
-  const parentRow = tree.getByTestId("treeRowWrapper").filter({ hasText: geodeObjectType }).first();
+  const parentRow = tree
+    .getByTestId("treeRowWrapper")
+    .filter({ hasText: geodeObjectType, hasNot: window.locator(".leaf-row") })
+    .first();
   await parentRow.waitFor({ state: "attached" });
   if (!dataName) {
     return parentRow;
@@ -86,7 +89,12 @@ async function getTreeRowByTextAndParent(
   const allRows = tree.getByTestId("treeRowWrapper");
   const childIndex = await allRows.evaluateAll(
     (rows, { type, name }) => {
-      const parentIndex = rows.findIndex((row) => row.textContent.includes(type));
+      const parentIndex = rows.findIndex(
+        (row) => row.textContent.includes(type) && !row.classList.contains("leaf-row"),
+      );
+      if (parentIndex === -1) {
+        return -1;
+      }
       for (let j = parentIndex + 1; j < rows.length; j += 1) {
         if (rows[j].textContent.includes(name)) {
           return j;
@@ -107,16 +115,11 @@ async function getTreeRowByTextAndParent(
   return allRows.nth(childIndex);
 }
 
-async function expandGeodeObjectType(
-  window,
-  geodeObjectType,
-  treeTestId = "mainObjectTree",
-  { force = false } = {},
-) {
+async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
-    await expandButton.click({ force });
+    await expandButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -219,7 +222,7 @@ async function openModelComponentsTree(window, geodeObjectType, dataName) {
 
 async function hideAllComponentLeafRows(window, categoryName) {
   const treeTestId = "modelComponentsObjectTree";
-  await expandGeodeObjectType(window, categoryName, treeTestId, { force: true });
+  await expandGeodeObjectType(window, categoryName, treeTestId);
   const tree = window.getByTestId(treeTestId);
   const leafRows = tree.getByTestId("treeRowWrapper").filter({ hasText: "00000000-" });
   const count = await leafRows.count();
