@@ -12,6 +12,7 @@ const hybridSolidGeodeObjectType = "HybridSolid3D";
 const tetrahedralSolidGeodeObjectType = "TetrahedralSolid3D";
 const triangulatedSurfaceGeodeObjectType = "TriangulatedSurface3D";
 const brepGeodeObjectType = "BRep";
+const structuralModelGeodeObjectType = "StructuralModel";
 
 // Default Data Name
 const defaultDataName = "test";
@@ -42,6 +43,7 @@ export {
   tetrahedralSolidGeodeObjectType,
   triangulatedSurfaceGeodeObjectType,
   brepGeodeObjectType,
+  structuralModelGeodeObjectType,
   defaultDataName,
   cellsFeatureName,
   edgesFeatureName,

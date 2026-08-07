@@ -4,7 +4,11 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
+import {
+  afterActionWait,
+  beforeAllTimeout,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
@@ -97,12 +101,14 @@ test("rename dialog via button", async () => {
 
 test("rename object via button", async () => {
   await confirmRename(window, RENAMED_POLYGONAL_SURFACE);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("isolate object", async () => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
