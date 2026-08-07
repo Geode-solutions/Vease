@@ -390,6 +390,7 @@ test("toggle both model component trees", async () => {
 
 test("blocks vertex attribute all blocks", async () => {
   await window.keyboard.press("Escape");
+  await toggleModelTreeRow(window, "Surfaces", 0, 1);
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 0, 1);
