@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 // Node imports
 
 // Third party imports
@@ -18,10 +19,15 @@ import {
 import {
   brepGeodeObjectType,
   defaultDataName,
+  edgeAttributeType,
   modelViewerObjectType,
+  polygonAttributeType,
+  polyhedronAttributeType,
   structuralModelGeodeObjectType,
+  vertexAttributeType,
 } from "@tests/utils/constants";
 import {
+  collapseGeodeObjectType,
   expandGeodeObjectType,
   expandMainObjectTree,
   hideAllComponentLeafRows,
@@ -34,16 +40,25 @@ import {
   toggleModelTreeRow,
   toggleObjectsTree,
 } from "@tests/utils/object_tree_interaction.js";
+import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
 } from "@tests/utils/model/color.js";
+import {
+  setModelEdgesEdgeAttribute,
+  setModelEdgesVertexAttribute,
+  setModelPointsVertexAttribute,
+  setModelPolygonsPolygonAttribute,
+  setModelPolygonsVertexAttribute,
+  setModelPolyhedraPolyhedronAttribute,
+  setModelPolyhedraVertexAttribute,
+} from "@tests/utils/model/attribute.js";
+import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
-import { resetCamera } from "@tests/utils/camera_interaction";
-import { setModelPolygonsVertexAttribute } from "@tests/utils/model/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -53,6 +68,7 @@ let window = undefined;
 let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
+const ROTATE_LEFT_A_LITTLE = -180;
 
 test.describe.configure({ mode: "serial" });
 
@@ -176,18 +192,95 @@ test("corners color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("corners vertex attribute all corners", async () => {
+  await window.keyboard.press("Escape");
+  await expandGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelPointsVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners vertex attribute all corners change item", async () => {
+  await setModelPointsVertexAttribute(window, "points", { item: 1 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners vertex attribute one corner", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: vertexAttributeType,
+    attributeName: "unique vertices",
+    colorMap: "roma",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
 test("lines visibility", async () => {
+  await window.keyboard.press("Escape");
+  await collapseGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Lines");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Lines");
 });
 
 test("lines color", async () => {
+  await toggleModelTreeRow(window, "Lines");
   await setModelTreeRowColorRandom(window, "Lines");
   await expect(window).toHaveScreenshot();
 });
 
+test("lines vertex attribute all lines", async () => {
+  await window.keyboard.press("Escape");
+  await expandGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelEdgesVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines vertex attribute all lines change item", async () => {
+  await setModelEdgesVertexAttribute(window, "points", { item: 1 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines vertex attribute one line", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: vertexAttributeType,
+    attributeName: "unique vertices",
+    colorMap: "roma",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines edge attribute all lines", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelEdgesEdgeAttribute(window, "edges", { item: 0 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines edge attribute one line", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: edgeAttributeType,
+    attributeName: "edges",
+    item: 0,
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
 test("surfaces visibility", async () => {
+  await window.keyboard.press("Escape");
+  await collapseGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Surfaces");
   await expect(window).toHaveScreenshot();
   await toggleModelTreeRow(window, "Surfaces");
@@ -197,10 +290,60 @@ test("surfaces color", async () => {
   await toggleModelTreeRow(window, "Surfaces");
   await setModelTreeRowColorRandom(window, "Surfaces");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Surfaces");
+});
+
+test("surfaces vertex attribute all surfaces", async () => {
+  await expandGeodeObjectType(window, "Surfaces", "modelComponentsObjectTree");
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelPolygonsVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces vertex attribute all surfaces change item", async () => {
+  await setModelPolygonsVertexAttribute(window, "points", { item: 1 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("toggle object tree main", async () => {
+  await toggleObjectsTree(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces vertex attribute one surface ", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: vertexAttributeType,
+    attributeName: "unique vertices",
+    colorMap: "roma",
+  });
+  await rotateCamera(window, ROTATE_LEFT_A_LITTLE, 0);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces polygon attribute all surfaces", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelPolygonsPolygonAttribute(window, "triangle_vertices", { item: 2 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces polygon attribute one surface", async () => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: polygonAttributeType,
+    attributeName: "triangle_adjacents",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
 });
 
 test("hide points in model tree", async () => {
+  await toggleModelTreeRow(window, "Surfaces");
   await window
     .getByTestId("modelComponentsObjectTree")
     .locator(".tree-row-wrapper", { hasText: "Surfaces" })
@@ -208,11 +351,6 @@ test("hide points in model tree", async () => {
     .first()
     .click({ button: "right" });
   await setPointsVisibility(window, "model", false);
-  await expect(window).toHaveScreenshot();
-});
-
-test("toggle object tree main", async () => {
-  await toggleObjectsTree(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -250,8 +388,51 @@ test("toggle both model component trees", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("blocks vertex attribute", async () => {
-  await openModelComponentContextMenu(window, "Blocks", 1);
-  await setModelPolygonsVertexAttribute(window, "points", { colorMap: "implicit" });
+test("blocks vertex attribute all blocks", async () => {
+  await window.keyboard.press("Escape");
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await expandGeodeObjectType(window, "Blocks", secondModelTree);
+  await openModelComponentContextMenu(window, "019ea699-", 0, 1);
+  await setModelPolyhedraVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
+  await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
+});
+
+test("blocks vertex attribute all blocks change item", async () => {
+  await setModelPolyhedraVertexAttribute(window, "points", { item: 1 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks vertex attribute one block", async () => {
+  await openModelComponentContextMenu(window, "019ea699-", 3, 1);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: vertexAttributeType,
+    attributeName: "unique vertices",
+    colorMap: "roma",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks polyhedron attribute all blocks", async () => {
+  await openModelComponentContextMenu(window, "019ea699-", 0, 1);
+  await setModelPolyhedraPolyhedronAttribute(window, "tetrahedron_vertices", { item: 2 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks polyhedron attribute one block", async () => {
+  await openModelComponentContextMenu(window, "019ea699-", 3, 1);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: polyhedronAttributeType,
+    attributeName: "tetrahedron_adjacents",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await collapseGeodeObjectType(window, "Blocks", secondModelTree);
 });

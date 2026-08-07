@@ -77,7 +77,7 @@ async function getTreeRowByTextAndParent(
   dataName,
   treeTestId = "mainObjectTree",
 ) {
-  const tree = window.getByTestId(treeTestId);
+  const tree = typeof treeTestId === "string" ? window.getByTestId(treeTestId).first() : treeTestId;
   const parentRow = tree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: geodeObjectType, hasNot: window.locator(".leaf-row") })
@@ -120,6 +120,15 @@ async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "main
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
     await expandButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
+  const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
+  if (await collapseButton.isVisible()) {
+    await collapseButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -173,10 +182,10 @@ async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainO
   await window.waitForTimeout(afterActionWait);
 }
 
-async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
+async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
   const row = modelComponentsObjectTree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
@@ -189,10 +198,10 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function openModelComponentContextMenu(window, rowName, rowIndex = 0) {
+async function openModelComponentContextMenu(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
   const row = modelComponentsObjectTree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
@@ -250,6 +259,7 @@ export {
   highlightData,
   getTreeRowByTextAndParent,
   expandGeodeObjectType,
+  collapseGeodeObjectType,
   hoverModelComponentRow,
   hideObjectInTree,
   focusObjectInTree,
