@@ -116,6 +116,8 @@ async function getTreeRowByTextAndParent(
 }
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
