@@ -3,13 +3,22 @@ from __future__ import annotations
 from typing import Any
 
 import requests
+import time
 
 
 class VeaseClient:
     def __init__(self, base_url: str):
         print(f"VeaseClient: {base_url}")
-        self.base_url = base_url.rstrip("/") + "/api/controller"
         self.session = requests.Session()
+        self.base_url = base_url.rstrip("/") + "/api"
+        while True:
+            status = self.get("/microservice/app/get_is_app_ready")
+            if status.get("isReady"):
+                print("App is ready!")
+                break
+            print("Not ready yet, retrying...")
+            time.sleep(1)
+        self.base_url += "/controller"
 
     def _url(self, path: str) -> str:
         return f"{self.base_url}/{path.lstrip('/')}"
@@ -28,8 +37,8 @@ class VeaseClient:
 
         return data
 
-    def get(self, path: str, params: dict | None = None) -> Any:
-        return self._request("GET", path, params=params)
+    def get(self, path: str) -> Any:
+        return self._request("GET", path)
 
     def post(
         self, path: str, json: dict | None = None, files: dict | None = None
