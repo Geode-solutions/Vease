@@ -77,56 +77,60 @@ async function getTreeRowByTextAndParent(
   dataName,
   treeTestId = "mainObjectTree",
 ) {
-  const tree = window.getByTestId(treeTestId);
+  const tree = typeof treeTestId === "string" ? window.getByTestId(treeTestId).first() : treeTestId;
+  const parentRow = tree
+    .getByTestId("treeRowWrapper")
+    .filter({ hasText: geodeObjectType, hasNot: window.locator(".leaf-row") })
+    .first();
+  await parentRow.waitFor({ state: "attached" });
+  if (!dataName) {
+    return parentRow;
+  }
   const allRows = tree.getByTestId("treeRowWrapper");
-  const count = await allRows.count();
-
-  for (let i = 0; i < count; i += 1) {
-    const row = allRows.nth(i);
-
-    //oxlint-disable-next-line no-await-in-loop
-    const rowText = await row.textContent();
-
-    //oxlint-disable-next-line no-await-in-loop
-    if (
-      rowText.includes(geodeObjectType) &&
-      //oxlint-disable-next-line no-await-in-loop
-      !(await row.evaluate((element) => element.classList.contains("leaf-row")))
-    ) {
-      if (!dataName) {
-        console.log("getTreeRowByTextAndParent", { row });
-        return row;
+  const childIndex = await allRows.evaluateAll(
+    (rows, { type, name }) => {
+      const parentIndex = rows.findIndex(
+        (row) => row.textContent.includes(type) && !row.classList.contains("leaf-row"),
+      );
+      if (parentIndex === -1) {
+        return -1;
       }
-      for (let j = i + 1; j < count; j += 1) {
-        const childRow = allRows.nth(j);
-        //oxlint-disable-next-line no-await-in-loop
-        const childRowText = await childRow.textContent();
-        if (childRowText.includes(dataName)) {
-          console.log("getTreeRowByTextAndParent", { childRow });
-          return childRow;
+      for (let j = parentIndex + 1; j < rows.length; j += 1) {
+        if (rows[j].textContent.includes(name)) {
+          return j;
         }
-        //oxlint-disable-next-line no-await-in-loop
-        const isLeaf = await childRow.evaluate((element) => element.classList.contains("leaf-row"));
-        if (!isLeaf) {
+        if (!rows[j].classList.contains("leaf-row")) {
           break;
         }
       }
-    }
-  }
-
-  throw new Error(
-    `Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`,
+      return -1;
+    },
+    { type: geodeObjectType, name: dataName },
   );
+  if (childIndex === -1) {
+    throw new Error(
+      `Could not find child "${dataName}" under parent "${geodeObjectType}" in tree "${treeTestId}"`,
+    );
+  }
+  return allRows.nth(childIndex);
 }
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
-  const expandButton = treeRow
-    .getByTestId("expandTreeRowButton")
-    .or(treeRow.locator(".mdi-menu-right"))
-    .first();
+  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
     await expandButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
+  const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
+  if (await collapseButton.isVisible()) {
+    await collapseButton.click();
     await window.waitForTimeout(afterActionWait);
   }
 }
@@ -174,16 +178,16 @@ async function showObjectInTree(window, objectName) {
 }
 
 async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByTextAndParent(window, treeTestId, objectName).click({
+  await getTreeRowByTextAndParent(window, objectName, undefined, treeTestId).click({
     button: "right",
   });
   await window.waitForTimeout(afterActionWait);
 }
 
-async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
+async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
   const row = modelComponentsObjectTree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
@@ -196,10 +200,10 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function openModelComponentContextMenu(window, rowName, rowIndex = 0) {
+async function openModelComponentContextMenu(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree");
+  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
   const row = modelComponentsObjectTree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
@@ -222,7 +226,7 @@ async function toggleObjectsTree(window) {
 async function openModelComponentsTree(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType, "mainObjectTree");
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
-  await row.getByTestId("expandModelComponentsButton").click();
+  await row.getByTestId("expandModelComponentsButton").first().click();
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
@@ -257,6 +261,7 @@ export {
   highlightData,
   getTreeRowByTextAndParent,
   expandGeodeObjectType,
+  collapseGeodeObjectType,
   hoverModelComponentRow,
   hideObjectInTree,
   focusObjectInTree,
