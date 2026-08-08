@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vease_scripting"
+version = "0.0.0"
+dynamic = ["dependencies"]
+authors = [{ name = "Geode-solutions", email = "team-web@geode-solutions.com" }]
+description = "Python scripting client for Vease app scripting"
+requires-python = ">=3.10,<3.15"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/Geode-solutions/Vease"
+"Bug Tracker" = "https://github.com/Geode-solutions/Vease/issues"
+
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["src"]
