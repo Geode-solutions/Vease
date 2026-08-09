@@ -64,7 +64,20 @@ async function runDesktopBuild() {
     },
   });
 
-  electronApp.process().stdout.on("data", (data) => console.log(`stdout: ${data}`));
+  let resolveAppUrl = undefined;
+  // oxlint-disable-next-line promise/avoid-new
+  const appUrlPromise = new Promise((resolve) => {
+    resolveAppUrl = resolve;
+  });
+  const urlRegex = /Nuxt server url\s+(?<host>localhost:\d+)/u;
+  electronApp.process().stdout.on("data", (data) => {
+    const line = data.toString();
+    console.log(`stdout: ${line}`);
+    const match = line.match(urlRegex);
+    if (match) {
+      resolveAppUrl(`http://${match.groups.host}`);
+    }
+  });
   electronApp.process().stderr.on("data", (error) => console.log(`stderr: ${error}`));
 
   electronApp.on("close", (data) => {
@@ -79,7 +92,8 @@ async function runDesktopBuild() {
     },
     { width: PAGE_WIDTH, height: PAGE_HEIGHT },
   );
-  // await waitForAppReady(appUrl, WAIT_TIMES.desktop);
+  const appUrl = await appUrlPromise;
+  await waitForAppReady(appUrl, WAIT_TIMES.desktop);
 
   return { electronApp, firstWindow };
 }
