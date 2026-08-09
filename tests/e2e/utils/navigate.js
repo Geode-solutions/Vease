@@ -214,7 +214,6 @@ async function navigateToApp(mode, browser) {
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
     console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
-    await firstWindow.waitForTimeout(WAIT_TIMES.desktop);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
