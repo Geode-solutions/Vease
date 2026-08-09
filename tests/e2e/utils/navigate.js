@@ -7,9 +7,11 @@ import { setTimeout } from "node:timers/promises";
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
-import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
 import { isWindows } from "std-env";
 import kill from "kill-port";
+
+import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
+import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.js";
 import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 
 // Local imports
@@ -77,6 +79,7 @@ async function runDesktopBuild() {
     },
     { width: PAGE_WIDTH, height: PAGE_HEIGHT },
   );
+  // await waitForAppReady(appUrl, WAIT_TIMES.desktop);
 
   return { electronApp, firstWindow };
 }
@@ -116,6 +119,21 @@ async function navigateToCloudApp(page, url, maxRetries) {
   console.log("Navigated to", page.url());
 }
 
+async function waitForAppReady(url, timeoutMs) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeoutMs) {
+    // oxlint-disable-next-line no-await-in-loop
+    const response = await getIsAppReady(url);
+    if (response?.isReady) {
+      return true;
+    }
+    // oxlint-disable-next-line no-await-in-loop
+    await setTimeout(MILLISECONDS);
+  }
+  console.log("Timed out waiting for app to become ready");
+  return false;
+}
+
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
@@ -130,10 +148,11 @@ async function navigateToApp(mode, browser) {
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
     page.on("console", (msg) => console.log(`Browser console: ${msg.text()}`));
-    await page.goto(`http://localhost:${nuxtPort}`);
+    const appUrl = `http://localhost:${nuxtPort}`;
+    await page.goto(appUrl);
     console.log("Navigated to", page.url());
     console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
-    await page.waitForTimeout(WAIT_TIMES.browser);
+    await waitForAppReady(appUrl, WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
 
     return {
