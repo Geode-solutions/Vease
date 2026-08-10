@@ -193,7 +193,6 @@ test("corners color", async () => {
 });
 
 test("corners vertex attribute all corners", async () => {
-  await window.keyboard.press("Escape");
   await expandGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelPointsVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
@@ -221,6 +220,9 @@ test("corners vertex attribute one corner", async () => {
 
 test("lines visibility", async () => {
   await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   await collapseGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Lines");
   await expect(window).toHaveScreenshot();
@@ -233,7 +235,6 @@ test("lines color", async () => {
 });
 
 test("lines vertex attribute all lines", async () => {
-  await window.keyboard.press("Escape");
   await expandGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelEdgesVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
@@ -280,6 +281,9 @@ test("lines edge attribute one line", async () => {
 
 test("surfaces visibility", async () => {
   await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
   await collapseGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Surfaces");
   await expect(window).toHaveScreenshot();
@@ -389,7 +393,6 @@ test("toggle both model component trees", async () => {
 });
 
 test("blocks vertex attribute all blocks", async () => {
-  await window.keyboard.press("Escape");
   await toggleModelTreeRow(window, "Surfaces", 0, 1);
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
