@@ -42,7 +42,7 @@ EOT
 
 # Setup router
 RUN apt-get install -y curl jq bash supervisor nginx
-COPY --from=router /etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=router /etc/nginx /etc/nginx
 COPY --from=router /etc/supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /etc/supervisor/conf.d

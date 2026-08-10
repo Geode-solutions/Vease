@@ -32,6 +32,8 @@ logs
 /vease-viewer*
 VTK.txt
 /data
+__pycache__
+*.egg-info
 
 # Playwright
 node_modules/

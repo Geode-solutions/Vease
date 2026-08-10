@@ -5,8 +5,15 @@ import {
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 
+function getMenuContainer(window, menuTestId) {
+  if (typeof menuTestId === "string") {
+    return window.getByTestId(menuTestId);
+  }
+  return menuTestId;
+}
+
 async function setFeatureItem(window, menuTestId, item) {
-  const container = window.getByTestId(menuTestId);
+  const container = getMenuContainer(window, menuTestId);
   await container.getByTestId("itemSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
@@ -22,12 +29,12 @@ async function setFeatureItem(window, menuTestId, item) {
 }
 
 async function setFeatureColorMap(window, menuTestId, colorMap) {
-  const container = window.getByTestId(menuTestId);
+  const container = getMenuContainer(window, menuTestId);
   await container.getByTestId("colorMapPicker").first().click();
   await window.waitForTimeout(afterActionWait);
-  const colorMapListFilter = await window.getByTestId("colorMapListFilter");
+  const colorMapListFilter = window.getByTestId("colorMapListFilter");
   await colorMapListFilter.filter({ visible: true }).first().locator("input").fill(colorMap);
-  const colorMapListLoading = await window.getByTestId("colorMapListLoading");
+  const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
 
   await window.waitForTimeout(afterActionWait);
@@ -66,10 +73,15 @@ async function applyAttribute(
     max = undefined,
   } = {},
 ) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
+  let testIdStr = "modelStyleMenu";
+  if (typeof menuTestId === "string") {
+    testIdStr = menuTestId;
+  }
 
-  const container = window.getByTestId(menuTestId);
+  await ensureMenuOpen(window, testIdStr);
+  await ensureFeatureVisible(window, testIdStr);
+
+  const container = getMenuContainer(window, menuTestId);
   await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
@@ -124,8 +136,10 @@ function setFeatureAttribute(
   attributeName,
   options = {},
 ) {
-  const menuTestId =
-    viewerObjectType === "model" ? "modelStyleMenu" : `${viewerObjectType}${feature}Menu`;
+  let menuTestId = `${viewerObjectType}${feature}Menu`;
+  if (viewerObjectType === "model") {
+    menuTestId = "modelStyleMenu";
+  }
   return applyAttribute(window, menuTestId, { attributeType, attributeName, ...options });
 }
 
