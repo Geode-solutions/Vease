@@ -2,8 +2,8 @@ import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
+import { connectToEventSource, connectToWebSocket } from "@vease/utils/events/index";
 import { setBackBaseUrl, setViewerBaseUrl } from "@ogw_shared/scripts";
-import { connectToEventSource, connectToWebSocket } from "@vease/utils/events";
 
 export default defineNuxtPlugin(() => {
   const appStore = useAppStore();

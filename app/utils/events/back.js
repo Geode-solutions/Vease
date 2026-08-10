@@ -6,7 +6,7 @@ import { importItem } from "@ogw_front/utils/import_workflow.js";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer.js";
 
 const backEventHandlers = {
-  [opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file]: async (payload) => {
+  [opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id]: async (payload) => {
     const hybridViewerStore = useHybridViewerStore();
     console.log("[GEODE] save_viewable_file:", payload);
     await importItem(payload);

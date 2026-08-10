@@ -42,7 +42,7 @@ function connectToEventSource() {
   const url = computed(() => `${backStore.base_url}/events`);
   console.log("[PLUGIN] EventSource URL:", url.value);
 
-  const { event, data, status, error } = useEventSource(url, [Object.keys(backEventHandlers)], {
+  const { event, data, status, error } = useEventSource(url, Object.keys(backEventHandlers), {
     autoReconnect: {
       retries: 3,
       delay: 1000,
@@ -55,9 +55,10 @@ function connectToEventSource() {
   console.log("[PLUGIN]", { event, data, status, error });
 
   watch([event, data], ([eventName, rawData]) => {
+    if (!eventName) { return };
     console.log("[Back] Event received:", eventName, rawData);
     dispatchEvent(eventName, rawData, backEventHandlers, "BACK");
-  });
+  }, { immediate: true });
 }
 
 function connectToWebSocket() {
