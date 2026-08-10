@@ -181,12 +181,7 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: [
-        "@geode/opengeodeweb-front",
-        "bowser",
-        "compare-versions",
-        "vuefire",
-      ],
+      include: ["@geode/opengeodeweb-front", "bowser", "compare-versions", "vuefire"],
     },
     watch: {
       ignored: ["**"],

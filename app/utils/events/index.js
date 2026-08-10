@@ -54,11 +54,17 @@ function connectToEventSource() {
 
   console.log("[PLUGIN]", { event, data, status, error });
 
-  watch([event, data], ([eventName, rawData]) => {
-    if (!eventName) { return };
-    console.log("[Back] Event received:", eventName, rawData);
-    dispatchEvent(eventName, rawData, backEventHandlers, "BACK");
-  }, { immediate: true });
+  watch(
+    [event, data],
+    ([eventName, rawData]) => {
+      if (!eventName) {
+        return;
+      }
+      console.log("[Back] Event received:", eventName, rawData);
+      dispatchEvent(eventName, rawData, backEventHandlers, "BACK");
+    },
+    { immediate: true },
+  );
 }
 
 function connectToWebSocket() {
@@ -68,9 +74,13 @@ function connectToWebSocket() {
   watch(
     () => viewerStore.status,
     (status) => {
-      if (status !== Status.CONNECTED) { return };
+      if (status !== Status.CONNECTED) {
+        return;
+      }
       const session = viewerStore.client.getConnection().getSession();
-      if (session === subscribedSession) { return };
+      if (session === subscribedSession) {
+        return;
+      }
       subscribedSession = session;
 
       for (const eventName of Object.keys(viewerEventHandlers)) {
