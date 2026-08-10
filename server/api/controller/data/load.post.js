@@ -28,7 +28,8 @@ export default defineEventHandler(async (event) => {
     await uploadFile(filePart);
     const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename);
     console.log(`Saving file as ${allowedGeodeObjectType}...`);
-    await saveViewableFile(filename, allowedGeodeObjectType);
+    const saveViewableFileResult = await saveViewableFile(filename, allowedGeodeObjectType);
+    console.log({ saveViewableFileResult });
 
     return { statusCode: 200, filename, mimeType, size: filePart.data.length };
   } catch (error) {
