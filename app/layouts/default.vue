@@ -17,6 +17,8 @@ import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
 
+console.log("Nuxt server url", globalThis.location.host);
+
 const UIStore = useUIStore();
 const infraStore = useInfraStore();
 const appStore = useAppStore();
