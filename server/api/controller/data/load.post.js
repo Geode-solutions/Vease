@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     if (!filePart) {
       throw createError({ statusCode: 400, statusMessage: "No file field found" });
     }
-    const { filename, type: mimeType } = filePart;
+    const { filename } = filePart;
 
     const allowedFileExtensions = await getAllowedFileExtensions();
     if (!allowedFileExtensions.includes(getFileExtension(filename))) {
@@ -28,10 +28,9 @@ export default defineEventHandler(async (event) => {
     await uploadFile(filePart);
     const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename);
     console.log(`Saving file as ${allowedGeodeObjectType}...`);
-    const saveViewableFileResult = await saveViewableFile(filename, allowedGeodeObjectType);
-    console.log({ saveViewableFileResult });
+    const response = await saveViewableFile(filename, allowedGeodeObjectType);
 
-    return { statusCode: 200, filename, mimeType, size: filePart.data.length };
+    return { statusCode: 200, response };
   } catch (error) {
     console.log(error);
     throw createError({
