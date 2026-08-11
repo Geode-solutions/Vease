@@ -59,6 +59,7 @@
     "@geode/opengeodeweb-viewer": "0.0.0",
     "@geode/vease-back": "0.0.0",
     "@geode/vease-viewer": "0.0.0",
+    "@nuxtjs/mcp-toolkit": "0.18.1",
     "bowser": "2.14.1",
     "broadcast-channel": "7.1.0",
     "bufferutil": "4.0.9",
@@ -69,7 +70,8 @@
     "kill-port": "2.0.1",
     "nuxt-vuefire": "1.1.2",
     "utf-8-validate": "6.0.5",
-    "vite": "8.2.0"
+    "vite": "8.2.0",
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@playwright/test": "1.54.1",
