@@ -20,6 +20,7 @@ import {
 } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
+  openMeshEdgesMenu,
   setMeshEdgesColorMap,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
@@ -101,6 +102,11 @@ test("edge attribute change item to 1", async () => {
 
 test("edge attribute change item to 2", async () => {
   await setMeshEdgesItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute reopen menu", async () => {
+  await openMeshEdgesMenu(window);
   await expect(window).toHaveScreenshot();
 });
 
