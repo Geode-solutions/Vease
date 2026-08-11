@@ -68,8 +68,8 @@ test("highlight", async () => {
 });
 
 test("viewer context menu", async () => {
-  const x = 549,
-    y = 210;
+  const x = 549;
+  const y = 210;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
 });
