@@ -92,7 +92,7 @@ test("polygon attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("polygon attribute -change colormap", async () => {
+test("polygon attribute change colormap", async () => {
   await setMeshPolygonsColorMap(window, colorMapName);
   await expect(window).toHaveScreenshot();
 });
@@ -105,22 +105,22 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 1", async () => {
+test("vertex attribute change item to 1", async () => {
   await setMeshPolygonsItem(window, 0);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 2", async () => {
+test("vertex attribute change item to 2", async () => {
   await setMeshPolygonsItem(window, 1);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change attribute name", async () => {
+test("vertex attribute change attribute name", async () => {
   await setMeshPolygonsVertexAttribute(window, otherVertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - switch back to points", async () => {
+test("vertex attribute switch back to points", async () => {
   await setMeshPolygonsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });

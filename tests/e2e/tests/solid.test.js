@@ -96,7 +96,7 @@ test("polyhedron attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("polyhedron attribute -change colormap", async () => {
+test("polyhedron attribute change colormap", async () => {
   await setMeshPolyhedraColorMap(window, colorMapName);
   await expect(window).toHaveScreenshot();
 });
@@ -109,22 +109,22 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 1", async () => {
+test("vertex attribute change item to 1", async () => {
   await setMeshPolyhedraItem(window, 0);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 2", async () => {
+test("vertex attribute change item to 2", async () => {
   await setMeshPolyhedraItem(window, 1);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change attribute name", async () => {
+test("vertex attribute change attribute name", async () => {
   await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - switch back to points", async () => {
+test("vertex attribute switch back to points", async () => {
   await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
