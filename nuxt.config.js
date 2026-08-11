@@ -102,9 +102,6 @@ export default defineNuxtConfig({
         inset: true,
       },
     },
-    moduleOptions: {
-      prefixComposables: true,
-    },
     vuetifyOptions: {
       labComponents: true,
       theme: {
