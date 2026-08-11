@@ -1,4 +1,4 @@
-import { afterActionWait, moveMouseOutOfTheWay } from "./viewer_interaction.js";
+import { afterActionWait, ensureMenuOpen, moveMouseOutOfTheWay } from "./viewer_interaction.js";
 import { setModelColor } from "./model/color.js";
 
 async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
@@ -211,6 +211,7 @@ async function openModelComponentContextMenu(window, rowName, rowIndex = 0, tree
   const label = row.locator(".tree-item-label").first();
   await label.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
+  await ensureMenuOpen(window, "modelStyleMenu");
 }
 
 async function setModelTreeRowColorRandom(window, rowName, rowIndex = 0) {

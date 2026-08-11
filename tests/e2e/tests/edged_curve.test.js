@@ -20,6 +20,7 @@ import {
 } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
+  openMeshEdgesMenu,
   setMeshEdgesColorMap,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
@@ -89,18 +90,23 @@ test("edge attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute -change colormap", async () => {
+test("edge attribute change colormap", async () => {
   await setMeshEdgesColorMap(window, colorMapName);
   await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute - change item to 1", async () => {
+test("edge attribute change item to 1", async () => {
   await setMeshEdgesItem(window, 0);
   await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute - change item to 2", async () => {
+test("edge attribute change item to 2", async () => {
   await setMeshEdgesItem(window, 1);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edge attribute reopen menu", async () => {
+  await openMeshEdgesMenu(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -112,12 +118,12 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change attribute name", async () => {
+test("vertex attribute change attribute name", async () => {
   await setMeshEdgesVertexAttribute(window, otherVertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - switch back to points", async () => {
+test("vertex attribute switch back to points", async () => {
   await setMeshEdgesVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
