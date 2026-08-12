@@ -241,7 +241,7 @@ export {
   ensureFeatureVisible,
   ensureMenuOpen,
   findOverlappingObjectsPicker,
-  hoverViewer as hoverViewer,
+  hoverViewer,
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
   openStyleMenu,
