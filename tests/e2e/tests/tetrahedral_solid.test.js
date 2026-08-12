@@ -22,15 +22,16 @@ import {
 } from "@tests/utils/constants";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
-  setMeshPolyhedraColor,
-  setMeshPolyhedraOpacity,
-} from "@tests/utils/mesh/polyhedra/color.js";
-import {
+  openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
   setMeshPolyhedraItem,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
+import {
+  setMeshPolyhedraColor,
+  setMeshPolyhedraOpacity,
+} from "@tests/utils/mesh/polyhedra/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -72,8 +73,8 @@ test("highlight", async () => {
 });
 
 test("viewer context menu", async () => {
-  const x = 549,
-    y = 360;
+  const x = 549;
+  const y = 360;
   await viewerContextMenu(window, x, y);
   await expect(window).toHaveScreenshot();
 });
@@ -96,8 +97,13 @@ test("polyhedron attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("polyhedron attribute -change colormap", async () => {
+test("polyhedron attribute change colormap", async () => {
   await setMeshPolyhedraColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedron attribute reopen menu", async () => {
+  await openMeshPolyhedraMenu(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -109,23 +115,28 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 1", async () => {
+test("vertex attribute change item to 1", async () => {
   await setMeshPolyhedraItem(window, 0);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 2", async () => {
+test("vertex attribute change item to 2", async () => {
   await setMeshPolyhedraItem(window, 1);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change attribute name", async () => {
+test("vertex attribute change attribute name", async () => {
   await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - switch back to points", async () => {
+test("vertex attribute switch back to points", async () => {
   await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute reopen menu", async () => {
+  await openMeshPolyhedraMenu(window);
   await expect(window).toHaveScreenshot();
 });
 

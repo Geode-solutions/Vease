@@ -14,42 +14,34 @@ function getMenuContainer(window, menuTestId) {
 
 async function setFeatureItem(window, menuTestId, item) {
   const container = getMenuContainer(window, menuTestId);
-  await container.getByTestId("itemSelector").first().click();
-  await window.waitForTimeout(afterActionWait);
+  const itemSelector = container.getByTestId("itemSelector").first();
+  if (await itemSelector.isVisible()) {
+    await itemSelector.click();
+    await window.waitForTimeout(afterActionWait);
 
-  const itemText = `Item ${item + 1}`;
-  await window
-    .locator(".v-overlay-container")
-    .getByText(itemText, { exact: true })
-    .filter({ visible: true })
-    .first()
-    .click();
-  await window.waitForTimeout(afterActionWait);
-  await moveMouseOutOfTheWay(window);
+    const itemText = `Item ${item + 1}`;
+    await window
+      .locator(".v-overlay-container")
+      .locator(".v-list-item")
+      .filter({ hasText: itemText, visible: true })
+      .first()
+      .click();
+    await window.waitForTimeout(afterActionWait);
+    await moveMouseOutOfTheWay(window);
+  }
 }
 
 async function setFeatureColorMap(window, menuTestId, colorMap) {
   const container = getMenuContainer(window, menuTestId);
-  await container.getByTestId("colorMapPicker").first().click();
+  const colorMapPicker = container.getByTestId("colorMapPicker").first();
+  await colorMapPicker.waitFor({ state: "visible" });
+  await colorMapPicker.click();
   await window.waitForTimeout(afterActionWait);
   const colorMapListFilter = window.getByTestId("colorMapListFilter");
   await colorMapListFilter.filter({ visible: true }).first().locator("input").fill(colorMap);
   const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
-
   await window.waitForTimeout(afterActionWait);
-
-  const groups = window
-    .getByTestId("colorMapList")
-    .locator(".text-white.font-weight-bold")
-    .filter({ visible: true });
-  const allGroups = await groups.all();
-  // oxlint-disable no-await-in-loop
-  for (const group of allGroups) {
-    await group.click();
-    await window.waitForTimeout(afterActionWait);
-  }
-  // oxlint-enable no-await-in-loop
 
   await window
     .getByTestId("colorMapList")
@@ -73,13 +65,10 @@ async function applyAttribute(
     max = undefined,
   } = {},
 ) {
-  let testIdStr = "modelStyleMenu";
   if (typeof menuTestId === "string") {
-    testIdStr = menuTestId;
+    await ensureMenuOpen(window, menuTestId);
+    await ensureFeatureVisible(window, menuTestId);
   }
-
-  await ensureMenuOpen(window, testIdStr);
-  await ensureFeatureVisible(window, testIdStr);
 
   const container = getMenuContainer(window, menuTestId);
   await container.getByTestId("coloringStyleSelector").first().click();
@@ -87,19 +76,21 @@ async function applyAttribute(
 
   await window
     .locator(".v-overlay-container")
-    .getByText(attributeType)
-    .filter({ visible: true })
+    .locator(".v-list-item")
+    .filter({ hasText: attributeType, visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
 
-  await container.getByTestId("attributeSelector").first().click();
+  const attributeSelector = container.getByTestId("attributeSelector").first();
+  await attributeSelector.waitFor({ state: "visible" });
+  await attributeSelector.click();
   await window.waitForTimeout(afterActionWait);
 
   await window
     .locator(".v-overlay-container")
-    .getByText(attributeName, { exact: true })
-    .filter({ visible: true })
+    .locator(".v-list-item")
+    .filter({ hasText: attributeName, visible: true })
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
