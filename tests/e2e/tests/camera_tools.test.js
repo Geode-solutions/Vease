@@ -18,7 +18,7 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
-  hoverViewerCenter,
+  hoverViewer,
   moveMouseOutOfTheWay,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
@@ -185,7 +185,7 @@ test("cells hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
@@ -194,7 +194,7 @@ test("points hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("hoverHighlightChip").click();
@@ -208,7 +208,7 @@ test("highlight cells on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("highlightOnHoverButton").click();
@@ -219,7 +219,7 @@ test("highlight points on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
@@ -304,7 +304,7 @@ test("clipping planes hover highlight on cell", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window, { x: 604, y: 490 });
+  await hoverViewer(window, { x: 604, y: 490 });
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
