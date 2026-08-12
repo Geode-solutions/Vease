@@ -9,6 +9,7 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/helpers/attribute";
+import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 
 function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -42,7 +43,13 @@ function setMeshPolyhedraColorMap(window, colorMap) {
   return setFeatureColorMap(window, menuTestId, colorMap);
 }
 
+function openMeshPolyhedraMenu(window) {
+  const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
+  return openStyleMenu(window, menuTestId);
+}
+
 export {
+  openMeshPolyhedraMenu,
   setMeshPolyhedraVertexAttribute,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraItem,

@@ -9,6 +9,7 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/helpers/attribute";
+import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 
 function setMeshEdgesVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -42,7 +43,13 @@ function setMeshEdgesColorMap(window, colorMap) {
   return setFeatureColorMap(window, menuTestId, colorMap);
 }
 
+function openMeshEdgesMenu(window) {
+  const menuTestId = `${meshViewerObjectType}${edgesFeatureName}Menu`;
+  return openStyleMenu(window, menuTestId);
+}
+
 export {
+  openMeshEdgesMenu,
   setMeshEdgesVertexAttribute,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
