@@ -130,11 +130,12 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function hoverViewerCenter(window) {
+async function hoverViewer(window, position) {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
+  const hoverPosition = position ?? { x: box.width / 2, y: box.height / 2 };
   await hybridViewerCanvas.hover({
-    position: { x: box.width / 2, y: box.height / 2 },
+    position: hoverPosition,
   });
   await window.waitForTimeout(afterActionWait);
 }
@@ -240,7 +241,7 @@ export {
   ensureFeatureVisible,
   ensureMenuOpen,
   findOverlappingObjectsPicker,
-  hoverViewerCenter,
+  hoverViewer,
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
   openStyleMenu,
