@@ -17,6 +17,7 @@ import {
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
+  openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
   setMeshCellsItem,
@@ -87,8 +88,13 @@ test("cell attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("cell attribute -change colormap", async () => {
+test("cell attribute change colormap", async () => {
   await setMeshCellsColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cell attribute reopen menu", async () => {
+  await openMeshCellsMenu(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -100,23 +106,28 @@ test("vertex attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 1", async () => {
+test("vertex attribute change item to 1", async () => {
   await setMeshCellsItem(window, 0);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change item to 2", async () => {
+test("vertex attribute change item to 2", async () => {
   await setMeshCellsItem(window, 1);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - change attribute name", async () => {
+test("vertex attribute change attribute name", async () => {
   await setMeshCellsVertexAttribute(window, otherVertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute - switch back to points", async () => {
+test("vertex attribute switch back to points", async () => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute reopen menu", async () => {
+  await openMeshCellsMenu(window);
   await expect(window).toHaveScreenshot();
 });
 

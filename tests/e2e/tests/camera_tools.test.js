@@ -18,7 +18,7 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
-  hoverViewerCenter,
+  hoverViewer,
   moveMouseOutOfTheWay,
   stabilizeHoverTooltip,
 } from "@tests/utils/viewer_interaction.js";
@@ -31,15 +31,20 @@ import {
   closeCameraManager,
   ensureHighlightMenuOpen,
   resetCamera,
+  resetShrinkFilter,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
+  selectShrinkDatasets,
+  setShrinkFactor,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
   toggleGridScale,
+  toggleShrinkFilter,
+  toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
 import {
   expandGeodeObjectType,
@@ -64,6 +69,7 @@ const CUSTOM_NORMAL_VALUE = -0.2;
 const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
+const CUSTOM_SHRINK_FACTOR = 0.5;
 
 test.describe.configure({ mode: "serial" });
 
@@ -179,7 +185,7 @@ test("cells hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
@@ -188,7 +194,7 @@ test("points hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("hoverHighlightChip").click();
@@ -202,7 +208,7 @@ test("highlight cells on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("highlightOnHoverButton").click();
@@ -213,7 +219,7 @@ test("highlight points on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
@@ -250,10 +256,16 @@ test("screenshot clipboard with background", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("open clipping planes tool", async () => {
+test("open shrink filter tool", async () => {
   await toggleGridScale(window);
   await resetCamera(window);
   await showObjectInTree(window, "BRep");
+  await toggleShrinkFilter(window);
+  await expect(window).toHaveScreenshot();
+  await toggleShrinkFilter(window);
+});
+
+test("open clipping planes tool", async () => {
   await toggleClippingPlanes(window);
   await expect(window).toHaveScreenshot();
 });
@@ -276,14 +288,23 @@ test("clipping planes target specific brep dataset", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes hover highlight on cell", async () => {
+test("shrink filter factor 50 percent", async () => {
   await toggleClippingPlanes(window);
+  await toggleShrinkFilter(window);
+  await toggleShrinkTargetAllVisible(window);
+  await selectShrinkDatasets(window, "test");
+  await setShrinkFactor(window, CUSTOM_SHRINK_FACTOR);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes hover highlight on cell", async () => {
+  await toggleShrinkFilter(window);
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "Y+");
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window, { x: 604, y: 490 });
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
@@ -295,8 +316,15 @@ test("clipping planes add second plane", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes multiple planes and datas", async () => {
+test("shrink filter reset", async () => {
   await toggleClippingPlanes(window);
+  await toggleShrinkFilter(window);
+  await resetShrinkFilter(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes multiple planes and datas", async () => {
+  await toggleShrinkFilter(window);
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X-");
   await showObjectInTree(window, "RegularGrid3D");
