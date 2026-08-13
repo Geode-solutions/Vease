@@ -94,6 +94,42 @@ async function ensureHighlightMenuOpen(window, childButtonTestId) {
   }
 }
 
+async function toggleShrinkFilter(window) {
+  await window.getByTestId("shrinkFilterButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setShrinkFactor(window, shrinkFactorValue) {
+  const slider = window.getByTestId("shrinkFactorSlider");
+  const box = await slider.boundingBox();
+  const clickX = box.width * shrinkFactorValue;
+  await slider.click({ position: { x: clickX, y: box.height / 2 } });
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function resetShrinkFilter(window) {
+  await window.getByTestId("resetShrinkButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleShrinkTargetAllVisible(window) {
+  const switchElement = window.getByTestId("shrinkTargetAllVisibleSwitch");
+  const checkbox = switchElement.getByRole("checkbox");
+  await checkbox.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function selectShrinkDatasets(window, datasetName, index = 0) {
+  const select = window.getByTestId("shrinkSelectedDatasetsSelect");
+  await select.click();
+  await window.waitForTimeout(afterActionWait);
+  const option = window.getByRole("option", { name: datasetName }).nth(index);
+  await option.click();
+  await window.waitForTimeout(afterActionWait);
+  await select.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -107,4 +143,9 @@ export {
   selectCameraOrientation,
   restoreCameraPosition,
   ensureHighlightMenuOpen,
+  toggleShrinkFilter,
+  setShrinkFactor,
+  resetShrinkFilter,
+  toggleShrinkTargetAllVisible,
+  selectShrinkDatasets,
 };

@@ -13,6 +13,7 @@ function stateHasKey(key, $state) {
   return Object.keys($state).includes(key);
 }
 
+// oxlint-disable-next-line eslint/no-unused-vars
 function piniaSharedState() {
   return async ({ store, options }) => {
     const omittedKeys = options?.share?.omit ?? [];
@@ -68,9 +69,10 @@ const piniaPlugin = defineNuxtPlugin((nuxtApp) => {
   const { $pinia } = nuxtApp;
   if (!$pinia) {
     console.warn("Pinia instance not available; skipping shared state plugin.");
+    // oxlint-disable-next-line eslint/no-useless-return
     return;
   }
-  $pinia.use(piniaSharedState());
+  // $pinia.use(piniaSharedState());
 });
 
 console.log("PINIA PLUGIN");
