@@ -130,6 +130,36 @@ async function selectShrinkDatasets(window, datasetName, index = 0) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function toggleRuler(window) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("rulerButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleRulerSnap(window) {
+  const switchElement = window.getByTestId("rulerSnapToggle");
+  const checkbox = switchElement.getByRole("checkbox");
+  await checkbox.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setRulerPointInput(window, pointIndex, coords) {
+  const card = window.getByTestId("rulerPointCard").nth(pointIndex - 1);
+  for (let axis = 0; axis < coords.length; axis += 1) {
+    const input = card.getByTestId("rulerPointCoordInput").nth(axis).locator("input");
+    // oxlint-disable-next-line no-await-in-loop
+    await input.fill(coords[axis].toString());
+  }
+  await window.getByTestId("rulerApplyButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function clearRuler(window) {
+  await window.getByTestId("rulerClearButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -148,4 +178,8 @@ export {
   resetShrinkFilter,
   toggleShrinkTargetAllVisible,
   selectShrinkDatasets,
+  toggleRuler,
+  toggleRulerSnap,
+  setRulerPointInput,
+  clearRuler,
 };
