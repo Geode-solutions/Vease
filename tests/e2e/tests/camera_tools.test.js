@@ -150,6 +150,7 @@ test("ruler tool pick vertex snap points", async () => {
     },
   });
   await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
