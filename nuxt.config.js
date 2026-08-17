@@ -9,7 +9,7 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local, microservice, serverless, cloud"];
+const serverDirectories = ["local", "microservice", "serverless", "cloud"];
 
 function getIgnoredDirectories(directoriesToKeep) {
   return serverDirectories
@@ -72,8 +72,28 @@ export default defineNuxtConfig({
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
 
   nitro: {
+    experimental: { asyncContext: true },
     ignore: nitroIgnoreConfig(),
   },
+
+  mcp: {
+    name: "Vease",
+    description: "Control the application with a set of commands",
+    security: {
+      allowedOrigins: ["http://127.0.0.1:54321"],
+    },
+  },
+  routeRules: {
+    "/mcp/**": {
+      cors: true,
+      headers: {
+        "Access-Control-Allow-Origin": "http://127.0.0.1:54321",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Accept",
+      },
+    },
+  },
+
 
   ssr: false,
   electron: {

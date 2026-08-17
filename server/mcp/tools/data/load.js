@@ -1,8 +1,10 @@
-// server/mcp/tools/load-file.ts
-import { z } from 'zod'
-import fs from 'node:fs/promises'
+// Node imports
 import path from 'node:path'
+
+// Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
+import fs from 'node:fs/promises'
+import { z } from 'zod'
 
 export default defineMcpTool({
   name: 'load-file',
@@ -15,7 +17,8 @@ export default defineMcpTool({
     filePath: z.string().describe('Absolute path to the file on disk to upload'),
   },
   handler: async ({ filePath }) => {
-    let fileBuffer
+    console.log("HELLO FROM LOAD FILE TOOL")
+    let fileBuffer = undefined
     try {
       fileBuffer = await fs.readFile(filePath)
     } catch {
@@ -27,7 +30,7 @@ export default defineMcpTool({
     formData.append('file', new Blob([fileBuffer]), filename)
 
     try {
-      const response = await fetch('/api/controller/data/load', {
+      const response = await fetch("http://localhost:3000/api/controller/data/load", {
         method: 'POST',
         body: formData,
       })
@@ -42,7 +45,7 @@ export default defineMcpTool({
         return `Error loading file: ${message}`
       }
 
-      const payload = await response.json().catch(() => null)
+      const payload = await response.json().catch(() => undefined)
       return `File loaded successfully: ${JSON.stringify(payload ?? { ok: true })}`
     } catch (error) {
       const message = error?.data?.statusMessage ?? error?.message ?? 'Unknown error'
