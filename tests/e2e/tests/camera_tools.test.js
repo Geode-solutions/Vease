@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 // Node imports
 
 // Third party imports
@@ -18,28 +19,40 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
-  hoverViewerCenter,
+  hoverViewer,
   moveMouseOutOfTheWay,
+  setEdgesVisibility,
   stabilizeHoverTooltip,
+  viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
+  meshViewerObjectType,
   rgd3dGeodeObjectType,
 } from "@tests/utils/constants.js";
 import {
+  clearRuler,
   closeCameraManager,
   ensureHighlightMenuOpen,
   resetCamera,
+  resetShrinkFilter,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
+  selectShrinkDatasets,
+  setRulerPointInput,
+  setShrinkFactor,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
   toggleGridScale,
+  toggleRuler,
+  toggleRulerSnap,
+  toggleShrinkFilter,
+  toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
 import {
   expandGeodeObjectType,
@@ -64,6 +77,13 @@ const CUSTOM_NORMAL_VALUE = -0.2;
 const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
+const CUSTOM_SHRINK_FACTOR = 0.5;
+const RULER_POINT_2_X = 1.8;
+const RULER_POINT_2_Y = 16.8;
+const RULER_POINT_2_Z = 44.9;
+const RULER_SNAP_X_RATIO = 0.5;
+const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
+const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 
 test.describe.configure({ mode: "serial" });
 
@@ -87,6 +107,53 @@ test("reset camera", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("grid edges visibility", async () => {
+  const x = 549;
+  const y = 360;
+  await viewerContextMenu(window, x, y);
+  await setEdgesVisibility(window, meshViewerObjectType, true);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("ruler tool pick point 1 and manual point 2", async () => {
+  await window.keyboard.press("Escape");
+  await toggleRuler(window);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.click({
+    position: { x: box.width / 2, y: box.height / 2 },
+  });
+  await window.waitForTimeout(afterActionWait);
+  await setRulerPointInput(window, 2, [RULER_POINT_2_X, RULER_POINT_2_Y, RULER_POINT_2_Z]);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("ruler tool pick vertex snap points", async () => {
+  await clearRuler(window);
+  await toggleRuler(window);
+  await toggleRulerSnap(window);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.click({
+    position: {
+      x: box.width * RULER_SNAP_X_RATIO,
+      y: box.height * RULER_SNAP_POINT_1_Y_RATIO,
+    },
+  });
+  await window.waitForTimeout(afterActionWait);
+  await hybridViewerCanvas.click({
+    position: {
+      x: box.width * RULER_SNAP_X_RATIO,
+      y: box.height * RULER_SNAP_POINT_2_Y_RATIO,
+    },
+  });
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
 test("rotate camera 180 degrees", async () => {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -95,6 +162,8 @@ test("rotate camera 180 degrees", async () => {
 });
 
 test("overlapping objects context menu", async () => {
+  await toggleRuler(window);
+  await clearRuler(window);
   await resetCamera(window);
   await findOverlappingObjectsPicker(window);
   await expect(window).toHaveScreenshot();
@@ -179,7 +248,7 @@ test("cells hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
@@ -188,7 +257,7 @@ test("points hover highlight", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("hoverHighlightChip").click();
@@ -202,7 +271,7 @@ test("highlight cells on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.getByTestId("highlightOnHoverButton").click();
@@ -213,7 +282,7 @@ test("highlight points on grid", async () => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window);
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
@@ -250,10 +319,16 @@ test("screenshot clipboard with background", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("open clipping planes tool", async () => {
+test("open shrink filter tool", async () => {
   await toggleGridScale(window);
   await resetCamera(window);
   await showObjectInTree(window, "BRep");
+  await toggleShrinkFilter(window);
+  await expect(window).toHaveScreenshot();
+  await toggleShrinkFilter(window);
+});
+
+test("open clipping planes tool", async () => {
   await toggleClippingPlanes(window);
   await expect(window).toHaveScreenshot();
 });
@@ -276,14 +351,23 @@ test("clipping planes target specific brep dataset", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes hover highlight on cell", async () => {
+test("shrink filter factor 50 percent", async () => {
   await toggleClippingPlanes(window);
+  await toggleShrinkFilter(window);
+  await toggleShrinkTargetAllVisible(window);
+  await selectShrinkDatasets(window, "test");
+  await setShrinkFactor(window, CUSTOM_SHRINK_FACTOR);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes hover highlight on cell", async () => {
+  await toggleShrinkFilter(window);
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "Y+");
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await hoverViewerCenter(window);
+  await hoverViewer(window, { x: 604, y: 490 });
   await stabilizeHoverTooltip(window);
   await expect(window).toHaveScreenshot();
 });
@@ -295,8 +379,15 @@ test("clipping planes add second plane", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes multiple planes and datas", async () => {
+test("shrink filter reset", async () => {
   await toggleClippingPlanes(window);
+  await toggleShrinkFilter(window);
+  await resetShrinkFilter(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("clipping planes multiple planes and datas", async () => {
+  await toggleShrinkFilter(window);
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X-");
   await showObjectInTree(window, "RegularGrid3D");

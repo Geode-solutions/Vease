@@ -94,6 +94,72 @@ async function ensureHighlightMenuOpen(window, childButtonTestId) {
   }
 }
 
+async function toggleShrinkFilter(window) {
+  await window.getByTestId("shrinkFilterButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setShrinkFactor(window, shrinkFactorValue) {
+  const slider = window.getByTestId("shrinkFactorSlider");
+  const box = await slider.boundingBox();
+  const clickX = box.width * shrinkFactorValue;
+  await slider.click({ position: { x: clickX, y: box.height / 2 } });
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function resetShrinkFilter(window) {
+  await window.getByTestId("resetShrinkButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleShrinkTargetAllVisible(window) {
+  const switchElement = window.getByTestId("shrinkTargetAllVisibleSwitch");
+  const checkbox = switchElement.getByRole("checkbox");
+  await checkbox.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function selectShrinkDatasets(window, datasetName, index = 0) {
+  const select = window.getByTestId("shrinkSelectedDatasetsSelect");
+  await select.click();
+  await window.waitForTimeout(afterActionWait);
+  const option = window.getByRole("option", { name: datasetName }).nth(index);
+  await option.click();
+  await window.waitForTimeout(afterActionWait);
+  await select.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleRuler(window) {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await window.getByTestId("rulerButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function toggleRulerSnap(window) {
+  const switchElement = window.getByTestId("rulerSnapToggle");
+  const checkbox = switchElement.getByRole("checkbox");
+  await checkbox.click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setRulerPointInput(window, pointIndex, coords) {
+  const card = window.getByTestId("rulerPointCard").nth(pointIndex - 1);
+  for (let axis = 0; axis < coords.length; axis += 1) {
+    const input = card.getByTestId("rulerPointCoordInput").nth(axis).locator("input");
+    // oxlint-disable-next-line no-await-in-loop
+    await input.fill(coords[axis].toString());
+  }
+  await window.getByTestId("rulerApplyButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function clearRuler(window) {
+  await window.getByTestId("rulerClearButton").click();
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -107,4 +173,13 @@ export {
   selectCameraOrientation,
   restoreCameraPosition,
   ensureHighlightMenuOpen,
+  toggleShrinkFilter,
+  setShrinkFactor,
+  resetShrinkFilter,
+  toggleShrinkTargetAllVisible,
+  selectShrinkDatasets,
+  toggleRuler,
+  toggleRulerSnap,
+  setRulerPointInput,
+  clearRuler,
 };
