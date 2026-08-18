@@ -19,6 +19,7 @@ import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 import packageJson from "../../../package.json" with { type: "json" };
 
 // Constants
+const __dirname = import.meta.dirname;
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 25;
@@ -42,7 +43,9 @@ function findAppExecutable() {
     console.log({ appExecutablePath });
     return path.join(appExecutablePath, executableName(packageJson.name));
   }
-  const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+  const buildReleasePath = path.join(__dirname, "../../../release", "0.0.0");
+  console.log([buildReleasePath]);
+  const buildPath = findLatestBuild(buildReleasePath);
   return parseElectronApp(buildPath).executable;
 }
 
@@ -223,4 +226,32 @@ async function navigateToApp(mode, browser) {
   throw new Error(`Unknown mode: ${mode}`);
 }
 
-export { navigateToApp };
+function navigateToViewerPage(window) {
+  const viewerNavButton = window.getByTestId("viewerNavButton");
+  return viewerNavButton.click();
+}
+function navigateToDataManagerPage(window) {
+  const dataManagerNavButton = window.getByTestId("dataManagerNavButton");
+  return dataManagerNavButton.click();
+}
+function navigateToExtensionsPage(window) {
+  const extensionsNavButton = window.getByTestId("extensionsNavButton");
+  return extensionsNavButton.click();
+}
+function navigateToAccountPage(window) {
+  const accountNavButton = window.getByTestId("accountNavButton");
+  return accountNavButton.click();
+}
+function navigateToInfosPage(window) {
+  const infosNavButton = window.getByTestId("infosNavButton");
+  return infosNavButton.click();
+}
+
+export {
+  navigateToApp,
+  navigateToAccountPage,
+  navigateToDataManagerPage,
+  navigateToExtensionsPage,
+  navigateToInfosPage,
+  navigateToViewerPage,
+};

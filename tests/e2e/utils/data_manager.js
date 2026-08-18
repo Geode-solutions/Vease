@@ -5,10 +5,6 @@
 // Local imports
 import { afterActionWait } from "./viewer_interaction";
 
-async function navigateToDataManager(window) {
-  await window.getByTestId("dataManagerNavButton").click();
-  await window.waitForTimeout(afterActionWait);
-}
 
 async function openDataManagerPiP(window) {
   await window.getByTestId("dataManagerPiPButton").click();
@@ -83,7 +79,6 @@ export {
   focusRowItem,
   getDataTableRow,
   isolateRowItem,
-  navigateToDataManager,
   openDataManagerPiP,
   openRenameByButton,
   openRenameByName,

@@ -22,14 +22,13 @@ import {
   expandObjectTree,
   focusRowItem,
   isolateRowItem,
-  navigateToDataManager,
   openDataManagerPiP,
   openRenameByButton,
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager.js";
+import { navigateToApp, navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import { loadData } from "@tests/utils/load.js";
-import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -59,7 +58,7 @@ test("load objects", async () => {
 });
 
 test("navigate to data manager", async () => {
-  await navigateToDataManager(window);
+  await navigateToDataManagerPage(window);
   await expect(window).toHaveScreenshot();
 });
 
