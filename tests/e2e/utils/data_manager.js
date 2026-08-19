@@ -5,7 +5,6 @@
 // Local imports
 import { afterActionWait } from "./viewer_interaction";
 
-
 async function openDataManagerPiP(window) {
   await window.getByTestId("dataManagerPiPButton").click();
   await window.waitForTimeout(afterActionWait);
