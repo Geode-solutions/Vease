@@ -8,7 +8,6 @@ import { modalTransitionWait } from "./constants.js";
 import { navigateToExtensionsPage } from "./navigate.js";
 import { waitForLoadingScreen } from "./interactions.js";
 
-
 async function loadExtension(window, extensionFilePath) {
   await waitForLoadingScreen(window);
   try {
