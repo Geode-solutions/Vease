@@ -7,7 +7,11 @@ import { expect } from "@playwright/test";
 const __dirname = import.meta.dirname;
 const loadTimeout = 5000;
 
-async function loadData(window, inputDataFilename, inputDataPath = path.join(__dirname, "..", "tests", "data")) {
+async function loadData(
+  window,
+  inputDataFilename,
+  inputDataPath = path.join(__dirname, "..", "tests", "data"),
+) {
   console.log(`Loading data: ${inputDataFilename} from ${inputDataPath}`);
   const inputFileExtension = path.extname(inputDataFilename);
   const inputDataFilePath = path.join(inputFilePath, inputDataPath);
