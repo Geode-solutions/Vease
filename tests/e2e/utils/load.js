@@ -7,10 +7,10 @@ import { expect } from "@playwright/test";
 const __dirname = import.meta.dirname;
 const loadTimeout = 5000;
 
-async function loadData(window, inputFilename) {
-  const inputFileExtension = path.extname(inputFilename);
-  console.log("loadData", { inputFilename, inputFileExtension });
-  const inputFilePath = path.join(__dirname, "..", "tests", "data", inputFilename);
+async function loadData(window, inputDataFilename, inputDataPath = path.join(__dirname, "..", "tests", "data")) {
+  console.log(`Loading data: ${inputDataFilename} from ${inputDataPath}`);
+  const inputFileExtension = path.extname(inputDataFilename);
+  const inputDataFilePath = path.join(inputFilePath, inputDataPath);
   const layoutImportButton = window.getByTestId("layoutImportButton");
   await layoutImportButton.waitFor({ state: "visible" });
   const layoutImportButtonTimeout = 50_000;
@@ -18,7 +18,7 @@ async function loadData(window, inputFilename) {
   await layoutImportButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
-  await fileInput.setInputFiles(inputFilePath);
+  await fileInput.setInputFiles(inputDataFilePath);
   const dataImportStepper = window.getByTestId("DataImportStepper");
   const finalizeImportButton = window.getByTestId("finalizeImportButton");
   await finalizeImportButton.click();
