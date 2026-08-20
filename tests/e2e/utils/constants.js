@@ -1,4 +1,43 @@
+// Node imports
+
+// Third party imports
+import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
+
+const MILLISECONDS = 1000;
+const CLOUD_TIMEOUT = 120;
+const LINUX_TIMEOUT_BROWSER = 60;
+const LINUX_TIMEOUT_DESKTOP = 50;
+const WINDOWS_TIMEOUT_BROWSER = 80;
+const WINDOWS_TIMEOUT_DESKTOP = 80;
+
+const maxDiffPixelRatio = 0.02;
+
+const TIMEOUTS = {
+  browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_TIMEOUT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
+};
+
+const CLOUD_SECONDS_SCREENSHOT_TIMEOUT = 10;
+const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS;
+
+const defaultExpect = {
+  toHaveScreenshot: {
+    maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
+      ? Number(process.env.MAX_PIXEL_RATIO)
+      : maxDiffPixelRatio,
+    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
+  },
+};
+
+const cloudExpect = {
+  ...defaultExpect,
+  toHaveScreenshot: {
+    ...defaultExpect.toHaveScreenshot,
+    timeout: CLOUD_SCREENSHOT_TIMEOUT,
+  },
+};
 
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
