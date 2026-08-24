@@ -23,6 +23,7 @@ const topPages = ref([
   {
     title: "Extensions",
     icon: "mdi-puzzle",
+    testId: "extensionsNavButton",
     click: () => navigateTo("/extensions"),
   },
 ]);
