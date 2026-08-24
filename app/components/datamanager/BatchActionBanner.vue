@@ -6,41 +6,64 @@ const { selectedIds } = defineProps({
   },
 });
 
-const emit = defineEmits(["delete", "clear"]);
+const emit = defineEmits(["delete", "toggle-visibility-selected", "clear"]);
 </script>
 
 <template>
   <v-expand-transition>
     <v-sheet
       v-if="selectedIds.length > 0"
-      class="mb-4 pa-3 border-thin rounded-lg"
+      class="mb-4 pa-3 border-thin rounded-lg banner-container"
       color="transparent"
-      rounded="lg"
     >
-      <div class="d-flex align-center justify-space-between">
-        <div class="d-flex align-center ga-2">
-          <span class="text-subtitle-2 text-white px-2"
-            >{{ selectedIds.length }} items selected</span
+      <div class="d-flex align-center justify-space-between flex-wrap ga-2">
+        <div class="d-flex align-center ga-2 flex-wrap">
+          <v-chip size="small" color="primary" variant="flat" class="font-weight-bold">
+            {{ selectedIds.length }} {{ selectedIds.length === 1 ? "item" : "items" }} selected
+          </v-chip>
+
+          <v-btn
+            prepend-icon="mdi-eye-outline"
+            size="small"
+            variant="tonal"
+            color="white"
+            class="text-none"
+            data-testid="batchVisibilityButton"
+            @click="emit('toggle-visibility-selected')"
           >
-          <v-divider vertical class="mx-2" />
+            Toggle Visibility
+          </v-btn>
+
           <v-btn
             prepend-icon="mdi-delete"
             size="small"
-            variant="text"
+            variant="flat"
             color="error"
+            class="text-none font-weight-bold"
+            data-testid="batchDeleteButton"
             @click="emit('delete')"
           >
-            Delete
+            Delete Selected
           </v-btn>
         </div>
+
         <v-btn
           icon="mdi-close"
           size="x-small"
           variant="text"
           color="white"
           @click="emit('clear')"
-        />
+        >
+          <v-tooltip activator="parent" location="top">Clear selection</v-tooltip>
+        </v-btn>
       </div>
     </v-sheet>
   </v-expand-transition>
 </template>
+
+<style scoped>
+.banner-container {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px);
+}
+</style>
