@@ -47,13 +47,7 @@ const emit = defineEmits(["delete", "toggle-visibility-selected", "clear"]);
           </v-btn>
         </div>
 
-        <v-btn
-          icon="mdi-close"
-          size="x-small"
-          variant="text"
-          color="white"
-          @click="emit('clear')"
-        >
+        <v-btn icon="mdi-close" size="x-small" variant="text" color="white" @click="emit('clear')">
           <v-tooltip activator="parent" location="top">Clear selection</v-tooltip>
         </v-btn>
       </div>
