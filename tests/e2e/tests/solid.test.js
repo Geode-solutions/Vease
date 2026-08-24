@@ -5,7 +5,10 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  afterActionWait,
   beforeAllTimeout,
+  getHybridViewerCanvas,
+  moveMouseOutOfTheWay,
   setEdgesVisibility,
   setEdgesWidth,
   setPointsSize,
@@ -20,7 +23,11 @@ import {
   hybridSolidGeodeObjectType,
   meshViewerObjectType,
 } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  expandMainObjectTree,
+  highlightData,
+  toggleObjectsTree,
+} from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
@@ -30,6 +37,7 @@ import {
 } from "@tests/utils/mesh/polyhedra/attribute.js";
 import {
   setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
 import { loadData } from "@tests/utils/load.js";
@@ -50,6 +58,7 @@ let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
+const ZOOM_WHEEL_DELTA = -5000;
 
 test.describe.configure({ mode: "serial" });
 
@@ -194,4 +203,19 @@ test("polyhedra visibility", async () => {
   await expect(window).toHaveScreenshot();
   // Revert
   await setPolyhedraVisibility(window, meshViewerObjectType, true);
+});
+
+test("reopen treeview over zoomed dark data adaptive style", async () => {
+  await setMeshPolyhedraColorBlack(window);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });
+  await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
+  await window.waitForTimeout(afterActionWait);
+  await toggleObjectsTree(window);
+  await toggleObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
 });
