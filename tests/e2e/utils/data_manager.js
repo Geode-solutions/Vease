@@ -3,6 +3,7 @@
 // Third party imports
 
 // Local imports
+import { getMainObjectTree } from "./object_tree_interaction";
 import { afterActionWait } from "./viewer_interaction";
 
 async function openDataManagerPiP(window) {
@@ -65,7 +66,8 @@ async function confirmDelete(window) {
 }
 
 async function expandObjectTree(window) {
-  await window.getByTestId("mainObjectTree").locator("button:has(.mdi-expand-all-outline)").click();
+  const mainObjectTree = getMainObjectTree(window);
+  await mainObjectTree.locator("button:has(.mdi-expand-all-outline)").click();
   await window.waitForTimeout(afterActionWait);
 }
 

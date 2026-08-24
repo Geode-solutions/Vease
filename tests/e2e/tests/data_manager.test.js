@@ -28,7 +28,7 @@ import {
   toggleRowVisibility,
 } from "@tests/utils/data_manager.js";
 import { navigateToApp, navigateToDataManagerPage } from "@tests/utils/navigate.js";
-import { loadData } from "@tests/utils/load.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -52,8 +52,8 @@ test.afterAll(async () => {
 });
 
 test("load objects", async () => {
-  await loadData(window, BREP_FILE);
-  await loadData(window, POLYGONAL_SURFACE_FILE);
+  await loadDatas(window, [BREP_FILE]);
+  await loadDatas(window, [POLYGONAL_SURFACE_FILE]);
   await expect(window).toHaveScreenshot();
 });
 
@@ -63,7 +63,7 @@ test("navigate to data manager", async () => {
 });
 
 test("import data from data manager", async () => {
-  await loadData(window, POINTSET_FILE);
+  await loadDatas(window, [POINTSET_FILE]);
   await expect(window).toHaveScreenshot();
 });
 

@@ -20,9 +20,9 @@ import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_in
 import {
   openMeshPointsMenu,
   setMeshPointsVertexAttribute,
-} from "@tests/utils/mesh/points/attribute.js";
-import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color.js";
-import { loadData } from "@tests/utils/load.js";
+} from "@tests/utils/data/mesh/points/attribute.js";
+import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/data/mesh/points/color.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
@@ -44,7 +44,7 @@ test.afterAll(async () => {
 });
 
 test("load", async () => {
-  await loadData(window, inputFilename);
+  await loadDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });

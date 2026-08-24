@@ -27,16 +27,16 @@ import {
   setMeshPolyhedraItem,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
-} from "@tests/utils/mesh/polyhedra/attribute.js";
+} from "@tests/utils/data/mesh/polyhedra/attribute.js";
 import {
   setMeshPolyhedraColor,
   setMeshPolyhedraOpacity,
-} from "@tests/utils/mesh/polyhedra/color.js";
-import { loadData } from "@tests/utils/load.js";
+} from "@tests/utils/data/mesh/polyhedra/color.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
-import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
-import { setMeshPolygonsColor } from "@tests/utils/mesh/polygon/color.js";
+import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
+import { setMeshPolygonsColor } from "@tests/utils/data/mesh/polygon/color.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -62,7 +62,7 @@ test.afterAll(async () => {
 });
 
 test("load", async () => {
-  await loadData(window, inputFilename);
+  await loadDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });

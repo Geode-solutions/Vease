@@ -30,6 +30,8 @@ import {
   collapseGeodeObjectType,
   expandGeodeObjectType,
   expandMainObjectTree,
+  getMainObjectTree,
+  getModelComponentsObjectTree,
   hideAllComponentLeafRows,
   hideObjectInTree,
   highlightData,
@@ -46,7 +48,7 @@ import {
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
-} from "@tests/utils/model/color.js";
+} from "@tests/utils/data/model/color.js";
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
@@ -55,9 +57,9 @@ import {
   setModelPolygonsVertexAttribute,
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
-} from "@tests/utils/model/attribute.js";
+} from "@tests/utils/data/model/attribute.js";
 import { applyAttribute } from "@tests/utils/helpers/attribute.js";
-import { loadData } from "@tests/utils/load.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
 
@@ -81,7 +83,7 @@ test.afterAll(async () => {
 });
 
 test("load brep", async () => {
-  await loadData(window, brepFilename);
+  await loadDatas(window, [brepFilename]);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
@@ -133,7 +135,7 @@ test("random coloring", async () => {
 test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   await expandGeodeObjectType(window, "BRep");
-  const mainObjectTree = window.getByTestId("mainObjectTree");
+  const mainObjectTree = getMainObjectTree(window);
   const testItem = mainObjectTree.getByText("test").first();
   await testItem.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
@@ -348,8 +350,8 @@ test("surfaces polygon attribute one surface", async () => {
 
 test("hide points in model tree", async () => {
   await toggleModelTreeRow(window, "Surfaces");
-  await window
-    .getByTestId("modelComponentsObjectTree")
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree
     .locator(".tree-row-wrapper", { hasText: "Surfaces" })
     .locator(".tree-item-label")
     .first()
@@ -359,8 +361,8 @@ test("hide points in model tree", async () => {
 });
 
 test("context menu through non visible surface", async () => {
-  await window
-    .getByTestId("modelComponentsObjectTree")
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree
     .locator(".tree-row-wrapper", { hasText: "00000000-" })
     .nth(4)
     .locator(".mdi-eye-off-outline")
@@ -377,7 +379,7 @@ test("context menu through non visible surface", async () => {
 
 test("load structural model", async () => {
   await toggleObjectsTree(window);
-  await loadData(window, structuralModelFilename);
+  await loadDatas(window, [structuralModelFilename]);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
@@ -394,7 +396,8 @@ test("toggle both model component trees", async () => {
 
 test("blocks vertex attribute all blocks", async () => {
   await toggleModelTreeRow(window, "Surfaces", 0, 1);
-  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  const secondModelTree = modelComponentsObjectTree.nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 0, 1);
   await setModelPolyhedraVertexAttribute(window, "points", { item: 0, colorMap: "vikO" });
@@ -437,6 +440,7 @@ test("blocks polyhedron attribute one block", async () => {
   await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
   await window.keyboard.press("Escape");
-  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  const secondModelTree = modelComponentsObjectTree.nth(1);
   await collapseGeodeObjectType(window, "Blocks", secondModelTree);
 });

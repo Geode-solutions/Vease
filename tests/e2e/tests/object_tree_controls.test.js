@@ -11,9 +11,11 @@ import {
 } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
-  collapseAllObjects,
-  expandAllObjects,
+  collapseMainObjectTree,
+  collapseModelComponentsObjectTree,
+  expandModelComponentsObjectTree,
   fillSearchQuery,
+  getMainObjectTree,
   hideObjectInTree,
   openFilterMenu,
   setModelTreeRowColorRandom,
@@ -22,7 +24,7 @@ import {
   toggleSortObjects,
   uncheckFilterCategory,
 } from "@tests/utils/object_tree_interaction.js";
-import { loadData } from "@tests/utils/load.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { resetCamera } from "@tests/utils/camera_interaction.js";
 import { test } from "@tests/fixtures.js";
@@ -47,10 +49,10 @@ test.afterAll(async () => {
 });
 
 test("load all files", async () => {
-  await loadData(window, brepFilename);
-  await loadData(window, edc3dFilename);
-  await loadData(window, psf3dFilename);
-  await loadData(window, hso3dFilename);
+  await loadDatas(window, [brepFilename]);
+  await loadDatas(window, [edc3dFilename]);
+  await loadDatas(window, [psf3dFilename]);
+  await loadDatas(window, [hso3dFilename]);
   await expect(window).toHaveScreenshot();
 });
 
@@ -91,8 +93,8 @@ test("search by text", async () => {
 });
 
 test("search by id", async () => {
-  const brepLabel = window
-    .getByTestId("mainObjectTree")
+  const mainObjectTree = getMainObjectTree(window);
+  const brepLabel = mainObjectTree
     .locator('[data-testid^="treeRow-"]', { hasText: "test" })
     .first();
   const dataTestId = await brepLabel.getAttribute("data-testid");
@@ -114,14 +116,14 @@ test("refilter object", async () => {
 });
 
 test("collapse main object tree", async () => {
-  await window
-    .getByTestId("mainObjectTree")
+  const mainObjectTree = getMainObjectTree(window);
+  await mainObjectTree
     .locator(".tree-row-wrapper", { hasText: "test" })
     .first()
     .locator("button:has(.mdi-magnify-expand)")
     .click();
   await window.waitForTimeout(afterActionWait);
-  await collapseAllObjects(window, "mainObjectTree");
+  await collapseMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -131,7 +133,7 @@ test("toggle objects", async () => {
 });
 
 test("expand model components", async () => {
-  await expandAllObjects(window, "modelComponentsObjectTree");
+  await expandModelComponentsObjectTree(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -141,7 +143,8 @@ test("hide model blocks", async () => {
 });
 
 test("filter model components", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("filterObjectsButton").click();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("filterObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("filterCheckbox-Blocks").getByRole("checkbox").uncheck();
   await window.waitForTimeout(afterActionWait);
@@ -153,26 +156,26 @@ test("filter model components", async () => {
 });
 
 test("sort model components by id", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
 });
 
 test("sort model components by name", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
 });
 
 test("search model components by text", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsButton").click();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("searchObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
-  const searchInput = window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("searchObjectsInput")
-    .locator("input");
+  const searchInput = modelComponentsObjectTree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill("ff");
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
@@ -191,8 +194,8 @@ test("color filtered surfaces", async () => {
 });
 
 test("clear searchbar", async () => {
-  const searchInput = window
-    .getByTestId("modelComponentsObjectTree")
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  const searchInput = modelComponentsObjectTree
     .getByTestId("searchObjectsInput")
     .locator("input");
   await searchInput.fill("");
@@ -200,6 +203,6 @@ test("clear searchbar", async () => {
 });
 
 test("collapse all model components", async () => {
-  await collapseAllObjects(window, "modelComponentsObjectTree");
+  await collapseModelComponentsObjectTree(window);
   await expect(window).toHaveScreenshot();
 });

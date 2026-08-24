@@ -61,7 +61,7 @@ import {
   hideObjectInTree,
   showObjectInTree,
 } from "@tests/utils/object_tree_interaction.js";
-import { loadData } from "@tests/utils/load.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/fixtures.js";
@@ -96,8 +96,8 @@ test.afterAll(async () => {
 });
 
 test("load", async () => {
-  await loadData(window, brepFilename);
-  await loadData(window, rgd3dFilename);
+  await loadDatas(window, [brepFilename]);
+  await loadDatas(window, [rgd3dFilename]);
   await expandMainObjectTree(window);
   await expect(window).toHaveScreenshot();
 });

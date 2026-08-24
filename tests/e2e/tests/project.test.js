@@ -11,7 +11,7 @@ import {
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
-import { hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
+import { getMainObjectTree, getModelComponentsObjectTree, hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/fixtures.js";
@@ -43,8 +43,8 @@ test("toggle surfaces visibility", async () => {
 });
 
 test("change lines color", async () => {
-  const tree = window.getByTestId("modelComponentsObjectTree");
-  const item = tree.getByText("Lines").first();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  const item = modelComponentsObjectTree.getByText("Lines").first();
   await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 
@@ -56,8 +56,8 @@ test("change lines color", async () => {
 });
 
 test("collapse model tree in main tree", async () => {
-  await window
-    .getByTestId("mainObjectTree")
+  const mainObjectTree = getMainObjectTree(window);
+  await mainObjectTree
     .locator(".tree-row-wrapper")
     .filter({ hasText: "surface_cube" })
     .first()
