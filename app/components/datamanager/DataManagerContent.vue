@@ -37,12 +37,14 @@ const newItemName = ref("");
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
-async function toggleVisibility(item) {
-  const newVisible = !item.visible;
-  await dataStore.updateItem(item.id, { visible: newVisible });
-  await dataStyleStore.setVisibility(item.id, newVisible, item);
-  item.visible = newVisible;
-  if (newVisible) {
+async function toggleVisibility(item, targetVisible = !item.visible) {
+  if (item.visible === targetVisible) {
+    return;
+  }
+  await dataStore.updateItem(item.id, { visible: targetVisible });
+  await dataStyleStore.setVisibility(item.id, targetVisible, item);
+  item.visible = targetVisible;
+  if (targetVisible) {
     await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
   } else {
     treeviewStore.removeItem(item.id);
@@ -58,16 +60,7 @@ async function toggleSelectedVisibility() {
   const anyVisible = targetItems.some((i) => i.visible);
   const targetVisible = !anyVisible;
 
-  const promises = targetItems.map(async (item) => {
-    await dataStore.updateItem(item.id, { visible: targetVisible });
-    await dataStyleStore.setVisibility(item.id, targetVisible, item);
-    item.visible = targetVisible;
-    if (targetVisible) {
-      await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
-    } else {
-      treeviewStore.removeItem(item.id);
-    }
-  });
+  const promises = targetItems.map((item) => toggleVisibility(item, targetVisible));
 
   await Promise.all(promises);
   showFeedback(targetVisible ? "Visibility enabled" : "Visibility disabled");
@@ -95,8 +88,8 @@ async function confirmRename(newName) {
     treeviewStore.renameItem(itemToRename.value.id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
-  } catch {
-    showFeedback("Failed to rename", "error");
+  } catch (error) {
+    showFeedback(`Failed to rename: ${error?.message || error}`, "error");
   }
 }
 
