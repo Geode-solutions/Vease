@@ -1,6 +1,5 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
-import { onKeyStroke } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
@@ -32,7 +31,7 @@ watch(
   },
 );
 
-onKeyStroke("Escape", () => {
+function handleEscape() {
   if (UIStore.showCreateTools) {
     if (selectedTool.value) {
       selectedTool.value = undefined;
@@ -40,7 +39,7 @@ onKeyStroke("Escape", () => {
       UIStore.setShowCreateTools(false);
     }
   }
-});
+}
 </script>
 
 <template>
@@ -61,6 +60,7 @@ onKeyStroke("Escape", () => {
             class="cursor-pointer flex-grow-1 custom-tool-card"
             padding="pa-2"
             :data-testid="'createToolCard-' + tool.id"
+            :escapeFunction="handleEscape"
             @click="handleSelectTool(tool.id)"
           >
             <div class="d-flex align-center ga-2 w-100">
@@ -122,6 +122,7 @@ onKeyStroke("Escape", () => {
       variant="panel"
       padding="pa-3"
       class="mt-2 flex-grow-1 overflow-hidden d-flex flex-column"
+      :escapeFunction="handleEscape"
     >
       <component
         v-if="getToolComponent(selectedTool)"
