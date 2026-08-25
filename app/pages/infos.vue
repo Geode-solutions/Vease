@@ -1,13 +1,13 @@
 <script setup>
 import { Status } from "@ogw_front/utils/status";
-import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
-import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
-
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
+import { useClipboard } from "@vueuse/core";
 import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
+import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
 
 const version = useRuntimeConfig().public.VERSION;
 const appStore = useAppStore();
@@ -20,12 +20,9 @@ const viewer_version = ref("");
 const infraStore = useInfraStore();
 const packages_versions = ref([]);
 
-const copied = ref(false);
+const { copy, copied } = useClipboard({ copiedDuring: 1500 });
 function copy_url() {
-  navigator.clipboard.writeText(appStore.base_url);
-  copied.value = true;
-  const timeout = 1500;
-  setTimeout(() => (copied.value = false), timeout);
+  copy(appStore.base_url);
 }
 
 const microservices = computed(() =>
