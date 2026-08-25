@@ -27,8 +27,6 @@ const successMessage = ref("");
 const showRemoveDialog = ref(false);
 const extensionToRemove = ref(undefined);
 
-
-
 const loadedExtensions = computed(() => appStore.getLoadedExtensions());
 
 const {
