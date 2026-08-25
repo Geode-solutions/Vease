@@ -1,7 +1,6 @@
 <script setup>
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
-import { onKeyStroke } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
@@ -14,17 +13,12 @@ function expandToFullPage() {
 function close() {
   UIStore.setShowDataManagerPiP(false);
 }
-
-onKeyStroke("Escape", () => {
-  if (UIStore.showDataManagerPiP) {
-    close();
-  }
-});
 </script>
 
 <template>
   <ResizablePiP
     storage-key="datamanager-pip"
+    :escapeFunction="close"
     :default-width="560"
     :default-height="480"
     :min-width="690"

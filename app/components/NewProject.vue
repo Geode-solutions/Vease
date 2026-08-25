@@ -1,6 +1,4 @@
 <script setup>
-import { onKeyStroke } from "@vueuse/core";
-
 const emit = defineEmits(["close"]);
 const { showDialog } = defineProps({
   showDialog: { type: Boolean, required: true },
@@ -13,12 +11,6 @@ const isVisible = computed({
       emit("close");
     }
   },
-});
-
-onKeyStroke("Escape", () => {
-  if (showDialog) {
-    emit("close");
-  }
 });
 </script>
 

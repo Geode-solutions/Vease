@@ -3,7 +3,7 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
 import { appMode } from "@geode/opengeodeweb-front/shared/app_mode";
 import { importExtensionFile } from "@ogw_front/utils/extension";
-import { onKeyStroke } from "@vueuse/core";
+
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
@@ -27,11 +27,7 @@ const successMessage = ref("");
 const showRemoveDialog = ref(false);
 const extensionToRemove = ref(undefined);
 
-onKeyStroke("Escape", () => {
-  if (showRemoveDialog.value) {
-    showRemoveDialog.value = false;
-  }
-});
+
 
 const loadedExtensions = computed(() => appStore.getLoadedExtensions());
 
