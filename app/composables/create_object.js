@@ -113,6 +113,8 @@ export function useCreateObjectTool({
   onKeyStroke("Escape", () => {
     if (pickingActive.value) {
       viewerStore.toggle_picking_mode(false);
+    } else if (UIStore.showCreateTools) {
+      handleClose();
     }
   });
 

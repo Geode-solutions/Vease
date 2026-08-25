@@ -1,5 +1,6 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
+import { onKeyStroke } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
@@ -30,6 +31,16 @@ watch(
     }
   },
 );
+
+onKeyStroke("Escape", () => {
+  if (UIStore.showCreateTools) {
+    if (selectedTool.value) {
+      selectedTool.value = undefined;
+    } else {
+      UIStore.setShowCreateTools(false);
+    }
+  }
+});
 </script>
 
 <template>

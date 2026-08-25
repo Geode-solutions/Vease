@@ -5,6 +5,7 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import Extension from "@vease/components/Extension";
 import GlassCard from "@ogw_front/components/GlassCard";
 import StepImport from "@vease/components/StepImport";
+import { onKeyStroke } from "@vueuse/core";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 const { uiStore } = defineProps({
@@ -28,6 +29,12 @@ const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreate
 function handleFilesDropped(files) {
   emit("files-dropped", files);
 }
+
+onKeyStroke("Escape", () => {
+  if (anyDrawerOpen.value && !viewerStore.picking_mode) {
+    closeAllDrawers();
+  }
+});
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script setup>
 import GlassCard from "@ogw_front/components/GlassCard";
+import { onKeyStroke } from "@vueuse/core";
 
 const { show, item, initialName } = defineProps({
   show: {
@@ -33,6 +34,12 @@ function handleConfirm() {
   }
   emit("confirm", currentName.value);
 }
+
+onKeyStroke("Escape", () => {
+  if (show) {
+    emit("update:show", false);
+  }
+});
 </script>
 
 <template>
