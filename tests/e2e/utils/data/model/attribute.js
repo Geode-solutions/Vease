@@ -5,7 +5,7 @@ import {
   polyhedronAttributeType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
-import { applyAttribute } from "@tests/utils/helpers/attribute.js";
+import { applyAttribute } from "@tests/utils/data/helpers/attribute.js";
 
 function setModelPointsVertexAttribute(window, attributeName = "points", options = {}) {
   return applyAttribute(window, "modelStyleMenu", {

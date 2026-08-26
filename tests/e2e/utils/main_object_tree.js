@@ -1,5 +1,5 @@
 import { afterActionWait, ensureMenuOpen, moveMouseOutOfTheWay } from "./viewer_interaction.js";
-import { setModelColor } from "./data/data/model/color.js";
+import { setModelColor } from "./data/model/color.js";
 
 function getMainObjectTree(window) {
   return window.getByTestId("mainObjectTree");
@@ -259,12 +259,8 @@ async function hideAllComponentLeafRows(window, categoryName) {
 export {
   checkFilterCategory,
   expandMainObjectTree,
-  expandModelComponentsObjectTree,
   collapseMainObjectTree,
-  collapseModelComponentsObjectTree,
   getMainObjectTree,
-  getModelComponentsObjectTree,
-  toggleSortObjects,
   openFilterMenu,
   uncheckFilterCategory,
   toggleSearchObjects,
@@ -284,4 +280,5 @@ export {
   toggleObjectsTree,
   openModelComponentsTree,
   hideAllComponentLeafRows,
+  expandMainObjectTreeGroup,
 };

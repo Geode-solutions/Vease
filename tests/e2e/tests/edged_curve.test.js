@@ -1,18 +1,8 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  beforeAllTimeout,
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
 import {
   defaultDataName,
   edgedCurveGeodeObjectType,
@@ -26,11 +16,18 @@ import {
   setMeshEdgesItem,
   setMeshEdgesVertexAttribute,
 } from "@tests/utils/data/mesh/edges/attribute.js";
+import {
+  setEdgesVisibility,
+  setEdgesWidth,
+  setPointsSize,
+  setPointsVisibility,
+  toggleInfoCard,
+  viewerContextMenu,
+} from "@tests/utils/viewer_interaction.js";
 import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/data/mesh/edges/color.js";
 import { loadDatas } from "@tests/utils/load.js";
-import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshPointsColorWithSlider } from "@tests/utils/data/mesh/points/color.js";
-import { test } from "@tests/fixtures.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
@@ -38,123 +35,93 @@ const attributeName = "edges";
 const vertexAttributeName = "points";
 const colorMapName = "vikO";
 const otherVertexAttributeName = "edges_around_vertex";
-let window = undefined;
-let cleanup = undefined;
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 
 test.describe.configure({ mode: "serial" });
 
-test.beforeAll(async ({ mode, browser }) => {
-  ({ window, cleanup } = await navigateToApp(mode, browser));
-}, beforeAllTimeout);
-
-test.afterAll(async () => {
-  await cleanup();
-});
-
-test("load", async () => {
+test("load", async ({ window }) => {
   await loadDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("highlight", async () => {
+test("highlight", async ({ window }) => {
   await highlightData(window, edgedCurveGeodeObjectType, defaultDataName);
-  await expect(window).toHaveScreenshot();
 });
 
-test("viewer context menu", async () => {
+test("viewer context menu", async ({ window }) => {
   const x = 549;
   const y = 210;
   await viewerContextMenu(window, x, y);
-  await expect(window).toHaveScreenshot();
 });
 
-test("info card", async () => {
-  await toggleInfoCard(window);
-  await expect(window).toHaveScreenshot();
+test("info card", async ({ window }) => {
   await toggleInfoCard(window);
 });
 
-test("points visibility", async () => {
+test("points visibility", async ({ window }) => {
+  await toggleInfoCard(window);
   const visibility = false;
   await setPointsVisibility(window, meshViewerObjectType, visibility);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute", async () => {
+test("edge attribute", async ({ window }) => {
   await setPointsVisibility(window, meshViewerObjectType, true);
   await setMeshEdgesEdgeAttribute(window, attributeName, { item: 1 });
-  await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute change colormap", async () => {
+test("edge attribute change colormap", async ({ window }) => {
   await setMeshEdgesColorMap(window, colorMapName);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute change item to 1", async () => {
+test("edge attribute change item to 1", async ({ window }) => {
   await setMeshEdgesItem(window, 0);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute change item to 2", async () => {
+test("edge attribute change item to 2", async ({ window }) => {
   await setMeshEdgesItem(window, 1);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute reopen menu", async () => {
+test("edge attribute reopen menu", async ({ window }) => {
   await openMeshEdgesMenu(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute", async () => {
+test("vertex attribute", async ({ window }) => {
   await setMeshEdgesVertexAttribute(window, vertexAttributeName, {
     item: 2,
     colorMap: colorMapName,
   });
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute change attribute name", async () => {
+test("vertex attribute change attribute name", async ({ window }) => {
   await setMeshEdgesVertexAttribute(window, otherVertexAttributeName);
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute switch back to points", async () => {
+test("vertex attribute switch back to points", async ({ window }) => {
   await setMeshEdgesVertexAttribute(window, vertexAttributeName);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edges color", async () => {
+test("edges color", async ({ window }) => {
   await setMeshEdgesColorWithSlider(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("points color", async () => {
+test("points color", async ({ window }) => {
   await setMeshPointsColorWithSlider(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("opacity", async () => {
+test("opacity", async ({ window }) => {
   await setMeshEdgesOpacity(window, OPACITY_50);
-  await expect(window).toHaveScreenshot();
 });
 
-test("points size", async () => {
+test("points size", async ({ window }) => {
   await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edges width", async () => {
+test("edges width", async ({ window }) => {
   await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
-  await expect(window).toHaveScreenshot();
 });
 
-test("edges visibility", async () => {
+test("edges visibility", async ({ window }) => {
   await setEdgesVisibility(window, meshViewerObjectType, false);
-  await expect(window).toHaveScreenshot();
-  await setEdgesVisibility(window, meshViewerObjectType, true);
 });

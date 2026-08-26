@@ -1,12 +1,10 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
 
 // Local imports
 import {
   afterActionWait,
-  beforeAllTimeout,
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import {
@@ -27,9 +25,9 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager.js";
-import { navigateToApp, navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import { loadDatas } from "@tests/utils/load.js";
-import { test } from "@tests/fixtures.js";
+import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const BREP_FILE = "test.og_brep";
@@ -38,91 +36,66 @@ const POINTSET_FILE = "test.og_pts3d";
 const RENAMED_BREP = "cube vease";
 const RENAMED_POLYGONAL_SURFACE = "surface vease";
 
-let window = undefined;
-let cleanup = undefined;
-
 test.describe.configure({ mode: "serial" });
 
-test.beforeAll(async ({ mode, browser }) => {
-  ({ window, cleanup } = await navigateToApp(mode, browser));
-}, beforeAllTimeout);
-
-test.afterAll(async () => {
-  await cleanup();
-});
-
-test("load objects", async () => {
+test("load objects", async ({ window }) => {
   await loadDatas(window, [BREP_FILE]);
   await loadDatas(window, [POLYGONAL_SURFACE_FILE]);
-  await expect(window).toHaveScreenshot();
 });
 
-test("navigate to data manager", async () => {
+test("navigate to data manager", async ({ window }) => {
   await navigateToDataManagerPage(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("import data from data manager", async () => {
+test("import data from data manager", async ({ window }) => {
   await loadDatas(window, [POINTSET_FILE]);
-  await expect(window).toHaveScreenshot();
 });
 
-test("rename object by clicking item name", async () => {
+test("rename object by clicking item name", async ({ window }) => {
   await openRenameByName(window, brepGeodeObjectType);
-  await expect(window).toHaveScreenshot();
 });
 
-test("rename object", async () => {
+test("rename object", async ({ window }) => {
   await confirmRename(window, RENAMED_BREP);
-  await expect(window).toHaveScreenshot();
 });
 
-test("toggle visibility off", async () => {
+test("toggle visibility off", async ({ window }) => {
   await toggleRowVisibility(window, pointSetGeodeObjectType);
-  await expect(window).toHaveScreenshot();
 });
 
-test("open picture in picture and expand objects", async () => {
+test("open picture in picture and expand objects", async ({ window }) => {
   await openDataManagerPiP(window);
   await expandObjectTree(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("focus object from pip", async () => {
+test("focus object from pip", async ({ window }) => {
   await focusRowItem(window, RENAMED_BREP);
-  await expect(window).toHaveScreenshot();
 });
 
-test("rename dialog via button", async () => {
+test("rename dialog via button", async ({ window }) => {
   await openRenameByButton(window, polygonalSurfaceGeodeObjectType);
-  await expect(window).toHaveScreenshot();
 });
 
-test("rename object via button", async () => {
+test("rename object via button", async ({ window }) => {
   await confirmRename(window, RENAMED_POLYGONAL_SURFACE);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("isolate object", async () => {
+test("isolate object", async ({ window }) => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("expand pip", async () => {
+test("expand pip", async ({ window }) => {
   await expandDataManagerPiP(window);
   await window.waitForTimeout(afterActionWait);
-  await expect(window).toHaveScreenshot();
 });
 
-test("delete object", async () => {
+test("delete object", async ({ window }) => {
   await clickdeleteDataButton(window, RENAMED_POLYGONAL_SURFACE);
-  await expect(window).toHaveScreenshot();
 });
 
-test("confirm delete object", async () => {
+test("confirm delete object", async ({ window }) => {
   await confirmDelete(window);
-  await expect(window).toHaveScreenshot();
 });

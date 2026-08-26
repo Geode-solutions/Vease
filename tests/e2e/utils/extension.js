@@ -2,11 +2,11 @@
 import path from "node:path";
 
 // Third party imports
+import { waitForLoadingScreen } from "vease/tests/e2e/utils/other.js";
 
 // Local imports
 import { modalTransitionWait } from "./constants.js";
 import { navigateToExtensionsPage } from "./navigate.js";
-import { waitForLoadingScreen } from "./interactions.js";
 
 async function loadExtension(window, extensionFilePath) {
   await waitForLoadingScreen(window);

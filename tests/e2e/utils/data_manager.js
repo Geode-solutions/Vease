@@ -3,8 +3,8 @@
 // Third party imports
 
 // Local imports
-import { getMainObjectTree } from "./object_tree_interaction";
 import { afterActionWait } from "./viewer_interaction";
+import { getMainObjectTree } from "./object_tree_interaction";
 
 async function openDataManagerPiP(window) {
   await window.getByTestId("dataManagerPiPButton").click();

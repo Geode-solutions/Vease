@@ -39,7 +39,6 @@ const cloudExpect = {
   },
 };
 
-const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 25;
 const CLOUD_WAIT = 65;
@@ -69,6 +68,7 @@ export {
   WAIT_TIMES,
   afterActionWait,
   beforeAllTimeout,
+  cloudExpect,
   defaultTimeout,
   modalTransitionWait,
   randomMultiplier,
