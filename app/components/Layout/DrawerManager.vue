@@ -28,6 +28,12 @@ const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreate
 function handleFilesDropped(files) {
   emit("files-dropped", files);
 }
+
+function handleEscape() {
+  if (anyDrawerOpen.value && !viewerStore.picking_mode) {
+    closeAllDrawers();
+  }
+}
 </script>
 
 <template>
@@ -49,6 +55,7 @@ function handleFilesDropped(files) {
       variant="panel"
       padding="pa-0"
       class="fill-height overflow-hidden border-0 d-flex flex-column"
+      :escapeFunction="handleEscape"
     >
       <StepImport
         v-if="uiStore.showStepper"
@@ -73,6 +80,7 @@ function handleFilesDropped(files) {
         variant="panel"
         padding="pa-0"
         class="fill-height overflow-hidden border-0 d-flex flex-column"
+        :escapeFunction="handleEscape"
       >
         <Extension />
       </GlassCard>
