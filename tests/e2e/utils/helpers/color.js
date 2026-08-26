@@ -55,6 +55,22 @@ async function setOpacity(window, menuTestId, percent) {
   await window.waitForTimeout(afterActionWait);
 }
 
+const COLOR_CANVAS_OFFSET = 5;
+
+async function setColorBlack(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  const canvas = container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first();
+  const box = await canvas.boundingBox();
+  await canvas.click({
+    position: { x: COLOR_CANVAS_OFFSET, y: box.height - COLOR_CANVAS_OFFSET },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
+function setFeatureColorBlack(window, viewerObjectType, feature, container = window) {
+  return setColorBlack(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
 function setFeatureColor(window, viewerObjectType, feature, container = window) {
   return setColor(window, `${viewerObjectType}${feature}Menu`, container);
 }
@@ -79,10 +95,12 @@ function setFeatureOpacity(window, viewerObjectType, feature, percent) {
 
 export {
   setColor,
+  setColorBlack,
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
   setFeatureColor,
+  setFeatureColorBlack,
   setFeatureColoringStyle,
   setFeatureColorWithSlider,
   setFeatureOpacity,

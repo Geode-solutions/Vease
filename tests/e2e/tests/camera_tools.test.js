@@ -54,6 +54,7 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
+import { confirmDelete, navigateToDataManager } from "@tests/utils/data_manager.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -401,5 +402,13 @@ test("clipping planes multiple planes and datas", async () => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("delete all data", async () => {
+  await navigateToDataManager(window);
+  await window.locator("thead .v-selection-control input").first().click({ force: true });
+  await window.getByTestId("deleteAllSelectedButton").click();
+  await confirmDelete(window);
   await expect(window).toHaveScreenshot();
 });
