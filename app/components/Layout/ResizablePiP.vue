@@ -3,16 +3,18 @@ import { useDraggable, useStorage, useWindowSize } from "@vueuse/core";
 
 const RATIO = 0.9;
 
-const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, edgeSize, margin, zIndex } =
+const edgeSize = 6;
+const margin = 16;
+
+const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, zIndex, escapeFunction } =
   defineProps({
     defaultWidth: { type: Number, default: 560 },
     defaultHeight: { type: Number, default: 480 },
     minWidth: { type: Number, default: 400 },
     minHeight: { type: Number, default: 300 },
     storageKey: { type: String, default: undefined },
-    edgeSize: { type: Number, default: 6 },
-    margin: { type: Number, default: 16 },
     zIndex: { type: Number, default: 1500 },
+    escapeFunction: { type: Function, default: undefined },
   });
 
 const { width: winWidth, height: winHeight } = useWindowSize();
@@ -247,6 +249,7 @@ function onResizeEnd() {
         class="resizable-pip-container fill-height overflow-hidden"
         rounded="xl"
         :style="{ border: '1px solid rgba(255, 255, 255, 0.12)' }"
+        :escapeFunction="escapeFunction"
       >
         <div ref="dragHandle" class="resizable-pip-handle">
           <slot name="handle" />

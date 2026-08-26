@@ -18,6 +18,7 @@ function close() {
 <template>
   <ResizablePiP
     storage-key="datamanager-pip"
+    :escapeFunction="close"
     :default-width="560"
     :default-height="480"
     :min-width="690"
