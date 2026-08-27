@@ -233,6 +233,15 @@ async function openStyleMenu(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function viewerQuickColormap(window, x, y) {
+  const hybridViewerCanvas = await getHybridViewerCanvas(window);
+  await hybridViewerCanvas.click({
+    button: "left",
+    position: { x, y },
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   beforeAllTimeout,
@@ -241,8 +250,8 @@ export {
   ensureFeatureVisible,
   ensureMenuOpen,
   findOverlappingObjectsPicker,
-  hoverViewer,
   getHybridViewerCanvas,
+  hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,
   setCellsVisibility,
@@ -256,4 +265,5 @@ export {
   stabilizeHoverTooltip,
   toggleInfoCard,
   viewerContextMenu,
+  viewerQuickColormap,
 };
