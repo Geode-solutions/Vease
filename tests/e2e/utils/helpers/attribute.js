@@ -154,4 +154,10 @@ async function setQuickColorMap(window, colorMap) {
   await moveMouseOutOfTheWay(window);
 }
 
-export { applyAttribute, setFeatureAttribute, setFeatureColorMap, setFeatureItem, setQuickColorMap };
+export {
+  applyAttribute,
+  setFeatureAttribute,
+  setFeatureColorMap,
+  setFeatureItem,
+  setQuickColorMap,
+};
