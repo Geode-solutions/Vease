@@ -110,9 +110,12 @@ export function useCreateObjectTool({
     },
   );
 
-  onKeyStroke("Escape", () => {
+  onKeyStroke("Escape", (event) => {
     if (pickingActive.value) {
       viewerStore.toggle_picking_mode(false);
+      if (event) {
+        event.stopImmediatePropagation();
+      }
     }
   });
 

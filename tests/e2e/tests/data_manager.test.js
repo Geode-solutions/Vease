@@ -1,6 +1,7 @@
 // Node imports
 
 // Third party imports
+import { expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -61,6 +62,8 @@ test("rename object", async ({ window }) => {
 
 test("toggle visibility off", async ({ window }) => {
   await toggleRowVisibility(window, pointSetGeodeObjectType);
+  await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
 });
 
 test("open picture in picture and expand objects", async ({ window }) => {
@@ -85,6 +88,7 @@ test("isolate object", async ({ window }) => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
 });
 
 test("expand pip", async ({ window }) => {

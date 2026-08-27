@@ -3,6 +3,7 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop";
 import GlassCard from "@ogw_front/components/GlassCard";
 import { appMode } from "@geode/opengeodeweb-front/shared/app_mode";
 import { importExtensionFile } from "@ogw_front/utils/extension";
+
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
@@ -397,18 +398,18 @@ function removeExtension() {
     </v-card-text>
 
     <v-dialog v-model="showRemoveDialog" max-width="400" class="remove-dialog">
-      <GlassCard variant="ui" padding="pa-0">
+      <GlassCard variant="panel" padding="pa-6">
         <v-card-title
-          class="d-flex align-center text-subtitle-1 font-weight-semibold text-warning pa-4 pb-2"
+          class="d-flex align-center text-subtitle-1 font-weight-semibold text-warning pa-0 pb-2"
         >
           <v-icon icon="mdi-alert-circle" size="20" class="mr-2" color="warning" />
           Remove Extension?
         </v-card-title>
 
-        <v-card-text class="px-4 pb-4 text-body-2">
-          <div class="text-medium-emphasis mb-2">
+        <v-card-text class="px-0 pb-4 text-body-2 text-white">
+          <div class="text-white opacity-80 mb-3">
             Are you sure you want to delete
-            <span class="font-weight-bold text-high-emphasis">{{
+            <span class="font-weight-bold text-white">{{
               getExtensionName(extensionToRemove)
             }}</span
             >?
@@ -421,12 +422,20 @@ function removeExtension() {
           </v-alert>
         </v-card-text>
 
-        <v-divider />
+        <v-divider class="opacity-10" />
 
-        <v-card-actions class="pa-2">
+        <v-card-actions class="px-0 pt-3 pb-0">
           <v-spacer />
-          <v-btn variant="text" size="small" @click="showRemoveDialog = false"> Cancel </v-btn>
-          <v-btn color="error" variant="elevated" size="small" @click="removeExtension">
+          <v-btn variant="text" color="white" size="small" @click="showRemoveDialog = false">
+            Cancel
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="flat"
+            size="small"
+            class="font-weight-bold"
+            @click="removeExtension"
+          >
             <v-icon start size="14">mdi-delete</v-icon>
             Remove
           </v-btn>

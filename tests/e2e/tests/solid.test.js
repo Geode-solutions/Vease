@@ -4,11 +4,20 @@
 
 // Local imports
 import {
+  afterActionWait,
   defaultDataName,
   hybridSolidGeodeObjectType,
   meshViewerObjectType,
 } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  expandMainObjectTree,
+  highlightData,
+  toggleObjectsTree,
+} from "@tests/utils/object_tree_interaction.js";
+import {
+  getHybridViewerCanvas,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/viewer_interaction";
 import {
   openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
@@ -28,6 +37,7 @@ import {
 } from "@tests/utils/viewer_interaction.js";
 import {
   setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
   setMeshPolyhedraOpacity,
 } from "@tests/utils/data/mesh/polyhedra/color.js";
 import { loadDatas } from "@tests/utils/load.js";
@@ -41,10 +51,11 @@ const inputFilename = "test.og_hso3d";
 const attributeName = "test_attribute";
 const vertexAttributeName = "points";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "polyhedra_around_vertex";
+const otherVertexAttributeName = "test_vertex";
 const OPACITY_50 = 50;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
+const ZOOM_WHEEL_DELTA = -5000;
 
 test.describe.configure({ mode: "serial" });
 
@@ -153,4 +164,18 @@ test("polygons visibility", async ({ window }) => {
 test("polyhedra visibility", async ({ window }) => {
   await setPolygonsVisibility(window, meshViewerObjectType, true);
   await setPolyhedraVisibility(window, meshViewerObjectType, false);
+});
+
+test("reopen treeview over zoomed dark data adaptive style", async ({ window }) => {
+  await setMeshPolyhedraColorBlack(window);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });
+  await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
+  await window.waitForTimeout(afterActionWait);
+  await toggleObjectsTree(window);
+  await toggleObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
 });
