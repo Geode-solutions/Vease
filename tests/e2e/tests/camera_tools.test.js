@@ -69,7 +69,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
-const rgd3dFilename = "grid.og_rgd3d";
+const rgd3dFilename = "test.og_rgd3d";
 let window = undefined;
 let cleanup = undefined;
 const ZSCALE_VALUE = 6.6;
