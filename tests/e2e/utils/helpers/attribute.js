@@ -139,6 +139,7 @@ async function setQuickColorMap(window, colorMap) {
     .getByTestId("colorMapListFilter")
     .filter({ visible: true })
     .first();
+  await colorMapListFilter.locator("input").waitFor({ state: "visible" });
   await colorMapListFilter.locator("input").fill(colorMap);
   const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
