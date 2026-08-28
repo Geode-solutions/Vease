@@ -153,5 +153,3 @@ test("points size", async () => {
   await setPointsSize(window, meshViewerObjectType, pointsSize);
   await expect(window).toHaveScreenshot();
 });
-
-
