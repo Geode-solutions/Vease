@@ -1,4 +1,6 @@
 // oxlint-disable max-lines
+// oxlint-disable eslint/capitalized-comments
+// oxlint-disable vitest/no-commented-out-tests
 // Node imports
 
 // Third party imports
@@ -54,7 +56,7 @@ import {
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
   setModelPolyhedraPolyhedronAttribute,
-  setModelPolyhedraVertexAttribute,
+  // setModelPolyhedraVertexAttribute,
 } from "@tests/utils/model/attribute.js";
 import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 import { loadData } from "@tests/utils/load.js";
@@ -398,7 +400,6 @@ test("toggle both model component trees", async () => {
 });
 
 
-// TODO : fix this
 // test("blocks vertex attribute all blocks", async () => {
 //   
 //   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
