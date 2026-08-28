@@ -59,7 +59,7 @@ test("load", async () => {
 });
 
 test("highlight", async () => {
-  await highlightData(window, rgd3dGeodeObjectType, "grid");
+  await highlightData(window, rgd3dGeodeObjectType, "test");
   await expect(window).toHaveScreenshot();
 });
 

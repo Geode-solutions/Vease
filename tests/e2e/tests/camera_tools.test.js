@@ -193,7 +193,7 @@ test("visibility off grid and expand brep focus", async () => {
   await window.waitForTimeout(afterActionWait);
 
   await expandGeodeObjectType(window, rgd3dGeodeObjectType);
-  await hideObjectInTree(window, rgd3dGeodeObjectType, "grid");
+  await hideObjectInTree(window, rgd3dGeodeObjectType, "test");
 
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
@@ -394,7 +394,7 @@ test("clipping planes multiple planes and datas", async () => {
   await showObjectInTree(window, "RegularGrid3D");
   await resetCamera(window);
   await toggleClippingPlanes(window);
-  await selectClippingDatasets(window, "grid");
+  await selectClippingDatasets(window, "test");
   await setPlaneNormal(window, 0, [1, 0, 0]);
   await setPlaneNormal(window, 1, [
     CUSTOM_NORMAL_VALUE_X,
