@@ -28,10 +28,11 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
+const vertexAttributeName = "test_vertex";
 let window = undefined;
 let cleanup = undefined;
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
+const pointsOpacity = 50;
+const pointsSize = 15;
 
 test.describe.configure({ mode: "serial" });
 
@@ -75,7 +76,7 @@ test("points visibility", async () => {
 
 test("vertex attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, true);
-  await setMeshPointsVertexAttribute(window);
+  await setMeshPointsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -84,17 +85,17 @@ test("vertex attribute reopen menu", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("color", async () => {
+test("points color", async () => {
   await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
 });
 
-test("opacity", async () => {
-  await setMeshPointsOpacity(window, OPACITY_50);
+test("points opacity", async () => {
+  await setMeshPointsOpacity(window, pointsOpacity);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
   await expect(window).toHaveScreenshot();
 });
