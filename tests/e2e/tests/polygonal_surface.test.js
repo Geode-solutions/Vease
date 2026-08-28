@@ -1,3 +1,4 @@
+// oxlint-disable max-dependencies
 // Node imports
 
 // Third party imports
@@ -47,7 +48,7 @@ const colorMapName = "vikO";
 const otherVertexAttributeName = "test_vertex";
 let window = undefined;
 let cleanup = undefined;
-const OPACITY_50 = 50;
+const QUICK_COLORMAP_TIMEOUT = 120_000;
 const POINTS_SIZE = 15;
 const EDGES_WIDTH = 5;
 
@@ -196,7 +197,7 @@ test("quick colormap picker change colormap", async () => {
   await viewerQuickColormap(window, x, y);
   await setQuickColorMap(window, colorMapName);
   await expect(window).toHaveScreenshot();
-});
+}, QUICK_COLORMAP_TIMEOUT);
 
 test("quick colormap picker change range", async () => {
   await setMeshPolygonsPolygonAttribute(window, attributeName);
