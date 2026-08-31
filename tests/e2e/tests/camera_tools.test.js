@@ -344,7 +344,7 @@ test("clipping planes custom origin and normal values", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes target specific brep dataset", async () => {
+test("clipping planes target specific brepdataset", async () => {
   await toggleTargetAllVisible(window);
   await selectClippingDatasets(window, "test");
   await hideObjectInTree(window, "RegularGrid3D");
