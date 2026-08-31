@@ -190,17 +190,14 @@ test("polygons textures", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test(
-  "quick colormap picker change colormap",
-  async () => {
-    await setMeshPolygonsPolygonAttribute(window, attributeName);
-    const x = 478;
-    const y = 650;
-    await viewerQuickColormap(window, x, y);
-    await setQuickColorMap(window, colorMapName);
-    await expect(window).toHaveScreenshot();
-  },
-);
+test("quick colormap picker change colormap", async () => {
+  await setMeshPolygonsPolygonAttribute(window, attributeName);
+  const x = 478;
+  const y = 650;
+  await viewerQuickColormap(window, x, y);
+  await setQuickColorMap(window, colorMapName);
+  await expect(window).toHaveScreenshot();
+});
 
 test("quick colormap picker change range", async () => {
   await setMeshPolygonsPolygonAttribute(window, attributeName);
