@@ -200,7 +200,6 @@ test(
     await setQuickColorMap(window, colorMapName);
     await expect(window).toHaveScreenshot();
   },
-  QUICK_COLORMAP_TIMEOUT,
 );
 
 test("quick colormap picker change range", async () => {
