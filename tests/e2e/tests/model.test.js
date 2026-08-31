@@ -140,7 +140,7 @@ test("object tree context menu", async () => {
   console.log("Right click on the BRep from object tree");
   await expandGeodeObjectType(window, "BRep");
   const mainObjectTree = window.getByTestId("mainObjectTree");
-  const testItem = mainObjectTree.getByText("test").first();
+  const testItem = mainObjectTree.getByText("test", { exact: true }).first();
   await testItem.click({ button: "right", force: true });
   await window.waitForTimeout(afterActionWait);
   await expect(window).toHaveScreenshot();
