@@ -6,7 +6,7 @@ import {
 import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
 
-function setMeshPointsVertexAttribute(window, attributeName = "points", options = {}) {
+function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
     window,
     meshViewerObjectType,

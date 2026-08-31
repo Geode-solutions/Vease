@@ -41,15 +41,15 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tso3d";
-const attributeName = "tetrahedron_adjacents";
-const vertexAttributeName = "points";
+const polyhedronAttributeName = "test_polyhedron";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "test_attribute";
 let window = undefined;
 let cleanup = undefined;
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const polyhedraOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
 
 test.describe.configure({ mode: "serial" });
 
@@ -93,7 +93,7 @@ test("points visibility", async () => {
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
+  await setMeshPolyhedraPolyhedronAttribute(window, polyhedronAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -126,11 +126,11 @@ test("vertex attribute change item to 2", async () => {
 });
 
 test("vertex attribute change attribute name", async () => {
-  await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName2);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute switch back to points", async () => {
+test("vertex attribute switch back to first attribute", async () => {
   await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
@@ -160,18 +160,18 @@ test("polygons color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("opacity", async () => {
-  await setMeshPolyhedraOpacity(window, OPACITY_50);
+test("polyhedra opacity", async () => {
+  await setMeshPolyhedraOpacity(window, polyhedraOpacity);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
   await expect(window).toHaveScreenshot();
 });
 
