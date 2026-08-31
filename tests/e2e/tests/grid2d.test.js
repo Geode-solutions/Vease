@@ -36,15 +36,15 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
-const attributeName = "RGB_data";
-const vertexAttributeName = "points";
+const cellAttributeName = "test_cell";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "test_vertex";
 let window = undefined;
 let cleanup = undefined;
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const cellsOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
 
 test.describe.configure({ mode: "serial" });
 
@@ -87,7 +87,7 @@ test("points visibility", async () => {
 });
 
 test("cell attribute", async () => {
-  await setMeshCellsCellAttribute(window, attributeName, { item: 1 });
+  await setMeshCellsCellAttribute(window, cellAttributeName, { item: 1 });
   await expect(window).toHaveScreenshot();
 });
 
@@ -121,11 +121,11 @@ test("vertex attribute", async () => {
 });
 
 test("vertex attribute change attribute name", async () => {
-  await setMeshCellsVertexAttribute(window, otherVertexAttributeName);
+  await setMeshCellsVertexAttribute(window, vertexAttributeName2);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute switch back to points", async () => {
+test("vertex attribute switch back to first attribute", async () => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
@@ -150,18 +150,18 @@ test("edges color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("opacity", async () => {
-  await setMeshCellsOpacity(window, OPACITY_50);
+test("cells opacity", async () => {
+  await setMeshCellsOpacity(window, cellsOpacity);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
   await expect(window).toHaveScreenshot();
 });
 

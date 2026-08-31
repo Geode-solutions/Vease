@@ -44,7 +44,7 @@ test("toggle surfaces visibility", async () => {
 
 test("change lines color", async () => {
   const tree = window.getByTestId("modelComponentsObjectTree");
-  const item = tree.getByText("Lines").first();
+  const item = tree.getByText("Lines", { exact: true }).first();
   await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 
