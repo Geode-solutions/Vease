@@ -233,7 +233,10 @@ async function toggleObjectsTree(window) {
 }
 
 async function closeObjectsTree(window) {
-  const isVisible = await window.getByTestId("mainObjectTree").isVisible().catch(() => false);
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
   if (isVisible) {
     await window.getByTestId("toggleObjectsButton").click();
     await window.waitForTimeout(afterActionWait);
@@ -241,7 +244,10 @@ async function closeObjectsTree(window) {
 }
 
 async function openObjectsTree(window) {
-  const isVisible = await window.getByTestId("mainObjectTree").isVisible().catch(() => false);
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
   if (!isVisible) {
     await window.getByTestId("toggleObjectsButton").click();
     await window.waitForTimeout(afterActionWait);

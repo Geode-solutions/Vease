@@ -230,5 +230,3 @@ test("polygons textures", async () => {
   await setPolygonsTextures(window, meshViewerObjectType);
   await expect(window).toHaveScreenshot();
 });
-
-
