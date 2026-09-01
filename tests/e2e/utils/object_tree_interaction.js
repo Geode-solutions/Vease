@@ -74,7 +74,6 @@ async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "main
   }
 }
 
-
 async function highlightData(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType);
   const mainObjectTree = window.getByTestId("mainObjectTree");
