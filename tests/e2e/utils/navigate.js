@@ -21,10 +21,10 @@ import packageJson from "../../../package.json" with { type: "json" };
 // Constants
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
-const LINUX_WAIT_DESKTOP = 25;
+const LINUX_WAIT_DESKTOP = 30;
 const CLOUD_WAIT = 65;
-const WINDOWS_WAIT_BROWSER = 25;
-const WINDOWS_WAIT_DESKTOP = 30;
+const WINDOWS_WAIT_BROWSER = 30;
+const WINDOWS_WAIT_DESKTOP = 40;
 const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
