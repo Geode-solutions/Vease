@@ -46,6 +46,22 @@ function findAppExecutable() {
   return parseElectronApp(buildPath).executable;
 }
 
+
+async function waitForAppReady(url, timeoutMs) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeoutMs) {
+    // oxlint-disable-next-line no-await-in-loop
+    const response = await getIsAppReady(url);
+    if (response?.isReady) {
+      return true;
+    }
+    // oxlint-disable-next-line no-await-in-loop
+    await setTimeout(MILLISECONDS);
+  }
+  console.log("Timed out waiting for app to become ready");
+  return false;
+}
+
 async function runDesktopBuild() {
   // Find the latest build in the out directory
   const appInfo = findAppExecutable();
@@ -131,21 +147,6 @@ async function navigateToCloudApp(page, url, maxRetries) {
     });
   }
   console.log("Navigated to", page.url());
-}
-
-async function waitForAppReady(url, timeoutMs) {
-  const startTime = Date.now();
-  while (Date.now() - startTime < timeoutMs) {
-    // oxlint-disable-next-line no-await-in-loop
-    const response = await getIsAppReady(url);
-    if (response?.isReady) {
-      return true;
-    }
-    // oxlint-disable-next-line no-await-in-loop
-    await setTimeout(MILLISECONDS);
-  }
-  console.log("Timed out waiting for app to become ready");
-  return false;
 }
 
 async function navigateToApp(mode, browser) {

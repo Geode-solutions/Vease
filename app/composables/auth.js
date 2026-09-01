@@ -39,6 +39,22 @@ function useAuth() {
     return newUser;
   }
 
+  async function login(email, password) {
+    const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
+    await loggedInUser.reload();
+    if (!loggedInUser.emailVerified) {
+      await signOut(auth);
+      throw new Error("Please verify your email address before logging in.");
+    }
+    if (infraStore.app_mode === appMode.DESKTOP) {
+      globalThis.electronAPI.save_credentials({
+        email,
+        password,
+      });
+    }
+    return loggedInUser;
+  }
+
   async function autoLogin() {
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
@@ -63,20 +79,19 @@ function useAuth() {
     }
   }
 
-  async function login(email, password) {
-    const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
-    await loggedInUser.reload();
-    if (!loggedInUser.emailVerified) {
-      await signOut(auth);
-      throw new Error("Please verify your email address before logging in.");
-    }
+  async function logout() {
     if (infraStore.app_mode === appMode.DESKTOP) {
-      globalThis.electronAPI.save_credentials({
-        email,
-        password,
-      });
+      try {
+        const { success } = await globalThis.electronAPI.delete_credentials();
+        if (!success) {
+          console.error("Failed to delete credentials:", error);
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to delete credentials:", error);
+      }
     }
-    return loggedInUser;
+    await signOut(auth);
   }
 
   async function deleteAccount(password) {
@@ -92,20 +107,6 @@ function useAuth() {
     await logout();
   }
 
-  async function logout() {
-    if (infraStore.app_mode === appMode.DESKTOP) {
-      try {
-        const { success } = await globalThis.electronAPI.delete_credentials();
-        if (!success) {
-          console.error("Failed to delete credentials:", error);
-          return;
-        }
-      } catch (error) {
-        console.error("Failed to delete credentials:", error);
-      }
-    }
-    await signOut(auth);
-  }
 
   function resetPassword(email) {
     const schema = {
