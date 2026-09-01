@@ -69,6 +69,12 @@ async function findOverlappingObjectsPicker(window) {
 }
 
 async function ensureMenuOpen(window, menuTestId) {
+  const centerButton = window.getByTestId("circularMenuCenterButton");
+  if (!(await centerButton.isVisible())) {
+    const contextMenuX = 549;
+    const contextMenuY = 360;
+    await viewerContextMenu(window, contextMenuX, contextMenuY);
+  }
   const menuContainer = window.getByTestId(menuTestId);
   const activeCircularMenuItemButton = menuContainer.getByTestId("activeCircularMenuItemButton");
   if (!(await activeCircularMenuItemButton.isVisible())) {
@@ -77,7 +83,10 @@ async function ensureMenuOpen(window, menuTestId) {
       await activeMenuButton.click();
       await window.waitForTimeout(afterActionWait);
     }
-    const menuButton = menuContainer.getByTestId("circularMenuItemButton").first();
+    const menuButton = menuContainer
+      .getByTestId("circularMenuItemButton")
+      .or(menuContainer.getByTestId("activeCircularMenuItemButton"))
+      .first();
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
@@ -233,11 +242,19 @@ async function openStyleMenu(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
 }
 
+const SCALAR_BAR_X_RATIO = 0.25;
+const SCALAR_BAR_Y_RATIO = 0.9;
+
 async function viewerQuickColormap(window, x, y) {
   const hybridViewerCanvas = await getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  const targetX = x ?? Math.round(box.width * SCALAR_BAR_X_RATIO);
+  const targetY = y ?? Math.round(box.height * SCALAR_BAR_Y_RATIO);
+
   await hybridViewerCanvas.click({
     button: "left",
-    position: { x, y },
+    position: { x: targetX, y: targetY },
+    force: true,
   });
   await window.waitForTimeout(afterActionWait);
 }

@@ -50,7 +50,9 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+
   await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function applyAttribute(

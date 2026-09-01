@@ -2,9 +2,6 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
-
-// Local imports
 import {
   afterActionWait,
   beforeAllTimeout,
@@ -20,11 +17,16 @@ import {
   viewerQuickColormap,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  closeObjectsTree,
+  expandMainObjectTree,
+  highlightData,
+  openObjectsTree,
+} from "@tests/utils/object_tree_interaction.js";
+import {
   defaultDataName,
   meshViewerObjectType,
   polygonalSurfaceGeodeObjectType,
 } from "@tests/utils/constants.js";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
@@ -33,6 +35,7 @@ import {
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
 import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
+import { expect } from "@playwright/test";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -59,7 +62,7 @@ test.beforeAll(async ({ mode, browser }) => {
 }, beforeAllTimeout);
 
 test.afterAll(async () => {
-  await cleanup?.();
+  await cleanup();
 });
 
 test("load", async () => {
@@ -106,6 +109,44 @@ test("polygon attribute change colormap", async () => {
 test("polygon attribute reopen menu", async () => {
   await openMeshPolygonsMenu(window);
   await expect(window).toHaveScreenshot();
+});
+
+test("quick colormap picker change colormap", async () => {
+  await window.keyboard.press("Escape");
+  await closeObjectsTree(window);
+  await window.waitForTimeout(afterActionWait);
+
+  const x = 275;
+  const y = 650;
+  await viewerQuickColormap(window, x, y);
+  await setQuickColorMap(window, colorMapName);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("quick colormap picker change range", async () => {
+  await window.keyboard.press("Escape");
+  await closeObjectsTree(window);
+  await window.waitForTimeout(afterActionWait);
+  const x = 275;
+  const y = 650;
+  await viewerQuickColormap(window, x, y);
+  const minInput = window
+    .getByTestId("attributeMinInput")
+    .filter({ visible: true })
+    .first()
+    .locator("input");
+  await minInput.fill("0.2");
+  await minInput.press("Enter");
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await openObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
 });
 
 test("vertex attribute", async () => {
@@ -190,28 +231,4 @@ test("polygons textures", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("quick colormap picker change colormap", async () => {
-  await setMeshPolygonsPolygonAttribute(window, attributeName);
-  const x = 478;
-  const y = 650;
-  await viewerQuickColormap(window, x, y);
-  await setQuickColorMap(window, colorMapName);
-  await expect(window).toHaveScreenshot();
-});
 
-test("quick colormap picker change range", async () => {
-  await setMeshPolygonsPolygonAttribute(window, attributeName);
-  const x = 478;
-  const y = 650;
-  await viewerQuickColormap(window, x, y);
-  const minInput = window
-    .getByTestId("attributeMinInput")
-    .filter({ visible: true })
-    .first()
-    .locator("input");
-  await minInput.fill("0.2");
-  await minInput.press("Enter");
-  await window.waitForTimeout(afterActionWait);
-  await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
-});
