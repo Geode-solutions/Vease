@@ -1,6 +1,7 @@
 import { meshViewerObjectType, polyhedraFeatureName } from "@tests/utils/constants.js";
 import {
   setFeatureColor,
+  setFeatureColorBlack,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
@@ -14,6 +15,10 @@ function setMeshPolyhedraColor(window) {
   return setFeatureColor(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
+function setMeshPolyhedraColorBlack(window) {
+  return setFeatureColorBlack(window, meshViewerObjectType, polyhedraFeatureName);
+}
+
 function setMeshPolyhedraColorWithSlider(window) {
   return setFeatureColorWithSlider(window, meshViewerObjectType, polyhedraFeatureName);
 }
@@ -24,6 +29,7 @@ function setMeshPolyhedraColoringStyle(window, style) {
 
 export {
   setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
   setMeshPolyhedraColorWithSlider,
   setMeshPolyhedraColoringStyle,
   setMeshPolyhedraOpacity,

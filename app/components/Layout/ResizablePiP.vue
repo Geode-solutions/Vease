@@ -3,16 +3,18 @@ import { useDraggable, useStorage, useWindowSize } from "@vueuse/core";
 
 const RATIO = 0.9;
 
-const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, edgeSize, margin, zIndex } =
+const edgeSize = 6;
+const margin = 16;
+
+const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, zIndex, escapeFunction } =
   defineProps({
     defaultWidth: { type: Number, default: 560 },
     defaultHeight: { type: Number, default: 480 },
     minWidth: { type: Number, default: 400 },
     minHeight: { type: Number, default: 300 },
     storageKey: { type: String, default: undefined },
-    edgeSize: { type: Number, default: 6 },
-    margin: { type: Number, default: 16 },
     zIndex: { type: Number, default: 1500 },
+    escapeFunction: { type: Function, default: undefined },
   });
 
 const { width: winWidth, height: winHeight } = useWindowSize();
@@ -69,21 +71,6 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-function startResize(event, edge) {
-  event.preventDefault();
-  event.stopPropagation();
-  isResizing.value = true;
-  resizeEdge = edge;
-  resizeStartPointerX = event.clientX;
-  resizeStartPointerY = event.clientY;
-  resizeStartWidth = pipWidth.value;
-  resizeStartHeight = pipHeight.value;
-  resizeStartX = x.value;
-  resizeStartY = y.value;
-  document.addEventListener("pointermove", onResizeMove);
-  document.addEventListener("pointerup", onResizeEnd);
-}
-
 function onResizeMove(event) {
   const deltaX = event.clientX - resizeStartPointerX;
   const deltaY = event.clientY - resizeStartPointerY;
@@ -114,6 +101,21 @@ function onResizeEnd() {
   savedPosition.value = { x: x.value, y: y.value };
   document.removeEventListener("pointermove", onResizeMove);
   document.removeEventListener("pointerup", onResizeEnd);
+}
+
+function startResize(event, edge) {
+  event.preventDefault();
+  event.stopPropagation();
+  isResizing.value = true;
+  resizeEdge = edge;
+  resizeStartPointerX = event.clientX;
+  resizeStartPointerY = event.clientY;
+  resizeStartWidth = pipWidth.value;
+  resizeStartHeight = pipHeight.value;
+  resizeStartX = x.value;
+  resizeStartY = y.value;
+  document.addEventListener("pointermove", onResizeMove);
+  document.addEventListener("pointerup", onResizeEnd);
 }
 </script>
 
@@ -247,6 +249,7 @@ function onResizeEnd() {
         class="resizable-pip-container fill-height overflow-hidden"
         rounded="xl"
         :style="{ border: '1px solid rgba(255, 255, 255, 0.12)' }"
+        :escapeFunction="escapeFunction"
       >
         <div ref="dragHandle" class="resizable-pip-handle">
           <slot name="handle" />

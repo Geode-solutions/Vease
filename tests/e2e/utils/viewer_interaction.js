@@ -109,9 +109,6 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-function setPolygonsTextures(window, viewerObjectType) {
-  return setFeatureTextures(window, viewerObjectType, "Polygons");
-}
 async function setFeatureTextures(window, viewerObjectType, feature) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
@@ -130,6 +127,10 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
 }
 
+function setPolygonsTextures(window, viewerObjectType) {
+  return setFeatureTextures(window, viewerObjectType, "Polygons");
+}
+
 async function hoverViewer(window, position) {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -146,12 +147,6 @@ async function stabilizeHoverTooltip(window) {
   });
 }
 
-function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
-  const menuTestId = `${viewerObjectType}${feature}Menu`;
-  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
-  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
-}
-
 async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility) {
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
@@ -161,6 +156,12 @@ async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+}
+
+function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
+  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
 }
 
 async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {

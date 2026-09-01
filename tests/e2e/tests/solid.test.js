@@ -5,7 +5,10 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
+  afterActionWait,
   beforeAllTimeout,
+  getHybridViewerCanvas,
+  moveMouseOutOfTheWay,
   setEdgesVisibility,
   setEdgesWidth,
   setPointsSize,
@@ -20,7 +23,11 @@ import {
   hybridSolidGeodeObjectType,
   meshViewerObjectType,
 } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  expandMainObjectTree,
+  highlightData,
+  toggleObjectsTree,
+} from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
@@ -30,6 +37,7 @@ import {
 } from "@tests/utils/mesh/polyhedra/attribute.js";
 import {
   setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
   setMeshPolyhedraOpacity,
 } from "@tests/utils/mesh/polyhedra/color.js";
 import { loadData } from "@tests/utils/load.js";
@@ -41,15 +49,16 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
-const attributeName = "test_attribute";
-const vertexAttributeName = "points";
+const polyhedronAttributeName = "test_polyhedron";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "polyhedra_around_vertex";
 let window = undefined;
 let cleanup = undefined;
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const polyhedraOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
+const ZOOM_WHEEL_DELTA = -5000;
 
 test.describe.configure({ mode: "serial" });
 
@@ -93,7 +102,7 @@ test("points visibility", async () => {
 
 test("polyhedron attribute", async () => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
+  await setMeshPolyhedraPolyhedronAttribute(window, polyhedronAttributeName);
   await expect(window).toHaveScreenshot();
 });
 
@@ -126,11 +135,11 @@ test("vertex attribute change item to 2", async () => {
 });
 
 test("vertex attribute change attribute name", async () => {
-  await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName2);
   await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute switch back to points", async () => {
+test("vertex attribute switch back to first attribute", async () => {
   await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });
@@ -161,17 +170,17 @@ test("polygons color", async () => {
 });
 
 test("opacity", async () => {
-  await setMeshPolyhedraOpacity(window, OPACITY_50);
+  await setMeshPolyhedraOpacity(window, polyhedraOpacity);
   await expect(window).toHaveScreenshot();
 });
 
 test("points size", async () => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
   await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async () => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
   await expect(window).toHaveScreenshot();
 });
 
@@ -194,4 +203,19 @@ test("polyhedra visibility", async () => {
   await expect(window).toHaveScreenshot();
   // Revert
   await setPolyhedraVisibility(window, meshViewerObjectType, true);
+});
+
+test("reopen treeview over zoomed dark data adaptive style", async () => {
+  await setMeshPolyhedraColorBlack(window);
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });
+  await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
+  await window.waitForTimeout(afterActionWait);
+  await toggleObjectsTree(window);
+  await toggleObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
 });

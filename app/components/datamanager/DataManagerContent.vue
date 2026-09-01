@@ -11,15 +11,12 @@ import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 import { useUIStore } from "@vease/stores/ui";
 
-import { useAppStore } from "@ogw_front/stores/app";
-
 const { compact = false } = defineProps({
   compact: { type: Boolean, default: false },
 });
 
 const UIStore = useUIStore();
 const dataStore = useDataStore();
-const appStore = useAppStore();
 const hybridViewerStore = useHybridViewerStore();
 const treeviewStore = useTreeviewStore();
 const dataStyleStore = useDataStyleStore();
@@ -40,25 +37,39 @@ const newItemName = ref("");
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
-function toggleSelection(item) {
-  const index = selectedIds.value.findIndex((selected) => selected.id === item.id);
-  if (index === -1) {
-    selectedIds.value.push(item);
-  } else {
-    selectedIds.value.splice(index, 1);
-  }
+function showFeedback(text, color = "success") {
+  snackbar.text = text;
+  snackbar.color = color;
+  snackbar.show = true;
 }
 
-async function toggleVisibility(item) {
-  const newVisible = !item.visible;
-  await dataStore.updateItem(item.id, { visible: newVisible });
-  await dataStyleStore.setVisibility(item.id, newVisible, item);
-  item.visible = newVisible;
-  if (newVisible) {
+async function toggleVisibility(item, targetVisible = !item.visible) {
+  if (item.visible === targetVisible) {
+    return;
+  }
+  await dataStore.updateItem(item.id, { visible: targetVisible });
+  await dataStyleStore.setVisibility(item.id, targetVisible, item);
+  item.visible = targetVisible;
+  if (targetVisible) {
     await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
   } else {
     treeviewStore.removeItem(item.id);
   }
+}
+
+async function toggleSelectedVisibility() {
+  const targetItems = selectedIds.value.length > 0 ? selectedIds.value : items.value;
+  if (!targetItems || targetItems.length === 0) {
+    return;
+  }
+
+  const anyVisible = targetItems.some((i) => i.visible);
+  const targetVisible = !anyVisible;
+
+  const promises = targetItems.map((item) => toggleVisibility(item, targetVisible));
+
+  await Promise.all(promises);
+  showFeedback(targetVisible ? "Visibility enabled" : "Visibility disabled");
 }
 
 function focusCamera(item) {
@@ -84,8 +95,7 @@ async function confirmRename(newName) {
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
-    console.error(error);
-    showFeedback("Failed to rename", "error");
+    showFeedback(`Failed to rename: ${error?.message || error}`, "error");
   }
 }
 
@@ -135,12 +145,6 @@ async function deleteSelected() {
   selectedIds.value = [];
   deleteSelectedDialog.value = false;
   showFeedback("Selected items deleted");
-}
-
-function showFeedback(text, color = "success") {
-  snackbar.text = text;
-  snackbar.color = color;
-  snackbar.show = true;
 }
 
 const { delete: del } = useMagicKeys();
@@ -194,10 +198,12 @@ useEventListener(document, "keydown", (event) => {
               :search="search"
               :compact="compact"
               @toggle-visibility="toggleVisibility"
+              @toggle-visibility-selected="toggleSelectedVisibility"
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
               @delete="confirmDelete"
+              @delete-selected="deleteSelectedDialog = true"
             />
           </v-window-item>
 

@@ -63,14 +63,6 @@ async function expandMainObjectTree(window) {
   await expandAllObjects(window, "mainObjectTree");
 }
 
-async function highlightData(window, geodeObjectType, dataName) {
-  await expandGeodeObjectType(window, geodeObjectType);
-  const mainObjectTree = window.getByTestId("mainObjectTree");
-  const testItem = mainObjectTree.getByText(dataName).first();
-  await testItem.hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function getTreeRowByTextAndParent(
   window,
   geodeObjectType,
@@ -124,6 +116,14 @@ async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "main
     await expandButton.click();
     await window.waitForTimeout(afterActionWait);
   }
+}
+
+async function highlightData(window, geodeObjectType, dataName) {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  const testItem = mainObjectTree.getByText(dataName, { exact: true }).first();
+  await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
