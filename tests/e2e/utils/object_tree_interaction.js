@@ -65,10 +65,8 @@ async function expandMainObjectTree(window) {
 
 async function highlightData(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType);
-  await window.bringToFront();
   const mainObjectTree = window.getByTestId("mainObjectTree");
   const testItem = mainObjectTree.getByText(dataName, { exact: true }).first();
-  console.log(testItem);
   await testItem.hover();
   await window.waitForTimeout(afterActionWait);
 }
