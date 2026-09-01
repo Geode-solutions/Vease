@@ -46,7 +46,6 @@ function findAppExecutable() {
   return parseElectronApp(buildPath).executable;
 }
 
-
 async function waitForAppReady(url, timeoutMs) {
   const startTime = Date.now();
   while (Date.now() - startTime < timeoutMs) {

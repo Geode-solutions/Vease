@@ -107,7 +107,6 @@ function useAuth() {
     await logout();
   }
 
-
   function resetPassword(email) {
     const schema = {
       $id: "/auth/send-password-reset",
