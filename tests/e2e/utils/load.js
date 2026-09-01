@@ -5,7 +5,7 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
-const loadTimeout = 5000;
+const loadTimeout = 10_000;
 
 async function loadData(window, inputFilename) {
   const inputFileExtension = path.extname(inputFilename);

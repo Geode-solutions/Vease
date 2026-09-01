@@ -71,21 +71,6 @@ function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
-function startResize(event, edge) {
-  event.preventDefault();
-  event.stopPropagation();
-  isResizing.value = true;
-  resizeEdge = edge;
-  resizeStartPointerX = event.clientX;
-  resizeStartPointerY = event.clientY;
-  resizeStartWidth = pipWidth.value;
-  resizeStartHeight = pipHeight.value;
-  resizeStartX = x.value;
-  resizeStartY = y.value;
-  document.addEventListener("pointermove", onResizeMove);
-  document.addEventListener("pointerup", onResizeEnd);
-}
-
 function onResizeMove(event) {
   const deltaX = event.clientX - resizeStartPointerX;
   const deltaY = event.clientY - resizeStartPointerY;
@@ -116,6 +101,21 @@ function onResizeEnd() {
   savedPosition.value = { x: x.value, y: y.value };
   document.removeEventListener("pointermove", onResizeMove);
   document.removeEventListener("pointerup", onResizeEnd);
+}
+
+function startResize(event, edge) {
+  event.preventDefault();
+  event.stopPropagation();
+  isResizing.value = true;
+  resizeEdge = edge;
+  resizeStartPointerX = event.clientX;
+  resizeStartPointerY = event.clientY;
+  resizeStartWidth = pipWidth.value;
+  resizeStartHeight = pipHeight.value;
+  resizeStartX = x.value;
+  resizeStartY = y.value;
+  document.addEventListener("pointermove", onResizeMove);
+  document.addEventListener("pointerup", onResizeEnd);
 }
 </script>
 

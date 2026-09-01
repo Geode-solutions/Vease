@@ -39,6 +39,22 @@ function useAuth() {
     return newUser;
   }
 
+  async function login(email, password) {
+    const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
+    await loggedInUser.reload();
+    if (!loggedInUser.emailVerified) {
+      await signOut(auth);
+      throw new Error("Please verify your email address before logging in.");
+    }
+    if (infraStore.app_mode === appMode.DESKTOP) {
+      globalThis.electronAPI.save_credentials({
+        email,
+        password,
+      });
+    }
+    return loggedInUser;
+  }
+
   async function autoLogin() {
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
@@ -63,35 +79,6 @@ function useAuth() {
     }
   }
 
-  async function login(email, password) {
-    const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
-    await loggedInUser.reload();
-    if (!loggedInUser.emailVerified) {
-      await signOut(auth);
-      throw new Error("Please verify your email address before logging in.");
-    }
-    if (infraStore.app_mode === appMode.DESKTOP) {
-      globalThis.electronAPI.save_credentials({
-        email,
-        password,
-      });
-    }
-    return loggedInUser;
-  }
-
-  async function deleteAccount(password) {
-    if (!user.value) {
-      throw new Error("No user logged in");
-    }
-
-    // Re-authenticate before deleting (required by Identity Platform)
-    const credential = EmailAuthProvider.credential(user.value.email, password);
-    await reauthenticateWithCredential(user.value, credential);
-
-    await deleteUser(user.value);
-    await logout();
-  }
-
   async function logout() {
     if (infraStore.app_mode === appMode.DESKTOP) {
       try {
@@ -105,6 +92,19 @@ function useAuth() {
       }
     }
     await signOut(auth);
+  }
+
+  async function deleteAccount(password) {
+    if (!user.value) {
+      throw new Error("No user logged in");
+    }
+
+    // Re-authenticate before deleting (required by Identity Platform)
+    const credential = EmailAuthProvider.credential(user.value.email, password);
+    await reauthenticateWithCredential(user.value, credential);
+
+    await deleteUser(user.value);
+    await logout();
   }
 
   function resetPassword(email) {
