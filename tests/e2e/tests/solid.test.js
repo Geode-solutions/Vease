@@ -49,7 +49,7 @@ import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
-const polyhedronAttributeName = "test_attribute";
+const polyhedronAttributeName = "test_polyhedron";
 const vertexAttributeName = "test_vertex";
 const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
