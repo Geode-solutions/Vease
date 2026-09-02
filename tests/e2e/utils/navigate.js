@@ -21,10 +21,10 @@ import packageJson from "../../../package.json" with { type: "json" };
 // Constants
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
-const LINUX_WAIT_DESKTOP = 25;
+const LINUX_WAIT_DESKTOP = 30;
 const CLOUD_WAIT = 65;
-const WINDOWS_WAIT_BROWSER = 25;
-const WINDOWS_WAIT_DESKTOP = 30;
+const WINDOWS_WAIT_BROWSER = 30;
+const WINDOWS_WAIT_DESKTOP = 40;
 const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
@@ -44,6 +44,21 @@ function findAppExecutable() {
   }
   const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
   return parseElectronApp(buildPath).executable;
+}
+
+async function waitForAppReady(url, timeoutMs) {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeoutMs) {
+    // oxlint-disable-next-line no-await-in-loop
+    const response = await getIsAppReady(url);
+    if (response?.isReady) {
+      return true;
+    }
+    // oxlint-disable-next-line no-await-in-loop
+    await setTimeout(MILLISECONDS);
+  }
+  console.log("Timed out waiting for app to become ready");
+  return false;
 }
 
 async function runDesktopBuild() {
@@ -131,21 +146,6 @@ async function navigateToCloudApp(page, url, maxRetries) {
     });
   }
   console.log("Navigated to", page.url());
-}
-
-async function waitForAppReady(url, timeoutMs) {
-  const startTime = Date.now();
-  while (Date.now() - startTime < timeoutMs) {
-    // oxlint-disable-next-line no-await-in-loop
-    const response = await getIsAppReady(url);
-    if (response?.isReady) {
-      return true;
-    }
-    // oxlint-disable-next-line no-await-in-loop
-    await setTimeout(MILLISECONDS);
-  }
-  console.log("Timed out waiting for app to become ready");
-  return false;
 }
 
 async function navigateToApp(mode, browser) {
