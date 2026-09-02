@@ -69,6 +69,12 @@ async function findOverlappingObjectsPicker(window) {
 }
 
 async function ensureMenuOpen(window, menuTestId) {
+  const centerButton = window.getByTestId("circularMenuCenterButton");
+  if (!(await centerButton.isVisible())) {
+    const contextMenuX = 549;
+    const contextMenuY = 360;
+    await viewerContextMenu(window, contextMenuX, contextMenuY);
+  }
   const menuContainer = window.getByTestId(menuTestId);
   const activeCircularMenuItemButton = menuContainer.getByTestId("activeCircularMenuItemButton");
   if (!(await activeCircularMenuItemButton.isVisible())) {
@@ -77,7 +83,10 @@ async function ensureMenuOpen(window, menuTestId) {
       await activeMenuButton.click();
       await window.waitForTimeout(afterActionWait);
     }
-    const menuButton = menuContainer.getByTestId("circularMenuItemButton").first();
+    const menuButton = menuContainer
+      .getByTestId("circularMenuItemButton")
+      .or(menuContainer.getByTestId("activeCircularMenuItemButton"))
+      .first();
     await menuButton.click();
     await window.waitForTimeout(afterActionWait);
   }
@@ -109,9 +118,6 @@ async function dragContextMenu(window, { targetX, targetY } = {}) {
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-function setPolygonsTextures(window, viewerObjectType) {
-  return setFeatureTextures(window, viewerObjectType, "Polygons");
-}
 async function setFeatureTextures(window, viewerObjectType, feature) {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
@@ -130,6 +136,10 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
 }
 
+function setPolygonsTextures(window, viewerObjectType) {
+  return setFeatureTextures(window, viewerObjectType, "Polygons");
+}
+
 async function hoverViewer(window, position) {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -146,12 +156,6 @@ async function stabilizeHoverTooltip(window) {
   });
 }
 
-function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
-  const menuTestId = `${viewerObjectType}${feature}Menu`;
-  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
-  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
-}
-
 async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility) {
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
@@ -161,6 +165,12 @@ async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility
     await checkbox.uncheck();
   }
   await window.waitForTimeout(afterActionWait);
+}
+
+function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+  const menuTestId = `${viewerObjectType}${feature}Menu`;
+  const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
+  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
 }
 
 async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
@@ -233,6 +243,23 @@ async function openStyleMenu(window, menuTestId) {
   await window.waitForTimeout(afterActionWait);
 }
 
+const SCALAR_BAR_X_RATIO = 0.25;
+const SCALAR_BAR_Y_RATIO = 0.9;
+
+async function viewerQuickColormap(window, x, y) {
+  const hybridViewerCanvas = await getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  const targetX = x ?? Math.round(box.width * SCALAR_BAR_X_RATIO);
+  const targetY = y ?? Math.round(box.height * SCALAR_BAR_Y_RATIO);
+
+  await hybridViewerCanvas.click({
+    button: "left",
+    position: { x: targetX, y: targetY },
+    force: true,
+  });
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   afterActionWait,
   beforeAllTimeout,
@@ -241,8 +268,8 @@ export {
   ensureFeatureVisible,
   ensureMenuOpen,
   findOverlappingObjectsPicker,
-  hoverViewer,
   getHybridViewerCanvas,
+  hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,
   setCellsVisibility,
@@ -256,4 +283,5 @@ export {
   stabilizeHoverTooltip,
   toggleInfoCard,
   viewerContextMenu,
+  viewerQuickColormap,
 };

@@ -1,0 +1,11 @@
+{
+  "route": "/visibility",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "minLength": 32, "maxLength": 32 },
+    "visibility": { "type": "boolean" }
+  },
+  "required": ["id", "visibility"],
+  "additionalProperties": false
+}
