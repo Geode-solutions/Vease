@@ -37,6 +37,12 @@ const newItemName = ref("");
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
+function showFeedback(text, color = "success") {
+  snackbar.text = text;
+  snackbar.color = color;
+  snackbar.show = true;
+}
+
 async function toggleVisibility(item, targetVisible = !item.visible) {
   if (item.visible === targetVisible) {
     return;
@@ -139,12 +145,6 @@ async function deleteSelected() {
   selectedIds.value = [];
   deleteSelectedDialog.value = false;
   showFeedback("Selected items deleted");
-}
-
-function showFeedback(text, color = "success") {
-  snackbar.text = text;
-  snackbar.color = color;
-  snackbar.show = true;
 }
 
 const { delete: del } = useMagicKeys();
