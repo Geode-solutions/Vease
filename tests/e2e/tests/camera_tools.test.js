@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 // Node imports
 
 // Third party imports
@@ -20,14 +21,18 @@ import {
   getHybridViewerCanvas,
   hoverViewer,
   moveMouseOutOfTheWay,
+  setEdgesVisibility,
   stabilizeHoverTooltip,
+  viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
+  meshViewerObjectType,
   rgd3dGeodeObjectType,
 } from "@tests/utils/constants.js";
 import {
+  clearRuler,
   closeCameraManager,
   ensureHighlightMenuOpen,
   resetCamera,
@@ -37,15 +42,19 @@ import {
   saveCameraPosition,
   selectCameraOrientation,
   selectShrinkDatasets,
+  setRulerPointInput,
   setShrinkFactor,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
   toggleGridScale,
+  toggleRuler,
+  toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
+import { confirmDelete, navigateToDataManager } from "@tests/utils/data_manager.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -70,6 +79,12 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const RULER_POINT_2_X = 1.8;
+const RULER_POINT_2_Y = 16.8;
+const RULER_POINT_2_Z = 44.9;
+const RULER_SNAP_X_RATIO = 0.5;
+const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
+const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 
 test.describe.configure({ mode: "serial" });
 
@@ -93,6 +108,53 @@ test("reset camera", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("grid edges visibility", async () => {
+  const x = 549;
+  const y = 360;
+  await viewerContextMenu(window, x, y);
+  await setEdgesVisibility(window, meshViewerObjectType, true);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("ruler tool pick point 1 and manual point 2", async () => {
+  await window.keyboard.press("Escape");
+  await toggleRuler(window);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.click({
+    position: { x: box.width / 2, y: box.height / 2 },
+  });
+  await window.waitForTimeout(afterActionWait);
+  await setRulerPointInput(window, 2, [RULER_POINT_2_X, RULER_POINT_2_Y, RULER_POINT_2_Z]);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("ruler tool pick vertex snap points", async () => {
+  await clearRuler(window);
+  await toggleRuler(window);
+  await toggleRulerSnap(window);
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
+  const box = await hybridViewerCanvas.boundingBox();
+  await hybridViewerCanvas.click({
+    position: {
+      x: box.width * RULER_SNAP_X_RATIO,
+      y: box.height * RULER_SNAP_POINT_1_Y_RATIO,
+    },
+  });
+  await window.waitForTimeout(afterActionWait);
+  await hybridViewerCanvas.click({
+    position: {
+      x: box.width * RULER_SNAP_X_RATIO,
+      y: box.height * RULER_SNAP_POINT_2_Y_RATIO,
+    },
+  });
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
 test("rotate camera 180 degrees", async () => {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -101,6 +163,8 @@ test("rotate camera 180 degrees", async () => {
 });
 
 test("overlapping objects context menu", async () => {
+  await toggleRuler(window);
+  await clearRuler(window);
   await resetCamera(window);
   await findOverlappingObjectsPicker(window);
   await expect(window).toHaveScreenshot();
@@ -164,6 +228,24 @@ test("save camera position", async () => {
   await saveCameraPosition(window, "angle 1");
   await expect(window).toHaveScreenshot();
   await closeCameraManager(window);
+});
+
+test("only one tool panel open at a time", async () => {
+  await toggleCameraManager(window);
+  const closeCameraManagerButton = window.getByTestId("closeCameraManagerButton");
+  const screenshotButton = window.getByTestId("screenshotButton");
+  const screenshotActionButton = window.getByTestId("screenshotActionButton");
+
+  await expect(closeCameraManagerButton).toBeVisible();
+  await screenshotButton.click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(closeCameraManagerButton).not.toBeVisible();
+  await expect(screenshotActionButton).toBeVisible();
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await screenshotButton.click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(screenshotActionButton).not.toBeVisible();
 });
 
 test("camera orientation", async () => {
@@ -280,7 +362,7 @@ test("clipping planes custom origin and normal values", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("clipping planes target specific brep dataset", async () => {
+test("clipping planes target specific brepdataset", async () => {
   await toggleTargetAllVisible(window);
   await selectClippingDatasets(window, "test");
   await hideObjectInTree(window, "RegularGrid3D");
@@ -338,5 +420,13 @@ test("clipping planes multiple planes and datas", async () => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("delete all data", async () => {
+  await navigateToDataManager(window);
+  await window.locator("thead .v-selection-control input").first().click({ force: true });
+  await window.getByTestId("deleteAllSelectedButton").click();
+  await confirmDelete(window);
   await expect(window).toHaveScreenshot();
 });

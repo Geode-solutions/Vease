@@ -50,7 +50,9 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+
   await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
 }
 
 async function applyAttribute(
@@ -134,4 +136,31 @@ function setFeatureAttribute(
   return applyAttribute(window, menuTestId, { attributeType, attributeName, ...options });
 }
 
-export { applyAttribute, setFeatureAttribute, setFeatureItem, setFeatureColorMap };
+async function setQuickColorMap(window, colorMap) {
+  const colorMapListFilter = window
+    .getByTestId("colorMapListFilter")
+    .filter({ visible: true })
+    .first();
+  await colorMapListFilter.locator("input").waitFor({ state: "visible" });
+  await colorMapListFilter.locator("input").fill(colorMap);
+  const colorMapListLoading = window.getByTestId("colorMapListLoading");
+  await colorMapListLoading.waitFor({ state: "detached" });
+  await window.waitForTimeout(afterActionWait);
+
+  await window
+    .getByTestId("colorMapList")
+    .getByText(colorMap, { exact: true })
+    .filter({ visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
+}
+
+export {
+  applyAttribute,
+  setFeatureAttribute,
+  setFeatureColorMap,
+  setFeatureItem,
+  setQuickColorMap,
+};

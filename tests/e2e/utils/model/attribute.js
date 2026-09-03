@@ -7,7 +7,7 @@ import {
 } from "@tests/utils/constants.js";
 import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 
-function setModelPointsVertexAttribute(window, attributeName = "points", options = {}) {
+function setModelPointsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -15,7 +15,7 @@ function setModelPointsVertexAttribute(window, attributeName = "points", options
   });
 }
 
-function setModelEdgesVertexAttribute(window, attributeName = "points", options = {}) {
+function setModelEdgesVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -23,7 +23,7 @@ function setModelEdgesVertexAttribute(window, attributeName = "points", options 
   });
 }
 
-function setModelPolygonsVertexAttribute(window, attributeName = "points", options = {}) {
+function setModelPolygonsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -31,7 +31,7 @@ function setModelPolygonsVertexAttribute(window, attributeName = "points", optio
   });
 }
 
-function setModelPolyhedraVertexAttribute(window, attributeName = "points", options = {}) {
+function setModelPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -39,7 +39,7 @@ function setModelPolyhedraVertexAttribute(window, attributeName = "points", opti
   });
 }
 
-function setModelCellsVertexAttribute(window, attributeName = "points", options = {}) {
+function setModelCellsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,

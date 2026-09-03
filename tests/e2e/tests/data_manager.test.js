@@ -80,6 +80,8 @@ test("rename object", async () => {
 
 test("toggle visibility off", async () => {
   await toggleRowVisibility(window, pointSetGeodeObjectType);
+  await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
   await expect(window).toHaveScreenshot();
 });
 
@@ -109,6 +111,7 @@ test("isolate object", async () => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
   await expect(window).toHaveScreenshot();
 });
 
