@@ -1,6 +1,5 @@
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
-import { z } from 'zod'
 
 export default defineMcpTool({
   name: 'render-viewer',
