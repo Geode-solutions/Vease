@@ -33,13 +33,13 @@ import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
-const attributeName = "RGB_data";
-const vertexAttributeName = "points";
+const cellAttributeName = "test_cell";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "test_vertex";
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const cellsOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
 
 test.describe.configure({ mode: "serial" });
 
@@ -69,7 +69,7 @@ test("points visibility", async ({ window }) => {
 });
 
 test("cell attribute", async ({ window }) => {
-  await setMeshCellsCellAttribute(window, attributeName, { item: 1 });
+  await setMeshCellsCellAttribute(window, cellAttributeName, { item: 1 });
 });
 
 test("cell attribute change colormap", async ({ window }) => {
@@ -97,10 +97,10 @@ test("vertex attribute", async ({ window }) => {
 });
 
 test("vertex attribute change attribute name", async ({ window }) => {
-  await setMeshCellsVertexAttribute(window, otherVertexAttributeName);
+  await setMeshCellsVertexAttribute(window, vertexAttributeName2);
 });
 
-test("vertex attribute switch back to points", async ({ window }) => {
+test("vertex attribute switch back to first attribute", async ({ window }) => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName);
 });
 
@@ -120,16 +120,16 @@ test("edges color", async ({ window }) => {
   await setMeshEdgesColorWithSlider(window);
 });
 
-test("opacity", async ({ window }) => {
-  await setMeshCellsOpacity(window, OPACITY_50);
+test("cells opacity", async ({ window }) => {
+  await setMeshCellsOpacity(window, cellsOpacity);
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {

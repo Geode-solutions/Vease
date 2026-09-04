@@ -68,14 +68,6 @@ async function fillSearchQuery(window, query) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function highlightData(window, geodeObjectType, dataName) {
-  await expandGeodeObjectType(window, geodeObjectType);
-  const mainObjectTree = getMainObjectTree(window);
-  const testItem = mainObjectTree.getByText(dataName).first();
-  await testItem.hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function getTreeRowByTextAndParent(
   window,
   geodeObjectType,
@@ -131,6 +123,14 @@ async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "main
   }
 }
 
+async function highlightData(window, geodeObjectType, dataName) {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = window.getByTestId("mainObjectTree");
+  const testItem = mainObjectTree.getByText(dataName, { exact: true }).first();
+  await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
+}
+
 async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
@@ -182,8 +182,14 @@ async function showObjectInTree(window, objectName) {
   }
 }
 
-async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainObjectTree") {
-  await getTreeRowByTextAndParent(window, objectName, undefined, treeTestId).click({
+async function openObjectTreeContextMenu(
+  window,
+  geodeObjectType,
+  dataName = undefined,
+  treeTestId = "mainObjectTree",
+) {
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, treeTestId);
+  await row.click({
     button: "right",
   });
   await window.waitForTimeout(afterActionWait);
@@ -229,6 +235,28 @@ async function setModelTreeRowColorRandom(window, rowName, rowIndex = 0) {
 async function toggleObjectsTree(window) {
   await window.getByTestId("toggleObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
+}
+
+async function closeObjectsTree(window) {
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
+  if (isVisible) {
+    await window.getByTestId("toggleObjectsButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function openObjectsTree(window) {
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
+  if (!isVisible) {
+    await window.getByTestId("toggleObjectsButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 async function openModelComponentsTree(window, geodeObjectType, dataName) {
@@ -278,6 +306,8 @@ export {
   setModelTreeRowColorRandom,
   openModelComponentContextMenu,
   toggleObjectsTree,
+  closeObjectsTree,
+  openObjectsTree,
   openModelComponentsTree,
   hideAllComponentLeafRows,
   expandMainObjectTreeGroup,

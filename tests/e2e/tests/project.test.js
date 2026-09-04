@@ -9,7 +9,7 @@ import {
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 import { exportProject, importProject } from "@tests/utils/project_interaction.js";
-import { getMainObjectTree, getModelComponentsObjectTree, hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
+import { getMainObjectTree, hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
 import { setColor } from "@tests/utils/helpers/color.js";
 import { test } from "@tests/utils/fixtures.js";
 
@@ -30,8 +30,8 @@ test("toggle surfaces visibility", async ({ window }) => {
 });
 
 test("change lines color", async ({ window }) => {
-  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
-  const item = modelComponentsObjectTree.getByText("Lines").first();
+  const tree = window.getByTestId("modelComponentsObjectTree");
+  const item = tree.getByText("Lines", { exact: true }).first();
   await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 

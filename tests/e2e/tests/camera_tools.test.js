@@ -201,8 +201,25 @@ test("save camera position", async ({ window }) => {
   await saveCameraPosition(window, "angle 1");
 });
 
-test("camera orientation", async ({ window }) => {
-  await closeCameraManager(window);
+test("only one tool panel open at a time", async (window) => {
+  await toggleCameraManager(window);
+  const closeCameraManagerButton = window.getByTestId("closeCameraManagerButton");
+  const screenshotButton = window.getByTestId("screenshotButton");
+  const screenshotActionButton = window.getByTestId("screenshotActionButton");
+
+  await expect(closeCameraManagerButton).toBeVisible();
+  await screenshotButton.click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(closeCameraManagerButton).not.toBeVisible();
+  await expect(screenshotActionButton).toBeVisible();
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await screenshotButton.click();
+  await window.waitForTimeout(afterActionWait);
+  await expect(screenshotActionButton).not.toBeVisible();
+});
+
+test("camera orientation", async (window) => {
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X+");
 });

@@ -37,13 +37,13 @@ import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
-const attributeName = "triangle_adjacents";
-const vertexAttributeName = "points";
+const polygonAttributeName = "test_polygon";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "unique vertices";
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const polygonsOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
 
 test.describe.configure({ mode: "serial" });
 
@@ -64,18 +64,15 @@ test("viewer context menu", async ({ window }) => {
 
 test("info card", async ({ window }) => {
   await toggleInfoCard(window);
-
-  await toggleInfoCard(window);
 });
 
 test("points visibility", async ({ window }) => {
-  const visibility = true;
-  await setPointsVisibility(window, meshViewerObjectType, visibility);
+  await setPointsVisibility(window, meshViewerObjectType, true);
 });
 
 test("polygon attribute", async ({ window }) => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolygonsPolygonAttribute(window, attributeName);
+  await setMeshPolygonsPolygonAttribute(window, polygonAttributeName);
 });
 
 test("polygon attribute change colormap", async ({ window }) => {
@@ -102,10 +99,10 @@ test("vertex attribute change item to 2", async ({ window }) => {
 });
 
 test("vertex attribute change attribute name", async ({ window }) => {
-  await setMeshPolygonsVertexAttribute(window, otherVertexAttributeName);
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName2);
 });
 
-test("vertex attribute switch back to points", async ({ window }) => {
+test("vertex attribute switch back to first attribute", async ({ window }) => {
   await setMeshPolygonsVertexAttribute(window, vertexAttributeName);
 });
 
@@ -126,15 +123,15 @@ test("edges color", async ({ window }) => {
 });
 
 test("opacity", async ({ window }) => {
-  await setMeshPolygonsOpacity(window, OPACITY_50);
+  await setMeshPolygonsOpacity(window, polygonsOpacity);
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {

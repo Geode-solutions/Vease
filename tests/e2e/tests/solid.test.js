@@ -48,13 +48,13 @@ import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
-const attributeName = "test_attribute";
-const vertexAttributeName = "points";
+const polyhedronAttributeName = "test_polyhedron";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-const otherVertexAttributeName = "test_vertex";
-const OPACITY_50 = 50;
-const POINTS_SIZE = 15;
-const EDGES_WIDTH = 5;
+const polyhedraOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
 const ZOOM_WHEEL_DELTA = -5000;
 
 test.describe.configure({ mode: "serial" });
@@ -86,7 +86,7 @@ test("points visibility", async ({ window }) => {
 
 test("polyhedron attribute", async ({ window }) => {
   await setPointsVisibility(window, meshViewerObjectType, false);
-  await setMeshPolyhedraPolyhedronAttribute(window, attributeName);
+  await setMeshPolyhedraPolyhedronAttribute(window, polyhedronAttributeName);
 });
 
 test("polyhedron attribute change colormap", async ({ window }) => {
@@ -113,10 +113,10 @@ test("vertex attribute change item to 2", async ({ window }) => {
 });
 
 test("vertex attribute change attribute name", async ({ window }) => {
-  await setMeshPolyhedraVertexAttribute(window, otherVertexAttributeName);
+  await setMeshPolyhedraVertexAttribute(window, vertexAttributeName2);
 });
 
-test("vertex attribute switch back to points", async ({ window }) => {
+test("vertex attribute switch back to first attribute", async ({ window }) => {
   await setMeshPolyhedraVertexAttribute(window, vertexAttributeName);
 });
 
@@ -141,15 +141,15 @@ test("polygons color", async ({ window }) => {
 });
 
 test("opacity", async ({ window }) => {
-  await setMeshPolyhedraOpacity(window, OPACITY_50);
+  await setMeshPolyhedraOpacity(window, polyhedraOpacity);
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, POINTS_SIZE);
+  await setPointsSize(window, meshViewerObjectType, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, EDGES_WIDTH);
+  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {
