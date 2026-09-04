@@ -1,11 +1,11 @@
+// oxlint-disable max-dependencies
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
-
-// Local imports
 import {
+  afterActionWait,
   beforeAllTimeout,
+  moveMouseOutOfTheWay,
   setEdgesVisibility,
   setEdgesWidth,
   setPointsSize,
@@ -14,13 +14,19 @@ import {
   setPolygonsVisibility,
   toggleInfoCard,
   viewerContextMenu,
+  viewerQuickColormap,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  closeObjectsTree,
+  expandMainObjectTree,
+  highlightData,
+  openObjectsTree,
+} from "@tests/utils/object_tree_interaction.js";
 import {
   defaultDataName,
   meshViewerObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+} from "@tests/utils/constants.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
@@ -29,10 +35,12 @@ import {
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
 import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
+import { expect } from "@playwright/test";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
 import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
+import { setQuickColorMap } from "@tests/utils/helpers/attribute.js";
 import { test } from "@tests/fixtures.js";
 
 // Constants
@@ -101,6 +109,44 @@ test("polygon attribute change colormap", async () => {
 test("polygon attribute reopen menu", async () => {
   await openMeshPolygonsMenu(window);
   await expect(window).toHaveScreenshot();
+});
+
+test("quick colormap picker change colormap", async () => {
+  await window.keyboard.press("Escape");
+  await closeObjectsTree(window);
+  await window.waitForTimeout(afterActionWait);
+
+  const x = 275;
+  const y = 650;
+  await viewerQuickColormap(window, x, y);
+  await setQuickColorMap(window, colorMapName);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+});
+
+test("quick colormap picker change range", async () => {
+  await window.keyboard.press("Escape");
+  await closeObjectsTree(window);
+  await window.waitForTimeout(afterActionWait);
+  const x = 275;
+  const y = 650;
+  await viewerQuickColormap(window, x, y);
+  const minInput = window
+    .getByTestId("attributeMinInput")
+    .filter({ visible: true })
+    .first()
+    .locator("input");
+  await minInput.fill("0.2");
+  await minInput.press("Enter");
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  await openObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
 });
 
 test("vertex attribute", async () => {
