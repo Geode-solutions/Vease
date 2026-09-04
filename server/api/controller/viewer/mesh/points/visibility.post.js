@@ -11,10 +11,13 @@ import { parseBoolean } from "@ogw_shared/utils/parse_boolean";
 
 export default defineEventHandler(async (event) => {
   try {
+    console.log("HELLO FROM MESH POINTS VISIBILITY CONTROLLER")
     const { id, visibility } = await readBody(event);
     const schema = opengeodeweb_viewer_schemas.opengeodeweb_viewer.mesh.points.visibility;
     const visibilityBool = parseBoolean(visibility);
+    console.log({ id, visibility, visibilityBool });
     const params = { id, visibility: visibilityBool };
+    console.log({ params });
     const client = await getViewerWebSocketClient();
     const response = await callSchema({
       schema,

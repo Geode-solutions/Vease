@@ -49,7 +49,8 @@
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop",
-    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots",
+    "mcp_bridge": "node node_scripts/mcp-bridge.mjs"
   },
   "dependencies": {
     "@fontsource/michroma": "5.2.6",
@@ -68,6 +69,7 @@
     "electron-updater": "6.6.2",
     "h3-formidable": "1.0.0",
     "kill-port": "2.0.1",
+    "mcp-remote": "0.8.3",
     "nuxt-vuefire": "1.1.2",
     "utf-8-validate": "6.0.5",
     "vite": "8.2.0",

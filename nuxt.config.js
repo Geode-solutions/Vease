@@ -80,14 +80,14 @@ export default defineNuxtConfig({
     name: "Vease",
     description: "Control the application with a set of commands",
     security: {
-      allowedOrigins: ["http://127.0.0.1:54321"],
+      allowedOrigins: ["http://localhost:*"],
     },
   },
   routeRules: {
     "/mcp/**": {
       cors: true,
       headers: {
-        "Access-Control-Allow-Origin": "http://127.0.0.1:54321",
+        "Access-Control-Allow-Origin": "http://localhost:*",
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Accept",
       },
