@@ -1,58 +1,77 @@
-// Viewer Object Types
-const meshViewerObjectType = "mesh";
-const modelViewerObjectType = "model";
+// Node imports
 
-// Geode Object Types
-const pointSetGeodeObjectType = "PointSet3D";
-const edgedCurveGeodeObjectType = "EdgedCurve3D";
-const rgd2dGeodeObjectType = "RegularGrid2D";
-const rgd3dGeodeObjectType = "RegularGrid3D";
-const polygonalSurfaceGeodeObjectType = "PolygonalSurface3D";
-const hybridSolidGeodeObjectType = "HybridSolid3D";
-const tetrahedralSolidGeodeObjectType = "TetrahedralSolid3D";
-const triangulatedSurfaceGeodeObjectType = "TriangulatedSurface3D";
-const brepGeodeObjectType = "BRep";
-const structuralModelGeodeObjectType = "StructuralModel";
+// Third party imports
+import { defineConfig, devices } from "@playwright/test";
+import { isWindows } from "std-env";
 
-// Default Data Name
-const defaultDataName = "test";
+const MILLISECONDS = 1000;
+const CLOUD_TIMEOUT = 120;
+const LINUX_TIMEOUT_BROWSER = 60;
+const LINUX_TIMEOUT_DESKTOP = 50;
+const WINDOWS_TIMEOUT_BROWSER = 80;
+const WINDOWS_TIMEOUT_DESKTOP = 80;
 
-// Feature Names
-const cellsFeatureName = "Cells";
-const edgesFeatureName = "Edges";
-const pointsFeatureName = "Points";
-const polygonsFeatureName = "Polygons";
-const polyhedraFeatureName = "Polyhedra";
+const maxDiffPixelRatio = 0.02;
 
-// Attribute Types
-const vertexAttributeType = "Vertex attribute";
-const edgeAttributeType = "Edge attribute";
-const polygonAttributeType = "Polygon attribute";
-const polyhedronAttributeType = "Polyhedron attribute";
-const cellAttributeType = "Cell attribute";
+const TIMEOUTS = {
+  browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_TIMEOUT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
+};
+
+const CLOUD_SECONDS_SCREENSHOT_TIMEOUT = 10;
+const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS;
+
+const defaultExpect = {
+  toHaveScreenshot: {
+    maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
+      ? Number(process.env.MAX_PIXEL_RATIO)
+      : maxDiffPixelRatio,
+    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
+  },
+};
+
+const cloudExpect = {
+  ...defaultExpect,
+  toHaveScreenshot: {
+    ...defaultExpect.toHaveScreenshot,
+    timeout: CLOUD_SCREENSHOT_TIMEOUT,
+  },
+};
+
+const LINUX_WAIT_BROWSER = 20;
+const LINUX_WAIT_DESKTOP = 25;
+const CLOUD_WAIT = 65;
+const WINDOWS_WAIT_BROWSER = 25;
+const WINDOWS_WAIT_DESKTOP = 30;
+
+const WAIT_TIMES = {
+  browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_WAIT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
+};
+
+const beforeAllTimeout = 180_000;
+const afterActionWait = 1500;
+const modalTransitionWait = 2000;
+const staggerMaxWait = 2000;
+const defaultTimeout = 60_000;
+const treeWaitTimeout = 60_000;
+const randomMultiplier = 1000;
+
+const PAGE_WIDTH = 1200;
+const PAGE_HEIGHT = 800;
 
 export {
-  meshViewerObjectType,
-  modelViewerObjectType,
-  pointSetGeodeObjectType,
-  edgedCurveGeodeObjectType,
-  rgd2dGeodeObjectType,
-  rgd3dGeodeObjectType,
-  polygonalSurfaceGeodeObjectType,
-  hybridSolidGeodeObjectType,
-  tetrahedralSolidGeodeObjectType,
-  triangulatedSurfaceGeodeObjectType,
-  brepGeodeObjectType,
-  structuralModelGeodeObjectType,
-  defaultDataName,
-  cellsFeatureName,
-  edgesFeatureName,
-  pointsFeatureName,
-  polygonsFeatureName,
-  polyhedraFeatureName,
-  vertexAttributeType,
-  edgeAttributeType,
-  polygonAttributeType,
-  polyhedronAttributeType,
-  cellAttributeType,
+  PAGE_HEIGHT,
+  PAGE_WIDTH,
+  WAIT_TIMES,
+  afterActionWait,
+  beforeAllTimeout,
+  cloudExpect,
+  defaultTimeout,
+  modalTransitionWait,
+  randomMultiplier,
+  staggerMaxWait,
+  treeWaitTimeout,
 };

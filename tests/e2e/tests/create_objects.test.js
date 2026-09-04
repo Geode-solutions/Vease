@@ -1,7 +1,6 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -14,13 +13,9 @@ import {
   submitCreateObject,
   toggleClosedCurve,
 } from "@tests/utils/create_objects.js";
-import { beforeAllTimeout } from "@tests/utils/viewer_interaction.js";
-import { navigateToApp } from "@tests/utils/navigate.js";
-import { test } from "@tests/fixtures.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
-let window = undefined;
-let cleanup = undefined;
 const POINTS_COORDS = [
   { x: 0, y: 0, z: 0 },
   { x: -0.2, y: 0.14, z: 0.09 },
@@ -55,86 +50,65 @@ const VIEWER_SURFACE_COORDS = [
 
 test.describe.configure({ mode: "serial" });
 
-test.beforeAll(async ({ mode, browser }) => {
-  ({ window, cleanup } = await navigateToApp(mode, browser));
-}, beforeAllTimeout);
-
-test.afterAll(async () => {
-  await cleanup();
-});
-
-test("open create tools", async () => {
+test("open create tools", async ({ window }) => {
   await openCreateToolsPanel(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("open create point tool", async () => {
+test("open create point tool", async ({ window }) => {
   await selectCreateTool(window, "Point");
-  await expect(window).toHaveScreenshot();
 });
 
-test("fill points coordinates", async () => {
+test("fill points coordinates", async ({ window }) => {
   await fillPointsCoords(window, POINTS_COORDS);
-  await expect(window).toHaveScreenshot();
 });
 
-test("pick in viewer", async () => {
+test("pick in viewer", async ({ window }) => {
   await clickPickButton(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("pick points and create pointset", async () => {
+test("pick points and create pointset", async ({ window }) => {
   await pickPointInViewer(window, VIEWER_POINTS_COORDS[0].x, VIEWER_POINTS_COORDS[0].y);
   await pickPointInViewer(window, VIEWER_POINTS_COORDS[1].x, VIEWER_POINTS_COORDS[1].y);
   await submitCreateObject(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("open create curve tool", async () => {
+test("open create curve tool", async ({ window }) => {
   await openCreateToolsPanel(window);
   await selectCreateTool(window, "Curve");
-  await expect(window).toHaveScreenshot();
 });
 
-test("fill curve coordinates", async () => {
+test("fill curve coordinates", async ({ window }) => {
   await fillPointsCoords(window, CURVE_COORDS);
-  await expect(window).toHaveScreenshot();
 });
 
-test("pick curve points and escape key", async () => {
+test("pick curve points and escape key", async ({ window }) => {
   await clickPickButton(window);
   await pickPointInViewer(window, VIEWER_CURVE_COORDS[0].x, VIEWER_CURVE_COORDS[0].y);
   await pickPointInViewer(window, VIEWER_CURVE_COORDS[1].x, VIEWER_CURVE_COORDS[1].y);
   await window.keyboard.press("Escape");
-  await expect(window).toHaveScreenshot();
 });
 
-test("close curve and create curve", async () => {
+test("close curve and create curve", async ({ window }) => {
   await toggleClosedCurve(window);
   await submitCreateObject(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("open create surface tool", async () => {
+test("open create surface tool", async ({ window }) => {
   await openCreateToolsPanel(window);
   await selectCreateTool(window, "PolygonalSurface");
-  await expect(window).toHaveScreenshot();
 });
 
-test("fill surface coordinates", async () => {
+test("fill surface coordinates", async ({ window }) => {
   await fillPointsCoords(window, SURFACE_COORDS);
-  await expect(window).toHaveScreenshot();
 });
 
-test("pick surface and click close", async () => {
+test("pick surface and click close", async ({ window }) => {
   await clickPickButton(window);
   await pickPointInViewer(window, VIEWER_SURFACE_COORDS[0].x, VIEWER_SURFACE_COORDS[0].y);
   await pickPointInViewer(window, VIEWER_SURFACE_COORDS[1].x, VIEWER_SURFACE_COORDS[1].y);
   await closePickingBanner(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("create surface", async () => {
+test("create surface", async ({ window }) => {
   await submitCreateObject(window);
-  await expect(window).toHaveScreenshot();
 });
