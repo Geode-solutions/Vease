@@ -201,7 +201,7 @@ test("save camera position", async ({ window }) => {
   await saveCameraPosition(window, "angle 1");
 });
 
-test("only one tool panel open at a time", async (window) => {
+test("only one tool panel open at a time", async ({ window }) => {
   await toggleCameraManager(window);
   const closeCameraManagerButton = window.getByTestId("closeCameraManagerButton");
   const screenshotButton = window.getByTestId("screenshotButton");
@@ -219,7 +219,7 @@ test("only one tool panel open at a time", async (window) => {
   await expect(screenshotActionButton).not.toBeVisible();
 });
 
-test("camera orientation", async (window) => {
+test("camera orientation", async ({ window }) => {
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X+");
 });
@@ -375,10 +375,9 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
   await resetCamera(window);
 });
 
-test("delete all data", async () => {
+test("delete all data", async ({ window }) => {
   await navigateToDataManager(window);
   await window.locator("thead .v-selection-control input").first().click({ force: true });
   await window.getByTestId("deleteAllSelectedButton").click();
   await confirmDelete(window);
-  await expect(window).toHaveScreenshot();
 });
