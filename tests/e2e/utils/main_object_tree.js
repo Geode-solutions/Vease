@@ -1,28 +1,35 @@
 import { afterActionWait, ensureMenuOpen, moveMouseOutOfTheWay } from "./viewer_interaction.js";
-import { setModelColor } from "./model/color.js";
+import { setModelColor } from "./data/model/color.js";
 
-async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
-  const btn = window.getByTestId(treeTestId).getByTestId("CollapseOrExpandAll");
-  const targetIcon = btn.locator(`.${expectedIcon}`);
-  if (await targetIcon.isVisible()) {
-    await btn.click({ force: true });
-    await moveMouseOutOfTheWay(window);
-    await window.waitForTimeout(afterActionWait);
+function getMainObjectTree(window) {
+  return window.getByTestId("mainObjectTree");
+}
+function collapseMainObjectTree(window) {
+  const mainObjectTree = getMainObjectTree(window);
+  return clickCollapseOrExpandAll(window, mainObjectTree, "mdi-collapse-all-outline");
+}
+function expandMainObjectTree(window) {
+  const mainObjectTree = getMainObjectTree(window);
+  return clickCollapseOrExpandAll(window, mainObjectTree, "mdi-expand-all-outline");
+}
+
+async function expandMainObjectTreeGroup(window, groupName) {
+  const mainObjectTree = getMainObjectTree(window);
+  const expandBtn = mainObjectTree
+    .locator(".tree-item-group, .v-treeview-item, [class*='group']")
+    .filter({ hasText: groupName })
+    .first()
+    .locator("button:has(.mdi-chevron-right)");
+
+  try {
+    await expandBtn.waitFor({ state: "visible", timeout: modalTransitionWait });
+    await expandBtn.click();
+    await window.waitForTimeout(modalTransitionWait);
+  } catch {
+    // Fallback: click the group title text to toggle
+    await mainObjectTree.getByText(groupName, { exact: true }).click();
+    await window.waitForTimeout(modalTransitionWait);
   }
-}
-
-async function expandAllObjects(window, treeTestId = "mainObjectTree") {
-  await clickCollapseOrExpandAll(window, treeTestId, "mdi-expand-all-outline");
-}
-
-async function collapseAllObjects(window, treeTestId = "mainObjectTree") {
-  await clickCollapseOrExpandAll(window, treeTestId, "mdi-collapse-all-outline");
-}
-
-async function toggleSortObjects(window) {
-  await window.getByTestId("sortObjectsButton").click();
-  await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
 }
 
 async function openFilterMenu(window, treeTestId = "mainObjectTree") {
@@ -52,15 +59,13 @@ async function toggleSearchObjects(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+
+
 async function fillSearchQuery(window, query) {
   const searchInput = window.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
-}
-
-async function expandMainObjectTree(window) {
-  await expandAllObjects(window, "mainObjectTree");
 }
 
 async function getTreeRowByTextAndParent(
@@ -193,8 +198,9 @@ async function openObjectTreeContextMenu(
 async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const row = modelComponentsObjectTree
+    .nth(treeIndex)
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
     .nth(rowIndex);
@@ -209,8 +215,9 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) 
 async function openModelComponentContextMenu(window, rowName, rowIndex = 0, treeIndex = 0) {
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
-  const modelComponentsObjectTree = window.getByTestId("modelComponentsObjectTree").nth(treeIndex);
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const row = modelComponentsObjectTree
+    .nth(treeIndex)
     .getByTestId("treeRowWrapper")
     .filter({ hasText: rowName })
     .nth(rowIndex);
@@ -278,15 +285,14 @@ async function hideAllComponentLeafRows(window, categoryName) {
 }
 
 export {
-  expandAllObjects,
-  collapseAllObjects,
-  toggleSortObjects,
-  openFilterMenu,
   checkFilterCategory,
+  expandMainObjectTree,
+  collapseMainObjectTree,
+  getMainObjectTree,
+  openFilterMenu,
   uncheckFilterCategory,
   toggleSearchObjects,
   fillSearchQuery,
-  expandMainObjectTree,
   highlightData,
   getTreeRowByTextAndParent,
   expandGeodeObjectType,
@@ -304,4 +310,5 @@ export {
   openObjectsTree,
   openModelComponentsTree,
   hideAllComponentLeafRows,
+  expandMainObjectTreeGroup,
 };

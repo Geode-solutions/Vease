@@ -8,7 +8,7 @@ import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/helpers/attribute";
+} from "@tests/utils/data/helpers/attribute";
 import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
 
 function setMeshPolygonsVertexAttribute(window, attributeName, options = {}) {

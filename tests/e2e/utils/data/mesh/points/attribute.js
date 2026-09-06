@@ -4,7 +4,7 @@ import {
   vertexAttributeType,
 } from "@tests/utils/constants.js";
 import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
-import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
+import { setFeatureAttribute } from "@tests/utils/data/helpers/attribute";
 
 function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
