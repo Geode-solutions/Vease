@@ -1,0 +1,7 @@
+{
+  "node": false,
+  "browser": true,
+  "cloud": true,
+  "desktop": true,
+  "docker": true
+}
