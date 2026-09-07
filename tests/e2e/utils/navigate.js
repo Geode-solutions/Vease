@@ -24,7 +24,7 @@ const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 30;
 const CLOUD_WAIT = 65;
 const WINDOWS_WAIT_BROWSER = 30;
-const WINDOWS_WAIT_DESKTOP = 40;
+const WINDOWS_WAIT_DESKTOP = 60;
 const SECONDS_NAVIGATION_TIMEOUT = 5;
 
 const WAIT_TIMES = {
@@ -71,7 +71,7 @@ async function runDesktopBuild() {
   const electronApp = await electron.launch({
     args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
     executablePath: appInfo,
-    wait: 20_000,
+    wait: 60_000,
     env: {
       ...process.env,
       ELECTRON_ENABLE_LOGGING: true,

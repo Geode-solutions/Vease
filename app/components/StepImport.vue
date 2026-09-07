@@ -23,7 +23,7 @@ watch(
   { deep: true },
 );
 
-const auto_upload = ref(true);
+const autoUpload = ref(true);
 const geode_object_type = ref("");
 const additional_files = ref([]);
 
@@ -36,8 +36,8 @@ const stepper_tree = useStepperTree(
         component_options: {
           multiple: true,
           files,
-          auto_upload,
-          show_overlay: false,
+          autoUpload,
+          showOverlay: false,
         },
       },
       chips: computed(() => files.value.map((file) => file.name)),
@@ -81,7 +81,7 @@ const stepper_tree = useStepperTree(
   ],
   {
     files,
-    auto_upload,
+    autoUpload,
     geode_object_type,
     additional_files,
   },
@@ -108,5 +108,7 @@ watch(
 </script>
 
 <template>
-  <Stepper :stepperTree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
+  <div class="d-flex flex-column fill-height overflow-hidden">
+    <Stepper :stepperTree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
+  </div>
 </template>
