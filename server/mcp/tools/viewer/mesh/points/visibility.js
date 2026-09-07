@@ -1,5 +1,6 @@
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
+import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
 import { z } from 'zod'
 
 export default defineMcpTool({
@@ -17,7 +18,7 @@ export default defineMcpTool({
     console.log("HELLO FROM SET MESH POINTS VISIBILITY TOOL")
 
     try {
-      const response = await fetch("http://localhost:3000/api/controller/viewer/mesh/points/visibility", {
+      const response = await fetch(`${getAppBaseUrl()}/api/controller/viewer/mesh/points/visibility`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, visibility }),

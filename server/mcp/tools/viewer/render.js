@@ -1,5 +1,6 @@
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
+import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
 
 export default defineMcpTool({
   name: 'render-viewer',
@@ -14,7 +15,7 @@ export default defineMcpTool({
     console.log("HELLO FROM RENDER VIEWER TOOL")
 
     try {
-      const response = await fetch("http://localhost:3000/api/controller/viewer/render", {
+      const response = await fetch(`${getAppBaseUrl()}/api/controller/viewer/render`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })

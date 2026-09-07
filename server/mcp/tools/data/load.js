@@ -3,6 +3,7 @@ import path from 'node:path'
 
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
+import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
 import fs from 'node:fs/promises'
 import { z } from 'zod'
 
@@ -30,7 +31,7 @@ export default defineMcpTool({
     formData.append('file', new Blob([fileBuffer]), filename)
 
     try {
-      const response = await fetch("http://localhost:3000/api/controller/data/load", {
+      const response = await fetch(`${getAppBaseUrl()}/api/controller/data/load`, {
         method: 'POST',
         body: formData,
       })
