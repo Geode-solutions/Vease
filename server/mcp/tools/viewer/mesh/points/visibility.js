@@ -1,7 +1,9 @@
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
-import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
 import { z } from 'zod'
+
+// Local imports
+import { getResolvedAppBaseUrl } from '@vease_server/utils/app_base_url.js'
 
 export default defineMcpTool({
   name: 'set-mesh-points-visibility',
@@ -18,7 +20,9 @@ export default defineMcpTool({
     console.log("HELLO FROM SET MESH POINTS VISIBILITY TOOL")
 
     try {
-      const response = await fetch(`${getAppBaseUrl()}/api/controller/viewer/mesh/points/visibility`, {
+      const baseUrl = getResolvedAppBaseUrl()
+      console.log(`Setting mesh points visibility for mesh ID ${id} to ${visibility} at ${baseUrl}`)
+      const response = await fetch(`${baseUrl}/api/controller/viewer/mesh/points/visibility`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, visibility }),
@@ -35,7 +39,7 @@ export default defineMcpTool({
       }
 
       const payload = await response.json().catch(() => undefined)
-      return `Mesh points visibility set successfully: ${JSON.stringify(payload ?? { ok: true })}`
+      return `Mesh points visibility set successfully: ${JSON.stringify(payload)}`
     } catch (error) {
       const message = error?.data?.statusMessage ?? error?.message ?? 'Unknown error'
       return `Error setting mesh points visibility: ${message}`

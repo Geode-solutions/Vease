@@ -1,6 +1,8 @@
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
-import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
+
+// Local imports
+import { getResolvedAppBaseUrl } from '@vease_server/utils/app_base_url.js'
 
 export default defineMcpTool({
   name: 'render-viewer',
@@ -15,7 +17,8 @@ export default defineMcpTool({
     console.log("HELLO FROM RENDER VIEWER TOOL")
 
     try {
-      const response = await fetch(`${getAppBaseUrl()}/api/controller/viewer/render`, {
+      const baseUrl = getResolvedAppBaseUrl()
+      const response = await fetch(`${baseUrl}/api/controller/viewer/render`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -31,7 +34,7 @@ export default defineMcpTool({
       }
 
       const payload = await response.json().catch(() => undefined)
-      return `Viewer rendered successfully: ${JSON.stringify(payload ?? { ok: true })}`
+      return `Viewer rendered successfully: ${JSON.stringify(payload)}`
     } catch (error) {
       const message = error?.data?.statusMessage ?? error?.message ?? 'Unknown error'
       return `Error rendering viewer: ${message}`

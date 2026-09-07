@@ -3,9 +3,11 @@ import path from 'node:path'
 
 // Third party imports
 import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
-import { getAppBaseUrl } from '@geode/opengeodeweb-front/server/utils/server_config.js'
 import fs from 'node:fs/promises'
 import { z } from 'zod'
+
+// Local imports
+import { getResolvedAppBaseUrl } from '@vease_server/utils/app_base_url.js'
 
 export default defineMcpTool({
   name: 'load-file',
@@ -31,7 +33,8 @@ export default defineMcpTool({
     formData.append('file', new Blob([fileBuffer]), filename)
 
     try {
-      const response = await fetch(`${getAppBaseUrl()}/api/controller/data/load`, {
+      const baseUrl = getResolvedAppBaseUrl()
+      const response = await fetch(`${baseUrl}/api/controller/data/load`, {
         method: 'POST',
         body: formData,
       })
@@ -47,7 +50,7 @@ export default defineMcpTool({
       }
 
       const payload = await response.json().catch(() => undefined)
-      return `File loaded successfully: ${JSON.stringify(payload ?? { ok: true })}`
+      return `File loaded successfully: ${JSON.stringify(payload)}`
     } catch (error) {
       const message = error?.data?.statusMessage ?? error?.message ?? 'Unknown error'
       return `Error loading file: ${message}`
