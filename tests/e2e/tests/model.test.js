@@ -415,6 +415,14 @@ test("show edges of surface in model tree", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("hide edges and points of surface in model tree", async () => {
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setEdgesVisibility(window, "model", false);
+  await setPointsVisibility(window, "model", false);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
 // test("blocks vertex attribute all blocks", async () => {
 //
 //   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
