@@ -396,7 +396,23 @@ test("toggle both model component trees", async () => {
   await toggleObjectsTree(window);
   await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Surfaces", 0, 1);
+  await toggleObjectsTree(window);
+});
+
+test("show points of surface in model tree", async () => {
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await expandGeodeObjectType(window, "Surfaces", secondModelTree);
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setPointsVisibility(window, "model", true);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("show edges of surface in model tree", async () => {
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setEdgesVisibility(window, "model", true);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
 });
 
 // test("blocks vertex attribute all blocks", async () => {
