@@ -396,7 +396,7 @@ test("toggle both model component trees", async () => {
   await toggleObjectsTree(window);
   await moveMouseOutOfTheWay(window);
   await expect(window).toHaveScreenshot();
-  await toggleObjectsTree(window);
+  await toggleModelTreeRow(window, "Surfaces", 0, 1);
 });
 
 test("show points of surface in model tree", async () => {
