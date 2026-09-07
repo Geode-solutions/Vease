@@ -38,7 +38,6 @@ function platformDirName() {
   throw new Error(`Unsupported platform for bundled llama.cpp: ${process.platform}`);
 }
 
-
 function archiveFileName() {
   return `llama-b10809-bin-${platformDirName()}.zip`;
 }
@@ -49,7 +48,7 @@ function resolveArchivePath(nuxtRootPath) {
   if (mode === appMode.DESKTOP && nodeEnv === "production") {
     return path.join(process.env.RESOURCES_PATH, "llama_cpp", archiveFileName());
   }
-  
+
   return path.join(nuxtRootPath, "third_parties", "llama_cpp", archiveFileName());
 }
 
@@ -99,7 +98,7 @@ async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
     return { port: LLAMA_PORT, apiKey: runningServer.apiKey };
   }
 
-  const nuxtRootPath = path.join(dirname, "..", "..")
+  const nuxtRootPath = path.join(dirname, "..", "..");
 
   const command = await ensureLlamaExtracted(nuxtRootPath);
   const apiKey = randomUUID();

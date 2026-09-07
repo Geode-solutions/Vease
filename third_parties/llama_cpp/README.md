@@ -12,7 +12,7 @@ Each archive holds the `llama`/`llama.exe` executable alongside every shared
 library it links against (per-CPU backend variants included, plus every
 subcommand's `*-impl` library — `llama` hard-links all of them even though
 Vease only ever runs `llama serve`, verified with `readelf -d`/`objdump -p`).
-The handful of *other* standalone CLI tools the release ships
+The handful of _other_ standalone CLI tools the release ships
 (`llama-cli`, `llama-quantize`, `llama-tts`, etc.) were removed since nothing
 in Vease invokes them and they're separate executables, not shared
 dependencies.

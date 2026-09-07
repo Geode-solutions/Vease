@@ -1,6 +1,8 @@
 export default defineEventHandler((event) => {
   console.log("TEST", event.node.req.method, event.node.req.url);
-  if (!event.node.req.url?.startsWith("/mcp")) { return };
+  if (!event.node.req.url?.startsWith("/mcp")) {
+    return;
+  }
 
   const origin = getHeader(event, "origin") || "http://127.0.0.1:54321";
   const requestedHeaders = getHeader(event, "access-control-request-headers");

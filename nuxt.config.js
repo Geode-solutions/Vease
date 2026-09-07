@@ -94,7 +94,6 @@ export default defineNuxtConfig({
     },
   },
 
-
   ssr: false,
   electron: {
     build: [
