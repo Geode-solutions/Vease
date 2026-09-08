@@ -21,7 +21,13 @@
     "icon": "./public/256x256.png",
     "category": "Science",
     "target": ["AppImage", "zip"],
-    "publish": ["github"]
+    "publish": ["github"],
+    "extraResources": [
+      {
+        "from": "./third_parties/llama_cpp/llama-b10809-bin-ubuntu-x64.zip",
+        "to": "llama_cpp/llama-b10809-bin-ubuntu-x64.zip"
+      }
+    ]
   },
   "win": {
     "artifactName": "${productName}_${platform}.${ext}",
@@ -30,7 +36,13 @@
       "sign": "./node_scripts/custom_sign.js"
     },
     "target": ["nsis", "zip"],
-    "publish": ["github"]
+    "publish": ["github"],
+    "extraResources": [
+      {
+        "from": "./third_parties/llama_cpp/llama-b10809-bin-win-x64.zip",
+        "to": "llama_cpp/llama-b10809-bin-win-x64.zip"
+      }
+    ]
   },
   "publish": [
     {
