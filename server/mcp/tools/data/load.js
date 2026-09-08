@@ -33,7 +33,7 @@ export default defineMcpTool({
 
     try {
       const appBaseUrl = getAppBaseUrl();
-      console.log("appBaseUrl", appBaseUrl)
+      console.log("appBaseUrl", appBaseUrl);
       const response = await fetch(`${appBaseUrl}/api/controller/data/load`, {
         method: "POST",
         body: formData,
