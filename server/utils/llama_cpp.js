@@ -189,7 +189,7 @@ async function startLlamaServer(model) {
   return { port, apiKey };
 }
 
-async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
+function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
   console.log("runLlamaServer", { model });
   if (runningServer && !runningServer.child.killed) {
     return { port: runningServer.port, apiKey: runningServer.apiKey, model };
@@ -200,8 +200,8 @@ async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
     return startingServer;
   }
 
+  startingServer = startLlamaServer(model);
   try {
-    startingServer = await startLlamaServer(model);
     return startingServer;
   } catch (error) {
     startingServer = undefined;
