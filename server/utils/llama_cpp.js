@@ -12,6 +12,7 @@ import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
 import { unzipFile } from "@geode/opengeodeweb-front/server/utils/server.js";
 
 const LLAMA_HOST = "127.0.0.1";
+let LLAMA_PORT = undefined;
 const DEFAULT_MODEL = "ggml-org/Qwen3.5-0.8B-GGUF:Q4_0";
 const CONTEXT_SIZE = "20000";
 const PARALLEL_SLOTS = "1";
@@ -100,7 +101,7 @@ async function ensureLlamaExtracted(nuxtRootPath) {
 }
 
 async function llamaServeArgs(model, apiKey) {
-  const LLAMA_PORT = await getAvailablePort();
+  LLAMA_PORT = await getAvailablePort();
   console.log(
     `Starting llama.cpp server on http://${LLAMA_HOST}:${LLAMA_PORT} with model ${model}`,
   );

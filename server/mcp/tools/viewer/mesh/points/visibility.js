@@ -3,7 +3,7 @@ import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 import { z } from "zod";
 
 // Local imports
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { callControllerApi } from "@vease_server/mcp/utils/controller_api.js";
 
 export default defineMcpTool({
   name: "set-mesh-points-visibility",
@@ -19,29 +19,14 @@ export default defineMcpTool({
       .describe("Whether the mesh points should be visible (true) or hidden (false)"),
   },
   handler: async ({ id, visibility }) => {
-    try {
-      const appBaseUrl = getAppBaseUrl();
-      const response = await fetch(`${appBaseUrl}/api/controller/viewer/mesh/points/visibility`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, visibility }),
-      });
-
-      if (!response.ok) {
-        const errorPayload = await response.json().catch(() => ({}));
-        const message =
-          errorPayload?.statusMessage ??
-          errorPayload?.message ??
-          response.statusText ??
-          "Unknown error";
-        return `Error setting mesh points visibility: ${message}`;
-      }
-
-      const payload = await response.json().catch(() => undefined);
-      return `Mesh points visibility set successfully: ${JSON.stringify(payload)}`;
-    } catch (error) {
-      const message = error?.data?.statusMessage ?? error?.message ?? "Unknown error";
-      return `Error setting mesh points visibility: ${message}`;
+    const result = await callControllerApi("/api/controller/viewer/mesh/points/visibility", {
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, visibility }),
+      errorPrefix: "Error setting mesh points visibility",
+    });
+    if (!result.ok) {
+      return result.message;
     }
+    return `Mesh points visibility set successfully: ${JSON.stringify(result.payload)}`;
   },
 });

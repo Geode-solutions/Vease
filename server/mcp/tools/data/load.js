@@ -7,7 +7,7 @@ import fs from "node:fs/promises";
 import { z } from "zod";
 
 // Local imports
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { callControllerApi } from "@vease_server/mcp/utils/controller_api.js";
 
 export default defineMcpTool({
   name: "load-file",
@@ -31,29 +31,13 @@ export default defineMcpTool({
     const formData = new FormData();
     formData.append("file", new Blob([fileBuffer]), filename);
 
-    try {
-      const appBaseUrl = getAppBaseUrl();
-      console.log("appBaseUrl", appBaseUrl);
-      const response = await fetch(`${appBaseUrl}/api/controller/data/load`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorPayload = await response.json().catch(() => ({}));
-        const message =
-          errorPayload?.statusMessage ??
-          errorPayload?.message ??
-          response.statusText ??
-          "Unknown error";
-        return `Error loading file: ${message}`;
-      }
-
-      const payload = await response.json().catch(() => undefined);
-      return `File loaded successfully: ${JSON.stringify(payload)}`;
-    } catch (error) {
-      const message = error?.data?.statusMessage ?? error?.message ?? "Unknown error";
-      return `Error loading file: ${message}`;
+    const result = await callControllerApi("/api/controller/data/load", {
+      body: formData,
+      errorPrefix: "Error loading file",
+    });
+    if (!result.ok) {
+      return result.message;
     }
+    return `File loaded successfully: ${JSON.stringify(result.payload)}`;
   },
 });
