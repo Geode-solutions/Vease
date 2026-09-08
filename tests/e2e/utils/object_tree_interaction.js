@@ -108,12 +108,7 @@ async function getTreeRowByTextAndParent(
   return allRows.nth(childIndex);
 }
 
-async function copyTreeRowId(
-  window,
-  parentName,
-  objectName = undefined,
-  treeTestId = "mainObjectTree",
-) {
+async function copyTreeRowId(window, parentName, objectName, treeTestId = "mainObjectTree") {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
   const label = row.getByTestId("treeItemLabel").first();
   const dataTestId = await row
