@@ -52,8 +52,9 @@ async function toggleSearchObjects(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function fillSearchQuery(window, query) {
-  const searchInput = window.getByTestId("searchObjectsInput").locator("input");
+async function fillSearchQuery(window, query, treeTestId = "mainObjectTree") {
+  const tree = window.getByTestId(treeTestId);
+  const searchInput = tree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
@@ -105,6 +106,23 @@ async function getTreeRowByTextAndParent(
     );
   }
   return allRows.nth(childIndex);
+}
+
+async function copyTreeRowId(window, parentName, objectName, treeTestId = "mainObjectTree") {
+  const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
+  const label = row.getByTestId("treeItemLabel").first();
+  const dataTestId = await row
+    .locator('[data-testid^="treeRow-"]')
+    .first()
+    .getAttribute("data-testid");
+  const id = dataTestId.replace("treeRow-", "");
+  await label.hover();
+  await window.waitForTimeout(afterActionWait);
+  const copyBtn = window.locator(".v-overlay--active").getByTestId("copyIdBtn");
+  await copyBtn.hover();
+  await copyBtn.click();
+  await window.waitForTimeout(afterActionWait);
+  return id;
 }
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
@@ -286,6 +304,7 @@ export {
   uncheckFilterCategory,
   toggleSearchObjects,
   fillSearchQuery,
+  copyTreeRowId,
   expandMainObjectTree,
   highlightData,
   getTreeRowByTextAndParent,
