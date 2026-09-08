@@ -193,11 +193,7 @@ test("color filtered surfaces", async () => {
 });
 
 test("clear searchbar", async () => {
-  const searchInput = window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("searchObjectsInput")
-    .locator("input");
-  await searchInput.fill("");
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();
 });
 
