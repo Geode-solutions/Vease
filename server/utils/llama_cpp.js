@@ -165,9 +165,6 @@ async function startLlamaServer(model) {
   child.stdout.on("data", (data) => {
     console.log(`[${child.name}] stdout: ${data}`);
   });
-  child.stderr.on("data", (data) => {
-    console.error(`[${child.name}] stderr: ${data}`);
-  });
   child.on("exit", () => {
     if (runningServer?.child === child) {
       runningServer = undefined;
@@ -206,11 +203,12 @@ function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
     return startingServer;
   }
 
-  startingServer = startLlamaServer(model);
   try {
+    startingServer = startLlamaServer(model);
     return startingServer;
-  } finally {
+  } catch (error) {
     startingServer = undefined;
+    throw error;
   }
 }
 

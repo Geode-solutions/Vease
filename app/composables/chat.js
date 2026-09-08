@@ -1,6 +1,6 @@
 // Third party imports
-import { useChat } from "@ai-sdk/vue";
 import { DefaultChatTransport } from "ai";
+import { useChat } from "@ai-sdk/vue";
 
 export function useVeaseChat() {
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
