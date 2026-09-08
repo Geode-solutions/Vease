@@ -24,8 +24,8 @@
     "publish": ["github"],
     "extraResources": [
       {
-        "from": "./third_parties/llama_cpp/llama-b10809-bin-ubuntu-x64.zip",
-        "to": "llama_cpp/llama-b10809-bin-ubuntu-x64.zip"
+        "from": "./third_parties/llama_cpp/llama-b10809-bin-ubuntu-x64.tar.gz",
+        "to": "llama_cpp/llama-b10809-bin-ubuntu-x64.tar.gz"
       }
     ]
   },

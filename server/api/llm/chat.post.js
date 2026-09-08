@@ -1,25 +1,23 @@
 // Third party imports
-import { convertToModelMessages, streamText } from "ai";
+import { convertToModelMessages, stepCountIs, streamText } from "ai";
 import { createError, defineEventHandler, readBody } from "h3";
 
 // Local imports
-import { getChatModel } from "@vease_server/utils/ai.js";
+import { getChatModel, getChatTools } from "@vease_server/utils/ai.js";
+
+const MAX_TOOL_STEPS = 5;
 
 export default defineEventHandler(async (event) => {
   try {
-
     const { messages } = await readBody(event);
-    console.log("messages", messages);
-    const model = await getChatModel();
-    console.log("model", model);
+    const [model, tools] = await Promise.all([getChatModel(), getChatTools()]);
 
     const result = streamText({
       model,
       messages: await convertToModelMessages(messages),
+      tools,
+      stopWhen: stepCountIs(MAX_TOOL_STEPS),
     });
-
-    console.log("result", result);
-
 
     return result.toUIMessageStreamResponse();
   } catch (error) {

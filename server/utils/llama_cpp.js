@@ -12,6 +12,7 @@ import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
 import { unzipFile } from "@geode/opengeodeweb-front/server/utils/server.js";
 
 const LLAMA_HOST = "127.0.0.1";
+let LLAMA_PORT = undefined;
 const DEFAULT_MODEL = "ggml-org/Qwen3.5-0.8B-GGUF:Q4_0";
 const CONTEXT_SIZE = "20000";
 const PARALLEL_SLOTS = "1";
@@ -20,7 +21,7 @@ const MCP_TOOLS = "read_file,file_glob_search,get_info";
 const EXECUTABLE_MODE = "755";
 const READY_TIMEOUT_SECONDS = 600;
 const MILLISECONDS_PER_SECOND = 1000;
-const VERBOSITY = 2;
+const VERBOSITY = 3;
 
 const EXTRACT_CACHE_DIR = path.join(os.homedir(), ".vease", "llama_cpp");
 const dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -101,8 +102,10 @@ async function ensureLlamaExtracted(nuxtRootPath) {
 }
 
 async function llamaServeArgs(model, apiKey) {
-  const port = await getAvailablePort();
-  console.log(`Starting llama.cpp server on http://${LLAMA_HOST}:${port} with model ${model}`);
+  LLAMA_PORT = await getAvailablePort();
+  console.log(
+    `Starting llama.cpp server on http://${LLAMA_HOST}:${LLAMA_PORT} with model ${model}`,
+  );
   const args = [
     "serve",
     "-hf",
@@ -122,7 +125,7 @@ async function llamaServeArgs(model, apiKey) {
     "-ngl",
     GPU_LAYERS,
     "--port",
-    String(port),
+    String(LLAMA_PORT),
     "--ui-mcp-proxy",
     "--ui-config",
     JSON.stringify({
@@ -141,7 +144,7 @@ async function llamaServeArgs(model, apiKey) {
     "--tools",
     MCP_TOOLS,
   ];
-  return { args, port };
+  return { args, port: LLAMA_PORT };
 }
 
 async function startLlamaServer(model) {
@@ -192,18 +195,20 @@ async function startLlamaServer(model) {
   return { port, apiKey };
 }
 
-async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
+function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
+  console.log("runLlamaServer", { model });
   if (runningServer && !runningServer.child.killed) {
     return { port: runningServer.port, apiKey: runningServer.apiKey, model };
   }
 
   if (startingServer) {
+    console.log("runLlamaServer", { startingServer });
     return startingServer;
   }
 
   startingServer = startLlamaServer(model);
   try {
-    return await startingServer;
+    return startingServer;
   } finally {
     startingServer = undefined;
   }

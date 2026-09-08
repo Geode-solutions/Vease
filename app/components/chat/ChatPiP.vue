@@ -53,7 +53,7 @@ watch(
         style="height: 40px; min-height: 40px; user-select: none"
       >
         <v-icon size="18" color="primary" class="mr-2">mdi-chat-outline</v-icon>
-        <span class="text-subtitle-2 font-weight-bold text-white">Chat</span>
+        <span class="text-subtitle-2 font-weight-bold text-white">Chat (beta)</span>
         <v-spacer />
         <v-btn icon size="x-small" variant="text" color="white" @click="close">
           <v-icon size="16">mdi-close</v-icon>
