@@ -12,6 +12,7 @@ import {
 import {
   checkFilterCategory,
   collapseAllObjects,
+  copyTreeRowId,
   expandAllObjects,
   fillSearchQuery,
   hideObjectInTree,
@@ -35,6 +36,7 @@ const hso3dFilename = "test.og_hso3d";
 
 let window = undefined;
 let cleanup = undefined;
+let surfaceId = undefined;
 
 test.describe.configure({ mode: "serial" });
 
@@ -191,12 +193,23 @@ test("color filtered surfaces", async () => {
 });
 
 test("clear searchbar", async () => {
-  const searchInput = window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("searchObjectsInput")
-    .locator("input");
-  await searchInput.fill("");
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
   await expect(window).toHaveScreenshot();
+});
+
+test("copy surface id", async () => {
+  surfaceId = await copyTreeRowId(window, "Surfaces", "00000000-", "modelComponentsObjectTree");
+  expect(surfaceId).toBeTruthy();
+  await expect(window).toHaveScreenshot();
+});
+
+test("search by copied surface id", async () => {
+  expect(surfaceId).toBeTruthy();
+  await fillSearchQuery(window, surfaceId, "modelComponentsObjectTree");
+  await expect(window).toHaveScreenshot({
+    mask: [window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput")],
+  });
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
 });
 
 test("collapse all model components", async () => {
