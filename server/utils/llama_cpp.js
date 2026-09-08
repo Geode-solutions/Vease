@@ -162,9 +162,6 @@ async function startLlamaServer(model) {
   child.on("spawn", () => {
     console.log(`[${child.name}] spawned, pid=${child.pid}`);
   });
-  child.stdout.on("data", (data) => {
-    console.log(`[${child.name}] stdout: ${data}`);
-  });
   child.on("exit", () => {
     if (runningServer?.child === child) {
       runningServer = undefined;
@@ -192,7 +189,7 @@ async function startLlamaServer(model) {
   return { port, apiKey };
 }
 
-function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
+async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
   console.log("runLlamaServer", { model });
   if (runningServer && !runningServer.child.killed) {
     return { port: runningServer.port, apiKey: runningServer.apiKey, model };
@@ -204,7 +201,7 @@ function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
   }
 
   try {
-    startingServer = startLlamaServer(model);
+    startingServer = await startLlamaServer(model);
     return startingServer;
   } catch (error) {
     startingServer = undefined;
