@@ -6,14 +6,12 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 // Local imports
+import { getAvailablePort, waitForReady } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 import { appMode } from "@geode/opengeodeweb-front/shared/app_mode.js";
 import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
 import { unzipFile } from "@geode/opengeodeweb-front/server/utils/server.js";
-import { waitForReady } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 
 const LLAMA_HOST = "127.0.0.1";
-
-const LLAMA_PORT = 54_321;
 const DEFAULT_MODEL = "ggml-org/Qwen3.5-0.8B-GGUF:Q4_0";
 const CONTEXT_SIZE = "20000";
 const PARALLEL_SLOTS = "1";
@@ -22,6 +20,7 @@ const MCP_TOOLS = "read_file,file_glob_search,get_info";
 const EXECUTABLE_MODE = "755";
 const READY_TIMEOUT_SECONDS = 600;
 const MILLISECONDS_PER_SECOND = 1000;
+const VERBOSITY = 2;
 
 const EXTRACT_CACHE_DIR = path.join(os.homedir(), ".vease", "llama_cpp");
 const dirname = path.dirname(new URL(import.meta.url).pathname);
@@ -38,8 +37,18 @@ function platformDirName() {
   throw new Error(`Unsupported platform for bundled llama.cpp: ${process.platform}`);
 }
 
+function platformArchiveExtension() {
+  if (process.platform === "win32") {
+    return "zip";
+  }
+  if (process.platform === "linux") {
+    return "tar.gz";
+  }
+  throw new Error(`Unsupported platform for bundled llama.cpp: ${process.platform}`);
+}
+
 function archiveFileName() {
-  return `llama-b10809-bin-${platformDirName()}.zip`;
+  return `llama-b10809-bin-${platformDirName()}.${platformArchiveExtension()}`;
 }
 
 function resolveArchivePath(nuxtRootPath) {
@@ -52,23 +61,49 @@ function resolveArchivePath(nuxtRootPath) {
   return path.join(nuxtRootPath, "third_parties", "llama_cpp", archiveFileName());
 }
 
+function findExecutable(dir, executableFileName) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const found = findExecutable(fullPath, executableFileName);
+      if (found) {
+        return found;
+      }
+    } else if (entry.name === executableFileName) {
+      return fullPath;
+    }
+  }
+  return undefined;
+}
+
 async function ensureLlamaExtracted(nuxtRootPath) {
   const extractDir = path.join(EXTRACT_CACHE_DIR, platformDirName());
-  const executablePath = path.join(extractDir, executableName("llama"));
-  if (fs.existsSync(executablePath)) {
+  const executableFileName = executableName("llama");
+  let executablePath = fs.existsSync(extractDir)
+    ? findExecutable(extractDir, executableFileName)
+    : undefined;
+  if (executablePath) {
     return executablePath;
   }
 
   const archivePath = resolveArchivePath(nuxtRootPath);
   console.log(`Extracting bundled llama.cpp from ${archivePath} to ${extractDir}`);
   await unzipFile(archivePath, extractDir);
+  executablePath = findExecutable(extractDir, executableFileName);
+  if (!executablePath) {
+    throw new Error(`Could not find ${executableFileName} after extracting ${archivePath}`);
+  }
   if (process.platform !== "win32") {
     fs.chmodSync(executablePath, EXECUTABLE_MODE);
   }
   return executablePath;
 }
 
-function llamaServeArgs(model, apiKey) {
+async function llamaServeArgs(model, apiKey) {
+  const LLAMA_PORT = await getAvailablePort();
+  console.log(
+    `Starting llama.cpp server on http://${LLAMA_HOST}:${LLAMA_PORT} with model ${model}`,
+  );
   return [
     "serve",
     "-hf",
@@ -78,6 +113,8 @@ function llamaServeArgs(model, apiKey) {
     CONTEXT_SIZE,
     "-np",
     PARALLEL_SLOTS,
+    "-lv",
+    VERBOSITY,
     "--api-key",
     apiKey,
     "--host",
@@ -88,6 +125,20 @@ function llamaServeArgs(model, apiKey) {
     "--port",
     String(LLAMA_PORT),
     "--ui-mcp-proxy",
+    "--ui-config",
+    JSON.stringify({
+      mcpServers: JSON.stringify([
+        {
+          id: "vease",
+          enabled: true,
+          name: "Vease",
+          url: "http://localhost:3000/mcp",
+          requestTimeoutSeconds: 300,
+          useProxy: true,
+        },
+      ]),
+    }),
+
     "--tools",
     MCP_TOOLS,
   ];
@@ -102,7 +153,7 @@ async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
 
   const command = await ensureLlamaExtracted(nuxtRootPath);
   const apiKey = randomUUID();
-  const args = llamaServeArgs(model, apiKey);
+  const args = await llamaServeArgs(model, apiKey);
   console.log("runLlamaServer", command, args);
 
   const child = child_process.spawn(command, args, {

@@ -72,7 +72,6 @@ export default defineNuxtConfig({
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
 
   nitro: {
-    experimental: { asyncContext: true },
     ignore: nitroIgnoreConfig(),
   },
 
@@ -80,19 +79,10 @@ export default defineNuxtConfig({
     name: "Vease",
     description: "Control the application with a set of commands",
     security: {
-      allowedOrigins: ["http://127.0.0.1:54321"],
+      allowedOrigins: "*",
     },
   },
-  routeRules: {
-    "/mcp/**": {
-      cors: true,
-      headers: {
-        "Access-Control-Allow-Origin": "http://127.0.0.1:54321",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Accept",
-      },
-    },
-  },
+
 
   ssr: false,
   electron: {

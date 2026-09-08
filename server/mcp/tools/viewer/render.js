@@ -2,7 +2,7 @@
 import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 
 // Local imports
-import { getResolvedAppBaseUrl } from "@vease_server/utils/app_base_url.js";
+import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 export default defineMcpTool({
   name: "render-viewer",
@@ -17,8 +17,8 @@ export default defineMcpTool({
     console.log("HELLO FROM RENDER VIEWER TOOL");
 
     try {
-      const baseUrl = getResolvedAppBaseUrl();
-      const response = await fetch(`${baseUrl}/api/controller/viewer/render`, {
+      const appBaseUrl = getAppBaseUrl();
+      const response = await fetch(`${appBaseUrl}/api/controller/viewer/render`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });

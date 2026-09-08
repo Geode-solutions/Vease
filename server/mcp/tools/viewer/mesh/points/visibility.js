@@ -3,7 +3,7 @@ import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 import { z } from "zod";
 
 // Local imports
-import { getResolvedAppBaseUrl } from "@vease_server/utils/app_base_url.js";
+import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 export default defineMcpTool({
   name: "set-mesh-points-visibility",
@@ -19,14 +19,9 @@ export default defineMcpTool({
       .describe("Whether the mesh points should be visible (true) or hidden (false)"),
   },
   handler: async ({ id, visibility }) => {
-    console.log("HELLO FROM SET MESH POINTS VISIBILITY TOOL");
-
     try {
-      const baseUrl = getResolvedAppBaseUrl();
-      console.log(
-        `Setting mesh points visibility for mesh ID ${id} to ${visibility} at ${baseUrl}`,
-      );
-      const response = await fetch(`${baseUrl}/api/controller/viewer/mesh/points/visibility`, {
+      const appBaseUrl = getAppBaseUrl();
+      const response = await fetch(`${appBaseUrl}/api/controller/viewer/mesh/points/visibility`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, visibility }),

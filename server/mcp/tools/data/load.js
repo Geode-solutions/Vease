@@ -7,7 +7,7 @@ import fs from "node:fs/promises";
 import { z } from "zod";
 
 // Local imports
-import { getResolvedAppBaseUrl } from "@vease_server/utils/app_base_url.js";
+import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 export default defineMcpTool({
   name: "load-file",
@@ -20,7 +20,6 @@ export default defineMcpTool({
     filePath: z.string().describe("Absolute path to the file on disk to upload"),
   },
   handler: async ({ filePath }) => {
-    console.log("HELLO FROM LOAD FILE TOOL");
     let fileBuffer = undefined;
     try {
       fileBuffer = await fs.readFile(filePath);
@@ -33,8 +32,9 @@ export default defineMcpTool({
     formData.append("file", new Blob([fileBuffer]), filename);
 
     try {
-      const baseUrl = getResolvedAppBaseUrl();
-      const response = await fetch(`${baseUrl}/api/controller/data/load`, {
+      const appBaseUrl = getAppBaseUrl();
+      console.log("appBaseUrl", appBaseUrl)
+      const response = await fetch(`${appBaseUrl}/api/controller/data/load`, {
         method: "POST",
         body: formData,
       });
