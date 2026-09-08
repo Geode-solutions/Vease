@@ -2,9 +2,8 @@
 
 Pinned release: [`b10809`](https://github.com/ggml-org/llama.cpp/releases/tag/b10809)
 
-- `llama-b10809-bin-ubuntu-x64.zip` — repackaging of
-  `llama-b10809-bin-ubuntu-x64.tar.gz` from the release (re-zipped so both
-  platforms can share the same extraction code path)
+- `llama-b10809-bin-ubuntu-x64.tar.gz` from the
+  release, unmodified
 - `llama-b10809-bin-win-x64.zip` — `llama-b10809-bin-win-cpu-x64.zip` from the
   release, unmodified
 
