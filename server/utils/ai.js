@@ -30,7 +30,7 @@ async function getLlamaChatModel(model) {
 function getGatewayChatModel(model) {
   return gateway.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
 }
- function getChatModel({ provider = CHAT_PROVIDER.LLAMA, model } = {}) {
+function getChatModel({ provider = CHAT_PROVIDER.LLAMA, model } = {}) {
   if (provider === CHAT_PROVIDER.GATEWAY) {
     return getGatewayChatModel(model);
   }
