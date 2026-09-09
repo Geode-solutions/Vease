@@ -93,19 +93,17 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    defaults: {
-      VImg: {
-        draggable: false,
-      },
-      VSwitch: {
-        color: "primary",
-        inset: true,
-      },
-    },
-    moduleOptions: {
-      enableRules: false,
-    },
+    enableRules: false,
     vuetifyOptions: {
+      defaults: {
+        VImg: {
+          draggable: false,
+        },
+        VSwitch: {
+          color: "primary",
+          inset: true,
+        },
+      },
       labComponents: true,
       theme: {
         defaultTheme: "lightTheme",
