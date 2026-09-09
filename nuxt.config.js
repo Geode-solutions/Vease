@@ -94,6 +94,9 @@ export default defineNuxtConfig({
 
   vuetify: {
     enableRules: false,
+    moduleOptions: {
+      enableRules: false,
+    },
     vuetifyOptions: {
       defaults: {
         VImg: {
