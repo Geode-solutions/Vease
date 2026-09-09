@@ -21,12 +21,13 @@ const MCP_TOOLS = "read_file,file_glob_search,get_info";
 const EXECUTABLE_MODE = "755";
 const READY_TIMEOUT_SECONDS = 600;
 const MILLISECONDS_PER_SECOND = 1000;
-const VERBOSITY = 2;
+const VERBOSITY = 3;
 
 const EXTRACT_CACHE_DIR = path.join(os.homedir(), ".vease", "llama_cpp");
 const dirname = path.dirname(new URL(import.meta.url).pathname);
 
 let runningServer = undefined;
+let startingServer = undefined;
 
 function platformDirName() {
   if (process.platform === "win32") {
@@ -105,7 +106,7 @@ async function llamaServeArgs(model, apiKey) {
   console.log(
     `Starting llama.cpp server on http://${LLAMA_HOST}:${LLAMA_PORT} with model ${model}`,
   );
-  return [
+  const args = [
     "serve",
     "-hf",
     model,
@@ -143,18 +144,15 @@ async function llamaServeArgs(model, apiKey) {
     "--tools",
     MCP_TOOLS,
   ];
+  return { args, port: LLAMA_PORT };
 }
 
-async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
-  if (runningServer && !runningServer.child.killed) {
-    return { port: LLAMA_PORT, apiKey: runningServer.apiKey };
-  }
-
+async function startLlamaServer(model) {
   const nuxtRootPath = path.join(dirname, "..", "..");
 
   const command = await ensureLlamaExtracted(nuxtRootPath);
   const apiKey = randomUUID();
-  const args = await llamaServeArgs(model, apiKey);
+  const { args, port } = await llamaServeArgs(model, apiKey);
   console.log("runLlamaServer", command, args);
 
   const child = child_process.spawn(command, args, {
@@ -187,8 +185,28 @@ async function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
     throw error;
   }
 
-  runningServer = { child, apiKey };
-  return { port: LLAMA_PORT, apiKey };
+  runningServer = { child, apiKey, port };
+  return { port, apiKey };
+}
+
+function runLlamaServer({ model = DEFAULT_MODEL } = {}) {
+  console.log("runLlamaServer", { model });
+  if (runningServer && !runningServer.child.killed) {
+    return { port: runningServer.port, apiKey: runningServer.apiKey, model };
+  }
+
+  if (startingServer) {
+    console.log("runLlamaServer", { startingServer });
+    return startingServer;
+  }
+
+  startingServer = startLlamaServer(model);
+  try {
+    return startingServer;
+  } catch (error) {
+    startingServer = undefined;
+    throw error;
+  }
 }
 
 function stopLlamaServer() {
@@ -202,7 +220,7 @@ function getLlamaStatus() {
   if (!runningServer) {
     return { running: false };
   }
-  return { running: true, port: LLAMA_PORT, apiKey: runningServer.apiKey };
+  return { running: true, port: runningServer.port, apiKey: runningServer.apiKey };
 }
 
 export { getLlamaStatus, runLlamaServer, stopLlamaServer };

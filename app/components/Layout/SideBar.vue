@@ -30,6 +30,13 @@ const topPages = ref([
 const bottomPages = computed(() => {
   const pages = [
     {
+      title: "Chat",
+      icon: "mdi-chat-outline",
+      testId: "chatNavButton",
+      click: () => UIStore.setShowChatPiP(!UIStore.showChatPiP),
+    },
+
+    {
       title: isUserAuthenticated.value ? "Account" : "Login",
       icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
       click: () => navigateTo("/account"),

@@ -58,7 +58,6 @@ export default defineNuxtConfig({
   modules: [
     process.env.MODE && process.env.MODE === "DESKTOP" ? "nuxt-electron" : undefined,
     "vuetify-nuxt-module",
-    "@nuxtjs/mcp-toolkit",
     [
       "@pinia/nuxt",
       {
@@ -102,17 +101,22 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    defaults: {
-      VImg: {
-        draggable: false,
-      },
-      VSwitch: {
-        color: "primary",
-        inset: true,
+    moduleOptions: {
+      enableRules: false,
+      rulesConfiguration: {
+        fromLabs: false,
       },
     },
-    moduleOptions: {},
     vuetifyOptions: {
+      defaults: {
+        VImg: {
+          draggable: false,
+        },
+        VSwitch: {
+          color: "primary",
+          inset: true,
+        },
+      },
       labComponents: true,
       theme: {
         defaultTheme: "lightTheme",
@@ -190,7 +194,14 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "bowser", "compare-versions", "vuefire"],
+      include: [
+        "@geode/opengeodeweb-front",
+        "@ai-sdk/vue",
+        "ai",
+        "bowser",
+        "compare-versions",
+        "vuefire",
+      ],
     },
     watch: {
       ignored: ["**"],
