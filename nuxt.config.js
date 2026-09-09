@@ -9,7 +9,7 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local, microservice, serverless, cloud"];
+const serverDirectories = ["local", "microservice", "serverless", "cloud"];
 
 function getIgnoredDirectories(directoriesToKeep) {
   return serverDirectories
@@ -72,6 +72,14 @@ export default defineNuxtConfig({
 
   nitro: {
     ignore: nitroIgnoreConfig(),
+  },
+
+  mcp: {
+    name: "Vease",
+    description: "Control the application with a set of commands",
+    security: {
+      allowedOrigins: "*",
+    },
   },
 
   ssr: false,
@@ -184,7 +192,14 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "bowser", "compare-versions", "vuefire"],
+      include: [
+        "@geode/opengeodeweb-front",
+        "@ai-sdk/vue",
+        "ai",
+        "bowser",
+        "compare-versions",
+        "vuefire",
+      ],
     },
     watch: {
       ignored: ["**"],
