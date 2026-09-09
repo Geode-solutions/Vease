@@ -57,7 +57,7 @@ export default defineNuxtConfig({
 
   modules: [
     process.env.MODE && process.env.MODE === "DESKTOP" ? "nuxt-electron" : undefined,
-    ["vuetify-nuxt-module", { enableRules: false }],
+    "vuetify-nuxt-module",
     [
       "@pinia/nuxt",
       {
@@ -101,9 +101,11 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    enableRules: false,
     moduleOptions: {
       enableRules: false,
+      rulesConfiguration: {
+        fromLabs: false,
+      },
     },
     vuetifyOptions: {
       defaults: {
