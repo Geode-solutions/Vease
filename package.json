@@ -52,6 +52,9 @@
     "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
   },
   "dependencies": {
+    "@ai-sdk/mcp": "2.0.45",
+    "@ai-sdk/openai-compatible": "3.0.44",
+    "@ai-sdk/vue": "4.0.93",
     "@fontsource/michroma": "5.2.6",
     "@fontsource/roboto": "5.2.10",
     "@geode/opengeodeweb-back": "0.0.0",
@@ -60,6 +63,7 @@
     "@geode/vease-back": "0.0.0",
     "@geode/vease-viewer": "0.0.0",
     "@nuxtjs/mcp-toolkit": "0.18.1",
+    "ai": "7.0.93",
     "bowser": "2.14.1",
     "broadcast-channel": "7.1.0",
     "bufferutil": "4.0.9",
