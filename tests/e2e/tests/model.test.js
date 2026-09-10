@@ -52,11 +52,15 @@ import {
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
+  setModelEdgesVertexAttributeNoDataColor,
   setModelPointsVertexAttribute,
+  setModelPointsVertexAttributeNoDataColor,
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
+  setModelPolygonsVertexAttributeNoDataColor,
   setModelPolyhedraPolyhedronAttribute,
-  // setModelPolyhedraVertexAttribute,
+  setModelPolyhedraVertexAttribute,
+  setModelPolyhedraVertexAttributeNoDataColor,
 } from "@tests/utils/model/attribute.js";
 import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 import { loadData } from "@tests/utils/load.js";
@@ -206,6 +210,11 @@ test("corners vertex attribute all corners", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("corners vertex attribute unmapped elements color", async () => {
+  await setModelPointsVertexAttributeNoDataColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
 test("corners vertex attribute all corners change item", async () => {
   await setModelPointsVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
@@ -245,6 +254,11 @@ test("lines vertex attribute all lines", async () => {
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelEdgesVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines vertex attribute unmapped elements color", async () => {
+  await setModelEdgesVertexAttributeNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -307,6 +321,11 @@ test("surfaces vertex attribute all surfaces", async () => {
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces vertex attribute unmapped elements color", async () => {
+  await setModelPolygonsVertexAttributeNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -423,21 +442,28 @@ test("hide edges and points of surface in model tree", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-// test("blocks vertex attribute all blocks", async () => {
-//
-//   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
-//   await expandGeodeObjectType(window, "Blocks", secondModelTree);
-//   await openModelComponentContextMenu(window, "019ea699-", 0, 1);
-//   await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
-//   await moveMouseOutOfTheWay(window);
-//   await expect(window).toHaveScreenshot();
-// });
+test("blocks vertex attribute all blocks", async () => {
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await expandGeodeObjectType(window, "Blocks", secondModelTree);
+  await openModelComponentContextMenu(window, "019ea699-", 0, 1);
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 0,
+    colorMap: "vikO",
+  });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
 
-// test("blocks vertex attribute all blocks change item", async () => {
-//   await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 1 });
-//   await moveMouseOutOfTheWay(window);
-//   await expect(window).toHaveScreenshot();
-// });
+test("blocks vertex attribute unmapped elements color", async () => {
+  await setModelPolyhedraVertexAttributeNoDataColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks vertex attribute all blocks change item", async () => {
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 1 });
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
 
 test("blocks vertex attribute one block", async () => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);

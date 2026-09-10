@@ -4,6 +4,11 @@ import {
   ensureMenuOpen,
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
 
 function getMenuContainer(window, menuTestId) {
   if (typeof menuTestId === "string") {
@@ -156,10 +161,32 @@ async function setQuickColorMap(window, colorMap) {
   await moveMouseOutOfTheWay(window);
 }
 
+async function setFeatureNoDataColor(window, menuTestId) {
+  if (typeof menuTestId === "string") {
+    await ensureMenuOpen(window, menuTestId);
+  }
+  const container = getMenuContainer(window, menuTestId);
+  const noDataColorBtn = container.getByTestId("noDataColorBtn").first();
+  await noDataColorBtn.waitFor({ state: "visible" });
+  await noDataColorBtn.click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .getByTestId("colorPicker")
+    .filter({ visible: true })
+    .first()
+    .waitFor({ state: "visible" });
+  await clickColorPickerSlider(window, SLIDER_PINK);
+  await clickColorPickerCanvas(window);
+  await noDataColorBtn.click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   applyAttribute,
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
+  setFeatureNoDataColor,
   setQuickColorMap,
 };
