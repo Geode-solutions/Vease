@@ -1,3 +1,4 @@
+import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/helpers/attribute.js";
 import {
   cellAttributeType,
   edgeAttributeType,
@@ -5,7 +6,6 @@ import {
   polyhedronAttributeType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
-import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/helpers/attribute.js";
 
 function setModelPointsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
