@@ -63,10 +63,6 @@ function setModelCellsVertexAttribute(window, attributeName, options = {}) {
   });
 }
 
-function setModelCellsVertexAttributeNoDataColor(window) {
-  return setFeatureNoDataColor(window, "modelStyleMenu");
-}
-
 function setModelEdgesEdgeAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: edgeAttributeType,
@@ -102,7 +98,6 @@ function setModelCellsCellAttribute(window, attributeName, options = {}) {
 export {
   setModelCellsCellAttribute,
   setModelCellsVertexAttribute,
-  setModelCellsVertexAttributeNoDataColor,
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
   setModelEdgesVertexAttributeNoDataColor,
