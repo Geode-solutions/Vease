@@ -25,6 +25,7 @@ import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
+  setMeshPolygonsNoDataColor,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
@@ -108,6 +109,11 @@ test("vertex attribute", async () => {
     item: 2,
     colorMap: colorMapName,
   });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshPolygonsNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 
