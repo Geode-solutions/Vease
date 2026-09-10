@@ -1,14 +1,14 @@
 import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
+import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
-import {
-  SLIDER_PINK,
-  clickColorPickerCanvas,
-  clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker.js";
 
 function getMenuContainer(window, menuTestId) {
   if (typeof menuTestId === "string") {
