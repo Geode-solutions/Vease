@@ -15,20 +15,19 @@ function getMenuContainer(window, menuTestId) {
 async function setFeatureItem(window, menuTestId, item) {
   const container = getMenuContainer(window, menuTestId);
   const itemSelector = container.getByTestId("itemSelector").first();
-  if (await itemSelector.isVisible()) {
-    await itemSelector.click();
-    await window.waitForTimeout(afterActionWait);
+  await itemSelector.waitFor({ state: "visible" });
+  await itemSelector.click();
+  await window.waitForTimeout(afterActionWait);
 
-    const itemText = `Item ${item + 1}`;
-    await window
-      .locator(".v-overlay-container")
-      .locator(".v-list-item")
-      .filter({ hasText: itemText, visible: true })
-      .first()
-      .click();
-    await window.waitForTimeout(afterActionWait);
-    await moveMouseOutOfTheWay(window);
-  }
+  const itemText = `Item ${item + 1}`;
+  await window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: itemText, visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
 }
 
 async function setFeatureColorMap(window, menuTestId, colorMap) {

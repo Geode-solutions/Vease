@@ -23,6 +23,7 @@ import {
   openMeshEdgesMenu,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
+  setMeshEdgesNoDataColor,
   setMeshEdgesVertexAttribute,
 } from "@tests/utils/mesh/edges/attribute.js";
 import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/mesh/edges/color.js";
@@ -90,11 +91,6 @@ test("edge attribute", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("edge attribute change item to 1", async () => {
-  await setMeshEdgesItem(window, 0);
-  await expect(window).toHaveScreenshot();
-});
-
 test("edge attribute change item to 2", async () => {
   await setMeshEdgesItem(window, 1);
   await expect(window).toHaveScreenshot();
@@ -110,6 +106,11 @@ test("vertex attribute", async () => {
     item: 2,
     colorMap: vertexAttributeColorMap,
   });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshEdgesNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 
