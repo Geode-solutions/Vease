@@ -44,10 +44,12 @@ function handleEscape() {
 
 <template>
   <v-card v-if="!selectedTool" flat color="transparent" class="d-flex flex-column h-100 w-100">
-    <div class="flex-shrink-0 pa-3 pb-1">
-      <div class="d-flex align-center mb-1">
-        <v-icon icon="mdi-creation" class="mr-2 text-white" size="20"></v-icon>
-        <h2 class="text-subtitle-1 font-weight-bold text-white mb-0">Create New Object</h2>
+    <div class="pa-3 text-center">
+      <div class="d-flex align-center justify-center">
+        <v-icon start icon="mdi-creation" class="me-2 mt-5 text-white" size="18" />
+        <h2 class="text-subtitle-1 font-weight-bold text-white mb-0" style="line-height: 1.2">
+          Create New Object
+        </h2>
       </div>
       <p class="text-caption text-white opacity-70 mb-0">Choose a drawing tool to get started.</p>
     </div>
