@@ -1,3 +1,4 @@
+import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/helpers/attribute.js";
 import {
   cellAttributeType,
   edgeAttributeType,
@@ -5,7 +6,6 @@ import {
   polyhedronAttributeType,
   vertexAttributeType,
 } from "@tests/utils/constants.js";
-import { applyAttribute } from "@tests/utils/helpers/attribute.js";
 
 function setModelPointsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
@@ -13,6 +13,10 @@ function setModelPointsVertexAttribute(window, attributeName, options = {}) {
     attributeName,
     ...options,
   });
+}
+
+function setModelPointsVertexAttributeNoDataColor(window) {
+  return setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
 function setModelEdgesVertexAttribute(window, attributeName, options = {}) {
@@ -23,6 +27,10 @@ function setModelEdgesVertexAttribute(window, attributeName, options = {}) {
   });
 }
 
+function setModelEdgesVertexAttributeNoDataColor(window) {
+  return setFeatureNoDataColor(window, "modelStyleMenu");
+}
+
 function setModelPolygonsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
@@ -31,12 +39,20 @@ function setModelPolygonsVertexAttribute(window, attributeName, options = {}) {
   });
 }
 
+function setModelPolygonsVertexAttributeNoDataColor(window) {
+  return setFeatureNoDataColor(window, "modelStyleMenu");
+}
+
 function setModelPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
+}
+
+function setModelPolyhedraVertexAttributeNoDataColor(window) {
+  return setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
 function setModelCellsVertexAttribute(window, attributeName, options = {}) {
@@ -84,9 +100,13 @@ export {
   setModelCellsVertexAttribute,
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
+  setModelEdgesVertexAttributeNoDataColor,
   setModelPointsVertexAttribute,
+  setModelPointsVertexAttributeNoDataColor,
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
+  setModelPolygonsVertexAttributeNoDataColor,
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
+  setModelPolyhedraVertexAttributeNoDataColor,
 };

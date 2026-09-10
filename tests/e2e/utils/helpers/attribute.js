@@ -1,4 +1,9 @@
 import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
+import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
@@ -15,20 +20,19 @@ function getMenuContainer(window, menuTestId) {
 async function setFeatureItem(window, menuTestId, item) {
   const container = getMenuContainer(window, menuTestId);
   const itemSelector = container.getByTestId("itemSelector").first();
-  if (await itemSelector.isVisible()) {
-    await itemSelector.click();
-    await window.waitForTimeout(afterActionWait);
+  await itemSelector.waitFor({ state: "visible" });
+  await itemSelector.click();
+  await window.waitForTimeout(afterActionWait);
 
-    const itemText = `Item ${item + 1}`;
-    await window
-      .locator(".v-overlay-container")
-      .locator(".v-list-item")
-      .filter({ hasText: itemText, visible: true })
-      .first()
-      .click();
-    await window.waitForTimeout(afterActionWait);
-    await moveMouseOutOfTheWay(window);
-  }
+  const itemText = `Item ${item + 1}`;
+  await window
+    .locator(".v-overlay-container")
+    .locator(".v-list-item")
+    .filter({ hasText: itemText, visible: true })
+    .first()
+    .click();
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
 }
 
 async function setFeatureColorMap(window, menuTestId, colorMap) {
@@ -157,10 +161,32 @@ async function setQuickColorMap(window, colorMap) {
   await moveMouseOutOfTheWay(window);
 }
 
+async function setFeatureNoDataColor(window, menuTestId) {
+  if (typeof menuTestId === "string") {
+    await ensureMenuOpen(window, menuTestId);
+  }
+  const container = getMenuContainer(window, menuTestId);
+  const noDataColorBtn = container.getByTestId("noDataColorBtn").first();
+  await noDataColorBtn.waitFor({ state: "visible" });
+  await noDataColorBtn.click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .getByTestId("colorPicker")
+    .filter({ visible: true })
+    .first()
+    .waitFor({ state: "visible" });
+  await clickColorPickerSlider(window, SLIDER_PINK);
+  await clickColorPickerCanvas(window);
+  await noDataColorBtn.click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
 export {
   applyAttribute,
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
+  setFeatureNoDataColor,
   setQuickColorMap,
 };
