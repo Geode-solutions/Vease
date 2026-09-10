@@ -19,6 +19,7 @@ import {
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPointsMenu,
+  setMeshPointsNoDataColor,
   setMeshPointsVertexAttribute,
 } from "@tests/utils/mesh/points/attribute.js";
 import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color.js";
@@ -29,6 +30,8 @@ import { test } from "@tests/fixtures.js";
 // Constants
 const inputFilename = "test.og_pts3d";
 const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
+const colorMapName = "vikO";
 let window = undefined;
 let cleanup = undefined;
 const pointsOpacity = 50;
@@ -75,7 +78,25 @@ test("points visibility", async () => {
 });
 
 test("vertex attribute", async () => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
+  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVertexAttribute(window, vertexAttributeName, {
+    item: 1,
+    colorMap: colorMapName,
+  });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshPointsNoDataColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute change attribute name", async () => {
+  await setMeshPointsVertexAttribute(window, vertexAttributeName2);
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute switch back to first attribute", async () => {
   await setMeshPointsVertexAttribute(window, vertexAttributeName);
   await expect(window).toHaveScreenshot();
 });

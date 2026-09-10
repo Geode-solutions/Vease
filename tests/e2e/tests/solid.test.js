@@ -32,6 +32,7 @@ import {
   openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
   setMeshPolyhedraItem,
+  setMeshPolyhedraNoDataColor,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
@@ -121,6 +122,11 @@ test("vertex attribute", async () => {
     item: 2,
     colorMap: colorMapName,
   });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshPolyhedraNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 

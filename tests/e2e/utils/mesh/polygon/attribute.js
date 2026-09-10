@@ -1,13 +1,14 @@
 import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
+import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
 } from "@tests/utils/viewer_interaction.js";
-import {
-  clickColorPickerCanvas,
-  clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker.js";
 import {
   meshViewerObjectType,
   polygonAttributeType,
@@ -69,7 +70,7 @@ async function setMeshPolygonsNoDataColor(window) {
     .filter({ visible: true })
     .first()
     .waitFor({ state: "visible" });
-  await clickColorPickerSlider(window);
+  await clickColorPickerSlider(window, SLIDER_PINK);
   await clickColorPickerCanvas(window);
   await noDataColorBtn.click();
   await moveMouseOutOfTheWay(window);

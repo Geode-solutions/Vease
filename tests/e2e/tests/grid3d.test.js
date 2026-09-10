@@ -21,6 +21,7 @@ import {
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
   setMeshCellsItem,
+  setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
 } from "@tests/utils/mesh/cells/attribute.js";
 import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
@@ -103,6 +104,11 @@ test("vertex attribute", async () => {
     item: 1,
     colorMap: colorMapName,
   });
+  await expect(window).toHaveScreenshot();
+});
+
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshCellsNoDataColor(window);
   await expect(window).toHaveScreenshot();
 });
 
