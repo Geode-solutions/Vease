@@ -1,4 +1,4 @@
-import { afterActionWait } from "@tests/utils/viewer_interaction.js";
+import { afterActionWait } from "../../viewer_interaction.js";
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;

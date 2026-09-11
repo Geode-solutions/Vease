@@ -3,13 +3,13 @@ import {
   edgesFeatureName,
   meshViewerObjectType,
   vertexAttributeType,
-} from "@tests/utils/constants.js";
+} from "../../../constants.js";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/data/helpers/attribute";
-import { openStyleMenu } from "@tests/utils/viewer_interaction.js";
+} from "../../helpers/attribute.js";
+import { openStyleMenu } from "../../../viewer_interaction.js";
 
 function setMeshEdgesVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(

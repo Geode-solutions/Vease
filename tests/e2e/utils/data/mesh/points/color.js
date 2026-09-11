@@ -1,10 +1,10 @@
-import { meshViewerObjectType, pointsFeatureName } from "@tests/utils/constants.js";
+import { meshViewerObjectType, pointsFeatureName } from "../../../constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/helpers/color";
+} from "../../helpers/color.js";
 
 function setMeshPointsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, pointsFeatureName, percent);

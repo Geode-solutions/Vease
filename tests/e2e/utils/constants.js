@@ -1,43 +1,9 @@
 // Node imports
 
 // Third party imports
-import { defineConfig, devices } from "@playwright/test";
 import { isWindows } from "std-env";
 
 const MILLISECONDS = 1000;
-const CLOUD_TIMEOUT = 120;
-const LINUX_TIMEOUT_BROWSER = 60;
-const LINUX_TIMEOUT_DESKTOP = 50;
-const WINDOWS_TIMEOUT_BROWSER = 80;
-const WINDOWS_TIMEOUT_DESKTOP = 80;
-
-const maxDiffPixelRatio = 0.02;
-
-const TIMEOUTS = {
-  browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
-  cloud: CLOUD_TIMEOUT * MILLISECONDS,
-  desktop: (isWindows ? WINDOWS_TIMEOUT_DESKTOP : LINUX_TIMEOUT_DESKTOP) * MILLISECONDS,
-};
-
-const CLOUD_SECONDS_SCREENSHOT_TIMEOUT = 10;
-const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS;
-
-const defaultExpect = {
-  toHaveScreenshot: {
-    maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
-      ? Number(process.env.MAX_PIXEL_RATIO)
-      : maxDiffPixelRatio,
-    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
-  },
-};
-
-const cloudExpect = {
-  ...defaultExpect,
-  toHaveScreenshot: {
-    ...defaultExpect.toHaveScreenshot,
-    timeout: CLOUD_SCREENSHOT_TIMEOUT,
-  },
-};
 
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 25;
@@ -62,16 +28,71 @@ const randomMultiplier = 1000;
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
+// Viewer Object Types
+const meshViewerObjectType = "mesh";
+const modelViewerObjectType = "model";
+
+// Geode Object Types
+const pointSetGeodeObjectType = "PointSet3D";
+const edgedCurveGeodeObjectType = "EdgedCurve3D";
+const rgd2dGeodeObjectType = "RegularGrid2D";
+const rgd3dGeodeObjectType = "RegularGrid3D";
+const polygonalSurfaceGeodeObjectType = "PolygonalSurface3D";
+const hybridSolidGeodeObjectType = "HybridSolid3D";
+const tetrahedralSolidGeodeObjectType = "TetrahedralSolid3D";
+const triangulatedSurfaceGeodeObjectType = "TriangulatedSurface3D";
+const brepGeodeObjectType = "BRep";
+const structuralModelGeodeObjectType = "StructuralModel";
+
+// Default Data Name
+const defaultDataName = "test";
+
+// Feature Names
+const cellsFeatureName = "Cells";
+const edgesFeatureName = "Edges";
+const pointsFeatureName = "Points";
+const polygonsFeatureName = "Polygons";
+const polyhedraFeatureName = "Polyhedra";
+
+// Attribute Types
+const vertexAttributeType = "Vertex attribute";
+const edgeAttributeType = "Edge attribute";
+const polygonAttributeType = "Polygon attribute";
+const polyhedronAttributeType = "Polyhedron attribute";
+const cellAttributeType = "Cell attribute";
+
 export {
   PAGE_HEIGHT,
   PAGE_WIDTH,
   WAIT_TIMES,
   afterActionWait,
   beforeAllTimeout,
-  cloudExpect,
+  brepGeodeObjectType,
+  cellAttributeType,
+  cellsFeatureName,
+  defaultDataName,
   defaultTimeout,
+  edgeAttributeType,
+  edgedCurveGeodeObjectType,
+  edgesFeatureName,
+  hybridSolidGeodeObjectType,
+  meshViewerObjectType,
   modalTransitionWait,
+  modelViewerObjectType,
+  pointSetGeodeObjectType,
+  pointsFeatureName,
+  polygonAttributeType,
+  polygonalSurfaceGeodeObjectType,
+  polygonsFeatureName,
+  polyhedraFeatureName,
+  polyhedronAttributeType,
   randomMultiplier,
+  rgd2dGeodeObjectType,
+  rgd3dGeodeObjectType,
   staggerMaxWait,
+  structuralModelGeodeObjectType,
+  tetrahedralSolidGeodeObjectType,
   treeWaitTimeout,
+  triangulatedSurfaceGeodeObjectType,
+  vertexAttributeType,
 };

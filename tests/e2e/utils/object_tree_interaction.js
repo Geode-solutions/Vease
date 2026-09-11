@@ -1,5 +1,6 @@
 import { afterActionWait, ensureMenuOpen, moveMouseOutOfTheWay } from "./viewer_interaction.js";
 import { setModelColor } from "./data/model/color.js";
+import { modalTransitionWait } from "./constants.js";
 
 function getMainObjectTree(window) {
   return window.getByTestId("mainObjectTree");
@@ -260,6 +261,28 @@ async function toggleObjectsTree(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function closeObjectsTree(window) {
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
+  if (isVisible) {
+    await window.getByTestId("toggleObjectsButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function openObjectsTree(window) {
+  const isVisible = await window
+    .getByTestId("mainObjectTree")
+    .isVisible()
+    .catch(() => false);
+  if (!isVisible) {
+    await window.getByTestId("toggleObjectsButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
 async function openModelComponentsTree(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType, "mainObjectTree");
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, "mainObjectTree");
@@ -288,6 +311,7 @@ async function hideAllComponentLeafRows(window, categoryName) {
 export {
   checkFilterCategory,
   expandMainObjectTree,
+  expandMainObjectTreeGroup,
   expandModelComponentsObjectTree,
   collapseMainObjectTree,
   collapseModelComponentsObjectTree,
@@ -311,6 +335,8 @@ export {
   setModelTreeRowColorRandom,
   openModelComponentContextMenu,
   toggleObjectsTree,
+  closeObjectsTree,
+  openObjectsTree,
   openModelComponentsTree,
   hideAllComponentLeafRows,
 };

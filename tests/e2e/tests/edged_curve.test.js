@@ -7,14 +7,14 @@ import {
   defaultDataName,
   edgedCurveGeodeObjectType,
   meshViewerObjectType,
-} from "@tests/utils/constants.js";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+} from "../utils/constants.js";
+import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
 import {
   openMeshEdgesMenu,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
   setMeshEdgesVertexAttribute,
-} from "@tests/utils/data/mesh/edges/attribute.js";
+} from "../utils/data/mesh/edges/attribute.js";
 import {
   setEdgesVisibility,
   setEdgesWidth,
@@ -22,14 +22,14 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
+} from "../utils/viewer_interaction.js";
 import {
   setMeshEdgesColorWithSlider,
   setMeshEdgesOpacity,
-} from "@tests/utils/data/mesh/edges/color.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshPointsColorWithSlider } from "@tests/utils/data/mesh/points/color.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/data/mesh/edges/color.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshPointsColorWithSlider } from "../utils/data/mesh/points/color.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";

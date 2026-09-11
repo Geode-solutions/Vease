@@ -3,15 +3,15 @@
 // Third party imports
 
 // Local imports
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
+import { meshViewerObjectType, rgd3dGeodeObjectType } from "../utils/constants.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
   setMeshCellsItem,
   setMeshCellsVertexAttribute,
-} from "@tests/utils/data/mesh/cells/attribute.js";
+} from "../utils/data/mesh/cells/attribute.js";
 import {
   setCellsVisibility,
   setEdgesVisibility,
@@ -20,12 +20,12 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/data/mesh/cells/color.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/viewer_interaction.js";
+import { setMeshCellsColor, setMeshCellsOpacity } from "../utils/data/mesh/cells/color.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "grid.og_rgd3d";
@@ -38,10 +38,6 @@ const pointsSize = 15;
 const edgesWidth = 5;
 
 test.describe.configure({ mode: "serial" });
-
-test.afterAll(async () => {
-  await cleanup();
-});
 
 test("load", async ({ window }) => {
   await loadDatas(window, [inputFilename]);

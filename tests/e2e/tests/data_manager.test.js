@@ -7,12 +7,12 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   moveMouseOutOfTheWay,
-} from "@tests/utils/viewer_interaction.js";
+} from "../utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "@tests/utils/constants.js";
+} from "../utils/constants.js";
 import {
   clickdeleteDataButton,
   confirmDelete,
@@ -25,10 +25,10 @@ import {
   openRenameByButton,
   openRenameByName,
   toggleRowVisibility,
-} from "@tests/utils/data_manager.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/data_manager.js";
+import { loadDatas } from "../utils/load.js";
+import { navigateToDataManagerPage } from "../utils/navigate.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const BREP_FILE = "test.og_brep";

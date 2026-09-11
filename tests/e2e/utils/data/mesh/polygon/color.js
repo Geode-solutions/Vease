@@ -1,10 +1,10 @@
-import { meshViewerObjectType, polygonsFeatureName } from "@tests/utils/constants.js";
+import { meshViewerObjectType, polygonsFeatureName } from "../../../constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/helpers/color";
+} from "../../helpers/color.js";
 
 function setMeshPolygonsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);

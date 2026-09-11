@@ -3,7 +3,7 @@ import {
   ensureFeatureVisible,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
-} from "@tests/utils/viewer_interaction.js";
+} from "../../viewer_interaction.js";
 
 function getMenuContainer(window, menuTestId) {
   if (typeof menuTestId === "string") {

@@ -3,7 +3,7 @@ import {
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
-} from "@tests/utils/data/helpers/color.js";
+} from "../helpers/color.js";
 
 function setModelOpacity(window, percent) {
   return setOpacity(window, "modelStyleMenu", percent);

@@ -1,10 +1,10 @@
-import { cellsFeatureName, meshViewerObjectType } from "@tests/utils/constants.js";
+import { cellsFeatureName, meshViewerObjectType } from "../../../constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/helpers/color";
+} from "../../helpers/color.js";
 
 function setMeshCellsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);

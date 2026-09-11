@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
 import {
   checkFilterCategory,
   collapseMainObjectTree,
@@ -12,6 +12,7 @@ import {
   expandModelComponentsObjectTree,
   fillSearchQuery,
   getMainObjectTree,
+  getModelComponentsObjectTree,
   hideObjectInTree,
   openFilterMenu,
   setModelTreeRowColorRandom,
@@ -19,10 +20,10 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@tests/utils/object_tree_interaction.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { resetCamera } from "@tests/utils/camera_interaction.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/object_tree_interaction.js";
+import { loadDatas } from "../utils/load.js";
+import { resetCamera } from "../utils/camera_interaction.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";

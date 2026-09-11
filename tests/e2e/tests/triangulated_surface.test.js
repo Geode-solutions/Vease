@@ -7,15 +7,15 @@ import {
   defaultDataName,
   meshViewerObjectType,
   triangulatedSurfaceGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+} from "../utils/constants.js";
+import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-} from "@tests/utils/data/mesh/polygon/attribute.js";
+} from "../utils/data/mesh/polygon/attribute.js";
 import {
   setEdgesVisibility,
   setEdgesWidth,
@@ -25,15 +25,15 @@ import {
   setPolygonsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
+} from "../utils/viewer_interaction.js";
 import {
   setMeshPolygonsColor,
   setMeshPolygonsOpacity,
-} from "@tests/utils/data/mesh/polygon/color.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/data/mesh/polygon/color.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";

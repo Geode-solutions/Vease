@@ -4,7 +4,7 @@
 // Node imports
 
 // Third party imports
-
+import { expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -16,7 +16,7 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
+} from "../utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
@@ -26,7 +26,7 @@ import {
   polyhedronAttributeType,
   structuralModelGeodeObjectType,
   vertexAttributeType,
-} from "@tests/utils/constants";
+} from "../utils/constants.js";
 import {
   collapseGeodeObjectType,
   expandGeodeObjectType,
@@ -42,14 +42,14 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
   toggleObjectsTree,
-} from "@tests/utils/object_tree_interaction.js";
-import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
+} from "../utils/object_tree_interaction.js";
+import { resetCamera, rotateCamera } from "../utils/camera_interaction.js";
 import {
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
-} from "@tests/utils/data/model/color.js";
+} from "../utils/data/model/color.js";
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
@@ -58,11 +58,11 @@ import {
   setModelPolygonsVertexAttribute,
   setModelPolyhedraPolyhedronAttribute,
   // setModelPolyhedraVertexAttribute,
-} from "@tests/utils/model/attribute.js";
-import { applyAttribute } from "@tests/utils/helpers/attribute.js";
-import { loadDatas } from "@tests/utils/load.js";
+} from "../utils/data/model/attribute.js";
+import { applyAttribute } from "../utils/data/helpers/attribute.js";
+import { loadDatas } from "../utils/load.js";
 
-import { test } from "@tests/fixtures.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";

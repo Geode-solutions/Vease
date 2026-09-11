@@ -14,32 +14,32 @@ import {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-} from "@tests/utils/viewer_interaction.js";
+} from "../utils/viewer_interaction.js";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   highlightData,
   openObjectsTree,
-} from "@tests/utils/object_tree_interaction.js";
+} from "../utils/object_tree_interaction.js";
 import {
   defaultDataName,
   meshViewerObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "@tests/utils/constants.js";
+} from "../utils/constants.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-} from "@tests/utils/mesh/polygon/attribute.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
+} from "../utils/data/mesh/polygon/attribute.js";
+import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "../utils/data/mesh/polygon/color.js";
 import { expect } from "@playwright/test";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
-import { setQuickColorMap } from "@tests/utils/helpers/attribute.js";
-import { test } from "@tests/fixtures.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
+import { setQuickColorMap } from "../utils/data/helpers/attribute.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";

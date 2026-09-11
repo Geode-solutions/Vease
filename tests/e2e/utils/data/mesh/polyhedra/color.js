@@ -1,11 +1,11 @@
-import { meshViewerObjectType, polyhedraFeatureName } from "@tests/utils/constants.js";
+import { meshViewerObjectType, polyhedraFeatureName } from "../../../constants.js";
 import {
   setFeatureColor,
   setFeatureColorBlack,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/helpers/color";
+} from "../../helpers/color.js";
 
 function setMeshPolyhedraOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polyhedraFeatureName, percent);
