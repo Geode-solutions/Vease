@@ -1,4 +1,4 @@
-import { afterActionWait } from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;
@@ -24,4 +24,39 @@ async function clickColorPickerSlider(window, container = window, percentage = S
   await window.waitForTimeout(afterActionWait);
 }
 
-export { clickColorPickerCanvas, clickColorPickerSlider, MAX_PERCENTAGE, SLIDER_BLUE, SLIDER_PINK };
+async function clickCopyColorBtn(window, container = window) {
+  await container.getByTestId("copyColorBtn").click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setColorInputText(window, text, container = window) {
+  const input = container.getByTestId("colorInput");
+  await input.fill(text);
+  await input.press("Enter");
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function pasteColorInputText(window, text, container = window) {
+  const input = container.getByTestId("colorInput");
+  await input.focus();
+  await input.evaluate((inputElement, textToPaste) => {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", textToPaste);
+    inputElement.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData: dataTransfer, bubbles: true }),
+    );
+  }, text);
+  await window.waitForTimeout(afterActionWait);
+}
+
+export {
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+  clickCopyColorBtn,
+  setColorInputText,
+  pasteColorInputText,
+  MAX_PERCENTAGE,
+  SLIDER_BLUE,
+  SLIDER_PINK,
+};

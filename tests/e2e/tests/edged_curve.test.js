@@ -14,6 +14,13 @@ import {
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  copyMeshEdgesColor,
+  pasteMeshEdgesColorInput,
+  setMeshEdgesColorInput,
+  setMeshEdgesColorWithSlider,
+  setMeshEdgesOpacity,
+} from "@tests/utils/mesh/edges/color.js";
+import {
   defaultDataName,
   edgedCurveGeodeObjectType,
   meshViewerObjectType,
@@ -26,7 +33,6 @@ import {
   setMeshEdgesNoDataColor,
   setMeshEdgesVertexAttribute,
 } from "@tests/utils/mesh/edges/attribute.js";
-import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/mesh/edges/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshPointsColorWithSlider } from "@tests/utils/mesh/points/color.js";
@@ -131,6 +137,21 @@ test("edges color", async () => {
 
 test("edges opacity", async () => {
   await setMeshEdgesOpacity(window, edgesOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges copy color to clipboard", async () => {
+  await copyMeshEdgesColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges set color via input", async () => {
+  await setMeshEdgesColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges paste color in input", async () => {
+  await pasteMeshEdgesColorInput(window, "0, 0, 255, 0.5");
   await expect(window).toHaveScreenshot();
 });
 

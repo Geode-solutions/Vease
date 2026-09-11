@@ -2,6 +2,9 @@ import {
   MAX_PERCENTAGE,
   clickColorPickerCanvas,
   clickColorPickerSlider,
+  clickCopyColorBtn,
+  pasteColorInputText,
+  setColorInputText,
 } from "@tests/utils/helpers/color_picker.js";
 import {
   afterActionWait,
@@ -67,6 +70,24 @@ async function setColorBlack(window, menuTestId, container = window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function copyColor(window, menuTestId, container = window) {
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+  await clickCopyColorBtn(window, container);
+}
+
+async function setColorInput(window, menuTestId, colorText, container = window) {
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+  await setColorInputText(window, colorText, container);
+}
+
+async function pasteColorInput(window, menuTestId, colorText, container = window) {
+  await ensureMenuOpen(window, menuTestId);
+  await ensureFeatureVisible(window, menuTestId);
+  await pasteColorInputText(window, colorText, container);
+}
+
 function setFeatureColorBlack(window, viewerObjectType, feature, container = window) {
   return setColorBlack(window, `${viewerObjectType}${feature}Menu`, container);
 }
@@ -77,6 +98,18 @@ function setFeatureColor(window, viewerObjectType, feature, container = window) 
 
 function setFeatureColorWithSlider(window, viewerObjectType, feature, container = window) {
   return setColorWithSlider(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
+function setFeatureCopyColor(window, viewerObjectType, feature, container = window) {
+  return copyColor(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
+function setFeatureColorInput(window, viewerObjectType, feature, colorText, container = window) {
+  return setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
+}
+
+function setFeaturePasteColorInput(window, viewerObjectType, feature, colorText, container = window) {
+  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
 }
 
 function setFeatureColoringStyle(
@@ -94,14 +127,20 @@ function setFeatureOpacity(window, viewerObjectType, feature, percent) {
 }
 
 export {
+  copyColor,
   setColor,
   setColorBlack,
+  setColorInput,
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
+  pasteColorInput,
   setFeatureColor,
   setFeatureColorBlack,
+  setFeatureColorInput,
   setFeatureColoringStyle,
   setFeatureColorWithSlider,
+  setFeatureCopyColor,
   setFeatureOpacity,
+  setFeaturePasteColorInput,
 };
