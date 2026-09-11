@@ -151,7 +151,7 @@ test("edges set color via input", async () => {
 });
 
 test("edges paste color in input", async () => {
-  await pasteMeshEdgesColorInput(window, "0, 0, 255, 0.5");
+  await pasteMeshEdgesColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
