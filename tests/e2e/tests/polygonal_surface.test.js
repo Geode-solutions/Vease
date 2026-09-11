@@ -1,7 +1,9 @@
-// oxlint-disable max-dependencies
 // Node imports
 
 // Third party imports
+import { expect } from "@playwright/test";
+
+// Local imports
 import {
   afterActionWait,
   beforeAllTimeout,
@@ -23,6 +25,13 @@ import {
   openObjectsTree,
 } from "@tests/utils/object_tree_interaction.js";
 import {
+  copyMeshPolygonsColor,
+  pasteMeshPolygonsColorInput,
+  setMeshPolygonsColor,
+  setMeshPolygonsColorInput,
+  setMeshPolygonsOpacity,
+} from "@tests/utils/mesh/polygon/color.js";
+import {
   defaultDataName,
   meshViewerObjectType,
   polygonalSurfaceGeodeObjectType,
@@ -35,8 +44,6 @@ import {
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
-import { expect } from "@playwright/test";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -193,6 +200,26 @@ test("polygons color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("polygons opacity", async () => {
+  await setMeshPolygonsOpacity(window, polygonsOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons copy color to clipboard", async () => {
+  await copyMeshPolygonsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons set color via input", async () => {
+  await setMeshPolygonsColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons paste color in input", async () => {
+  await pasteMeshPolygonsColorInput(window);
+  await expect(window).toHaveScreenshot();
+});
+
 test("points color", async () => {
   await setMeshPointsColor(window);
   await expect(window).toHaveScreenshot();
@@ -200,11 +227,6 @@ test("points color", async () => {
 
 test("edges color", async () => {
   await setMeshEdgesColor(window);
-  await expect(window).toHaveScreenshot();
-});
-
-test("polygons opacity", async () => {
-  await setMeshPolygonsOpacity(window, polygonsOpacity);
   await expect(window).toHaveScreenshot();
 });
 

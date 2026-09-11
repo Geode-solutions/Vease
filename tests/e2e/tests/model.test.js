@@ -42,13 +42,25 @@ import {
   toggleModelTreeRow,
   toggleObjectsTree,
 } from "@tests/utils/object_tree_interaction.js";
-import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
+  copyModelEdgesColor,
+  copyModelPointsColor,
+  copyModelPolygonsColor,
+  copyModelPolyhedraColor,
+  pasteModelEdgesColorInput,
+  pasteModelPointsColorInput,
+  pasteModelPolygonsColorInput,
+  pasteModelPolyhedraColorInput,
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
+  setModelEdgesColorInput,
   setModelOpacity,
+  setModelPointsColorInput,
+  setModelPolygonsColorInput,
+  setModelPolyhedraColorInput,
 } from "@tests/utils/model/color.js";
+import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
@@ -181,17 +193,30 @@ test("object tree hover first surface", async () => {
 test("blocks visibility", async () => {
   await toggleModelTreeRow(window, "Blocks");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Blocks");
 });
 
 test("blocks color", async () => {
-  await toggleModelTreeRow(window, "Blocks");
   await setModelTreeRowColorRandom(window, "Blocks");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Blocks");
+});
+
+test("blocks copy color to clipboard", async () => {
+  await copyModelPolyhedraColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks set color via input", async () => {
+  await setModelPolyhedraColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("blocks paste color in input", async () => {
+  await pasteModelPolyhedraColorInput(window);
+  await expect(window).toHaveScreenshot();
 });
 
 test("corners visibility", async () => {
+  await toggleModelTreeRow(window, "Blocks");
   await toggleModelTreeRow(window, "Corners");
   await expect(window).toHaveScreenshot();
   await toggleModelTreeRow(window, "Corners");
@@ -199,6 +224,21 @@ test("corners visibility", async () => {
 
 test("corners color", async () => {
   await setModelTreeRowColorRandom(window, "Corners");
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners copy color to clipboard", async () => {
+  await copyModelPointsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners set color via input", async () => {
+  await setModelPointsColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("corners paste color in input", async () => {
+  await pasteModelPointsColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -241,11 +281,26 @@ test("lines visibility", async () => {
   await collapseGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Lines");
   await expect(window).toHaveScreenshot();
+  await toggleModelTreeRow(window, "Lines");
 });
 
 test("lines color", async () => {
-  await toggleModelTreeRow(window, "Lines");
   await setModelTreeRowColorRandom(window, "Lines");
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines copy color to clipboard", async () => {
+  await copyModelEdgesColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines set color via input", async () => {
+  await setModelEdgesColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("lines paste color in input", async () => {
+  await pasteModelEdgesColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -307,12 +362,25 @@ test("surfaces visibility", async () => {
   await collapseGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Surfaces");
   await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Surfaces");
 });
 
 test("surfaces color", async () => {
-  await toggleModelTreeRow(window, "Surfaces");
   await setModelTreeRowColorRandom(window, "Surfaces");
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces copy color to clipboard", async () => {
+  await copyModelPolygonsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces set color via input", async () => {
+  await setModelPolygonsColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("surfaces paste color in input", async () => {
+  await pasteModelPolygonsColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 

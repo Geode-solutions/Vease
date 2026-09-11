@@ -2,6 +2,9 @@ import {
   MAX_PERCENTAGE,
   clickColorPickerCanvas,
   clickColorPickerSlider,
+  clickCopyColorBtn,
+  pasteColorInputText,
+  setColorInputText,
 } from "@tests/utils/helpers/color_picker.js";
 import {
   afterActionWait,
@@ -13,18 +16,15 @@ async function setColoringStyle(window, menuTestId, coloringStyle, container = w
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
-  const selector = container.getByTestId("coloringStyleSelector").first();
-  await selector.waitFor({ state: "visible", timeout: 15_000 });
-  await selector.click();
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  const listItem = window
+  await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
     .filter({ hasText: coloringStyle, visible: true })
-    .first();
-  await listItem.waitFor({ state: "visible", timeout: 15_000 });
-  await listItem.click();
+    .first()
+    .click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -67,6 +67,21 @@ async function setColorBlack(window, menuTestId, container = window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function copyColor(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await clickCopyColorBtn(window, container);
+}
+
+async function setColorInput(window, menuTestId, colorText, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await setColorInputText(window, colorText, container);
+}
+
+async function pasteColorInput(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await pasteColorInputText(window, container);
+}
+
 function setFeatureColorBlack(window, viewerObjectType, feature, container = window) {
   return setColorBlack(window, `${viewerObjectType}${feature}Menu`, container);
 }
@@ -77,6 +92,18 @@ function setFeatureColor(window, viewerObjectType, feature, container = window) 
 
 function setFeatureColorWithSlider(window, viewerObjectType, feature, container = window) {
   return setColorWithSlider(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
+function setFeatureCopyColor(window, viewerObjectType, feature, container = window) {
+  return copyColor(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
+function setFeatureColorInput(window, viewerObjectType, feature, colorText, container = window) {
+  return setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
+}
+
+function setFeaturePasteColorInput(window, viewerObjectType, feature, container = window) {
+  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
 function setFeatureColoringStyle(
@@ -94,14 +121,20 @@ function setFeatureOpacity(window, viewerObjectType, feature, percent) {
 }
 
 export {
+  copyColor,
   setColor,
   setColorBlack,
+  setColorInput,
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
+  pasteColorInput,
   setFeatureColor,
   setFeatureColorBlack,
+  setFeatureColorInput,
   setFeatureColoringStyle,
   setFeatureColorWithSlider,
+  setFeatureCopyColor,
   setFeatureOpacity,
+  setFeaturePasteColorInput,
 };
