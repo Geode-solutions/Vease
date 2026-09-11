@@ -46,10 +46,6 @@ export function useVeaseChat() {
 
   watch(user, refreshCloudEntitlement, { immediate: true });
 
-  // Fetches this user's own Vercel AI Gateway key (budget-capped, minted once
-  // per user by Vease-API) and hands it to the local Nitro server, which is
-  // the one that actually calls the Gateway. Cached for the session so we
-  // don't re-fetch it on every message.
   async function ensureGatewayKey() {
     if (gatewayKeyReady || !user.value) {
       return;
@@ -57,7 +53,7 @@ export function useVeaseChat() {
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
     const { apiKeyString } = await APIStore.request({ schema: KEY_SCHEMA, headers });
-    await $fetch("/api/llm/gateway-key", { method: "POST", body: { apiKey: apiKeyString } });
+    await $fetch("/api/llm/gateway_key", { method: "POST", body: { apiKey: apiKeyString } });
     gatewayKeyReady = true;
   }
 

@@ -68,6 +68,7 @@ export default defineNuxtConfig({
     ],
     "@vueuse/nuxt",
     "nuxt-vuefire",
+    "@nuxtjs/mcp-toolkit",
   ].filter(Boolean),
 
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
