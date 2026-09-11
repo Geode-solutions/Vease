@@ -1,12 +1,12 @@
 // Third party imports
-import { createMCPClient } from "@ai-sdk/mcp";
 import { createGateway } from "@ai-sdk/gateway";
+import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 // Local imports
+import { getGatewayApiKey } from "@vease_server/utils/server_config.js";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp.js";
-import { getGatewayApiKey } from "@vease_server/utils/gateway_key_storage.js";
 
 const LLAMA_HOST = "127.0.0.1";
 const DEFAULT_GATEWAY_MODEL = "openai/gpt-4o-mini";

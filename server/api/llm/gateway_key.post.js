@@ -2,7 +2,7 @@
 import { defineEventHandler, readBody } from "h3";
 
 // Local imports
-import { setGatewayApiKey } from "@vease_server/utils/gateway_key_storage.js";
+import { setGatewayApiKey } from "@vease_server/utils/server_config.js";
 
 export default defineEventHandler(async (event) => {
   const { apiKey } = await readBody(event);
