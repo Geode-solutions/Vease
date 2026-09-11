@@ -4,9 +4,7 @@ const MILLISECONDS_IN_SECOND = 1000;
 
 export const useAPIStore = defineStore("api", () => {
   const request_counter = ref(0);
-  const base_url = ref(
-    "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
-  );
+  const base_url = ref(useRuntimeConfig().public.VEASE_API_BASE_URL);
 
   function start_request() {
     request_counter.value += 1;

@@ -42,6 +42,8 @@ export default defineNuxtConfig({
       COMMAND_VIEWER: "vease-viewer",
       NUXT_ROOT_PATH: __dirname,
       PROJECT: package_json.name,
+      VEASE_API_BASE_URL:
+        "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
     },
   },
   extends: ["@geode/opengeodeweb-front"],

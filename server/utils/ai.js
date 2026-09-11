@@ -1,11 +1,12 @@
 // Third party imports
 import { createMCPClient } from "@ai-sdk/mcp";
+import { createGateway } from "@ai-sdk/gateway";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { gateway } from "@ai-sdk/gateway";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 // Local imports
 import { runLlamaServer } from "@vease_server/utils/llama_cpp.js";
+import { getGatewayApiKey } from "@vease_server/utils/gateway_key_storage.js";
 
 const LLAMA_HOST = "127.0.0.1";
 const DEFAULT_GATEWAY_MODEL = "openai/gpt-4o-mini";
@@ -28,8 +29,14 @@ async function getLlamaChatModel(model) {
 }
 
 function getGatewayChatModel(model) {
-  return gateway.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
+  const apiKey = getGatewayApiKey();
+  if (!apiKey) {
+    throw new Error("No AI Gateway key cached for this session yet");
+  }
+  const provider = createGateway({ apiKey });
+  return provider.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
 }
+
 function getChatModel({ provider = CHAT_PROVIDER.LLAMA, model } = {}) {
   if (provider === CHAT_PROVIDER.GATEWAY) {
     return getGatewayChatModel(model);
