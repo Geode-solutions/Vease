@@ -133,7 +133,7 @@ test("points set color via input", async () => {
 });
 
 test("points paste color in input", async () => {
-  await pasteMeshPointsColorInput(window, "0, 0, 255, 0.5");
+  await pasteMeshPointsColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
