@@ -148,16 +148,6 @@ test("cells color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
-test("points color", async () => {
-  await setMeshPointsColor(window);
-  await expect(window).toHaveScreenshot();
-});
-
-test("edges color", async () => {
-  await setMeshEdgesColor(window);
-  await expect(window).toHaveScreenshot();
-});
-
 test("cells opacity", async () => {
   await setMeshCellsOpacity(window, cellsOpacity);
   await expect(window).toHaveScreenshot();
@@ -174,7 +164,17 @@ test("cells set color via input", async () => {
 });
 
 test("cells paste color in input", async () => {
-  await pasteMeshCellsColorInput(window, "0, 0, 255, 0.5");
+  await pasteMeshCellsColorInput(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points color", async () => {
+  await setMeshPointsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("edges color", async () => {
+  await setMeshEdgesColor(window);
   await expect(window).toHaveScreenshot();
 });
 
