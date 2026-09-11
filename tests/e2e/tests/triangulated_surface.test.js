@@ -153,6 +153,11 @@ test("polygons color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("opacity", async () => {
+  await setMeshPolygonsOpacity(window, polygonsOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
 test("polygons copy color to clipboard", async () => {
   await copyMeshPolygonsColor(window);
   await expect(window).toHaveScreenshot();
@@ -175,11 +180,6 @@ test("points color", async () => {
 
 test("edges color", async () => {
   await setMeshEdgesColor(window);
-  await expect(window).toHaveScreenshot();
-});
-
-test("opacity", async () => {
-  await setMeshPolygonsOpacity(window, polygonsOpacity);
   await expect(window).toHaveScreenshot();
 });
 
