@@ -163,6 +163,11 @@ test("polyhedra color", async () => {
   await expect(window).toHaveScreenshot();
 });
 
+test("opacity", async () => {
+  await setMeshPolyhedraOpacity(window, polyhedraOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
 test("polyhedra copy color to clipboard", async () => {
   await copyMeshPolyhedraColor(window);
   await expect(window).toHaveScreenshot();
@@ -174,7 +179,7 @@ test("polyhedra set color via input", async () => {
 });
 
 test("polyhedra paste color in input", async () => {
-  await pasteMeshPolyhedraColorInput(window, "0, 0, 255, 0.5");
+  await pasteMeshPolyhedraColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
@@ -190,11 +195,6 @@ test("edges color", async () => {
 
 test("polygons color", async () => {
   await setMeshPolygonsColor(window);
-  await expect(window).toHaveScreenshot();
-});
-
-test("opacity", async () => {
-  await setMeshPolyhedraOpacity(window, polyhedraOpacity);
   await expect(window).toHaveScreenshot();
 });
 
