@@ -14,6 +14,13 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
+import {
+  copyMeshCellsColor,
+  pasteMeshCellsColorInput,
+  setMeshCellsColor,
+  setMeshCellsColorInput,
+  setMeshCellsOpacity,
+} from "@tests/utils/mesh/cells/color.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
@@ -24,7 +31,6 @@ import {
   setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
 } from "@tests/utils/mesh/cells/attribute.js";
-import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -154,6 +160,21 @@ test("edges color", async () => {
 
 test("cells opacity", async () => {
   await setMeshCellsOpacity(window, cellsOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cells copy color to clipboard", async () => {
+  await copyMeshCellsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("cells set color via input", async () => {
+  await setMeshCellsColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("cells paste color in input", async () => {
+  await pasteMeshCellsColorInput(window, "0, 0, 255, 0.5");
   await expect(window).toHaveScreenshot();
 });
 
