@@ -148,7 +148,7 @@ async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "ma
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
   if (await collapseButton.isVisible()) {
-    await collapseButton.click();
+    await collapseButton.click({ force: true });
     await window.waitForTimeout(afterActionWait);
   }
 }
