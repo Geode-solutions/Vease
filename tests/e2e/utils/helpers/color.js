@@ -16,18 +16,15 @@ async function setColoringStyle(window, menuTestId, coloringStyle, container = w
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
-  const selector = container.getByTestId("coloringStyleSelector").first();
-  await selector.waitFor({ state: "visible", timeout: 15_000 });
-  await selector.click();
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  const listItem = window
+  await window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
     .filter({ hasText: coloringStyle, visible: true })
-    .first();
-  await listItem.waitFor({ state: "visible", timeout: 15_000 });
-  await listItem.click();
+    .first()
+    .click();
   await window.waitForTimeout(afterActionWait);
 }
 
