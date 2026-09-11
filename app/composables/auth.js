@@ -15,7 +15,7 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 import { useAPIStore } from "@vease/stores/api";
 
 function releaseGatewayKey() {
-  return $fetch("/api/llm/gateway_key", { method: "DELETE" })
+  return $fetch("/api/llm/gateway_key", { method: "DELETE" });
 }
 
 //oxlint-disable max-lines-per-function
