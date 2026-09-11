@@ -169,12 +169,12 @@ test("polyhedra copy color to clipboard", async () => {
 });
 
 test("polyhedra set color via input", async () => {
-  await setMeshPolyhedraColorInput(window, "#00ff00");
+  await setMeshPolyhedraColorInput(window, "0, 255, 0");
   await expect(window).toHaveScreenshot();
 });
 
 test("polyhedra paste color in input", async () => {
-  await pasteMeshPolyhedraColorInput(window, "#0000ff");
+  await pasteMeshPolyhedraColorInput(window, "0, 0, 255, 0.5");
   await expect(window).toHaveScreenshot();
 });
 
