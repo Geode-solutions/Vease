@@ -16,10 +16,17 @@ import {
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  copyMeshPolygonsColor,
+  pasteMeshPolygonsColorInput,
+  setMeshPolygonsColor,
+  setMeshPolygonsColorInput,
+  setMeshPolygonsOpacity,
+} from "@tests/utils/mesh/polygon/color.js";
+import {
   defaultDataName,
   meshViewerObjectType,
   triangulatedSurfaceGeodeObjectType,
-} from "@tests/utils/constants";
+} from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolygonsMenu,
@@ -29,7 +36,6 @@ import {
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
 } from "@tests/utils/mesh/polygon/attribute.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -144,6 +150,21 @@ test("vertex attribute reopen menu", async () => {
 
 test("polygons color", async () => {
   await setMeshPolygonsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons copy color to clipboard", async () => {
+  await copyMeshPolygonsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons set color via input", async () => {
+  await setMeshPolygonsColorInput(window, "#00ff00");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polygons paste color in input", async () => {
+  await pasteMeshPolygonsColorInput(window, "#0000ff");
   await expect(window).toHaveScreenshot();
 });
 
