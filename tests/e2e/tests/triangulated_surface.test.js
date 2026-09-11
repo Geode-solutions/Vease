@@ -159,12 +159,12 @@ test("polygons copy color to clipboard", async () => {
 });
 
 test("polygons set color via input", async () => {
-  await setMeshPolygonsColorInput(window, "#00ff00");
+  await setMeshPolygonsColorInput(window, "0, 255, 0");
   await expect(window).toHaveScreenshot();
 });
 
 test("polygons paste color in input", async () => {
-  await pasteMeshPolygonsColorInput(window, "#0000ff");
+  await pasteMeshPolygonsColorInput(window);
   await expect(window).toHaveScreenshot();
 });
 
