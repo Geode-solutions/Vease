@@ -68,20 +68,17 @@ async function setColorBlack(window, menuTestId, container = window) {
 }
 
 async function copyColor(window, menuTestId, container = window) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
+  await setColoringStyle(window, menuTestId, "Constant", container);
   await clickCopyColorBtn(window, container);
 }
 
 async function setColorInput(window, menuTestId, colorText, container = window) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
+  await setColoringStyle(window, menuTestId, "Constant", container);
   await setColorInputText(window, colorText, container);
 }
 
 async function pasteColorInput(window, menuTestId, container = window) {
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
+  await setColoringStyle(window, menuTestId, "Constant", container);
   await pasteColorInputText(window, container);
 }
 
