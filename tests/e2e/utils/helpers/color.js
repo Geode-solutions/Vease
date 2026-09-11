@@ -79,10 +79,10 @@ async function setColorInput(window, menuTestId, colorText, container = window) 
   await setColorInputText(window, colorText, container);
 }
 
-async function pasteColorInput(window, menuTestId, colorText, container = window) {
+async function pasteColorInput(window, menuTestId, container = window) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
-  await pasteColorInputText(window, colorText, container);
+  await pasteColorInputText(window, container);
 }
 
 function setFeatureColorBlack(window, viewerObjectType, feature, container = window) {
@@ -105,8 +105,8 @@ function setFeatureColorInput(window, viewerObjectType, feature, colorText, cont
   return setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
 }
 
-function setFeaturePasteColorInput(window, viewerObjectType, feature, colorText, container = window) {
-  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
+function setFeaturePasteColorInput(window, viewerObjectType, feature, container = window) {
+  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
 function setFeatureColoringStyle(

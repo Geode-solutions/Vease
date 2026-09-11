@@ -29,8 +29,8 @@ function setMeshPointsColorInput(window, colorText) {
   return setFeatureColorInput(window, meshViewerObjectType, pointsFeatureName, colorText);
 }
 
-function pasteMeshPointsColorInput(window, colorText) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, pointsFeatureName, colorText);
+function pasteMeshPointsColorInput(window, container = window) {
+  return setFeaturePasteColorInput(window, meshViewerObjectType, pointsFeatureName, container);
 }
 
 function setMeshPointsColoringStyle(window, style) {

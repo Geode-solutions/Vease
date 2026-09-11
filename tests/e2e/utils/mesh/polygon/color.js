@@ -29,8 +29,8 @@ function setMeshPolygonsColorInput(window, colorText) {
   return setFeatureColorInput(window, meshViewerObjectType, polygonsFeatureName, colorText);
 }
 
-function pasteMeshPolygonsColorInput(window, colorText) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, polygonsFeatureName, colorText);
+function pasteMeshPolygonsColorInput(window, container = window) {
+  return setFeaturePasteColorInput(window, meshViewerObjectType, polygonsFeatureName, container);
 }
 
 function setMeshPolygonsColoringStyle(window, style) {

@@ -29,8 +29,8 @@ function setMeshCellsColorInput(window, colorText) {
   return setFeatureColorInput(window, meshViewerObjectType, cellsFeatureName, colorText);
 }
 
-function pasteMeshCellsColorInput(window, colorText) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, cellsFeatureName, colorText);
+function pasteMeshCellsColorInput(window, container = window) {
+  return setFeaturePasteColorInput(window, meshViewerObjectType, cellsFeatureName, container);
 }
 
 function setMeshCellsColoringStyle(window, style) {

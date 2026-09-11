@@ -34,8 +34,8 @@ function setMeshPolyhedraColorInput(window, colorText) {
   return setFeatureColorInput(window, meshViewerObjectType, polyhedraFeatureName, colorText);
 }
 
-function pasteMeshPolyhedraColorInput(window, colorText) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, polyhedraFeatureName, colorText);
+function pasteMeshPolyhedraColorInput(window, container = window) {
+  return setFeaturePasteColorInput(window, meshViewerObjectType, polyhedraFeatureName, container);
 }
 
 function setMeshPolyhedraColoringStyle(window, style) {

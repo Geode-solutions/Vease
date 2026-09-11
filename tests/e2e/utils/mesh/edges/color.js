@@ -29,8 +29,8 @@ function setMeshEdgesColorInput(window, colorText) {
   return setFeatureColorInput(window, meshViewerObjectType, edgesFeatureName, colorText);
 }
 
-function pasteMeshEdgesColorInput(window, colorText) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, edgesFeatureName, colorText);
+function pasteMeshEdgesColorInput(window, container = window) {
+  return setFeaturePasteColorInput(window, meshViewerObjectType, edgesFeatureName, container);
 }
 
 function setMeshEdgesColoringStyle(window, style) {

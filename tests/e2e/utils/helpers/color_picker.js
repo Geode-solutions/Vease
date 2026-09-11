@@ -37,16 +37,17 @@ async function setColorInputText(window, text, container = window) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function pasteColorInputText(window, text, container = window) {
+async function pasteColorInputText(window, container = window) {
+  const textToPaste = await window.evaluate(() => navigator.clipboard.readText());
   const input = container.getByTestId("colorInput");
   await input.focus();
-  await input.evaluate((inputElement, textToPaste) => {
+  await input.evaluate((inputElement, data) => {
     const dataTransfer = new DataTransfer();
-    dataTransfer.setData("text/plain", textToPaste);
+    dataTransfer.setData("text/plain", data);
     inputElement.dispatchEvent(
       new ClipboardEvent("paste", { clipboardData: dataTransfer, bubbles: true }),
     );
-  }, text);
+  }, textToPaste);
   await window.waitForTimeout(afterActionWait);
 }
 
