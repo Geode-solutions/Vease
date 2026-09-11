@@ -12,6 +12,13 @@ import {
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  copyMeshPointsColor,
+  pasteMeshPointsColorInput,
+  setMeshPointsColor,
+  setMeshPointsColorInput,
+  setMeshPointsOpacity,
+} from "@tests/utils/mesh/points/color.js";
+import {
   defaultDataName,
   meshViewerObjectType,
   pointSetGeodeObjectType,
@@ -22,7 +29,6 @@ import {
   setMeshPointsNoDataColor,
   setMeshPointsVertexAttribute,
 } from "@tests/utils/mesh/points/attribute.js";
-import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { test } from "@tests/fixtures.js";
@@ -113,6 +119,21 @@ test("points color", async () => {
 
 test("points opacity", async () => {
   await setMeshPointsOpacity(window, pointsOpacity);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points copy color to clipboard", async () => {
+  await copyMeshPointsColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("points set color via input", async () => {
+  await setMeshPointsColorInput(window, "0, 255, 0");
+  await expect(window).toHaveScreenshot();
+});
+
+test("points paste color in input", async () => {
+  await pasteMeshPointsColorInput(window, "0, 0, 255, 0.5");
   await expect(window).toHaveScreenshot();
 });
 
