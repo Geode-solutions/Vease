@@ -19,10 +19,18 @@ import {
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
+  copyMeshPolyhedraColor,
+  pasteMeshPolyhedraColorInput,
+  setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
+  setMeshPolyhedraColorInput,
+  setMeshPolyhedraOpacity,
+} from "@tests/utils/mesh/polyhedra/color.js";
+import {
   defaultDataName,
   hybridSolidGeodeObjectType,
   meshViewerObjectType,
-} from "@tests/utils/constants";
+} from "@tests/utils/constants.js";
 import {
   expandMainObjectTree,
   highlightData,
@@ -36,11 +44,6 @@ import {
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute.js";
-import {
-  setMeshPolyhedraColor,
-  setMeshPolyhedraColorBlack,
-  setMeshPolyhedraOpacity,
-} from "@tests/utils/mesh/polyhedra/color.js";
 import { loadData } from "@tests/utils/load.js";
 import { navigateToApp } from "@tests/utils/navigate.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
@@ -157,6 +160,21 @@ test("vertex attribute reopen menu", async () => {
 
 test("polyhedra color", async () => {
   await setMeshPolyhedraColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedra copy color to clipboard", async () => {
+  await copyMeshPolyhedraColor(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedra set color via input", async () => {
+  await setMeshPolyhedraColorInput(window, "#00ff00");
+  await expect(window).toHaveScreenshot();
+});
+
+test("polyhedra paste color in input", async () => {
+  await pasteMeshPolyhedraColorInput(window, "#0000ff");
   await expect(window).toHaveScreenshot();
 });
 
