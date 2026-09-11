@@ -14,6 +14,10 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
 
+function releaseGatewayKey() {
+  return $fetch("/api/llm/gateway_key", { method: "DELETE" });
+}
+
 //oxlint-disable max-lines-per-function
 function useAuth() {
   const auth = useFirebaseAuth();
@@ -80,6 +84,7 @@ function useAuth() {
   }
 
   async function logout() {
+    await releaseGatewayKey();
     if (infraStore.app_mode === appMode.DESKTOP) {
       try {
         const { success } = await globalThis.electronAPI.delete_credentials();

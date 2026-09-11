@@ -52,6 +52,7 @@
     "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "4.0.75",
     "@ai-sdk/mcp": "2.0.45",
     "@ai-sdk/openai-compatible": "3.0.44",
     "@ai-sdk/vue": "4.0.93",

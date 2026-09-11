@@ -4,7 +4,16 @@ import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
 
 const UIStore = useUIStore();
-const { messages, sendMessage, status, error } = useVeaseChat();
+const {
+  messages,
+  sendMessage,
+  status,
+  error,
+  provider,
+  toggleProvider,
+  isCloudAiAllowed,
+  CHAT_PROVIDER,
+} = useVeaseChat();
 
 const input = ref("");
 const messagesEnd = ref(undefined);
@@ -55,6 +64,27 @@ watch(
         <v-icon size="18" color="primary" class="mr-2">mdi-chat-outline</v-icon>
         <span class="text-subtitle-2 font-weight-bold text-white">Chat (beta)</span>
         <v-spacer />
+        <span class="mr-1">
+          <v-btn
+            size="x-small"
+            variant="tonal"
+            color="white"
+            :disabled="!isCloudAiAllowed"
+            @click="toggleProvider"
+          >
+            <v-icon size="14" class="mr-1">
+              {{ provider === CHAT_PROVIDER.LLAMA ? "mdi-laptop" : "mdi-cloud-outline" }}
+            </v-icon>
+            {{ provider === CHAT_PROVIDER.LLAMA ? "Local" : "Cloud" }}
+          </v-btn>
+          <v-tooltip activator="parent" location="top">
+            {{
+              isCloudAiAllowed
+                ? "Switch between local and cloud AI"
+                : "Cloud AI is restricted to authorized accounts"
+            }}
+          </v-tooltip>
+        </span>
         <v-btn icon size="x-small" variant="text" color="white" @click="close">
           <v-icon size="16">mdi-close</v-icon>
           <v-tooltip activator="parent" location="top">Close</v-tooltip>

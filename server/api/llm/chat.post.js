@@ -9,9 +9,11 @@ const MAX_TOOL_STEPS = 5;
 
 export default defineEventHandler(async (event) => {
   try {
-    const { messages } = await readBody(event);
-    const [model, tools] = await Promise.all([getChatModel(), getChatTools()]);
-
+    const { messages, provider, model: modelId } = await readBody(event);
+    const [model, tools] = await Promise.all([
+      getChatModel({ provider, model: modelId }),
+      getChatTools(),
+    ]);
     const result = streamText({
       model,
       messages: await convertToModelMessages(messages),
