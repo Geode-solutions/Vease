@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useAppStore } from "@ogw_front/stores/app";
 
 const appStore = useAppStore();
 
 const allGlobalComponents = computed(() => {
-  const components = [];
+  const components: unknown[] = [];
   for (const extensionComponents of appStore.globalComponents.values()) {
     for (const component of extensionComponents.values()) {
       components.push(component);

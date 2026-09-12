@@ -10,3 +10,20 @@ jobs:
     with:
       repos: ${{ vars.REPOS }}
     secrets: inherit
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: Geode-solutions/actions/install/checkout@master
+        with:
+          token: ${{ secrets.TOKEN }}
+      - name: Install dependencies
+        uses: Geode-solutions/actions/install/node-dependencies@master
+        with:
+          repos: ${{ vars.REPOS }}
+          branch: ${{ github.event.pull_request.head.ref }}
+          use_registry: false
+          token: ${{ secrets.TOKEN }}
+      - name: Typecheck
+        run: npm run typecheck

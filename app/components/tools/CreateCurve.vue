@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { ref } from "vue";
@@ -33,9 +33,9 @@ const {
     const [firstPoint] = currentPoints;
     if (firstPoint && firstPoint.x !== "") {
       const distance = Math.hypot(
-        newPoint.x - firstPoint.x,
-        newPoint.y - firstPoint.y,
-        newPoint.z - firstPoint.z,
+        Number(newPoint.x) - Number(firstPoint.x),
+        Number(newPoint.y) - Number(firstPoint.y),
+        Number(newPoint.z) - Number(firstPoint.z),
       );
       if (distance < DISTANCE_TOLERANCE) {
         closed.value = true;

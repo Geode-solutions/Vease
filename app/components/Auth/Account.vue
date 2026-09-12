@@ -1,5 +1,5 @@
-<script setup>
-import AuthDeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog";
+<script setup lang="ts">
+import AuthDeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
 import { useAuth } from "@vease/composables/auth";
 
 const { logout, user } = useAuth();

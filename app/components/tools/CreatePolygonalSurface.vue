@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { useCreateObjectTool } from "@vease/composables/create_object";

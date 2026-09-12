@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useUIStore } from "@vease/stores/ui";

@@ -1,5 +1,5 @@
-<script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
+<script setup lang="ts">
+import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useAuth } from "@vease/composables/auth";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 

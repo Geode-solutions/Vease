@@ -1,0 +1,134 @@
+// Node imports
+
+// Third party imports
+import type { Page } from "@playwright/test";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import { expect } from "@playwright/test";
+
+// Local imports
+import {
+  afterActionWait,
+  moveMouseOutOfTheWay,
+  noopCleanup,
+} from "@tests/utils/viewer_interaction";
+import {
+  brepGeodeObjectType,
+  pointSetGeodeObjectType,
+  polygonalSurfaceGeodeObjectType,
+} from "@tests/utils/constants";
+import {
+  clickdeleteDataButton,
+  confirmDelete,
+  confirmRename,
+  expandDataManagerPiP,
+  expandObjectTree,
+  focusRowItem,
+  isolateRowItem,
+  navigateToDataManager,
+  openDataManagerPiP,
+  openRenameByButton,
+  openRenameByName,
+  toggleRowVisibility,
+} from "@tests/utils/data_manager";
+import { loadData } from "@tests/utils/load";
+import { navigateToApp } from "@tests/utils/navigate";
+import { test } from "@tests/fixtures";
+
+// Constants
+const BREP_FILE = "test.og_brep";
+const POLYGONAL_SURFACE_FILE = "test.og_psf3d";
+const POINTSET_FILE = "test.og_pts3d";
+const RENAMED_BREP = "cube vease";
+const RENAMED_POLYGONAL_SURFACE = "surface vease";
+
+let window: Page = undefined as unknown as Page;
+let cleanup: () => unknown = noopCleanup;
+
+test.describe.configure({ mode: "serial" });
+
+test.beforeAll(async ({ mode, browser }) => {
+  ({ window, cleanup } = await navigateToApp(mode, browser));
+});
+
+test.afterAll(async () => {
+  await cleanup();
+});
+
+test("load objects", async () => {
+  await loadData(window, BREP_FILE);
+  await loadData(window, POLYGONAL_SURFACE_FILE);
+  await expect(window).toHaveScreenshot();
+});
+
+test("navigate to data manager", async () => {
+  await navigateToDataManager(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("import data from data manager", async () => {
+  await loadData(window, POINTSET_FILE);
+  await expect(window).toHaveScreenshot();
+});
+
+test("rename object by clicking item name", async () => {
+  await openRenameByName(window, brepGeodeObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("rename object", async () => {
+  await confirmRename(window, RENAMED_BREP);
+  await expect(window).toHaveScreenshot();
+});
+
+test("toggle visibility off", async () => {
+  await toggleRowVisibility(window, pointSetGeodeObjectType);
+  await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
+  await expect(window).toHaveScreenshot();
+});
+
+test("open picture in picture and expand objects", async () => {
+  await openDataManagerPiP(window);
+  await expandObjectTree(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("focus object from pip", async () => {
+  await focusRowItem(window, RENAMED_BREP);
+  await expect(window).toHaveScreenshot();
+});
+
+test("rename dialog via button", async () => {
+  await openRenameByButton(window, polygonalSurfaceGeodeObjectType);
+  await expect(window).toHaveScreenshot();
+});
+
+test("rename object via button", async () => {
+  await confirmRename(window, RENAMED_POLYGONAL_SURFACE);
+  await moveMouseOutOfTheWay(window);
+  await expect(window).toHaveScreenshot();
+});
+
+test("isolate object", async () => {
+  await isolateRowItem(window, pointSetGeodeObjectType);
+  await window.waitForTimeout(afterActionWait);
+  await moveMouseOutOfTheWay(window);
+  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
+  await expect(window).toHaveScreenshot();
+});
+
+test("expand pip", async () => {
+  await expandDataManagerPiP(window);
+  await window.waitForTimeout(afterActionWait);
+  await expect(window).toHaveScreenshot();
+});
+
+test("delete object", async () => {
+  await clickdeleteDataButton(window, RENAMED_POLYGONAL_SURFACE);
+  await expect(window).toHaveScreenshot();
+});
+
+test("confirm delete object", async () => {
+  await confirmDelete(window);
+  await expect(window).toHaveScreenshot();
+});

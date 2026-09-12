@@ -1,5 +1,5 @@
-<script setup>
-import AuthForm from "@vease/components/Auth/Form";
+<script setup lang="ts">
+import AuthForm from "@vease/components/Auth/Form.vue";
 import logo from "@vease/assets/img/logo.png";
 import { useAuthPage } from "@vease/composables/auth_page";
 
