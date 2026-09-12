@@ -50,8 +50,9 @@ function get_packages_versions() {
     { schema },
     {
       response_function: (response) => {
-        packages_versions.value = (response as { packages_versions: PackageVersion[] })
-          .packages_versions;
+        packages_versions.value = (
+          response as { packages_versions: PackageVersion[] }
+        ).packages_versions;
       },
     },
   );

@@ -26,9 +26,7 @@ const test = base.extend<ModeFixtures>({
       const statusColor = testInfo.status === "passed" ? "\u001B[32m" : "\u001B[31m";
       const status = (testInfo.status || "done").toUpperCase();
       const duration = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
-      console.log(
-        `[35m[END][0m ${name} : ${statusColor}${status}[0m (${duration}s)`,
-      );
+      console.log(`[35m[END][0m ${name} : ${statusColor}${status}[0m (${duration}s)`);
     },
     { auto: true },
   ],

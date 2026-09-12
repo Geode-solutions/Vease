@@ -105,10 +105,4 @@ export type {
   ViewerConnection,
   ViewerClient,
 };
-export {
-  getBackStore,
-  getHybridViewerStore,
-  getInfraStore,
-  getDataStyleStore,
-  getViewerClient,
-};
+export { getBackStore, getHybridViewerStore, getInfraStore, getDataStyleStore, getViewerClient };

@@ -31,10 +31,7 @@ import {
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
 } from "@tests/utils/mesh/polyhedra/attribute";
-import {
-  setMeshPolyhedraColor,
-  setMeshPolyhedraOpacity,
-} from "@tests/utils/mesh/polyhedra/color";
+import { setMeshPolyhedraColor, setMeshPolyhedraOpacity } from "@tests/utils/mesh/polyhedra/color";
 import { loadData } from "@tests/utils/load";
 import { navigateToApp } from "@tests/utils/navigate";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color";
