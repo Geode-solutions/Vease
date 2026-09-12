@@ -19,7 +19,6 @@ import { useUIStore } from "@vease/stores/ui";
 
 console.log("Nuxt server url", globalThis.location.host);
 
-
 const UIStore = useUIStore();
 const infraStore = getInfraStore();
 const appStore = useAppStore();
