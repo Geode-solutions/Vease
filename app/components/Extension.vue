@@ -1,7 +1,7 @@
-<script setup>
-import DragAndDrop from "@ogw_front/components/DragAndDrop";
-import GlassCard from "@ogw_front/components/GlassCard";
-import { appMode } from "@geode/opengeodeweb-front/shared/app_mode";
+<script setup lang="ts">
+import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import { appMode } from "@geode/opengeodeweb-front/shared/app_mode.js";
 import { importExtensionFile } from "@ogw_front/utils/extension";
 
 import { useAppStore } from "@ogw_front/stores/app";
@@ -9,13 +9,10 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { formatRelativeTime } from "@/utils/format_date";
 import { useExtensionMetadata } from "@/composables/extension_metadata";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import type { Extension } from "@/composables/extension_metadata";
 
-const { hideHeader } = defineProps({
-  hideHeader: {
-    type: Boolean,
-    default: false,
-  },
-});
+const { hideHeader = false } = defineProps<{ hideHeader?: boolean }>();
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -25,7 +22,7 @@ const loading = ref(false);
 const errorMessage = ref("");
 const successMessage = ref("");
 const showRemoveDialog = ref(false);
-const extensionToRemove = ref(undefined);
+const extensionToRemove = ref<Extension | undefined>(undefined);
 
 const loadedExtensions = computed(() => appStore.getLoadedExtensions());
 
@@ -78,7 +75,7 @@ function formatDate(dateString) {
   return formatRelativeTime(dateString);
 }
 
-function confirmRemove(extension) {
+function confirmRemove(extension: Extension) {
   extensionToRemove.value = extension;
   showRemoveDialog.value = true;
 }

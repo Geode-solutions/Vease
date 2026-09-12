@@ -1,63 +1,68 @@
-<script setup>
+<script setup lang="ts">
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
+import type { DataItem } from "@vease/types/data_item";
 
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
 const SECONDS_IN_DAY = 86_400;
 const MILLISECONDS_TO_SECONDS = 1000;
 
-const { items, search, compact } = defineProps({
-  items: { type: Array, required: true },
-  search: { type: String, default: "" },
-  compact: { type: Boolean, default: false },
-});
+const {
+  items,
+  search = "",
+  compact = false,
+} = defineProps<{
+  items: DataItem[];
+  search?: string;
+  compact?: boolean;
+}>();
 
-const selectedIds = defineModel("selectedIds", {
-  type: Array,
-  default: () => [],
-});
+const selectedIds = defineModel<DataItem[]>("selectedIds", { default: () => [] });
 
-const emit = defineEmits([
-  "toggle-visibility",
-  "focus-camera",
-  "isolate",
-  "rename",
-  "delete",
-  "delete-selected",
-  "toggle-visibility-selected",
-]);
+const emit = defineEmits<{
+  "toggle-visibility": [item: DataItem];
+  "focus-camera": [item: DataItem];
+  isolate: [item: DataItem];
+  rename: [item: DataItem];
+  delete: [item: DataItem];
+  "delete-selected": [];
+  "toggle-visibility-selected": [];
+}>();
 
-const headers = computed(() => [
-  { title: "Name", key: "name", sortable: true, width: "auto" },
-  {
-    title: "Type",
-    key: "geode_object_type",
-    sortable: true,
-    align: "center",
-    width: compact ? "90px" : "110px",
-  },
-  {
-    title: "Date",
-    key: "created_at",
-    sortable: true,
-    align: "center",
-    width: compact ? "120px" : "160px",
-  },
-  {
-    title: "Visibility",
-    key: "visible",
-    sortable: false,
-    align: "center",
-    width: compact ? "90px" : "140px",
-  },
-  {
-    title: "Actions",
-    key: "actions",
-    sortable: false,
-    align: "end",
-    width: compact ? "140px" : "180px",
-  },
-]);
+const headers = computed(
+  () =>
+    [
+      { title: "Name", key: "name", sortable: true, width: "auto" },
+      {
+        title: "Type",
+        key: "geode_object_type",
+        sortable: true,
+        align: "center",
+        width: compact ? "90px" : "110px",
+      },
+      {
+        title: "Date",
+        key: "created_at",
+        sortable: true,
+        align: "center",
+        width: compact ? "120px" : "160px",
+      },
+      {
+        title: "Visibility",
+        key: "visible",
+        sortable: false,
+        align: "center",
+        width: compact ? "90px" : "140px",
+      },
+      {
+        title: "Actions",
+        key: "actions",
+        sortable: false,
+        align: "end",
+        width: compact ? "140px" : "180px",
+      },
+    ] as const,
+);
 
 const isAllVisible = computed(() => {
   if (items.length === 0) {
@@ -67,19 +72,19 @@ const isAllVisible = computed(() => {
   return targetItems.every((item) => item.visible);
 });
 
-function getRowProps({ item }) {
+function getRowProps({ item }: { item: DataItem }) {
   const isSelected = selectedIds.value.some((selected) => selected.id === item.id);
   return {
     class: isSelected ? "selected-row" : "",
   };
 }
 
-function formatSmartDate(dateStr) {
+function formatSmartDate(dateStr: string | undefined) {
   if (!dateStr) {
     return "";
   }
   const date = new Date(dateStr);
-  const diff = Math.floor((Date.now() - date) / MILLISECONDS_TO_SECONDS);
+  const diff = Math.floor((Date.now() - date.getTime()) / MILLISECONDS_TO_SECONDS);
 
   let relative = "";
   if (diff < SECONDS_IN_MINUTE) {

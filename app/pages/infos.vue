@@ -1,24 +1,28 @@
-<script setup>
+<script setup lang="ts">
+import { getBackStore, getInfraStore } from "@vease/utils/external_stores";
 import { Status } from "@ogw_front/utils/status";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { useAppStore } from "@ogw_front/stores/app";
-import { useBackStore } from "@ogw_front/stores/back";
 import { useClipboard } from "@vueuse/core";
-import { useInfraStore } from "@ogw_front/stores/infra";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
 
+interface PackageVersion {
+  package: string;
+  version: string;
+}
+
 const version = useRuntimeConfig().public.VERSION;
 const appStore = useAppStore();
-const backStore = useBackStore();
+const backStore = getBackStore();
 const viewerStore = useViewerStore();
 
 const back_version = ref("");
 const viewer_version = ref("");
 
-const infraStore = useInfraStore();
-const packages_versions = ref([]);
+const infraStore = getInfraStore();
+const packages_versions = ref<PackageVersion[]>([]);
 
 const { copy, copied } = useClipboard({ copiedDuring: 1500 });
 function copy_url() {
@@ -46,7 +50,8 @@ function get_packages_versions() {
     { schema },
     {
       response_function: (response) => {
-        packages_versions.value = response.packages_versions;
+        packages_versions.value = (response as { packages_versions: PackageVersion[] })
+          .packages_versions;
       },
     },
   );
@@ -56,9 +61,9 @@ runFunctionWhenMicroservicesConnected(() => {
   get_packages_versions();
   for (const store of infraStore.microservices) {
     if (store.$id === "back") {
-      store.get_version(vease_back_schemas.vease_back.microservice_version);
+      store.get_version?.(vease_back_schemas.vease_back.microservice_version);
     } else if (store.$id === "viewer") {
-      store.get_version(vease_viewer_schemas.vease_viewer.microservice_version);
+      store.get_version?.(vease_viewer_schemas.vease_viewer.microservice_version);
     } else if (typeof store.get_version === "function") {
       store.get_version();
     }
@@ -122,7 +127,7 @@ runFunctionWhenMicroservicesConnected(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="pkg in packages_versions" :key="pkg">
+              <tr v-for="pkg in packages_versions" :key="pkg.package">
                 <td class="text-left text-white">{{ pkg.package }}</td>
                 <td>
                   <a
@@ -167,7 +172,7 @@ runFunctionWhenMicroservicesConnected(() => {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="microservice in microservices" :key="microservice">
+                <tr v-for="microservice in microservices" :key="microservice.name">
                   <td class="text-left text-white">
                     {{ microservice.name }}
                   </td>
