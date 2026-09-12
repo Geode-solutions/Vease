@@ -8,7 +8,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   afterActionWait,
-  beforeAllTimeout,
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
   noopCleanup,
@@ -67,7 +66,6 @@ const ZOOM_WHEEL_DELTA = -5000;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

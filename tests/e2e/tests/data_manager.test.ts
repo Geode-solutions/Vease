@@ -8,7 +8,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   afterActionWait,
-  beforeAllTimeout,
   moveMouseOutOfTheWay,
   noopCleanup,
 } from "@tests/utils/viewer_interaction";
@@ -48,7 +47,6 @@ let cleanup: () => unknown = noopCleanup;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

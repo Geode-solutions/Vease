@@ -8,7 +8,6 @@ import { expect } from "@playwright/test";
 
 import {
   afterActionWait,
-  beforeAllTimeout,
   moveMouseOutOfTheWay,
   noopCleanup,
   setEdgesVisibility,
@@ -63,7 +62,6 @@ const edgesWidth = 5;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

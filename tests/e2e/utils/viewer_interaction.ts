@@ -1,5 +1,4 @@
 // Constants
-const beforeAllTimeout = 60_000;
 const afterActionWait = 2000;
 const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
@@ -277,7 +276,6 @@ async function viewerQuickColormap(window, x, y) {
 
 export {
   afterActionWait,
-  beforeAllTimeout,
   noopCleanup,
   dragContextMenu,
   dragElement,

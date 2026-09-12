@@ -6,7 +6,6 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 // Local imports
-import { beforeAllTimeout, noopCleanup } from "@tests/utils/viewer_interaction";
 import {
   clickPickButton,
   closePickingBanner,
@@ -18,6 +17,7 @@ import {
   toggleClosedCurve,
 } from "@tests/utils/create_objects";
 import { navigateToApp } from "@tests/utils/navigate";
+import { noopCleanup } from "@tests/utils/viewer_interaction";
 import { test } from "@tests/fixtures";
 
 // Constants
@@ -58,7 +58,6 @@ const VIEWER_SURFACE_COORDS = [
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

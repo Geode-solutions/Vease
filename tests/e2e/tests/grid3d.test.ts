@@ -6,8 +6,9 @@ import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 // Local imports
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
-  beforeAllTimeout,
   noopCleanup,
   setCellsVisibility,
   setEdgesVisibility,
@@ -17,8 +18,6 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
-import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
@@ -49,7 +48,6 @@ const edgesWidth = 5;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

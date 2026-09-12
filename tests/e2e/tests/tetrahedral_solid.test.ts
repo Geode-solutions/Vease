@@ -7,7 +7,12 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  beforeAllTimeout,
+  defaultDataName,
+  meshViewerObjectType,
+  tetrahedralSolidGeodeObjectType,
+} from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import {
   noopCleanup,
   setEdgesVisibility,
   setEdgesWidth,
@@ -18,12 +23,6 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction";
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  tetrahedralSolidGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
 import {
   openMeshPolyhedraMenu,
   setMeshPolyhedraColorMap,
@@ -58,7 +57,6 @@ const edgesWidth = 5;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

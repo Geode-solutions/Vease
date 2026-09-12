@@ -11,7 +11,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   afterActionWait,
-  beforeAllTimeout,
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
   noopCleanup,
@@ -86,7 +85,6 @@ const ROTATE_LEFT_A_LITTLE = -180;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

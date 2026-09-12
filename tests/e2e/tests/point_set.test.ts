@@ -7,19 +7,18 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  beforeAllTimeout,
+  defaultDataName,
+  meshViewerObjectType,
+  pointSetGeodeObjectType,
+} from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import {
   noopCleanup,
   setPointsSize,
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction";
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  pointSetGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
 import {
   openMeshPointsMenu,
   setMeshPointsNoDataColor,
@@ -43,7 +42,6 @@ const pointsSize = 15;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 

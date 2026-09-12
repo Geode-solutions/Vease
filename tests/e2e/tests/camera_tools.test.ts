@@ -17,7 +17,6 @@ import {
 } from "@tests/utils/clipping_planes_interaction";
 import {
   afterActionWait,
-  beforeAllTimeout,
   dragContextMenu,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
@@ -92,7 +91,6 @@ const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 test.describe.configure({ mode: "serial" });
 
 test.beforeAll(async ({ mode, browser }) => {
-  test.setTimeout(beforeAllTimeout);
   ({ window, cleanup } = await navigateToApp(mode, browser));
 });
 
