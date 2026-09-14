@@ -10,7 +10,7 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   defaultDataName,
   edgedCurveGeodeObjectType,

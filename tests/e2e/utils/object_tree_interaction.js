@@ -339,7 +339,6 @@ export {
   toggleSearchObjects,
   fillSearchQuery,
   copyTreeRowId,
-  expandMainObjectTree,
   highlightData,
   getTreeRowByTextAndParent,
   expandGeodeObjectType,

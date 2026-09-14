@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
   collapseAllObjects,

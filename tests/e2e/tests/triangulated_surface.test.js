@@ -13,9 +13,10 @@ import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
+  setMeshPolygonsNoDataColor,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-} from "@tests/utils/data/mesh/polygon/attribute.js";
+} from "@tests/utils/mesh/polygon/attribute.js";
 import {
   setEdgesVisibility,
   setEdgesWidth,
@@ -26,20 +27,6 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  triangulatedSurfaceGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import {
-  openMeshPolygonsMenu,
-  setMeshPolygonsColorMap,
-  setMeshPolygonsItem,
-  setMeshPolygonsNoDataColor,
-  setMeshPolygonsPolygonAttribute,
-  setMeshPolygonsVertexAttribute,
-} from "@tests/utils/mesh/polygon/attribute.js";
 import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "@tests/utils/mesh/polygon/color.js";
 import { loadDatas } from "@tests/utils/load.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";

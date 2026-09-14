@@ -12,8 +12,8 @@ import {
   selectCreateTool,
   submitCreateObject,
   toggleClosedCurve,
-} from "../utils/create_objects.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/create_objects.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const POINTS_COORDS = [

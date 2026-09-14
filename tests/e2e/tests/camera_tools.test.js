@@ -12,7 +12,7 @@ import {
   setPlaneNormal,
   toggleClippingPlanes,
   toggleTargetAllVisible,
-} from "../utils/clipping_planes_interaction.js";
+} from "@tests/utils/clipping_planes_interaction.js";
 import {
   afterActionWait,
   dragContextMenu,
@@ -23,13 +23,13 @@ import {
   setEdgesVisibility,
   stabilizeHoverTooltip,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
   meshViewerObjectType,
   rgd3dGeodeObjectType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   clearRuler,
   closeCameraManager,
@@ -52,19 +52,19 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
-} from "../utils/camera_interaction.js";
-import { confirmDelete } from "../utils/data_manager.js";
-import { navigateToDataManagerPage } from "../utils/navigate.js";
+} from "@tests/utils/camera_interaction.js";
+import { confirmDelete } from "@tests/utils/data_manager.js";
+import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
   focusObjectInTree,
   hideObjectInTree,
   showObjectInTree,
-} from "../utils/object_tree_interaction.js";
-import { loadDatas } from "../utils/load.js";
-import { setColor } from "../utils/data/helpers/color.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/object_tree_interaction.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { setColor } from "@tests/utils/data/helpers/color.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";

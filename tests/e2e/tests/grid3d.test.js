@@ -3,15 +3,16 @@
 // Third party imports
 
 // Local imports
-import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
-import { meshViewerObjectType, rgd3dGeodeObjectType } from "../utils/constants.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
   setMeshCellsItem,
+  setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
-} from "../utils/data/mesh/cells/attribute.js";
+} from "@tests/utils/mesh/cells/attribute.js";
 import {
   setCellsVisibility,
   setEdgesVisibility,
@@ -21,16 +22,6 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants";
-import {
-  openMeshCellsMenu,
-  setMeshCellsCellAttribute,
-  setMeshCellsColorMap,
-  setMeshCellsItem,
-  setMeshCellsNoDataColor,
-  setMeshCellsVertexAttribute,
-} from "@tests/utils/mesh/cells/attribute.js";
 import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import { loadDatas } from "@tests/utils/load.js";
 import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";

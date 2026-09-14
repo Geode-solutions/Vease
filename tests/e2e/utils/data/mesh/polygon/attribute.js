@@ -14,7 +14,7 @@ import {
   polygonAttributeType,
   polygonsFeatureName,
   vertexAttributeType,
-} from "../../../constants.js";
+} from "@tests/utils/data/constants.js";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
