@@ -88,11 +88,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async () => {
+test("vertex attribute unmapped elements color", async ({window}) => {
   await setMeshPolygonsNoDataColor(window);
 });
 
-test("vertex attribute change item to 1", async () => {
+test("vertex attribute change item to 1", async ({window}) => {
   await setMeshPolygonsItem(window, 0);
 });
 

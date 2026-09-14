@@ -17,8 +17,6 @@ import {
 import {
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
-} from "@tests/utils/viewer_interaction.js";
-import {
   setEdgesVisibility,
   setEdgesWidth,
   setPointsSize,

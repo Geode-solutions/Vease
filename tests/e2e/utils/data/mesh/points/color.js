@@ -1,10 +1,10 @@
-import { meshViewerObjectType, pointsFeatureName } from "../../../constants.js";
+import { meshViewerObjectType, pointsFeatureName } from "@tests/e2e/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "../../helpers/color.js";
+} from "@tests/e2e/utils/data/helpers/color.js";
 
 function setMeshPointsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, pointsFeatureName, percent);

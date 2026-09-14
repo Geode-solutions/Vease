@@ -1,6 +1,8 @@
+//oxlint-disable eslint/max-lines
+
 import { afterActionWait, ensureMenuOpen, moveMouseOutOfTheWay } from "./viewer_interaction.js";
-import { setModelColor } from "./data/model/color.js";
 import { modalTransitionWait } from "./constants.js";
+import { setModelColor } from "./data/model/color.js";
 
 function getMainObjectTree(window) {
   return window.getByTestId("mainObjectTree");
@@ -97,14 +99,6 @@ async function fillSearchQuery(window, query, treeTestId = "mainObjectTree") {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function highlightData(window, geodeObjectType, dataName) {
-  await expandGeodeObjectType(window, geodeObjectType);
-  const mainObjectTree = getMainObjectTree(window);
-  const testItem = mainObjectTree.getByText(dataName).first();
-  await testItem.hover();
-  await window.waitForTimeout(afterActionWait);
-}
-
 async function getTreeRowByTextAndParent(
   window,
   geodeObjectType,
@@ -149,6 +143,25 @@ async function getTreeRowByTextAndParent(
   return allRows.nth(childIndex);
 }
 
+async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
+  await window.keyboard.press("Escape");
+  await window.waitForTimeout(afterActionWait);
+  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
+  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
+  if (await expandButton.isVisible()) {
+    await expandButton.click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function highlightData(window, geodeObjectType, dataName) {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = getMainObjectTree(window);
+  const testItem = mainObjectTree.getByText(dataName).first();
+  await testItem.hover();
+  await window.waitForTimeout(afterActionWait);
+}
+
 async function copyTreeRowId(window, parentName, objectName, treeTestId = "mainObjectTree") {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, treeTestId);
   const label = row.getByTestId("treeItemLabel").first();
@@ -164,17 +177,6 @@ async function copyTreeRowId(window, parentName, objectName, treeTestId = "mainO
   await copyBtn.click();
   await window.waitForTimeout(afterActionWait);
   return id;
-}
-
-async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
-  const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
-  if (await expandButton.isVisible()) {
-    await expandButton.click();
-    await window.waitForTimeout(afterActionWait);
-  }
 }
 
 async function collapseGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {

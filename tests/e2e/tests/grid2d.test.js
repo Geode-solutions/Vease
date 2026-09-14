@@ -4,15 +4,6 @@
 
 // Local imports
 import {
-  setCellsVisibility,
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import {
   defaultDataName,
   meshViewerObjectType,
   rgd2dGeodeObjectType,
@@ -26,6 +17,15 @@ import {
   setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
 } from "@tests/utils/mesh/cells/attribute.js";
+import {
+  setCellsVisibility,
+  setEdgesVisibility,
+  setEdgesWidth,
+  setPointsSize,
+  setPointsVisibility,
+  toggleInfoCard,
+  viewerContextMenu,
+} from "@tests/utils/viewer_interaction.js";
 import { setMeshCellsColorWithSlider, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
 import { loadDatas } from "@tests/utils/load.js";
 import { setMeshEdgesColorWithSlider } from "@tests/utils/mesh/edges/color.js";
@@ -97,11 +97,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async () => {
+test("vertex attribute unmapped elements color", async ({window}) => {
   await setMeshCellsNoDataColor(window);
 });
 
-test("vertex attribute change attribute name", async () => {
+test("vertex attribute change attribute name", async ({window}) => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName2);
 });
 

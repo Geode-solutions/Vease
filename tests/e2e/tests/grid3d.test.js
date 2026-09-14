@@ -85,11 +85,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async () => {
+test("vertex attribute unmapped elements color", async ({window}) => {
   await setMeshCellsNoDataColor(window);
 });
 
-test("vertex attribute change item to 1", async () => {
+test("vertex attribute change item to 1", async ({window}) => {
   await setMeshCellsItem(window, 0);
 });
 

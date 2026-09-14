@@ -1,4 +1,9 @@
 import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
+import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
@@ -10,11 +15,6 @@ import {
   meshViewerObjectType,
   vertexAttributeType,
 } from "@tests/utils/data/constants.js";
-import {
-  SLIDER_PINK,
-  clickColorPickerCanvas,
-  clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker.js";
 import {
   setFeatureAttribute,
   setFeatureColorMap,

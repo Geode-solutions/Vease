@@ -4,14 +4,6 @@
 
 // Local imports
 import {
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import {
   defaultDataName,
   edgedCurveGeodeObjectType,
   meshViewerObjectType,
@@ -24,9 +16,16 @@ import {
   setMeshEdgesNoDataColor,
   setMeshEdgesVertexAttribute,
 } from "@tests/utils/mesh/edges/attribute.js";
+import {
+  setEdgesVisibility,
+  setEdgesWidth,
+  setPointsSize,
+  setPointsVisibility,
+  toggleInfoCard,
+  viewerContextMenu,
+} from "@tests/utils/viewer_interaction.js";
 import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/mesh/edges/color.js";
-import { loadData } from "@tests/utils/load.js";
-import { navigateToApp } from "@tests/utils/navigate.js";
+import { loadDatas } from "@tests/utils/load.js";
 import { setMeshPointsColorWithSlider } from "@tests/utils/mesh/points/color.js";
 import { test } from "@tests/fixtures.js";
 
@@ -73,7 +72,7 @@ test("edge attribute", async ({ window }) => {
   await setMeshEdgesEdgeAttribute(window, edgeAttributeName, { colorMap: edgeAttributeColorMap });
 });
 
-test("edge attribute change item to 2", async () => {
+test("edge attribute change item to 2", async ({window}) => {
   await setMeshEdgesItem(window, 1);
 });
 
@@ -88,11 +87,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async () => {
+test("vertex attribute unmapped elements color", async ({window}) => {
   await setMeshEdgesNoDataColor(window);
 });
 
-test("vertex attribute change attribute name", async () => {
+test("vertex attribute change attribute name", async ({window}) => {
   await setMeshEdgesVertexAttribute(window, vertexAttributeName2);
 });
 

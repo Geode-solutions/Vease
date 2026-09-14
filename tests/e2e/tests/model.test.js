@@ -181,11 +181,11 @@ test("corners vertex attribute all corners", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("corners vertex attribute unmapped elements color", async () => {
+test("corners vertex attribute unmapped elements color", async ({window}) => {
   await setModelPointsVertexAttributeNoDataColor(window);
 });
 
-test("corners vertex attribute all corners change item", async () => {
+test("corners vertex attribute all corners change item", async ({window}) => {
   await setModelPointsVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -222,11 +222,11 @@ test("lines vertex attribute all lines", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("lines vertex attribute unmapped elements color", async () => {
+test("lines vertex attribute unmapped elements color", async ({window}) => {
   await setModelEdgesVertexAttributeNoDataColor(window);
 });
 
-test("lines vertex attribute all lines change item", async () => {
+test("lines vertex attribute all lines change item", async ({window}) => {
   await setModelEdgesVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -281,11 +281,11 @@ test("surfaces vertex attribute all surfaces", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("surfaces vertex attribute unmapped elements color", async () => {
+test("surfaces vertex attribute unmapped elements color", async ({window}) => {
   await setModelPolygonsVertexAttributeNoDataColor(window);
 });
 
-test("surfaces vertex attribute all surfaces change item", async () => {
+test("surfaces vertex attribute all surfaces change item", async ({window}) => {
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -365,7 +365,7 @@ test("toggle both model component trees", async ({ window }) => {
   await toggleModelTreeRow(window, "Surfaces", 0, 1);
 });
 
-test("show points of surface in model tree", async () => {
+test("show points of surface in model tree", async ({window}) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Surfaces", secondModelTree);
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
@@ -373,20 +373,20 @@ test("show points of surface in model tree", async () => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("show edges of surface in model tree", async () => {
+test("show edges of surface in model tree", async ({window}) => {
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
   await setEdgesVisibility(window, "model", true);
   await moveMouseOutOfTheWay(window);
 });
 
-test("hide edges and points of surface in model tree", async () => {
+test("hide edges and points of surface in model tree", async ({window}) => {
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
   await setEdgesVisibility(window, "model", false);
   await setPointsVisibility(window, "model", false);
   await moveMouseOutOfTheWay(window);
 });
 
-test("blocks vertex attribute all blocks", async () => {
+test("blocks vertex attribute all blocks", async ({window}) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 0, 1);
@@ -397,16 +397,16 @@ test("blocks vertex attribute all blocks", async () => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("blocks vertex attribute unmapped elements color", async () => {
+test("blocks vertex attribute unmapped elements color", async ({window}) => {
   await setModelPolyhedraVertexAttributeNoDataColor(window);
 });
 
-test("blocks vertex attribute all blocks change item", async () => {
+test("blocks vertex attribute all blocks change item", async ({window}) => {
   await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
 
-test("blocks vertex attribute one block", async () => {
+test("blocks vertex attribute one block", async ({window}) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 3, 1);

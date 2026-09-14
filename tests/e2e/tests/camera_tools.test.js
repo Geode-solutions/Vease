@@ -53,8 +53,6 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
-import { confirmDelete } from "@tests/utils/data_manager.js";
-import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -62,7 +60,9 @@ import {
   hideObjectInTree,
   showObjectInTree,
 } from "@tests/utils/object_tree_interaction.js";
+import { confirmDelete } from "@tests/utils/data_manager.js";
 import { loadDatas } from "@tests/utils/load.js";
+import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import { setColor } from "@tests/utils/data/helpers/color.js";
 import { test } from "@tests/utils/fixtures.js";
 

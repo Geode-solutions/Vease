@@ -7,7 +7,7 @@ import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
-} from "../../viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 
 async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
