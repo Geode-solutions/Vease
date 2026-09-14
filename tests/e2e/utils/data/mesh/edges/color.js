@@ -1,10 +1,10 @@
-import { edgesFeatureName, meshViewerObjectType } from "@tests/e2e/utils/constants.js";
+import { edgesFeatureName, meshViewerObjectType } from "../../../constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/data/helpers/color.js";
+} from "../../helpers/color.js";
 
 function setMeshEdgesOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, edgesFeatureName, percent);

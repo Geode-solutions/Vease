@@ -3,8 +3,8 @@
 // Third party imports
 
 // Local imports
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
-import { meshViewerObjectType, rgd3dGeodeObjectType } from "@tests/utils/constants.js";
+import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
+import { meshViewerObjectType, rgd3dGeodeObjectType } from "../utils/constants.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
@@ -12,7 +12,7 @@ import {
   setMeshCellsItem,
   setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
-} from "@tests/utils/mesh/cells/attribute.js";
+} from "../utils/data/mesh/cells/attribute.js";
 import {
   setCellsVisibility,
   setEdgesVisibility,
@@ -21,12 +21,12 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import { setMeshCellsColor, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/mesh/points/color.js";
-import { test } from "@tests/fixtures.js";
+} from "../utils/viewer_interaction.js";
+import { setMeshCellsColor, setMeshCellsOpacity } from "../utils/data/mesh/cells/color.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "grid.og_rgd3d";
@@ -85,11 +85,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async ({window}) => {
+test("vertex attribute unmapped elements color", async ({ window }) => {
   await setMeshCellsNoDataColor(window);
 });
 
-test("vertex attribute change item to 1", async ({window}) => {
+test("vertex attribute change item to 1", async ({ window }) => {
   await setMeshCellsItem(window, 0);
 });
 

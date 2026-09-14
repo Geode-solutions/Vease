@@ -2,24 +2,24 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker.js";
+} from "../../helpers/color_picker.js";
 import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
-} from "@tests/utils/viewer_interaction.js";
+} from "../../../viewer_interaction.js";
 import {
   meshViewerObjectType,
   polyhedraFeatureName,
   polyhedronAttributeType,
   vertexAttributeType,
-} from "@tests/utils/data/constants.js";
+} from "../../constants.js";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/helpers/attribute";
+} from "../../helpers/attribute.js";
 
 function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(

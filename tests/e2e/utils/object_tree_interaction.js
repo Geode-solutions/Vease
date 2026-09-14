@@ -8,11 +8,10 @@ function getMainObjectTree(window) {
   return window.getByTestId("mainObjectTree");
 }
 function getModelComponentsObjectTree(window) {
-  return window.getByTestId("modelComponentsObjectTree")
+  return window.getByTestId("modelComponentsObjectTree");
 }
 
-async function clickCollapseOrExpandAll(window, treeTestId, expectedIcon) {
-  const tree = window.getByTestId(treeTestId);
+async function clickCollapseOrExpandAll(window, tree, expectedIcon) {
   const btn = tree.getByTestId("CollapseOrExpandAll");
   const targetIcon = btn.locator(`.${expectedIcon}`);
   if (await targetIcon.isVisible()) {

@@ -4,11 +4,13 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
 import {
   checkFilterCategory,
-  collapseAllObjects,
+  collapseMainObjectTree,
+  collapseModelComponentsObjectTree,
   copyTreeRowId,
+  expandModelComponentsObjectTree,
   fillSearchQuery,
   getMainObjectTree,
   getModelComponentsObjectTree,
@@ -19,10 +21,10 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@tests/utils/object_tree_interaction.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { resetCamera } from "@tests/utils/camera_interaction.js";
-import { test } from "@tests/utils/fixtures.js";
+} from "../utils/object_tree_interaction.js";
+import { loadDatas } from "../utils/load.js";
+import { resetCamera } from "../utils/camera_interaction.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -166,7 +168,7 @@ test("clear searchbar", async ({ window }) => {
   await window.keyboard.press("Escape");
 });
 
-test("clear searchbar", async ({ window }) => {
+test("clear model components searchbar", async ({ window }) => {
   await fillSearchQuery(window, "", "modelComponentsObjectTree");
 });
 
@@ -185,5 +187,5 @@ test("search by copied surface id", async ({ window }) => {
 });
 
 test("collapse all model components", async ({ window }) => {
-  await collapseAllObjects(window, "modelComponentsObjectTree");
+  await collapseModelComponentsObjectTree(window);
 });

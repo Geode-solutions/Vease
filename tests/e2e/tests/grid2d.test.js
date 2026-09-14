@@ -3,12 +3,8 @@
 // Third party imports
 
 // Local imports
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  rgd2dGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import { defaultDataName, meshViewerObjectType, rgd2dGeodeObjectType } from "../utils/constants.js";
+import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
@@ -16,7 +12,7 @@ import {
   setMeshCellsItem,
   setMeshCellsNoDataColor,
   setMeshCellsVertexAttribute,
-} from "@tests/utils/mesh/cells/attribute.js";
+} from "../utils/data/mesh/cells/attribute.js";
 import {
   setCellsVisibility,
   setEdgesVisibility,
@@ -25,12 +21,15 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import { setMeshCellsColorWithSlider, setMeshCellsOpacity } from "@tests/utils/mesh/cells/color.js";
-import { loadDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColorWithSlider } from "@tests/utils/mesh/edges/color.js";
-import { setMeshPointsColorWithSlider } from "@tests/utils/mesh/points/color.js";
-import { test } from "@tests/fixtures.js";
+} from "../utils/viewer_interaction.js";
+import {
+  setMeshCellsColorWithSlider,
+  setMeshCellsOpacity,
+} from "../utils/data/mesh/cells/color.js";
+import { loadDatas } from "../utils/load.js";
+import { setMeshEdgesColorWithSlider } from "../utils/data/mesh/edges/color.js";
+import { setMeshPointsColorWithSlider } from "../utils/data/mesh/points/color.js";
+import { test } from "../utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_rgd2d";
@@ -97,11 +96,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute unmapped elements color", async ({window}) => {
+test("vertex attribute unmapped elements color", async ({ window }) => {
   await setMeshCellsNoDataColor(window);
 });
 
-test("vertex attribute change attribute name", async ({window}) => {
+test("vertex attribute change attribute name", async ({ window }) => {
   await setMeshCellsVertexAttribute(window, vertexAttributeName2);
 });
 
