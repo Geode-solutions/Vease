@@ -9,7 +9,7 @@ import {
   uploadFile,
 } from "@vease_server/utils/data_file.js";
 
-import { getFileExtension } from "@ogw_shared/utils/response_handlers/load.js";
+import { getFileExtension } from "@ogw_shared/utils/response_handlers/load";
 
 export default defineEventHandler(async (event) => {
   try {

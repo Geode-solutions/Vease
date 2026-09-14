@@ -1,7 +1,7 @@
 // Third party imports
 import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 // Local imports
 import { runLlamaServer } from "@vease_server/utils/llama_cpp.js";
