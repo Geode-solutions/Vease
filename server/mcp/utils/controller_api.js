@@ -1,5 +1,5 @@
 // Local imports
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 export async function callControllerApi(path, { method = "POST", headers, body, errorPrefix }) {
   try {
