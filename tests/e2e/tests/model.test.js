@@ -16,7 +16,7 @@ import {
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
@@ -26,7 +26,7 @@ import {
   polyhedronAttributeType,
   structuralModelGeodeObjectType,
   vertexAttributeType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   collapseGeodeObjectType,
   expandGeodeObjectType,
@@ -42,14 +42,14 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
   toggleObjectsTree,
-} from "../utils/object_tree_interaction.js";
-import { resetCamera, rotateCamera } from "../utils/camera_interaction.js";
+} from "@tests/utils/object_tree_interaction.js";
+import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction.js";
 import {
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
   setModelOpacity,
-} from "../utils/data/model/color.js";
+} from "@tests/utils/data/model/color.js";
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
