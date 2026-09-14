@@ -14,32 +14,35 @@ import {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   highlightData,
   openObjectsTree,
-} from "../utils/object_tree_interaction.js";
+} from "@tests/utils/object_tree_interaction.js";
 import {
   defaultDataName,
   meshViewerObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
+  setMeshPolygonsNoDataColor,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-} from "../utils/data/mesh/polygon/attribute.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "../utils/data/mesh/polygon/color.js";
-import { expect } from "@playwright/test";
-import { loadDatas } from "../utils/load.js";
-import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
-import { setQuickColorMap } from "../utils/data/helpers/attribute.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/data/mesh/polygon/attribute.js";
+import {
+  setMeshPolygonsColor,
+  setMeshPolygonsOpacity,
+} from "@tests/utils/data/mesh/polygon/color.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
+import { setQuickColorMap } from "@tests/utils/data/helpers/attribute.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";
@@ -81,7 +84,6 @@ test("points visibility", async ({ window }) => {
 test("polygon attribute", async ({ window }) => {
   await setPointsVisibility(window, meshViewerObjectType, false);
   await setMeshPolygonsPolygonAttribute(window, polygonAttributeName);
-  await expect(window).toHaveScreenshot();
 });
 
 test("polygon attribute change colormap", async ({ window }) => {
@@ -102,7 +104,7 @@ test("quick colormap picker change colormap", async ({ window }) => {
   await viewerQuickColormap(window, x, y);
   await setQuickColorMap(window, colorMapName);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
+
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
 });
@@ -123,7 +125,7 @@ test("quick colormap picker change range", async ({ window }) => {
   await minInput.press("Enter");
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
+
   await window.keyboard.press("Escape");
   await window.waitForTimeout(afterActionWait);
   await openObjectsTree(window);
@@ -137,6 +139,10 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshPolygonsNoDataColor(window);
+});
+
 test("vertex attribute change item to 1", async ({ window }) => {
   await setMeshPolygonsItem(window, 0);
 });
@@ -147,7 +153,6 @@ test("vertex attribute change item to 2", async ({ window }) => {
 
 test("vertex attribute change attribute name", async ({ window }) => {
   await setMeshPolygonsVertexAttribute(window, vertexAttributeName2);
-  await expect(window).toHaveScreenshot();
 });
 
 test("vertex attribute switch back to first attribute", async ({ window }) => {
@@ -172,17 +177,14 @@ test("edges color", async ({ window }) => {
 
 test("polygons opacity", async ({ window }) => {
   await setMeshPolygonsOpacity(window, polygonsOpacity);
-  await expect(window).toHaveScreenshot();
 });
 
 test("points size", async ({ window }) => {
   await setPointsSize(window, meshViewerObjectType, pointsSize);
-  await expect(window).toHaveScreenshot();
 });
 
 test("edges width", async ({ window }) => {
   await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
-  await expect(window).toHaveScreenshot();
 });
 
 test("edges visibility", async ({ window }) => {

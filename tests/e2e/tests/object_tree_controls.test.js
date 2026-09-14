@@ -7,9 +7,8 @@ import { expect } from "@playwright/test";
 import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
 import {
   checkFilterCategory,
-  collapseMainObjectTree,
-  collapseModelComponentsObjectTree,
-  expandModelComponentsObjectTree,
+  collapseAllObjects,
+  copyTreeRowId,
   fillSearchQuery,
   getMainObjectTree,
   getModelComponentsObjectTree,
@@ -20,16 +19,18 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "../utils/object_tree_interaction.js";
-import { loadDatas } from "../utils/load.js";
-import { resetCamera } from "../utils/camera_interaction.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/object_tree_interaction.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { resetCamera } from "@tests/utils/camera_interaction.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
 const edc3dFilename = "test.og_edc3d";
 const psf3dFilename = "test.og_psf3d";
 const hso3dFilename = "test.og_hso3d";
+
+let surfaceId = undefined;
 
 test.describe.configure({ mode: "serial" });
 
@@ -163,11 +164,26 @@ test("color filtered surfaces", async ({ window }) => {
 
 test("clear searchbar", async ({ window }) => {
   await window.keyboard.press("Escape");
-  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
-  const searchInput = modelComponentsObjectTree.getByTestId("searchObjectsInput").locator("input");
-  await searchInput.fill("");
+});
+
+test("clear searchbar", async ({ window }) => {
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
+});
+
+test("copy surface id", async ({ window }) => {
+  surfaceId = await copyTreeRowId(window, "Surfaces", "00000000-", "modelComponentsObjectTree");
+  expect(surfaceId).toBeTruthy();
+});
+
+test("search by copied surface id", async ({ window }) => {
+  expect(surfaceId).toBeTruthy();
+  await fillSearchQuery(window, surfaceId, "modelComponentsObjectTree");
+  await expect(window).toHaveScreenshot({
+    mask: [window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput")],
+  });
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
 });
 
 test("collapse all model components", async ({ window }) => {
-  await collapseModelComponentsObjectTree(window);
+  await collapseAllObjects(window, "modelComponentsObjectTree");
 });

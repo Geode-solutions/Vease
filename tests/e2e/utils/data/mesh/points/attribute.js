@@ -1,10 +1,20 @@
 import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker.js";
+import {
+  afterActionWait,
+  ensureMenuOpen,
+  moveMouseOutOfTheWay,
+  openStyleMenu,
+} from "@tests/utils/viewer_interaction.js";
+import {
   meshViewerObjectType,
   pointsFeatureName,
   vertexAttributeType,
-} from "../../../constants.js";
-import { openStyleMenu } from "../../../viewer_interaction.js";
-import { setFeatureAttribute } from "../../helpers/attribute.js";
+} from "@tests/utils/constants.js";
+import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
 
 function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -22,4 +32,23 @@ function openMeshPointsMenu(window) {
   return openStyleMenu(window, menuTestId);
 }
 
-export { openMeshPointsMenu, setMeshPointsVertexAttribute };
+async function setMeshPointsNoDataColor(window) {
+  const menuTestId = `${meshViewerObjectType}${pointsFeatureName}Menu`;
+  await ensureMenuOpen(window, menuTestId);
+  const noDataColorBtn = window.getByTestId("noDataColorBtn").first();
+  await noDataColorBtn.waitFor({ state: "visible" });
+  await noDataColorBtn.click();
+  await window.waitForTimeout(afterActionWait);
+  await window
+    .getByTestId("colorPicker")
+    .filter({ visible: true })
+    .first()
+    .waitFor({ state: "visible" });
+  await clickColorPickerSlider(window, SLIDER_PINK);
+  await clickColorPickerCanvas(window);
+  await noDataColorBtn.click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
+export { openMeshPointsMenu, setMeshPointsVertexAttribute, setMeshPointsNoDataColor };

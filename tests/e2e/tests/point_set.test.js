@@ -7,25 +7,28 @@ import {
   defaultDataName,
   meshViewerObjectType,
   pointSetGeodeObjectType,
-} from "../utils/constants.js";
-import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
+} from "@tests/utils/constants.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPointsMenu,
+  setMeshPointsNoDataColor,
   setMeshPointsVertexAttribute,
-} from "../utils/data/mesh/points/attribute.js";
-import { setMeshPointsColor, setMeshPointsOpacity } from "../utils/data/mesh/points/color.js";
+} from "@tests/utils/data/mesh/points/attribute.js";
+import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/data/mesh/points/color.js";
 import {
   setPointsSize,
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
-import { loadDatas } from "../utils/load.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/viewer_interaction.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
 const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
+const colorMapName = "vikO";
 const pointsOpacity = 50;
 const pointsSize = 15;
 
@@ -56,7 +59,22 @@ test("points visibility", async ({ window }) => {
 });
 
 test("vertex attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
+  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVertexAttribute(window, vertexAttributeName, {
+    item: 1,
+    colorMap: colorMapName,
+  });
+});
+
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshPointsNoDataColor(window);
+});
+
+test("vertex attribute change attribute name", async ({ window }) => {
+  await setMeshPointsVertexAttribute(window, vertexAttributeName2);
+});
+
+test("vertex attribute switch back to first attribute", async ({ window }) => {
   await setMeshPointsVertexAttribute(window, vertexAttributeName);
 });
 

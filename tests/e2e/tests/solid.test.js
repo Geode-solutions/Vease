@@ -8,23 +8,16 @@ import {
   defaultDataName,
   hybridSolidGeodeObjectType,
   meshViewerObjectType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   expandMainObjectTree,
   highlightData,
   toggleObjectsTree,
-} from "../utils/object_tree_interaction.js";
+} from "@tests/utils/object_tree_interaction.js";
 import {
   getHybridViewerCanvas,
   moveMouseOutOfTheWay,
-} from "../utils/viewer_interaction.js";
-import {
-  openMeshPolyhedraMenu,
-  setMeshPolyhedraColorMap,
-  setMeshPolyhedraItem,
-  setMeshPolyhedraPolyhedronAttribute,
-  setMeshPolyhedraVertexAttribute,
-} from "../utils/data/mesh/polyhedra/attribute.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   setEdgesVisibility,
   setEdgesWidth,
@@ -34,17 +27,25 @@ import {
   setPolyhedraVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
+import {
+  openMeshPolyhedraMenu,
+  setMeshPolyhedraColorMap,
+  setMeshPolyhedraItem,
+  setMeshPolyhedraNoDataColor,
+  setMeshPolyhedraPolyhedronAttribute,
+  setMeshPolyhedraVertexAttribute,
+} from "@tests/utils/mesh/polyhedra/attribute.js";
 import {
   setMeshPolyhedraColor,
   setMeshPolyhedraColorBlack,
   setMeshPolyhedraOpacity,
-} from "../utils/data/mesh/polyhedra/color.js";
-import { loadDatas } from "../utils/load.js";
-import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
-import { setMeshPolygonsColor } from "../utils/data/mesh/polygon/color.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/data/mesh/polyhedra/color.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
+import { setMeshPolygonsColor } from "@tests/utils/data/mesh/polygon/color.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";
@@ -102,6 +103,10 @@ test("vertex attribute", async ({ window }) => {
     item: 2,
     colorMap: colorMapName,
   });
+});
+
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshPolyhedraNoDataColor(window);
 });
 
 test("vertex attribute change item to 1", async ({ window }) => {

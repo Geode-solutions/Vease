@@ -9,7 +9,7 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local, microservice, serverless, cloud"];
+const serverDirectories = ["local", "microservice", "serverless", "cloud"];
 
 function getIgnoredDirectories(directoriesToKeep) {
   return serverDirectories
@@ -74,6 +74,14 @@ export default defineNuxtConfig({
     ignore: nitroIgnoreConfig(),
   },
 
+  mcp: {
+    name: "Vease",
+    description: "Control the application with a set of commands",
+    security: {
+      allowedOrigins: "*",
+    },
+  },
+
   ssr: false,
   electron: {
     build: [
@@ -93,17 +101,22 @@ export default defineNuxtConfig({
   },
 
   vuetify: {
-    defaults: {
-      VImg: {
-        draggable: false,
-      },
-      VSwitch: {
-        color: "primary",
-        inset: true,
+    moduleOptions: {
+      enableRules: false,
+      rulesConfiguration: {
+        fromLabs: false,
       },
     },
-    moduleOptions: {},
     vuetifyOptions: {
+      defaults: {
+        VImg: {
+          draggable: false,
+        },
+        VSwitch: {
+          color: "primary",
+          inset: true,
+        },
+      },
       labComponents: true,
       theme: {
         defaultTheme: "lightTheme",
@@ -181,7 +194,14 @@ export default defineNuxtConfig({
       },
     },
     optimizeDeps: {
-      include: ["@geode/opengeodeweb-front", "bowser", "compare-versions", "vuefire"],
+      include: [
+        "@geode/opengeodeweb-front",
+        "@ai-sdk/vue",
+        "ai",
+        "bowser",
+        "compare-versions",
+        "vuefire",
+      ],
     },
     watch: {
       ignored: ["**"],

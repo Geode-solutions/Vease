@@ -4,18 +4,6 @@
 
 // Local imports
 import {
-  defaultDataName,
-  edgedCurveGeodeObjectType,
-  meshViewerObjectType,
-} from "../utils/constants.js";
-import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
-import {
-  openMeshEdgesMenu,
-  setMeshEdgesEdgeAttribute,
-  setMeshEdgesItem,
-  setMeshEdgesVertexAttribute,
-} from "../utils/data/mesh/edges/attribute.js";
-import {
   setEdgesVisibility,
   setEdgesWidth,
   setPointsSize,
@@ -24,12 +12,23 @@ import {
   viewerContextMenu,
 } from "../utils/viewer_interaction.js";
 import {
-  setMeshEdgesColorWithSlider,
-  setMeshEdgesOpacity,
-} from "../utils/data/mesh/edges/color.js";
-import { loadDatas } from "../utils/load.js";
-import { setMeshPointsColorWithSlider } from "../utils/data/mesh/points/color.js";
-import { test } from "../utils/fixtures.js";
+  defaultDataName,
+  edgedCurveGeodeObjectType,
+  meshViewerObjectType,
+} from "@tests/utils/constants.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
+import {
+  openMeshEdgesMenu,
+  setMeshEdgesEdgeAttribute,
+  setMeshEdgesItem,
+  setMeshEdgesNoDataColor,
+  setMeshEdgesVertexAttribute,
+} from "@tests/utils/mesh/edges/attribute.js";
+import { setMeshEdgesColorWithSlider, setMeshEdgesOpacity } from "@tests/utils/mesh/edges/color.js";
+import { loadData } from "@tests/utils/load.js";
+import { navigateToApp } from "@tests/utils/navigate.js";
+import { setMeshPointsColorWithSlider } from "@tests/utils/mesh/points/color.js";
+import { test } from "@tests/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_edc3d";
@@ -74,11 +73,7 @@ test("edge attribute", async ({ window }) => {
   await setMeshEdgesEdgeAttribute(window, edgeAttributeName, { colorMap: edgeAttributeColorMap });
 });
 
-test("edge attribute change item to 1", async ({ window }) => {
-  await setMeshEdgesItem(window, 0);
-});
-
-test("edge attribute change item to 2", async ({ window }) => {
+test("edge attribute change item to 2", async () => {
   await setMeshEdgesItem(window, 1);
 });
 
@@ -93,7 +88,11 @@ test("vertex attribute", async ({ window }) => {
   });
 });
 
-test("vertex attribute change attribute name", async ({ window }) => {
+test("vertex attribute unmapped elements color", async () => {
+  await setMeshEdgesNoDataColor(window);
+});
+
+test("vertex attribute change attribute name", async () => {
   await setMeshEdgesVertexAttribute(window, vertexAttributeName2);
 });
 

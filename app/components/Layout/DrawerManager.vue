@@ -1,4 +1,5 @@
 <script setup>
+import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import CreateTools from "@vease/components/CreateTools";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import DragAndDrop from "@ogw_front/components/DragAndDrop";
@@ -90,6 +91,8 @@ function handleEscape() {
   <DragAndDrop :inline="false" :fullscreen="true" @files-selected="handleFilesDropped" />
 
   <DataManagerPiP v-if="uiStore.showDataManagerPiP" />
+
+  <ChatPiP v-if="uiStore.showChatPiP" />
 </template>
 
 <style scoped>

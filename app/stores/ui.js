@@ -12,6 +12,7 @@ export const useUIStore = defineStore("UI", () => {
   const showCreateAOI = ref(false);
   const showExtensions = ref(false);
   const showDataManagerPiP = ref(false);
+  const showChatPiP = ref(false);
   const dataManagerTabs = ref([]);
 
   const anyOverlayOpen = computed(
@@ -117,6 +118,10 @@ export const useUIStore = defineStore("UI", () => {
     showDataManagerPiP.value = value;
   }
 
+  function setShowChatPiP(value) {
+    showChatPiP.value = value;
+  }
+
   return {
     toolsDefinitions,
     activeTools,
@@ -133,6 +138,7 @@ export const useUIStore = defineStore("UI", () => {
     showCreateTools,
     showExtensions,
     showDataManagerPiP,
+    showChatPiP,
     showCreateVOI,
     showCreateAOI,
     anyOverlayOpen,
@@ -144,6 +150,7 @@ export const useUIStore = defineStore("UI", () => {
     setShowCreateTools,
     setShowExtensions,
     setShowDataManagerPiP,
+    setShowChatPiP,
     setShowCreateVOI,
     setShowCreateAOI,
   };

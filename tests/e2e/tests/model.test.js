@@ -53,16 +53,19 @@ import {
 import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
+  setModelEdgesVertexAttributeNoDataColor,
   setModelPointsVertexAttribute,
+  setModelPointsVertexAttributeNoDataColor,
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
+  setModelPolygonsVertexAttributeNoDataColor,
   setModelPolyhedraPolyhedronAttribute,
-  // setModelPolyhedraVertexAttribute,
-} from "../utils/data/model/attribute.js";
-import { applyAttribute } from "../utils/data/helpers/attribute.js";
-import { loadDatas } from "../utils/load.js";
-
-import { test } from "../utils/fixtures.js";
+  setModelPolyhedraVertexAttribute,
+  setModelPolyhedraVertexAttributeNoDataColor,
+} from "@tests/utils/model/attribute.js";
+import { applyAttribute } from "@tests/utils/helpers/attribute.js";
+import { loadDatas } from "@tests/utils/load.js";
+import { test } from "@tests/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -178,7 +181,11 @@ test("corners vertex attribute all corners", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("corners vertex attribute all corners change item", async ({ window }) => {
+test("corners vertex attribute unmapped elements color", async () => {
+  await setModelPointsVertexAttributeNoDataColor(window);
+});
+
+test("corners vertex attribute all corners change item", async () => {
   await setModelPointsVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -215,7 +222,11 @@ test("lines vertex attribute all lines", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("lines vertex attribute all lines change item", async ({ window }) => {
+test("lines vertex attribute unmapped elements color", async () => {
+  await setModelEdgesVertexAttributeNoDataColor(window);
+});
+
+test("lines vertex attribute all lines change item", async () => {
   await setModelEdgesVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -270,7 +281,11 @@ test("surfaces vertex attribute all surfaces", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("surfaces vertex attribute all surfaces change item", async ({ window }) => {
+test("surfaces vertex attribute unmapped elements color", async () => {
+  await setModelPolygonsVertexAttributeNoDataColor(window);
+});
+
+test("surfaces vertex attribute all surfaces change item", async () => {
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 1 });
   await moveMouseOutOfTheWay(window);
 });
@@ -350,8 +365,48 @@ test("toggle both model component trees", async ({ window }) => {
   await toggleModelTreeRow(window, "Surfaces", 0, 1);
 });
 
+test("show points of surface in model tree", async () => {
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await expandGeodeObjectType(window, "Surfaces", secondModelTree);
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setPointsVisibility(window, "model", true);
+  await moveMouseOutOfTheWay(window);
+});
 
-test("blocks vertex attribute one block", async ({ window }) => {
+test("show edges of surface in model tree", async () => {
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setEdgesVisibility(window, "model", true);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("hide edges and points of surface in model tree", async () => {
+  await openModelComponentContextMenu(window, "019ea682-", 0, 1);
+  await setEdgesVisibility(window, "model", false);
+  await setPointsVisibility(window, "model", false);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks vertex attribute all blocks", async () => {
+  const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
+  await expandGeodeObjectType(window, "Blocks", secondModelTree);
+  await openModelComponentContextMenu(window, "019ea699-", 0, 1);
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 0,
+    colorMap: "vikO",
+  });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks vertex attribute unmapped elements color", async () => {
+  await setModelPolyhedraVertexAttributeNoDataColor(window);
+});
+
+test("blocks vertex attribute all blocks change item", async () => {
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 1 });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks vertex attribute one block", async () => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 3, 1);
@@ -361,7 +416,6 @@ test("blocks vertex attribute one block", async ({ window }) => {
     attributeName: vertexAttributeName,
     colorMap: "roma",
   });
-  await moveMouseOutOfTheWay(window);
 });
 
 test("blocks polyhedron attribute all blocks", async ({ window }) => {
