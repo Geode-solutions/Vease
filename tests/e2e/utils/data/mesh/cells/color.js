@@ -1,10 +1,10 @@
-import { cellsFeatureName, meshViewerObjectType } from "../../constants.js";
+import { cellsFeatureName, meshViewerObjectType } from "vease/tests/e2e/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "../../helpers/color.js";
+} from "vease/tests/e2e/utils/data/helpers/color.js";
 
 function setMeshCellsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);

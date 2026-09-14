@@ -1,4 +1,9 @@
-import { setColor, setColorWithSlider, setColoringStyle, setOpacity } from "../helpers/color.js";
+import {
+  setColor,
+  setColorWithSlider,
+  setColoringStyle,
+  setOpacity,
+} from "vease/tests/e2e/utils/data/helpers/color.js";
 
 function setModelOpacity(window, percent) {
   return setOpacity(window, "modelStyleMenu", percent);

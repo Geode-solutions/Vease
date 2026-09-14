@@ -19,15 +19,12 @@ import {
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
   hoverViewer,
-  moveMouseOutOfTheWay,
-  setEdgesVisibility,
   stabilizeHoverTooltip,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
-  meshViewerObjectType,
   rgd3dGeodeObjectType,
 } from "@tests/utils/constants.js";
 import {
@@ -53,6 +50,7 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction.js";
+
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -62,8 +60,10 @@ import {
 } from "@tests/utils/object_tree_interaction.js";
 import { confirmDelete } from "@tests/utils/data_manager.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction.js";
 import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
 import { setColor } from "@tests/utils/data/helpers/color.js";
+import { setMeshEdgesVisibility } from "@tests/utils/data/index.js";
 import { test } from "@tests/utils/fixtures.js";
 
 // Constants
@@ -99,7 +99,7 @@ test("grid edges visibility", async ({ window }) => {
   const x = 549;
   const y = 360;
   await viewerContextMenu(window, x, y);
-  await setEdgesVisibility(window, meshViewerObjectType, true);
+  await setMeshEdgesVisibility(window, true);
   await moveMouseOutOfTheWay(window);
 });
 

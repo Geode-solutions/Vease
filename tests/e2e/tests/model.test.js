@@ -10,23 +10,18 @@ import { expect } from "@playwright/test";
 import {
   afterActionWait,
   getHybridViewerCanvas,
-  moveMouseOutOfTheWay,
-  setEdgesVisibility,
-  setPointsSize,
-  setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   defaultDataName,
   edgeAttributeType,
-  modelViewerObjectType,
   polygonAttributeType,
   polyhedronAttributeType,
   structuralModelGeodeObjectType,
   vertexAttributeType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   collapseGeodeObjectType,
   expandGeodeObjectType,
@@ -42,30 +37,32 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
   toggleObjectsTree,
-} from "../utils/object_tree_interaction.js";
-import { resetCamera, rotateCamera } from "../utils/camera_interaction.js";
+} from "@tests/utils/object_tree_interaction.js";
+import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction.js";
 import {
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
-  setModelOpacity,
-} from "../utils/data/model/color.js";
-import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
   setModelEdgesVertexAttributeNoDataColor,
+  setModelEdgesVisibility,
+  setModelOpacity,
+  setModelPointsSize,
   setModelPointsVertexAttribute,
   setModelPointsVertexAttributeNoDataColor,
+  setModelPointsVisibility,
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
   setModelPolygonsVertexAttributeNoDataColor,
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
-} from "../utils/data/model/attribute.js";
-import { applyAttribute } from "../utils/data/helpers/attribute.js";
-import { loadDatas } from "../utils/load.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/data/index.js";
+import { applyAttribute } from "@tests/utils/data/helpers/attribute.js";
+import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -81,7 +78,7 @@ const ROTATE_LEFT_A_LITTLE = -180;
 test.describe.configure({ mode: "serial" });
 
 test("load brep", async ({ window }) => {
-  await loadDatas(window, [brepFilename]);
+  await loadVeaseTestDatas(window, [brepFilename]);
   await expandMainObjectTree(window);
 });
 
@@ -102,11 +99,11 @@ test("info card", async ({ window }) => {
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
   const visibility = true;
-  await setPointsVisibility(window, modelViewerObjectType, visibility);
+  await setModelPointsVisibility(window, visibility);
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, "model", pointsSize);
+  await setModelPointsSize(window, pointsSize);
 });
 
 test("model color", async ({ window }) => {
@@ -131,7 +128,7 @@ test("object tree context menu", async ({ window }) => {
 });
 
 test("edges visibility", async ({ window }) => {
-  await setEdgesVisibility(window, "model", true);
+  await setModelEdgesVisibility(window, true);
 });
 
 test("object tree model components", async ({ window }) => {
@@ -330,7 +327,7 @@ test("hide points in model tree", async ({ window }) => {
     .locator(".tree-item-label")
     .first()
     .click({ button: "right" });
-  await setPointsVisibility(window, "model", false);
+  await setModelPointsVisibility(window, false);
 });
 
 test("context menu through non visible surface", async ({ window }) => {
@@ -350,7 +347,7 @@ test("context menu through non visible surface", async ({ window }) => {
 
 test("load structural model", async ({ window }) => {
   await toggleObjectsTree(window);
-  await loadDatas(window, [structuralModelFilename]);
+  await loadVeaseTestDatas(window, [structuralModelFilename]);
   await expandMainObjectTree(window);
 });
 
@@ -369,20 +366,20 @@ test("show points of surface in model tree", async ({ window }) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Surfaces", secondModelTree);
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
-  await setPointsVisibility(window, "model", true);
+  await setModelPointsVisibility(window, true);
   await moveMouseOutOfTheWay(window);
 });
 
 test("show edges of surface in model tree", async ({ window }) => {
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
-  await setEdgesVisibility(window, "model", true);
+  await setModelEdgesVisibility(window, true);
   await moveMouseOutOfTheWay(window);
 });
 
 test("hide edges and points of surface in model tree", async ({ window }) => {
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
-  await setEdgesVisibility(window, "model", false);
-  await setPointsVisibility(window, "model", false);
+  await setModelEdgesVisibility(window, false);
+  await setModelPointsVisibility(window, false);
   await moveMouseOutOfTheWay(window);
 });
 

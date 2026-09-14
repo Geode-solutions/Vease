@@ -1,11 +1,11 @@
-import { meshViewerObjectType, polyhedraFeatureName } from "../../../constants.js";
+import { meshViewerObjectType, polyhedraFeatureName } from "vease/tests/e2e/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorBlack,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "../../helpers/color.js";
+} from "vease/tests/e2e/utils/data/helpers/color.js";
 
 function setMeshPolyhedraOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polyhedraFeatureName, percent);

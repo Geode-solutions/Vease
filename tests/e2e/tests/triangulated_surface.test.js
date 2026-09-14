@@ -3,37 +3,28 @@
 // Third party imports
 
 // Local imports
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  triangulatedSurfaceGeodeObjectType,
-} from "@tests/utils/constants.js";
+import { defaultDataName, triangulatedSurfaceGeodeObjectType } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolygonsMenu,
+  setMeshEdgesColor,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColor,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+  setMeshPolygonsColor,
   setMeshPolygonsColorMap,
   setMeshPolygonsItem,
   setMeshPolygonsNoDataColor,
-  setMeshPolygonsPolygonAttribute,
-  setMeshPolygonsVertexAttribute,
-} from "@tests/utils/data/mesh/polygon/attribute.js";
-import {
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  setPolygonsTextures,
-  setPolygonsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import {
-  setMeshPolygonsColor,
   setMeshPolygonsOpacity,
-} from "@tests/utils/data/mesh/polygon/color.js";
+  setMeshPolygonsPolygonAttribute,
+  setMeshPolygonsTextures,
+  setMeshPolygonsVertexAttribute,
+  setMeshPolygonsVisibility,
+} from "@tests/utils/data/index.js";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
 import { test } from "@tests/utils/fixtures.js";
 
 // Constants
@@ -68,11 +59,11 @@ test("info card", async ({ window }) => {
 });
 
 test("points visibility", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
+  await setMeshPointsVisibility(window, true);
 });
 
 test("polygon attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
   await setMeshPolygonsPolygonAttribute(window, polygonAttributeName);
 });
 
@@ -132,23 +123,23 @@ test("opacity", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
+  await setMeshPointsSize(window, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
+  await setMeshEdgesWidth(window, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, false);
+  await setMeshEdgesVisibility(window, false);
 });
 
 test("polygons visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, true);
-  await setPolygonsVisibility(window, meshViewerObjectType, false);
+  await setMeshEdgesVisibility(window, true);
+  await setMeshPolygonsVisibility(window, false);
 });
 
 test("polygons textures", async ({ window }) => {
-  await setPolygonsVisibility(window, meshViewerObjectType, true);
-  await setPolygonsTextures(window, meshViewerObjectType);
+  await setMeshPolygonsVisibility(window, true);
+  await setMeshPolygonsTextures(window);
 });

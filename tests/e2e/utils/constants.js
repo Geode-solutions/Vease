@@ -19,6 +19,7 @@ const WAIT_TIMES = {
 
 const beforeAllTimeout = 180_000;
 const afterActionWait = 1500;
+const halfSecondWait = 500;
 const modalTransitionWait = 2000;
 const staggerMaxWait = 2000;
 const defaultTimeout = 60_000;
@@ -66,6 +67,7 @@ export {
   PAGE_WIDTH,
   WAIT_TIMES,
   afterActionWait,
+  halfSecondWait,
   beforeAllTimeout,
   brepGeodeObjectType,
   cellAttributeType,

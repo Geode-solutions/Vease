@@ -3,36 +3,27 @@
 // Third party imports
 
 // Local imports
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  rgd2dGeodeObjectType,
-} from "@tests/utils/constants.js";
+import { defaultDataName, rgd2dGeodeObjectType } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
   setMeshCellsColorMap,
+  setMeshCellsColorWithSlider,
   setMeshCellsItem,
   setMeshCellsNoDataColor,
-  setMeshCellsVertexAttribute,
-} from "@tests/utils/data/mesh/cells/attribute.js";
-import {
-  setCellsVisibility,
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import {
-  setMeshCellsColorWithSlider,
   setMeshCellsOpacity,
-} from "@tests/utils/data/mesh/cells/color.js";
+  setMeshCellsVertexAttribute,
+  setMeshCellsVisibility,
+  setMeshEdgesColorWithSlider,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColorWithSlider,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+} from "@tests/utils/data/index.js";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColorWithSlider } from "@tests/utils/data/mesh/edges/color.js";
-import { setMeshPointsColorWithSlider } from "@tests/utils/data/mesh/points/color.js";
 import { test } from "@tests/utils/fixtures.js";
 
 // Constants
@@ -69,7 +60,7 @@ test("info card", async ({ window }) => {
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
   const visibility = true;
-  await setPointsVisibility(window, meshViewerObjectType, visibility);
+  await setMeshPointsVisibility(window, visibility);
 });
 
 test("cell attribute", async ({ window }) => {
@@ -93,7 +84,7 @@ test("cell attribute reopen menu", async ({ window }) => {
 });
 
 test("vertex attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
   await setMeshCellsVertexAttribute(window, vertexAttributeName, {
     item: 1,
     colorMap: colorMapName,
@@ -133,18 +124,19 @@ test("cells opacity", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
+  await setMeshPointsSize(window, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
+  await setMeshEdgesWidth(window, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, false);
+  await setMeshEdgesVisibility(window, false);
 });
 
 test("cells visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, true); // Revert
-  await setCellsVisibility(window, meshViewerObjectType, false);
+  // Revert
+  await setMeshEdgesVisibility(window, true);
+  await setMeshCellsVisibility(window, false);
 });

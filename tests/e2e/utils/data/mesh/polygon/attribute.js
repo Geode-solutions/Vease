@@ -2,24 +2,24 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "../../helpers/color_picker.js";
+} from "@tests/utils/data/helpers/color_picker.js";
 import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
-} from "../../../viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   meshViewerObjectType,
   polygonAttributeType,
   polygonsFeatureName,
   vertexAttributeType,
-} from "../../constants.js";
+} from "@tests/utils/constants.js";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "../../helpers/attribute.js";
+} from "@tests/utils/data/helpers/attribute.js";
 
 function setMeshPolygonsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -79,9 +79,9 @@ async function setMeshPolygonsNoDataColor(window) {
 
 export {
   openMeshPolygonsMenu,
-  setMeshPolygonsNoDataColor,
-  setMeshPolygonsVertexAttribute,
-  setMeshPolygonsPolygonAttribute,
-  setMeshPolygonsItem,
   setMeshPolygonsColorMap,
+  setMeshPolygonsItem,
+  setMeshPolygonsNoDataColor,
+  setMeshPolygonsPolygonAttribute,
+  setMeshPolygonsVertexAttribute,
 };

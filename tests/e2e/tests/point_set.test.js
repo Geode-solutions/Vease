@@ -3,24 +3,18 @@
 // Third party imports
 
 // Local imports
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  pointSetGeodeObjectType,
-} from "@tests/utils/constants.js";
+import { defaultDataName, pointSetGeodeObjectType } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPointsMenu,
+  setMeshPointsColor,
   setMeshPointsNoDataColor,
+  setMeshPointsOpacity,
+  setMeshPointsSize,
   setMeshPointsVertexAttribute,
-} from "@tests/utils/data/mesh/points/attribute.js";
-import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/data/mesh/points/color.js";
-import {
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
+  setMeshPointsVisibility,
+} from "@tests/utils/data/index.js";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
 import { test } from "@tests/utils/fixtures.js";
 
@@ -55,11 +49,11 @@ test("info card", async ({ window }) => {
 
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
 });
 
 test("vertex attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
   await setMeshPointsVertexAttribute(window, vertexAttributeName, {
     item: 1,
     colorMap: colorMapName,
@@ -91,5 +85,5 @@ test("points opacity", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
+  await setMeshPointsSize(window, pointsSize);
 });

@@ -2,7 +2,7 @@
 import path from "node:path";
 
 // Third party imports
-import { waitForLoadingScreen } from "vease/tests/e2e/utils/other.js";
+import { waitForLoadingScreen } from "./other.js";
 
 // Local imports
 import { modalTransitionWait } from "./constants.js";

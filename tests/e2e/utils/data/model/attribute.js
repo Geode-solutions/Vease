@@ -1,11 +1,14 @@
-import { applyAttribute, setFeatureNoDataColor } from "../helpers/attribute.js";
+import {
+  applyAttribute,
+  setFeatureNoDataColor,
+} from "vease/tests/e2e/utils/data/helpers/attribute.js";
 import {
   cellAttributeType,
   edgeAttributeType,
   polygonAttributeType,
   polyhedronAttributeType,
   vertexAttributeType,
-} from "../../constants.js";
+} from "vease/tests/e2e/utils/constants.js";
 
 function setModelPointsVertexAttribute(window, attributeName, options = {}) {
   return applyAttribute(window, "modelStyleMenu", {

@@ -1,33 +1,24 @@
 // Node imports
 // Third party imports
 // Local imports
-import {
-  defaultDataName,
-  edgedCurveGeodeObjectType,
-  meshViewerObjectType,
-} from "@tests/utils/constants.js";
+import { defaultDataName, edgedCurveGeodeObjectType } from "@tests/utils/constants.js";
 import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshEdgesMenu,
+  setMeshEdgesColorWithSlider,
   setMeshEdgesEdgeAttribute,
   setMeshEdgesItem,
   setMeshEdgesNoDataColor,
-  setMeshEdgesVertexAttribute,
-} from "@tests/utils/data/mesh/edges/attribute.js";
-import {
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction.js";
-import {
-  setMeshEdgesColorWithSlider,
   setMeshEdgesOpacity,
-} from "@tests/utils/data/mesh/edges/color.js";
+  setMeshEdgesVertexAttribute,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColorWithSlider,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+} from "@tests/utils/data/index.js";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
-import { setMeshPointsColorWithSlider } from "@tests/utils/data/mesh/points/color.js";
 import { test } from "@tests/utils/fixtures.js";
 
 // Constants
@@ -64,11 +55,11 @@ test("info card", async ({ window }) => {
 
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
 });
 
 test("edge attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, true);
+  await setMeshPointsVisibility(window, true);
   await setMeshEdgesEdgeAttribute(window, edgeAttributeName, { colorMap: edgeAttributeColorMap });
 });
 
@@ -108,19 +99,19 @@ test("edges opacity", async ({ window }) => {
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
+  await setMeshEdgesWidth(window, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, false);
+  await setMeshEdgesVisibility(window, false);
 });
 
 test("points color", async ({ window }) => {
   // Revert
-  await setEdgesVisibility(window, meshViewerObjectType, true);
+  await setMeshEdgesVisibility(window, true);
   await setMeshPointsColorWithSlider(window);
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
+  await setMeshPointsSize(window, pointsSize);
 });

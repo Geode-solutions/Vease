@@ -1,10 +1,10 @@
-import { meshViewerObjectType, polygonsFeatureName } from "../../../constants.js";
+import { meshViewerObjectType, polygonsFeatureName } from "vease/tests/e2e/utils/constants.js";
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "../../helpers/color.js";
+} from "vease/tests/e2e/utils/data/helpers/color.js";
 
 function setMeshPolygonsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);

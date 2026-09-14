@@ -1,17 +1,13 @@
 // Local imports
-import { meshViewerObjectType } from "@tests/utils/constants.js";
+// oxlint-disable-next-line unicorn/prefer-export-from
+import { afterActionWait, halfSecondWait } from "./constants.js";
+// oxlint-disable-next-line unicorn/prefer-export-from
+import { moveMouseOutOfTheWay } from "./app_interaction.js";
 
 // Constants
-const beforeAllTimeout = 60_000;
-const afterActionWait = 2000;
-const WAIT_FOR_OPTIONS_TIMEOUT = 500;
 
 function getHybridViewerCanvas(window) {
   return window.getByTestId("hybridViewer").locator("canvas");
-}
-
-function moveMouseOutOfTheWay(window) {
-  return window.mouse.move(0, 0);
 }
 
 async function viewerContextMenu(window, x, y) {
@@ -61,7 +57,7 @@ async function findOverlappingObjectsPicker(window) {
     // oxlint-disable-next-line no-await-in-loop
     await window.keyboard.press("Escape");
     // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
+    await window.waitForTimeout(halfSecondWait);
   }
 
   if (!found) {
@@ -101,7 +97,7 @@ async function ensureFeatureVisible(window, menuTestId) {
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
     // Wait for conditionally rendered options to appear
-    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
+    await window.waitForTimeout(halfSecondWait);
   }
 }
 
@@ -265,7 +261,6 @@ async function viewerQuickColormap(window, x, y) {
 
 export {
   afterActionWait,
-  beforeAllTimeout,
   dragContextMenu,
   dragElement,
   ensureFeatureVisible,

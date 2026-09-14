@@ -1,5 +1,9 @@
 import { MAX_PERCENTAGE, clickColorPickerCanvas, clickColorPickerSlider } from "./color_picker.js";
-import { afterActionWait, ensureFeatureVisible, ensureMenuOpen } from "../../viewer_interaction.js";
+import {
+  afterActionWait,
+  ensureFeatureVisible,
+  ensureMenuOpen,
+} from "vease/tests/e2e/utils/viewer_interaction.js";
 
 async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);

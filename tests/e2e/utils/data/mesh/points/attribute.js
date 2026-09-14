@@ -2,19 +2,19 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "../../helpers/color_picker.js";
+} from "@tests/utils/data/helpers/color_picker.js";
 import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
-} from "../../../viewer_interaction.js";
+} from "@tests/utils/viewer_interaction.js";
 import {
   meshViewerObjectType,
   pointsFeatureName,
   vertexAttributeType,
-} from "../../../constants.js";
-import { setFeatureAttribute } from "../../helpers/attribute.js";
+} from "@tests/utils/constants.js";
+import { setFeatureAttribute } from "@tests/utils/data/helpers/attribute.js";
 
 function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(
@@ -51,4 +51,4 @@ async function setMeshPointsNoDataColor(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
-export { openMeshPointsMenu, setMeshPointsVertexAttribute, setMeshPointsNoDataColor };
+export { openMeshPointsMenu, setMeshPointsNoDataColor, setMeshPointsVertexAttribute };

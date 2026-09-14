@@ -7,7 +7,6 @@ import {
   afterActionWait,
   defaultDataName,
   hybridSolidGeodeObjectType,
-  meshViewerObjectType,
 } from "@tests/utils/constants.js";
 import {
   expandMainObjectTree,
@@ -16,33 +15,31 @@ import {
 } from "@tests/utils/object_tree_interaction.js";
 import {
   getHybridViewerCanvas,
-  moveMouseOutOfTheWay,
-  setEdgesVisibility,
-  setEdgesWidth,
-  setPointsSize,
-  setPointsVisibility,
-  setPolygonsVisibility,
-  setPolyhedraVisibility,
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction.js";
 import {
   openMeshPolyhedraMenu,
+  setMeshEdgesColor,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColor,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+  setMeshPolygonsColor,
+  setMeshPolygonsVisibility,
+  setMeshPolyhedraColor,
+  setMeshPolyhedraColorBlack,
   setMeshPolyhedraColorMap,
   setMeshPolyhedraItem,
   setMeshPolyhedraNoDataColor,
+  setMeshPolyhedraOpacity,
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
-} from "@tests/utils/data/mesh/polyhedra/attribute.js";
-import {
-  setMeshPolyhedraColor,
-  setMeshPolyhedraColorBlack,
-  setMeshPolyhedraOpacity,
-} from "@tests/utils/data/mesh/polyhedra/color.js";
+  setMeshPolyhedraVisibility,
+} from "@tests/utils/data/index.js";
 import { loadVeaseTestDatas } from "@tests/utils/load.js";
-import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
-import { setMeshPolygonsColor } from "@tests/utils/data/mesh/polygon/color.js";
+import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction.js";
 import { test } from "@tests/utils/fixtures.js";
 
 // Constants
@@ -80,11 +77,11 @@ test("info card", async ({ window }) => {
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
   const visibility = true;
-  await setPointsVisibility(window, meshViewerObjectType, visibility);
+  await setMeshPointsVisibility(window, visibility);
 });
 
 test("polyhedron attribute", async ({ window }) => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
+  await setMeshPointsVisibility(window, false);
   await setMeshPolyhedraPolyhedronAttribute(window, polyhedronAttributeName);
 });
 
@@ -148,25 +145,26 @@ test("opacity", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
+  await setMeshPointsSize(window, pointsSize);
 });
 
 test("edges width", async ({ window }) => {
-  await setEdgesWidth(window, meshViewerObjectType, edgesWidth);
+  await setMeshEdgesWidth(window, edgesWidth);
 });
 
 test("edges visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, false);
+  await setMeshEdgesVisibility(window, false);
 });
 
 test("polygons visibility", async ({ window }) => {
-  await setEdgesVisibility(window, meshViewerObjectType, true); // Revert
-  await setPolygonsVisibility(window, meshViewerObjectType, false);
+  // Revert
+  await setMeshEdgesVisibility(window, true);
+  await setMeshPolygonsVisibility(window, false);
 });
 
 test("polyhedra visibility", async ({ window }) => {
-  await setPolygonsVisibility(window, meshViewerObjectType, true);
-  await setPolyhedraVisibility(window, meshViewerObjectType, false);
+  await setMeshPolygonsVisibility(window, true);
+  await setMeshPolyhedraVisibility(window, false);
 });
 
 test("reopen treeview over zoomed dark data adaptive style", async ({ window }) => {
