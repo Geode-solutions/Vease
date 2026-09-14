@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
 import {
   checkFilterCategory,
   collapseMainObjectTree,
@@ -21,10 +21,10 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "../utils/object_tree_interaction.js";
-import { loadDatas } from "../utils/load.js";
-import { resetCamera } from "../utils/camera_interaction.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/object_tree_interaction.js";
+import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { resetCamera } from "@tests/utils/camera_interaction.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -37,10 +37,10 @@ let surfaceId = undefined;
 test.describe.configure({ mode: "serial" });
 
 test("load all files", async ({ window }) => {
-  await loadDatas(window, [brepFilename]);
-  await loadDatas(window, [edc3dFilename]);
-  await loadDatas(window, [psf3dFilename]);
-  await loadDatas(window, [hso3dFilename]);
+  await loadVeaseTestDatas(window, [brepFilename]);
+  await loadVeaseTestDatas(window, [edc3dFilename]);
+  await loadVeaseTestDatas(window, [psf3dFilename]);
+  await loadVeaseTestDatas(window, [hso3dFilename]);
 });
 
 test("reset camera", async ({ window }) => {

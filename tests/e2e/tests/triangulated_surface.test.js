@@ -7,8 +7,8 @@ import {
   defaultDataName,
   meshViewerObjectType,
   triangulatedSurfaceGeodeObjectType,
-} from "../utils/constants.js";
-import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
+} from "@tests/utils/constants.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPolygonsMenu,
   setMeshPolygonsColorMap,
@@ -16,7 +16,7 @@ import {
   setMeshPolygonsNoDataColor,
   setMeshPolygonsPolygonAttribute,
   setMeshPolygonsVertexAttribute,
-} from "../utils/data/mesh/polygon/attribute.js";
+} from "@tests/utils/data/mesh/polygon/attribute.js";
 import {
   setEdgesVisibility,
   setEdgesWidth,
@@ -26,12 +26,15 @@ import {
   setPolygonsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
-import { setMeshPolygonsColor, setMeshPolygonsOpacity } from "../utils/data/mesh/polygon/color.js";
-import { loadDatas } from "../utils/load.js";
-import { setMeshEdgesColor } from "../utils/data/mesh/edges/color.js";
-import { setMeshPointsColor } from "../utils/data/mesh/points/color.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/viewer_interaction.js";
+import {
+  setMeshPolygonsColor,
+  setMeshPolygonsOpacity,
+} from "@tests/utils/data/mesh/polygon/color.js";
+import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { setMeshEdgesColor } from "@tests/utils/data/mesh/edges/color.js";
+import { setMeshPointsColor } from "@tests/utils/data/mesh/points/color.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
@@ -46,7 +49,7 @@ const edgesWidth = 5;
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {
-  await loadDatas(window, [inputFilename]);
+  await loadVeaseTestDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
 });
 

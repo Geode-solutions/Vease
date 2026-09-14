@@ -4,12 +4,12 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "../utils/constants.js";
+} from "@tests/utils/constants.js";
 import {
   clickdeleteDataButton,
   confirmDelete,
@@ -22,10 +22,10 @@ import {
   openRenameByButton,
   openRenameByName,
   toggleRowVisibility,
-} from "../utils/data_manager.js";
-import { loadDatas } from "../utils/load.js";
-import { navigateToDataManagerPage } from "../utils/navigate.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/data_manager.js";
+import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { navigateToDataManagerPage } from "@tests/utils/navigate.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const BREP_FILE = "test.og_brep";
@@ -37,8 +37,8 @@ const RENAMED_POLYGONAL_SURFACE = "surface vease";
 test.describe.configure({ mode: "serial" });
 
 test("load objects", async ({ window }) => {
-  await loadDatas(window, [BREP_FILE]);
-  await loadDatas(window, [POLYGONAL_SURFACE_FILE]);
+  await loadVeaseTestDatas(window, [BREP_FILE]);
+  await loadVeaseTestDatas(window, [POLYGONAL_SURFACE_FILE]);
 });
 
 test("navigate to data manager", async ({ window }) => {
@@ -46,7 +46,7 @@ test("navigate to data manager", async ({ window }) => {
 });
 
 test("import data from data manager", async ({ window }) => {
-  await loadDatas(window, [POINTSET_FILE]);
+  await loadVeaseTestDatas(window, [POINTSET_FILE]);
 });
 
 test("rename object by clicking item name", async ({ window }) => {

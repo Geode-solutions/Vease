@@ -23,7 +23,7 @@ const test = base.extend({
 
   logTestProgress: [
     // oxlint-disable-next-line no-empty-pattern
-    async ({ }, use, testInfo) => {
+    async ({}, use, testInfo) => {
       const name = `${path.basename(testInfo.file)} › ${testInfo.title}`;
       console.log(`\u001B[33m[START]\u001B[0m ${name}`);
       const start = Date.now();
@@ -32,7 +32,7 @@ const test = base.extend({
       const status = (testInfo.status || "done").toUpperCase();
       const duration = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
       console.log(
-        `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}${status}\u001B[0m (${duration}s)`,
+        `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}TEST ${status}\u001B[0m (${duration}s)`,
       );
     },
     { auto: true },

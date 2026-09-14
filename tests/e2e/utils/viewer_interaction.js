@@ -1,3 +1,6 @@
+// Local imports
+import { meshViewerObjectType } from "@tests/utils/constants.js";
+
 // Constants
 const beforeAllTimeout = 60_000;
 const afterActionWait = 2000;

@@ -4,11 +4,11 @@ import path from "node:path";
 // Third party imports
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "../utils/viewer_interaction.js";
-import { exportProject, importProject } from "../utils/project_interaction.js";
-import { getMainObjectTree, hideObjectInTree } from "../utils/object_tree_interaction.js";
-import { setColor } from "../utils/data/helpers/color.js";
-import { test } from "../utils/fixtures.js";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction.js";
+import { exportProject, importProject } from "@tests/utils/project_interaction.js";
+import { getMainObjectTree, hideObjectInTree } from "@tests/utils/object_tree_interaction.js";
+import { setColor } from "@tests/utils/data/helpers/color.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test_project.vease";

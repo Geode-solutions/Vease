@@ -5,19 +5,19 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
-const loadWorkflowTimeout = 5000;
+const loadWorkflowTimeout = 10_000;
 
 function getLayoutImportButton(window) {
   return window.getByTestId("layoutImportButton");
 }
 
-async function loadDatas(
+async function loadVeaseTestDatas(
   window,
   inputDataFilenames,
   {
     loadTimeout = loadWorkflowTimeout,
     inputDataPath = path.join(__dirname, "..", "tests", "data"),
-  },
+  } = {},
 ) {
   console.log(`Loading datas: ${inputDataFilenames} from ${inputDataPath}`);
   const inputFileExtension = path.extname(inputDataFilenames[0]);
@@ -39,4 +39,4 @@ async function loadDatas(
   await window.waitForTimeout(loadTimeout);
 }
 
-export { loadDatas };
+export { loadVeaseTestDatas };

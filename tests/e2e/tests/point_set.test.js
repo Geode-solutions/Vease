@@ -7,22 +7,22 @@ import {
   defaultDataName,
   meshViewerObjectType,
   pointSetGeodeObjectType,
-} from "../utils/constants.js";
-import { expandMainObjectTree, highlightData } from "../utils/object_tree_interaction.js";
+} from "@tests/utils/constants.js";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction.js";
 import {
   openMeshPointsMenu,
   setMeshPointsNoDataColor,
   setMeshPointsVertexAttribute,
-} from "../utils/data/mesh/points/attribute.js";
-import { setMeshPointsColor, setMeshPointsOpacity } from "../utils/data/mesh/points/color.js";
+} from "@tests/utils/data/mesh/points/attribute.js";
+import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/data/mesh/points/color.js";
 import {
   setPointsSize,
   setPointsVisibility,
   toggleInfoCard,
   viewerContextMenu,
-} from "../utils/viewer_interaction.js";
-import { loadDatas } from "../utils/load.js";
-import { test } from "../utils/fixtures.js";
+} from "@tests/utils/viewer_interaction.js";
+import { loadVeaseTestDatas } from "@tests/utils/load.js";
+import { test } from "@tests/utils/fixtures.js";
 
 // Constants
 const inputFilename = "test.og_pts3d";
@@ -35,7 +35,7 @@ const pointsSize = 15;
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {
-  await loadDatas(window, [inputFilename]);
+  await loadVeaseTestDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
 });
 
