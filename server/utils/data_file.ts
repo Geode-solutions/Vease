@@ -3,8 +3,8 @@ import type { MultiPartData } from "h3";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
 import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
-import { getBackBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
-import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load.js";
+import { getBackBaseUrl } from "@ogw_server/utils/server_config";
+import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load";
 
 // Local imports
 

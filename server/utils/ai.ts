@@ -3,7 +3,7 @@ import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { MCPClient } from "@ai-sdk/mcp";
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.ts";
 
 // Local imports
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";

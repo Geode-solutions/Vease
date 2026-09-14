@@ -69,7 +69,7 @@ export default defineNuxtConfig({
     "nuxt-vuefire",
   ],
 
-  plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.js"],
+  plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.ts"],
 
   nitro: {
     ignore: nitroIgnoreConfig(),

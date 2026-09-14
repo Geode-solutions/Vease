@@ -4,7 +4,7 @@ import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb
 
 // Third party imports
 import { callSchema } from "@ogw_shared/utils/call_schema";
-import { getViewerWebSocketClient } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 
 // Local imports
 import { asErrorLike } from "@vease_server/utils/errors";
