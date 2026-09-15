@@ -93,9 +93,7 @@ test("quick colormap picker change colormap", async ({ window }) => {
   await closeObjectsTree(window);
   await window.waitForTimeout(afterActionWait);
 
-  const x = 275;
-  const y = 650;
-  await viewerQuickColormap(window, x, y);
+  await viewerQuickColormap(window);
   await setQuickColorMap(window, colorMapName);
   await moveMouseOutOfTheWay(window);
 
@@ -107,9 +105,7 @@ test("quick colormap picker change range", async ({ window }) => {
   await window.keyboard.press("Escape");
   await closeObjectsTree(window);
   await window.waitForTimeout(afterActionWait);
-  const x = 275;
-  const y = 650;
-  await viewerQuickColormap(window, x, y);
+  await viewerQuickColormap(window);
   const minInput = window
     .getByTestId("attributeMinInput")
     .filter({ visible: true })

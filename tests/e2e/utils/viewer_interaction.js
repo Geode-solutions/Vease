@@ -231,6 +231,15 @@ async function toggleInfoCard(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+async function resetMenuScroll(window, scrollTop = 0) {
+  await window.evaluate((top) => {
+    const cardTexts = document.querySelectorAll(".v-card-text");
+    for (const cardTextElement of cardTexts) {
+      cardTextElement.scrollTop = top;
+    }
+  }, scrollTop);
+}
+
 async function openStyleMenu(window, menuTestId) {
   const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
   if (await activeMenuButton.isVisible()) {
@@ -238,6 +247,7 @@ async function openStyleMenu(window, menuTestId) {
     await window.waitForTimeout(afterActionWait);
   }
   await ensureMenuOpen(window, menuTestId);
+  await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
@@ -270,6 +280,7 @@ export {
   hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,
+  resetMenuScroll,
   setCellsVisibility,
   setEdgesVisibility,
   setEdgesWidth,

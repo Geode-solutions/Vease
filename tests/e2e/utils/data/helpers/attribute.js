@@ -6,6 +6,15 @@ import {
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction.js";
 
+async function resetMenuScroll(window, scrollTop = 0) {
+  await window.evaluate((top) => {
+    const cardTexts = document.querySelectorAll(".v-card-text");
+    for (const cardTextElement of cardTexts) {
+      cardTextElement.scrollTop = top;
+    }
+  }, scrollTop);
+}
+
 function getMenuContainer(window, menuTestId) {
   if (typeof menuTestId === "string") {
     return window.getByTestId(menuTestId);
@@ -28,6 +37,7 @@ async function setFeatureItem(window, menuTestId, item) {
     .first()
     .click();
   await window.waitForTimeout(afterActionWait);
+  await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
 }
 
@@ -51,6 +61,7 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
     .click();
   await window.waitForTimeout(afterActionWait);
 
+  await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
@@ -117,6 +128,7 @@ async function applyAttribute(
     await input.press("Enter");
     await window.waitForTimeout(afterActionWait);
   }
+  await resetMenuScroll(window, 0);
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
 }
@@ -174,12 +186,14 @@ async function setFeatureNoDataColor(window, menuTestId) {
   await clickColorPickerSlider(window, SLIDER_PINK);
   await clickColorPickerCanvas(window);
   await noDataColorBtn.click();
+  await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
 export {
   applyAttribute,
+  resetMenuScroll,
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,

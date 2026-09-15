@@ -6,10 +6,10 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 // Local imports
-import { getAvailablePort, waitForReady } from "@geode/opengeodeweb-front/server/utils/scripts.js";
-import { appMode } from "@geode/opengeodeweb-front/shared/app_mode.js";
-import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
-import { unzipFile } from "@geode/opengeodeweb-front/server/utils/server.js";
+import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
+import { appMode } from "@ogw_shared/app_mode";
+import { executableName } from "@ogw_server/utils/path";
+import { unzipFile } from "@ogw_server/utils/server";
 
 const LLAMA_HOST = "127.0.0.1";
 let LLAMA_PORT = undefined;
