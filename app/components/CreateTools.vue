@@ -1,9 +1,9 @@
-<script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
+<script setup lang="ts">
+import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
-const selectedTool = ref(undefined);
+const selectedTool = ref<string | undefined>(undefined);
 
 function getToolComponent(toolId) {
   return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component;

@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/mesh/edges/color.js
 import { edgesFeatureName, meshViewerObjectType } from "vease/tests/e2e/utils/constants.js";
+========
+import { edgesFeatureName, meshViewerObjectType } from "@tests/utils/constants";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/mesh/edges/color.ts
 import {
   setFeatureColor,
   setFeatureColorWithSlider,

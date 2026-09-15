@@ -1,0 +1,145 @@
+// Node imports
+
+// Third party imports
+
+// Local imports
+import { defaultDataName, triangulatedSurfaceGeodeObjectType } from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import {
+  openMeshPolygonsMenu,
+  setMeshEdgesColor,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColor,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+  setMeshPolygonsColor,
+  setMeshPolygonsColorMap,
+  setMeshPolygonsItem,
+  setMeshPolygonsNoDataColor,
+  setMeshPolygonsOpacity,
+  setMeshPolygonsPolygonAttribute,
+  setMeshPolygonsTextures,
+  setMeshPolygonsVertexAttribute,
+  setMeshPolygonsVisibility,
+} from "@tests/utils/data/index";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@tests/utils/load";
+import { test } from "@tests/utils/fixtures";
+
+// Constants
+const inputFilename = "test.og_tsf3d";
+const polygonAttributeName = "test_polygon";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
+const colorMapName = "vikO";
+const polygonsOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
+
+test.describe.configure({ mode: "serial" });
+
+test("load", async ({ window }) => {
+  await loadVeaseTestDatas(window, [inputFilename]);
+  await expandMainObjectTree(window);
+});
+
+test("highlight", async ({ window }) => {
+  await highlightData(window, triangulatedSurfaceGeodeObjectType, defaultDataName);
+});
+
+test("viewer context menu", async ({ window }) => {
+  const x = 549;
+  const y = 210;
+  await viewerContextMenu(window, x, y);
+});
+
+test("info card", async ({ window }) => {
+  await toggleInfoCard(window);
+});
+
+test("points visibility", async ({ window }) => {
+  await setMeshPointsVisibility(window, true);
+});
+
+test("polygon attribute", async ({ window }) => {
+  await setMeshPointsVisibility(window, false);
+  await setMeshPolygonsPolygonAttribute(window, polygonAttributeName);
+});
+
+test("polygon attribute change colormap", async ({ window }) => {
+  await setMeshPolygonsColorMap(window, colorMapName);
+});
+
+test("polygon attribute reopen menu", async ({ window }) => {
+  await openMeshPolygonsMenu(window);
+});
+
+test("vertex attribute", async ({ window }) => {
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: colorMapName,
+  });
+});
+
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshPolygonsNoDataColor(window);
+});
+
+test("vertex attribute change item to 1", async ({ window }) => {
+  await setMeshPolygonsItem(window, 0);
+});
+
+test("vertex attribute change item to 2", async ({ window }) => {
+  await setMeshPolygonsItem(window, 1);
+});
+
+test("vertex attribute change attribute name", async ({ window }) => {
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName2);
+});
+
+test("vertex attribute switch back to first attribute", async ({ window }) => {
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName);
+});
+
+test("vertex attribute reopen menu", async ({ window }) => {
+  await openMeshPolygonsMenu(window);
+});
+
+test("polygons color", async ({ window }) => {
+  await setMeshPolygonsColor(window);
+});
+
+test("points color", async ({ window }) => {
+  await setMeshPointsColor(window);
+});
+
+test("edges color", async ({ window }) => {
+  await setMeshEdgesColor(window);
+});
+
+test("opacity", async ({ window }) => {
+  await setMeshPolygonsOpacity(window, polygonsOpacity);
+});
+
+test("points size", async ({ window }) => {
+  await setMeshPointsSize(window, pointsSize);
+});
+
+test("edges width", async ({ window }) => {
+  await setMeshEdgesWidth(window, edgesWidth);
+});
+
+test("edges visibility", async ({ window }) => {
+  await setMeshEdgesVisibility(window, false);
+});
+
+test("polygons visibility", async ({ window }) => {
+  await setMeshEdgesVisibility(window, true);
+  await setMeshPolygonsVisibility(window, false);
+});
+
+test("polygons textures", async ({ window }) => {
+  await setMeshPolygonsVisibility(window, true);
+  await setMeshPolygonsTextures(window);
+});

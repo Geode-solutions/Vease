@@ -1,27 +1,21 @@
-<script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
+<script setup lang="ts">
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
-const { extensions, pending, fetchError, modelValue } = defineProps({
-  extensions: {
-    type: Array,
-    default: [],
-  },
-  pending: {
-    type: Boolean,
-    default: false,
-  },
-  fetchError: {
-    type: [Error, Object, Boolean],
-    default: false,
-  },
-  modelValue: {
-    type: Object,
-    default: undefined,
-  },
-});
+const {
+  extensions = [],
+  pending = false,
+  fetchError = false,
+  modelValue = undefined,
+} = defineProps<{
+  extensions?: MarketplaceExtension[];
+  pending?: boolean;
+  fetchError?: Error | Record<string, unknown> | boolean;
+  modelValue?: MarketplaceExtension;
+}>();
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits<{ "update:modelValue": [value: MarketplaceExtension] }>();
 
 const searchQuery = ref("");
 
@@ -41,11 +35,11 @@ const filteredExtensions = computed(() => {
   );
 });
 
-function selectExtension(ext) {
+function selectExtension(ext: MarketplaceExtension) {
   emit("update:modelValue", ext);
 }
 
-function extensionIcon(ext) {
+function extensionIcon(ext: MarketplaceExtension) {
   if (appStore.getExtension(ext.id)) {
     return "mdi-puzzle-check-outline";
   }

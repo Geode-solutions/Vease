@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/mesh/cells/color.js
 import { cellsFeatureName, meshViewerObjectType } from "vease/tests/e2e/utils/constants.js";
+========
+import { cellsFeatureName, meshViewerObjectType } from "@tests/utils/constants";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/mesh/cells/color.ts
 import {
   setFeatureColor,
   setFeatureColorWithSlider,

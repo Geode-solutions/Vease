@@ -1,6 +1,7 @@
-<script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
+<script setup lang="ts">
+import GlassCard from "@ogw_front/components/GlassCard.vue";
 import MarketplaceDetails from "./MarketplaceDetails.vue";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "./MarketplaceSidebar.vue";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
@@ -17,7 +18,7 @@ const {
   watch: [user],
 });
 
-const selectedExtension = ref(undefined);
+const selectedExtension = ref<MarketplaceExtension | undefined>(undefined);
 </script>
 
 <template>

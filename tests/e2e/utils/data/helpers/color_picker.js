@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/helpers/color_picker.js
 import { afterActionWait } from "vease/tests/e2e/utils/viewer_interaction.js";
+========
+import { afterActionWait } from "@tests/utils/viewer_interaction";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/helpers/color_picker.ts
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;

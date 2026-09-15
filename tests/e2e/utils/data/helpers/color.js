@@ -1,9 +1,21 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/helpers/color.js
 import { MAX_PERCENTAGE, clickColorPickerCanvas, clickColorPickerSlider } from "./color_picker.js";
+========
+import {
+  MAX_PERCENTAGE,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/helpers/color.ts
 import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
+<<<<<<<< HEAD:tests/e2e/utils/data/helpers/color.js
 } from "vease/tests/e2e/utils/viewer_interaction.js";
+========
+} from "@tests/utils/viewer_interaction";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/helpers/color.ts
 
 async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);

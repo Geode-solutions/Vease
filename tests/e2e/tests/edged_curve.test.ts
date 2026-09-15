@@ -1,0 +1,117 @@
+// Node imports
+// Third party imports
+// Local imports
+import { defaultDataName, edgedCurveGeodeObjectType } from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import {
+  openMeshEdgesMenu,
+  setMeshEdgesColorWithSlider,
+  setMeshEdgesEdgeAttribute,
+  setMeshEdgesItem,
+  setMeshEdgesNoDataColor,
+  setMeshEdgesOpacity,
+  setMeshEdgesVertexAttribute,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColorWithSlider,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+} from "@tests/utils/data/index";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@tests/utils/load";
+import { test } from "@tests/utils/fixtures";
+
+// Constants
+const inputFilename = "test.og_edc3d";
+const edgeAttributeName = "test_edge";
+const edgeAttributeColorMap = "acton";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
+const vertexAttributeColorMap = "vikO";
+const edgesOpacity = 50;
+const edgesWidth = 5;
+const pointsSize = 2;
+
+test.describe.configure({ mode: "serial" });
+
+test("load", async ({ window }) => {
+  await loadVeaseTestDatas(window, [inputFilename]);
+  await expandMainObjectTree(window);
+});
+
+test("highlight", async ({ window }) => {
+  await highlightData(window, edgedCurveGeodeObjectType, defaultDataName);
+});
+
+test("viewer context menu", async ({ window }) => {
+  const x = 549;
+  const y = 210;
+  await viewerContextMenu(window, x, y);
+});
+
+test("info card", async ({ window }) => {
+  await toggleInfoCard(window);
+});
+
+test("points visibility", async ({ window }) => {
+  await toggleInfoCard(window);
+  await setMeshPointsVisibility(window, false);
+});
+
+test("edge attribute", async ({ window }) => {
+  await setMeshPointsVisibility(window, true);
+  await setMeshEdgesEdgeAttribute(window, edgeAttributeName, { colorMap: edgeAttributeColorMap });
+});
+
+test("edge attribute change item to 2", async ({ window }) => {
+  await setMeshEdgesItem(window, 1);
+});
+
+test("edge attribute reopen menu", async ({ window }) => {
+  await openMeshEdgesMenu(window);
+});
+
+test("vertex attribute", async ({ window }) => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName, {
+    item: 2,
+    colorMap: vertexAttributeColorMap,
+  });
+});
+
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshEdgesNoDataColor(window);
+});
+
+test("vertex attribute change attribute name", async ({ window }) => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName2);
+});
+
+test("vertex attribute switch back to first attribute", async ({ window }) => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName);
+});
+
+test("edges color", async ({ window }) => {
+  await setMeshEdgesColorWithSlider(window);
+});
+
+test("edges opacity", async ({ window }) => {
+  await setMeshEdgesOpacity(window, edgesOpacity);
+});
+
+test("edges width", async ({ window }) => {
+  await setMeshEdgesWidth(window, edgesWidth);
+});
+
+test("edges visibility", async ({ window }) => {
+  await setMeshEdgesVisibility(window, false);
+});
+
+test("points color", async ({ window }) => {
+  // Revert
+  await setMeshEdgesVisibility(window, true);
+  await setMeshPointsColorWithSlider(window);
+});
+
+test("points size", async ({ window }) => {
+  await setMeshPointsSize(window, pointsSize);
+});

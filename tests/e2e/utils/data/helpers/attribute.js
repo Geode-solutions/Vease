@@ -1,10 +1,18 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/helpers/attribute.js
 import { SLIDER_PINK, clickColorPickerCanvas, clickColorPickerSlider } from "./color_picker.js";
+========
+import {
+  SLIDER_PINK,
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+} from "@tests/utils/helpers/color_picker";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/helpers/attribute.ts
 import {
   afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
-} from "@tests/utils/viewer_interaction.js";
+} from "@tests/utils/viewer_interaction";
 
 async function resetMenuScroll(window, scrollTop = 0) {
   await window.evaluate((top) => {
@@ -66,6 +74,15 @@ async function setFeatureColorMap(window, menuTestId, colorMap) {
   await window.waitForTimeout(afterActionWait);
 }
 
+interface ApplyAttributeOptions {
+  attributeType: string;
+  attributeName: string;
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
 async function applyAttribute(
   window,
   menuTestId,
@@ -76,7 +93,7 @@ async function applyAttribute(
     colorMap = undefined,
     min = undefined,
     max = undefined,
-  } = {},
+  }: ApplyAttributeOptions,
 ) {
   if (typeof menuTestId === "string") {
     await ensureMenuOpen(window, menuTestId);

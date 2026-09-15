@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/mesh/polygon/color.js
 import { meshViewerObjectType, polygonsFeatureName } from "vease/tests/e2e/utils/constants.js";
+========
+import { meshViewerObjectType, polygonsFeatureName } from "@tests/utils/constants";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/mesh/polygon/color.ts
 import {
   setFeatureColor,
   setFeatureColorWithSlider,

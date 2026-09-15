@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { useDataStore } from "@ogw_front/stores/data";
 import { useMenuStore } from "@ogw_front/stores/menu";
 
-import HybridRenderingView from "@ogw_front/components/HybridRenderingView";
-import Launcher from "@ogw_front/components/Launcher";
-import ViewerUI from "@ogw_front/components/Viewer/Ui";
+import HybridRenderingView from "@ogw_front/components/HybridRenderingView.vue";
+import Launcher from "@ogw_front/components/Launcher.vue";
+import ViewerUI from "@ogw_front/components/Viewer/Ui.vue";
 
 const menuStore = useMenuStore();
 const dataStore = useDataStore();
@@ -24,11 +24,14 @@ async function handleTreeMenu({
   modelComponentType,
   targetComponentIds,
 }) {
+  if (!cardContainer.value) {
+    return;
+  }
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yUI = event.clientY - rect.top;
 
-  let meta_data = undefined;
+  let meta_data: unknown = undefined;
   if (context_type === "model_component") {
     meta_data = {
       viewer_type: "model_component",
@@ -61,6 +64,9 @@ async function handleTreeMenu({
 }
 
 async function openMenu(event) {
+  if (!cardContainer.value || !viewerUI.value) {
+    return;
+  }
   const rect = cardContainer.value.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const yPicking = containerHeight.value - (event.clientY - rect.top);

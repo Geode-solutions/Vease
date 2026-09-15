@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:tests/e2e/utils/data/mesh/points/color.js
 import { meshViewerObjectType, pointsFeatureName } from "vease/tests/e2e/utils/constants.js";
+========
+import { meshViewerObjectType, pointsFeatureName } from "@tests/utils/constants";
+>>>>>>>> 077a2b111249c4084a9c0f8cdbeb3050312354a3:tests/e2e/utils/data/mesh/points/color.ts
 import {
   setFeatureColor,
   setFeatureColorWithSlider,
