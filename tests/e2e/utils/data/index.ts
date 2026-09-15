@@ -1,2 +1,2 @@
-export * from "./mesh/index";
-export * from "./model/index";
+export * from "./mesh";
+export * from "./model";

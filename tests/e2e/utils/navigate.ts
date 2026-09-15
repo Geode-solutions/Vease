@@ -10,9 +10,9 @@ import { _electron as electron } from "playwright";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 
-import { executableName } from "@geode/opengeodeweb-front/server/utils/path";
-import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts";
-import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts";
+import { executableName } from "@geode/opengeodeweb-front/server/utils/path.ts";
+import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.ts";
+import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.ts";
 
 // Local imports
 // oxlint-disable-next-line no-relative-parent-imports

@@ -4,7 +4,7 @@ import {
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "@tests/utils/data/helpers/color.ts";
+} from "@tests/utils/data/helpers/color";
 
 function setMeshPolygonsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);

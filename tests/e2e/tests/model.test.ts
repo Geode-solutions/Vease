@@ -58,7 +58,7 @@ import {
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
-} from "@tests/utils/data/index";
+} from "@tests/utils/data";
 import { applyAttribute } from "@tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";

@@ -19,7 +19,7 @@ import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/data/helpers/attribute.ts";
+} from "@tests/utils/data/helpers/attribute";
 
 function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(

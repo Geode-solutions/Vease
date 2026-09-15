@@ -59,7 +59,7 @@ import { loadVeaseTestDatas } from "@tests/utils/load";
 import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { setColor } from "@tests/utils/data/helpers/color";
-import { setMeshEdgesVisibility } from "@tests/utils/data/index";
+import { setMeshEdgesVisibility } from "@tests/utils/data";
 import { test } from "@tests/utils/fixtures";
 
 // Constants

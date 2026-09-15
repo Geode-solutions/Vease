@@ -13,7 +13,7 @@ import {
   setMeshPointsSize,
   setMeshPointsVertexAttribute,
   setMeshPointsVisibility,
-} from "@tests/utils/data/index";
+} from "@tests/utils/data";
 import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { test } from "@tests/utils/fixtures";

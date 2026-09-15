@@ -37,7 +37,7 @@ import {
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
   setMeshPolyhedraVisibility,
-} from "@tests/utils/data/index";
+} from "@tests/utils/data";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { test } from "@tests/utils/fixtures";

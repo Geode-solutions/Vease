@@ -32,7 +32,7 @@ import {
   setMeshPolygonsTextures,
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsVisibility,
-} from "@tests/utils/data/index";
+} from "@tests/utils/data";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { setQuickColorMap } from "@tests/utils/data/helpers/attribute";
