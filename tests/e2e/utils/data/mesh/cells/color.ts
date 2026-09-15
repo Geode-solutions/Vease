@@ -4,7 +4,7 @@ import {
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "vease/tests/e2e/utils/data/helpers/color";
+} from "@tests/utils/data/helpers/color";
 
 function setMeshCellsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);

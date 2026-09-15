@@ -1,8 +1,8 @@
 // Local imports
 // oxlint-disable-next-line unicorn/prefer-export-from
-import { afterActionWait, halfSecondWait } from "./constants.js";
+import { afterActionWait, halfSecondWait } from "./constants.ts";
 // oxlint-disable-next-line unicorn/prefer-export-from
-import { moveMouseOutOfTheWay } from "./app_interaction.js";
+import { moveMouseOutOfTheWay } from "./app_interaction.ts";
 
 function noopCleanup(): unknown {
   return undefined;

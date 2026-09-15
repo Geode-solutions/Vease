@@ -1,4 +1,4 @@
-import { afterActionWait } from "./constants.js";
+import { afterActionWait } from "./constants";
 
 function moveMouseOutOfTheWay(window) {
   return window.mouse.move(0, 0);

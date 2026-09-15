@@ -1,5 +1,5 @@
-import { meshViewerObjectType } from "vease/tests/e2e/utils/constants.js";
-import { setPointsVisibility } from "vease/tests/e2e/utils/viewer_interaction.js";
+import { meshViewerObjectType } from "@tests/utils/constants";
+import { setPointsVisibility } from "@tests/utils/viewer_interaction";
 
 function setMeshPointsVisibility(window, visibility) {
   return setPointsVisibility(window, meshViewerObjectType, visibility);

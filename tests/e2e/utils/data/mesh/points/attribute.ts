@@ -2,7 +2,7 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker";
+} from "@tests/utils/data/helpers/color_picker";
 import {
   afterActionWait,
   ensureMenuOpen,
@@ -14,7 +14,7 @@ import {
   pointsFeatureName,
   vertexAttributeType,
 } from "@tests/utils/constants";
-import { setFeatureAttribute } from "@tests/utils/helpers/attribute";
+import { setFeatureAttribute } from "@tests/utils/data/helpers/attribute";
 
 function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(

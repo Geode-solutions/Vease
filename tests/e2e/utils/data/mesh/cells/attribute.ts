@@ -2,7 +2,7 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker";
+} from "@tests/utils/data/helpers/color_picker";
 import {
   afterActionWait,
   ensureMenuOpen,
@@ -19,7 +19,7 @@ import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/data/helpers/attribute.js";
+} from "@tests/utils/data/helpers/attribute";
 
 function setMeshCellsVertexAttribute(window, attributeName, options = {}) {
   return setFeatureAttribute(

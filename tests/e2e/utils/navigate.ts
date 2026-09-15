@@ -10,9 +10,8 @@ import { _electron as electron } from "playwright";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 
-import { executableName } from "@geode/opengeodeweb-front/server/utils/path.ts";
-import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.ts";
-import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.ts";
+import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts";
+import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts";
 
 // Local imports
 // oxlint-disable-next-line no-relative-parent-imports
@@ -36,6 +35,10 @@ const WAIT_TIMES = {
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
+
+function executableName(name) {
+  return isWindows ? `${name}.exe` : name;
+}
 
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;

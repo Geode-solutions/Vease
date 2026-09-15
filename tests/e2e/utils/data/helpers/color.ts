@@ -2,7 +2,7 @@ import {
   MAX_PERCENTAGE,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/helpers/color_picker";
+} from "@tests/utils/data/helpers/color_picker";
 import {
   afterActionWait,
   ensureFeatureVisible,

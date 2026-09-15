@@ -1,4 +1,4 @@
-import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/helpers/attribute";
+import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/data/helpers/attribute";
 import {
   cellAttributeType,
   edgeAttributeType,

@@ -4,7 +4,7 @@ import {
   setFeatureColorWithSlider,
   setFeatureColoringStyle,
   setFeatureOpacity,
-} from "vease/tests/e2e/utils/data/helpers/color.js";
+} from "@tests/utils/data/helpers/color.ts";
 
 function setMeshPolygonsOpacity(window, percent) {
   return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);
