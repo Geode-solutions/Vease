@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useDraggable, useStorage, useWindowSize } from "@vueuse/core";
 
 const RATIO = 0.9;
@@ -6,25 +6,43 @@ const RATIO = 0.9;
 const edgeSize = 6;
 const margin = 16;
 
-const { defaultWidth, defaultHeight, minWidth, minHeight, storageKey, zIndex, escapeFunction } =
-  defineProps({
-    defaultWidth: { type: Number, default: 560 },
-    defaultHeight: { type: Number, default: 480 },
-    minWidth: { type: Number, default: 400 },
-    minHeight: { type: Number, default: 300 },
-    storageKey: { type: String, default: undefined },
-    zIndex: { type: Number, default: 1500 },
-    escapeFunction: { type: Function, default: undefined },
-  });
+const DEFAULT_WIDTH = 560;
+const DEFAULT_HEIGHT = 480;
+const DEFAULT_MIN_WIDTH = 400;
+const DEFAULT_MIN_HEIGHT = 300;
+const DEFAULT_Z_INDEX = 1500;
+
+const {
+  defaultWidth = DEFAULT_WIDTH,
+  defaultHeight = DEFAULT_HEIGHT,
+  minWidth = DEFAULT_MIN_WIDTH,
+  minHeight = DEFAULT_MIN_HEIGHT,
+  storageKey = undefined,
+  zIndex = DEFAULT_Z_INDEX,
+  escapeFunction = undefined,
+} = defineProps<{
+  defaultWidth?: number;
+  defaultHeight?: number;
+  minWidth?: number;
+  minHeight?: number;
+  storageKey?: string;
+  zIndex?: number;
+  escapeFunction?: () => void;
+}>();
 
 const { width: winWidth, height: winHeight } = useWindowSize();
 
 const maxWidth = computed(() => Math.floor(winWidth.value * RATIO));
 const maxHeight = computed(() => Math.floor(winHeight.value * RATIO));
 
+interface Position {
+  x: number | undefined;
+  y: number | undefined;
+}
+
 const savedPosition = storageKey
-  ? useStorage(`${storageKey}-position`, { x: undefined, y: undefined })
-  : ref({ x: undefined, y: undefined });
+  ? useStorage<Position>(`${storageKey}-position`, { x: undefined, y: undefined })
+  : ref<Position>({ x: undefined, y: undefined });
 
 const savedSize = storageKey
   ? useStorage(`${storageKey}-size`, {
@@ -47,8 +65,8 @@ const initialY = computed(() =>
     : savedPosition.value.y,
 );
 
-const pipRef = ref(undefined);
-const dragHandle = ref(undefined);
+const pipRef = useTemplateRef("pipRef");
+const dragHandle = useTemplateRef("dragHandle");
 
 const { x, y } = useDraggable(pipRef, {
   handle: dragHandle,

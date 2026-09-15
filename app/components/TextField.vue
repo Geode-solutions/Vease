@@ -1,28 +1,21 @@
-<script setup>
-const { value, rules, label, required, counter } = defineProps({
-  value: {
-    type: String,
-    required: true,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  counter: {
-    type: Number,
-    default: undefined,
-  },
-});
+<script setup lang="ts">
+import type { ValidationRule } from "vuetify";
 
-const emit = defineEmits(["input"]);
+const {
+  value,
+  rules = [],
+  label,
+  required = false,
+  counter = undefined,
+} = defineProps<{
+  value: string;
+  rules?: ValidationRule[];
+  label: string;
+  required?: boolean;
+  counter?: number;
+}>();
+
+const emit = defineEmits<{ input: [value: string] }>();
 </script>
 
 <template>

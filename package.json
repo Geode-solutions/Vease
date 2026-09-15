@@ -43,13 +43,14 @@
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build && electron-builder build --publish=never",
-    "test": "npx playwright test --config ./tests/e2e/playwright.config.js",
+    "test": "npx playwright test --config ./tests/e2e/playwright.config.ts",
     "test:e2e:browser:chrome": "npm run test -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test -- --project=browser-firefox",
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test -- --project=cloud",
     "test:e2e:desktop": "npm run test -- --project=desktop",
-    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots"
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots",
+    "typecheck": "cross-env MODE=BROWSER nuxi prepare && vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p .nuxt/tsconfig.server.json --noImplicitAny false && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tests/e2e/tsconfig.json"
   },
   "dependencies": {
     "@ai-sdk/mcp": "2.0.45",
@@ -86,6 +87,8 @@
     "electron-playwright-helpers": "1.7.1",
     "nuxt-electron": "0.7.0",
     "playwright": "1.54.1",
-    "std-env": "3.9.0"
+    "std-env": "3.9.0",
+    "typescript": "5.9.3",
+    "vue-tsc": "3.3.11"
   }
 }

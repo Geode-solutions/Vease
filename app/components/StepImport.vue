@@ -1,20 +1,18 @@
-<script setup>
-import FileSelector from "@ogw_front/components/FileSelector";
-import ImportFile from "@vease/components/ImportFile";
-import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector";
-import ObjectSelector from "@ogw_front/components/ObjectSelector";
-import Stepper from "@ogw_front/components/Stepper";
+<script setup lang="ts">
+import FileSelector from "@ogw_front/components/FileSelector.vue";
+import ImportFile from "@vease/components/ImportFile.vue";
+import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue";
+import ObjectSelector from "@ogw_front/components/ObjectSelector.vue";
+import Stepper from "@ogw_front/components/Stepper.vue";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits<{ close: [] }>();
 const UIStore = useUIStore();
 
-const { files: initialFiles } = defineProps({
-  files: { type: Array, default: () => [] },
-});
+const { files: initialFiles = [] } = defineProps<{ files?: File[] }>();
 
-const files = ref(initialFiles);
+const files = ref<File[]>(initialFiles);
 watch(
   () => initialFiles,
   (newVal) => {
@@ -25,7 +23,7 @@ watch(
 
 const autoUpload = ref(true);
 const geode_object_type = ref("");
-const additional_files = ref([]);
+const additional_files = ref<File[]>([]);
 
 const stepper_tree = useStepperTree(
   [

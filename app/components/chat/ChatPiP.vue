@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
@@ -7,7 +7,7 @@ const UIStore = useUIStore();
 const { messages, sendMessage, status, error } = useVeaseChat();
 
 const input = ref("");
-const messagesEnd = ref(undefined);
+const messagesEnd = useTemplateRef("messagesEnd");
 
 function close() {
   UIStore.setShowChatPiP(false);

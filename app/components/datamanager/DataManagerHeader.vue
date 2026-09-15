@@ -1,18 +1,28 @@
-<script setup>
+<script setup lang="ts">
+import type { DataManagerTab } from "@vease/stores/ui";
 import SearchBar from "@ogw_front/components/SearchBar.vue";
 import { useTemplateRef } from "vue";
+// oxlint-disable-next-line eslint/no-duplicate-imports
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 
-const { searchValue, activeTab, tabs, compact } = defineProps({
-  searchValue: { type: String, default: "" },
-  activeTab: { type: String, default: "data" },
-  tabs: { type: Array, default: () => [] },
-  compact: { type: Boolean, default: false },
-});
+const {
+  searchValue = "",
+  activeTab = "data",
+  tabs = [],
+  compact = false,
+} = defineProps<{
+  searchValue?: string;
+  activeTab?: string;
+  tabs?: DataManagerTab[];
+  compact?: boolean;
+}>();
 
-const emit = defineEmits(["update:searchValue", "update:activeTab"]);
+const emit = defineEmits<{
+  "update:searchValue": [value: string];
+  "update:activeTab": [value: string];
+}>();
 const searchInput = useTemplateRef("searchInput");
 
 function enterPiP() {
@@ -20,7 +30,11 @@ function enterPiP() {
   navigateTo("/");
 }
 
-defineExpose({ focusSearch: () => searchInput.value?.focus() });
+defineExpose({
+  // SearchBar doesn't expose its internal input; focus() is a best-effort no-op
+  // If the underlying instance doesn't provide one at runtime.
+  focusSearch: () => (searchInput.value as { focus?: () => void } | null)?.focus?.(),
+});
 </script>
 
 <template>
