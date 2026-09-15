@@ -19,6 +19,7 @@ import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 import packageJson from "../../../package.json" with { type: "json" };
 
 // Constants
+const __dirname = import.meta.dirname;
 const MILLISECONDS = 1000;
 const LINUX_WAIT_BROWSER = 20;
 const LINUX_WAIT_DESKTOP = 30;
@@ -36,17 +37,15 @@ const WAIT_TIMES = {
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
 
-function noopResolveAppUrl(): void {
-  return undefined;
-}
-
 function findAppExecutable() {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
   if (appExecutablePath && fs.existsSync(appExecutablePath)) {
     console.log({ appExecutablePath });
     return path.join(appExecutablePath, executableName(packageJson.name));
   }
-  const buildPath = findLatestBuild(path.join(process.cwd(), "release", "0.0.0"));
+  const buildReleasePath = path.join(__dirname, "../../../release", "0.0.0");
+  console.log([buildReleasePath]);
+  const buildPath = findLatestBuild(buildReleasePath);
   return parseElectronApp(buildPath).executable;
 }
 
@@ -55,6 +54,7 @@ async function waitForAppReady(url, timeoutMs) {
   while (Date.now() - startTime < timeoutMs) {
     // oxlint-disable-next-line no-await-in-loop
     const response = await getIsAppReady(url);
+    console.log(`App ready check response: ${JSON.stringify(response)}`);
     if (response?.isReady) {
       return true;
     }
@@ -75,32 +75,32 @@ async function runDesktopBuild() {
   const electronApp = await electron.launch({
     args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
     executablePath: appInfo,
-    timeout: 60_000,
+    wait: 60_000,
     env: {
       ...process.env,
-      ELECTRON_ENABLE_LOGGING: "true",
+      ELECTRON_ENABLE_LOGGING: true,
       NODE_ENV: "development",
     },
   });
 
-  let resolveAppUrl: (url: string) => void = noopResolveAppUrl;
+  let resolveAppUrl = undefined;
   // oxlint-disable-next-line promise/avoid-new
-  const appUrlPromise = new Promise<string>((resolve) => {
+  const appUrlPromise = new Promise((resolve) => {
     resolveAppUrl = resolve;
   });
   const urlRegex = /Nuxt server url\s+(?<host>localhost:\d+)/u;
-  electronApp.process().stdout?.on("data", (data) => {
+  electronApp.process().stdout.on("data", (data) => {
     const line = data.toString();
     console.log(`stdout: ${line}`);
     const match = line.match(urlRegex);
-    if (match?.groups) {
+    if (match) {
       resolveAppUrl(`http://${match.groups.host}`);
     }
   });
-  electronApp.process().stderr?.on("data", (error) => console.log(`stderr: ${error}`));
+  electronApp.process().stderr.on("data", (error) => console.log(`stderr: ${error}`));
 
-  electronApp.on("close", () => {
-    console.log("electronApp close");
+  electronApp.on("close", (data) => {
+    console.log("electronApp close", data);
   });
   const firstWindow = await electronApp.firstWindow();
   const browserWindow = await electronApp.browserWindow(firstWindow);
@@ -120,7 +120,7 @@ async function runDesktopBuild() {
 async function navigateToCloudApp(page, url, maxRetries) {
   console.log(`Navigating to: ${url}`);
   const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
-  let lastError: unknown = undefined;
+  let lastError = undefined;
   let succeeded = false;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
@@ -136,7 +136,7 @@ async function navigateToCloudApp(page, url, maxRetries) {
       break;
     } catch (error) {
       lastError = error;
-      console.log(`Attempt ${attempt} failed: ${error instanceof Error ? error.message : error}`);
+      console.log(`Attempt ${attempt} failed: ${error.message}`);
       if (attempt < maxRetries) {
         // oxlint-disable-next-line no-await-in-loop
         await setTimeout(MILLISECONDS);
@@ -227,4 +227,32 @@ async function navigateToApp(mode, browser) {
   throw new Error(`Unknown mode: ${mode}`);
 }
 
-export { navigateToApp };
+function navigateToViewerPage(window) {
+  const viewerNavButton = window.getByTestId("viewerNavButton");
+  return viewerNavButton.click();
+}
+function navigateToDataManagerPage(window) {
+  const dataManagerNavButton = window.getByTestId("dataManagerNavButton");
+  return dataManagerNavButton.click();
+}
+function navigateToExtensionsPage(window) {
+  const extensionsNavButton = window.getByTestId("extensionsNavButton");
+  return extensionsNavButton.click();
+}
+function navigateToAccountPage(window) {
+  const accountNavButton = window.getByTestId("accountNavButton");
+  return accountNavButton.click();
+}
+function navigateToInfosPage(window) {
+  const infosNavButton = window.getByTestId("infosNavButton");
+  return infosNavButton.click();
+}
+
+export {
+  navigateToApp,
+  navigateToAccountPage,
+  navigateToDataManagerPage,
+  navigateToExtensionsPage,
+  navigateToInfosPage,
+  navigateToViewerPage,
+};

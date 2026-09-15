@@ -1,6 +1,8 @@
-// Constants
-const afterActionWait = 2000;
-const WAIT_FOR_OPTIONS_TIMEOUT = 500;
+// Local imports
+// oxlint-disable-next-line unicorn/prefer-export-from
+import { afterActionWait, halfSecondWait } from "./constants";
+// oxlint-disable-next-line unicorn/prefer-export-from
+import { moveMouseOutOfTheWay } from "./app_interaction";
 
 function noopCleanup(): unknown {
   return undefined;
@@ -8,10 +10,6 @@ function noopCleanup(): unknown {
 
 function getHybridViewerCanvas(window) {
   return window.getByTestId("hybridViewer").locator("canvas");
-}
-
-function moveMouseOutOfTheWay(window) {
-  return window.mouse.move(0, 0);
 }
 
 async function viewerContextMenu(window, x, y) {
@@ -61,7 +59,7 @@ async function findOverlappingObjectsPicker(window) {
     // oxlint-disable-next-line no-await-in-loop
     await window.keyboard.press("Escape");
     // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
+    await window.waitForTimeout(halfSecondWait);
   }
 
   if (!found) {
@@ -101,7 +99,7 @@ async function ensureFeatureVisible(window, menuTestId) {
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
     // Wait for conditionally rendered options to appear
-    await window.waitForTimeout(WAIT_FOR_OPTIONS_TIMEOUT);
+    await window.waitForTimeout(halfSecondWait);
   }
 }
 

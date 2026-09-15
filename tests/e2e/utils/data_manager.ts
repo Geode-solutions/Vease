@@ -4,11 +4,7 @@
 
 // Local imports
 import { afterActionWait } from "./viewer_interaction";
-
-async function navigateToDataManager(window) {
-  await window.getByTestId("dataManagerNavButton").click();
-  await window.waitForTimeout(afterActionWait);
-}
+import { getMainObjectTree } from "./object_tree_interaction";
 
 async function openDataManagerPiP(window) {
   await window.getByTestId("dataManagerPiPButton").click();
@@ -70,7 +66,8 @@ async function confirmDelete(window) {
 }
 
 async function expandObjectTree(window) {
-  await window.getByTestId("mainObjectTree").locator("button:has(.mdi-expand-all-outline)").click();
+  const mainObjectTree = getMainObjectTree(window);
+  await mainObjectTree.locator("button:has(.mdi-expand-all-outline)").click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -83,7 +80,6 @@ export {
   focusRowItem,
   getDataTableRow,
   isolateRowItem,
-  navigateToDataManager,
   openDataManagerPiP,
   openRenameByButton,
   openRenameByName,
