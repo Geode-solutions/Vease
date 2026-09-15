@@ -10,9 +10,9 @@ import { _electron as electron } from "playwright";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 
-import { executableName } from "@geode/opengeodeweb-front/server/utils/path.js";
-import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.js";
-import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
+import { executableName } from "@geode/opengeodeweb-front/server/utils/path.ts";
+import { getIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.ts";
+import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.ts";
 
 // Local imports
 // oxlint-disable-next-line no-relative-parent-imports
@@ -54,6 +54,7 @@ async function waitForAppReady(url, timeoutMs) {
   while (Date.now() - startTime < timeoutMs) {
     // oxlint-disable-next-line no-await-in-loop
     const response = await getIsAppReady(url);
+    console.log(`App ready check response: ${JSON.stringify(response)}`);
     if (response?.isReady) {
       return true;
     }
