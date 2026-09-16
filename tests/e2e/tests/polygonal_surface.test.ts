@@ -96,7 +96,7 @@ test("quick colormap picker change colormap", async ({ window }) => {
   await viewerQuickColormap(window);
   await setQuickColorMap(window, colorMapName);
   await moveMouseOutOfTheWay(window);
- await closeAllMenus(window);
+  await closeAllMenus(window);
 });
 
 test("quick colormap picker change range", async ({ window }) => {
