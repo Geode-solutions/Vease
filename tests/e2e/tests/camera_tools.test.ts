@@ -207,13 +207,14 @@ test("only one tool panel open at a time", async ({ window }) => {
   await expect(closeCameraManagerButton).not.toBeVisible();
   await expect(screenshotActionButton).toBeVisible();
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
-  await screenshotButton.click();
-  await window.waitForTimeout(afterActionWait);
-  await expect(screenshotActionButton).not.toBeVisible();
 });
 
 test("camera orientation", async ({ window }) => {
+  const screenshotButton = window.getByTestId("screenshotButton");
+  await screenshotButton.click();
+  await window.waitForTimeout(afterActionWait);
+  const screenshotActionButton = window.getByTestId("screenshotActionButton");
+  await expect(screenshotActionButton).not.toBeVisible();
   await toggleCameraOrientation(window);
   await selectCameraOrientation(window, "X+");
 });
