@@ -1,8 +1,8 @@
 //oxlint-disable eslint/max-lines
 
 import { afterActionWait, ensureMenuOpen } from "./viewer_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
 import { modalTransitionWait } from "./constants";
-import { moveMouseOutOfTheWay } from "./app_interaction";
 import { setModelColor } from "./data/model/color";
 
 function getMainObjectTree(window) {
@@ -144,8 +144,7 @@ async function getTreeRowByTextAndParent(
 }
 
 async function expandGeodeObjectType(window, geodeObjectType, treeTestId = "mainObjectTree") {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, treeTestId);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
@@ -238,8 +237,7 @@ async function openObjectTreeContextMenu(window, objectName, treeTestId = "mainO
 }
 
 async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const row = modelComponentsObjectTree
     .nth(treeIndex)
@@ -255,8 +253,7 @@ async function toggleModelTreeRow(window, rowName, rowIndex = 0, treeIndex = 0) 
 }
 
 async function openModelComponentContextMenu(window, rowName, rowIndex = 0, treeIndex = 0) {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const row = modelComponentsObjectTree
     .nth(treeIndex)

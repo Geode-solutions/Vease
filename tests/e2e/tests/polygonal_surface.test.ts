@@ -8,6 +8,7 @@ import {
   viewerContextMenu,
   viewerQuickColormap,
 } from "@tests/utils/viewer_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
   closeObjectsTree,
   expandMainObjectTree,
@@ -34,7 +35,6 @@ import {
   setMeshPolygonsVisibility,
 } from "@tests/utils/data";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { setQuickColorMap } from "@tests/utils/data/helpers/attribute";
 import { test } from "@tests/utils/fixtures";
 
@@ -96,9 +96,7 @@ test("quick colormap picker change colormap", async ({ window }) => {
   await viewerQuickColormap(window);
   await setQuickColorMap(window, colorMapName);
   await moveMouseOutOfTheWay(window);
-
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+ await closeAllMenus(window);
 });
 
 test("quick colormap picker change range", async ({ window }) => {
@@ -116,8 +114,7 @@ test("quick colormap picker change range", async ({ window }) => {
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
 
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await openObjectsTree(window);
   await moveMouseOutOfTheWay(window);
 });

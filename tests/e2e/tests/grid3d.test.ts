@@ -55,12 +55,11 @@ test("viewer context menu", async ({ window }) => {
 
 test("info card", async ({ window }) => {
   await toggleInfoCard(window);
-  await toggleInfoCard(window);
 });
 
 test("points visibility", async ({ window }) => {
-  const visibility = true;
-  await setMeshPointsVisibility(window, visibility);
+  await toggleInfoCard(window);
+  await setMeshPointsVisibility(window, true);
 });
 
 test("cell attribute", async ({ window }) => {

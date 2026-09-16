@@ -2,7 +2,7 @@
 import path from "node:path";
 
 // Third party imports
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
 
@@ -11,8 +11,13 @@ import { navigateToApp } from "./navigate";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
+interface ScreenshotMask {
+  locators: Locator[];
+}
+
 interface TestFixtures {
   mode: string;
+  screenshotMask: ScreenshotMask;
   window: Page;
   logTestProgress: void;
   autoScreenshot: void;
@@ -20,6 +25,10 @@ interface TestFixtures {
 
 const test = base.extend<TestFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
+
+  // A fresh object per test; set `screenshotMask.locators` from within a test
+  // Body to mask elements on the auto screenshot taken after that test.
+  screenshotMask: [{ locators: [] }, { scope: "test" }],
 
   window: [
     async ({ mode, browser }, use) => {
@@ -48,10 +57,10 @@ const test = base.extend<TestFixtures>({
   ],
 
   autoScreenshot: [
-    async ({ window }, use, testInfo) => {
+    async ({ window, screenshotMask }, use, testInfo) => {
       await use();
       if (testInfo.status === testInfo.expectedStatus) {
-        await expect(window).toHaveScreenshot();
+        await expect(window).toHaveScreenshot({ mask: screenshotMask.locators });
       }
     },
     { auto: true },

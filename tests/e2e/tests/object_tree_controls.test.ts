@@ -22,6 +22,7 @@ import {
   toggleSortObjects,
   uncheckFilterCategory,
 } from "@tests/utils/object_tree_interaction";
+import { closeAllMenus } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { resetCamera } from "@tests/utils/camera_interaction";
 import { test } from "@tests/utils/fixtures";
@@ -51,12 +52,10 @@ test("filter objects", async ({ window }) => {
   await openFilterMenu(window);
   await uncheckFilterCategory(window, "EdgedCurve3D");
   await uncheckFilterCategory(window, "PolygonalSurface3D");
-
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
 test("sort by id", async ({ window }) => {
+  await closeAllMenus(window);
   await toggleSortObjects(window);
 });
 
@@ -75,7 +74,7 @@ test("search by text", async ({ window }) => {
   await fillSearchQuery(window, "");
 });
 
-test("search by id", async ({ window }) => {
+test("search by id", async ({ window, screenshotMask }) => {
   const mainObjectTree = getMainObjectTree(window);
   const brepLabel = mainObjectTree
     .locator('[data-testid^="treeRow-"]', { hasText: "test" })
@@ -84,18 +83,15 @@ test("search by id", async ({ window }) => {
   const brepId = dataTestId.replace("treeRow-", "");
   const searchPrefix = brepId.slice(0, 3);
   await fillSearchQuery(window, searchPrefix);
-  await expect(window).toHaveScreenshot({
-    mask: [window.getByTestId("searchObjectsInput")],
-  });
-  await fillSearchQuery(window, "");
+  screenshotMask.locators = [window.getByTestId("searchObjectsInput")];
 });
 
 test("refilter object", async ({ window }) => {
+  await fillSearchQuery(window, "");
   await openFilterMenu(window);
   await checkFilterCategory(window, "PolygonalSurface3D");
 
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
 });
 
 test("collapse main object tree", async ({ window }) => {
@@ -132,8 +128,7 @@ test("filter model components", async ({ window }) => {
 });
 
 test("sort model components by id", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
@@ -143,7 +138,6 @@ test("sort model components by id", async ({ window }) => {
 test("sort model components by name", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
   await window.waitForTimeout(afterActionWait);
 });
 
@@ -177,15 +171,15 @@ test("copy surface id", async ({ window }) => {
   expect(surfaceId).toBeTruthy();
 });
 
-test("search by copied surface id", async ({ window }) => {
+test("search by copied surface id", async ({ window, screenshotMask }) => {
   expect(surfaceId).toBeTruthy();
   await fillSearchQuery(window, surfaceId, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot({
-    mask: [window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput")],
-  });
-  await fillSearchQuery(window, "", "modelComponentsObjectTree");
+  screenshotMask.locators = [
+    window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput"),
+  ];
 });
 
 test("collapse all model components", async ({ window }) => {
+  await fillSearchQuery(window, "", "modelComponentsObjectTree");
   await collapseModelComponentsObjectTree(window);
 });

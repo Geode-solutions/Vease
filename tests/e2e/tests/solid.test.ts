@@ -8,6 +8,7 @@ import {
   defaultDataName,
   hybridSolidGeodeObjectType,
 } from "@tests/utils/constants";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
   expandMainObjectTree,
   highlightData,
@@ -39,7 +40,6 @@ import {
   setMeshPolyhedraVisibility,
 } from "@tests/utils/data";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -169,8 +169,7 @@ test("polyhedra visibility", async ({ window }) => {
 
 test("reopen treeview over zoomed dark data adaptive style", async ({ window }) => {
   await setMeshPolyhedraColorBlack(window);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
   await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });

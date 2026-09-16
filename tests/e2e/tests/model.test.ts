@@ -4,7 +4,6 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -22,6 +21,7 @@ import {
   structuralModelGeodeObjectType,
   vertexAttributeType,
 } from "@tests/utils/constants";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
   collapseGeodeObjectType,
   expandGeodeObjectType,
@@ -61,7 +61,6 @@ import {
 } from "@tests/utils/data";
 import { applyAttribute } from "@tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -132,10 +131,7 @@ test("edges visibility", async ({ window }) => {
 });
 
 test("object tree model components", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
   await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
   await hideAllComponentLeafRows(window, "Surfaces");
@@ -199,10 +195,7 @@ test("corners vertex attribute one corner", async ({ window }) => {
 });
 
 test("lines visibility", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await collapseGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Lines");
 });
@@ -257,10 +250,7 @@ test("lines edge attribute one line", async ({ window }) => {
 });
 
 test("surfaces visibility", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await collapseGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
   await toggleModelTreeRow(window, "Surfaces");
 });
@@ -358,11 +348,10 @@ test("toggle both model component trees", async ({ window }) => {
   await resetCamera(window);
   await toggleObjectsTree(window);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
-  await toggleModelTreeRow(window, "Surfaces", 0, 1);
 });
 
 test("show points of surface in model tree", async ({ window }) => {
+  await toggleModelTreeRow(window, "Surfaces", 0, 1);
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
   await expandGeodeObjectType(window, "Surfaces", secondModelTree);
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);

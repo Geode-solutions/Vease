@@ -47,6 +47,7 @@ import {
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction";
 
+import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -56,7 +57,6 @@ import {
 } from "@tests/utils/object_tree_interaction";
 import { confirmDelete } from "@tests/utils/data_manager";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { setMeshEdgesVisibility } from "@tests/utils/data";
@@ -163,14 +163,9 @@ test("overlapping objects context menu at top", async ({ window }) => {
 });
 
 test("visibility off grid and expand brep focus", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-
+  await closeAllMenus(window);
   await expandGeodeObjectType(window, rgd3dGeodeObjectType);
   await hideObjectInTree(window, rgd3dGeodeObjectType, "grid");
-
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
@@ -200,6 +195,7 @@ test("save camera position", async ({ window }) => {
 });
 
 test("only one tool panel open at a time", async ({ window }) => {
+  await closeCameraManager(window);
   await toggleCameraManager(window);
   const closeCameraManagerButton = window.getByTestId("closeCameraManagerButton");
   const screenshotButton = window.getByTestId("screenshotButton");
@@ -278,11 +274,7 @@ test("restore camera position", async ({ window }) => {
 test("screenshot file without background", async ({ window }) => {
   await closeCameraManager(window);
   // Close any open menus from previous test
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-
+  await closeAllMenus(window);
   await window.getByTestId("screenshotButton").click();
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
@@ -303,10 +295,10 @@ test("open shrink filter tool", async ({ window }) => {
   await resetCamera(window);
   await showObjectInTree(window, "BRep");
   await toggleShrinkFilter(window);
-  await toggleShrinkFilter(window);
 });
 
 test("open clipping planes tool", async ({ window }) => {
+  await toggleShrinkFilter(window);
   await toggleClippingPlanes(window);
 });
 

@@ -15,7 +15,7 @@ const CI_WORKERS = 2;
 
 const retries = process.env.CI ? CI_RETRIES : 0;
 const workers = process.env.CI ? CI_WORKERS : 3;
-const testMatch = "tests/e2e/tests/edged_curve.test.ts";
+const testMatch = "tests/e2e/tests/camera_tools.test.ts";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
