@@ -23,21 +23,30 @@ import {
 } from "@tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
-  collapseGeodeObjectType,
-  expandGeodeObjectType,
-  expandMainObjectTree,
-  getMainObjectTree,
+  collapseGeodeObjectTypeInTree,
+  expandGeodeObjectTypeInTree,
+  hideObjectInTree,
+} from "@tests/utils/object_trees/common";
+import {
+  collapseMeshComponentType,
+  collapseModelComponentTypes,
+  expandMeshComponentType,
   getModelComponentsObjectTree,
   hideAllComponentLeafRows,
-  hideObjectInTree,
-  highlightData,
-  hoverModelComponentRow,
+  hoverLines,
+  hoverSurfaces,
   openModelComponentContextMenu,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
+} from "@tests/utils/object_trees/model_components_object_tree";
+import {
+  expandGeodeObjectType,
+  expandMainObjectTree,
+  getMainObjectTree,
+  highlightData,
   toggleObjectsTree,
-} from "@tests/utils/object_tree_interaction";
+} from "@tests/utils/object_trees/main_object_tree";
 import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
   setModelColor,
@@ -133,18 +142,18 @@ test("edges visibility", async ({ window }) => {
 test("object tree model components", async ({ window }) => {
   await closeAllMenus(window);
   await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
-  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await hideAllComponentLeafRows(window, "Surfaces");
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 });
 
 test("object tree hover lines", async ({ window }) => {
-  await hoverModelComponentRow(window, "Lines");
+  await hoverLines(window);
 });
 
 test("object tree hover first surface", async ({ window }) => {
-  await hoverModelComponentRow(window, "Surfaces", "00000000-");
+  await hoverSurfaces(window, "00000000-");
 });
 
 test("blocks visibility", async ({ window }) => {
@@ -168,7 +177,7 @@ test("corners color", async ({ window }) => {
 });
 
 test("corners vertex attribute all corners", async ({ window }) => {
-  await expandGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
+  await expandMeshComponentType(window, "Corners");
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelPointsVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
@@ -196,7 +205,7 @@ test("corners vertex attribute one corner", async ({ window }) => {
 
 test("lines visibility", async ({ window }) => {
   await closeAllMenus(window);
-  await collapseGeodeObjectType(window, "Corners", "modelComponentsObjectTree");
+  await collapseModelComponentTypes(window);
   await toggleModelTreeRow(window, "Lines");
 });
 
@@ -206,7 +215,7 @@ test("lines color", async ({ window }) => {
 });
 
 test("lines vertex attribute all lines", async ({ window }) => {
-  await expandGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
+  await expandMeshComponentType(window, "Lines");
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelEdgesVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
@@ -251,7 +260,7 @@ test("lines edge attribute one line", async ({ window }) => {
 
 test("surfaces visibility", async ({ window }) => {
   await closeAllMenus(window);
-  await collapseGeodeObjectType(window, "Lines", "modelComponentsObjectTree");
+  await collapseMeshComponentType(window, "Lines");
   await toggleModelTreeRow(window, "Surfaces");
 });
 
@@ -262,7 +271,7 @@ test("surfaces color", async ({ window }) => {
 });
 
 test("surfaces vertex attribute all surfaces", async ({ window }) => {
-  await expandGeodeObjectType(window, "Surfaces", "modelComponentsObjectTree");
+  await expandMeshComponentType(window, "Surfaces");
   await openModelComponentContextMenu(window, "00000000-", 0);
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
@@ -342,7 +351,7 @@ test("load structural model", async ({ window }) => {
 });
 
 test("toggle both model component trees", async ({ window }) => {
-  await hideObjectInTree(window, "BRep");
+  await hideObjectInTree(window, "BRep", undefined, getMainObjectTree(window));
   await resetCamera(window);
   await openModelComponentsTree(window, structuralModelGeodeObjectType, defaultDataName);
   await resetCamera(window);
@@ -353,7 +362,7 @@ test("toggle both model component trees", async ({ window }) => {
 test("show points of surface in model tree", async ({ window }) => {
   await toggleModelTreeRow(window, "Surfaces", 0, 1);
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
-  await expandGeodeObjectType(window, "Surfaces", secondModelTree);
+  await expandGeodeObjectTypeInTree(window, "Surfaces", secondModelTree);
   await openModelComponentContextMenu(window, "019ea682-", 0, 1);
   await setModelPointsVisibility(window, true);
   await moveMouseOutOfTheWay(window);
@@ -374,7 +383,7 @@ test("hide edges and points of surface in model tree", async ({ window }) => {
 
 test("blocks vertex attribute all blocks", async ({ window }) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
-  await expandGeodeObjectType(window, "Blocks", secondModelTree);
+  await expandGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 0, 1);
   await setModelPolyhedraVertexAttribute(window, vertexAttributeName, {
     item: 0,
@@ -394,7 +403,7 @@ test("blocks vertex attribute all blocks change item", async ({ window }) => {
 
 test("blocks vertex attribute one block", async ({ window }) => {
   const secondModelTree = window.getByTestId("modelComponentsObjectTree").nth(1);
-  await expandGeodeObjectType(window, "Blocks", secondModelTree);
+  await expandGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
   await openModelComponentContextMenu(window, "019ea699-", 3, 1);
   const componentOptions = window.getByTestId("modelComponentOptions");
   await applyAttribute(window, componentOptions, {
@@ -421,5 +430,5 @@ test("blocks polyhedron attribute one block", async ({ window }) => {
   await window.keyboard.press("Escape");
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const secondModelTree = modelComponentsObjectTree.nth(1);
-  await collapseGeodeObjectType(window, "Blocks", secondModelTree);
+  await collapseGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
 });

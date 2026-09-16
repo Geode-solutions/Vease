@@ -8,4 +8,5 @@ async function closeAllMenus(window) {
   await window.waitForTimeout(afterActionWait);
 }
 
+
 export { closeAllMenus, moveMouseOutOfTheWay };

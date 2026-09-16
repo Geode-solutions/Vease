@@ -6,7 +6,9 @@ import path from "node:path";
 // Local imports
 import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import { exportProject, importProject } from "@tests/utils/project_interaction";
-import { getMainObjectTree, hideObjectInTree } from "@tests/utils/object_tree_interaction";
+import { getMainObjectTree } from "@tests/utils/object_trees/main_object_tree";
+import { getModelComponentsObjectTree } from "@tests/utils/object_trees/model_components_object_tree";
+import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
 
@@ -21,12 +23,12 @@ test("import project", async ({ window }) => {
 });
 
 test("toggle surfaces visibility", async ({ window }) => {
-  await hideObjectInTree(window, "Surfaces", undefined, "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Surfaces", undefined, getModelComponentsObjectTree(window));
 });
 
 test("change lines color", async ({ window }) => {
-  const tree = window.getByTestId("modelComponentsObjectTree");
-  const item = tree.getByText("Lines", { exact: true }).first();
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  const item = modelComponentsObjectTree.getByText("Lines", { exact: true }).first();
   await item.click({ button: "right" });
   await window.waitForTimeout(afterActionWait);
 

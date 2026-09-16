@@ -7,21 +7,25 @@ import { expect } from "@playwright/test";
 import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import {
   checkFilterCategory,
-  collapseMainObjectTree,
-  collapseModelComponentsObjectTree,
   copyTreeRowId,
-  expandModelComponentsObjectTree,
   fillSearchQuery,
-  getMainObjectTree,
-  getModelComponentsObjectTree,
   hideObjectInTree,
   openFilterMenu,
-  setModelTreeRowColorRandom,
-  toggleObjectsTree,
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@tests/utils/object_tree_interaction";
+} from "@tests/utils/object_trees/common";
+import {
+  collapseMainObjectTree,
+  getMainObjectTree,
+  toggleObjectsTree,
+} from "@tests/utils/object_trees/main_object_tree";
+import {
+  collapseModelComponentsObjectTree,
+  expandModelComponentsObjectTree,
+  getModelComponentsObjectTree,
+  setModelTreeRowColorRandom,
+} from "@tests/utils/object_trees/model_components_object_tree";
 import { closeAllMenus } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { resetCamera } from "@tests/utils/camera_interaction";
@@ -49,7 +53,7 @@ test("reset camera", async ({ window }) => {
 });
 
 test("filter objects", async ({ window }) => {
-  await openFilterMenu(window);
+  await openFilterMenu(window, getMainObjectTree(window));
   await uncheckFilterCategory(window, "EdgedCurve3D");
   await uncheckFilterCategory(window, "PolygonalSurface3D");
 });
@@ -64,14 +68,14 @@ test("sort by name", async ({ window }) => {
 });
 
 test("hide HybridSolid3D objects", async ({ window }) => {
-  await hideObjectInTree(window, "HybridSolid3D");
+  await hideObjectInTree(window, "HybridSolid3D", undefined, getMainObjectTree(window));
 });
 
 test("search by text", async ({ window }) => {
   await toggleSearchObjects(window);
-  await fillSearchQuery(window, "test");
+  await fillSearchQuery(window, "test", getMainObjectTree(window));
 
-  await fillSearchQuery(window, "");
+  await fillSearchQuery(window, "", getMainObjectTree(window));
 });
 
 test("search by id", async ({ window, screenshotMask }) => {
@@ -82,13 +86,14 @@ test("search by id", async ({ window, screenshotMask }) => {
   const dataTestId = await brepLabel.getAttribute("data-testid");
   const brepId = dataTestId.replace("treeRow-", "");
   const searchPrefix = brepId.slice(0, 3);
-  await fillSearchQuery(window, searchPrefix);
+  await fillSearchQuery(window, searchPrefix, mainObjectTree);
   screenshotMask.locators = [window.getByTestId("searchObjectsInput")];
 });
 
 test("refilter object", async ({ window }) => {
-  await fillSearchQuery(window, "");
-  await openFilterMenu(window);
+  const mainObjectTree = getMainObjectTree(window);
+  await fillSearchQuery(window, "", mainObjectTree);
+  await openFilterMenu(window, mainObjectTree);
   await checkFilterCategory(window, "PolygonalSurface3D");
 
   await closeAllMenus(window);
@@ -114,7 +119,7 @@ test("expand model components", async ({ window }) => {
 });
 
 test("hide model blocks", async ({ window }) => {
-  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
 });
 
 test("filter model components", async ({ window }) => {
@@ -151,7 +156,7 @@ test("search model components by text", async ({ window }) => {
 });
 
 test("hide filtered corners", async ({ window }) => {
-  await hideObjectInTree(window, "Corners", undefined, "modelComponentsObjectTree");
+  await hideObjectInTree(window, "Corners", undefined, getModelComponentsObjectTree(window));
 });
 
 test("color filtered surfaces", async ({ window }) => {
@@ -163,23 +168,28 @@ test("clear searchbar", async ({ window }) => {
 });
 
 test("clear model components searchbar", async ({ window }) => {
-  await fillSearchQuery(window, "", "modelComponentsObjectTree");
+  await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
 });
 
 test("copy surface id", async ({ window }) => {
-  surfaceId = await copyTreeRowId(window, "Surfaces", "00000000-", "modelComponentsObjectTree");
+  surfaceId = await copyTreeRowId(
+    window,
+    "Surfaces",
+    "00000000-",
+    getModelComponentsObjectTree(window),
+  );
   expect(surfaceId).toBeTruthy();
 });
 
 test("search by copied surface id", async ({ window, screenshotMask }) => {
   expect(surfaceId).toBeTruthy();
-  await fillSearchQuery(window, surfaceId, "modelComponentsObjectTree");
+  await fillSearchQuery(window, surfaceId, getModelComponentsObjectTree(window));
   screenshotMask.locators = [
     window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput"),
   ];
 });
 
 test("collapse all model components", async ({ window }) => {
-  await fillSearchQuery(window, "", "modelComponentsObjectTree");
+  await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
   await collapseModelComponentsObjectTree(window);
 });

@@ -4,7 +4,7 @@
 
 // Local imports
 import { defaultDataName, rgd2dGeodeObjectType } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,

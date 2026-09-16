@@ -14,7 +14,7 @@ import {
   expandMainObjectTree,
   highlightData,
   openObjectsTree,
-} from "@tests/utils/object_tree_interaction";
+} from "@tests/utils/object_trees/main_object_tree";
 import { defaultDataName, polygonalSurfaceGeodeObjectType } from "@tests/utils/constants";
 import {
   openMeshPolygonsMenu,

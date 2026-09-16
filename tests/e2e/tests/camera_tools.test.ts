@@ -52,10 +52,11 @@ import {
   expandGeodeObjectType,
   expandMainObjectTree,
   focusObjectInTree,
-  hideObjectInTree,
+  getMainObjectTree,
   showObjectInTree,
-} from "@tests/utils/object_tree_interaction";
+} from "@tests/utils/object_trees/main_object_tree";
 import { confirmDelete } from "@tests/utils/data_manager";
+import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { setColor } from "@tests/utils/data/helpers/color";
@@ -165,7 +166,7 @@ test("overlapping objects context menu at top", async ({ window }) => {
 test("visibility off grid and expand brep focus", async ({ window }) => {
   await closeAllMenus(window);
   await expandGeodeObjectType(window, rgd3dGeodeObjectType);
-  await hideObjectInTree(window, rgd3dGeodeObjectType, "grid");
+  await hideObjectInTree(window, rgd3dGeodeObjectType, "grid", getMainObjectTree(window));
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
@@ -226,7 +227,7 @@ test("z scaling value 1", async ({ window }) => {
 
 test("cells hover highlight", async ({ window }) => {
   await showObjectInTree(window, "BRep");
-  await hideObjectInTree(window, "RegularGrid3D");
+  await hideObjectInTree(window, "RegularGrid3D", undefined, getMainObjectTree(window));
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
@@ -247,7 +248,7 @@ test("highlight cells on grid", async ({ window }) => {
   await window.getByTestId("hoverHighlightChip").click();
   await window.waitForTimeout(afterActionWait);
   await showObjectInTree(window, "RegularGrid3D");
-  await hideObjectInTree(window, "BRep");
+  await hideObjectInTree(window, "BRep", undefined, getMainObjectTree(window));
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
@@ -314,7 +315,7 @@ test("clipping planes custom origin and normal values", async ({ window }) => {
 test("clipping planes target specific brep dataset", async ({ window }) => {
   await toggleTargetAllVisible(window);
   await selectClippingDatasets(window, "test");
-  await hideObjectInTree(window, "RegularGrid3D");
+  await hideObjectInTree(window, "RegularGrid3D", undefined, getMainObjectTree(window));
   await resetCamera(window);
 });
 

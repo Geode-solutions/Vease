@@ -2,7 +2,7 @@
 // Third party imports
 // Local imports
 import { defaultDataName, edgedCurveGeodeObjectType } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
 import {
   openMeshEdgesMenu,
   setMeshEdgesColorWithSlider,

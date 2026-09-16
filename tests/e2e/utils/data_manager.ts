@@ -4,7 +4,7 @@
 
 // Local imports
 import { afterActionWait } from "./viewer_interaction";
-import { getMainObjectTree } from "./object_tree_interaction";
+import { getMainObjectTree } from "./object_trees/main_object_tree";
 
 async function openDataManagerPiP(window) {
   await window.getByTestId("dataManagerPiPButton").click();
