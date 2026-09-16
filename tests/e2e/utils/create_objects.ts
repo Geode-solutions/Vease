@@ -6,6 +6,7 @@ async function openCreateToolsPanel(window) {
 }
 
 async function selectCreateTool(window, toolId) {
+  await openCreateToolsPanel(window);
   await window.getByTestId(`createToolCard-${toolId}`).click();
   await window.waitForTimeout(afterActionWait);
 }

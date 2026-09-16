@@ -11,14 +11,14 @@ import { navigateToApp } from "./navigate";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
-interface ModeFixtures {
+interface TestFixtures {
   mode: string;
   window: Page;
   logTestProgress: void;
   autoScreenshot: void;
 }
 
-const test = base.extend<ModeFixtures>({
+const test = base.extend<TestFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
 
   window: [
