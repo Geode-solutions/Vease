@@ -27,12 +27,11 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
 } from "@tests/utils/object_trees/model_components_object_tree";
-import { brepGeodeObjectType } from "@tests/utils/constants"
+import { brepGeodeObjectType } from "@tests/utils/constants";
 import { closeAllMenus } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { resetCamera } from "@tests/utils/camera_interaction";
 import { test } from "@tests/utils/fixtures";
-
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -103,7 +102,7 @@ test("refilter object", async ({ window }) => {
 });
 
 test("collapse main object tree", async ({ window }) => {
- await openModelComponentsTree(window, brepGeodeObjectType, "test")
+  await openModelComponentsTree(window, brepGeodeObjectType, "test");
   await collapseMainObjectTree(window);
 });
 
