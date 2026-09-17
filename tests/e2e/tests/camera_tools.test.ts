@@ -277,6 +277,7 @@ test("screenshot file without background", async ({ window }) => {
   await closeCameraManager(window);
   // Close any open menus from previous test
   await closeAllMenus(window);
+  await closeAllMenus(window);
   await window.getByTestId("screenshotButton").click();
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();

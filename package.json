@@ -52,12 +52,12 @@
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "test": "echo \"Error: no test specified\" && exit 0",
     "test:e2e": "npx playwright test --config ./tests/e2e/playwright.config.ts",
-    "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome --headed",
+    "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test:e2e -- --project=browser-firefox",
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test:e2e -- --project=cloud",
     "test:e2e:desktop": "npm run test:e2e -- --project=desktop",
-    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.005 npm run test:e2e:browser:chrome -- --update-snapshots",
+    "test:e2e:update_snapshots": "cross-env MAX_PIXEL_RATIO=0.0025 npm run test:e2e:browser:chrome -- --update-snapshots",
     "typecheck": "cross-env MODE=BROWSER nuxi prepare && vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p .nuxt/tsconfig.server.json --noImplicitAny false && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tests/e2e/tsconfig.json"
   },
   "dependencies": {
