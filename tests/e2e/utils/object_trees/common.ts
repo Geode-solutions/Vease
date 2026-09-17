@@ -16,13 +16,8 @@ async function collapseTreeGroup(window, tree, groupName) {
   const groupRow = tree.getByTestId("treeRowWrapper").filter({ hasText: groupName }).first();
   const collapseBtn = groupRow.getByTestId("collapseTreeRowButton");
 
-  try {
-    await collapseBtn.waitFor({ state: "visible", timeout: modalTransitionWait });
+  if (await collapseBtn.isVisible()) {
     await collapseBtn.click();
-    await window.waitForTimeout(modalTransitionWait);
-  } catch {
-    // Fallback: click the group row to toggle
-    await groupRow.click();
     await window.waitForTimeout(modalTransitionWait);
   }
 }

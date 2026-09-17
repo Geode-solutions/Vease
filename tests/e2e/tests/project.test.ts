@@ -6,8 +6,7 @@ import path from "node:path";
 // Local imports
 import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import { exportProject, importProject } from "@tests/utils/project_interaction";
-import { getMainObjectTree } from "@tests/utils/object_trees/main_object_tree";
-import { getModelComponentsObjectTree } from "@tests/utils/object_trees/model_components_object_tree";
+import { getModelComponentsObjectTree, openModelComponentsTree } from "@tests/utils/object_trees/model_components_object_tree";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
@@ -40,15 +39,7 @@ test("change lines color", async ({ window }) => {
 });
 
 test("collapse model tree in main tree", async ({ window }) => {
-  const mainObjectTree = getMainObjectTree(window);
-  await mainObjectTree
-    .locator(".tree-row-wrapper")
-    .filter({ hasText: "surface_cube" })
-    .first()
-    .locator("button:has(.mdi-magnify-expand)")
-    .click({ force: true });
-  await window.waitForTimeout(afterActionWait);
-  await moveMouseOutOfTheWay(window);
+  await openModelComponentsTree(window, "BRep", "test")
 });
 
 test("export project", async ({ window }) => {

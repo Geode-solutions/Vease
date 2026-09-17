@@ -128,10 +128,9 @@ async function hideAllComponentLeafRows(window, categoryName) {
     // oxlint-disable no-await-in-loop
     if (await eyeBtn.isVisible()) {
       await eyeBtn.click({ force: true });
-      await window.waitForTimeout(afterActionWait);
-      // oxlint-enable no-await-in-loop
     }
   }
+  await window.waitForTimeout(afterActionWait);
 }
 
 export {

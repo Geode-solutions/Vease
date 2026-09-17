@@ -1,4 +1,5 @@
 import { afterActionWait } from "@tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;
@@ -6,6 +7,7 @@ const SLIDER_PINK = 0.85;
 
 async function clickColorPickerCanvas(window, container = window) {
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 

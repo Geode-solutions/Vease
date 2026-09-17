@@ -16,7 +16,7 @@ const CI_WORKERS = 2;
 const retries = process.env.CI ? CI_RETRIES : 0;
 const workers = process.env.CI ? CI_WORKERS : 3;
 const testMatch = "tests/e2e/tests/**/*.test.ts";
-const maxDiffPixelRatio = 0.02;
+const maxDiffPixelRatio = 0.01;
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,

@@ -8,6 +8,7 @@ import {
   ensureFeatureVisible,
   ensureMenuOpen,
 } from "@tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 
 async function setColoringStyle(window, menuTestId, coloringStyle, container = window) {
   await ensureMenuOpen(window, menuTestId);
@@ -25,6 +26,7 @@ async function setColoringStyle(window, menuTestId, coloringStyle, container = w
     .first();
   await listItem.waitFor({ state: "visible", timeout: 15_000 });
   await listItem.click();
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -52,6 +54,7 @@ async function setOpacity(window, menuTestId, percent) {
     force: true,
     position: { x: (box.width * percent) / MAX_PERCENTAGE, y: box.height / 2 },
   });
+  await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 

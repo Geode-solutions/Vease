@@ -55,8 +55,9 @@ test("load", async ({ window }) => {
   await expandMainObjectTree(window);
 });
 
-test("highlight", async ({ window }) => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, polygonalSurfaceGeodeObjectType, defaultDataName);
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -96,7 +97,6 @@ test("quick colormap picker change colormap", async ({ window }) => {
   await viewerQuickColormap(window);
   await setQuickColorMap(window, colorMapName);
   await moveMouseOutOfTheWay(window);
-  await closeAllMenus(window);
 });
 
 test("quick colormap picker change range", async ({ window }) => {
@@ -113,13 +113,12 @@ test("quick colormap picker change range", async ({ window }) => {
   await minInput.press("Enter");
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
-
-  await closeAllMenus(window);
-  await openObjectsTree(window);
-  await moveMouseOutOfTheWay(window);
 });
 
 test("vertex attribute", async ({ window }) => {
+  await closeAllMenus(window);
+  await openObjectsTree(window);
+  await moveMouseOutOfTheWay(window);
   await setMeshPolygonsVertexAttribute(window, vertexAttributeName, {
     item: 2,
     colorMap: colorMapName,
@@ -179,7 +178,6 @@ test("edges visibility", async ({ window }) => {
 });
 
 test("polygons visibility", async ({ window }) => {
-  // Revert
   await setMeshEdgesVisibility(window, true);
   await setMeshPolygonsVisibility(window, false);
 });

@@ -90,8 +90,9 @@ test("load brep", async ({ window }) => {
   await expandMainObjectTree(window);
 });
 
-test("highlight", async ({ window }) => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, brepGeodeObjectType, defaultDataName);
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -161,13 +162,11 @@ test("blocks visibility", async ({ window }) => {
 });
 
 test("blocks color", async ({ window }) => {
-  await toggleModelTreeRow(window, "Blocks");
-  await toggleModelTreeRow(window, "Blocks");
   await setModelTreeRowColorRandom(window, "Blocks");
-  await toggleModelTreeRow(window, "Blocks");
 });
 
 test("corners visibility", async ({ window }) => {
+  await toggleModelTreeRow(window, "Blocks");
   await toggleModelTreeRow(window, "Corners");
 });
 

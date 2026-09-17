@@ -43,8 +43,9 @@ test("load", async ({ window }) => {
   await expandMainObjectTree(window);
 });
 
-test("highlight", async ({ window }) => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, rgd3dGeodeObjectType, "grid");
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -135,7 +136,6 @@ test("edges visibility", async ({ window }) => {
 });
 
 test("cells visibility", async ({ window }) => {
-  // Revert
   await setMeshEdgesVisibility(window, true);
   await setMeshCellsVisibility(window, false);
 });

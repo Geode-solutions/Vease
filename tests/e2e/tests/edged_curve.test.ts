@@ -39,8 +39,9 @@ test("load", async ({ window }) => {
   await expandMainObjectTree(window);
 });
 
-test("highlight", async ({ window }) => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, edgedCurveGeodeObjectType, defaultDataName);
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -107,7 +108,6 @@ test("edges visibility", async ({ window }) => {
 });
 
 test("points color", async ({ window }) => {
-  // Revert
   await setMeshEdgesVisibility(window, true);
   await setMeshPointsColorWithSlider(window);
 });

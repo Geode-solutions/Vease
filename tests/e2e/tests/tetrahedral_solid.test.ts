@@ -45,8 +45,9 @@ test("load", async ({ window }) => {
   await expandMainObjectTree(window);
 });
 
-test("highlight", async ({ window }) => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, tetrahedralSolidGeodeObjectType, defaultDataName);
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -142,7 +143,6 @@ test("edges visibility", async ({ window }) => {
 });
 
 test("polygons visibility", async ({ window }) => {
-  // Revert
   await setMeshEdgesVisibility(window, true);
   await setMeshPolygonsVisibility(window, false);
 });

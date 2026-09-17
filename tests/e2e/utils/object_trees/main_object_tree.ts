@@ -29,13 +29,8 @@ async function expandMainObjectTreeGroup(window, groupName) {
     .first()
     .locator("button:has(.mdi-chevron-right)");
 
-  try {
-    await expandBtn.waitFor({ state: "visible", timeout: modalTransitionWait });
+  if (await expandBtn.isVisible()) {
     await expandBtn.click();
-    await window.waitForTimeout(modalTransitionWait);
-  } catch {
-    // Fallback: click the group title text to toggle
-    await mainObjectTree.getByText(groupName, { exact: true }).click();
     await window.waitForTimeout(modalTransitionWait);
   }
 }
@@ -56,8 +51,12 @@ function collapseGeodeObjectType(window, geodeObjectType) {
 async function highlightData(window, geodeObjectType, dataName) {
   await expandGeodeObjectType(window, geodeObjectType);
   const mainObjectTree = getMainObjectTree(window);
-  const testItem = mainObjectTree.getByText(dataName).first();
-  await testItem.hover();
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
+  await row.getByTestId("treeItemLabel").hover();
+  await window
+    .getByTestId("tooltipIdValue")
+    .filter({ hasNotText: geodeObjectType })
+    .waitFor({ state: "visible" });
   await window.waitForTimeout(afterActionWait);
 }
 

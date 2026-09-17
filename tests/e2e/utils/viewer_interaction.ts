@@ -268,7 +268,7 @@ async function openStyleMenu(window, menuTestId) {
 const SCALAR_BAR_X_RATIO = 0.25;
 const SCALAR_BAR_Y_RATIO = 0.9;
 
-async function viewerQuickColormap(window, x, y) {
+async function viewerQuickColormap(window, x = undefined, y = undefined) {
   const hybridViewerCanvas = await getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
   const targetX = x ?? Math.round(box.width * SCALAR_BAR_X_RATIO);

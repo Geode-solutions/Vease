@@ -26,9 +26,13 @@ interface TestFixtures {
 const test = base.extend<TestFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
 
-  // A fresh object per test; set `screenshotMask.locators` from within a test
-  // Body to mask elements on the auto screenshot taken after that test.
-  screenshotMask: [{ locators: [] }, { scope: "test" }],
+  screenshotMask: [
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use) => {
+      await use({ locators: [] });
+    },
+    { scope: "test" },
+  ],
 
   window: [
     async ({ mode, browser }, use) => {
