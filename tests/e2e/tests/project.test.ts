@@ -6,7 +6,10 @@ import path from "node:path";
 // Local imports
 import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import { exportProject, importProject } from "@tests/utils/project_interaction";
-import { getModelComponentsObjectTree, openModelComponentsTree } from "@tests/utils/object_trees/model_components_object_tree";
+import {
+  getModelComponentsObjectTree,
+  openModelComponentsTree,
+} from "@tests/utils/object_trees/model_components_object_tree";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
@@ -34,17 +37,14 @@ test("change lines color", async ({ window }) => {
   const container = window.locator(".options-section", { hasText: "Lines Options" });
   await setColor(window, "modelStyleMenu", container);
   await moveMouseOutOfTheWay(window);
-
-  await window.keyboard.press("Escape");
 });
 
 test("collapse model tree in main tree", async ({ window }) => {
-  await openModelComponentsTree(window, "BRep", "test")
+  await window.keyboard.press("Escape");
+  await openModelComponentsTree(window, "BRep", "test");
 });
 
 test("export project", async ({ window }) => {
   await exportProject(window);
   await window.waitForTimeout(afterActionWait);
-
-  await window.keyboard.press("Escape");
 });

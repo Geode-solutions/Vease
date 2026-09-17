@@ -107,8 +107,7 @@ test("info card", async ({ window }) => {
 
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
-  const visibility = true;
-  await setModelPointsVisibility(window, visibility);
+  await setModelPointsVisibility(window, true);
 });
 
 test("points size", async ({ window }) => {

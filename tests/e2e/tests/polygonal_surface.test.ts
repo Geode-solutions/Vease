@@ -72,8 +72,7 @@ test("info card", async ({ window }) => {
 
 test("points visibility", async ({ window }) => {
   await toggleInfoCard(window);
-  const visibility = true;
-  await setMeshPointsVisibility(window, visibility);
+  await setMeshPointsVisibility(window, true);
 });
 
 test("polygon attribute", async ({ window }) => {

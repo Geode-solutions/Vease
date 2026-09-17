@@ -175,7 +175,10 @@ async function navigateToApp(mode, browser) {
 
     return {
       window: page,
-      cleanup: () => kill(nuxtPort),
+      cleanup: async () => {
+        await page.close();
+        await kill(nuxtPort);
+      },
     };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => {
