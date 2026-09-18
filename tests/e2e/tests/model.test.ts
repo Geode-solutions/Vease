@@ -42,10 +42,7 @@ import {
   highlightData,
   toggleObjectsTree,
 } from "@tests/utils/object_trees/main_object_tree";
-import {
-  expandGeodeObjectTypeInTree,
-  hideObjectInTree,
-} from "@tests/utils/object_trees/common";
+import { expandGeodeObjectTypeInTree, hideObjectInTree } from "@tests/utils/object_trees/common";
 import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
   setModelColor,
