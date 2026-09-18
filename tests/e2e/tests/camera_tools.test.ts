@@ -80,8 +80,8 @@ const RULER_SNAP_X_RATIO = 0.5;
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 
-test.describe.configure({ mode: "serial" });
 test.use({ suiteId: import.meta.url });
+test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {
   await loadVeaseTestDatas(window, [brepFilename]);
