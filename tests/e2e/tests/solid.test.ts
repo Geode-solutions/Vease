@@ -40,7 +40,6 @@ import {
   setMeshPolyhedraVisibility,
 } from "@tests/utils/data";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { resetApp } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -55,10 +54,6 @@ const edgesWidth = 5;
 const ZOOM_WHEEL_DELTA = -5000;
 
 test.describe.configure({ mode: "serial" });
-
-test.afterAll(async ({ window, mode }) => {
-  await resetApp(window, mode);
-});
 
 test("load", async ({ window }) => {
   await loadVeaseTestDatas(window, [inputFilename]);

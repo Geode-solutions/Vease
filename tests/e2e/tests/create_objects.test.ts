@@ -13,7 +13,6 @@ import {
   submitCreateObject,
   toggleClosedCurve,
 } from "@tests/utils/create_objects";
-import { resetApp } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -50,10 +49,6 @@ const VIEWER_SURFACE_COORDS = [
 ];
 
 test.describe.configure({ mode: "serial" });
-
-test.afterAll(async ({ window, mode }) => {
-  await resetApp(window, mode);
-});
 
 test("open create tools", async ({ window }) => {
   await openCreateToolsPanel(window);

@@ -7,7 +7,7 @@ import type { Locator, Page } from "@playwright/test";
 import { test as base, expect } from "@playwright/test";
 
 // Local imports
-import { navigateToApp } from "./navigate";
+import { navigateToApp, resetApp } from "./navigate";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
@@ -21,7 +21,10 @@ interface TestFixtures {
   window: Page;
   logTestProgress: void;
   autoScreenshot: void;
+  resetAppOnNewFile: void;
 }
+
+let lastTestFile: string | undefined = undefined;
 
 const test = base.extend<TestFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
@@ -41,6 +44,17 @@ const test = base.extend<TestFixtures>({
       await cleanup();
     },
     { scope: "worker" },
+  ],
+
+  resetAppOnNewFile: [
+    async ({ window, mode }, use, testInfo) => {
+      if (lastTestFile !== testInfo.file) {
+        await resetApp(window, mode);
+      }
+      lastTestFile = testInfo.file;
+      await use();
+    },
+    { auto: true, scope: "test" },
   ],
 
   logTestProgress: [

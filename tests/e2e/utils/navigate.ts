@@ -152,6 +152,25 @@ async function navigateToCloudApp(page, url, maxRetries) {
   console.log("Navigated to", page.url());
 }
 
+async function signInToCloudApp(page) {
+  const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
+  const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
+  await eMailInput.fill(process.env.GEODE_USER_EMAIL);
+  await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
+
+  const signInSecondsWait = 2;
+  const signInTimeout = signInSecondsWait * MILLISECONDS;
+  await page.waitForTimeout(signInTimeout);
+  const signInButton = await page.getByTestId("signInButton");
+  await signInButton.click();
+
+  const loadAppButton = await page.getByTestId("loadAppButton");
+  await loadAppButton.click();
+  console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+  await page.waitForTimeout(WAIT_TIMES.cloud);
+  await page.waitForFunction(() => document.readyState === "complete");
+}
+
 async function navigateToApp(mode, browser) {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
@@ -197,23 +216,6 @@ async function navigateToApp(mode, browser) {
     const maxRetries = 10;
     await navigateToCloudApp(page, url, maxRetries);
 
-    const eMailInput = await page.getByTestId("eMailInput").getByRole("textbox");
-    const passwordInput = await page.getByTestId("passwordInput").getByRole("textbox");
-    await eMailInput.fill(process.env.GEODE_USER_EMAIL);
-    await passwordInput.fill(process.env.GEODE_USER_PASSWORD);
-
-    const signInSecondsWait = 2;
-    const signInTimeout = signInSecondsWait * MILLISECONDS;
-    await page.waitForTimeout(signInTimeout);
-    const signInButton = await page.getByTestId("signInButton");
-    await signInButton.click();
-
-    const loadAppButton = await page.getByTestId("loadAppButton");
-    await loadAppButton.click();
-    console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
-    await page.waitForTimeout(WAIT_TIMES.cloud);
-    await page.waitForFunction(() => document.readyState === "complete");
-
     return {
       window: page,
       cleanup: () => page.close(),
@@ -231,12 +233,22 @@ async function navigateToApp(mode, browser) {
 }
 
 async function resetApp(window, mode) {
-  if (mode !== "BROWSER") {
+  if (mode === "CLOUD") {
+    await window.reload();
+    await signInToCloudApp(window);
+    return;
+  }
+  const waitTimesByMode = {
+    BROWSER: WAIT_TIMES.browser,
+    DESKTOP: WAIT_TIMES.desktop,
+  };
+  const waitTime = waitTimesByMode[mode];
+  if (!waitTime) {
     return;
   }
   const appUrl = window.url();
   await window.reload();
-  await waitForAppReady(appUrl, WAIT_TIMES.browser);
+  await waitForAppReady(appUrl, waitTime);
   await window.waitForFunction(() => document.readyState === "complete");
 }
 

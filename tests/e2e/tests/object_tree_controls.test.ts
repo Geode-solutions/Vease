@@ -30,7 +30,6 @@ import {
 import { brepGeodeObjectType } from "@tests/utils/constants";
 import { closeAllMenus } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { resetApp } from "@tests/utils/navigate";
 import { resetCamera } from "@tests/utils/camera_interaction";
 import { test } from "@tests/utils/fixtures";
 
@@ -43,10 +42,6 @@ const hso3dFilename = "test.og_hso3d";
 let surfaceId = undefined;
 
 test.describe.configure({ mode: "serial" });
-
-test.afterAll(async ({ window, mode }) => {
-  await resetApp(window, mode);
-});
 
 test("load all files", async ({ window }) => {
   await loadVeaseTestDatas(window, [brepFilename]);

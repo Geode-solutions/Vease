@@ -55,10 +55,10 @@ import {
   getMainObjectTree,
   showObjectInTree,
 } from "@tests/utils/object_trees/main_object_tree";
-import { navigateToDataManagerPage, resetApp } from "@tests/utils/navigate";
 import { confirmDelete } from "@tests/utils/data_manager";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@tests/utils/load";
+import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { setMeshEdgesVisibility } from "@tests/utils/data";
 import { test } from "@tests/utils/fixtures";
@@ -81,10 +81,6 @@ const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 
 test.describe.configure({ mode: "serial" });
-
-test.afterAll(async ({ window, mode }) => {
-  await resetApp(window, mode);
-});
 
 test("load", async ({ window }) => {
   await loadVeaseTestDatas(window, [brepFilename]);
