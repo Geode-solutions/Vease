@@ -70,6 +70,7 @@ import {
 } from "@tests/utils/data";
 import { applyAttribute } from "@tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@tests/utils/load";
+import { resetApp } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -84,6 +85,10 @@ const pointsSize = 15;
 const ROTATE_LEFT_A_LITTLE = -180;
 
 test.describe.configure({ mode: "serial" });
+
+test.afterAll(async ({ window, mode }) => {
+  await resetApp(window, mode);
+});
 
 test("load brep", async ({ window }) => {
   await loadVeaseTestDatas(window, [brepFilename]);

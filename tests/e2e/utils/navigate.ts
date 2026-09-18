@@ -230,6 +230,16 @@ async function navigateToApp(mode, browser) {
   throw new Error(`Unknown mode: ${mode}`);
 }
 
+async function resetApp(window, mode) {
+  if (mode !== "BROWSER") {
+    return;
+  }
+  const appUrl = window.url();
+  await window.reload();
+  await waitForAppReady(appUrl, WAIT_TIMES.browser);
+  await window.waitForFunction(() => document.readyState === "complete");
+}
+
 function navigateToViewerPage(window) {
   const viewerNavButton = window.getByTestId("viewerNavButton");
   return viewerNavButton.click();
@@ -258,4 +268,5 @@ export {
   navigateToExtensionsPage,
   navigateToInfosPage,
   navigateToViewerPage,
+  resetApp,
 };

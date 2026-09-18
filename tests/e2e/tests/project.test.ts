@@ -10,7 +10,9 @@ import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
 } from "@tests/utils/object_trees/model_components_object_tree";
+import { brepGeodeObjectType } from "@tests/utils/constants";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
+import { resetApp } from "@tests/utils/navigate";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
 
@@ -18,6 +20,10 @@ import { test } from "@tests/utils/fixtures";
 const inputFilename = "test_project.vease";
 
 test.describe.configure({ mode: "serial" });
+
+test.afterAll(async ({ window, mode }) => {
+  await resetApp(window, mode);
+});
 
 test("import project", async ({ window }) => {
   const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
@@ -41,7 +47,7 @@ test("change lines color", async ({ window }) => {
 
 test("collapse model tree in main tree", async ({ window }) => {
   await window.keyboard.press("Escape");
-  await openModelComponentsTree(window, "BRep", "test");
+  await openModelComponentsTree(window, brepGeodeObjectType, "surface_cube");
 });
 
 test("export project", async ({ window }) => {

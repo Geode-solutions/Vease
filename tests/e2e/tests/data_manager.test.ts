@@ -23,8 +23,8 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager";
+import { navigateToDataManagerPage, resetApp } from "@tests/utils/navigate";
 import { loadVeaseTestDatas } from "@tests/utils/load";
-import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
 
 // Constants
@@ -35,6 +35,10 @@ const RENAMED_BREP = "cube vease";
 const RENAMED_POLYGONAL_SURFACE = "surface vease";
 
 test.describe.configure({ mode: "serial" });
+
+test.afterAll(async ({ window, mode }) => {
+  await resetApp(window, mode);
+});
 
 test("load objects", async ({ window }) => {
   await loadVeaseTestDatas(window, [BREP_FILE]);
