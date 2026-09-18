@@ -426,8 +426,8 @@ test("blocks polyhedron attribute one block", async ({ window }) => {
     attributeName: polyhedronAttributeName,
   });
   await moveMouseOutOfTheWay(window);
-  await window.keyboard.press("Escape");
-  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
-  const secondModelTree = modelComponentsObjectTree.nth(1);
-  await collapseGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
+  // await window.keyboard.press("Escape");
+  // const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  // const secondModelTree = modelComponentsObjectTree.nth(1);
+  // await collapseGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
 });

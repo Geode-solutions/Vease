@@ -98,11 +98,10 @@ test("refilter object", async ({ window }) => {
   await fillSearchQuery(window, "", mainObjectTree);
   await openFilterMenu(window, mainObjectTree);
   await checkFilterCategory(window, "PolygonalSurface3D");
-
-  await closeAllMenus(window);
 });
 
 test("collapse main object tree", async ({ window }) => {
+  await closeAllMenus(window);
   await openModelComponentsTree(window, brepGeodeObjectType, "test");
   await collapseMainObjectTree(window);
 });
@@ -160,11 +159,9 @@ test("color filtered surfaces", async ({ window }) => {
   await setModelTreeRowColorRandom(window, "Surfaces");
 });
 
-test("clear searchbar", async ({ window }) => {
-  await window.keyboard.press("Escape");
-});
 
 test("clear model components searchbar", async ({ window }) => {
+  await window.keyboard.press("Escape");
   await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
 });
 

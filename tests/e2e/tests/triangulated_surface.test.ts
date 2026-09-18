@@ -61,6 +61,7 @@ test("info card", async ({ window }) => {
 });
 
 test("points visibility", async ({ window }) => {
+  await toggleInfoCard(window);
   await setMeshPointsVisibility(window, true);
 });
 
