@@ -48,6 +48,7 @@ const VIEWER_SURFACE_COORDS = [
   { x: 600, y: 450 },
 ];
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("open create tools", async ({ window }) => {

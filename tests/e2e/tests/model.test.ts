@@ -83,6 +83,7 @@ const modelOpacity = 50;
 const pointsSize = 15;
 const ROTATE_LEFT_A_LITTLE = -180;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load brep", async ({ window }) => {

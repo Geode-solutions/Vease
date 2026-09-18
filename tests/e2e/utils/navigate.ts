@@ -215,6 +215,7 @@ async function navigateToApp(mode, browser) {
     const url = `https://${prefix}vease.geode-solutions.com`;
     const maxRetries = 10;
     await navigateToCloudApp(page, url, maxRetries);
+    await signInToCloudApp(page);
 
     return {
       window: page,
@@ -230,26 +231,6 @@ async function navigateToApp(mode, browser) {
     };
   }
   throw new Error(`Unknown mode: ${mode}`);
-}
-
-async function resetApp(window, mode) {
-  if (mode === "CLOUD") {
-    await window.reload();
-    await signInToCloudApp(window);
-    return;
-  }
-  const waitTimesByMode = {
-    BROWSER: WAIT_TIMES.browser,
-    DESKTOP: WAIT_TIMES.desktop,
-  };
-  const waitTime = waitTimesByMode[mode];
-  if (!waitTime) {
-    return;
-  }
-  const appUrl = window.url();
-  await window.reload();
-  await waitForAppReady(appUrl, waitTime);
-  await window.waitForFunction(() => document.readyState === "complete");
 }
 
 function navigateToViewerPage(window) {
@@ -280,5 +261,4 @@ export {
   navigateToExtensionsPage,
   navigateToInfosPage,
   navigateToViewerPage,
-  resetApp,
 };

@@ -18,6 +18,7 @@ import { test } from "@tests/utils/fixtures";
 // Constants
 const inputFilename = "test_project.vease";
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("import project", async ({ window }) => {

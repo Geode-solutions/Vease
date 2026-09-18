@@ -34,6 +34,7 @@ const POINTSET_FILE = "test.og_pts3d";
 const RENAMED_BREP = "cube vease";
 const RENAMED_POLYGONAL_SURFACE = "surface vease";
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load objects", async ({ window }) => {

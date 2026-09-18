@@ -32,6 +32,7 @@ const edgesOpacity = 50;
 const edgesWidth = 5;
 const pointsSize = 2;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {

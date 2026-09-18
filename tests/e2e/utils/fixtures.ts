@@ -7,7 +7,7 @@ import type { Locator, Page } from "@playwright/test";
 import { test as base, expect } from "@playwright/test";
 
 // Local imports
-import { navigateToApp, resetApp } from "./navigate";
+import { navigateToApp } from "./navigate";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
@@ -17,17 +17,17 @@ interface ScreenshotMask {
 
 interface TestFixtures {
   mode: string;
+  suiteId: string;
   screenshotMask: ScreenshotMask;
   window: Page;
   logTestProgress: void;
   autoScreenshot: void;
-  resetAppOnNewFile: void;
 }
-
-let lastTestFile: string | undefined = undefined;
 
 const test = base.extend<TestFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
+
+  suiteId: ["default", { option: true, scope: "worker" }],
 
   screenshotMask: [
     // oxlint-disable-next-line no-empty-pattern
@@ -44,17 +44,6 @@ const test = base.extend<TestFixtures>({
       await cleanup();
     },
     { scope: "worker" },
-  ],
-
-  resetAppOnNewFile: [
-    async ({ window, mode }, use, testInfo) => {
-      if (lastTestFile !== testInfo.file) {
-        await resetApp(window, mode);
-      }
-      lastTestFile = testInfo.file;
-      await use();
-    },
-    { auto: true, scope: "test" },
   ],
 
   logTestProgress: [

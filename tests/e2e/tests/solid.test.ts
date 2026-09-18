@@ -53,6 +53,7 @@ const pointsSize = 15;
 const edgesWidth = 5;
 const ZOOM_WHEEL_DELTA = -5000;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {

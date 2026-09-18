@@ -37,6 +37,7 @@ const polygonsOpacity = 50;
 const pointsSize = 15;
 const edgesWidth = 5;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {

@@ -41,6 +41,7 @@ const hso3dFilename = "test.og_hso3d";
 
 let surfaceId = undefined;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load all files", async ({ window }) => {

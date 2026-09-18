@@ -26,6 +26,7 @@ const colorMapName = "vikO";
 const pointsOpacity = 50;
 const pointsSize = 15;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {
