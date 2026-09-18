@@ -1,124 +1,91 @@
 // Node imports
 
 // Third party imports
-import type { Page } from "@playwright/test";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  defaultDataName,
-  meshViewerObjectType,
-  pointSetGeodeObjectType,
-} from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_tree_interaction";
-import {
-  noopCleanup,
-  setPointsSize,
-  setPointsVisibility,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction";
+import { defaultDataName, pointSetGeodeObjectType } from "@tests/utils/constants";
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
 import {
   openMeshPointsMenu,
+  setMeshPointsColor,
   setMeshPointsNoDataColor,
+  setMeshPointsOpacity,
+  setMeshPointsSize,
   setMeshPointsVertexAttribute,
-} from "@tests/utils/mesh/points/attribute";
-import { setMeshPointsColor, setMeshPointsOpacity } from "@tests/utils/mesh/points/color";
-import { loadData } from "@tests/utils/load";
-import { navigateToApp } from "@tests/utils/navigate";
-import { test } from "@tests/fixtures";
+  setMeshPointsVisibility,
+} from "@tests/utils/data";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@tests/utils/load";
+import { test } from "@tests/utils/fixtures";
 
 // Constants
 const inputFilename = "test.og_pts3d";
 const vertexAttributeName = "test_vertex";
 const vertexAttributeName2 = "test_vertex2";
 const colorMapName = "vikO";
-let window: Page = undefined as unknown as Page;
-let cleanup: () => unknown = noopCleanup;
 const pointsOpacity = 50;
 const pointsSize = 15;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
-test.beforeAll(async ({ mode, browser }) => {
-  ({ window, cleanup } = await navigateToApp(mode, browser));
-});
-
-test.afterAll(async () => {
-  await cleanup();
-});
-
-test("load", async () => {
-  await loadData(window, inputFilename);
+test("load", async ({ window }) => {
+  await loadVeaseTestDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("highlight", async () => {
+test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, pointSetGeodeObjectType, defaultDataName);
-  await expect(window).toHaveScreenshot();
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
 });
 
-test("viewer context menu", async () => {
+test("viewer context menu", async ({ window }) => {
   const x = 549;
   const y = 360;
   await viewerContextMenu(window, x, y);
-  await expect(window).toHaveScreenshot();
 });
 
-test("info card", async () => {
-  await toggleInfoCard(window);
-  await expect(window).toHaveScreenshot();
+test("info card", async ({ window }) => {
   await toggleInfoCard(window);
 });
 
-test("points visibility", async () => {
-  const visibility = false;
-  await setPointsVisibility(window, meshViewerObjectType, visibility);
-  await expect(window).toHaveScreenshot();
+test("points visibility", async ({ window }) => {
+  await toggleInfoCard(window);
+  await setMeshPointsVisibility(window, false);
 });
 
-test("vertex attribute", async () => {
-  await setPointsVisibility(window, meshViewerObjectType, false);
+test("vertex attribute", async ({ window }) => {
+  await setMeshPointsVisibility(window, false);
   await setMeshPointsVertexAttribute(window, vertexAttributeName, {
     item: 1,
     colorMap: colorMapName,
   });
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute unmapped elements color", async () => {
+test("vertex attribute unmapped elements color", async ({ window }) => {
   await setMeshPointsNoDataColor(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute change attribute name", async () => {
+test("vertex attribute change attribute name", async ({ window }) => {
   await setMeshPointsVertexAttribute(window, vertexAttributeName2);
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute switch back to first attribute", async () => {
+test("vertex attribute switch back to first attribute", async ({ window }) => {
   await setMeshPointsVertexAttribute(window, vertexAttributeName);
-  await expect(window).toHaveScreenshot();
 });
 
-test("vertex attribute reopen menu", async () => {
+test("vertex attribute reopen menu", async ({ window }) => {
   await openMeshPointsMenu(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("points color", async () => {
+test("points color", async ({ window }) => {
   await setMeshPointsColor(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("points opacity", async () => {
+test("points opacity", async ({ window }) => {
   await setMeshPointsOpacity(window, pointsOpacity);
-  await expect(window).toHaveScreenshot();
 });
 
-test("points size", async () => {
-  await setPointsSize(window, meshViewerObjectType, pointsSize);
-  await expect(window).toHaveScreenshot();
+test("points size", async ({ window }) => {
+  await setMeshPointsSize(window, pointsSize);
 });

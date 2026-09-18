@@ -1,3 +1,34 @@
+// Node imports
+
+// Third party imports
+import { isWindows } from "std-env";
+
+const MILLISECONDS = 1000;
+
+const LINUX_WAIT_BROWSER = 20;
+const LINUX_WAIT_DESKTOP = 25;
+const CLOUD_WAIT = 65;
+const WINDOWS_WAIT_BROWSER = 25;
+const WINDOWS_WAIT_DESKTOP = 30;
+
+const WAIT_TIMES = {
+  browser: (isWindows ? WINDOWS_WAIT_BROWSER : LINUX_WAIT_BROWSER) * MILLISECONDS,
+  cloud: CLOUD_WAIT * MILLISECONDS,
+  desktop: (isWindows ? WINDOWS_WAIT_DESKTOP : LINUX_WAIT_DESKTOP) * MILLISECONDS,
+};
+
+const beforeAllTimeout = 180_000;
+const afterActionWait = 1500;
+const halfSecondWait = 500;
+const modalTransitionWait = 2000;
+const staggerMaxWait = 2000;
+const defaultTimeout = 60_000;
+const treeWaitTimeout = 60_000;
+const randomMultiplier = 1000;
+
+const PAGE_WIDTH = 1200;
+const PAGE_HEIGHT = 800;
+
 // Viewer Object Types
 const meshViewerObjectType = "mesh";
 const modelViewerObjectType = "model";
@@ -32,27 +63,38 @@ const polyhedronAttributeType = "Polyhedron attribute";
 const cellAttributeType = "Cell attribute";
 
 export {
+  PAGE_HEIGHT,
+  PAGE_WIDTH,
+  WAIT_TIMES,
+  afterActionWait,
+  halfSecondWait,
+  beforeAllTimeout,
+  brepGeodeObjectType,
+  cellAttributeType,
+  cellsFeatureName,
+  defaultDataName,
+  defaultTimeout,
+  edgeAttributeType,
+  edgedCurveGeodeObjectType,
+  edgesFeatureName,
+  hybridSolidGeodeObjectType,
   meshViewerObjectType,
+  modalTransitionWait,
   modelViewerObjectType,
   pointSetGeodeObjectType,
-  edgedCurveGeodeObjectType,
-  rgd2dGeodeObjectType,
-  rgd3dGeodeObjectType,
-  polygonalSurfaceGeodeObjectType,
-  hybridSolidGeodeObjectType,
-  tetrahedralSolidGeodeObjectType,
-  triangulatedSurfaceGeodeObjectType,
-  brepGeodeObjectType,
-  structuralModelGeodeObjectType,
-  defaultDataName,
-  cellsFeatureName,
-  edgesFeatureName,
   pointsFeatureName,
+  polygonAttributeType,
+  polygonalSurfaceGeodeObjectType,
   polygonsFeatureName,
   polyhedraFeatureName,
-  vertexAttributeType,
-  edgeAttributeType,
-  polygonAttributeType,
   polyhedronAttributeType,
-  cellAttributeType,
+  randomMultiplier,
+  rgd2dGeodeObjectType,
+  rgd3dGeodeObjectType,
+  staggerMaxWait,
+  structuralModelGeodeObjectType,
+  tetrahedralSolidGeodeObjectType,
+  treeWaitTimeout,
+  triangulatedSurfaceGeodeObjectType,
+  vertexAttributeType,
 };

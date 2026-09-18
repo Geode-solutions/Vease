@@ -1,8 +1,11 @@
 import { afterActionWait, getHybridViewerCanvas } from "./viewer_interaction";
 
 async function openCreateToolsPanel(window) {
-  await window.getByTestId("createButton").click();
-  await window.waitForTimeout(afterActionWait);
+  const isOpen = await window.getByTestId("createToolsPanel").isVisible();
+  if (!isOpen) {
+    await window.getByTestId("createButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 async function selectCreateTool(window, toolId) {

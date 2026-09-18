@@ -1,4 +1,4 @@
-import { afterActionWait } from "./viewer_interaction";
+import { afterActionWait } from "./constants";
 
 async function exportProject(window) {
   await window.getByTestId("projectMenuButton").click();
