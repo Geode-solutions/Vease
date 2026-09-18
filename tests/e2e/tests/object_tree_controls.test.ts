@@ -159,7 +159,6 @@ test("color filtered surfaces", async ({ window }) => {
   await setModelTreeRowColorRandom(window, "Surfaces");
 });
 
-
 test("clear model components searchbar", async ({ window }) => {
   await window.keyboard.press("Escape");
   await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
