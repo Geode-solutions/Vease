@@ -23,12 +23,13 @@ function expandMainObjectTree(window) {
 
 async function expandMainObjectTreeGroup(window, groupName) {
   const mainObjectTree = getMainObjectTree(window);
-  const expandBtn = mainObjectTree
+  const groupRow = mainObjectTree
     .locator(".tree-item-group, .v-treeview-item, [class*='group']")
     .filter({ hasText: groupName })
-    .first()
-    .locator("button:has(.mdi-chevron-right)");
+    .first();
+  await groupRow.waitFor({ state: "visible" });
 
+  const expandBtn = groupRow.locator("button:has(.mdi-chevron-right)");
   if (await expandBtn.isVisible()) {
     await expandBtn.click();
     await window.waitForTimeout(modalTransitionWait);

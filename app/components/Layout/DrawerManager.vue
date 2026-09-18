@@ -63,7 +63,13 @@ function handleEscape() {
         :files="uiStore.droppedFiles"
         @close="uiStore.setShowStepper(false)"
       />
-      <CreateTools v-if="uiStore.showCreateTools" />
+      <div
+        v-if="uiStore.showCreateTools"
+        data-testid="createToolsPanel"
+        class="d-flex flex-column h-100 w-100"
+      >
+        <CreateTools />
+      </div>
     </GlassCard>
   </v-card>
 
