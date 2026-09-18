@@ -23,11 +23,6 @@ import {
 } from "@tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import {
-  collapseGeodeObjectTypeInTree,
-  expandGeodeObjectTypeInTree,
-  hideObjectInTree,
-} from "@tests/utils/object_trees/common";
-import {
   collapseMeshComponentType,
   collapseModelComponentTypes,
   expandMeshComponentType,
@@ -47,6 +42,10 @@ import {
   highlightData,
   toggleObjectsTree,
 } from "@tests/utils/object_trees/main_object_tree";
+import {
+  expandGeodeObjectTypeInTree,
+  hideObjectInTree,
+} from "@tests/utils/object_trees/common";
 import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
 import {
   setModelColor,
@@ -426,8 +425,4 @@ test("blocks polyhedron attribute one block", async ({ window }) => {
     attributeName: polyhedronAttributeName,
   });
   await moveMouseOutOfTheWay(window);
-  // await window.keyboard.press("Escape");
-  // const modelComponentsObjectTree = getModelComponentsObjectTree(window);
-  // const secondModelTree = modelComponentsObjectTree.nth(1);
-  // await collapseGeodeObjectTypeInTree(window, "Blocks", secondModelTree);
 });
