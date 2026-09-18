@@ -6,7 +6,6 @@ import {
   getTreeRowByTextAndParent,
 } from "./common";
 import { afterActionWait } from "@tests/utils/viewer_interaction";
-import { modalTransitionWait } from "@tests/utils/constants";
 
 function getMainObjectTree(window) {
   return window.getByTestId("mainObjectTree");
@@ -19,21 +18,6 @@ function collapseMainObjectTree(window) {
 function expandMainObjectTree(window) {
   const mainObjectTree = getMainObjectTree(window);
   return clickCollapseOrExpandAll(window, mainObjectTree, "mdi-expand-all-outline");
-}
-
-async function expandMainObjectTreeGroup(window, groupName) {
-  const mainObjectTree = getMainObjectTree(window);
-  const groupRow = mainObjectTree
-    .locator(".tree-item-group, .v-treeview-item, [class*='group']")
-    .filter({ hasText: groupName })
-    .first();
-  await groupRow.waitFor({ state: "visible" });
-
-  const expandBtn = groupRow.locator("button:has(.mdi-chevron-right)");
-  if (await expandBtn.isVisible()) {
-    await expandBtn.click();
-    await window.waitForTimeout(modalTransitionWait);
-  }
 }
 
 function collapseMainObjectTreeGroup(window, groupName) {
@@ -117,7 +101,6 @@ export {
   collapseMainObjectTreeGroup,
   expandGeodeObjectType,
   expandMainObjectTree,
-  expandMainObjectTreeGroup,
   focusObjectInTree,
   getMainObjectTree,
   highlightData,
