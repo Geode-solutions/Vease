@@ -85,11 +85,11 @@ let resizeStartHeight = 0;
 let resizeStartX = 0;
 let resizeStartY = 0;
 
-function clamp(value, min, max) {
+function clamp(value, min, max): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function onResizeMove(event) {
+function onResizeMove(event): void {
   const deltaX = event.clientX - resizeStartPointerX;
   const deltaY = event.clientY - resizeStartPointerY;
 
@@ -113,7 +113,7 @@ function onResizeMove(event) {
   }
 }
 
-function onResizeEnd() {
+function onResizeEnd(): void {
   isResizing.value = false;
   savedSize.value = { width: pipWidth.value, height: pipHeight.value };
   savedPosition.value = { x: x.value, y: y.value };
@@ -121,7 +121,7 @@ function onResizeEnd() {
   document.removeEventListener("pointerup", onResizeEnd);
 }
 
-function startResize(event, edge) {
+function startResize(event, edge): void {
   event.preventDefault();
   event.stopPropagation();
   isResizing.value = true;

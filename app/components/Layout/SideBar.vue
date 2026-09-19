@@ -19,18 +19,18 @@ const topPages = ref<SidebarPage[]>([
     title: "Viewer",
     icon: "mdi-rotate-orbit",
     testId: "viewerNavButton",
-    click: () => navigateTo("/"),
+    click: (): unknown => navigateTo("/"),
   },
   {
     title: "Data Manager",
     icon: "mdi-database",
     testId: "dataManagerNavButton",
-    click: () => navigateTo("/data_manager"),
+    click: (): unknown => navigateTo("/data_manager"),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
-    click: () => navigateTo("/extensions"),
+    click: (): unknown => navigateTo("/extensions"),
   },
 ]);
 
@@ -40,19 +40,19 @@ const bottomPages = computed(() => {
       title: "Chat",
       icon: "mdi-chat-outline",
       testId: "chatNavButton",
-      click: () => UIStore.setShowChatPiP(!UIStore.showChatPiP),
+      click: (): unknown => UIStore.setShowChatPiP(!UIStore.showChatPiP),
     },
 
     {
       title: isUserAuthenticated.value ? "Account" : "Login",
       icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
-      click: () => navigateTo("/account"),
+      click: (): unknown => navigateTo("/account"),
     },
 
     {
       title: "Infos",
       icon: "mdi-information-outline",
-      click: () => navigateTo("/infos"),
+      click: (): unknown => navigateTo("/infos"),
     },
   ];
 
@@ -61,12 +61,12 @@ const bottomPages = computed(() => {
 
 let draggedItem: SidebarPage | undefined = undefined;
 
-function startDrag(event: DragEvent, item: SidebarPage) {
+function startDrag(event: DragEvent, item: SidebarPage): void {
   draggedItem = item;
   event.dataTransfer?.setData("text/plain", "sidebar-icon");
 }
 
-function onDrop(event: DragEvent, dropIndex: number) {
+function onDrop(event: DragEvent, dropIndex: number): void {
   if (!draggedItem) {
     return;
   }

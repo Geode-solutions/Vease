@@ -1,7 +1,7 @@
 import { transformExtensionCode } from "@vease/utils/extension_code_transformer";
 import { useAppStore } from "@ogw_front/stores/app.js";
 
-export function useExtensionsStore() {
+export function useExtensionsStore(): ReturnType<typeof useAppStore> {
   const appStore = useAppStore();
 
   appStore.setCodeTransformer(transformExtensionCode);

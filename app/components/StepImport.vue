@@ -85,12 +85,12 @@ const stepper_tree = useStepperTree(
   },
 );
 
-function reset_values() {
+function reset_values(): void {
   UIStore.setDroppedFiles([]);
   stepper_tree.reset_values();
 }
 
-function handleClose() {
+function handleClose(): void {
   reset_values();
   emit("close");
 }

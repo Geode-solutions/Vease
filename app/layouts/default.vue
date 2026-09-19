@@ -32,7 +32,7 @@ runFunctionWhenMicroservicesConnected(() => {
   setIsAppReady(appStore.base_url, true);
 });
 
-function handleFilesDropped(files) {
+function handleFilesDropped(files): void {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
     UIStore.setDroppedFiles([...files]);
     UIStore.setShowStepper(true);
@@ -72,12 +72,19 @@ watch(
   <v-app
     :class="{
       'splash-screen-active': !infraStore.microservices_connected,
-      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions,
+      'drawer-active':
+        UIStore.showStepper ||
+        UIStore.showCreateTools ||
+        UIStore.showExtensions,
     }"
   >
     <MainNavigation />
     <v-main class="custom-background dropzone">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+      <GlassCard
+        variant="ui"
+        padding="pa-0"
+        class="island-wrapper overflow-hidden"
+      >
         <Launcher
           v-if="infraStore.status != Status.CREATED"
           app-name="Vease"
@@ -92,7 +99,10 @@ watch(
         <NuxtPage v-else style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
-        <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
+        <DrawerManager
+          :ui-store="UIStore"
+          @files-dropped="handleFilesDropped"
+        />
       </InfraConnected>
     </v-main>
     <v-progress-linear

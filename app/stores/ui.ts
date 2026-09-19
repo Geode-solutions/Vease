@@ -37,10 +37,7 @@ const useUIStore = defineStore("UI", () => {
     () => showStepper.value || showCreateTools.value || showExtensions.value,
   );
 
-  function registerToolComponent(
-    toolDefinition: ToolDefinition,
-    extensionPath: string | undefined = undefined,
-  ) {
+  function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
     const { id, component, ...rest } = toolDefinition;
     const existingIndex = toolsDefinitions.value.findIndex((tool) => tool.id === id);
     const newDefinition = { id, component, extensionPath, ...rest };
@@ -54,7 +51,7 @@ const useUIStore = defineStore("UI", () => {
     }
   }
 
-  function unregisterTool(toolId: string) {
+  function unregisterTool(toolId: string): void {
     const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId);
     if (index === -1) {
       return;
@@ -63,7 +60,7 @@ const useUIStore = defineStore("UI", () => {
     console.log(`[UIStore] Tool unregistered: ${toolId}`);
   }
 
-  function unregisterToolsByExtension(extensionPath: string) {
+  function unregisterToolsByExtension(extensionPath: string): void {
     const beforeCount = toolsDefinitions.value.length;
     toolsDefinitions.value = toolsDefinitions.value.filter(
       (tool) => tool.extensionPath !== extensionPath,
@@ -72,10 +69,10 @@ const useUIStore = defineStore("UI", () => {
     console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
   }
 
-  function getActiveTools() {
+  function getActiveTools(): ToolDefinition[] {
     const extensionsStore = useExtensionsStore();
     return toolsDefinitions.value.filter((tool) => {
-      if (!tool.extensionPath) {
+      if (tool.extensionPath === undefined || tool.extensionPath === "") {
         return true;
       }
       return extensionsStore.getExtensionEnabled(tool.extensionPath);
@@ -84,7 +81,7 @@ const useUIStore = defineStore("UI", () => {
 
   const activeTools = computed(getActiveTools);
 
-  function registerDataManagerTab(tabDefinition: DataManagerTab) {
+  function registerDataManagerTab(tabDefinition: DataManagerTab): void {
     const { id, component, ...rest } = tabDefinition;
     const existingIndex = dataManagerTabs.value.findIndex((tab) => tab.id === id);
     const newDefinition = { id, component, ...rest };
@@ -98,48 +95,48 @@ const useUIStore = defineStore("UI", () => {
     }
   }
 
-  function setShowDropZone(value: boolean) {
+  function setShowDropZone(value: boolean): void {
     showDropZone.value = value;
   }
 
-  function setShowStepper(value: boolean) {
+  function setShowStepper(value: boolean): void {
     showStepper.value = value;
   }
 
-  function setDroppedFiles(files: File[]) {
+  function setDroppedFiles(files: File[]): void {
     droppedFiles.value = files;
   }
 
-  function setShowButton(value: boolean) {
+  function setShowButton(value: boolean): void {
     showButton.value = value;
   }
 
-  function toggleDrawer() {
+  function toggleDrawer(): void {
     droppedFiles.value = [];
     showStepper.value = !showStepper.value;
   }
 
-  function setShowCreateTools(value: boolean) {
+  function setShowCreateTools(value: boolean): void {
     showCreateTools.value = value;
   }
 
-  function setShowExtensions(value: boolean) {
+  function setShowExtensions(value: boolean): void {
     showExtensions.value = value;
   }
 
-  function setShowCreateVOI(value: boolean) {
+  function setShowCreateVOI(value: boolean): void {
     showCreateVOI.value = value;
   }
 
-  function setShowCreateAOI(value: boolean) {
+  function setShowCreateAOI(value: boolean): void {
     showCreateAOI.value = value;
   }
 
-  function setShowDataManagerPiP(value: boolean) {
+  function setShowDataManagerPiP(value: boolean): void {
     showDataManagerPiP.value = value;
   }
 
-  function setShowChatPiP(value: boolean) {
+  function setShowChatPiP(value: boolean): void {
     showChatPiP.value = value;
   }
 

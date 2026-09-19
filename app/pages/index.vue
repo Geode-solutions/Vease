@@ -23,7 +23,7 @@ async function handleTreeMenu({
   modelId,
   modelComponentType,
   targetComponentIds,
-}) {
+}): Promise<void> {
   if (!cardContainer.value) {
     return;
   }
@@ -63,7 +63,7 @@ async function handleTreeMenu({
   );
 }
 
-async function openMenu(event) {
+async function openMenu(event): Promise<void> {
   if (!cardContainer.value || !viewerUI.value) {
     return;
   }

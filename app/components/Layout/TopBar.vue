@@ -11,11 +11,11 @@ const infraStore = getInfraStore();
 
 const importFileInput = useTemplateRef("importFileInput");
 
-function triggerImport() {
+function triggerImport(): void {
   importFileInput.value?.click();
 }
 
-function onImportFileSelected(event) {
+function onImportFileSelected(event): void {
   const project = event.target.files?.[0];
   if (!project) {
     return;

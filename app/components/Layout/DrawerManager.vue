@@ -14,7 +14,7 @@ const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
 const emit = defineEmits<{ "files-dropped": [files: File[]] }>();
 const viewerStore = useViewerStore();
 
-function closeAllDrawers() {
+function closeAllDrawers(): void {
   uiStore.setShowStepper(false);
   uiStore.setShowCreateTools(false);
   uiStore.setShowExtensions(false);
@@ -25,11 +25,11 @@ const anyDrawerOpen = computed(
 );
 const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
 
-function handleFilesDropped(files) {
+function handleFilesDropped(files): void {
   emit("files-dropped", files);
 }
 
-function handleEscape() {
+function handleEscape(): void {
   if (anyDrawerOpen.value && !viewerStore.picking_mode) {
     closeAllDrawers();
   }

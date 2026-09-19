@@ -35,11 +35,11 @@ const filteredExtensions = computed(() => {
   );
 });
 
-function selectExtension(ext: MarketplaceExtension) {
+function selectExtension(ext: MarketplaceExtension): void {
   emit("update:modelValue", ext);
 }
 
-function extensionIcon(ext: MarketplaceExtension) {
+function extensionIcon(ext: MarketplaceExtension): string {
   if (appStore.getExtension(ext.id)) {
     return "mdi-puzzle-check-outline";
   }
