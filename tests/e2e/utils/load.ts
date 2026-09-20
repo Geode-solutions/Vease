@@ -5,7 +5,7 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
-const loadWorkflowTimeout = 10_000;
+const loadWorkflowTimeout = 8000;
 
 function getLayoutImportButton(window) {
   return window.getByTestId("layoutImportButton");
@@ -26,7 +26,7 @@ async function loadVeaseTestDatas(
   );
   const layoutImportButton = getLayoutImportButton(window);
   await layoutImportButton.waitFor({ state: "visible" });
-  const layoutImportButtonTimeout = 50_000;
+  const layoutImportButtonTimeout = 20_000;
   await expect(layoutImportButton).toBeEnabled({ timeout: layoutImportButtonTimeout });
   await layoutImportButton.click();
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
