@@ -6,7 +6,7 @@ function getCreateToolsPanelButton(window) {
 
 async function openCreateToolsPanel(window) {
   const createToolsPanelButton = getCreateToolsPanelButton(window);
-  const isOpen = createToolsPanelButton.isVisible();
+  const isOpen = await createToolsPanelButton.isVisible();
   if (!isOpen) {
     await window.getByTestId("createButton").click();
     await window.waitForTimeout(afterActionWait);
@@ -15,7 +15,7 @@ async function openCreateToolsPanel(window) {
 
 async function closeCreateToolsPanel(window) {
   const createToolsPanelButton = getCreateToolsPanelButton(window);
-  const isOpen = createToolsPanelButton.isVisible();
+  const isOpen = await createToolsPanelButton.isVisible();
   if (isOpen) {
     await window.getByTestId("createButton").click();
     await window.waitForTimeout(afterActionWait);
@@ -23,7 +23,8 @@ async function closeCreateToolsPanel(window) {
 }
 
 async function selectCreateTool(window, toolId) {
-  await window.getByTestId(`createToolCard-${toolId}`).click();
+  const createToolButton = window.getByTestId(`createToolCard-${toolId}`);
+  await createToolButton.click();
   await window.waitForTimeout(afterActionWait);
 }
 
