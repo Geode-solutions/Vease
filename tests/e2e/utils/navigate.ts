@@ -7,6 +7,7 @@ import { setTimeout } from "node:timers/promises";
 // Third party imports
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import { _electron as electron } from "playwright";
+import { expect } from "@playwright/test";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 
@@ -166,8 +167,8 @@ async function signInToCloudApp(page) {
 
   const loadAppButton = await page.getByTestId("loadAppButton");
   await loadAppButton.click();
-  console.log(`Waiting for ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
-  await page.waitForTimeout(WAIT_TIMES.cloud);
+  console.log(`Waiting up to ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+  await expect(page.getByTestId("layoutImportButton")).toBeEnabled({ timeout: WAIT_TIMES.cloud });
   await page.waitForFunction(() => document.readyState === "complete");
 }
 
