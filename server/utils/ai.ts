@@ -7,7 +7,7 @@ import type { MCPClient } from "@ai-sdk/mcp";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 // Local imports
-import { getGatewayApiKey } from "@vease_server/utils/server_config.ts";
+import { getGatewayApiKey } from "@vease_server/utils/server_config.js";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 const LLAMA_HOST = "127.0.0.1";
