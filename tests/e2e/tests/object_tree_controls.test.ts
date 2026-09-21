@@ -1,34 +1,37 @@
 // Node imports
 
 // Third party imports
-import type { Page } from "@playwright/test";
-// oxlint-disable-next-line eslint/no-duplicate-imports
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  afterActionWait,
-  moveMouseOutOfTheWay,
-  noopCleanup,
-} from "@tests/utils/viewer_interaction";
+import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import {
   checkFilterCategory,
-  collapseAllObjects,
   copyTreeRowId,
-  expandAllObjects,
   fillSearchQuery,
   hideObjectInTree,
   openFilterMenu,
-  setModelTreeRowColorRandom,
-  toggleObjectsTree,
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@tests/utils/object_tree_interaction";
-import { loadData } from "@tests/utils/load";
-import { navigateToApp } from "@tests/utils/navigate";
+} from "@tests/utils/object_trees/common";
+import {
+  collapseMainObjectTree,
+  getMainObjectTree,
+  toggleObjectsTree,
+} from "@tests/utils/object_trees/main_object_tree";
+import {
+  collapseModelComponentsObjectTree,
+  expandModelComponentsObjectTree,
+  getModelComponentsObjectTree,
+  openModelComponentsTree,
+  setModelTreeRowColorRandom,
+} from "@tests/utils/object_trees/model_components_object_tree";
+import { brepGeodeObjectType } from "@tests/utils/constants";
+import { closeAllMenus } from "@tests/utils/app_interaction";
+import { loadVeaseTestDatas } from "@tests/utils/load";
 import { resetCamera } from "@tests/utils/camera_interaction";
-import { test } from "@tests/fixtures";
+import { test } from "@tests/utils/fixtures";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -36,186 +39,150 @@ const edc3dFilename = "test.og_edc3d";
 const psf3dFilename = "test.og_psf3d";
 const hso3dFilename = "test.og_hso3d";
 
-let window: Page = undefined as unknown as Page;
-let cleanup: () => unknown = noopCleanup;
 let surfaceId = undefined;
 
+test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
-test.beforeAll(async ({ mode, browser }) => {
-  ({ window, cleanup } = await navigateToApp(mode, browser));
+test("load all files", async ({ window }) => {
+  await loadVeaseTestDatas(window, [brepFilename]);
+  await loadVeaseTestDatas(window, [edc3dFilename]);
+  await loadVeaseTestDatas(window, [psf3dFilename]);
+  await loadVeaseTestDatas(window, [hso3dFilename]);
 });
 
-test.afterAll(async () => {
-  await cleanup();
-});
-
-test("load all files", async () => {
-  await loadData(window, brepFilename);
-  await loadData(window, edc3dFilename);
-  await loadData(window, psf3dFilename);
-  await loadData(window, hso3dFilename);
-  await expect(window).toHaveScreenshot();
-});
-
-test("reset camera", async () => {
+test("reset camera", async ({ window }) => {
   await resetCamera(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("filter objects", async () => {
-  await openFilterMenu(window);
+test("filter objects", async ({ window }) => {
+  await openFilterMenu(window, getMainObjectTree(window));
   await uncheckFilterCategory(window, "EdgedCurve3D");
   await uncheckFilterCategory(window, "PolygonalSurface3D");
-  await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("sort by id", async () => {
+test("sort by id", async ({ window }) => {
+  await closeAllMenus(window);
   await toggleSortObjects(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("sort by name", async () => {
+test("sort by name", async ({ window }) => {
   await toggleSortObjects(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("hide HybridSolid3D objects", async () => {
-  await hideObjectInTree(window, "HybridSolid3D");
-  await expect(window).toHaveScreenshot();
+test("hide HybridSolid3D objects", async ({ window }) => {
+  await hideObjectInTree(window, "HybridSolid3D", undefined, getMainObjectTree(window));
 });
 
-test("search by text", async () => {
+test("search by text", async ({ window }) => {
   await toggleSearchObjects(window);
-  await fillSearchQuery(window, "test");
-  await expect(window).toHaveScreenshot();
-  await fillSearchQuery(window, "");
+  await fillSearchQuery(window, "test", getMainObjectTree(window));
+
+  await fillSearchQuery(window, "", getMainObjectTree(window));
 });
 
-test("search by id", async () => {
-  const brepLabel = window
-    .getByTestId("mainObjectTree")
+test("search by id", async ({ window, screenshotMask }) => {
+  const mainObjectTree = getMainObjectTree(window);
+  const brepLabel = mainObjectTree
     .locator('[data-testid^="treeRow-"]', { hasText: "test" })
     .first();
   const dataTestId = await brepLabel.getAttribute("data-testid");
-  expect(dataTestId).toBeTruthy();
-  const brepId = dataTestId!.replace("treeRow-", "");
+  const brepId = dataTestId.replace("treeRow-", "");
   const searchPrefix = brepId.slice(0, 3);
-  await fillSearchQuery(window, searchPrefix);
-  await expect(window).toHaveScreenshot({
-    mask: [window.getByTestId("searchObjectsInput")],
-  });
-  await fillSearchQuery(window, "");
+  await fillSearchQuery(window, searchPrefix, mainObjectTree);
+  screenshotMask.locators = [window.getByTestId("searchObjectsInput")];
 });
 
-test("refilter object", async () => {
-  await openFilterMenu(window);
+test("refilter object", async ({ window }) => {
+  const mainObjectTree = getMainObjectTree(window);
+  await fillSearchQuery(window, "", mainObjectTree);
+  await openFilterMenu(window, mainObjectTree);
   await checkFilterCategory(window, "PolygonalSurface3D");
-  await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("collapse main object tree", async () => {
-  await window
-    .getByTestId("mainObjectTree")
-    .locator(".tree-row-wrapper", { hasText: "test" })
-    .first()
-    .locator("button:has(.mdi-magnify-expand)")
-    .click();
-  await window.waitForTimeout(afterActionWait);
-  await collapseAllObjects(window, "mainObjectTree");
-  await expect(window).toHaveScreenshot();
+test("collapse main object tree", async ({ window }) => {
+  await closeAllMenus(window);
+  await openModelComponentsTree(window, brepGeodeObjectType, "test");
+  await collapseMainObjectTree(window);
 });
 
-test("toggle objects", async () => {
+test("toggle objects", async ({ window }) => {
   await toggleObjectsTree(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("expand model components", async () => {
-  await expandAllObjects(window, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot();
+test("expand model components", async ({ window }) => {
+  await expandModelComponentsObjectTree(window);
 });
 
-test("hide model blocks", async () => {
-  await hideObjectInTree(window, "Blocks", undefined, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot();
+test("hide model blocks", async ({ window }) => {
+  await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
 });
 
-test("filter model components", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("filterObjectsButton").click();
+test("filter model components", async ({ window }) => {
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("filterObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("filterCheckbox-Blocks").getByRole("checkbox").uncheck();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("filterCheckbox-Lines").getByRole("checkbox").uncheck();
   await window.waitForTimeout(afterActionWait);
-  await expect(window).toHaveScreenshot();
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("sort model components by id", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+test("sort model components by id", async ({ window }) => {
+  await closeAllMenus(window);
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
   await moveMouseOutOfTheWay(window);
-  await expect(window).toHaveScreenshot();
 });
 
-test("sort model components by name", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("sortObjectsButton").click();
+test("sort model components by name", async ({ window }) => {
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
-  await window.waitForTimeout(afterActionWait);
-  await expect(window).toHaveScreenshot();
 });
 
-test("search model components by text", async () => {
-  await window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsButton").click();
+test("search model components by text", async ({ window }) => {
+  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
+  await modelComponentsObjectTree.getByTestId("searchObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
-  const searchInput = window
-    .getByTestId("modelComponentsObjectTree")
-    .getByTestId("searchObjectsInput")
-    .locator("input");
+  const searchInput = modelComponentsObjectTree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill("ff");
   await window.waitForTimeout(afterActionWait);
-  await expect(window).toHaveScreenshot();
-  await window.waitForTimeout(afterActionWait);
 });
 
-test("hide filtered corners", async () => {
-  await hideObjectInTree(window, "Corners", undefined, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot();
+test("hide filtered corners", async ({ window }) => {
+  await hideObjectInTree(window, "Corners", undefined, getModelComponentsObjectTree(window));
 });
 
-test("color filtered surfaces", async () => {
+test("color filtered surfaces", async ({ window }) => {
   await setModelTreeRowColorRandom(window, "Surfaces");
-  await expect(window).toHaveScreenshot();
+});
+
+test("clear model components searchbar", async ({ window }) => {
   await window.keyboard.press("Escape");
+  await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
 });
 
-test("clear searchbar", async () => {
-  await fillSearchQuery(window, "", "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot();
-});
-
-test("copy surface id", async () => {
-  surfaceId = await copyTreeRowId(window, "Surfaces", "00000000-", "modelComponentsObjectTree");
+test("copy surface id", async ({ window }) => {
+  surfaceId = await copyTreeRowId(
+    window,
+    "Surfaces",
+    "00000000-",
+    getModelComponentsObjectTree(window),
+  );
   expect(surfaceId).toBeTruthy();
-  await expect(window).toHaveScreenshot();
 });
 
-test("search by copied surface id", async () => {
+test("search by copied surface id", async ({ window, screenshotMask }) => {
   expect(surfaceId).toBeTruthy();
-  await fillSearchQuery(window, surfaceId, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot({
-    mask: [window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput")],
-  });
-  await fillSearchQuery(window, "", "modelComponentsObjectTree");
+  await fillSearchQuery(window, surfaceId, getModelComponentsObjectTree(window));
+  screenshotMask.locators = [
+    window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput"),
+  ];
 });
 
-test("collapse all model components", async () => {
-  await collapseAllObjects(window, "modelComponentsObjectTree");
-  await expect(window).toHaveScreenshot();
+test("collapse all model components", async ({ window }) => {
+  await fillSearchQuery(window, "", getModelComponentsObjectTree(window));
+  await collapseModelComponentsObjectTree(window);
 });
