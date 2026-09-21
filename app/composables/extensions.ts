@@ -1,11 +1,13 @@
+// oxlint-disable eslint/sort-imports
 import Bowser from "bowser";
 import { compare } from "compare-versions";
-import { uploadExtension } from "@ogw_front/utils/extension";
+import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "./auth";
-import { useExtensionMetadata } from "@vease/composables/extension_metadata";
+import { type Extension, useExtensionMetadata } from "@vease/composables/extension_metadata";
 
 function getUserPlatform() {
   const parser = Bowser.getParser(navigator.userAgent);
@@ -26,7 +28,7 @@ export function useExtensions() {
   const APIStore = useAPIStore();
   const { getExtensionVersion } = useExtensionMetadata();
 
-  async function allowedExtensions() {
+  async function allowedExtensions(): Promise<MarketplaceExtension[]> {
     if (!isUserAuthenticated.value || !user.value) {
       return [];
     }
@@ -79,18 +81,21 @@ export function useExtensions() {
     const extensionsFilesToDownload: ReturnType<typeof downloadExtension>[] = [];
     for (const loadedExtension of loadedExtensions) {
       const matchingExtension = extensions.find((extension) => extension.id === loadedExtension.id);
+      if (!matchingExtension) {
+        continue;
+      }
       const latestVersion = matchingExtension.version;
       console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
-      const currentVersion = getExtensionVersion(loadedExtension);
+      const currentVersion = getExtensionVersion(loadedExtension as unknown as Extension);
       console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
-      if (currentVersion && compare(latestVersion, currentVersion, ">")) {
+      if (latestVersion && currentVersion && compare(latestVersion, currentVersion, ">")) {
         extensionsFilesToDownload.push(downloadExtension(loadedExtension.id));
       }
     }
     await Promise.all(
       extensionsFilesToDownload.map(async (extensionFilePromise) => {
         const extensionFile = await extensionFilePromise;
-        await uploadExtension(extensionFile);
+        await importExtensionURL(extensionFile);
       }),
     );
   }

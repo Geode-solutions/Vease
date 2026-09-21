@@ -114,7 +114,7 @@ function useAuth() {
     await logout();
   }
 
-  function resetPassword(email: string) {
+  async function resetPassword(email: string) {
     const schema = {
       $id: "/auth/send-password-reset",
       methods: ["POST"],
@@ -124,7 +124,18 @@ function useAuth() {
       additionalProperties: false,
     };
     const params = { email };
-    return APIStore.request({ schema, params });
+    try {
+      const res = (await APIStore.request({ schema, params }, { skip_feedback_error: true })) as {
+        success?: boolean;
+        error?: string;
+      };
+      if (res && res.error) {
+        throw new Error(res.error);
+      }
+      return res;
+    } catch {
+      throw new Error("This email is not associated with an account.");
+    }
   }
   return {
     user,

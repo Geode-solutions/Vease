@@ -5,11 +5,10 @@ function getFriendlyErrorMessage(error) {
   const message = String(error.message || "").toLowerCase();
   const fullError = `${code} ${message}`;
 
-  if (
-    fullError.includes("invalid-credential") ||
-    fullError.includes("user-not-found") ||
-    fullError.includes("wrong-password")
-  ) {
+  if (fullError.includes("not associated") || fullError.includes("user-not-found")) {
+    return "This email is not associated with an account.";
+  }
+  if (fullError.includes("invalid-credential") || fullError.includes("wrong-password")) {
     return "Invalid email address or password.";
   }
   if (fullError.includes("email-already-in-use")) {
@@ -46,6 +45,7 @@ const confirmPassword = ref("");
 const showForgotPassword = ref(false);
 const forgotPasswordEmail = ref("");
 const forgotPasswordLoading = ref(false);
+const forgotPasswordError = ref("");
 
 // oxlint-disable-next-line max-lines-per-function
 export function useAuthPage() {
@@ -85,12 +85,15 @@ export function useAuthPage() {
       return;
     }
     forgotPasswordLoading.value = true;
+    forgotPasswordError.value = "";
+    errorMessage.value = "";
+    successMessage.value = "";
     try {
       await resetPassword(forgotPasswordEmail.value);
       successMessage.value = "Password reset email sent!";
       showForgotPassword.value = false;
     } catch (error) {
-      errorMessage.value = getFriendlyErrorMessage(error);
+      forgotPasswordError.value = getFriendlyErrorMessage(error);
     } finally {
       forgotPasswordLoading.value = false;
     }
@@ -113,6 +116,7 @@ export function useAuthPage() {
     showForgotPassword,
     forgotPasswordEmail,
     forgotPasswordLoading,
+    forgotPasswordError,
     onSubmit,
     handleForgotPassword,
     toggleMode,

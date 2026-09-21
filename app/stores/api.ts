@@ -9,6 +9,7 @@ interface ApiCallbacks {
   response_function?: (response: unknown) => unknown;
   request_error_function?: (error: unknown) => unknown;
   response_error_function?: (response: unknown) => unknown;
+  skip_feedback_error?: boolean;
 }
 
 const MILLISECONDS_IN_SECOND = 1000;

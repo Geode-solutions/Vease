@@ -6,7 +6,10 @@ const show = defineModel({ type: Boolean, default: false });
 
 const email = defineModel("email", { type: String });
 
-const { loading = false } = defineProps<{ loading?: boolean }>();
+const { loading = false, error = "" } = defineProps<{
+  loading?: boolean;
+  error?: string;
+}>();
 
 const emit = defineEmits<{ submit: [] }>();
 
@@ -25,9 +28,13 @@ async function handleSubmit(event) {
         <v-card-title class="text-h4 font-weight-bold mb-4 text-white px-0">
           Reset Password
         </v-card-title>
-        <v-card-text class="text-body-1 text-white opacity-80 mb-8 px-0">
+        <v-card-text class="text-body-1 text-white opacity-80 mb-6 px-0">
           Enter your email address and we'll send you a recovery link.
         </v-card-text>
+
+        <v-alert v-if="error" type="error" variant="elevated" closable class="mb-6 rounded-lg">
+          {{ error }}
+        </v-alert>
 
         <v-text-field
           v-model="email"
