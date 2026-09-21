@@ -146,14 +146,17 @@ async function deleteSelected(): Promise<void> {
 }
 
 const { delete: del } = useMagicKeys();
-whenever(computed(() => del?.value ?? false), () => {
-  if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")) {
-    return;
-  }
-  if (selectedIds.value.length > 0) {
-    deleteSelectedDialog.value = true;
-  }
-});
+whenever(
+  computed(() => del?.value ?? false),
+  () => {
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")) {
+      return;
+    }
+    if (selectedIds.value.length > 0) {
+      deleteSelectedDialog.value = true;
+    }
+  },
+);
 
 useEventListener(document, "keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && (event.key === "k" || event.key === "K")) {

@@ -7,21 +7,7 @@
     "style": "error",
     "restriction": "error"
   },
-  "options": {
-    "typeAware": true,
-    "typeCheck": true
-  },
-  "plugins": [
-    "eslint",
-    "import",
-    "node",
-    "oxc",
-    "promise",
-    "typescript",
-    "unicorn",
-    "vitest",
-    "vue"
-  ],
+  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest", "vue"],
   "rules": {
     "eslint/func-style": ["error", "declaration"],
     "eslint/id-length": [
@@ -161,18 +147,6 @@
       "files": ["**/preload.js"],
       "rules": {
         "import/no-commonjs": "off"
-      }
-    },
-    {
-      "files": ["app/utils/external_stores.ts", "app/utils/extension_code_transformer.ts"],
-      "rules": {
-        "typescript/no-unsafe-type-assertion": "off"
-      }
-    },
-    {
-      "files": ["app/types/vease_globals.d.ts"],
-      "rules": {
-        "import/no-namespace": "off" // Conflicts with typescript/consistent-type-imports: `typeof import(...)` is forbidden, so a whole-module type here can only be expressed via `import type * as X`
       }
     }
   ]

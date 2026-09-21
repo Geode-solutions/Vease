@@ -46,9 +46,7 @@ const bottomPages = computed(() => {
 
     {
       title: isUserAuthenticated.value ? "Account" : "Login",
-      icon: isUserAuthenticated.value
-        ? "mdi-account-outline"
-        : "mdi-account-key-outline",
+      icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
       testId: "accountNavButton",
       click: (): unknown => navigateTo("/account"),
     },
