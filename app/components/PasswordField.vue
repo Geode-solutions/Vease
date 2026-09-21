@@ -1,28 +1,21 @@
-<script setup>
-const { value, rules, label, required, toggleVisibility } = defineProps({
-  value: {
-    type: String,
-    required: true,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  toggleVisibility: {
-    type: Function,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { ValidationRule } from "vuetify";
 
-const emit = defineEmits(["input"]);
+const {
+  value,
+  rules = [],
+  label,
+  required = false,
+  toggleVisibility,
+} = defineProps<{
+  value: string;
+  rules?: ValidationRule[];
+  label: string;
+  required?: boolean;
+  toggleVisibility: () => void;
+}>();
+
+const emit = defineEmits<{ input: [value: string] }>();
 
 const showPassword = ref(false);
 </script>

@@ -1,49 +1,47 @@
-<script setup>
+<script setup lang="ts">
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
+import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
+import type { DataItem } from "@vease/types/data_item";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useDataStyleStore } from "@ogw_front/stores/data_style";
-import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 import { useUIStore } from "@vease/stores/ui";
 
-const { compact = false } = defineProps({
-  compact: { type: Boolean, default: false },
-});
+const { compact = false } = defineProps<{ compact?: boolean }>();
 
 const UIStore = useUIStore();
 const dataStore = useDataStore();
-const hybridViewerStore = useHybridViewerStore();
+const hybridViewerStore = getHybridViewerStore();
 const treeviewStore = useTreeviewStore();
-const dataStyleStore = useDataStyleStore();
+const dataStyleStore = getDataStyleStore();
 
 const search = ref("");
 const viewMode = ref("list");
 const items = dataStore.refAllItems();
 const activeTab = ref("data");
-const selectedIds = ref([]);
+const selectedIds = ref<DataItem[]>([]);
 
 const deleteSelectedDialog = ref(false);
 const deleteSingleDialog = ref(false);
-const itemToDelete = ref(undefined);
+const itemToDelete = ref<DataItem | undefined>(undefined);
 const renameDialog = ref(false);
-const itemToRename = ref(undefined);
+const itemToRename = ref<DataItem | undefined>(undefined);
 const newItemName = ref("");
 
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
-function showFeedback(text, color = "success") {
+function showFeedback(text: string, color = "success") {
   snackbar.text = text;
   snackbar.color = color;
   snackbar.show = true;
 }
 
-async function toggleVisibility(item, targetVisible = !item.visible) {
+async function toggleVisibility(item: DataItem, targetVisible: boolean = !item.visible) {
   if (item.visible === targetVisible) {
     return;
   }
@@ -72,34 +70,35 @@ async function toggleSelectedVisibility() {
   showFeedback(targetVisible ? "Visibility enabled" : "Visibility disabled");
 }
 
-function focusCamera(item) {
+function focusCamera(item: DataItem) {
   hybridViewerStore.focusCameraOnObject(item.id);
 }
 
-function openRenameDialog(item) {
+function openRenameDialog(item: DataItem) {
   itemToRename.value = item;
   newItemName.value = item.name;
   renameDialog.value = true;
 }
 
-async function confirmRename(newName) {
-  if (!newName || !itemToRename.value) {
+async function confirmRename(newName: string) {
+  const item = itemToRename.value;
+  if (!newName || !item) {
     return;
   }
   try {
-    itemToRename.value.name = newName;
-    await dataStore.updateItem(itemToRename.value.id, {
+    item.name = newName;
+    await dataStore.updateItem(item.id, {
       name: newName,
     });
-    treeviewStore.renameItem(itemToRename.value.id, newName);
+    treeviewStore.renameItem(item.id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
-    showFeedback(`Failed to rename: ${error?.message || error}`, "error");
+    showFeedback(`Failed to rename: ${error instanceof Error ? error.message : error}`, "error");
   }
 }
 
-async function isolateItem(item) {
+async function isolateItem(item: DataItem) {
   const promises = items.value.map(async (i) => {
     const visible = i.id === item.id;
     await dataStore.updateItem(i.id, { visible });
@@ -113,21 +112,21 @@ async function isolateItem(item) {
   focusCamera(item);
 }
 
-function confirmDelete(item) {
+function confirmDelete(item: DataItem) {
   itemToDelete.value = item;
   deleteSingleDialog.value = true;
 }
 
 async function executeDelete() {
-  if (!itemToDelete.value) {
+  const item = itemToDelete.value;
+  if (!item) {
     return;
   }
-  await dataStore.deregisterObject(itemToDelete.value.id);
-  await dataStore.deleteItem(itemToDelete.value.id);
-  await hybridViewerStore.removeItem(itemToDelete.value.id);
-  treeviewStore.removeItem(itemToDelete.value.id);
-  items.value = items.value.filter((i) => i.id !== itemToDelete.value.id);
-  selectedIds.value = selectedIds.value.filter((selected) => selected.id !== itemToDelete.value.id);
+  await dataStore.deregisterObject(item.id);
+  await dataStore.deleteItem(item.id);
+  await hybridViewerStore.removeItem(item.id);
+  treeviewStore.removeItem(item.id);
+  selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
 }
@@ -141,15 +140,14 @@ async function deleteSelected() {
     treeviewStore.removeItem(id);
   });
   await Promise.all(promises);
-  items.value = items.value.filter((i) => !idsToDelete.includes(i.id));
   selectedIds.value = [];
   deleteSelectedDialog.value = false;
   showFeedback("Selected items deleted");
 }
 
 const { delete: del } = useMagicKeys();
-whenever(del, () => {
-  if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+whenever(del!, () => {
+  if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")) {
     return;
   }
   if (selectedIds.value.length > 0) {

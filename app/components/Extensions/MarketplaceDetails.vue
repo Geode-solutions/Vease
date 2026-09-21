@@ -1,17 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
-import GlassCard from "@ogw_front/components/GlassCard";
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { useExtensions } from "@vease/composables/extensions";
 
-const { extension } = defineProps({
-  extension: {
-    type: Object,
-    default: undefined,
-  },
-});
+const { extension = undefined } = defineProps<{ extension?: MarketplaceExtension }>();
 
 const MESSAGE_TIMEOUT = 5000;
 
@@ -23,7 +19,7 @@ const installing = ref(false);
 const installError = ref("");
 const installSuccess = ref("");
 const installed = computed(() => {
-  if (!appStore.getExtension(extension.id)) {
+  if (!extension || !appStore.getExtension(extension.id)) {
     return false;
   }
   return true;
@@ -46,7 +42,7 @@ async function installSelectedExtension() {
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
     console.error(error);
-    installError.value = error.message || "Failed to install extension.";
+    installError.value = error instanceof Error ? error.message : "Failed to install extension.";
   } finally {
     installing.value = false;
     setTimeout(() => {

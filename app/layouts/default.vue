@@ -1,18 +1,18 @@
-<script setup>
-import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers";
-import GlassCard from "@ogw_front/components/GlassCard";
-import GlobalComponents from "@vease/components/Extensions/GlobalComponents";
-import InfraConnected from "@ogw_front/components/InfraConnected";
-import Launcher from "@ogw_front/components/Launcher";
+<script setup lang="ts">
+import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue";
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import GlobalComponents from "@vease/components/Extensions/GlobalComponents.vue";
+import InfraConnected from "@ogw_front/components/InfraConnected.vue";
+import Launcher from "@ogw_front/components/Launcher.vue";
 import { Status } from "@ogw_front/utils/status";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
-import { useInfraStore } from "@ogw_front/stores/infra";
 
-import AuthWrapper from "@vease/components/Auth/Wrapper";
-import DrawerManager from "@vease/components/Layout/DrawerManager";
-import MainNavigation from "@vease/components/Layout/MainNavigation";
+import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
+import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
+import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
+import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
@@ -20,7 +20,7 @@ import { useUIStore } from "@vease/stores/ui";
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
-const infraStore = useInfraStore();
+const infraStore = getInfraStore();
 const appStore = useAppStore();
 
 const { updateExtensions } = useExtensions();
@@ -29,7 +29,7 @@ autoLogin();
 
 runFunctionWhenMicroservicesConnected(() => {
   console.log("[APP] App is ready");
-  setIsAppReady(appStore.appBaseUrl, true);
+  setIsAppReady(appStore.base_url, true);
 });
 
 function handleFilesDropped(files) {
@@ -83,7 +83,7 @@ watch(
           app-name="Vease"
           logo="/logo.png"
           :isUserAuthenticated="isUserAuthenticated"
-          :email="user?.email"
+          :email="user?.email ?? undefined"
         >
           <template #auth>
             <AuthWrapper />

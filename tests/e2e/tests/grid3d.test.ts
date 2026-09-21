@@ -1,0 +1,142 @@
+// Node imports
+
+// Third party imports
+
+// Local imports
+import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
+import {
+  openMeshCellsMenu,
+  setMeshCellsCellAttribute,
+  setMeshCellsColor,
+  setMeshCellsColorMap,
+  setMeshCellsItem,
+  setMeshCellsNoDataColor,
+  setMeshCellsOpacity,
+  setMeshCellsVertexAttribute,
+  setMeshCellsVisibility,
+  setMeshEdgesColor,
+  setMeshEdgesVisibility,
+  setMeshEdgesWidth,
+  setMeshPointsColor,
+  setMeshPointsSize,
+  setMeshPointsVisibility,
+} from "@tests/utils/data";
+import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@tests/utils/load";
+import { rgd3dGeodeObjectType } from "@tests/utils/constants";
+import { test } from "@tests/utils/fixtures";
+
+// Constants
+const inputFilename = "grid.og_rgd3d";
+const cellAttributeName = "test_cell";
+const vertexAttributeName = "test_vertex";
+const vertexAttributeName2 = "test_vertex2";
+const colorMapName = "vikO";
+const cellsOpacity = 50;
+const pointsSize = 15;
+const edgesWidth = 5;
+
+test.use({ suiteId: import.meta.url });
+test.describe.configure({ mode: "serial" });
+
+test("load", async ({ window }) => {
+  await loadVeaseTestDatas(window, [inputFilename]);
+  await expandMainObjectTree(window);
+});
+
+test("highlight", async ({ window, screenshotMask }) => {
+  await highlightData(window, rgd3dGeodeObjectType, "grid");
+  screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
+});
+
+test("viewer context menu", async ({ window }) => {
+  const x = 549;
+  const y = 360;
+  await viewerContextMenu(window, x, y);
+});
+
+test("info card", async ({ window }) => {
+  await toggleInfoCard(window);
+});
+
+test("points visibility", async ({ window }) => {
+  await toggleInfoCard(window);
+  await setMeshPointsVisibility(window, true);
+});
+
+test("cell attribute", async ({ window }) => {
+  await setMeshPointsVisibility(window, false);
+  await setMeshCellsCellAttribute(window, cellAttributeName);
+});
+
+test("cell attribute change colormap", async ({ window }) => {
+  await setMeshCellsColorMap(window, colorMapName);
+});
+
+test("cell attribute reopen menu", async ({ window }) => {
+  await openMeshCellsMenu(window);
+});
+
+test("vertex attribute", async ({ window }) => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName, {
+    item: 1,
+    colorMap: colorMapName,
+  });
+});
+
+test("vertex attribute unmapped elements color", async ({ window }) => {
+  await setMeshCellsNoDataColor(window);
+});
+
+test("vertex attribute change item to 1", async ({ window }) => {
+  await setMeshCellsItem(window, 0);
+});
+
+test("vertex attribute change item to 2", async ({ window }) => {
+  await setMeshCellsItem(window, 1);
+});
+
+test("vertex attribute change attribute name", async ({ window }) => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName2);
+});
+
+test("vertex attribute switch back to first attribute", async ({ window }) => {
+  await setMeshCellsVertexAttribute(window, vertexAttributeName);
+});
+
+test("vertex attribute reopen menu", async ({ window }) => {
+  await openMeshCellsMenu(window);
+});
+
+test("cells color", async ({ window }) => {
+  await setMeshCellsColor(window);
+});
+
+test("points color", async ({ window }) => {
+  await setMeshPointsColor(window);
+});
+
+test("edges color", async ({ window }) => {
+  await setMeshEdgesColor(window);
+});
+
+test("cells opacity", async ({ window }) => {
+  await setMeshCellsOpacity(window, cellsOpacity);
+});
+
+test("points size", async ({ window }) => {
+  await setMeshPointsSize(window, pointsSize);
+});
+
+test("edges width", async ({ window }) => {
+  await setMeshEdgesWidth(window, edgesWidth);
+});
+
+test("edges visibility", async ({ window }) => {
+  await setMeshEdgesVisibility(window, false);
+});
+
+test("cells visibility", async ({ window }) => {
+  await setMeshEdgesVisibility(window, true);
+  await setMeshCellsVisibility(window, false);
+});

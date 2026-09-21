@@ -1,19 +1,19 @@
-<script setup>
-import GlassCard from "@ogw_front/components/GlassCard";
-import { emailRules } from "~/utils/validation.js";
+<script setup lang="ts">
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import { emailRules } from "~/utils/validation";
 
 const show = defineModel({ type: Boolean, default: false });
 
 const email = defineModel("email", { type: String });
 
-const { loading } = defineProps({
-  loading: { type: Boolean, default: false },
-});
+const { loading = false } = defineProps<{ loading?: boolean }>();
+
+const emit = defineEmits<{ submit: [] }>();
 
 async function handleSubmit(event) {
   const { valid } = await event;
   if (valid) {
-    submit();
+    emit("submit");
   }
 }
 </script>

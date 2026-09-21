@@ -1,13 +1,20 @@
-<script setup>
+<script setup lang="ts">
 import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
+
+interface SidebarPage {
+  title: string;
+  icon: string;
+  testId?: string;
+  click: () => unknown;
+}
 
 const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
 
 const drawer = ref(true);
 
-const topPages = ref([
+const topPages = ref<SidebarPage[]>([
   {
     title: "Viewer",
     icon: "mdi-rotate-orbit",
@@ -23,6 +30,7 @@ const topPages = ref([
   {
     title: "Extensions",
     icon: "mdi-puzzle",
+    testId: "extensionsNavButton",
     click: () => navigateTo("/extensions"),
   },
 ]);
@@ -39,12 +47,14 @@ const bottomPages = computed(() => {
     {
       title: isUserAuthenticated.value ? "Account" : "Login",
       icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
+      testId: "accountNavButton",
       click: () => navigateTo("/account"),
     },
 
     {
       title: "Infos",
       icon: "mdi-information-outline",
+      testId: "infosNavButton",
       click: () => navigateTo("/infos"),
     },
   ];
@@ -52,14 +62,17 @@ const bottomPages = computed(() => {
   return pages;
 });
 
-let draggedItem = undefined;
+let draggedItem: SidebarPage | undefined = undefined;
 
-function startDrag(event, item) {
+function startDrag(event: DragEvent, item: SidebarPage) {
   draggedItem = item;
-  event.dataTransfer.setData("text/plain", "sidebar-icon");
+  event.dataTransfer?.setData("text/plain", "sidebar-icon");
 }
 
-function onDrop(event, dropIndex) {
+function onDrop(event: DragEvent, dropIndex: number) {
+  if (!draggedItem) {
+    return;
+  }
   const dragIndex = topPages.value.indexOf(draggedItem);
   if (dragIndex === dropIndex) {
     return;
