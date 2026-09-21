@@ -20,7 +20,7 @@ async function setColoringStyle(window, menuTestId, coloringStyle, container = w
   await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
-  await window
+  const listItem = window
     .locator(".v-overlay-container")
     .locator(".v-list-item")
     .filter({ hasText: coloringStyle, visible: true })
