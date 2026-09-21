@@ -1,12 +1,30 @@
 import { afterActionWait, getHybridViewerCanvas } from "./viewer_interaction";
 
+function getCreateToolsPanelButton(window) {
+  return window.getByTestId("createToolsPanel");
+}
+
 async function openCreateToolsPanel(window) {
-  await window.getByTestId("createButton").click();
-  await window.waitForTimeout(afterActionWait);
+  const createToolsPanelButton = getCreateToolsPanelButton(window);
+  const isOpen = await createToolsPanelButton.isVisible();
+  if (!isOpen) {
+    await window.getByTestId("createButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
+}
+
+async function closeCreateToolsPanel(window) {
+  const createToolsPanelButton = getCreateToolsPanelButton(window);
+  const isOpen = await createToolsPanelButton.isVisible();
+  if (isOpen) {
+    await window.getByTestId("createButton").click();
+    await window.waitForTimeout(afterActionWait);
+  }
 }
 
 async function selectCreateTool(window, toolId) {
-  await window.getByTestId(`createToolCard-${toolId}`).click();
+  const createToolButton = window.getByTestId(`createToolCard-${toolId}`);
+  await createToolButton.click();
   await window.waitForTimeout(afterActionWait);
 }
 
@@ -72,6 +90,7 @@ async function toggleClosedCurve(window) {
 
 export {
   openCreateToolsPanel,
+  closeCreateToolsPanel,
   selectCreateTool,
   fillPointCoords,
   fillPointsCoords,

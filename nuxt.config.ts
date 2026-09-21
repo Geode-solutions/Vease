@@ -54,6 +54,9 @@ function nitroIgnoreConfig() {
   if (mode === "CLOUD_SERVER") {
     return getIgnoredDirectories(["cloud", "microservice"]);
   }
+  if (mode === "NODE") {
+    return getIgnoredDirectories(["**"]);
+  }
   throw new Error(`Unknown mode provided: ${mode}`);
 }
 

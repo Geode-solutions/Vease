@@ -1,9 +1,5 @@
-import {
-  afterActionWait,
-  dragElement,
-  getHybridViewerCanvas,
-  moveMouseOutOfTheWay,
-} from "./viewer_interaction";
+import { afterActionWait, dragElement, getHybridViewerCanvas } from "./viewer_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
 
 async function resetCamera(window) {
   await window.getByTestId("resetCameraButton").click();
@@ -22,16 +18,13 @@ async function toggleCenterOnClick(window) {
 }
 
 async function toggleGridScale(window) {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await window.getByTestId("gridScaleButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
 async function setZScaling(window, zScaleValue) {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
-
+  await closeAllMenus(window);
   await window.getByTestId("zScalingButton").click();
   await window.waitForTimeout(afterActionWait);
 
@@ -131,8 +124,7 @@ async function selectShrinkDatasets(window, datasetName, index = 0) {
 }
 
 async function toggleRuler(window) {
-  await window.keyboard.press("Escape");
-  await window.waitForTimeout(afterActionWait);
+  await closeAllMenus(window);
   await window.getByTestId("rulerButton").click();
   await window.waitForTimeout(afterActionWait);
 }

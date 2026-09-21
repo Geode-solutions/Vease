@@ -46,6 +46,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 package-lock.json
+
+# Compiled Node-safe siblings of tests/e2e/utils/ (see rolldown.config.ts)
+/tests/e2e/utils/**/*.js
 # Local Netlify folder
 .netlify
 
