@@ -14,7 +14,7 @@ const CI_RETRIES = 1;
 const CI_WORKERS = 2;
 
 const retries = process.env.CI ? CI_RETRIES : 0;
-const workers = process.env.CI ? CI_WORKERS : 3;
+const workers = process.env.CI ? CI_WORKERS : undefined;
 const testMatch = "tests/e2e/tests/**/*.test.ts";
 const maxDiffPixelRatio = 0.02;
 
