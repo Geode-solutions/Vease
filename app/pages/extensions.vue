@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Extension from "@vease/components/Extension.vue";
 import Marketplace from "@vease/components/Extensions/Marketplace.vue";
 

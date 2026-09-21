@@ -1,5 +1,5 @@
-<script setup>
-import AuthForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog";
+<script setup lang="ts">
+import AuthForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
 import { emailRules } from "@vease/utils/validation";
 import { useAuthPage } from "@vease/composables/auth_page";
 

@@ -1,38 +1,29 @@
-<script setup>
-const { value, rules, label, required, prependIcon, accept } = defineProps({
-  value: {
-    type: File,
-    required: true,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  prependIcon: {
-    type: String,
-    default: undefined,
-  },
-  accept: {
-    type: String,
-    default: undefined,
-  },
-});
+<script setup lang="ts">
+import type { ValidationRule } from "vuetify";
 
-const emit = defineEmits(["update:value"]);
+const {
+  value,
+  rules = [],
+  label,
+  required = false,
+  prependIcon = undefined,
+  accept = undefined,
+} = defineProps<{
+  value: File;
+  rules?: ValidationRule[];
+  label: string;
+  required?: boolean;
+  prependIcon?: string;
+  accept?: string;
+}>();
+
+const emit = defineEmits<{ "update:value": [value: File] }>();
 </script>
 
 <template>
   <v-file-input
     :model-value="value"
-    @update:model-value="emit('update:value', $event)"
+    @update:model-value="emit('update:value', $event as File)"
     :rules="rules"
     :label="label"
     :required="required"

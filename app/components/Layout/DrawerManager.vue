@@ -1,18 +1,17 @@
-<script setup>
+<script setup lang="ts">
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
-import CreateTools from "@vease/components/CreateTools";
+import CreateTools from "@vease/components/CreateTools.vue";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
-import DragAndDrop from "@ogw_front/components/DragAndDrop";
-import Extension from "@vease/components/Extension";
-import GlassCard from "@ogw_front/components/GlassCard";
-import StepImport from "@vease/components/StepImport";
+import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
+import Extension from "@vease/components/Extension.vue";
+import GlassCard from "@ogw_front/components/GlassCard.vue";
+import StepImport from "@vease/components/StepImport.vue";
+import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
-const { uiStore } = defineProps({
-  uiStore: { type: Object, required: true },
-});
+const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
 
-const emit = defineEmits(["files-dropped"]);
+const emit = defineEmits<{ "files-dropped": [files: File[]] }>();
 const viewerStore = useViewerStore();
 
 function closeAllDrawers() {
@@ -64,7 +63,13 @@ function handleEscape() {
         :files="uiStore.droppedFiles"
         @close="uiStore.setShowStepper(false)"
       />
-      <CreateTools v-if="uiStore.showCreateTools" />
+      <div
+        v-if="uiStore.showCreateTools"
+        data-testid="createToolsPanel"
+        class="d-flex flex-column h-100 w-100"
+      >
+        <CreateTools />
+      </div>
     </GlassCard>
   </v-card>
 

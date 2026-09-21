@@ -1,18 +1,27 @@
-<script setup>
+<script setup lang="ts">
+import type { Ref } from "vue";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
 
-const emit = defineEmits(["update_values", "increment_step", "decrement_step", "reset_values"]);
+const emit = defineEmits<{
+  update_values: [];
+  increment_step: [];
+  decrement_step: [];
+  reset_values: [];
+}>();
 
-const { filenames, geodeObjectType } = defineProps({
-  filenames: { type: Array, required: true },
-  geodeObjectType: { type: String, required: true },
-});
+const { filenames, geodeObjectType } = defineProps<{
+  filenames: string[];
+  geodeObjectType: string;
+}>();
 
 const UIStore = useUIStore();
 
 const import_button = useTemplateRef("import_button");
-useFocus(import_button, { initialValue: true });
+// VueUse's useFocus supports component refs at runtime (it reads `.$el`), but
+// Vuetify's generated component instance type is too complex for its own
+// MaybeElementRef declaration to structurally match.
+useFocus(import_button as unknown as Ref<HTMLElement | null>, { initialValue: true });
 
 const loading = ref(false);
 const toggle_loading = useToggle(loading);

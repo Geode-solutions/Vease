@@ -1,12 +1,13 @@
-<script setup>
-const { selectedIds } = defineProps({
-  selectedIds: {
-    type: Array,
-    default: () => [],
-  },
-});
+<script setup lang="ts">
+import type { DataItem } from "@vease/types/data_item";
 
-const emit = defineEmits(["delete", "toggle-visibility-selected", "clear"]);
+const { selectedIds = [] } = defineProps<{ selectedIds?: DataItem[] }>();
+
+const emit = defineEmits<{
+  delete: [];
+  "toggle-visibility-selected": [];
+  clear: [];
+}>();
 </script>
 
 <template>
