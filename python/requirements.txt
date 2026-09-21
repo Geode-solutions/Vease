@@ -8,7 +8,7 @@ certifi==2026.7.22
     # via requests
 charset-normalizer==3.4.9
     # via requests
-idna==3.18
+idna>=3.18
     # via requests
 requests==2.33.0
     # via -r Vease/Vease/python/requirements.in

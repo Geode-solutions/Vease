@@ -1,15 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
-import GlassCard from "@ogw_front/components/GlassCard";
+import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { Status } from "@ogw_front/utils/status";
+import { getInfraStore } from "@vease/utils/external_stores";
 import logo from "@vease/assets/img/logo.png";
-import { useInfraStore } from "@ogw_front/stores/infra";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
-const infraStore = useInfraStore();
+const infraStore = getInfraStore();
 
-const importFileInput = ref(undefined);
+const importFileInput = useTemplateRef("importFileInput");
 
 function triggerImport() {
   importFileInput.value?.click();

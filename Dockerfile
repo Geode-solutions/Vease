@@ -41,7 +41,15 @@ stderr_logfile_maxbytes=0
 EOT
 
 # Setup router
-RUN apt-get install -y curl jq bash supervisor nginx
+# Debian's own nginx package is frozen at 1.22.1, which predates the `http2 on;`
+# directive (needs 1.25.1+) used in the router's nginx.conf, so pull nginx from
+# nginx.org's official apt repo instead of the Debian archive.
+RUN apt-get install -y curl jq bash supervisor gnupg2 ca-certificates lsb-release debian-archive-keyring \
+    && curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/debian $(lsb_release -cs) nginx" \
+    > /etc/apt/sources.list.d/nginx.list \
+    && apt-get update \
+    && apt-get install -y nginx
 COPY --from=router /etc/nginx /etc/nginx
 COPY --from=router /etc/supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /var/log/supervisor
