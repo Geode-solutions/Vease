@@ -51,16 +51,16 @@ async function handleTreeMenu({
     meta_data = await dataStore.item(itemId);
   }
 
-  menuStore.openMenu(
-    itemId,
+  menuStore.openMenu({
+    id: itemId,
     x,
-    yUI,
-    containerWidth.value,
-    containerHeight.value,
-    rect.top,
-    rect.left,
+    y: yUI,
+    width: containerWidth.value,
+    height: containerHeight.value,
+    top: rect.top,
+    left: rect.left,
     meta_data,
-  );
+  });
 }
 
 async function openMenu(event): Promise<void> {
@@ -85,16 +85,16 @@ async function openMenu(event): Promise<void> {
     }
   }
 
-  menuStore.openMenu(
-    pickedId,
+  menuStore.openMenu({
+    id: pickedId,
     x,
-    yUI,
-    containerWidth.value,
-    containerHeight.value,
-    rect.top,
-    rect.left,
-    item,
-  );
+    y: yUI,
+    width: containerWidth.value,
+    height: containerHeight.value,
+    top: rect.top,
+    left: rect.left,
+    meta_data: item,
+  });
 }
 
 const { width: elWidth, height: elHeight } = useElementSize(cardContainer);
