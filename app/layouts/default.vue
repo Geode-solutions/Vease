@@ -32,7 +32,7 @@ runFunctionWhenMicroservicesConnected(() => {
   setIsAppReady(appStore.base_url, true);
 });
 
-function handleFilesDropped(files) {
+function handleFilesDropped(files): void {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
     UIStore.setDroppedFiles([...files]);
     UIStore.setShowStepper(true);

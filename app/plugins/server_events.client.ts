@@ -14,13 +14,15 @@ export default defineNuxtPlugin(() => {
     if (name !== "launch") {
       return;
     }
-    after(async () => {
-      try {
-        await setBackBaseUrl(appStore.base_url, backStore.base_url);
-        connectToEventSource();
-      } catch (error) {
-        console.error("[SYNC] back launch failed", error);
-      }
+    after(() => {
+      void (async (): Promise<void> => {
+        try {
+          await setBackBaseUrl(appStore.base_url, backStore.base_url);
+          connectToEventSource();
+        } catch (error) {
+          console.error("[SYNC] back launch failed", error);
+        }
+      })();
     });
   });
 
@@ -28,13 +30,15 @@ export default defineNuxtPlugin(() => {
     if (name !== "launch") {
       return;
     }
-    after(async () => {
-      try {
-        await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
-        connectToWebSocket();
-      } catch (error) {
-        console.error("[SYNC] viewer launch failed", error);
-      }
+    after(() => {
+      void (async (): Promise<void> => {
+        try {
+          await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
+          connectToWebSocket();
+        } catch (error) {
+          console.error("[SYNC] viewer launch failed", error);
+        }
+      })();
     });
   });
 });

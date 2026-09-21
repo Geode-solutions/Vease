@@ -10,7 +10,10 @@ export default defineNuxtPlugin(() => {
     iconType: "mdi",
     iconSource: "mdi-circle-medium",
     component: markRaw(
-      defineAsyncComponent(() => import("@vease/components/tools/CreatePoint.vue")),
+      defineAsyncComponent(async () => {
+        const component = await import("@vease/components/tools/CreatePoint.vue");
+        return component;
+      }),
     ),
   });
 
@@ -21,7 +24,10 @@ export default defineNuxtPlugin(() => {
     iconType: "mdi",
     iconSource: "mdi-vector-polyline",
     component: markRaw(
-      defineAsyncComponent(() => import("@vease/components/tools/CreateCurve.vue")),
+      defineAsyncComponent(async () => {
+        const component = await import("@vease/components/tools/CreateCurve.vue");
+        return component;
+      }),
     ),
   });
 
@@ -32,7 +38,10 @@ export default defineNuxtPlugin(() => {
     iconType: "mdi",
     iconSource: "mdi-vector-polygon",
     component: markRaw(
-      defineAsyncComponent(() => import("@vease/components/tools/CreatePolygonalSurface.vue")),
+      defineAsyncComponent(async () => {
+        const component = await import("@vease/components/tools/CreatePolygonalSurface.vue");
+        return component;
+      }),
     ),
   });
 });

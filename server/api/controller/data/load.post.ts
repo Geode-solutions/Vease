@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, statusMessage: "No file field found" });
     }
     const { filename } = filePart;
-    if (!filename) {
+    if (filename === undefined || filename === "") {
       throw createError({ statusCode: 400, statusMessage: "No filename found" });
     }
 
@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
     await uploadFile(filePart);
     const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename);
-    if (!allowedGeodeObjectType) {
+    if (allowedGeodeObjectType === undefined || allowedGeodeObjectType === "") {
       throw createError({
         statusCode: 400,
         statusMessage: "No allowed geode object type found for file",

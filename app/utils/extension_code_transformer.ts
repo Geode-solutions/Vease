@@ -1,10 +1,14 @@
-function transformCoreImports(code) {
+function transformCoreImports(code: string): string {
+  const globalThisAny = globalThis as unknown as Record<
+    string,
+    Record<string, unknown> | undefined
+  >;
   let transformedCode = code.replaceAll(
     /from\s+["']vue["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const Vue = globalThis.Vue;
       export default Vue;
-      ${Object.keys(globalThis.Vue || {})
+      ${Object.keys(globalThisAny.Vue ?? {})
         .map((key) => `export const ${key} = Vue.${key};`)
         .join("")}
     `)}"`,
@@ -15,7 +19,7 @@ function transformCoreImports(code) {
     `from "data:text/javascript,${encodeURIComponent(`
       const Pinia = globalThis.Pinia;
       export default Pinia;
-      ${Object.keys(globalThis.Pinia || {})
+      ${Object.keys(globalThisAny.Pinia ?? {})
         .map((key) => `export const ${key} = Pinia.${key};`)
         .join("")}
     `)}"`,
@@ -23,7 +27,7 @@ function transformCoreImports(code) {
   return transformedCode;
 }
 
-function transformStoreImports(code) {
+function transformStoreImports(code: string): string {
   let transformedCode = code.replaceAll(
     /from\s+["']@ogw_front\/app\/stores\/app\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
@@ -34,7 +38,7 @@ function transformStoreImports(code) {
 
   transformedCode = transformedCode.replaceAll(
     /from\s+["']@ogw_front\/app\/stores\/(?<storePath>[^"']+)["']/gu,
-    (match, storePath) => {
+    (match: string, storePath: string) => {
       const storeName = storePath.replace(".js", "");
       const capitalizedName = storeName.charAt(0).toUpperCase() + storeName.slice(1);
       return `from "data:text/javascript,${encodeURIComponent(`
@@ -46,7 +50,7 @@ function transformStoreImports(code) {
   return transformedCode;
 }
 
-function transformUtilImports(code) {
+function transformUtilImports(code: string): string {
   let transformedCode = code.replaceAll(
     /from\s+["']@ogw_front\/app\/utils\/status\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
@@ -71,7 +75,7 @@ function transformUtilImports(code) {
   return transformedCode;
 }
 
-function transformSchemaImports(code) {
+function transformSchemaImports(code: string): string {
   return code.replaceAll(
     /from\s+["']@geode\/vease-modeling-back\/vease_modeling_back_schemas\.json["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
@@ -81,7 +85,7 @@ function transformSchemaImports(code) {
   );
 }
 
-function transformGlobalFunctionCalls(code) {
+function transformGlobalFunctionCalls(code: string): string {
   let transformedCode = code.replaceAll(
     /\buseInfraStore\(/gu,
     "globalThis.__VEASE_STORES__.useInfraStore(",
@@ -97,7 +101,7 @@ function transformGlobalFunctionCalls(code) {
   return transformedCode;
 }
 
-export function transformExtensionCode(code) {
+export function transformExtensionCode(code: string): string {
   let transformedCode = transformCoreImports(code);
   transformedCode = transformStoreImports(transformedCode);
   transformedCode = transformUtilImports(transformedCode);

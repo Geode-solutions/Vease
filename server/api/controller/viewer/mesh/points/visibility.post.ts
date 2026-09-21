@@ -10,9 +10,14 @@ import { parseBoolean } from "@ogw_shared/utils/parse_boolean";
 // Local imports
 import { asErrorLike } from "@vease_server/utils/errors";
 
+interface MeshPointsVisibilityBody {
+  id: string;
+  visibility: string | number | boolean;
+}
+
 export default defineEventHandler(async (event) => {
   try {
-    const { id, visibility } = await readBody(event);
+    const { id, visibility } = await readBody<MeshPointsVisibilityBody>(event);
     const schema = opengeodeweb_viewer_schemas.opengeodeweb_viewer.mesh.points.visibility;
     const visibilityBool = parseBoolean(visibility);
     const params = { id, visibility: visibilityBool };

@@ -11,6 +11,26 @@ interface CallControllerApiOptions {
 // oxlint-disable-next-line eslint/id-length
 type CallControllerApiResult = { ok: true; payload: unknown } | { ok: false; message: string };
 
+function extractErrorMessage(value: unknown): string | undefined {
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+
+  if ("statusMessage" in value && typeof value.statusMessage === "string") {
+    return value.statusMessage;
+  }
+
+  if ("message" in value && typeof value.message === "string") {
+    return value.message;
+  }
+
+  if ("data" in value) {
+    return extractErrorMessage(value.data);
+  }
+
+  return undefined;
+}
+
 export async function callControllerApi(
   path: string,
   { method = "POST", headers, body, errorPrefix }: CallControllerApiOptions,
@@ -21,22 +41,17 @@ export async function callControllerApi(
     const response = await fetch(`${appBaseUrl}${path}`, { method, headers, body });
 
     if (!response.ok) {
-      const errorPayload = await response.json().catch(() => ({}));
-      const message =
-        errorPayload?.statusMessage ??
-        errorPayload?.message ??
-        response.statusText ??
-        "Unknown error";
+      const errorPayload: unknown = await response.json().catch(() => ({}));
+      const message = extractErrorMessage(errorPayload) ?? response.statusText ?? "Unknown error";
       // oxlint-disable-next-line eslint/id-length
       return { ok: false, message: `${errorPrefix}: ${message}` };
     }
 
-    const payload = await response.json().catch(() => undefined);
+    const payload: unknown = await response.json().catch(() => undefined);
     // oxlint-disable-next-line eslint/id-length
     return { ok: true, payload };
   } catch (error) {
-    const err = error as { data?: { statusMessage?: string }; message?: string };
-    const message = err?.data?.statusMessage ?? err?.message ?? "Unknown error";
+    const message = extractErrorMessage(error) ?? "Unknown error";
     // oxlint-disable-next-line eslint/id-length
     return { ok: false, message: `${errorPrefix}: ${message}` };
   }

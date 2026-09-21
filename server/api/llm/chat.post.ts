@@ -1,5 +1,12 @@
 // Third party imports
-import { convertToModelMessages, stepCountIs, streamText } from "ai";
+import {
+  type UIMessage,
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  stepCountIs,
+  streamText,
+  toUIMessageStream,
+} from "ai";
 import { createError, defineEventHandler, readBody } from "h3";
 
 // Local imports
@@ -10,7 +17,7 @@ const MAX_TOOL_STEPS = 5;
 
 export default defineEventHandler(async (event) => {
   try {
-    const { messages } = await readBody(event);
+    const { messages } = await readBody<{ messages: Omit<UIMessage, "id">[] }>(event);
     const [model, tools] = await Promise.all([getChatModel(), getChatTools()]);
 
     const result = streamText({
@@ -20,7 +27,9 @@ export default defineEventHandler(async (event) => {
       stopWhen: stepCountIs(MAX_TOOL_STEPS),
     });
 
-    return result.toUIMessageStreamResponse();
+    return createUIMessageStreamResponse({
+      stream: toUIMessageStream({ stream: result.stream }),
+    });
   } catch (error) {
     console.log(error);
     throw createError({

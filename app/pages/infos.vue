@@ -25,7 +25,7 @@ const infraStore = getInfraStore();
 const packages_versions = ref<PackageVersion[]>([]);
 
 const { copy, copied } = useClipboard({ copiedDuring: 1500 });
-function copy_url() {
+function copy_url(): void {
   copy(appStore.base_url);
 }
 
@@ -44,7 +44,7 @@ const microservices = computed(() =>
   }),
 );
 
-function get_packages_versions() {
+function get_packages_versions(): void {
   const schema = vease_back_schemas.vease_back.packages_versions;
   backStore.request(
     { schema },

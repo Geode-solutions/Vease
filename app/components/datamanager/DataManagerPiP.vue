@@ -5,12 +5,12 @@ import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 
-function expandToFullPage() {
+function expandToFullPage(): void {
   UIStore.setShowDataManagerPiP(false);
   navigateTo("/data_manager");
 }
 
-function close() {
+function close(): void {
   UIStore.setShowDataManagerPiP(false);
 }
 </script>

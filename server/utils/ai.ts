@@ -1,8 +1,7 @@
 // Third party imports
-import { createMCPClient } from "@ai-sdk/mcp";
+import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
+import type { LanguageModelV4 } from "@ai-sdk/provider";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import type { MCPClient } from "@ai-sdk/mcp";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.ts";
 
 // Local imports
@@ -11,11 +10,11 @@ import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 const LLAMA_HOST = "127.0.0.1";
 let mcpClientPromise: Promise<MCPClient> | undefined = undefined;
 
-function getMcpBaseUrl() {
+function getMcpBaseUrl(): string {
   return `${getAppBaseUrl()}/mcp`;
 }
 
-async function getChatModel() {
+async function getChatModel(): Promise<LanguageModelV4> {
   const { port, apiKey, model } = await runLlamaServer();
 
   const provider = createOpenAICompatible({
@@ -26,16 +25,15 @@ async function getChatModel() {
   return provider.chatModel(model);
 }
 
-function getMcpClient() {
-  if (!mcpClientPromise) {
-    mcpClientPromise = createMCPClient({
-      transport: { type: "http", url: getMcpBaseUrl() },
-    });
-  }
-  return mcpClientPromise;
+async function getMcpClient(): Promise<MCPClient> {
+  mcpClientPromise ??= createMCPClient({
+    transport: { type: "http", url: getMcpBaseUrl() },
+  });
+  const client = await mcpClientPromise;
+  return client;
 }
 
-async function getChatTools() {
+async function getChatTools(): Promise<Awaited<ReturnType<MCPClient["tools"]>>> {
   const client = await getMcpClient();
   return client.tools();
 }
