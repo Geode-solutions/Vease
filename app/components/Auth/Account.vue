@@ -9,16 +9,25 @@ const showDeleteAccount = ref(false);
 <template>
   <v-row no-gutters class="fill-height align-center justify-center">
     <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
-      <div class="d-flex flex-column align-center w-100 px-4">
+      <v-sheet color="transparent" class="d-flex flex-column align-center w-100 px-4">
         <v-avatar color="rgba(0, 0, 0, 0.1)" size="120" class="mb-8 account-avatar">
           <v-icon icon="mdi-account" size="80" color="white" />
         </v-avatar>
 
-        <v-row align="center" justify="center" class="mb-4">
-          <p class="text-h6 text-white text-center opacity-60 mb-1 font-weight-medium">Logged as</p>
-          <p class="text-h4 text-white text-center font-weight-black">
-            {{ user?.email }}
-          </p>
+        <v-row align="center" justify="center" class="flex-column text-center mb-6 w-100 pa-0">
+          <v-col cols="12" class="pa-0">
+            <p class="text-subtitle-1 text-white text-center opacity-60 mb-1 font-weight-medium">
+              Logged as
+            </p>
+          </v-col>
+          <v-col cols="12" class="pa-0">
+            <p
+              class="text-h5 text-white text-center font-weight-bold"
+              style="word-break: break-all"
+            >
+              {{ user?.email }}
+            </p>
+          </v-col>
         </v-row>
         <v-row class="pa-0">
           <v-col cols="12" class="pa-0">
@@ -55,7 +64,7 @@ const showDeleteAccount = ref(false);
             prepend-icon="mdi-delete"
           />
         </v-row>
-      </div>
+      </v-sheet>
     </v-col>
   </v-row>
 
