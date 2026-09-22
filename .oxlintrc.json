@@ -1,5 +1,4 @@
 {
-  "ignorePatterns": ["nuxt.config.ts"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -8,21 +7,7 @@
     "style": "error",
     "restriction": "error"
   },
-  "options": {
-    "typeAware": true,
-    "typeCheck": true
-  },
-  "plugins": [
-    "eslint",
-    "import",
-    "node",
-    "oxc",
-    "promise",
-    "typescript",
-    "unicorn",
-    "vitest",
-    "vue"
-  ],
+  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest", "vue"],
   "rules": {
     "eslint/func-style": ["error", "declaration"],
     "eslint/id-length": [
