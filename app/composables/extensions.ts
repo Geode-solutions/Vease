@@ -64,8 +64,6 @@ function toExtension(loadedExtension: Readonly<{ id: string; metadata: unknown }
   };
 }
 
-
-
 function getUserPlatform(): string {
   const parser = Bowser.getParser(navigator.userAgent);
   const os = parser.getOS();
@@ -158,7 +156,11 @@ export function useExtensions(): UseExtensionsReturn {
       console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
       const currentVersion = getExtensionVersion(toExtension(loadedExtension));
       console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
-      if (latestVersion && currentVersion !== undefined && compare(latestVersion, currentVersion, ">")) {
+      if (
+        latestVersion &&
+        currentVersion !== undefined &&
+        compare(latestVersion, currentVersion, ">")
+      ) {
         extensionsFilesToDownload.push(downloadExtension(loadedExtension.id));
       }
     }
