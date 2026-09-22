@@ -13,12 +13,15 @@ import type { ViewerSession } from "@vease/utils/external_stores";
 
 type EventHandlerMap = Record<string, (payload: unknown) => unknown>;
 
-function getEventHandler(eventName: string, handlerMap: EventHandlerMap) {
+function getEventHandler(
+  eventName: string,
+  handlerMap: EventHandlerMap,
+): (payload: unknown) => unknown {
   const handler = handlerMap[eventName];
   if (!handler) {
     throw new Error(`No handler found for event "${eventName}"`);
   }
-  return handlerMap[eventName];
+  return handler;
 }
 
 function dispatchEvent(
@@ -26,17 +29,14 @@ function dispatchEvent(
   rawPayload: unknown,
   handlerMap: EventHandlerMap,
   source: string,
-) {
+): void {
   console.log(`[${source}] Event received:`, eventName, rawPayload);
 
   const handler = getEventHandler(eventName, handlerMap);
-  if (!handler) {
-    return;
-  }
 
-  let payload = undefined;
+  let payload: unknown = undefined;
   try {
-    payload = typeof rawPayload === "string" ? JSON.parse(rawPayload) : rawPayload;
+    payload = typeof rawPayload === "string" ? (JSON.parse(rawPayload) as unknown) : rawPayload;
   } catch (error) {
     console.error(`[${source}] Failed to parse payload for "${eventName}":`, rawPayload, error);
     return;
@@ -45,7 +45,7 @@ function dispatchEvent(
   handler(payload);
 }
 
-function connectToEventSource() {
+function connectToEventSource(): void {
   const backStore = getBackStore();
   console.log("[PLUGIN] Connecting to EventSource...");
   const url = computed(() => `${backStore.base_url}/events`);
@@ -66,7 +66,7 @@ function connectToEventSource() {
   watch(
     [event, data],
     ([eventName, rawData]) => {
-      if (!eventName) {
+      if (typeof eventName !== "string" || eventName === "") {
         return;
       }
       console.log("[Back] Event received:", eventName, rawData);
@@ -76,7 +76,7 @@ function connectToEventSource() {
   );
 }
 
-function connectToWebSocket() {
+function connectToWebSocket(): void {
   const viewerStore = useViewerStore();
   let subscribedSession: ViewerSession | undefined = undefined;
 

@@ -10,7 +10,7 @@ const { loading = false } = defineProps<{ loading?: boolean }>();
 
 const emit = defineEmits<{ submit: [] }>();
 
-async function handleSubmit(event) {
+async function handleSubmit(event): Promise<void> {
   const { valid } = await event;
   if (valid) {
     emit("submit");

@@ -25,7 +25,7 @@ const emit = defineEmits<{
 }>();
 const searchInput = useTemplateRef("searchInput");
 
-function enterPiP() {
+function enterPiP(): void {
   UIStore.setShowDataManagerPiP(true);
   navigateTo("/");
 }

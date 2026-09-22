@@ -1,8 +1,35 @@
 import { useAuth } from "@vease/composables/auth";
 
-function getFriendlyErrorMessage(error) {
-  const code = String(error.code || "").toLowerCase();
-  const message = String(error.message || "").toLowerCase();
+function getErrorCode(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string"
+  ) {
+    return error.code;
+  }
+  return "";
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof error.message === "string"
+  ) {
+    return error.message;
+  }
+  return "";
+}
+
+function getFriendlyErrorMessage(error: unknown): string {
+  const code = getErrorCode(error).toLowerCase();
+  const message = getErrorMessage(error).toLowerCase();
   const fullError = `${code} ${message}`;
 
   if (
@@ -31,7 +58,8 @@ function getFriendlyErrorMessage(error) {
     return "Network error. Please check your connection.";
   }
 
-  return error.message || "An error occurred. Please try again.";
+  const fallbackMessage = getErrorMessage(error);
+  return fallbackMessage === "" ? "An error occurred. Please try again." : fallbackMessage;
 }
 
 const isLogin = ref(true);
@@ -47,11 +75,27 @@ const showForgotPassword = ref(false);
 const forgotPasswordEmail = ref("");
 const forgotPasswordLoading = ref(false);
 
+interface UseAuthPageReturn {
+  isLogin: typeof isLogin;
+  loading: typeof loading;
+  error: typeof errorMessage;
+  successMessage: typeof successMessage;
+  email: typeof email;
+  password: typeof password;
+  confirmPassword: typeof confirmPassword;
+  showForgotPassword: typeof showForgotPassword;
+  forgotPasswordEmail: typeof forgotPasswordEmail;
+  forgotPasswordLoading: typeof forgotPasswordLoading;
+  onSubmit: () => Promise<void>;
+  handleForgotPassword: () => Promise<void>;
+  toggleMode: () => void;
+}
+
 // oxlint-disable-next-line max-lines-per-function
-export function useAuthPage() {
+export function useAuthPage(): UseAuthPageReturn {
   const { login, register, resetPassword } = useAuth();
 
-  async function onSubmit() {
+  async function onSubmit(): Promise<void> {
     errorMessage.value = "";
     successMessage.value = "";
 
@@ -80,7 +124,7 @@ export function useAuthPage() {
     }
   }
 
-  async function handleForgotPassword() {
+  async function handleForgotPassword(): Promise<void> {
     if (!forgotPasswordEmail.value) {
       return;
     }
@@ -96,7 +140,7 @@ export function useAuthPage() {
     }
   }
 
-  function toggleMode() {
+  function toggleMode(): void {
     isLogin.value = !isLogin.value;
     errorMessage.value = "";
     successMessage.value = "";

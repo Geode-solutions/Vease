@@ -26,7 +26,7 @@ const installed = computed(() => {
 });
 console.log({ installed });
 
-async function installSelectedExtension() {
+async function installSelectedExtension(): Promise<void> {
   if (!extension) {
     return;
   }

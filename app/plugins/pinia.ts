@@ -1,24 +1,35 @@
 //oxlint-disable unicorn/require-post-message-target-origin
 import { BroadcastChannel, createLeaderElection } from "broadcast-channel";
+import type { PiniaPluginContext, StateTree } from "pinia";
 
-function serialize(obj, keysToUpdate) {
+interface SharedStateMessage {
+  timestamp: number;
+  state: Record<string, unknown>;
+}
+
+interface ShareOptions {
+  share?: {
+    omit?: string[];
+  };
+}
+
+function serialize(obj: StateTree, keysToUpdate: string[]): Record<string, unknown> {
   const object = Object.fromEntries(
     Object.entries(obj).filter(([key]) => keysToUpdate.includes(key)),
   );
-  //oxlint-disable-next-line unicorn/prefer-structured-clone
-  return JSON.parse(JSON.stringify(object));
+  return structuredClone(object);
 }
 
-function stateHasKey(key, $state) {
+function stateHasKey(key: string, $state: StateTree): boolean {
   return Object.keys($state).includes(key);
 }
 
 // oxlint-disable-next-line eslint/no-unused-vars
 function piniaSharedState() {
-  return async ({ store, options }) => {
-    const omittedKeys = options?.share?.omit ?? [];
+  return async ({ store, options }: PiniaPluginContext): Promise<void> => {
+    const omittedKeys = (options as ShareOptions).share?.omit ?? [];
     store.is_sync = false;
-    const channel = new BroadcastChannel(store.$id);
+    const channel = new BroadcastChannel<SharedStateMessage | undefined>(store.$id);
     const election = createLeaderElection(channel);
     let timestamp = 0;
     let externalUpdate = false;
@@ -27,7 +38,7 @@ function piniaSharedState() {
     );
     channel.addEventListener("message", (newState) => {
       if (newState === undefined) {
-        channel.postMessage({
+        void channel.postMessage({
           timestamp,
           state: serialize(store.$state, keysToUpdate),
         });
@@ -39,7 +50,7 @@ function piniaSharedState() {
       }
       externalUpdate = true;
       timestamp = incomingTimestamp;
-      store.$patch((state) => {
+      store.$patch((state: StateTree) => {
         for (const key of keysToUpdate) {
           state[key] = incomingState[key];
         }
@@ -47,15 +58,15 @@ function piniaSharedState() {
       store.is_sync = true;
     });
     if (await election.hasLeader()) {
-      channel.postMessage(undefined);
+      void channel.postMessage(undefined);
     } else {
       await election.awaitLeadership();
       store.is_sync = true;
     }
-    store.$subscribe((mutation, state) => {
+    store.$subscribe((_mutation, state: StateTree) => {
       if (!externalUpdate) {
         timestamp = Date.now();
-        channel.postMessage({
+        void channel.postMessage({
           timestamp,
           state: serialize(state, keysToUpdate),
         });
@@ -67,11 +78,7 @@ function piniaSharedState() {
 
 const piniaPlugin = defineNuxtPlugin((nuxtApp) => {
   const { $pinia } = nuxtApp;
-  if (!$pinia) {
-    console.warn("Pinia instance not available; skipping shared state plugin.");
-    // oxlint-disable-next-line eslint/no-useless-return
-    return;
-  }
+  void $pinia;
   // $pinia.use(piniaSharedState());
 });
 

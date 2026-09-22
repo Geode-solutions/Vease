@@ -72,14 +72,14 @@ const isAllVisible = computed(() => {
   return targetItems.every((item) => item.visible);
 });
 
-function getRowProps({ item }: { item: DataItem }) {
+function getRowProps({ item }: { item: DataItem }): { class: string } {
   const isSelected = selectedIds.value.some((selected) => selected.id === item.id);
   return {
     class: isSelected ? "selected-row" : "",
   };
 }
 
-function formatSmartDate(dateStr: string | undefined) {
+function formatSmartDate(dateStr: string | undefined): string {
   if (!dateStr) {
     return "";
   }
