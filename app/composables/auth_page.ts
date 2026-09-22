@@ -1,5 +1,16 @@
 import { useAuth } from "@vease/composables/auth";
 
+const ERROR_MESSAGE_MAP: [string[], string][] = [
+  [["not associated", "user-not-found"], "This email is not associated with an account."],
+  [["invalid-credential", "wrong-password"], "Invalid email address or password."],
+  [["email-already-in-use"], "This email is already registered."],
+  [["weak-password"], "Password should be at least 6 characters."],
+  [["invalid-email"], "Please enter a valid email address."],
+  [["user-disabled"], "This account has been disabled."],
+  [["too-many-requests"], "Too many failed attempts. Please try again later."],
+  [["network-request-failed"], "Network error. Please check your connection."],
+];
+
 function getErrorCode(error: unknown): string {
   if (
     typeof error === "object" &&
@@ -27,39 +38,39 @@ function getErrorMessage(error: unknown): string {
   return "";
 }
 
-function getFriendlyErrorMessage(error: unknown): string {
-  const code = getErrorCode(error).toLowerCase();
-  const message = getErrorMessage(error).toLowerCase();
-  const fullError = `${code} ${message}`;
+function extractApiError(error: Record<string, unknown> | null | undefined): string {
+  if (!error) {
+    return "";
+  }
+  const data = error.data as Record<string, unknown> | undefined;
+  const response = error.response as { _data?: Record<string, unknown> } | undefined;
+  const resData = response?._data;
 
-  if (
-    fullError.includes("invalid-credential") ||
-    fullError.includes("user-not-found") ||
-    fullError.includes("wrong-password")
-  ) {
-    return "Invalid email address or password.";
+  const errVal = data?.error || resData?.error || data?.message || resData?.message;
+  return typeof errVal === "string" ? errVal : "";
+}
+
+function getFriendlyErrorMessage(error: unknown): string {
+  const errObj = error as Record<string, unknown> | null | undefined;
+  const apiError = extractApiError(errObj);
+  const code = (getErrorCode(error) || String(errObj?.code || "")).toLowerCase();
+  const message = (getErrorMessage(error) || String(errObj?.message || "")).toLowerCase();
+  const fullError = `${code} ${message} ${apiError.toLowerCase()}`;
+
+  for (const [patterns, friendlyMessage] of ERROR_MESSAGE_MAP) {
+    if (patterns.some((pattern) => fullError.includes(pattern))) {
+      return friendlyMessage;
+    }
   }
-  if (fullError.includes("email-already-in-use")) {
-    return "This email is already registered.";
-  }
-  if (fullError.includes("weak-password")) {
-    return "Password should be at least 6 characters.";
-  }
-  if (fullError.includes("invalid-email")) {
-    return "Please enter a valid email address.";
-  }
-  if (fullError.includes("user-disabled")) {
-    return "This account has been disabled.";
-  }
-  if (fullError.includes("too-many-requests")) {
-    return "Too many failed attempts. Please try again later.";
-  }
-  if (fullError.includes("network-request-failed")) {
-    return "Network error. Please check your connection.";
+
+  if (apiError && !apiError.startsWith("[POST]")) {
+    return apiError;
   }
 
   const fallbackMessage = getErrorMessage(error);
-  return fallbackMessage === "" ? "An error occurred. Please try again." : fallbackMessage;
+  return fallbackMessage === "" || fallbackMessage.startsWith("[POST]")
+    ? "An error occurred. Please try again."
+    : fallbackMessage;
 }
 
 const isLogin = ref(true);
@@ -74,6 +85,7 @@ const confirmPassword = ref("");
 const showForgotPassword = ref(false);
 const forgotPasswordEmail = ref("");
 const forgotPasswordLoading = ref(false);
+const forgotPasswordError = ref("");
 
 interface UseAuthPageReturn {
   isLogin: typeof isLogin;
@@ -129,12 +141,15 @@ export function useAuthPage(): UseAuthPageReturn {
       return;
     }
     forgotPasswordLoading.value = true;
+    forgotPasswordError.value = "";
+    errorMessage.value = "";
+    successMessage.value = "";
     try {
       await resetPassword(forgotPasswordEmail.value);
       successMessage.value = "Password reset email sent!";
       showForgotPassword.value = false;
     } catch (error) {
-      errorMessage.value = getFriendlyErrorMessage(error);
+      forgotPasswordError.value = getFriendlyErrorMessage(error);
     } finally {
       forgotPasswordLoading.value = false;
     }
@@ -157,6 +172,7 @@ export function useAuthPage(): UseAuthPageReturn {
     showForgotPassword,
     forgotPasswordEmail,
     forgotPasswordLoading,
+    forgotPasswordError,
     onSubmit,
     handleForgotPassword,
     toggleMode,

@@ -11,7 +11,7 @@ const {
 } = defineProps<{
   extensions?: MarketplaceExtension[];
   pending?: boolean;
-  fetchError?: Error | Record<string, unknown> | boolean;
+  fetchError?: Error | Record<string, unknown> | boolean | null;
   modelValue?: MarketplaceExtension;
 }>();
 

@@ -14,6 +14,7 @@ const {
   showForgotPassword,
   forgotPasswordEmail,
   forgotPasswordLoading,
+  forgotPasswordError,
   onSubmit,
   handleForgotPassword,
   toggleMode,
@@ -143,6 +144,7 @@ async function handleSubmit(event): Promise<void> {
     v-model="showForgotPassword"
     v-model:email="forgotPasswordEmail"
     :loading="forgotPasswordLoading"
+    :error="forgotPasswordError"
     @submit="handleForgotPassword"
   />
 </template>

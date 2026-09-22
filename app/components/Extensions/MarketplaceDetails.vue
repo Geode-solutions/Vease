@@ -7,7 +7,10 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { useExtensions } from "@vease/composables/extensions";
 
-const { extension = undefined } = defineProps<{ extension?: MarketplaceExtension }>();
+const { extension = undefined, pending = false } = defineProps<{
+  extension?: MarketplaceExtension | null;
+  pending?: boolean;
+}>();
 
 const MESSAGE_TIMEOUT = 5000;
 
@@ -163,6 +166,17 @@ async function installSelectedExtension(): Promise<void> {
         </v-sheet>
       </v-sheet>
     </template>
+
+    <v-sheet
+      v-else-if="pending"
+      color="transparent"
+      class="fill-height d-flex flex-column align-center justify-center text-center pa-6"
+    >
+      <v-progress-circular indeterminate color="white" size="64" class="mb-4" />
+      <h2 class="text-h6 font-weight-medium text-white opacity-80">
+        Loading marketplace content...
+      </h2>
+    </v-sheet>
 
     <v-sheet
       v-else

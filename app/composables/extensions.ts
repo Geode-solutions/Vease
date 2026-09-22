@@ -1,6 +1,6 @@
 import Bowser from "bowser";
 import { compare } from "compare-versions";
-import { uploadExtension } from "@ogw_front/utils/extension";
+import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
 import { useAPIStore } from "@vease/stores/api";
@@ -61,14 +61,6 @@ function toExtension(loadedExtension: Readonly<{ id: string; metadata: unknown }
       version: getStringField(metadata, "version"),
     },
   };
-}
-
-async function fetchExtensionFile(
-  response: Readonly<{ url: string; extensionFileName: string }>,
-): Promise<File> {
-  const fetchResponse = await fetch(response.url);
-  const blob = await fetchResponse.blob();
-  return new File([blob], response.extensionFileName);
 }
 
 function getUserPlatform(): string {
@@ -163,15 +155,18 @@ export function useExtensions(): UseExtensionsReturn {
       console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
       const currentVersion = getExtensionVersion(toExtension(loadedExtension));
       console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
-      if (currentVersion !== undefined && compare(latestVersion, currentVersion, ">")) {
+      if (
+        latestVersion &&
+        currentVersion !== undefined &&
+        compare(latestVersion, currentVersion, ">")
+      ) {
         extensionsFilesToDownload.push(downloadExtension(loadedExtension.id));
       }
     }
     await Promise.all(
       extensionsFilesToDownload.map(async (extensionFilePromise) => {
         const extensionFile = await extensionFilePromise;
-        const file = await fetchExtensionFile(extensionFile);
-        await uploadExtension(file);
+        await importExtensionURL(extensionFile);
       }),
     );
   }

@@ -159,8 +159,21 @@ function useAuth(): UseAuthReturn {
       additionalProperties: false,
     };
     const params = { email };
-    const result = await APIStore.request({ schema, params });
-    return result;
+    try {
+      const res = (await APIStore.request({ schema, params }, { skip_feedback_error: true })) as {
+        success?: boolean;
+        error?: string;
+      };
+      if (res && res.error) {
+        throw new Error(res.error);
+      }
+      return res;
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message) {
+        throw error;
+      }
+      throw new Error("Failed to send password reset email.", { cause: error });
+    }
   }
   return {
     user,
