@@ -7,7 +7,7 @@ import { useAppStore } from "@ogw_front/stores/app";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "./auth";
-import { type Extension, useExtensionMetadata } from "@vease/composables/extension_metadata";
+import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 
 function getUserPlatform() {
   const parser = Bowser.getParser(navigator.userAgent);
@@ -86,7 +86,7 @@ export function useExtensions() {
       }
       const latestVersion = matchingExtension.version;
       console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
-      const currentVersion = getExtensionVersion(loadedExtension as unknown as Extension);
+      const currentVersion = getExtensionVersion(loadedExtension);
       console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
       if (latestVersion && currentVersion && compare(latestVersion, currentVersion, ">")) {
         extensionsFilesToDownload.push(downloadExtension(loadedExtension.id));

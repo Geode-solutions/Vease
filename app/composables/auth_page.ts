@@ -1,36 +1,46 @@
 import { useAuth } from "@vease/composables/auth";
 
-function getFriendlyErrorMessage(error) {
-  const code = String(error.code || "").toLowerCase();
-  const message = String(error.message || "").toLowerCase();
-  const fullError = `${code} ${message}`;
+const ERROR_MESSAGE_MAP: [string[], string][] = [
+  [["not associated", "user-not-found"], "This email is not associated with an account."],
+  [["invalid-credential", "wrong-password"], "Invalid email address or password."],
+  [["email-already-in-use"], "This email is already registered."],
+  [["weak-password"], "Password should be at least 6 characters."],
+  [["invalid-email"], "Please enter a valid email address."],
+  [["user-disabled"], "This account has been disabled."],
+  [["too-many-requests"], "Too many failed attempts. Please try again later."],
+  [["network-request-failed"], "Network error. Please check your connection."],
+];
 
-  if (fullError.includes("not associated") || fullError.includes("user-not-found")) {
-    return "This email is not associated with an account.";
+function extractApiError(error: Record<string, unknown> | null | undefined): string {
+  if (!error) {
+    return "";
   }
-  if (fullError.includes("invalid-credential") || fullError.includes("wrong-password")) {
-    return "Invalid email address or password.";
-  }
-  if (fullError.includes("email-already-in-use")) {
-    return "This email is already registered.";
-  }
-  if (fullError.includes("weak-password")) {
-    return "Password should be at least 6 characters.";
-  }
-  if (fullError.includes("invalid-email")) {
-    return "Please enter a valid email address.";
-  }
-  if (fullError.includes("user-disabled")) {
-    return "This account has been disabled.";
-  }
-  if (fullError.includes("too-many-requests")) {
-    return "Too many failed attempts. Please try again later.";
-  }
-  if (fullError.includes("network-request-failed")) {
-    return "Network error. Please check your connection.";
+  const data = error.data as Record<string, unknown> | undefined;
+  const response = error.response as { _data?: Record<string, unknown> } | undefined;
+  const resData = response?._data;
+
+  const errVal = data?.error || resData?.error || data?.message || resData?.message;
+  return typeof errVal === "string" ? errVal : "";
+}
+
+function getFriendlyErrorMessage(error: unknown) {
+  const errObj = error as Record<string, unknown> | null | undefined;
+  const apiError = extractApiError(errObj);
+  const code = String(errObj?.code || "").toLowerCase();
+  const message = String(errObj?.message || "").toLowerCase();
+  const fullError = `${code} ${message} ${apiError.toLowerCase()}`;
+
+  for (const [patterns, friendlyMessage] of ERROR_MESSAGE_MAP) {
+    if (patterns.some((pattern) => fullError.includes(pattern))) {
+      return friendlyMessage;
+    }
   }
 
-  return error.message || "An error occurred. Please try again.";
+  if (apiError && !apiError.startsWith("[POST]")) {
+    return apiError;
+  }
+
+  return "An error occurred. Please try again.";
 }
 
 const isLogin = ref(true);

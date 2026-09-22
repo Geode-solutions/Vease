@@ -133,8 +133,11 @@ function useAuth() {
         throw new Error(res.error);
       }
       return res;
-    } catch {
-      throw new Error("This email is not associated with an account.");
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message) {
+        throw error;
+      }
+      throw new Error("Failed to send password reset email.", { cause: error });
     }
   }
   return {

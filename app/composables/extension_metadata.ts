@@ -27,11 +27,12 @@ function getExtensionDescription(extension: Extension | null | undefined) {
   return extension?.metadata?.description || "Custom extension module";
 }
 
-function getExtensionVersion(extension: Extension | null | undefined) {
+function getExtensionVersion(extension: Extension | Record<string, unknown> | null | undefined) {
   if (!extension) {
     return undefined;
   }
-  return extension?.metadata?.version || undefined;
+  const ext = extension as Extension;
+  return ext?.metadata?.version || undefined;
 }
 
 function useExtensionMetadata() {
