@@ -1,14 +1,15 @@
+declare global {
+  var Vue: Record<string, unknown> | undefined;
+  var Pinia: Record<string, unknown> | undefined;
+}
+
 function transformCoreImports(code: string): string {
-  const globalThisAny = globalThis as unknown as Record<
-    string,
-    Record<string, unknown> | undefined
-  >;
   let transformedCode = code.replaceAll(
     /from\s+["']vue["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const Vue = globalThis.Vue;
       export default Vue;
-      ${Object.keys(globalThisAny.Vue ?? {})
+      ${Object.keys(globalThis.Vue ?? {})
         .map((key) => `export const ${key} = Vue.${key};`)
         .join("")}
     `)}"`,
@@ -19,7 +20,7 @@ function transformCoreImports(code: string): string {
     `from "data:text/javascript,${encodeURIComponent(`
       const Pinia = globalThis.Pinia;
       export default Pinia;
-      ${Object.keys(globalThisAny.Pinia ?? {})
+      ${Object.keys(globalThis.Pinia ?? {})
         .map((key) => `export const ${key} = Pinia.${key};`)
         .join("")}
     `)}"`,

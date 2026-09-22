@@ -17,7 +17,16 @@ function collectTsFiles(dir: string): string[] {
   return files;
 }
 
-const ownPackageName = JSON.parse(fs.readFileSync("package.json", "utf8")).name as string;
+const packageJson: unknown = JSON.parse(fs.readFileSync("package.json", "utf8"));
+if (
+  typeof packageJson !== "object" ||
+  packageJson === null ||
+  !("name" in packageJson) ||
+  typeof packageJson.name !== "string"
+) {
+  throw new Error('package.json is missing a string "name" field');
+}
+const ownPackageName = packageJson.name;
 
 function isExternal(id: string): boolean {
   if (id.startsWith(".") || path.isAbsolute(id) || id.startsWith("@tests/")) {
@@ -48,7 +57,10 @@ function resolveTestsAlias(source: string): string | undefined {
 
 const testsAliasPlugin = {
   name: "tests-alias",
-  resolveId(source: string, importer: string | undefined) {
+  resolveId(
+    source: string,
+    importer: string | undefined,
+  ): string | { id: string; external: boolean } | undefined {
     if (source.startsWith(TESTS_ALIAS_PREFIX)) {
       return resolveTestsAlias(source);
     }
@@ -57,7 +69,7 @@ const testsAliasPlugin = {
     // App version/name) against the output location. Since preserveModules keeps
     // Every output file at the same relative path as its input, the original
     // Specifier is already correct as-is, so hand it back unchanged.
-    if (source.endsWith(".json") && source.startsWith(".") && importer) {
+    if (source.endsWith(".json") && source.startsWith(".") && importer !== undefined) {
       return { id: source, external: true };
     }
     return undefined;

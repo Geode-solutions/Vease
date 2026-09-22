@@ -16,6 +16,7 @@ import {
 } from "@tests/utils/object_trees/main_object_tree";
 import {
   getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction";
@@ -171,7 +172,7 @@ test("reopen treeview over zoomed dark data adaptive style", async ({ window }) 
   await setMeshPolyhedraColorBlack(window);
   await closeAllMenus(window);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  const box = await hybridViewerCanvas.boundingBox();
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });
   await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
   await window.waitForTimeout(afterActionWait);

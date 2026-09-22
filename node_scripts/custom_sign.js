@@ -1,5 +1,8 @@
 import child_process from "node:child_process";
 
+/**
+ * @param {{ path: string }} configuration
+ */
 export default function customSign(configuration) {
   console.log("customSign", configuration);
 

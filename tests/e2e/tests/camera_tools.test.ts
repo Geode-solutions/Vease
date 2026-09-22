@@ -18,6 +18,7 @@ import {
   dragContextMenu,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
   hoverViewer,
   stabilizeHoverTooltip,
   viewerContextMenu,
@@ -105,7 +106,7 @@ test("ruler tool pick point 1 and manual point 2", async ({ window }) => {
   await window.keyboard.press("Escape");
   await toggleRuler(window);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  const box = await hybridViewerCanvas.boundingBox();
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await hybridViewerCanvas.click({
     position: { x: box.width / 2, y: box.height / 2 },
   });
@@ -119,7 +120,7 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
   await toggleRuler(window);
   await toggleRulerSnap(window);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  const box = await hybridViewerCanvas.boundingBox();
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await hybridViewerCanvas.click({
     position: {
       x: box.width * RULER_SNAP_X_RATIO,
@@ -139,7 +140,7 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
 
 test("rotate camera 180 degrees", async ({ window }) => {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  const box = await hybridViewerCanvas.boundingBox();
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await rotateCamera(window, -box.width);
 });
 

@@ -13,8 +13,9 @@ const WINDOWS_TIMEOUT_DESKTOP = 180;
 const CI_RETRIES = 1;
 const CI_WORKERS = 2;
 
-const retries = process.env.CI ? CI_RETRIES : 0;
-const workers = process.env.CI ? CI_WORKERS : 3;
+const isCI = process.env.CI !== undefined && process.env.CI !== "";
+const retries = isCI ? CI_RETRIES : 0;
+const workers = isCI ? CI_WORKERS : 3;
 const testMatch = "tests/e2e/tests/**/*.test.ts";
 const maxDiffPixelRatio = 0.02;
 
@@ -29,9 +30,10 @@ const CLOUD_SCREENSHOT_TIMEOUT = CLOUD_SECONDS_SCREENSHOT_TIMEOUT * MILLISECONDS
 
 const defaultExpect = {
   toHaveScreenshot: {
-    maxDiffPixelRatio: process.env.MAX_PIXEL_RATIO
-      ? Number(process.env.MAX_PIXEL_RATIO)
-      : maxDiffPixelRatio,
+    maxDiffPixelRatio:
+      process.env.MAX_PIXEL_RATIO !== undefined && process.env.MAX_PIXEL_RATIO !== ""
+        ? Number(process.env.MAX_PIXEL_RATIO)
+        : maxDiffPixelRatio,
     pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
   },
 };

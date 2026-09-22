@@ -1,8 +1,13 @@
+import type { Locator, Page } from "@playwright/test";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
 import { afterActionWait } from "@tests/utils/viewer_interaction";
 import { modalTransitionWait } from "@tests/utils/constants";
 
-async function clickCollapseOrExpandAll(window, tree, expectedIcon) {
+async function clickCollapseOrExpandAll(
+  window: Page,
+  tree: Locator,
+  expectedIcon: string,
+): Promise<void> {
   const btn = tree.getByTestId("CollapseOrExpandAll");
   const targetIcon = btn.locator(`.${expectedIcon}`);
   if (await targetIcon.isVisible()) {
@@ -12,7 +17,7 @@ async function clickCollapseOrExpandAll(window, tree, expectedIcon) {
   }
 }
 
-async function collapseTreeGroup(window, tree, groupName) {
+async function collapseTreeGroup(window: Page, tree: Locator, groupName: string): Promise<void> {
   const groupRow = tree.getByTestId("treeRowWrapper").filter({ hasText: groupName }).first();
   const collapseBtn = groupRow.getByTestId("collapseTreeRowButton");
 
@@ -22,13 +27,13 @@ async function collapseTreeGroup(window, tree, groupName) {
   }
 }
 
-async function toggleSortObjects(window) {
+async function toggleSortObjects(window: Page): Promise<void> {
   await window.getByTestId("sortObjectsButton").click();
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
-async function openFilterMenu(window, tree) {
+async function openFilterMenu(window: Page, tree: Locator): Promise<void> {
   await tree.getByTestId("filterObjectsButton").click();
   await window
     .locator(".v-overlay-container [data-testid^='filterCheckbox-']")
@@ -36,39 +41,44 @@ async function openFilterMenu(window, tree) {
     .waitFor({ state: "attached" });
 }
 
-async function checkFilterCategory(window, categoryId) {
+async function checkFilterCategory(window: Page, categoryId: string): Promise<void> {
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
   await checkbox.waitFor({ state: "attached" });
   await checkbox.check();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function uncheckFilterCategory(window, categoryId) {
+async function uncheckFilterCategory(window: Page, categoryId: string): Promise<void> {
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
   await checkbox.waitFor({ state: "attached" });
   await checkbox.uncheck();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function toggleSearchObjects(window) {
+async function toggleSearchObjects(window: Page): Promise<void> {
   await window.getByTestId("searchObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function fillSearchQuery(window, query, tree) {
+async function fillSearchQuery(window: Page, query: string, tree: Locator): Promise<void> {
   const searchInput = tree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
   await moveMouseOutOfTheWay(window);
   await window.waitForTimeout(afterActionWait);
 }
 
-async function getTreeRowByTextAndParent(window, geodeObjectType, dataName, tree) {
+async function getTreeRowByTextAndParent(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string | undefined,
+  tree: Locator,
+): Promise<Locator> {
   const parentRow = tree
     .getByTestId("treeRowWrapper")
     .filter({ hasText: geodeObjectType, hasNot: window.locator(".leaf-row") })
     .first();
   await parentRow.waitFor({ state: "attached" });
-  if (!dataName) {
+  if (dataName === undefined || dataName === "") {
     return parentRow;
   }
   const allRows = tree.getByTestId("treeRowWrapper");
@@ -98,7 +108,11 @@ async function getTreeRowByTextAndParent(window, geodeObjectType, dataName, tree
   return allRows.nth(childIndex);
 }
 
-async function expandGeodeObjectTypeInTree(window, geodeObjectType, tree) {
+async function expandGeodeObjectTypeInTree(
+  window: Page,
+  geodeObjectType: string,
+  tree: Locator,
+): Promise<void> {
   await closeAllMenus(window);
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, tree);
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
@@ -108,7 +122,11 @@ async function expandGeodeObjectTypeInTree(window, geodeObjectType, tree) {
   }
 }
 
-async function collapseGeodeObjectTypeInTree(window, geodeObjectType, tree) {
+async function collapseGeodeObjectTypeInTree(
+  window: Page,
+  geodeObjectType: string,
+  tree: Locator,
+): Promise<void> {
   const treeRow = await getTreeRowByTextAndParent(window, geodeObjectType, undefined, tree);
   const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
   if (await collapseButton.isVisible()) {
@@ -117,14 +135,23 @@ async function collapseGeodeObjectTypeInTree(window, geodeObjectType, tree) {
   }
 }
 
-async function copyTreeRowId(window, parentName, objectName, tree) {
+async function getTreeRowId(rowDataTestIdLocator: Locator, objectName: string): Promise<string> {
+  const dataTestId = await rowDataTestIdLocator.getAttribute("data-testid");
+  if (dataTestId === null) {
+    throw new Error(`Could not find a "data-testid" attribute for row "${objectName}"`);
+  }
+  return dataTestId.replace("treeRow-", "");
+}
+
+async function copyTreeRowId(
+  window: Page,
+  parentName: string,
+  objectName: string,
+  tree: Locator,
+): Promise<string> {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, tree);
   const label = row.getByTestId("treeItemLabel").first();
-  const dataTestId = await row
-    .locator('[data-testid^="treeRow-"]')
-    .first()
-    .getAttribute("data-testid");
-  const id = dataTestId.replace("treeRow-", "");
+  const id = await getTreeRowId(row.locator('[data-testid^="treeRow-"]').first(), objectName);
   await label.hover();
   await window.waitForTimeout(afterActionWait);
   const copyBtn = window.locator(".v-overlay--active").getByTestId("copyIdBtn");
@@ -134,7 +161,12 @@ async function copyTreeRowId(window, parentName, objectName, tree) {
   return id;
 }
 
-async function hideObjectInTree(window, parentName, objectName, tree) {
+async function hideObjectInTree(
+  window: Page,
+  parentName: string,
+  objectName: string | undefined,
+  tree: Locator,
+): Promise<void> {
   const row = await getTreeRowByTextAndParent(window, parentName, objectName, tree);
   await row.waitFor({ state: "attached" });
   const btn = row.getByTestId("visibleObjectEyeButton").first();
@@ -145,7 +177,11 @@ async function hideObjectInTree(window, parentName, objectName, tree) {
   }
 }
 
-async function openObjectTreeContextMenu(window, objectName, tree) {
+async function openObjectTreeContextMenu(
+  window: Page,
+  objectName: string,
+  tree: Locator,
+): Promise<void> {
   const row = await getTreeRowByTextAndParent(window, objectName, undefined, tree);
   await row.click({
     button: "right",
@@ -162,6 +198,7 @@ export {
   expandGeodeObjectTypeInTree,
   fillSearchQuery,
   getTreeRowByTextAndParent,
+  getTreeRowId,
   hideObjectInTree,
   openFilterMenu,
   openObjectTreeContextMenu,
