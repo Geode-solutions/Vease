@@ -164,7 +164,10 @@ test("blocks color", async ({ window }) => {
 test("blocks vertex attribute all blocks one component", async ({ window }) => {
   await expandMeshComponentType(window, "Blocks");
   await openModelComponentContextMenu(window, "00000000-", 0);
-  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 0,
+    colorMap: "vikO",
+  });
   await moveMouseOutOfTheWay(window);
 });
 
