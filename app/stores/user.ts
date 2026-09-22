@@ -1,8 +1,8 @@
-async function fetchUserData() {
+async function fetchUserData(): Promise<void> {
   // Function placeholder
 }
 
-async function updateProfile() {
+async function updateProfile(): Promise<void> {
   // Function placeholder
 }
 

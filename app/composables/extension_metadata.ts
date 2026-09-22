@@ -1,4 +1,6 @@
 import { useUIStore } from "@vease/stores/ui";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import type { ToolDefinition } from "@vease/stores/ui";
 
 interface Extension {
   id?: string;
@@ -10,42 +12,53 @@ interface Extension {
   [key: string]: unknown;
 }
 
-function getExtensionName(extension: Extension | null | undefined) {
+function getExtensionName(extension: Extension | null | undefined): string {
   if (!extension) {
     return "Unknown Extension";
   }
-  if (extension.metadata?.name) {
-    return extension.metadata.name;
+  const name = extension.metadata?.name;
+  if (name !== undefined && name !== "") {
+    return name;
   }
-  return extension.id || "Unknown Extension";
+  return extension.id !== undefined && extension.id !== "" ? extension.id : "Unknown Extension";
 }
 
-function getExtensionDescription(extension: Extension | null | undefined) {
+function getExtensionDescription(extension: Extension | null | undefined): string {
   if (!extension) {
     return "Custom extension module";
   }
-  return extension?.metadata?.description || "Custom extension module";
+  const description = extension.metadata?.description;
+  return description !== undefined && description !== "" ? description : "Custom extension module";
 }
 
-function getExtensionVersion(extension: Extension | Record<string, unknown> | null | undefined) {
+function getExtensionVersion(
+  extension: Extension | Record<string, unknown> | null | undefined,
+): string | undefined {
   if (!extension) {
     return undefined;
   }
   const ext = extension as Extension;
-  return ext?.metadata?.version || undefined;
+  const version = ext.metadata?.version;
+  return version !== undefined && version !== "" ? version : undefined;
 }
 
-function useExtensionMetadata() {
+function useExtensionMetadata(): {
+  getExtensionName: typeof getExtensionName;
+  getExtensionDescription: typeof getExtensionDescription;
+  getExtensionVersion: typeof getExtensionVersion;
+  getExtensionTools: (extension: Extension | null | undefined) => ToolDefinition[];
+  getExtensionToolsCount: (extension: Extension | null | undefined) => number;
+} {
   const UIStore = useUIStore();
 
-  function getExtensionTools(extension: Extension | null | undefined) {
+  function getExtensionTools(extension: Extension | null | undefined): ToolDefinition[] {
     if (!extension) {
       return [];
     }
     return UIStore.toolsDefinitions.filter((tool) => tool.extensionPath === extension.id);
   }
 
-  function getExtensionToolsCount(extension: Extension | null | undefined) {
+  function getExtensionToolsCount(extension: Extension | null | undefined): number {
     return getExtensionTools(extension).length;
   }
 

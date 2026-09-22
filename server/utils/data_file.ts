@@ -8,8 +8,36 @@ import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load"
 
 // Local imports
 
-async function getAllowedFileExtensions() {
-  const backBaseUrl = await getBackBaseUrl();
+interface AllowedFilesResponse {
+  extensions: string[];
+}
+
+interface AllowedObjectsResponse {
+  allowed_objects: Parameters<typeof resolveAllowedObjects>[1][number];
+}
+
+function isAllowedFilesResponse(value: unknown): value is AllowedFilesResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "extensions" in value &&
+    Array.isArray(value.extensions) &&
+    value.extensions.every((extension) => typeof extension === "string")
+  );
+}
+
+function isAllowedObjectsResponse(value: unknown): value is AllowedObjectsResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "allowed_objects" in value &&
+    typeof value.allowed_objects === "object" &&
+    value.allowed_objects !== null
+  );
+}
+
+async function getAllowedFileExtensions(): Promise<string[]> {
+  const backBaseUrl = getBackBaseUrl();
   console.log(`Fetching allowed file extensions from ${backBaseUrl}`);
   const schema = back_schemas.opengeodeweb_back.allowed_files;
   const response = await fetchSchema({
@@ -18,11 +46,14 @@ async function getAllowedFileExtensions() {
     headers: undefined,
     timeout: undefined,
   });
+  if (!isAllowedFilesResponse(response)) {
+    throw new Error(`${schema.$id}: unexpected response shape`);
+  }
   return response.extensions;
 }
 
-async function getAllowedGeodeObjectTypes(filename: string) {
-  const backBaseUrl = await getBackBaseUrl();
+async function getAllowedGeodeObjectTypes(filename: string): Promise<string | undefined> {
+  const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.allowed_objects;
   const params = { filename };
   const response = await fetchSchema({
@@ -32,21 +63,22 @@ async function getAllowedGeodeObjectTypes(filename: string) {
     headers: undefined,
     timeout: undefined,
   });
-  const resolved = resolveAllowedObjects([filename], [response.allowed_objects]);
-  if (resolved.selectedGeodeObject) {
-    return resolved.selectedGeodeObject;
+  if (!isAllowedObjectsResponse(response)) {
+    throw new Error(`${schema.$id}: unexpected response shape`);
   }
+  const { selectedGeodeObject } = resolveAllowedObjects([filename], [response.allowed_objects]);
+  return selectedGeodeObject === "" ? undefined : selectedGeodeObject;
 }
 
-async function uploadFile(file: MultiPartData) {
-  const backBaseUrl = await getBackBaseUrl();
+async function uploadFile(file: MultiPartData): Promise<unknown> {
+  const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.upload_file;
   const { filename, type, data } = file;
   console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
 
   const params = new FormData();
   params.append("file", new Blob([new Uint8Array(data)], { type }), filename);
-  return fetchRaw({
+  const response = await fetchRaw({
     route: schema.$id,
     method: schema.methods.find((method) => method !== "OPTIONS"),
     params,
@@ -55,13 +87,15 @@ async function uploadFile(file: MultiPartData) {
     max_retry: undefined,
     timeout: undefined,
   });
+
+  return response;
 }
 
-async function saveViewableFile(filename: string, geode_object_type: string) {
-  const backBaseUrl = await getBackBaseUrl();
+async function saveViewableFile(filename: string, geode_object_type: string): Promise<unknown> {
+  const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.save_viewable_file;
   const params = { filename, geode_object_type };
-  return fetchSchema({
+  const response = await fetchSchema({
     schema,
     params,
     baseURL: backBaseUrl,
@@ -69,6 +103,7 @@ async function saveViewableFile(filename: string, geode_object_type: string) {
     headers: undefined,
     timeout: undefined,
   });
+  return response;
 }
 
 export { getAllowedFileExtensions, getAllowedGeodeObjectTypes, uploadFile, saveViewableFile };

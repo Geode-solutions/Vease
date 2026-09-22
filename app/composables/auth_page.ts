@@ -11,6 +11,33 @@ const ERROR_MESSAGE_MAP: [string[], string][] = [
   [["network-request-failed"], "Network error. Please check your connection."],
 ];
 
+function getErrorCode(error: unknown): string {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string"
+  ) {
+    return error.code;
+  }
+  return "";
+}
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    typeof error.message === "string"
+  ) {
+    return error.message;
+  }
+  return "";
+}
+
 function extractApiError(error: Record<string, unknown> | null | undefined): string {
   if (!error) {
     return "";
@@ -23,11 +50,11 @@ function extractApiError(error: Record<string, unknown> | null | undefined): str
   return typeof errVal === "string" ? errVal : "";
 }
 
-function getFriendlyErrorMessage(error: unknown) {
+function getFriendlyErrorMessage(error: unknown): string {
   const errObj = error as Record<string, unknown> | null | undefined;
   const apiError = extractApiError(errObj);
-  const code = String(errObj?.code || "").toLowerCase();
-  const message = String(errObj?.message || "").toLowerCase();
+  const code = (getErrorCode(error) || String(errObj?.code || "")).toLowerCase();
+  const message = (getErrorMessage(error) || String(errObj?.message || "")).toLowerCase();
   const fullError = `${code} ${message} ${apiError.toLowerCase()}`;
 
   for (const [patterns, friendlyMessage] of ERROR_MESSAGE_MAP) {
@@ -40,7 +67,10 @@ function getFriendlyErrorMessage(error: unknown) {
     return apiError;
   }
 
-  return "An error occurred. Please try again.";
+  const fallbackMessage = getErrorMessage(error);
+  return fallbackMessage === "" || fallbackMessage.startsWith("[POST]")
+    ? "An error occurred. Please try again."
+    : fallbackMessage;
 }
 
 const isLogin = ref(true);
@@ -57,11 +87,27 @@ const forgotPasswordEmail = ref("");
 const forgotPasswordLoading = ref(false);
 const forgotPasswordError = ref("");
 
+interface UseAuthPageReturn {
+  isLogin: typeof isLogin;
+  loading: typeof loading;
+  error: typeof errorMessage;
+  successMessage: typeof successMessage;
+  email: typeof email;
+  password: typeof password;
+  confirmPassword: typeof confirmPassword;
+  showForgotPassword: typeof showForgotPassword;
+  forgotPasswordEmail: typeof forgotPasswordEmail;
+  forgotPasswordLoading: typeof forgotPasswordLoading;
+  onSubmit: () => Promise<void>;
+  handleForgotPassword: () => Promise<void>;
+  toggleMode: () => void;
+}
+
 // oxlint-disable-next-line max-lines-per-function
-export function useAuthPage() {
+export function useAuthPage(): UseAuthPageReturn {
   const { login, register, resetPassword } = useAuth();
 
-  async function onSubmit() {
+  async function onSubmit(): Promise<void> {
     errorMessage.value = "";
     successMessage.value = "";
 
@@ -90,7 +136,7 @@ export function useAuthPage() {
     }
   }
 
-  async function handleForgotPassword() {
+  async function handleForgotPassword(): Promise<void> {
     if (!forgotPasswordEmail.value) {
       return;
     }
@@ -109,7 +155,7 @@ export function useAuthPage() {
     }
   }
 
-  function toggleMode() {
+  function toggleMode(): void {
     isLogin.value = !isLogin.value;
     errorMessage.value = "";
     successMessage.value = "";

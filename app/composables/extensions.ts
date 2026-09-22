@@ -4,15 +4,72 @@ import { compare } from "compare-versions";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
-import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "./auth";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import type { Extension } from "@vease/composables/extension_metadata";
 
-function getUserPlatform() {
+interface RemoteExtensionInfo {
+  id: string;
+  version: string;
+}
+
+function isRemoteExtensionInfo(value: unknown): value is RemoteExtensionInfo {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "version" in value &&
+    typeof value.version === "string"
+  );
+}
+
+function isRemoteExtensionInfoArray(value: unknown): value is RemoteExtensionInfo[] {
+  return Array.isArray(value) && value.every((item) => isRemoteExtensionInfo(item));
+}
+
+interface DownloadExtensionResponse {
+  url: string;
+}
+
+function isDownloadExtensionResponse(value: unknown): value is DownloadExtensionResponse {
+  return (
+    typeof value === "object" && value !== null && "url" in value && typeof value.url === "string"
+  );
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function getStringField(
+  source: Readonly<Record<string, unknown>>,
+  field: string,
+): string | undefined {
+  const value = source[field];
+  return typeof value === "string" ? value : undefined;
+}
+
+function toExtension(loadedExtension: Readonly<{ id: string; metadata: unknown }>): Extension {
+  const metadata = isRecord(loadedExtension.metadata) ? loadedExtension.metadata : {};
+  return {
+    id: loadedExtension.id,
+    metadata: {
+      name: getStringField(metadata, "name"),
+      description: getStringField(metadata, "description"),
+      version: getStringField(metadata, "version"),
+    },
+  };
+}
+
+
+
+function getUserPlatform(): string {
   const parser = Bowser.getParser(navigator.userAgent);
   const os = parser.getOS();
-  const name = os.name?.toLowerCase() || "";
+  const name = os.name?.toLowerCase() ?? "";
   if (name.includes("windows")) {
     return "win32";
   }
@@ -22,13 +79,19 @@ function getUserPlatform() {
   return "unknown";
 }
 
+interface UseExtensionsReturn {
+  allowedExtensions: () => Promise<RemoteExtensionInfo[]>;
+  downloadExtension: (extensionId: string) => Promise<{ url: string; extensionFileName: string }>;
+  updateExtensions: () => Promise<void>;
+}
+
 // oxlint-disable-next-line max-lines-per-function
-export function useExtensions() {
+export function useExtensions(): UseExtensionsReturn {
   const { isUserAuthenticated, user } = useAuth();
   const APIStore = useAPIStore();
   const { getExtensionVersion } = useExtensionMetadata();
 
-  async function allowedExtensions(): Promise<MarketplaceExtension[]> {
+  async function allowedExtensions(): Promise<RemoteExtensionInfo[]> {
     if (!isUserAuthenticated.value || !user.value) {
       return [];
     }
@@ -42,10 +105,13 @@ export function useExtensions() {
       additionalProperties: false,
     };
     const headers = { Authorization: `Bearer ${token}` };
-    return APIStore.request({ schema, headers });
+    const result = await APIStore.request({ schema, headers });
+    return isRemoteExtensionInfoArray(result) ? result : [];
   }
 
-  async function downloadExtension(extensionId: string) {
+  async function downloadExtension(
+    extensionId: string,
+  ): Promise<{ url: string; extensionFileName: string }> {
     if (!isUserAuthenticated.value || !user.value) {
       throw new Error("User not authenticated");
     }
@@ -61,13 +127,17 @@ export function useExtensions() {
     const platform = getUserPlatform();
     const params = { extension: extensionId, platform };
     const headers = { Authorization: `Bearer ${token}` };
-    const { url } = await APIStore.request({ schema, params, headers });
+    const result = await APIStore.request({ schema, params, headers });
+    if (!isDownloadExtensionResponse(result)) {
+      throw new Error("Invalid download extension response");
+    }
+    const { url } = result;
     console.log({ url });
     const extensionFileName = `${extensionId}-${platform}.vext`;
     return { url, extensionFileName };
   }
 
-  async function updateExtensions() {
+  async function updateExtensions(): Promise<void> {
     console.log("[Extensions] Updating extensions...");
     if (process.env.NODE_ENV === "development") {
       console.log("[Extensions] Skipping extension update in development mode");
@@ -86,9 +156,9 @@ export function useExtensions() {
       }
       const latestVersion = matchingExtension.version;
       console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
-      const currentVersion = getExtensionVersion(loadedExtension);
+      const currentVersion = getExtensionVersion(toExtension(loadedExtension));
       console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
-      if (latestVersion && currentVersion && compare(latestVersion, currentVersion, ">")) {
+      if (latestVersion && currentVersion !== undefined && compare(latestVersion, currentVersion, ">")) {
         extensionsFilesToDownload.push(downloadExtension(loadedExtension.id));
       }
     }

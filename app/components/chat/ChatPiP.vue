@@ -9,18 +9,18 @@ const { messages, sendMessage, status, error } = useVeaseChat();
 const input = ref("");
 const messagesEnd = useTemplateRef("messagesEnd");
 
-function close() {
+function close(): void {
   UIStore.setShowChatPiP(false);
 }
 
-function messageText(message) {
+function messageText(message): string {
   return message.parts
     .filter((part) => part.type === "text")
     .map((part) => part.text)
     .join("");
 }
 
-function submit() {
+function submit(): void {
   const text = input.value.trim();
   if (!text || status.value !== "ready") {
     return;
