@@ -1,4 +1,3 @@
-// oxlint-disable eslint/sort-imports
 import Bowser from "bowser";
 import { compare } from "compare-versions";
 import { importExtensionURL } from "@ogw_front/utils/extension";
