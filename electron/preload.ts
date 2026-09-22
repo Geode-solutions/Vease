@@ -1,4 +1,6 @@
-import { contextBridge, ipcRenderer } from "electron";
+// oxlint-disable unicorn/prefer-module
+// oxlint-disable-next-line import/no-commonjs
+const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   project_folder_path: async (args: { projectFolderPath: string }): Promise<unknown> => {
