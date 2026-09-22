@@ -101,52 +101,39 @@ export default defineNuxtConfig({
     ignore: nitroIgnoreConfig(),
   },
 
-  // `mcp` is contributed by @nuxtjs/mcp-toolkit's NuxtConfig augmentation, which
-  // The version resolved for local type-checking doesn't declare; spread it in
-  // As an unknown-shaped object to avoid an excess-property error either way.
-  ...({
-    mcp: {
-      name: "Vease",
-      description: "Control the application with a set of commands",
-      security: {
-        allowedOrigins: "*",
-      },
+  mcp: {
+    name: "Vease",
+    description: "Control the application with a set of commands",
+    security: {
+      allowedOrigins: "*",
     },
-  } as Record<string, unknown>),
+  },
 
   ssr: false,
-  // `electron` is contributed by nuxt-electron's NuxtConfig augmentation, which
-  // Only applies while that module is active (DESKTOP mode); spread it in as an
-  // Unknown-shaped object so the key type-checks in every mode.
-  ...({
-    electron: {
-      build: [
-        {
-          // Main-Process entry file of the Electron App.
-          entry: "electron/main.ts",
+  electron: {
+    build: [
+      {
+        // Main-Process entry file of the Electron App.
+        entry: "electron/main.ts",
+      },
+      {
+        entry: "electron/preload.ts",
+        onstart(args) {
+          args.reload();
         },
-        {
-          entry: "electron/preload.ts",
-          onstart(args) {
-            args.reload();
-          },
-        },
-      ],
-      // TO REMOVE TEMPORARY
-      disableDefaultOptions: true,
-    },
-  } as Record<string, unknown>),
+      },
+    ],
+    // TO REMOVE TEMPORARY
+    disableDefaultOptions: true,
+  },
 
   vuetify: {
-    // `enableRules` predates the vuetify-nuxt-module version resolved for local
-    // Type-checking; cast to keep the runtime option without fighting drift
-    // Between that version's types and the one this repo actually installs.
     moduleOptions: {
       enableRules: false,
       rulesConfiguration: {
         fromLabs: false,
       },
-    } as any,
+    },
     vuetifyOptions: {
       defaults: {
         VImg: {

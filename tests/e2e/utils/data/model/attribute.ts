@@ -6,89 +6,133 @@ import {
   polyhedronAttributeType,
   vertexAttributeType,
 } from "@tests/utils/constants";
+import type { Page } from "@playwright/test";
 
-function setModelPointsVertexAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setModelPointsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelPointsVertexAttributeNoDataColor(window) {
-  return setFeatureNoDataColor(window, "modelStyleMenu");
+async function setModelPointsVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
-function setModelEdgesVertexAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelEdgesVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelEdgesVertexAttributeNoDataColor(window) {
-  return setFeatureNoDataColor(window, "modelStyleMenu");
+async function setModelEdgesVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
-function setModelPolygonsVertexAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelPolygonsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelPolygonsVertexAttributeNoDataColor(window) {
-  return setFeatureNoDataColor(window, "modelStyleMenu");
+async function setModelPolygonsVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
-function setModelPolyhedraVertexAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelPolyhedraVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelPolyhedraVertexAttributeNoDataColor(window) {
-  return setFeatureNoDataColor(window, "modelStyleMenu");
+async function setModelPolyhedraVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
-function setModelCellsVertexAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelCellsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelEdgesEdgeAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelEdgesEdgeAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: edgeAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelPolygonsPolygonAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelPolygonsPolygonAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: polygonAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelPolyhedraPolyhedronAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelPolyhedraPolyhedronAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: polyhedronAttributeType,
     attributeName,
     ...options,
   });
 }
 
-function setModelCellsCellAttribute(window, attributeName, options = {}) {
-  return applyAttribute(window, "modelStyleMenu", {
+async function setModelCellsCellAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await applyAttribute(window, "modelStyleMenu", {
     attributeType: cellAttributeType,
     attributeName,
     ...options,
