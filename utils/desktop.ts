@@ -116,7 +116,7 @@ async function createServer(): Promise<{ server: UtilityProcess; PORT: number }>
 
 // oxlint-disable-next-line eslint/require-await
 async function waitForServerReady(
-  server: Readonly<UtilityProcess>,
+  server: UtilityProcess,
   expectedResponse: string,
   signal: AbortSignal,
 ): Promise<void> {

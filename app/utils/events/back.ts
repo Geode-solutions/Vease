@@ -6,7 +6,7 @@ import type { NewDataItem } from "@ogw_front/stores/data";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow.js";
 
-function isNewDataItem(value: unknown): value is Readonly<NewDataItem> {
+function isNewDataItem(value: unknown): value is NewDataItem {
   return (
     typeof value === "object" &&
     value !== null &&
