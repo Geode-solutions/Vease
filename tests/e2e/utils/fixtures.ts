@@ -15,30 +15,33 @@ interface ScreenshotMask {
   locators: Locator[];
 }
 
-interface TestFixtures {
+interface WorkerFixtures {
   mode: string;
   suiteId: string;
-  screenshotMask: ScreenshotMask;
   window: Page;
-  logTestProgress: void;
-  autoScreenshot: void;
 }
 
-const test = base.extend<TestFixtures>({
+interface TestFixtures {
+  screenshotMask: ScreenshotMask;
+  logTestProgress: undefined;
+  autoScreenshot: undefined;
+}
+
+const test = base.extend<TestFixtures, WorkerFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
 
   suiteId: ["default", { option: true, scope: "worker" }],
 
   screenshotMask: [
     // oxlint-disable-next-line no-empty-pattern
-    async ({}, use) => {
+    async ({}, use): Promise<void> => {
       await use({ locators: [] });
     },
     { scope: "test" },
   ],
 
   window: [
-    async ({ mode, browser }, use) => {
+    async ({ mode, browser }, use): Promise<void> => {
       const { window, cleanup } = await navigateToApp(mode, browser);
       await use(window);
       await cleanup();
@@ -48,13 +51,13 @@ const test = base.extend<TestFixtures>({
 
   logTestProgress: [
     // oxlint-disable-next-line no-empty-pattern
-    async ({}, use, testInfo) => {
+    async ({}, use, testInfo): Promise<void> => {
       const name = `${path.basename(testInfo.file)} › ${testInfo.title}`;
       console.log(`\u001B[33m[START]\u001B[0m ${name}`);
       const start = Date.now();
-      await use();
+      await use(undefined);
       const statusColor = testInfo.status === "passed" ? "\u001B[32m" : "\u001B[31m";
-      const status = (testInfo.status || "done").toUpperCase();
+      const status = (testInfo.status ?? "done").toUpperCase();
       const duration = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
       console.log(
         `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}TEST ${status}\u001B[0m (${duration}s)`,
@@ -64,8 +67,8 @@ const test = base.extend<TestFixtures>({
   ],
 
   autoScreenshot: [
-    async ({ window, screenshotMask }, use, testInfo) => {
-      await use();
+    async ({ window, screenshotMask }, use, testInfo): Promise<void> => {
+      await use(undefined);
       if (testInfo.status === testInfo.expectedStatus) {
         await expect(window).toHaveScreenshot({ mask: screenshotMask.locators });
       }

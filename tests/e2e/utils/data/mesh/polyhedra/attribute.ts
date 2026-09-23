@@ -20,9 +20,21 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/data/helpers/attribute";
+import type { Page } from "@playwright/test";
 
-function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setMeshPolyhedraVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     polyhedraFeatureName,
@@ -32,8 +44,12 @@ function setMeshPolyhedraVertexAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshPolyhedraPolyhedronAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+async function setMeshPolyhedraPolyhedronAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     polyhedraFeatureName,
@@ -43,22 +59,22 @@ function setMeshPolyhedraPolyhedronAttribute(window, attributeName, options = {}
   );
 }
 
-function setMeshPolyhedraItem(window, item) {
+async function setMeshPolyhedraItem(window: Page, item: number): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
-  return setFeatureItem(window, menuTestId, item);
+  await setFeatureItem(window, menuTestId, item);
 }
 
-function setMeshPolyhedraColorMap(window, colorMap) {
+async function setMeshPolyhedraColorMap(window: Page, colorMap: string): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
-  return setFeatureColorMap(window, menuTestId, colorMap);
+  await setFeatureColorMap(window, menuTestId, colorMap);
 }
 
-function openMeshPolyhedraMenu(window) {
+async function openMeshPolyhedraMenu(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
-  return openStyleMenu(window, menuTestId);
+  await openStyleMenu(window, menuTestId);
 }
 
-async function setMeshPolyhedraNoDataColor(window) {
+async function setMeshPolyhedraNoDataColor(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polyhedraFeatureName}Menu`;
   await ensureMenuOpen(window, menuTestId);
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();

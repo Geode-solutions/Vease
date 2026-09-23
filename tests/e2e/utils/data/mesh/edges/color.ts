@@ -5,21 +5,22 @@ import {
   setFeatureColoringStyle,
   setFeatureOpacity,
 } from "@tests/utils/data/helpers/color";
+import type { Page } from "@playwright/test";
 
-function setMeshEdgesOpacity(window, percent) {
-  return setFeatureOpacity(window, meshViewerObjectType, edgesFeatureName, percent);
+async function setMeshEdgesOpacity(window: Page, percent: number): Promise<void> {
+  await setFeatureOpacity(window, meshViewerObjectType, edgesFeatureName, percent);
 }
 
-function setMeshEdgesColor(window) {
-  return setFeatureColor(window, meshViewerObjectType, edgesFeatureName);
+async function setMeshEdgesColor(window: Page): Promise<void> {
+  await setFeatureColor(window, meshViewerObjectType, edgesFeatureName);
 }
 
-function setMeshEdgesColorWithSlider(window) {
-  return setFeatureColorWithSlider(window, meshViewerObjectType, edgesFeatureName);
+async function setMeshEdgesColorWithSlider(window: Page): Promise<void> {
+  await setFeatureColorWithSlider(window, meshViewerObjectType, edgesFeatureName);
 }
 
-function setMeshEdgesColoringStyle(window, style) {
-  return setFeatureColoringStyle(window, meshViewerObjectType, edgesFeatureName, style);
+async function setMeshEdgesColoringStyle(window: Page, style: string): Promise<void> {
+  await setFeatureColoringStyle(window, meshViewerObjectType, edgesFeatureName, style);
 }
 
 export {

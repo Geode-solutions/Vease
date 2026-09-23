@@ -20,9 +20,21 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/data/helpers/attribute";
+import type { Page } from "@playwright/test";
 
-function setMeshEdgesVertexAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setMeshEdgesVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     edgesFeatureName,
@@ -32,8 +44,12 @@ function setMeshEdgesVertexAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshEdgesEdgeAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+async function setMeshEdgesEdgeAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     edgesFeatureName,
@@ -43,22 +59,22 @@ function setMeshEdgesEdgeAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshEdgesItem(window, item) {
+async function setMeshEdgesItem(window: Page, item: number): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${edgesFeatureName}Menu`;
-  return setFeatureItem(window, menuTestId, item);
+  await setFeatureItem(window, menuTestId, item);
 }
 
-function setMeshEdgesColorMap(window, colorMap) {
+async function setMeshEdgesColorMap(window: Page, colorMap: string): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${edgesFeatureName}Menu`;
-  return setFeatureColorMap(window, menuTestId, colorMap);
+  await setFeatureColorMap(window, menuTestId, colorMap);
 }
 
-function openMeshEdgesMenu(window) {
+async function openMeshEdgesMenu(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${edgesFeatureName}Menu`;
-  return openStyleMenu(window, menuTestId);
+  await openStyleMenu(window, menuTestId);
 }
 
-async function setMeshEdgesNoDataColor(window) {
+async function setMeshEdgesNoDataColor(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${edgesFeatureName}Menu`;
   await ensureMenuOpen(window, menuTestId);
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();

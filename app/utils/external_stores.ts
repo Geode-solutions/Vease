@@ -1,6 +1,4 @@
-// Typed access helpers for Pinia stores shipped by @geode/opengeodeweb-front.
-// These external stores are plain JavaScript, and Pinia's type inference collapses some of them to weak or empty types.
-// The helpers below document the additional surface Vease relies on at runtime and cast to it once, instead of scattering `as any` across call sites.
+/* oxlint-disable typescript/no-unsafe-type-assertion */
 import { useBackStore } from "@ogw_front/stores/back";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";

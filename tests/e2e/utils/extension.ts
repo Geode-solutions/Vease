@@ -2,13 +2,14 @@
 import path from "node:path";
 
 // Third party imports
+import type { Page } from "@playwright/test";
 import { waitForLoadingScreen } from "./other";
 
 // Local imports
 import { modalTransitionWait } from "./constants";
 import { navigateToExtensionsPage } from "./navigate";
 
-async function loadExtension(window, extensionFilePath) {
+async function loadExtension(window: Page, extensionFilePath: string): Promise<void> {
   await waitForLoadingScreen(window);
   try {
     const inputFileExtension = path.extname(extensionFilePath);
@@ -16,7 +17,7 @@ async function loadExtension(window, extensionFilePath) {
     await navigateToExtensionsPage(window);
     // Wait for modal transition
     await window.waitForTimeout(modalTransitionWait);
-    const installedExtensionButton = await window.getByRole("tab", { name: "Installed" });
+    const installedExtensionButton = window.getByRole("tab", { name: "Installed" });
     await installedExtensionButton.click();
     await window.waitForTimeout(modalTransitionWait);
 
@@ -34,14 +35,14 @@ async function loadExtension(window, extensionFilePath) {
   }
 }
 
-async function removeExtension(window, extensionName) {
+async function removeExtension(window: Page, extensionName: string): Promise<void> {
   await waitForLoadingScreen(window);
   const importExtensionButton = window.locator("button:has(.mdi-puzzle)").first();
   await importExtensionButton.waitFor({ state: "visible", timeout: 60_000 });
   await importExtensionButton.click({ timeout: 60_000 });
   // Wait for modal transition
   await window.waitForTimeout(modalTransitionWait);
-  const installedExtensionButton = await window.getByRole("tab", { name: "Installed" });
+  const installedExtensionButton = window.getByRole("tab", { name: "Installed" });
   await installedExtensionButton.click();
   let removed = false;
   try {

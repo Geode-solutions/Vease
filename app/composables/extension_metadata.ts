@@ -31,11 +31,14 @@ function getExtensionDescription(extension: Extension | null | undefined): strin
   return description !== undefined && description !== "" ? description : "Custom extension module";
 }
 
-function getExtensionVersion(extension: Extension | null | undefined): string | undefined {
+function getExtensionVersion(
+  extension: Extension | Record<string, unknown> | null | undefined,
+): string | undefined {
   if (!extension) {
     return undefined;
   }
-  const version = extension.metadata?.version;
+  const ext = extension as Extension;
+  const version = ext.metadata?.version;
   return version !== undefined && version !== "" ? version : undefined;
 }
 

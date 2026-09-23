@@ -9,6 +9,7 @@ import {
   checkFilterCategory,
   copyTreeRowId,
   fillSearchQuery,
+  getTreeRowId,
   hideObjectInTree,
   openFilterMenu,
   toggleSearchObjects,
@@ -27,6 +28,7 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
 } from "@tests/utils/object_trees/model_components_object_tree";
+import { assertDefined } from "@tests/utils/other";
 import { brepGeodeObjectType } from "@tests/utils/constants";
 import { closeAllMenus } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
@@ -39,7 +41,7 @@ const edc3dFilename = "test.og_edc3d";
 const psf3dFilename = "test.og_psf3d";
 const hso3dFilename = "test.og_hso3d";
 
-let surfaceId = undefined;
+let surfaceId: string | undefined = undefined;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -86,8 +88,7 @@ test("search by id", async ({ window, screenshotMask }) => {
   const brepLabel = mainObjectTree
     .locator('[data-testid^="treeRow-"]', { hasText: "test" })
     .first();
-  const dataTestId = await brepLabel.getAttribute("data-testid");
-  const brepId = dataTestId.replace("treeRow-", "");
+  const brepId = await getTreeRowId(brepLabel, "test");
   const searchPrefix = brepId.slice(0, 3);
   await fillSearchQuery(window, searchPrefix, mainObjectTree);
   screenshotMask.locators = [window.getByTestId("searchObjectsInput")];
@@ -175,8 +176,8 @@ test("copy surface id", async ({ window }) => {
 });
 
 test("search by copied surface id", async ({ window, screenshotMask }) => {
-  expect(surfaceId).toBeTruthy();
-  await fillSearchQuery(window, surfaceId, getModelComponentsObjectTree(window));
+  const id = assertDefined(surfaceId, "surfaceId was not set by the previous test.");
+  await fillSearchQuery(window, id, getModelComponentsObjectTree(window));
   screenshotMask.locators = [
     window.getByTestId("modelComponentsObjectTree").getByTestId("searchObjectsInput"),
   ];

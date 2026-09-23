@@ -1,3 +1,4 @@
+import type { Locator, Page } from "@playwright/test";
 import {
   clickCollapseOrExpandAll,
   collapseGeodeObjectTypeInTree,
@@ -7,33 +8,37 @@ import {
 } from "./common";
 import { afterActionWait } from "@tests/utils/viewer_interaction";
 
-function getMainObjectTree(window) {
+function getMainObjectTree(window: Page): Locator {
   return window.getByTestId("mainObjectTree");
 }
 
-function collapseMainObjectTree(window) {
+async function collapseMainObjectTree(window: Page): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
-  return clickCollapseOrExpandAll(window, mainObjectTree, "mdi-collapse-all-outline");
+  await clickCollapseOrExpandAll(window, mainObjectTree, "mdi-collapse-all-outline");
 }
-function expandMainObjectTree(window) {
+async function expandMainObjectTree(window: Page): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
-  return clickCollapseOrExpandAll(window, mainObjectTree, "mdi-expand-all-outline");
+  await clickCollapseOrExpandAll(window, mainObjectTree, "mdi-expand-all-outline");
 }
 
-function collapseMainObjectTreeGroup(window, groupName) {
+async function collapseMainObjectTreeGroup(window: Page, groupName: string): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
-  return collapseTreeGroup(window, mainObjectTree, groupName);
+  await collapseTreeGroup(window, mainObjectTree, groupName);
 }
 
-function expandGeodeObjectType(window, geodeObjectType) {
-  return expandGeodeObjectTypeInTree(window, geodeObjectType, getMainObjectTree(window));
+async function expandGeodeObjectType(window: Page, geodeObjectType: string): Promise<void> {
+  await expandGeodeObjectTypeInTree(window, geodeObjectType, getMainObjectTree(window));
 }
 
-function collapseGeodeObjectType(window, geodeObjectType) {
-  return collapseGeodeObjectTypeInTree(window, geodeObjectType, getMainObjectTree(window));
+async function collapseGeodeObjectType(window: Page, geodeObjectType: string): Promise<void> {
+  await collapseGeodeObjectTypeInTree(window, geodeObjectType, getMainObjectTree(window));
 }
 
-async function highlightData(window, geodeObjectType, dataName) {
+async function highlightData(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
   await expandGeodeObjectType(window, geodeObjectType);
   const mainObjectTree = getMainObjectTree(window);
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
@@ -45,7 +50,11 @@ async function highlightData(window, geodeObjectType, dataName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function focusObjectInTree(window, geodeObjectType, dataName) {
+async function focusObjectInTree(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
   await expandGeodeObjectType(window, geodeObjectType);
   const mainObjectTree = getMainObjectTree(window);
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
@@ -53,7 +62,7 @@ async function focusObjectInTree(window, geodeObjectType, dataName) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function showObjectInTree(window, objectName) {
+async function showObjectInTree(window: Page, objectName: string): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
   const row = await getTreeRowByTextAndParent(window, objectName, undefined, mainObjectTree);
   await row.waitFor({ state: "attached" });
@@ -67,12 +76,12 @@ async function showObjectInTree(window, objectName) {
   }
 }
 
-async function toggleObjectsTree(window) {
+async function toggleObjectsTree(window: Page): Promise<void> {
   await window.getByTestId("toggleObjectsButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function closeObjectsTree(window) {
+async function closeObjectsTree(window: Page): Promise<void> {
   const isVisible = await window
     .getByTestId("mainObjectTree")
     .isVisible()
@@ -83,7 +92,7 @@ async function closeObjectsTree(window) {
   }
 }
 
-async function openObjectsTree(window) {
+async function openObjectsTree(window: Page): Promise<void> {
   const isVisible = await window
     .getByTestId("mainObjectTree")
     .isVisible()
