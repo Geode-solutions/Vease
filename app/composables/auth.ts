@@ -17,7 +17,7 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 import { useAPIStore } from "@vease/stores/api";
 
 interface DesktopElectronAPI {
-  save_credentials: (args: Readonly<{ email: string; password: string }>) => void;
+  save_credentials: (args: { email: string; password: string }) => void;
   get_credentials: () => Promise<{
     success: boolean;
     credentials?: { email: string; password: string };

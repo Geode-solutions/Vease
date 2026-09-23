@@ -44,14 +44,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function getStringField(
-  source: Readonly<Record<string, unknown>>,
+  source: Record<string, unknown>,
   field: string,
 ): string | undefined {
   const value = source[field];
   return typeof value === "string" ? value : undefined;
 }
 
-function toExtension(loadedExtension: Readonly<{ id: string; metadata: unknown }>): Extension {
+function toExtension(loadedExtension: { id: string; metadata: unknown }): Extension {
   const metadata = isRecord(loadedExtension.metadata) ? loadedExtension.metadata : {};
   return {
     id: loadedExtension.id,
