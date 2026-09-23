@@ -8,17 +8,18 @@ import {
   setFeatureOpacity,
   setFeaturePasteColorInput,
 } from "@tests/utils/data/helpers/color";
+import type { Page } from "@playwright/test";
 
-function setMeshCellsOpacity(window, percent) {
-  return setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);
+async function setMeshCellsOpacity(window: Page, percent: number): Promise<void> {
+  await setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);
 }
 
-function setMeshCellsColor(window) {
-  return setFeatureColor(window, meshViewerObjectType, cellsFeatureName);
+async function setMeshCellsColor(window: Page): Promise<void> {
+  await setFeatureColor(window, meshViewerObjectType, cellsFeatureName);
 }
 
-function setMeshCellsColorWithSlider(window) {
-  return setFeatureColorWithSlider(window, meshViewerObjectType, cellsFeatureName);
+async function setMeshCellsColorWithSlider(window: Page): Promise<void> {
+  await setFeatureColorWithSlider(window, meshViewerObjectType, cellsFeatureName);
 }
 
 function copyMeshCellsColor(window) {
@@ -33,8 +34,8 @@ function pasteMeshCellsColorInput(window, container = window) {
   return setFeaturePasteColorInput(window, meshViewerObjectType, cellsFeatureName, container);
 }
 
-function setMeshCellsColoringStyle(window, style) {
-  return setFeatureColoringStyle(window, meshViewerObjectType, cellsFeatureName, style);
+async function setMeshCellsColoringStyle(window: Page, style: string): Promise<void> {
+  await setFeatureColoringStyle(window, meshViewerObjectType, cellsFeatureName, style);
 }
 
 export {

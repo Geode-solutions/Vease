@@ -2,24 +2,24 @@
 import path from "node:path";
 
 // Third party imports
-import { expect } from "@playwright/test";
+import { type Locator, type Page, expect } from "@playwright/test";
 
 const __dirname = import.meta.dirname;
 const loadWorkflowTimeout = 8000;
 
-function getLayoutImportButton(window) {
+function getLayoutImportButton(window: Page): Locator {
   return window.getByTestId("layoutImportButton");
 }
 
 async function loadVeaseTestDatas(
-  window,
-  inputDataFilenames,
+  window: Page,
+  inputDataFilenames: string[],
   {
     loadTimeout = loadWorkflowTimeout,
     inputDataPath = path.join(__dirname, "..", "tests", "data"),
-  } = {},
-) {
-  console.log(`Loading datas: ${inputDataFilenames} from ${inputDataPath}`);
+  }: { loadTimeout?: number; inputDataPath?: string } = {},
+): Promise<void> {
+  console.log(`Loading datas: ${inputDataFilenames.join(", ")} from ${inputDataPath}`);
   const inputFileExtension = path.extname(inputDataFilenames[0]);
   const inputDataFilePaths = inputDataFilenames.map((filename) =>
     path.join(inputDataPath, filename),

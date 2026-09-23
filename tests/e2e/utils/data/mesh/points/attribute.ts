@@ -14,10 +14,22 @@ import {
   pointsFeatureName,
   vertexAttributeType,
 } from "@tests/utils/constants";
+import type { Page } from "@playwright/test";
 import { setFeatureAttribute } from "@tests/utils/data/helpers/attribute";
 
-function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setMeshPointsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     pointsFeatureName,
@@ -27,12 +39,12 @@ function setMeshPointsVertexAttribute(window, attributeName, options = {}) {
   );
 }
 
-function openMeshPointsMenu(window) {
+async function openMeshPointsMenu(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${pointsFeatureName}Menu`;
-  return openStyleMenu(window, menuTestId);
+  await openStyleMenu(window, menuTestId);
 }
 
-async function setMeshPointsNoDataColor(window) {
+async function setMeshPointsNoDataColor(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${pointsFeatureName}Menu`;
   await ensureMenuOpen(window, menuTestId);
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();

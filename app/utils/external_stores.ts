@@ -1,11 +1,9 @@
-// Typed access helpers for Pinia stores shipped by @geode/opengeodeweb-front.
-// These external stores are plain JavaScript, and Pinia's type inference collapses some of them to weak or empty types.
-// The helpers below document the additional surface Vease relies on at runtime and cast to it once, instead of scattering `as any` across call sites.
+/* oxlint-disable typescript/no-unsafe-type-assertion */
 import { useBackStore } from "@ogw_front/stores/back";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useInfraStore } from "@ogw_front/stores/infra";
-import { useViewerStore } from "@ogw_front/stores/viewer";
+import type { useViewerStore } from "@ogw_front/stores/viewer";
 
 interface ApiSchema {
   $id: string;
@@ -26,19 +24,18 @@ interface BackStoreExtra {
   ) => Promise<unknown>;
 }
 
-function getBackStore() {
-  return useBackStore() as unknown as ReturnType<typeof useBackStore> & BackStoreExtra;
+function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
+  return useBackStore();
 }
 
 interface HybridViewerStoreExtra {
   remoteRender: () => Promise<void> | undefined;
   focusCameraOnObject: (id: string) => unknown;
-  removeItem: (id: string) => Promise<unknown> | unknown;
+  removeItem: (id: string) => unknown;
 }
 
-function getHybridViewerStore() {
-  return useHybridViewerStore() as unknown as ReturnType<typeof useHybridViewerStore> &
-    HybridViewerStoreExtra;
+function getHybridViewerStore(): ReturnType<typeof useHybridViewerStore> & HybridViewerStoreExtra {
+  return useHybridViewerStore();
 }
 
 interface MicroserviceStore {
@@ -59,7 +56,8 @@ interface InfraStoreExtra {
   create_connection: () => Promise<void>;
 }
 
-function getInfraStore() {
+function getInfraStore(): Omit<ReturnType<typeof useInfraStore>, keyof InfraStoreExtra> &
+  InfraStoreExtra {
   return useInfraStore() as unknown as Omit<
     ReturnType<typeof useInfraStore>,
     keyof InfraStoreExtra
@@ -68,13 +66,11 @@ function getInfraStore() {
 }
 
 interface DataStyleStoreExtra {
-  mutateMeshPointsVisibility: (payload: unknown) => void;
-  setVisibility: (id: string, visible: boolean, item?: unknown) => Promise<unknown> | unknown;
+  setVisibility: (id: string, visible: boolean, item?: unknown) => unknown;
 }
 
-function getDataStyleStore() {
-  return useDataStyleStore() as unknown as ReturnType<typeof useDataStyleStore> &
-    DataStyleStoreExtra;
+function getDataStyleStore(): ReturnType<typeof useDataStyleStore> & DataStyleStoreExtra {
+  return useDataStyleStore();
 }
 
 interface ViewerSession {
@@ -89,7 +85,7 @@ interface ViewerClient {
   getConnection: () => ViewerConnection;
 }
 
-function getViewerClient(viewerStore: ReturnType<typeof useViewerStore>) {
+function getViewerClient(viewerStore: ReturnType<typeof useViewerStore>): ViewerClient {
   return viewerStore.client as unknown as ViewerClient;
 }
 

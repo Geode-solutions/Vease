@@ -20,9 +20,21 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/data/helpers/attribute";
+import type { Page } from "@playwright/test";
 
-function setMeshPolygonsVertexAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setMeshPolygonsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     polygonsFeatureName,
@@ -32,8 +44,12 @@ function setMeshPolygonsVertexAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshPolygonsPolygonAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+async function setMeshPolygonsPolygonAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     polygonsFeatureName,
@@ -43,22 +59,22 @@ function setMeshPolygonsPolygonAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshPolygonsItem(window, item) {
+async function setMeshPolygonsItem(window: Page, item: number): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
-  return setFeatureItem(window, menuTestId, item);
+  await setFeatureItem(window, menuTestId, item);
 }
 
-function setMeshPolygonsColorMap(window, colorMap) {
+async function setMeshPolygonsColorMap(window: Page, colorMap: string): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
-  return setFeatureColorMap(window, menuTestId, colorMap);
+  await setFeatureColorMap(window, menuTestId, colorMap);
 }
 
-function openMeshPolygonsMenu(window) {
+async function openMeshPolygonsMenu(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
-  return openStyleMenu(window, menuTestId);
+  await openStyleMenu(window, menuTestId);
 }
 
-async function setMeshPolygonsNoDataColor(window) {
+async function setMeshPolygonsNoDataColor(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
   await ensureMenuOpen(window, menuTestId);
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();

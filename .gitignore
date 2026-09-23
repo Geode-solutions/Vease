@@ -7,6 +7,10 @@
 build
 dist
 
+# Regenerated on every `nuxt prepare`; content is tied to this machine's build cache
+# (see nuxt.config.ts for why the tsconfig must be self-contained, not `extends`-based)
+/tsconfig.json
+
 
 # Node dependencies
 /node_modules 

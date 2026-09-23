@@ -5,72 +5,79 @@ import { importItem } from "@ogw_front/utils/import_workflow.js";
 import { useUIStore } from "@vease/stores/ui";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { ToolDefinition } from "@vease/stores/ui";
-import { useAppStore } from "@ogw_front/stores/app";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
 
+import { type NewDataItem, useDataStore } from "@ogw_front/stores/data";
+import { type RegisterableStore, useAppStore } from "@ogw_front/stores/app";
+
 export const VeaseExtensionAPI = {
-  registerTool(extensionId: string, toolDefinition: ToolDefinition) {
+  registerTool(extensionId: string, toolDefinition: ToolDefinition): void {
     if (!toolDefinition.id) {
       throw new Error("Tool definition must have an id");
     }
-    if (!toolDefinition.component) {
+    if (toolDefinition.component === undefined) {
       throw new Error("Tool definition must have a component");
     }
     useUIStore().registerToolComponent(toolDefinition, extensionId);
   },
 
-  unregisterTool(toolId: string) {
+  unregisterTool(toolId: string): void {
     useUIStore().unregisterTool(toolId);
   },
 
-  unregisterToolsByExtension(extensionId: string) {
+  unregisterToolsByExtension(extensionId: string): void {
     useUIStore().unregisterToolsByExtension(extensionId);
   },
 
-  getSchemas() {
+  getSchemas(): {
+    opengeodeweb_back: typeof back_schemas.opengeodeweb_back;
+    vease_back: typeof vease_back_schemas.vease_back;
+  } {
     return {
       opengeodeweb_back: back_schemas.opengeodeweb_back,
       vease_back: vease_back_schemas.vease_back,
     };
   },
 
-  importItem(item: unknown) {
-    return importItem(item);
+  async importItem(item: unknown): Promise<string> {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided items are expected to match NewDataItem.
+    const id = await importItem(item as NewDataItem);
+    return id;
   },
 
-  registerStore(store: unknown) {
+  registerStore(store: unknown): void {
     const appStore = useAppStore();
-    appStore.registerStore(store);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided stores are expected to match RegisterableStore.
+    appStore.registerStore(store as RegisterableStore);
   },
 
-  get UIStore() {
+  get UIStore(): ReturnType<typeof useUIStore> {
     return useUIStore();
   },
 
-  get DataBaseStore() {
+  get DataBaseStore(): ReturnType<typeof useDataStore> {
     return useDataStore();
   },
 
-  get HybridViewerStore() {
+  get HybridViewerStore(): ReturnType<typeof useHybridViewerStore> {
     return useHybridViewerStore();
   },
 
-  get AppStore() {
+  get AppStore(): ReturnType<typeof useAppStore> {
     return useAppStore();
   },
 
-  get Database() {
+  get Database(): typeof Database {
     return Database;
   },
 
-  register_microservice(store: unknown) {
+  async register_microservice(store: unknown): Promise<void> {
     const infraStore = getInfraStore();
     infraStore.register_microservice(store);
-    infraStore.create_connection();
+    await infraStore.create_connection();
   },
-  unregister_microservice(id: string) {
+  unregister_microservice(id: string): void {
     const infraStore = getInfraStore();
     infraStore.unregister_microservice(id);
   },

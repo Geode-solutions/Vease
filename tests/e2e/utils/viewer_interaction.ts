@@ -1,3 +1,6 @@
+// Third party imports
+import type { Locator, Page } from "@playwright/test";
+
 // Local imports
 // oxlint-disable-next-line unicorn/prefer-export-from
 import { afterActionWait, halfSecondWait } from "./constants";
@@ -8,12 +11,22 @@ function noopCleanup(): unknown {
   return undefined;
 }
 
-function getHybridViewerCanvas(window) {
+function getHybridViewerCanvas(window: Page): Locator {
   return window.getByTestId("hybridViewer").locator("canvas");
 }
 
-async function viewerContextMenu(window, x, y) {
-  const hybridViewerCanvas = await getHybridViewerCanvas(window);
+async function getHybridViewerCanvasBoundingBox(
+  hybridViewerCanvas: Locator,
+): Promise<{ x: number; y: number; width: number; height: number }> {
+  const box = await hybridViewerCanvas.boundingBox();
+  if (!box) {
+    throw new Error("Could not get bounding box of the hybrid viewer canvas.");
+  }
+  return box;
+}
+
+async function viewerContextMenu(window: Page, x: number, y: number): Promise<void> {
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   await hybridViewerCanvas.click({
     button: "right",
     position: { x, y },
@@ -21,7 +34,7 @@ async function viewerContextMenu(window, x, y) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function findOverlappingObjectsPicker(window) {
+async function findOverlappingObjectsPicker(window: Page): Promise<void> {
   let found = false;
   const points = [
     { x: 440, y: 530 },
@@ -69,7 +82,7 @@ async function findOverlappingObjectsPicker(window) {
   }
 }
 
-async function ensureMenuOpen(window, menuTestId) {
+async function ensureMenuOpen(window: Page, menuTestId: string): Promise<void> {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   if (!(await centerButton.isVisible())) {
     const contextMenuX = 549;
@@ -93,9 +106,9 @@ async function ensureMenuOpen(window, menuTestId) {
   }
 }
 
-async function ensureFeatureVisible(window, menuTestId) {
+async function ensureFeatureVisible(window: Page, menuTestId: string): Promise<void> {
   const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
-  const visibilitySwitch = await window.getByTestId(switchTestId).getByRole("checkbox");
+  const visibilitySwitch = window.getByTestId(switchTestId).getByRole("checkbox");
   if (!(await visibilitySwitch.isChecked())) {
     await visibilitySwitch.check({ force: true });
     // Wait for conditionally rendered options to appear
@@ -111,11 +124,15 @@ interface DragOptions {
 }
 
 async function dragElement(
-  window,
-  locator,
+  window: Page,
+  locator: Locator,
   { targetX, targetY, deltaX = 0, deltaY = 0 }: DragOptions = {},
-) {
-  const { x, y, width, height } = await locator.boundingBox();
+): Promise<void> {
+  const box = await locator.boundingBox();
+  if (!box) {
+    throw new Error("Could not get bounding box of the element to drag.");
+  }
+  const { x, y, width, height } = box;
   const startX = x + width / 2;
   const startY = y + height / 2;
   await window.mouse.move(startX, startY);
@@ -125,12 +142,19 @@ async function dragElement(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function dragContextMenu(window, { targetX, targetY }: DragOptions = {}) {
+async function dragContextMenu(
+  window: Page,
+  { targetX, targetY }: DragOptions = {},
+): Promise<void> {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-async function setFeatureTextures(window, viewerObjectType, feature) {
+async function setFeatureTextures(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+): Promise<void> {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
@@ -148,13 +172,16 @@ async function setFeatureTextures(window, viewerObjectType, feature) {
   await window.waitForTimeout(afterActionWait);
 }
 
-function setPolygonsTextures(window, viewerObjectType) {
-  return setFeatureTextures(window, viewerObjectType, "Polygons");
+async function setPolygonsTextures(window: Page, viewerObjectType: string): Promise<void> {
+  await setFeatureTextures(window, viewerObjectType, "Polygons");
 }
 
-async function hoverViewer(window, position?: { x: number; y: number }) {
+async function hoverViewer(window: Page, position?: { x: number; y: number }): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
+  if (!box) {
+    throw new Error("Could not get bounding box of the hybrid viewer canvas.");
+  }
   const hoverPosition = position ?? { x: box.width / 2, y: box.height / 2 };
   await hybridViewerCanvas.hover({
     position: hoverPosition,
@@ -162,13 +189,18 @@ async function hoverViewer(window, position?: { x: number; y: number }) {
   await window.waitForTimeout(afterActionWait);
 }
 
-async function stabilizeHoverTooltip(window) {
+async function stabilizeHoverTooltip(window: Page): Promise<void> {
   await window.addStyleTag({
     content: ".tooltip-value-dim { visibility: hidden !important; }",
   });
 }
 
-async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility) {
+async function setVisibilityGeneric(
+  window: Page,
+  menuTestId: string,
+  switchTestId: string,
+  visibility: boolean,
+): Promise<void> {
   await ensureMenuOpen(window, menuTestId);
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
   if (visibility) {
@@ -179,13 +211,23 @@ async function setVisibilityGeneric(window, menuTestId, switchTestId, visibility
   await window.waitForTimeout(afterActionWait);
 }
 
-function setFeatureVisibility(window, viewerObjectType, feature, visibility) {
+async function setFeatureVisibility(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  visibility: boolean,
+): Promise<void> {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   const switchTestId = `${viewerObjectType}${feature}VisibilitySwitch`;
-  return setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
+  await setVisibilityGeneric(window, menuTestId, switchTestId, visibility);
 }
 
-async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
+async function setFeatureSizeOrWidth(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  value: number,
+): Promise<void> {
   const menuTestId = `${viewerObjectType}${feature}Menu`;
   let sliderTestId = `${viewerObjectType}${feature}SizeSlider`;
   if (feature === "Edges") {
@@ -194,11 +236,11 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
-  const slider = await window.getByTestId(sliderTestId);
+  const slider = window.getByTestId(sliderTestId);
   await slider
     .locator("input")
     .first()
-    .evaluate((node, val) => {
+    .evaluate((node: HTMLInputElement, val: string) => {
       node.value = val;
       node.dispatchEvent(new Event("input", { bubbles: true }));
       node.dispatchEvent(new Event("change", { bubbles: true }));
@@ -207,44 +249,65 @@ async function setFeatureSizeOrWidth(window, viewerObjectType, feature, value) {
 }
 
 // Specific feature functions
-function setPointsVisibility(window, viewerObjectType, visibility) {
+async function setPointsVisibility(
+  window: Page,
+  viewerObjectType: string,
+  visibility: boolean,
+): Promise<void> {
   if (viewerObjectType === "model") {
-    return setVisibilityGeneric(
+    await setVisibilityGeneric(
       window,
       "modelPointsMenu",
       "modelPointsVisibilitySwitch",
       visibility,
     );
+    return;
   }
-  return setFeatureVisibility(window, viewerObjectType, "Points", visibility);
+  await setFeatureVisibility(window, viewerObjectType, "Points", visibility);
 }
-function setEdgesVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
+async function setEdgesVisibility(
+  window: Page,
+  viewerObjectType: string,
+  visibility: boolean,
+): Promise<void> {
+  await setFeatureVisibility(window, viewerObjectType, "Edges", visibility);
 }
-function setPolygonsVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Polygons", visibility);
+async function setPolygonsVisibility(
+  window: Page,
+  viewerObjectType: string,
+  visibility: boolean,
+): Promise<void> {
+  await setFeatureVisibility(window, viewerObjectType, "Polygons", visibility);
 }
-function setPolyhedraVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Polyhedra", visibility);
+async function setPolyhedraVisibility(
+  window: Page,
+  viewerObjectType: string,
+  visibility: boolean,
+): Promise<void> {
+  await setFeatureVisibility(window, viewerObjectType, "Polyhedra", visibility);
 }
-function setCellsVisibility(window, viewerObjectType, visibility) {
-  return setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
+async function setCellsVisibility(
+  window: Page,
+  viewerObjectType: string,
+  visibility: boolean,
+): Promise<void> {
+  await setFeatureVisibility(window, viewerObjectType, "Cells", visibility);
 }
 
-function setPointsSize(window, viewerObjectType, value) {
-  return setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
+async function setPointsSize(window: Page, viewerObjectType: string, value: number): Promise<void> {
+  await setFeatureSizeOrWidth(window, viewerObjectType, "Points", value);
 }
-function setEdgesWidth(window, viewerObjectType, value) {
-  return setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
+async function setEdgesWidth(window: Page, viewerObjectType: string, value: number): Promise<void> {
+  await setFeatureSizeOrWidth(window, viewerObjectType, "Edges", value);
 }
 
-async function toggleInfoCard(window) {
+async function toggleInfoCard(window: Page): Promise<void> {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await centerButton.click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function resetMenuScroll(window, scrollTop = 0) {
+async function resetMenuScroll(window: Page, scrollTop = 0): Promise<void> {
   await window.evaluate((top) => {
     const cardTexts = document.querySelectorAll(".v-card-text");
     for (const cardTextElement of cardTexts) {
@@ -253,7 +316,7 @@ async function resetMenuScroll(window, scrollTop = 0) {
   }, scrollTop);
 }
 
-async function openStyleMenu(window, menuTestId) {
+async function openStyleMenu(window: Page, menuTestId: string): Promise<void> {
   const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
   if (await activeMenuButton.isVisible()) {
     await activeMenuButton.click();
@@ -268,9 +331,12 @@ async function openStyleMenu(window, menuTestId) {
 const SCALAR_BAR_X_RATIO = 0.25;
 const SCALAR_BAR_Y_RATIO = 0.9;
 
-async function viewerQuickColormap(window, x = undefined, y = undefined) {
-  const hybridViewerCanvas = await getHybridViewerCanvas(window);
+async function viewerQuickColormap(window: Page, x?: number, y?: number): Promise<void> {
+  const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
+  if (!box) {
+    throw new Error("Could not get bounding box of the hybrid viewer canvas.");
+  }
   const targetX = x ?? Math.round(box.width * SCALAR_BAR_X_RATIO);
   const targetY = y ?? Math.round(box.height * SCALAR_BAR_Y_RATIO);
 
@@ -291,6 +357,7 @@ export {
   ensureMenuOpen,
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
   hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,

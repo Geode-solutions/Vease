@@ -7,21 +7,22 @@ import {
   setColoringStyle,
   setOpacity,
 } from "@tests/utils/data/helpers/color";
+import type { Page } from "@playwright/test";
 
-function setModelOpacity(window, percent) {
-  return setOpacity(window, "modelStyleMenu", percent);
+async function setModelOpacity(window: Page, percent: number): Promise<void> {
+  await setOpacity(window, "modelStyleMenu", percent);
 }
 
-function setModelColor(window) {
-  return setColor(window, "modelStyleMenu");
+async function setModelColor(window: Page): Promise<void> {
+  await setColor(window, "modelStyleMenu");
 }
 
-function setModelColorWithSlider(window) {
-  return setColorWithSlider(window, "modelStyleMenu");
+async function setModelColorWithSlider(window: Page): Promise<void> {
+  await setColorWithSlider(window, "modelStyleMenu");
 }
 
-function setModelColoringStyle(window, style) {
-  return setColoringStyle(window, "modelStyleMenu", style);
+async function setModelColoringStyle(window: Page, style: string): Promise<void> {
+  await setColoringStyle(window, "modelStyleMenu", style);
 }
 
 function copyModelPointsColor(window) {

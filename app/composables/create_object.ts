@@ -5,6 +5,8 @@ import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { ApiSchema } from "@vease/utils/external_stores";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import type { NewDataItem } from "@ogw_front/stores/data";
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 interface Point {
@@ -21,15 +23,21 @@ interface CreateObjectToolOptions {
   previewStyle?: string;
   previewExtraSources?: unknown[];
   getPreviewParams?: () => Record<string, unknown>;
-  onPickedPoint?: (point: Point, points: Point[]) => boolean | void;
+  onPickedPoint?: (point: Point, points: Point[]) => boolean | undefined;
   onReset?: () => void;
+}
+
+interface FormattedPoint {
+  x: number;
+  y: number;
+  z: number;
 }
 
 function createEmptyPoint(): Point {
   return { x: "", y: "", z: "" };
 }
 
-function formatPoints(pts: Point[]) {
+function formatPoints(pts: Point[]): FormattedPoint[] {
   return pts.map((point) => ({
     x: Number(String(point.x).replaceAll(",", ".")),
     y: Number(String(point.y).replaceAll(",", ".")),
@@ -39,18 +47,35 @@ function formatPoints(pts: Point[]) {
 
 const preview_schema = viewer_schemas.opengeodeweb_viewer.viewer.preview_points;
 
+interface UseCreateObjectToolReturn {
+  name: Ref<string>;
+  points: Ref<Point[]>;
+  pickingActive: Ref<boolean>;
+  loading: Ref<boolean>;
+  validPoints: ComputedRef<Point[]>;
+  hasValidPoints: ComputedRef<boolean>;
+  validPointCount: ComputedRef<number>;
+  addPoint: () => void;
+  removePoint: (index: number) => void;
+  togglePickMode: () => void;
+  handleClose: () => void;
+  sanitizeInput: (value: unknown, index: number, field: keyof Point) => void;
+  handlePaste: (event: ClipboardEvent, index: number, field: keyof Point) => void;
+  createObject: () => Promise<void>;
+}
+
 // oxlint-disable-next-line max-lines-per-function, max-statements
 export function useCreateObjectTool({
   namePrefix,
   minPoints,
   schema,
   getAdditionalPayload = () => ({}),
-  previewStyle = undefined,
+  previewStyle,
   previewExtraSources = [],
   getPreviewParams = () => ({}),
-  onPickedPoint = undefined,
-  onReset = undefined,
-}: CreateObjectToolOptions) {
+  onPickedPoint,
+  onReset,
+}: CreateObjectToolOptions): UseCreateObjectToolReturn {
   const UIStore = useUIStore();
   const backStore = getBackStore();
   const hybridViewerStore = getHybridViewerStore();
@@ -59,7 +84,7 @@ export function useCreateObjectTool({
   let counter = 0;
   const pickingActive = ref(false);
 
-  function generateName() {
+  function generateName(): string {
     counter += 1;
     return counter === 1 ? namePrefix : `${namePrefix} ${counter}`;
   }
@@ -68,29 +93,29 @@ export function useCreateObjectTool({
 
   const points = ref<Point[]>(Array.from({ length: minPoints }, () => createEmptyPoint()));
 
-  function addPoint() {
+  function addPoint(): void {
     points.value.push(createEmptyPoint());
   }
 
-  function removePoint(index: number) {
+  function removePoint(index: number): void {
     if (points.value.length > minPoints) {
       points.value.splice(index, 1);
     }
   }
 
-  function togglePickMode() {
+  function togglePickMode(): void {
     pickingActive.value = !pickingActive.value;
     viewerStore.toggle_picking_mode(pickingActive.value);
   }
 
-  function handleClose() {
+  function handleClose(): void {
     if (pickingActive.value) {
       viewerStore.toggle_picking_mode(false);
     }
     counter = 0;
     name.value = generateName();
     points.value = Array.from({ length: minPoints }, () => createEmptyPoint());
-    if (onReset) {
+    if (onReset !== undefined) {
       onReset();
     }
     UIStore.setShowCreateTools(false);
@@ -108,7 +133,7 @@ export function useCreateObjectTool({
         z: Number(String(newVal.z).replaceAll(",", ".")),
       };
 
-      if (onPickedPoint && onPickedPoint(new_point, points.value)) {
+      if (onPickedPoint !== undefined && onPickedPoint(new_point, points.value) === true) {
         return;
       }
 
@@ -132,9 +157,7 @@ export function useCreateObjectTool({
   onKeyStroke("Escape", (event) => {
     if (pickingActive.value) {
       viewerStore.toggle_picking_mode(false);
-      if (event) {
-        event.stopImmediatePropagation();
-      }
+      event.stopImmediatePropagation();
     }
   });
 
@@ -142,7 +165,7 @@ export function useCreateObjectTool({
     if (viewerStore.picking_mode) {
       viewerStore.toggle_picking_mode(false);
     }
-    if (previewStyle) {
+    if (previewStyle !== undefined) {
       const params = { points: [], style: previewStyle, ...getPreviewParams() };
       await viewerStore.request({ schema: preview_schema, params });
     }
@@ -155,7 +178,7 @@ export function useCreateObjectTool({
   const hasValidPoints = computed(() => validPoints.value.length >= minPoints);
   const validPointCount = computed(() => validPoints.value.length);
 
-  if (previewStyle) {
+  if (previewStyle !== undefined) {
     watch(
       [validPoints, ...previewExtraSources],
       async () => {
@@ -170,7 +193,7 @@ export function useCreateObjectTool({
     );
   }
 
-  function sanitizeInput(value: unknown, index: number, field: keyof Point) {
+  function sanitizeInput(value: unknown, index: number, field: keyof Point): void {
     const point = points.value[index];
     if (!point) {
       return;
@@ -182,8 +205,8 @@ export function useCreateObjectTool({
     point[field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
   }
 
-  function handlePaste(event: ClipboardEvent, index: number, field: keyof Point) {
-    const text = event?.clipboardData?.getData("text") || "";
+  function handlePaste(event: ClipboardEvent, index: number, field: keyof Point): void {
+    const text = event.clipboardData?.getData("text") ?? "";
     const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/gu);
     if (!coords) {
       return;
@@ -195,14 +218,14 @@ export function useCreateObjectTool({
     if (coords.length >= 2) {
       point.x = coords[0] ?? "";
       point.y = coords[1] ?? "";
-      point.z = coords[2] || "0";
+      point.z = coords[2] ?? "0";
     } else {
       point[field] = coords[0] ?? "";
     }
     event.preventDefault();
   }
 
-  async function createObject() {
+  async function createObject(): Promise<void> {
     if (validPoints.value.length < minPoints) {
       return;
     }
@@ -214,7 +237,8 @@ export function useCreateObjectTool({
         ...getAdditionalPayload(validPoints.value),
       };
       const resp = await backStore.request({ schema, params });
-      await importItem({ ...(resp as Record<string, unknown>) });
+      // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem.
+      await importItem(resp as NewDataItem);
       await hybridViewerStore.remoteRender();
       handleClose();
     } finally {

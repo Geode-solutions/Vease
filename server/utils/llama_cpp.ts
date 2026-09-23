@@ -44,7 +44,7 @@ const dirname = path.dirname(new URL(import.meta.url).pathname);
 let runningServer: RunningLlamaServer | undefined = undefined;
 let startingServer: Promise<LlamaServerHandle> | undefined = undefined;
 
-function platformDirName() {
+function platformDirName(): string {
   if (process.platform === "win32") {
     return "win-x64";
   }
@@ -54,7 +54,7 @@ function platformDirName() {
   throw new Error(`Unsupported platform for bundled llama.cpp: ${process.platform}`);
 }
 
-function platformArchiveExtension() {
+function platformArchiveExtension(): string {
   if (process.platform === "win32") {
     return "zip";
   }
@@ -64,11 +64,11 @@ function platformArchiveExtension() {
   throw new Error(`Unsupported platform for bundled llama.cpp: ${process.platform}`);
 }
 
-function archiveFileName() {
+function archiveFileName(): string {
   return `llama-b10809-bin-${platformDirName()}.${platformArchiveExtension()}`;
 }
 
-function resolveArchivePath(nuxtRootPath: string) {
+function resolveArchivePath(nuxtRootPath: string): string {
   const mode = process.env.MODE;
   const nodeEnv = process.env.NODE_ENV;
   if (mode === appMode.DESKTOP && nodeEnv === "production") {
@@ -83,7 +83,7 @@ function findExecutable(dir: string, executableFileName: string): string | undef
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       const found = findExecutable(fullPath, executableFileName);
-      if (found) {
+      if (found !== undefined) {
         return found;
       }
     } else if (entry.name === executableFileName) {
@@ -93,13 +93,13 @@ function findExecutable(dir: string, executableFileName: string): string | undef
   return undefined;
 }
 
-async function ensureLlamaExtracted(nuxtRootPath: string) {
+async function ensureLlamaExtracted(nuxtRootPath: string): Promise<string> {
   const extractDir = path.join(EXTRACT_CACHE_DIR, platformDirName());
   const executableFileName = executableName("llama");
   let executablePath = fs.existsSync(extractDir)
     ? findExecutable(extractDir, executableFileName)
     : undefined;
-  if (executablePath) {
+  if (executablePath !== undefined) {
     return executablePath;
   }
 
@@ -107,7 +107,7 @@ async function ensureLlamaExtracted(nuxtRootPath: string) {
   console.log(`Extracting bundled llama.cpp from ${archivePath} to ${extractDir}`);
   await unzipFile(archivePath, extractDir);
   executablePath = findExecutable(extractDir, executableFileName);
-  if (!executablePath) {
+  if (executablePath === undefined) {
     throw new Error(`Could not find ${executableFileName} after extracting ${archivePath}`);
   }
   if (process.platform !== "win32") {
@@ -116,7 +116,10 @@ async function ensureLlamaExtracted(nuxtRootPath: string) {
   return executablePath;
 }
 
-async function llamaServeArgs(model: string, apiKey: string) {
+async function llamaServeArgs(
+  model: string,
+  apiKey: string,
+): Promise<{ args: string[]; port: number }> {
   const port = await getAvailablePort();
   console.log(`Starting llama.cpp server on http://${LLAMA_HOST}:${port} with model ${model}`);
   const args = [
@@ -160,7 +163,7 @@ async function llamaServeArgs(model: string, apiKey: string) {
   return { args, port };
 }
 
-async function startLlamaServer(model: string) {
+async function startLlamaServer(model: string): Promise<LlamaServerHandle> {
   const nuxtRootPath = path.join(dirname, "..", "..");
 
   const command = await ensureLlamaExtracted(nuxtRootPath);
@@ -181,10 +184,9 @@ async function startLlamaServer(model: string) {
   });
 
   const controller = new AbortController();
-  const timer = setTimeout(
-    () => controller.abort(),
-    READY_TIMEOUT_SECONDS * MILLISECONDS_PER_SECOND,
-  );
+  const timer = setTimeout(() => {
+    controller.abort();
+  }, READY_TIMEOUT_SECONDS * MILLISECONDS_PER_SECOND);
   if (typeof timer.unref === "function") {
     timer.unref();
   }
@@ -223,14 +225,14 @@ async function runLlamaServer({
   }
 }
 
-function stopLlamaServer() {
+function stopLlamaServer(): void {
   if (runningServer) {
     runningServer.child.kill();
     runningServer = undefined;
   }
 }
 
-function getLlamaStatus() {
+function getLlamaStatus(): { running: false } | { running: true; port: number; apiKey: string } {
   if (!runningServer) {
     return { running: false };
   }

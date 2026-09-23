@@ -2,6 +2,7 @@ import { api_fetch } from "@ogw_internal/utils/api_fetch";
 
 interface ApiSchema {
   $id: string;
+  methods: string[];
   [key: string]: unknown;
 }
 
@@ -9,6 +10,7 @@ interface ApiCallbacks {
   response_function?: (response: unknown) => unknown;
   request_error_function?: (error: unknown) => unknown;
   response_error_function?: (response: unknown) => unknown;
+  skip_feedback_error?: boolean;
 }
 
 const MILLISECONDS_IN_SECOND = 1000;
@@ -19,27 +21,27 @@ export const useAPIStore = defineStore("api", () => {
     "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
   );
 
-  function start_request() {
+  function start_request(): void {
     request_counter.value += 1;
   }
 
-  function stop_request() {
+  function stop_request(): void {
     request_counter.value -= 1;
   }
 
-  function request(
+  async function request(
     {
       schema,
       params = {},
       headers = {},
-    }: { schema: ApiSchema; params?: Record<string, unknown>; headers?: Record<string, unknown> },
+    }: { schema: ApiSchema; params?: Record<string, unknown>; headers?: Record<string, string> },
     callbacks: ApiCallbacks = {},
-  ) {
+  ): Promise<unknown> {
     console.log("[API] Request:", schema.$id);
     const start = Date.now();
 
-    return api_fetch(
-      { base_url: base_url.value, start_request, stop_request },
+    const result = await api_fetch(
+      { $id: schema.$id, base_url: base_url.value, start_request, stop_request },
       { schema, params, headers },
       {
         ...callbacks,
@@ -57,6 +59,7 @@ export const useAPIStore = defineStore("api", () => {
         },
       },
     );
+    return result;
   }
   return {
     base_url,

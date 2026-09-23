@@ -9,6 +9,7 @@
 import {
   afterActionWait,
   getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
 } from "@tests/utils/viewer_interaction";
@@ -395,7 +396,7 @@ test("context menu through non visible surface", async ({ window }) => {
     .click();
   await window.waitForTimeout(afterActionWait);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  const box = await hybridViewerCanvas.boundingBox();
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await viewerContextMenu(window, box.width / 2, box.height / 2);
   await setModelColor(window);
 });

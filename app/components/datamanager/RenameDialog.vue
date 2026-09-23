@@ -26,7 +26,7 @@ watch(
   },
 );
 
-function handleConfirm() {
+function handleConfirm(): void {
   if (!currentName.value) {
     return;
   }

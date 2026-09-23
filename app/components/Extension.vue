@@ -34,7 +34,7 @@ const {
   getExtensionToolsCount,
 } = useExtensionMetadata();
 
-async function processFiles(filesToProcess) {
+async function processFiles(filesToProcess): Promise<void> {
   const validFiles = filesToProcess.filter((file) => file.name.endsWith(".vext"));
   if (validFiles.length === 0) {
     errorMessage.value = "Please drop valid extension files (.vext)";
@@ -67,20 +67,20 @@ async function processFiles(filesToProcess) {
   }
 }
 
-function toggleExtensionState(extension) {
+function toggleExtensionState(extension): void {
   appStore.toggleExtension(extension.id);
 }
 
-function formatDate(dateString) {
+function formatDate(dateString): string {
   return formatRelativeTime(dateString);
 }
 
-function confirmRemove(extension: Extension) {
+function confirmRemove(extension: Extension): void {
   extensionToRemove.value = extension;
   showRemoveDialog.value = true;
 }
 
-function removeExtension() {
+function removeExtension(): void {
   if (extensionToRemove.value) {
     appStore.unloadExtension(extensionToRemove.value.id);
     showRemoveDialog.value = false;

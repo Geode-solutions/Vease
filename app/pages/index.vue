@@ -23,7 +23,7 @@ async function handleTreeMenu({
   modelId,
   modelComponentType,
   targetComponentIds,
-}) {
+}): Promise<void> {
   if (!cardContainer.value) {
     return;
   }
@@ -51,19 +51,19 @@ async function handleTreeMenu({
     meta_data = await dataStore.item(itemId);
   }
 
-  menuStore.openMenu(
-    itemId,
+  menuStore.openMenu({
+    id: itemId,
     x,
-    yUI,
-    containerWidth.value,
-    containerHeight.value,
-    rect.top,
-    rect.left,
+    y: yUI,
+    width: containerWidth.value,
+    height: containerHeight.value,
+    top: rect.top,
+    left: rect.left,
     meta_data,
-  );
+  });
 }
 
-async function openMenu(event) {
+async function openMenu(event): Promise<void> {
   if (!cardContainer.value || !viewerUI.value) {
     return;
   }
@@ -85,16 +85,16 @@ async function openMenu(event) {
     }
   }
 
-  menuStore.openMenu(
-    pickedId,
+  menuStore.openMenu({
+    id: pickedId,
     x,
-    yUI,
-    containerWidth.value,
-    containerHeight.value,
-    rect.top,
-    rect.left,
-    item,
-  );
+    y: yUI,
+    width: containerWidth.value,
+    height: containerHeight.value,
+    top: rect.top,
+    left: rect.left,
+    meta_data: item,
+  });
 }
 
 const { width: elWidth, height: elHeight } = useElementSize(cardContainer);

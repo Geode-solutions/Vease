@@ -7,7 +7,7 @@ const MONTHS = 30;
 const QUARTERS = 4;
 const YEARS = 12;
 
-export function formatRelativeTime(dateInput: string | Date) {
+export function formatRelativeTime(dateInput: string | Date): string {
   const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
