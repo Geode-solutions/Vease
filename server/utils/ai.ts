@@ -3,7 +3,7 @@ import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
 import type { LanguageModelV4 } from "@ai-sdk/provider";
 import { createGateway } from "@ai-sdk/gateway";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
+import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 // Local imports
 import { clearGatewayApiKey, getGatewayApiKey } from "@vease_server/utils/server_config.js";
