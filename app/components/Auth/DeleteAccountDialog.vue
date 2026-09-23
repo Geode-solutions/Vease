@@ -10,7 +10,7 @@ const loading = ref(false);
 const password = ref("");
 const passwordVisible = ref(false);
 
-async function handleDeleteAccount() {
+async function handleDeleteAccount(): Promise<void> {
   loading.value = true;
   try {
     await deleteAccount(password.value);

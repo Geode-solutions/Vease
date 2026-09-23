@@ -1,8 +1,9 @@
+import type { Page } from "@playwright/test";
 import { meshViewerObjectType } from "@tests/utils/constants";
 import { setCellsVisibility } from "@tests/utils/viewer_interaction";
 
-function setMeshCellsVisibility(window, visibility) {
-  return setCellsVisibility(window, meshViewerObjectType, visibility);
+async function setMeshCellsVisibility(window: Page, visibility: boolean): Promise<void> {
+  await setCellsVisibility(window, meshViewerObjectType, visibility);
 }
 
 export { setMeshCellsVisibility };

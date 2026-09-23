@@ -6,25 +6,26 @@ import {
   setFeatureColoringStyle,
   setFeatureOpacity,
 } from "@tests/utils/data/helpers/color";
+import type { Page } from "@playwright/test";
 
-function setMeshPolyhedraOpacity(window, percent) {
-  return setFeatureOpacity(window, meshViewerObjectType, polyhedraFeatureName, percent);
+async function setMeshPolyhedraOpacity(window: Page, percent: number): Promise<void> {
+  await setFeatureOpacity(window, meshViewerObjectType, polyhedraFeatureName, percent);
 }
 
-function setMeshPolyhedraColor(window) {
-  return setFeatureColor(window, meshViewerObjectType, polyhedraFeatureName);
+async function setMeshPolyhedraColor(window: Page): Promise<void> {
+  await setFeatureColor(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
-function setMeshPolyhedraColorBlack(window) {
-  return setFeatureColorBlack(window, meshViewerObjectType, polyhedraFeatureName);
+async function setMeshPolyhedraColorBlack(window: Page): Promise<void> {
+  await setFeatureColorBlack(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
-function setMeshPolyhedraColorWithSlider(window) {
-  return setFeatureColorWithSlider(window, meshViewerObjectType, polyhedraFeatureName);
+async function setMeshPolyhedraColorWithSlider(window: Page): Promise<void> {
+  await setFeatureColorWithSlider(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
-function setMeshPolyhedraColoringStyle(window, style) {
-  return setFeatureColoringStyle(window, meshViewerObjectType, polyhedraFeatureName, style);
+async function setMeshPolyhedraColoringStyle(window: Page, style: string): Promise<void> {
+  await setFeatureColoringStyle(window, meshViewerObjectType, polyhedraFeatureName, style);
 }
 
 export {

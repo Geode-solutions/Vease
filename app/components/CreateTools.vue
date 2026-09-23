@@ -5,19 +5,19 @@ import { useUIStore } from "@vease/stores/ui";
 const UIStore = useUIStore();
 const selectedTool = ref<string | undefined>(undefined);
 
-function getToolComponent(toolId) {
+function getToolComponent(toolId): unknown {
   return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component;
 }
 
-function handleSelectTool(toolId) {
+function handleSelectTool(toolId): void {
   selectedTool.value = toolId;
 }
 
-function handleBack() {
+function handleBack(): void {
   selectedTool.value = undefined;
 }
 
-function handleToolCreated() {
+function handleToolCreated(): void {
   selectedTool.value = undefined;
   UIStore.setShowCreateTools(false);
 }
@@ -31,7 +31,7 @@ watch(
   },
 );
 
-function handleEscape() {
+function handleEscape(): void {
   if (UIStore.showCreateTools) {
     if (selectedTool.value) {
       selectedTool.value = undefined;

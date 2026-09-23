@@ -6,7 +6,8 @@ import { useChat } from "@ai-sdk/vue";
 import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "@vease/composables/auth";
 
-const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" };
+const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
+type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
 const ENTITLEMENT_SCHEMA = {
   $id: "/ai/entitlement",
@@ -26,33 +27,48 @@ const KEY_SCHEMA = {
   additionalProperties: false,
 };
 
-export function useVeaseChat() {
+interface VeaseChatReturn extends Pick<
+  ReturnType<typeof useChat>,
+  "messages" | "sendMessage" | "status" | "error" | "stop" | "clearError"
+> {
+  provider: Ref<ChatProvider>;
+  toggleProvider: () => Promise<void>;
+  isCloudAiAllowed: Ref<boolean>;
+  CHAT_PROVIDER: typeof CHAT_PROVIDER;
+}
+
+export function useVeaseChat(): VeaseChatReturn {
   const { user } = useAuth();
   const APIStore = useAPIStore();
-  const provider = ref(CHAT_PROVIDER.LLAMA);
+  const provider = ref<ChatProvider>(CHAT_PROVIDER.LLAMA);
   const isCloudAiAllowed = ref(false);
   let gatewayKeyReady = false;
 
-  async function refreshCloudEntitlement() {
+  async function refreshCloudEntitlement(): Promise<void> {
     if (!user.value) {
       isCloudAiAllowed.value = false;
       return;
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { cloudAllowed } = await APIStore.request({ schema: ENTITLEMENT_SCHEMA, headers });
+    const { cloudAllowed } = (await APIStore.request({
+      schema: ENTITLEMENT_SCHEMA,
+      headers,
+    })) as { cloudAllowed?: boolean };
     isCloudAiAllowed.value = Boolean(cloudAllowed);
   }
 
   watch(user, refreshCloudEntitlement, { immediate: true });
 
-  async function ensureGatewayKey() {
+  async function ensureGatewayKey(): Promise<void> {
     if (gatewayKeyReady || !user.value) {
       return;
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { apiKeyString } = await APIStore.request({ schema: KEY_SCHEMA, headers });
+    const { apiKeyString } = (await APIStore.request({ schema: KEY_SCHEMA, headers })) as {
+      apiKeyString?: string;
+    };
     await $fetch("/api/llm/gateway_key", { method: "POST", body: { apiKey: apiKeyString } });
     gatewayKeyReady = true;
   }
@@ -64,7 +80,7 @@ export function useVeaseChat() {
     }),
   });
 
-  async function toggleProvider() {
+  async function toggleProvider(): Promise<void> {
     if (!isCloudAiAllowed.value) {
       return;
     }

@@ -10,18 +10,53 @@ import {
 import { appMode } from "@ogw_shared/app_mode";
 import { useFirebaseAuth } from "vuefire";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import type { Auth } from "firebase/auth";
-import { useInfraStore } from "@ogw_front/stores/infra";
+import type { Auth, User } from "firebase/auth";
+import { useInfraStore } from "@ogw_front/stores/infra.js";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
 
-function releaseGatewayKey() {
-  return $fetch("/api/llm/gateway_key", { method: "DELETE" });
+function deleteGatewayKey() {
+  return $fetch("/api/llm/delete_gateway_key", { method: "POST" });
+}
+
+interface DesktopElectronAPI {
+  save_credentials: (args: Readonly<{ email: string; password: string }>) => void;
+  get_credentials: () => Promise<{
+    success: boolean;
+    credentials?: { email: string; password: string };
+    error?: string;
+  }>;
+  delete_credentials: () => Promise<{ success: boolean; error?: string }>;
+}
+
+function hasDesktopElectronAPI(
+  value: typeof globalThis,
+): value is typeof globalThis & { electronAPI: DesktopElectronAPI } {
+  return "electronAPI" in value;
+}
+
+function getDesktopElectronAPI(): DesktopElectronAPI {
+  const globalScope = globalThis;
+  if (!hasDesktopElectronAPI(globalScope)) {
+    throw new Error("Desktop electron API is not available");
+  }
+  return globalScope.electronAPI;
+}
+
+interface UseAuthReturn {
+  user: ReturnType<typeof useCurrentUser>;
+  isUserAuthenticated: ComputedRef<boolean>;
+  autoLogin: () => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string) => Promise<User>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<unknown>;
 }
 
 //oxlint-disable max-lines-per-function
-function useAuth() {
+function useAuth(): UseAuthReturn {
   const firebaseAuth = useFirebaseAuth();
   if (!firebaseAuth) {
     throw new Error("Firebase auth is not initialized");
@@ -33,7 +68,7 @@ function useAuth() {
 
   const isUserAuthenticated = computed(() => Boolean(user.value));
 
-  async function register(email: string, password: string) {
+  async function register(email: string, password: string): Promise<User> {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
     const schema = {
       $id: "/auth/send-verification",
@@ -49,7 +84,7 @@ function useAuth() {
     return newUser;
   }
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<User> {
     const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
     await loggedInUser.reload();
     if (!loggedInUser.emailVerified) {
@@ -57,7 +92,7 @@ function useAuth() {
       throw new Error("Please verify your email address before logging in.");
     }
     if (infraStore.app_mode === appMode.DESKTOP) {
-      globalThis.electronAPI.save_credentials({
+      getDesktopElectronAPI().save_credentials({
         email,
         password,
       });
@@ -65,12 +100,12 @@ function useAuth() {
     return loggedInUser;
   }
 
-  async function autoLogin() {
+  async function autoLogin(): Promise<void> {
     if (infraStore.app_mode !== appMode.DESKTOP) {
       return;
     }
     try {
-      const { success, credentials, error } = await globalThis.electronAPI.get_credentials();
+      const { success, credentials, error } = await getDesktopElectronAPI().get_credentials();
       if (!success) {
         console.error("Failed to get credentials:", error);
         return;
@@ -78,10 +113,10 @@ function useAuth() {
       if (credentials) {
         const { email, password } = credentials;
         try {
-          return login(email, password);
+          await login(email, password);
         } catch (loginError) {
           console.error("Auto-login failed:", loginError);
-          return globalThis.electronAPI.delete_credentials();
+          await getDesktopElectronAPI().delete_credentials();
         }
       }
     } catch (error) {
@@ -89,11 +124,11 @@ function useAuth() {
     }
   }
 
-  async function logout() {
-    await releaseGatewayKey();
+  async function logout(): Promise<void> {
+    await deleteGatewayKey();
     if (infraStore.app_mode === appMode.DESKTOP) {
       try {
-        const { success } = await globalThis.electronAPI.delete_credentials();
+        const { success } = await getDesktopElectronAPI().delete_credentials();
         if (!success) {
           console.error("Failed to delete credentials");
           return;
@@ -105,7 +140,7 @@ function useAuth() {
     await signOut(auth);
   }
 
-  async function deleteAccount(password: string) {
+  async function deleteAccount(password: string): Promise<void> {
     const currentUser = user.value;
     if (!currentUser) {
       throw new Error("No user logged in");
@@ -119,7 +154,7 @@ function useAuth() {
     await logout();
   }
 
-  function resetPassword(email: string) {
+  async function resetPassword(email: string): Promise<unknown> {
     const schema = {
       $id: "/auth/send-password-reset",
       methods: ["POST"],
@@ -129,7 +164,21 @@ function useAuth() {
       additionalProperties: false,
     };
     const params = { email };
-    return APIStore.request({ schema, params });
+    try {
+      const res = (await APIStore.request({ schema, params }, { skip_feedback_error: true })) as {
+        success?: boolean;
+        error?: string;
+      };
+      if (res && res.error) {
+        throw new Error(res.error);
+      }
+      return res;
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message) {
+        throw error;
+      }
+      throw new Error("Failed to send password reset email.", { cause: error });
+    }
   }
   return {
     user,

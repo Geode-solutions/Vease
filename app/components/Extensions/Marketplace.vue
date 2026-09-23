@@ -13,8 +13,8 @@ const {
   data: extensions,
   pending,
   error: fetchError,
-  // oxlint-disable-next-line no-top-level-await
-} = await useAsyncData("extensions", () => allowedExtensions(), {
+} = useAsyncData<MarketplaceExtension[]>("extensions", () => allowedExtensions(), {
+  lazy: true,
   watch: [user],
 });
 
@@ -39,7 +39,7 @@ const selectedExtension = ref<MarketplaceExtension | undefined>(undefined);
     </v-col>
 
     <v-col cols="12" md="8" lg="9" class="d-flex flex-column pa-0 pl-md-2" style="min-height: 0">
-      <MarketplaceDetails :extension="selectedExtension" />
+      <MarketplaceDetails :extension="selectedExtension" :pending="pending" />
     </v-col>
   </v-row>
 

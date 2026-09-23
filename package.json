@@ -50,6 +50,7 @@
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
+    "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "test": "echo \"Error: no test specified\" && exit 0",
     "test:e2e": "npx playwright test --config ./tests/e2e/playwright.config.ts",
     "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",

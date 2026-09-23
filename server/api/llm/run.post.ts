@@ -9,7 +9,7 @@ import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 export default defineEventHandler(async (event) => {
   try {
-    const { model } = await readBody(event);
+    const { model } = await readBody<{ model?: string }>(event);
     const { port, apiKey } = await runLlamaServer({ model });
 
     return {

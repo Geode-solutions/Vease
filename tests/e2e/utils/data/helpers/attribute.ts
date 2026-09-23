@@ -1,3 +1,4 @@
+import type { Locator, Page } from "@playwright/test";
 import {
   SLIDER_PINK,
   clickColorPickerCanvas,
@@ -10,7 +11,7 @@ import {
   moveMouseOutOfTheWay,
 } from "@tests/utils/viewer_interaction";
 
-async function resetMenuScroll(window, scrollTop = 0) {
+async function resetMenuScroll(window: Page, scrollTop = 0): Promise<void> {
   await window.evaluate((top) => {
     const cardTexts = document.querySelectorAll(".v-card-text");
     for (const cardTextElement of cardTexts) {
@@ -19,14 +20,18 @@ async function resetMenuScroll(window, scrollTop = 0) {
   }, scrollTop);
 }
 
-function getMenuContainer(window, menuTestId) {
+function getMenuContainer(window: Page, menuTestId: string | Locator): Locator {
   if (typeof menuTestId === "string") {
     return window.getByTestId(menuTestId);
   }
   return menuTestId;
 }
 
-async function setFeatureItem(window, menuTestId, item) {
+async function setFeatureItem(
+  window: Page,
+  menuTestId: string | Locator,
+  item: number,
+): Promise<void> {
   const container = getMenuContainer(window, menuTestId);
   const itemSelector = container.getByTestId("itemSelector").first();
   await itemSelector.waitFor({ state: "visible" });
@@ -45,7 +50,11 @@ async function setFeatureItem(window, menuTestId, item) {
   await moveMouseOutOfTheWay(window);
 }
 
-async function setFeatureColorMap(window, menuTestId, colorMap) {
+async function setFeatureColorMap(
+  window: Page,
+  menuTestId: string | Locator,
+  colorMap: string,
+): Promise<void> {
   const container = getMenuContainer(window, menuTestId);
   const colorMapPicker = container.getByTestId("colorMapPicker").first();
   await colorMapPicker.waitFor({ state: "visible" });
@@ -80,17 +89,10 @@ interface ApplyAttributeOptions {
 }
 
 async function applyAttribute(
-  window,
-  menuTestId,
-  {
-    attributeType,
-    attributeName,
-    item = undefined,
-    colorMap = undefined,
-    min = undefined,
-    max = undefined,
-  }: ApplyAttributeOptions,
-) {
+  window: Page,
+  menuTestId: string | Locator,
+  { attributeType, attributeName, item, colorMap, min, max }: ApplyAttributeOptions,
+): Promise<void> {
   if (typeof menuTestId === "string") {
     await ensureMenuOpen(window, menuTestId);
     await ensureFeatureVisible(window, menuTestId);
@@ -125,7 +127,7 @@ async function applyAttribute(
     await setFeatureItem(window, menuTestId, item);
   }
 
-  if (colorMap) {
+  if (colorMap !== undefined && colorMap !== "") {
     await setFeatureColorMap(window, menuTestId, colorMap);
   }
 
@@ -146,22 +148,29 @@ async function applyAttribute(
   await moveMouseOutOfTheWay(window);
 }
 
-function setFeatureAttribute(
-  window,
-  viewerObjectType,
-  feature,
-  attributeType,
-  attributeName,
-  options = {},
-) {
+interface FeatureAttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setFeatureAttribute(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  attributeType: string,
+  attributeName: string,
+  options: FeatureAttributeOptions = {},
+): Promise<void> {
   let menuTestId = `${viewerObjectType}${feature}Menu`;
   if (viewerObjectType === "model") {
     menuTestId = "modelStyleMenu";
   }
-  return applyAttribute(window, menuTestId, { attributeType, attributeName, ...options });
+  await applyAttribute(window, menuTestId, { attributeType, attributeName, ...options });
 }
 
-async function setQuickColorMap(window, colorMap) {
+async function setQuickColorMap(window: Page, colorMap: string): Promise<void> {
   const colorMapListFilter = window
     .getByTestId("colorMapListFilter")
     .filter({ visible: true })
@@ -182,7 +191,7 @@ async function setQuickColorMap(window, colorMap) {
   await moveMouseOutOfTheWay(window);
 }
 
-async function setFeatureNoDataColor(window, menuTestId) {
+async function setFeatureNoDataColor(window: Page, menuTestId: string | Locator): Promise<void> {
   if (typeof menuTestId === "string") {
     await ensureMenuOpen(window, menuTestId);
   }

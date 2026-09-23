@@ -1,20 +1,36 @@
 // Third party imports
-import { convertToModelMessages, stepCountIs, streamText } from "ai";
+import {
+  type UIMessage,
+  convertToModelMessages,
+  createUIMessageStreamResponse,
+  stepCountIs,
+  streamText,
+  toUIMessageStream,
+} from "ai";
 import { createError, defineEventHandler, readBody } from "h3";
 
 // Local imports
-import { getChatModel, getChatTools } from "@vease_server/utils/ai";
+import { type ChatProvider, getChatModel, getChatTools } from "@vease_server/utils/ai";
 import { asErrorLike } from "@vease_server/utils/errors";
 
 const MAX_TOOL_STEPS = 5;
 
 export default defineEventHandler(async (event) => {
   try {
-    const { messages, provider, model: modelId } = await readBody(event);
+    const {
+      messages,
+      provider,
+      model: modelId,
+    } = await readBody<{
+      messages: Omit<UIMessage, "id">[];
+      provider?: ChatProvider;
+      model?: string;
+    }>(event);
     const [model, tools] = await Promise.all([
       getChatModel({ provider, model: modelId }),
       getChatTools(),
     ]);
+
     const result = streamText({
       model,
       messages: await convertToModelMessages(messages),
@@ -22,7 +38,9 @@ export default defineEventHandler(async (event) => {
       stopWhen: stepCountIs(MAX_TOOL_STEPS),
     });
 
-    return result.toUIMessageStreamResponse();
+    return createUIMessageStreamResponse({
+      stream: toUIMessageStream({ stream: result.stream }),
+    });
   } catch (error) {
     console.log(error);
     throw createError({

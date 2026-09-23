@@ -5,21 +5,22 @@ import {
   setFeatureColoringStyle,
   setFeatureOpacity,
 } from "@tests/utils/data/helpers/color";
+import type { Page } from "@playwright/test";
 
-function setMeshPolygonsOpacity(window, percent) {
-  return setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);
+async function setMeshPolygonsOpacity(window: Page, percent: number): Promise<void> {
+  await setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);
 }
 
-function setMeshPolygonsColor(window) {
-  return setFeatureColor(window, meshViewerObjectType, polygonsFeatureName);
+async function setMeshPolygonsColor(window: Page): Promise<void> {
+  await setFeatureColor(window, meshViewerObjectType, polygonsFeatureName);
 }
 
-function setMeshPolygonsColorWithSlider(window) {
-  return setFeatureColorWithSlider(window, meshViewerObjectType, polygonsFeatureName);
+async function setMeshPolygonsColorWithSlider(window: Page): Promise<void> {
+  await setFeatureColorWithSlider(window, meshViewerObjectType, polygonsFeatureName);
 }
 
-function setMeshPolygonsColoringStyle(window, style) {
-  return setFeatureColoringStyle(window, meshViewerObjectType, polygonsFeatureName, style);
+async function setMeshPolygonsColoringStyle(window: Page, style: string): Promise<void> {
+  await setFeatureColoringStyle(window, meshViewerObjectType, polygonsFeatureName, style);
 }
 
 export {

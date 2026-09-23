@@ -35,13 +35,13 @@ const newItemName = ref("");
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
-function showFeedback(text: string, color = "success") {
+function showFeedback(text: string, color = "success"): void {
   snackbar.text = text;
   snackbar.color = color;
   snackbar.show = true;
 }
 
-async function toggleVisibility(item: DataItem, targetVisible: boolean = !item.visible) {
+async function toggleVisibility(item: DataItem, targetVisible = !item.visible): Promise<void> {
   if (item.visible === targetVisible) {
     return;
   }
@@ -55,7 +55,7 @@ async function toggleVisibility(item: DataItem, targetVisible: boolean = !item.v
   }
 }
 
-async function toggleSelectedVisibility() {
+async function toggleSelectedVisibility(): Promise<void> {
   const targetItems = selectedIds.value.length > 0 ? selectedIds.value : items.value;
   if (!targetItems || targetItems.length === 0) {
     return;
@@ -70,17 +70,17 @@ async function toggleSelectedVisibility() {
   showFeedback(targetVisible ? "Visibility enabled" : "Visibility disabled");
 }
 
-function focusCamera(item: DataItem) {
+function focusCamera(item: DataItem): void {
   hybridViewerStore.focusCameraOnObject(item.id);
 }
 
-function openRenameDialog(item: DataItem) {
+function openRenameDialog(item: DataItem): void {
   itemToRename.value = item;
   newItemName.value = item.name;
   renameDialog.value = true;
 }
 
-async function confirmRename(newName: string) {
+async function confirmRename(newName: string): Promise<void> {
   const item = itemToRename.value;
   if (!newName || !item) {
     return;
@@ -98,7 +98,7 @@ async function confirmRename(newName: string) {
   }
 }
 
-async function isolateItem(item: DataItem) {
+async function isolateItem(item: DataItem): Promise<void> {
   const promises = items.value.map(async (i) => {
     const visible = i.id === item.id;
     await dataStore.updateItem(i.id, { visible });
@@ -112,12 +112,12 @@ async function isolateItem(item: DataItem) {
   focusCamera(item);
 }
 
-function confirmDelete(item: DataItem) {
+function confirmDelete(item: DataItem): void {
   itemToDelete.value = item;
   deleteSingleDialog.value = true;
 }
 
-async function executeDelete() {
+async function executeDelete(): Promise<void> {
   const item = itemToDelete.value;
   if (!item) {
     return;
@@ -131,7 +131,7 @@ async function executeDelete() {
   showFeedback("Item deleted");
 }
 
-async function deleteSelected() {
+async function deleteSelected(): Promise<void> {
   const idsToDelete = selectedIds.value.map((selected) => selected.id);
   const promises = idsToDelete.map(async (id) => {
     await dataStore.deregisterObject(id);
@@ -146,14 +146,17 @@ async function deleteSelected() {
 }
 
 const { delete: del } = useMagicKeys();
-whenever(del!, () => {
-  if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")) {
-    return;
-  }
-  if (selectedIds.value.length > 0) {
-    deleteSelectedDialog.value = true;
-  }
-});
+whenever(
+  computed(() => del?.value ?? false),
+  () => {
+    if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName ?? "")) {
+      return;
+    }
+    if (selectedIds.value.length > 0) {
+      deleteSelectedDialog.value = true;
+    }
+  },
+);
 
 useEventListener(document, "keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && (event.key === "k" || event.key === "K")) {

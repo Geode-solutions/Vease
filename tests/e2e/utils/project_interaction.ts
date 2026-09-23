@@ -1,13 +1,14 @@
+import type { Page } from "@playwright/test";
 import { afterActionWait } from "./constants";
 
-async function exportProject(window) {
+async function exportProject(window: Page): Promise<void> {
   await window.getByTestId("projectMenuButton").click();
   await window.waitForTimeout(afterActionWait);
   await window.getByTestId("exportProjectButton").click();
   await window.waitForTimeout(afterActionWait);
 }
 
-async function importProject(window, projectFilePath) {
+async function importProject(window: Page, projectFilePath: string): Promise<void> {
   await window.getByTestId("projectMenuButton").click();
   await window.waitForTimeout(afterActionWait);
   const fileInput = window.getByTestId("importProjectInput");

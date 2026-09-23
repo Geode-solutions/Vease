@@ -20,9 +20,21 @@ import {
   setFeatureColorMap,
   setFeatureItem,
 } from "@tests/utils/data/helpers/attribute";
+import type { Page } from "@playwright/test";
 
-function setMeshCellsVertexAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+interface AttributeOptions {
+  item?: number;
+  colorMap?: string;
+  min?: number | string;
+  max?: number | string;
+}
+
+async function setMeshCellsVertexAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     cellsFeatureName,
@@ -32,8 +44,12 @@ function setMeshCellsVertexAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshCellsCellAttribute(window, attributeName, options = {}) {
-  return setFeatureAttribute(
+async function setMeshCellsCellAttribute(
+  window: Page,
+  attributeName: string,
+  options: AttributeOptions = {},
+): Promise<void> {
+  await setFeatureAttribute(
     window,
     meshViewerObjectType,
     cellsFeatureName,
@@ -43,22 +59,22 @@ function setMeshCellsCellAttribute(window, attributeName, options = {}) {
   );
 }
 
-function setMeshCellsItem(window, item) {
+async function setMeshCellsItem(window: Page, item: number): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
-  return setFeatureItem(window, menuTestId, item);
+  await setFeatureItem(window, menuTestId, item);
 }
 
-function setMeshCellsColorMap(window, colorMap) {
+async function setMeshCellsColorMap(window: Page, colorMap: string): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
-  return setFeatureColorMap(window, menuTestId, colorMap);
+  await setFeatureColorMap(window, menuTestId, colorMap);
 }
 
-function openMeshCellsMenu(window) {
+async function openMeshCellsMenu(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
-  return openStyleMenu(window, menuTestId);
+  await openStyleMenu(window, menuTestId);
 }
 
-async function setMeshCellsNoDataColor(window) {
+async function setMeshCellsNoDataColor(window: Page): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${cellsFeatureName}Menu`;
   await ensureMenuOpen(window, menuTestId);
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();

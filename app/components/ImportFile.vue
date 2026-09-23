@@ -26,7 +26,7 @@ useFocus(import_button as unknown as Ref<HTMLElement | null>, { initialValue: tr
 const loading = ref(false);
 const toggle_loading = useToggle(loading);
 
-async function import_files() {
+async function import_files(): Promise<void> {
   toggle_loading();
   const files_array = filenames.map((filename) => ({
     filename,
@@ -43,7 +43,7 @@ async function import_files() {
   }
 }
 
-function cancel() {
+function cancel(): void {
   emit("reset_values");
   UIStore.setShowStepper(false);
 }

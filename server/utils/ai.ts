@@ -1,26 +1,26 @@
 // Third party imports
+import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
+import type { LanguageModelV4 } from "@ai-sdk/provider";
 import { createGateway } from "@ai-sdk/gateway";
-import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import type { MCPClient } from "@ai-sdk/mcp";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.js";
 
 // Local imports
-import { getGatewayApiKey } from "@vease_server/utils/server_config.js";
+import { clearGatewayApiKey, getGatewayApiKey } from "@vease_server/utils/server_config.js";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 const LLAMA_HOST = "127.0.0.1";
 const DEFAULT_GATEWAY_MODEL = "openai/gpt-4o-mini";
-const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" };
+const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
+type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
 let mcpClientPromise: Promise<MCPClient> | undefined = undefined;
 
-function getMcpBaseUrl() {
+function getMcpBaseUrl(): string {
   return `${getAppBaseUrl()}/mcp`;
 }
 
-async function getLlamaChatModel(model) {
+async function getLlamaChatModel(model: string | undefined): Promise<LanguageModelV4> {
   const { port, apiKey, model: resolvedModel } = await runLlamaServer({ model });
 
   const provider = createOpenAICompatible({
@@ -31,7 +31,7 @@ async function getLlamaChatModel(model) {
   return provider.chatModel(resolvedModel);
 }
 
-function getGatewayChatModel(model) {
+function getGatewayChatModel(model: string | undefined): LanguageModelV4 {
   const apiKey = getGatewayApiKey();
   if (!apiKey) {
     throw new Error("No AI Gateway key cached for this session yet");
@@ -40,25 +40,31 @@ function getGatewayChatModel(model) {
   return provider.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
 }
 
-function getChatModel({ provider = CHAT_PROVIDER.LLAMA, model } = {}) {
+async function getChatModel({
+  provider = CHAT_PROVIDER.LLAMA,
+  model,
+}: { provider?: ChatProvider; model?: string } = {}): Promise<LanguageModelV4> {
   if (provider === CHAT_PROVIDER.GATEWAY) {
     return getGatewayChatModel(model);
   }
-  return getLlamaChatModel(model);
+  return await getLlamaChatModel(model);
 }
 
-function getMcpClient() {
-  if (!mcpClientPromise) {
-    mcpClientPromise = createMCPClient({
-      transport: { type: "http", url: getMcpBaseUrl() },
-    });
-  }
-  return mcpClientPromise;
+async function getMcpClient(): Promise<MCPClient> {
+  mcpClientPromise ??= createMCPClient({
+    transport: { type: "http", url: getMcpBaseUrl() },
+  });
+  const client = await mcpClientPromise;
+  return client;
 }
 
-async function getChatTools() {
+async function getChatTools(): Promise<Awaited<ReturnType<MCPClient["tools"]>>> {
   const client = await getMcpClient();
   return client.tools();
 }
 
-export { CHAT_PROVIDER, getChatModel, getChatTools };
+function deleteGatewayKey(): void {
+  clearGatewayApiKey();
+}
+
+export { CHAT_PROVIDER, deleteGatewayKey, getChatModel, getChatTools, type ChatProvider };
