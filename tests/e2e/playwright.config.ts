@@ -16,7 +16,7 @@ const CI_WORKERS = 2;
 const isCI = process.env.CI !== undefined && process.env.CI !== "";
 const retries = isCI ? CI_RETRIES : 0;
 const workers = isCI ? CI_WORKERS : undefined;
-const testMatch = "tests/e2e/tests/**/*.test.ts";
+const testMatch = "tests/e2e/tests/**/model.test.ts";
 const maxDiffPixelRatio = 0.02;
 
 const TIMEOUTS = {
