@@ -4,16 +4,16 @@ import path from "node:path";
 // Third party imports
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
-import { exportProject, importProject } from "@tests/utils/project_interaction";
+import { afterActionWait, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
-} from "@tests/utils/object_trees/model_components_object_tree";
-import { brepGeodeObjectType } from "@tests/utils/constants";
-import { hideObjectInTree } from "@tests/utils/object_trees/common";
-import { setColor } from "@tests/utils/data/helpers/color";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { brepGeodeObjectType } from "@vease_tests/utils/constants";
+import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import { setColor } from "@vease_tests/utils/data/helpers/color";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const inputFilename = "test_project.vease";

@@ -25,7 +25,10 @@
   "type": "module",
   "main": "dist-electron/main.js",
   "exports": {
-    "./tests/e2e/utils/*": "./tests/e2e/utils/*"
+    "./tests/e2e/utils/*.js": {
+      "types": "./tests/e2e/utils/*.ts",
+      "default": "./.build/tests/e2e/utils/*.js"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -42,7 +45,7 @@
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
     "build": "MODE=NODE nuxt prepare && rolldown -c rolldown.config.ts",
     "build:front": "nuxi build",
-    "build:browser": "cross-env MODE=BROWSER npm run build:front",
+    "build:browser": "npm run build && cross-env MODE=BROWSER npm run build:front",
     "build:cloud": "cross-env MODE=CLOUD npm run build:front",
     "build:cloud_server": "cross-env MODE=CLOUD_SERVER npm run build:front",
     "build:desktop": "npm run package",

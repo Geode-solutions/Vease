@@ -4,7 +4,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
+import { afterActionWait, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import {
   checkFilterCategory,
   copyTreeRowId,
@@ -15,25 +15,25 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@tests/utils/object_trees/common";
+} from "@vease_tests/utils/object_trees/common";
 import {
   collapseMainObjectTree,
   getMainObjectTree,
   toggleObjectsTree,
-} from "@tests/utils/object_trees/main_object_tree";
+} from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   collapseModelComponentsObjectTree,
   expandModelComponentsObjectTree,
   getModelComponentsObjectTree,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
-} from "@tests/utils/object_trees/model_components_object_tree";
-import { assertDefined } from "@tests/utils/other";
-import { brepGeodeObjectType } from "@tests/utils/constants";
-import { closeAllMenus } from "@tests/utils/app_interaction";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { resetCamera } from "@tests/utils/camera_interaction";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { assertDefined } from "@vease_tests/utils/other";
+import { brepGeodeObjectType } from "@vease_tests/utils/constants";
+import { closeAllMenus } from "@vease_tests/utils/app_interaction";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { resetCamera } from "@vease_tests/utils/camera_interaction";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const brepFilename = "test.og_brep";

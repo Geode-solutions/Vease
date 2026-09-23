@@ -12,7 +12,7 @@ import {
   setPlaneNormal,
   toggleClippingPlanes,
   toggleTargetAllVisible,
-} from "@tests/utils/clipping_planes_interaction";
+} from "@vease_tests/utils/clipping_planes_interaction";
 import {
   afterActionWait,
   dragContextMenu,
@@ -22,8 +22,12 @@ import {
   hoverViewer,
   stabilizeHoverTooltip,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction";
-import { brepGeodeObjectType, defaultDataName, rgd3dGeodeObjectType } from "@tests/utils/constants";
+} from "@vease_tests/utils/viewer_interaction";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  rgd3dGeodeObjectType,
+} from "@vease_tests/utils/constants";
 import {
   clearRuler,
   closeCameraManager,
@@ -46,23 +50,23 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
-} from "@tests/utils/camera_interaction";
+} from "@vease_tests/utils/camera_interaction";
 
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
   focusObjectInTree,
   getMainObjectTree,
   showObjectInTree,
-} from "@tests/utils/object_trees/main_object_tree";
-import { confirmDelete } from "@tests/utils/data_manager";
-import { hideObjectInTree } from "@tests/utils/object_trees/common";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { navigateToDataManagerPage } from "@tests/utils/navigate";
-import { setColor } from "@tests/utils/data/helpers/color";
-import { setMeshEdgesVisibility } from "@tests/utils/data";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/object_trees/main_object_tree";
+import { confirmDelete } from "@vease_tests/utils/data_manager";
+import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
+import { setColor } from "@vease_tests/utils/data/helpers/color";
+import { setMeshEdgesVisibility } from "@vease_tests/utils/data";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const brepFilename = "test.og_brep";

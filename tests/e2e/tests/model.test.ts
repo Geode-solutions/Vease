@@ -12,7 +12,7 @@ import {
   getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 import {
   brepGeodeObjectType,
   defaultDataName,
@@ -21,8 +21,8 @@ import {
   polyhedronAttributeType,
   structuralModelGeodeObjectType,
   vertexAttributeType,
-} from "@tests/utils/constants";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+} from "@vease_tests/utils/constants";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import {
   collapseMeshComponentType,
   collapseModelComponentTypes,
@@ -35,16 +35,19 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
-} from "@tests/utils/object_trees/model_components_object_tree";
+} from "@vease_tests/utils/object_trees/model_components_object_tree";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
   getMainObjectTree,
   highlightData,
   toggleObjectsTree,
-} from "@tests/utils/object_trees/main_object_tree";
-import { expandGeodeObjectTypeInTree, hideObjectInTree } from "@tests/utils/object_trees/common";
-import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
+} from "@vease_tests/utils/object_trees/main_object_tree";
+import {
+  expandGeodeObjectTypeInTree,
+  hideObjectInTree,
+} from "@vease_tests/utils/object_trees/common";
+import { resetCamera, rotateCamera } from "@vease_tests/utils/camera_interaction";
 
 import {
   copyModelEdgesColor,
@@ -77,10 +80,10 @@ import {
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
-} from "@tests/utils/data";
-import { applyAttribute } from "@tests/utils/data/helpers/attribute";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data";
+import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const brepFilename = "test.og_brep";

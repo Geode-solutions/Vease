@@ -4,12 +4,12 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
+import { afterActionWait, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "@tests/utils/constants";
+} from "@vease_tests/utils/constants";
 import {
   clickdeleteDataButton,
   confirmDelete,
@@ -22,10 +22,10 @@ import {
   openRenameByButton,
   openRenameByName,
   toggleRowVisibility,
-} from "@tests/utils/data_manager";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { navigateToDataManagerPage } from "@tests/utils/navigate";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data_manager";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const BREP_FILE = "test.og_brep";

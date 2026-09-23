@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { cellsFeatureName, meshViewerObjectType } from "@tests/utils/constants";
+import { cellsFeatureName, meshViewerObjectType } from "@vease_tests/utils/constants";
 import {
   setFeatureColor,
   setFeatureColorInput,
@@ -8,7 +8,7 @@ import {
   setFeatureCopyColor,
   setFeatureOpacity,
   setFeaturePasteColorInput,
-} from "@tests/utils/data/helpers/color";
+} from "@vease_tests/utils/data/helpers/color";
 
 async function setMeshCellsOpacity(window: Page, percent: number): Promise<void> {
   await setFeatureOpacity(window, meshViewerObjectType, cellsFeatureName, percent);

@@ -2,20 +2,20 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/data/helpers/color_picker";
+} from "@vease_tests/utils/data/helpers/color_picker";
 import {
   afterActionWait,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 import {
   meshViewerObjectType,
   pointsFeatureName,
   vertexAttributeType,
-} from "@tests/utils/constants";
+} from "@vease_tests/utils/constants";
 import type { Page } from "@playwright/test";
-import { setFeatureAttribute } from "@tests/utils/data/helpers/attribute";
+import { setFeatureAttribute } from "@vease_tests/utils/data/helpers/attribute";
 
 interface AttributeOptions {
   item?: number;
