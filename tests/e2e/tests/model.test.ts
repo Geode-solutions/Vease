@@ -45,22 +45,35 @@ import {
 } from "@tests/utils/object_trees/main_object_tree";
 import { expandGeodeObjectTypeInTree, hideObjectInTree } from "@tests/utils/object_trees/common";
 import { resetCamera, rotateCamera } from "@tests/utils/camera_interaction";
+
 import {
+  copyModelEdgesColor,
+  copyModelPointsColor,
+  copyModelPolygonsColor,
+  copyModelPolyhedraColor,
+  pasteModelEdgesColorInput,
+  pasteModelPointsColorInput,
+  pasteModelPolygonsColorInput,
+  pasteModelPolyhedraColorInput,
   setModelColor,
   setModelColorWithSlider,
   setModelColoringStyle,
+  setModelEdgesColorInput,
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
   setModelEdgesVertexAttributeNoDataColor,
   setModelEdgesVisibility,
   setModelOpacity,
+  setModelPointsColorInput,
   setModelPointsSize,
   setModelPointsVertexAttribute,
   setModelPointsVertexAttributeNoDataColor,
   setModelPointsVisibility,
+  setModelPolygonsColorInput,
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
   setModelPolygonsVertexAttributeNoDataColor,
+  setModelPolyhedraColorInput,
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
@@ -162,6 +175,18 @@ test("blocks color", async ({ window }) => {
   await setModelTreeRowColorRandom(window, "Blocks");
 });
 
+test("blocks copy color to clipboard", async ({ window }) => {
+  await copyModelPolyhedraColor(window);
+});
+
+test("blocks set color via input", async ({ window }) => {
+  await setModelPolyhedraColorInput(window, "0, 255, 0");
+});
+
+test("blocks paste color in input", async ({ window }) => {
+  await pasteModelPolyhedraColorInput(window);
+});
+
 test("corners visibility", async ({ window }) => {
   await toggleModelTreeRow(window, "Blocks");
   await toggleModelTreeRow(window, "Corners");
@@ -170,6 +195,18 @@ test("corners visibility", async ({ window }) => {
 test("corners color", async ({ window }) => {
   await toggleModelTreeRow(window, "Corners");
   await setModelTreeRowColorRandom(window, "Corners");
+});
+
+test("corners copy color to clipboard", async ({ window }) => {
+  await copyModelPointsColor(window);
+});
+
+test("corners set color via input", async ({ window }) => {
+  await setModelPointsColorInput(window, "0, 255, 0");
+});
+
+test("corners paste color in input", async ({ window }) => {
+  await pasteModelPointsColorInput(window);
 });
 
 test("corners vertex attribute all corners", async ({ window }) => {
@@ -208,6 +245,18 @@ test("lines visibility", async ({ window }) => {
 test("lines color", async ({ window }) => {
   await toggleModelTreeRow(window, "Lines");
   await setModelTreeRowColorRandom(window, "Lines");
+});
+
+test("lines copy color to clipboard", async ({ window }) => {
+  await copyModelEdgesColor(window);
+});
+
+test("lines set color via input", async ({ window }) => {
+  await setModelEdgesColorInput(window, "0, 255, 0");
+});
+
+test("lines paste color in input", async ({ window }) => {
+  await pasteModelEdgesColorInput(window);
 });
 
 test("lines vertex attribute all lines", async ({ window }) => {
@@ -264,6 +313,18 @@ test("surfaces color", async ({ window }) => {
   await toggleModelTreeRow(window, "Surfaces");
   await toggleModelTreeRow(window, "Surfaces");
   await setModelTreeRowColorRandom(window, "Surfaces");
+});
+
+test("surfaces copy color to clipboard", async ({ window }) => {
+  await copyModelPolygonsColor(window);
+});
+
+test("surfaces set color via input", async ({ window }) => {
+  await setModelPolygonsColorInput(window, "0, 255, 0");
+});
+
+test("surfaces paste color in input", async ({ window }) => {
+  await pasteModelPolygonsColorInput(window);
 });
 
 test("surfaces vertex attribute all surfaces", async ({ window }) => {
