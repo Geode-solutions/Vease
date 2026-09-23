@@ -85,7 +85,10 @@ const {
                 variant="outlined"
                 color="white"
                 density="compact"
-                :rules="[(value) => (value !== '' && value != null) || `${coord.toUpperCase()} is required`]"
+                :rules="[
+                  (value) =>
+                    (value !== '' && value != null) || `${coord.toUpperCase()} is required`,
+                ]"
                 class="rounded-lg text-caption"
                 theme="dark"
                 base-color="white"
