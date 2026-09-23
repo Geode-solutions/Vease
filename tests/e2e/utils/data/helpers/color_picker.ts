@@ -33,21 +33,31 @@ async function clickColorPickerSlider(
   await waitForActionSettled(window);
 }
 
-async function clickCopyColorBtn(window, container = window) {
+async function clickCopyColorBtn(window: Page, container: Page | Locator = window): Promise<void> {
   await container.getByTestId("copyColorBtn").click();
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
 }
 
-async function setColorInputText(window, text, container = window) {
+async function setColorInputText(
+  window: Page,
+  text: string,
+  container: Page | Locator = window,
+): Promise<void> {
   const input = container.getByTestId("colorInput");
   await input.fill(text);
   await input.press("Enter");
   await waitForActionSettled(window);
 }
 
-async function pasteColorInputText(window, container = window) {
-  const textToPaste = await window.evaluate(() => navigator.clipboard.readText());
+async function pasteColorInputText(
+  window: Page,
+  container: Page | Locator = window,
+): Promise<void> {
+  const textToPaste = await window.evaluate(async () => {
+    const clipboardText = await navigator.clipboard.readText();
+    return clipboardText;
+  });
   const input = container.getByTestId("colorInput");
   await input.focus();
   await input.evaluate((inputElement, data) => {

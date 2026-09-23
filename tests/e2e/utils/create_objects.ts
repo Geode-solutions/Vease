@@ -60,14 +60,15 @@ async function addPointRow(window: Page): Promise<void> {
 
 async function fillPointsCoords(window: Page, coords: PointCoords[]): Promise<void> {
   async function fillNext(index: number): Promise<void> {
-    if (index >= coords.length) {
+    const point = coords[index];
+    if (point === undefined) {
       return;
     }
     const row = window.getByTestId(`point-${index}`);
     if ((await row.count()) === 0) {
       await addPointRow(window);
     }
-    const { x, y, z } = coords[index];
+    const { x, y, z } = point;
     await fillPointCoords(window, index, x, y, z);
     await fillNext(index + 1);
   }
