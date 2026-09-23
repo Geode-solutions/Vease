@@ -1,16 +1,16 @@
 import type { Page } from "@playwright/test";
-import { afterActionWait } from "./constants";
+import { waitForActionSettled } from "./viewer_interaction";
 
 async function exportProject(window: Page): Promise<void> {
   await window.getByTestId("projectMenuButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("exportProjectButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function importProject(window: Page, projectFilePath: string): Promise<void> {
   await window.getByTestId("projectMenuButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const fileInput = window.getByTestId("importProjectInput");
   await fileInput.setInputFiles(projectFilePath);
   const importTimeout = 8000;

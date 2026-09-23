@@ -13,16 +13,6 @@ import {
   toggleClippingPlanes,
   toggleTargetAllVisible,
 } from "@tests/utils/clipping_planes_interaction";
-import {
-  afterActionWait,
-  dragContextMenu,
-  findOverlappingObjectsPicker,
-  getHybridViewerCanvas,
-  getHybridViewerCanvasBoundingBox,
-  hoverViewer,
-  stabilizeHoverTooltip,
-  viewerContextMenu,
-} from "@tests/utils/viewer_interaction";
 import { brepGeodeObjectType, defaultDataName, rgd3dGeodeObjectType } from "@tests/utils/constants";
 import {
   clearRuler,
@@ -47,8 +37,17 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction";
-
 import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import {
+  dragContextMenu,
+  findOverlappingObjectsPicker,
+  getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
+  hoverViewer,
+  stabilizeHoverTooltip,
+  viewerContextMenu,
+  waitForActionSettled,
+} from "@tests/utils/viewer_interaction";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
@@ -56,6 +55,7 @@ import {
   getMainObjectTree,
   showObjectInTree,
 } from "@tests/utils/object_trees/main_object_tree";
+
 import { confirmDelete } from "@tests/utils/data_manager";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@tests/utils/load";
@@ -110,7 +110,7 @@ test("ruler tool pick point 1 and manual point 2", async ({ window }) => {
   await hybridViewerCanvas.click({
     position: { x: box.width / 2, y: box.height / 2 },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await setRulerPointInput(window, 2, [RULER_POINT_2_X, RULER_POINT_2_Y, RULER_POINT_2_Z]);
   await moveMouseOutOfTheWay(window);
 });
@@ -127,7 +127,7 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
       y: box.height * RULER_SNAP_POINT_1_Y_RATIO,
     },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hybridViewerCanvas.click({
     position: {
       x: box.width * RULER_SNAP_X_RATIO,
@@ -135,7 +135,7 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
     },
   });
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("rotate camera 180 degrees", async ({ window }) => {
@@ -157,7 +157,7 @@ test("select regulargrid3d and change color", async ({ window }) => {
     .filter({ hasText: rgd3dGeodeObjectType })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await setColor(window, "meshCellsMenu");
 });
 
@@ -171,7 +171,7 @@ test("visibility off grid and expand brep focus", async ({ window }) => {
   await hideObjectInTree(window, rgd3dGeodeObjectType, "grid", getMainObjectTree(window));
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("center on click", async ({ window }) => {
@@ -180,7 +180,7 @@ test("center on click", async ({ window }) => {
   await hybridViewerCanvas.click({
     position: { x: 750, y: 250 },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("toggle grid scale tool", async ({ window }) => {
@@ -206,7 +206,7 @@ test("only one tool panel open at a time", async ({ window }) => {
 
   await expect(closeCameraManagerButton).toBeVisible();
   await screenshotButton.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await expect(closeCameraManagerButton).not.toBeVisible();
   await expect(screenshotActionButton).toBeVisible();
   await moveMouseOutOfTheWay(window);
@@ -215,7 +215,7 @@ test("only one tool panel open at a time", async ({ window }) => {
 test("camera orientation", async ({ window }) => {
   const screenshotButton = window.getByTestId("screenshotButton");
   await screenshotButton.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const screenshotActionButton = window.getByTestId("screenshotActionButton");
   await expect(screenshotActionButton).not.toBeVisible();
   await toggleCameraOrientation(window);
@@ -233,7 +233,7 @@ test("cells hover highlight", async ({ window }) => {
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hoverViewer(window);
   await stabilizeHoverTooltip(window);
 });
@@ -241,30 +241,30 @@ test("cells hover highlight", async ({ window }) => {
 test("points hover highlight", async ({ window }) => {
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hoverViewer(window);
   await stabilizeHoverTooltip(window);
 });
 
 test("highlight cells on grid", async ({ window }) => {
   await window.getByTestId("hoverHighlightChip").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await showObjectInTree(window, "RegularGrid3D");
   await hideObjectInTree(window, "BRep", undefined, getMainObjectTree(window));
   await resetCamera(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hoverViewer(window);
   await stabilizeHoverTooltip(window);
 });
 
 test("highlight points on grid", async ({ window }) => {
   await window.getByTestId("highlightOnHoverButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await ensureHighlightMenuOpen(window, "highlightOnHoverPointsButton");
   await window.getByTestId("highlightOnHoverPointsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hoverViewer(window);
   await stabilizeHoverTooltip(window);
 });
@@ -284,7 +284,7 @@ test("screenshot file without background", async ({ window }) => {
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot 1");
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
   await window.getByTestId("screenshotActionButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("screenshot clipboard with background", async ({ window }) => {
@@ -292,7 +292,7 @@ test("screenshot clipboard with background", async ({ window }) => {
   await window.getByTestId("screenshotClipboardButton").click();
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("open shrink filter tool", async ({ window }) => {
@@ -336,7 +336,7 @@ test("clipping planes hover highlight on cell", async ({ window }) => {
   await selectCameraOrientation(window, "Y+");
   await ensureHighlightMenuOpen(window, "highlightOnHoverCellsButton");
   await window.getByTestId("highlightOnHoverCellsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await hoverViewer(window, { x: 604, y: 490 });
   await stabilizeHoverTooltip(window);
 });

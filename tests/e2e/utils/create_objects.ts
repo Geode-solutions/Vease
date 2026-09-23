@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 
-import { afterActionWait, getHybridViewerCanvas } from "./viewer_interaction";
+import { getHybridViewerCanvas, waitForActionSettled } from "./viewer_interaction";
 
 interface PointCoords {
   x: number;
@@ -17,7 +17,7 @@ async function openCreateToolsPanel(window: Page): Promise<void> {
   const isOpen = await createToolsPanelButton.isVisible();
   if (!isOpen) {
     await window.getByTestId("createButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -26,14 +26,14 @@ async function closeCreateToolsPanel(window: Page): Promise<void> {
   const isOpen = await createToolsPanelButton.isVisible();
   if (isOpen) {
     await window.getByTestId("createButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
 async function selectCreateTool(window: Page, toolId: string): Promise<void> {
   const createToolButton = window.getByTestId(`createToolCard-${toolId}`);
   await createToolButton.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function fillPointCoords(
@@ -46,16 +46,16 @@ async function fillPointCoords(
   const row = window.getByTestId(`point-${index}`);
   const inputs = row.locator("input");
   await inputs.nth(0).fill(x.toString());
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await inputs.nth(1).fill(y.toString());
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await inputs.nth(2).fill(z.toString());
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function addPointRow(window: Page): Promise<void> {
   await window.getByTestId("addPointButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function fillPointsCoords(window: Page, coords: PointCoords[]): Promise<void> {
@@ -76,7 +76,7 @@ async function fillPointsCoords(window: Page, coords: PointCoords[]): Promise<vo
 
 async function clickPickButton(window: Page): Promise<void> {
   await window.getByTestId("pickButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function pickPointInViewer(window: Page, x: number, y: number): Promise<void> {
@@ -84,22 +84,22 @@ async function pickPointInViewer(window: Page, x: number, y: number): Promise<vo
   await hybridViewerCanvas.click({
     position: { x, y },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function submitCreateObject(window: Page): Promise<void> {
   await window.getByTestId("submitButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function closePickingBanner(window: Page): Promise<void> {
   await window.getByTestId("pickingActiveChip").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleClosedCurve(window: Page): Promise<void> {
   await window.getByTestId("closedCurveCheckbox").getByRole("checkbox").check();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

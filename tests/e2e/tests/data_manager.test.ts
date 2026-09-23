@@ -4,7 +4,6 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
@@ -23,6 +22,7 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager";
+import { moveMouseOutOfTheWay, waitForActionSettled } from "@tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
@@ -84,14 +84,14 @@ test("rename object via button", async ({ window }) => {
 
 test("isolate object", async ({ window }) => {
   await isolateRowItem(window, pointSetGeodeObjectType);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
   await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
 });
 
 test("expand pip", async ({ window }) => {
   await expandDataManagerPiP(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("delete object", async ({ window }) => {
