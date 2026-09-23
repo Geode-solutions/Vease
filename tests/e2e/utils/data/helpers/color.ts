@@ -95,17 +95,30 @@ async function setColorBlack(
   await window.waitForTimeout(afterActionWait);
 }
 
-async function copyColor(window, menuTestId, container = window) {
+async function copyColor(
+  window: Page,
+  menuTestId: string,
+  container: Page | Locator = window,
+): Promise<void> {
   await setColoringStyle(window, menuTestId, "Constant", container);
   await clickCopyColorBtn(window, container);
 }
 
-async function setColorInput(window, menuTestId, colorText, container = window) {
+async function setColorInput(
+  window: Page,
+  menuTestId: string,
+  colorText: string,
+  container: Page | Locator = window,
+): Promise<void> {
   await setColoringStyle(window, menuTestId, "Constant", container);
   await setColorInputText(window, colorText, container);
 }
 
-async function pasteColorInput(window, menuTestId, container = window) {
+async function pasteColorInput(
+  window: Page,
+  menuTestId: string,
+  container: Page | Locator = window,
+): Promise<void> {
   await setColoringStyle(window, menuTestId, "Constant", container);
   await pasteColorInputText(window, container);
 }
@@ -137,16 +150,32 @@ async function setFeatureColorWithSlider(
   await setColorWithSlider(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
-function setFeatureCopyColor(window, viewerObjectType, feature, container = window) {
-  return copyColor(window, `${viewerObjectType}${feature}Menu`, container);
+async function setFeatureCopyColor(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  container: Page | Locator = window,
+): Promise<void> {
+  await copyColor(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
-function setFeatureColorInput(window, viewerObjectType, feature, colorText, container = window) {
-  return setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
+async function setFeatureColorInput(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  colorText: string,
+  container: Page | Locator = window,
+): Promise<void> {
+  await setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
 }
 
-function setFeaturePasteColorInput(window, viewerObjectType, feature, container = window) {
-  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, container);
+async function setFeaturePasteColorInput(
+  window: Page,
+  viewerObjectType: string,
+  feature: string,
+  container: Page | Locator = window,
+): Promise<void> {
+  await pasteColorInput(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
 async function setFeatureColoringStyle(

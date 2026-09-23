@@ -91,10 +91,14 @@ async function getTreeRowByTextAndParent(
         return -1;
       }
       for (let j = parentIndex + 1; j < rows.length; j += 1) {
-        if (rows[j].textContent.includes(name)) {
+        const row = rows[j];
+        if (row === undefined) {
+          break;
+        }
+        if (row.textContent.includes(name)) {
           return j;
         }
-        if (!rows[j].classList.contains("leaf-row")) {
+        if (!row.classList.contains("leaf-row")) {
           break;
         }
       }

@@ -1,3 +1,4 @@
+import type { Locator, Page } from "@playwright/test";
 import { edgesFeatureName, meshViewerObjectType } from "@tests/utils/constants";
 import {
   setFeatureColor,
@@ -8,7 +9,6 @@ import {
   setFeatureOpacity,
   setFeaturePasteColorInput,
 } from "@tests/utils/data/helpers/color";
-import type { Page } from "@playwright/test";
 
 async function setMeshEdgesOpacity(window: Page, percent: number): Promise<void> {
   await setFeatureOpacity(window, meshViewerObjectType, edgesFeatureName, percent);
@@ -22,16 +22,19 @@ async function setMeshEdgesColorWithSlider(window: Page): Promise<void> {
   await setFeatureColorWithSlider(window, meshViewerObjectType, edgesFeatureName);
 }
 
-function copyMeshEdgesColor(window) {
-  return setFeatureCopyColor(window, meshViewerObjectType, edgesFeatureName);
+async function copyMeshEdgesColor(window: Page): Promise<void> {
+  await setFeatureCopyColor(window, meshViewerObjectType, edgesFeatureName);
 }
 
-function setMeshEdgesColorInput(window, colorText) {
-  return setFeatureColorInput(window, meshViewerObjectType, edgesFeatureName, colorText);
+async function setMeshEdgesColorInput(window: Page, colorText: string): Promise<void> {
+  await setFeatureColorInput(window, meshViewerObjectType, edgesFeatureName, colorText);
 }
 
-function pasteMeshEdgesColorInput(window, container = window) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, edgesFeatureName, container);
+async function pasteMeshEdgesColorInput(
+  window: Page,
+  container: Page | Locator = window,
+): Promise<void> {
+  await setFeaturePasteColorInput(window, meshViewerObjectType, edgesFeatureName, container);
 }
 
 async function setMeshEdgesColoringStyle(window: Page, style: string): Promise<void> {

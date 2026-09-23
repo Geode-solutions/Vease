@@ -25,52 +25,52 @@ async function setModelColoringStyle(window: Page, style: string): Promise<void>
   await setColoringStyle(window, "modelStyleMenu", style);
 }
 
-function copyModelPointsColor(window) {
-  return copyColor(window, "modelStyleMenu");
+async function copyModelPointsColor(window: Page): Promise<void> {
+  await copyColor(window, "modelStyleMenu");
 }
 
-function setModelPointsColorInput(window, colorText) {
-  return setColorInput(window, "modelStyleMenu", colorText);
+async function setModelPointsColorInput(window: Page, colorText: string): Promise<void> {
+  await setColorInput(window, "modelStyleMenu", colorText);
 }
 
-function pasteModelPointsColorInput(window) {
-  return pasteColorInput(window, "modelStyleMenu");
+async function pasteModelPointsColorInput(window: Page): Promise<void> {
+  await pasteColorInput(window, "modelStyleMenu");
 }
 
-function copyModelEdgesColor(window) {
-  return copyColor(window, "modelStyleMenu");
+async function copyModelEdgesColor(window: Page): Promise<void> {
+  await copyColor(window, "modelStyleMenu");
 }
 
-function setModelEdgesColorInput(window, colorText) {
-  return setColorInput(window, "modelStyleMenu", colorText);
+async function setModelEdgesColorInput(window: Page, colorText: string): Promise<void> {
+  await setColorInput(window, "modelStyleMenu", colorText);
 }
 
-function pasteModelEdgesColorInput(window) {
-  return pasteColorInput(window, "modelStyleMenu");
+async function pasteModelEdgesColorInput(window: Page): Promise<void> {
+  await pasteColorInput(window, "modelStyleMenu");
 }
 
-function copyModelPolygonsColor(window) {
-  return copyColor(window, "modelStyleMenu");
+async function copyModelPolygonsColor(window: Page): Promise<void> {
+  await copyColor(window, "modelStyleMenu");
 }
 
-function setModelPolygonsColorInput(window, colorText) {
-  return setColorInput(window, "modelStyleMenu", colorText);
+async function setModelPolygonsColorInput(window: Page, colorText: string): Promise<void> {
+  await setColorInput(window, "modelStyleMenu", colorText);
 }
 
-function pasteModelPolygonsColorInput(window) {
-  return pasteColorInput(window, "modelStyleMenu");
+async function pasteModelPolygonsColorInput(window: Page): Promise<void> {
+  await pasteColorInput(window, "modelStyleMenu");
 }
 
-function copyModelPolyhedraColor(window) {
-  return copyColor(window, "modelStyleMenu");
+async function copyModelPolyhedraColor(window: Page): Promise<void> {
+  await copyColor(window, "modelStyleMenu");
 }
 
-function setModelPolyhedraColorInput(window, colorText) {
-  return setColorInput(window, "modelStyleMenu", colorText);
+async function setModelPolyhedraColorInput(window: Page, colorText: string): Promise<void> {
+  await setColorInput(window, "modelStyleMenu", colorText);
 }
 
-function pasteModelPolyhedraColorInput(window) {
-  return pasteColorInput(window, "modelStyleMenu");
+async function pasteModelPolyhedraColorInput(window: Page): Promise<void> {
+  await pasteColorInput(window, "modelStyleMenu");
 }
 
 export {
