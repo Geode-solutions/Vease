@@ -293,6 +293,7 @@ test("screenshot clipboard with background", async ({ window }) => {
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
   await waitForActionSettled(window);
+  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible({ timeout: 6000 });
 });
 
 test("open shrink filter tool", async ({ window }) => {
