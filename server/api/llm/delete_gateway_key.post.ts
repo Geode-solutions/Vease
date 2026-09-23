@@ -2,9 +2,9 @@
 import { defineEventHandler } from "h3";
 
 // Local imports
-import { clearGatewayApiKey } from "@vease_server/utils/server_config.js";
+import { deleteGatewayKey } from "@vease_server/utils/ai";
 
 export default defineEventHandler(() => {
-  clearGatewayApiKey();
+  deleteGatewayKey();
   return { statusCode: 200 };
 });

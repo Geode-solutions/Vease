@@ -34,13 +34,13 @@ function remap_path_to_root(target: string, build_dir: string): string {
   return relative.startsWith("./") || relative.startsWith("../") ? relative : `./${relative}`;
 }
 
-function getIgnoredDirectories(directoriesToKeep) {
+function getIgnoredDirectories(directoriesToKeep: string[]): string[] {
   return serverDirectories
     .filter((directory) => !directoriesToKeep.includes(directory))
     .map((directory) => `api/${directory}/**`);
 }
 
-function nitroIgnoreConfig() {
+function nitroIgnoreConfig(): string[] {
   const mode = process.env.MODE;
   if (!mode) {
     throw new Error("No mode provided");

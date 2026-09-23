@@ -49,6 +49,7 @@
     "build:desktop:unpacked": "cross-env MODE=DESKTOP npm run build:front && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
+    "json": "npx opengeodeweb-microservice-generate --startDir server/api --key route --separator / --prefix api",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "test": "echo \"Error: no test specified\" && exit 0",

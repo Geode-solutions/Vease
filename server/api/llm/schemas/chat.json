@@ -1,0 +1,21 @@
+{
+  "route": "/chat",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "messages": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": ["messages", "provider", "model"],
+  "additionalProperties": false
+}
