@@ -43,10 +43,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function getStringField(
-  source: Record<string, unknown>,
-  field: string,
-): string | undefined {
+function getStringField(source: Record<string, unknown>, field: string): string | undefined {
   const value = source[field];
   return typeof value === "string" ? value : undefined;
 }
