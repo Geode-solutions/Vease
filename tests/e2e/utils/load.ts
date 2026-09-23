@@ -20,7 +20,11 @@ async function loadVeaseTestDatas(
   }: { loadTimeout?: number; inputDataPath?: string } = {},
 ): Promise<void> {
   console.log(`Loading datas: ${inputDataFilenames.join(", ")} from ${inputDataPath}`);
-  const inputFileExtension = path.extname(inputDataFilenames[0]);
+  const [firstInputDataFilename] = inputDataFilenames;
+  if (firstInputDataFilename === undefined) {
+    throw new Error("No input data filenames provided");
+  }
+  const inputFileExtension = path.extname(firstInputDataFilename);
   const inputDataFilePaths = inputDataFilenames.map((filename) =>
     path.join(inputDataPath, filename),
   );
