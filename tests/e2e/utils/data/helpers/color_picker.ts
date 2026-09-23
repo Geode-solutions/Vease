@@ -33,4 +33,50 @@ async function clickColorPickerSlider(
   await window.waitForTimeout(afterActionWait);
 }
 
-export { clickColorPickerCanvas, clickColorPickerSlider, MAX_PERCENTAGE, SLIDER_BLUE, SLIDER_PINK };
+async function clickCopyColorBtn(window: Page, container: Page | Locator = window): Promise<void> {
+  await container.getByTestId("copyColorBtn").click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function setColorInputText(
+  window: Page,
+  text: string,
+  container: Page | Locator = window,
+): Promise<void> {
+  const input = container.getByTestId("colorInput");
+  await input.fill(text);
+  await input.press("Enter");
+  await window.waitForTimeout(afterActionWait);
+}
+
+async function pasteColorInputText(
+  window: Page,
+  container: Page | Locator = window,
+): Promise<void> {
+  const textToPaste = await window.evaluate(async () => {
+    const clipboardText = await navigator.clipboard.readText();
+    return clipboardText;
+  });
+  const input = container.getByTestId("colorInput");
+  await input.focus();
+  await input.evaluate((inputElement, data) => {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", data);
+    inputElement.dispatchEvent(
+      new ClipboardEvent("paste", { clipboardData: dataTransfer, bubbles: true }),
+    );
+  }, textToPaste);
+  await window.waitForTimeout(afterActionWait);
+}
+
+export {
+  clickColorPickerCanvas,
+  clickColorPickerSlider,
+  clickCopyColorBtn,
+  setColorInputText,
+  pasteColorInputText,
+  MAX_PERCENTAGE,
+  SLIDER_BLUE,
+  SLIDER_PINK,
+};

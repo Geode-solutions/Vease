@@ -21,7 +21,7 @@ function deleteGatewayKey() {
 }
 
 interface DesktopElectronAPI {
-  save_credentials: (args: Readonly<{ email: string; password: string }>) => void;
+  save_credentials: (args: { email: string; password: string }) => void;
   get_credentials: () => Promise<{
     success: boolean;
     credentials?: { email: string; password: string };
