@@ -3,6 +3,9 @@ import {
   MAX_PERCENTAGE,
   clickColorPickerCanvas,
   clickColorPickerSlider,
+  clickCopyColorBtn,
+  pasteColorInputText,
+  setColorInputText,
 } from "@tests/utils/data/helpers/color_picker";
 import {
   afterActionWait,
@@ -20,9 +23,7 @@ async function setColoringStyle(
   await ensureMenuOpen(window, menuTestId);
   await ensureFeatureVisible(window, menuTestId);
 
-  const selector = container.getByTestId("coloringStyleSelector").first();
-  await selector.waitFor({ state: "visible", timeout: 15_000 });
-  await selector.click();
+  await container.getByTestId("coloringStyleSelector").first().click();
   await window.waitForTimeout(afterActionWait);
 
   const listItem = window
@@ -94,6 +95,21 @@ async function setColorBlack(
   await window.waitForTimeout(afterActionWait);
 }
 
+async function copyColor(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await clickCopyColorBtn(window, container);
+}
+
+async function setColorInput(window, menuTestId, colorText, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await setColorInputText(window, colorText, container);
+}
+
+async function pasteColorInput(window, menuTestId, container = window) {
+  await setColoringStyle(window, menuTestId, "Constant", container);
+  await pasteColorInputText(window, container);
+}
+
 async function setFeatureColorBlack(
   window: Page,
   viewerObjectType: string,
@@ -121,6 +137,18 @@ async function setFeatureColorWithSlider(
   await setColorWithSlider(window, `${viewerObjectType}${feature}Menu`, container);
 }
 
+function setFeatureCopyColor(window, viewerObjectType, feature, container = window) {
+  return copyColor(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
+function setFeatureColorInput(window, viewerObjectType, feature, colorText, container = window) {
+  return setColorInput(window, `${viewerObjectType}${feature}Menu`, colorText, container);
+}
+
+function setFeaturePasteColorInput(window, viewerObjectType, feature, container = window) {
+  return pasteColorInput(window, `${viewerObjectType}${feature}Menu`, container);
+}
+
 async function setFeatureColoringStyle(
   window: Page,
   viewerObjectType: string,
@@ -141,14 +169,20 @@ async function setFeatureOpacity(
 }
 
 export {
+  copyColor,
   setColor,
   setColorBlack,
+  setColorInput,
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
+  pasteColorInput,
   setFeatureColor,
   setFeatureColorBlack,
+  setFeatureColorInput,
   setFeatureColoringStyle,
   setFeatureColorWithSlider,
+  setFeatureCopyColor,
   setFeatureOpacity,
+  setFeaturePasteColorInput,
 };
