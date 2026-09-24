@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { DataItem } from "@vease/types/data_item";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
@@ -9,10 +9,7 @@ const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 const mockItem: DataItem = {
@@ -26,11 +23,6 @@ const mockItem: DataItem = {
 describe("rename dialog component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders dialog when show prop is true", () => {

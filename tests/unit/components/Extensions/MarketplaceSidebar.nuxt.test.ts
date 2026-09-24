@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
 import { VListItem } from "vuetify/components";
@@ -12,10 +12,7 @@ vi.mock(import("@ogw_front/stores/app"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 const firstExtension: MarketplaceExtension = {
@@ -39,10 +36,6 @@ describe("the MarketplaceSidebar component", () => {
   beforeEach(() => {
     setupActivePinia();
     mockInstalledExtensions([]);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("shows a loading indicator while pending", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import FileInput from "@vease/components/FileInput.vue";
 
@@ -12,10 +12,6 @@ const ACCEPT_PATTERN = ".txt,.csv";
 describe("the FileInput component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders v-file-input with correct props and label", () => {

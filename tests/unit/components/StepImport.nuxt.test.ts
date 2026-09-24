@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import StepImport from "@vease/components/StepImport.vue";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
@@ -31,10 +31,6 @@ describe("the StepImport component", () => {
     vi.mocked(useStepperTree).mockReturnValue({
       reset_values: resetValuesMock,
     } as unknown as ReturnType<typeof useStepperTree>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders Stepper container component", () => {

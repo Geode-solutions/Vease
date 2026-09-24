@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { useAuth } from "@vease/composables/auth";
@@ -42,11 +42,6 @@ describe("wrapper component", () => {
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<unknown>>(),
     } as unknown as ReturnType<typeof useAuth>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders login component when user is not authenticated", () => {

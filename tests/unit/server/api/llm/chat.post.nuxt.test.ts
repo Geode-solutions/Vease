@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getChatModel, getChatTools } from "@vease_server/utils/ai";
-import { createMockEvent } from "@vease_tests/server_utils";
+import { eventWithBody } from "@vease_tests/server_utils";
 import handler from "@vease_server/api/llm/chat.post";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -29,14 +29,6 @@ vi.mock(import("ai"), () => ({
   toUIMessageStream: vi.fn<(options: { stream: unknown }) => unknown>(({ stream }) => stream),
 }));
 
-function eventWithBody(body: unknown): ReturnType<typeof createMockEvent> {
-  return createMockEvent({
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    rawBody: JSON.stringify(body),
-  });
-}
-
 describe("the POST /api/llm/chat endpoint", () => {
   const fakeModel = { modelId: "llama-3-8b" };
   const fakeTools = { search_tools: {} };
@@ -48,11 +40,6 @@ describe("the POST /api/llm/chat endpoint", () => {
     vi.mocked(getChatTools).mockResolvedValue(
       fakeTools as unknown as Awaited<ReturnType<typeof getChatTools>>,
     );
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("streams a response built from the request's messages, model and tools", async () => {

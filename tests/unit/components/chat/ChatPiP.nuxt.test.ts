@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import { useUIStore } from "@vease/stores/ui";
@@ -51,10 +51,6 @@ describe("the ChatPiP component", () => {
       status: ref<string>("ready"),
       error: ref<{ message: string } | undefined>(undefined),
     } as unknown as ReturnType<typeof useVeaseChat>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders the chat component header and messages", () => {

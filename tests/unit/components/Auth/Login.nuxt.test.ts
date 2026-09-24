@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { ref } from "vue";
 import { useAuthPage } from "@vease/composables/auth_page";
@@ -38,11 +38,6 @@ describe("login component", () => {
       email: emailRef,
       password: passwordRef,
     } as unknown as ReturnType<typeof useAuthPage>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders vease title and login subtitle when isLogin is true", () => {

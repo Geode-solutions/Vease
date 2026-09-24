@@ -1,5 +1,5 @@
 import { type Dirent, chmodSync, existsSync, readdirSync } from "node:fs";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
 import os from "node:os";
 import path from "node:path";
@@ -132,11 +132,6 @@ describe("server/utils/llama_cpp", () => {
 
   beforeEach(async () => {
     state.current = await loadLlamaCppModule();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   function current(): LlamaCppModule {

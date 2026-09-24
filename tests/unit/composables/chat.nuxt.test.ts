@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { useChat } from "@ai-sdk/vue";
 import { useVeaseChat } from "@vease/composables/chat";
 
@@ -18,10 +18,6 @@ vi.mock(import("@ai-sdk/vue"), () => ({
 describe("the useVeaseChat composable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("initializes useChat with /api/llm/chat endpoint", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import TextField from "@vease/components/TextField.vue";
 
@@ -12,10 +12,6 @@ const MAX_COUNTER = 50;
 describe("the TextField component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders v-text-field with passed props", () => {

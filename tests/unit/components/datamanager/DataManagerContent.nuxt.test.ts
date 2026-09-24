@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
@@ -121,11 +121,6 @@ describe("data manager content component", () => {
       focusCameraOnObject: mockFocusCameraOnObject,
       removeItem: mockRemoveViewerItem,
     } as unknown as ReturnType<typeof getHybridViewerStore>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders header and data table subcomponents", () => {

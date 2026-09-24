@@ -125,6 +125,12 @@
       }
     },
     {
+      "files": ["tests/setup_indexeddb.ts", "tests/setup_global_hooks.ts"],
+      "rules": {
+        "vitest/require-top-level-describe": "off"
+      }
+    },
+    {
       "files": ["tests/**"],
       "rules": {
         "jest/consistent-test-it": "off",

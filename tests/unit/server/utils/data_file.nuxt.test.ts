@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
   getAllowedFileExtensions,
   getAllowedGeodeObjectTypes,
@@ -27,11 +27,6 @@ vi.mock(import("@ogw_server/utils/server_config"), () => ({
 describe("server/utils/data_file", () => {
   beforeEach(() => {
     vi.mocked(getBackBaseUrl).mockReturnValue("http://back.local");
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   describe("getAllowedFileExtensions()", () => {

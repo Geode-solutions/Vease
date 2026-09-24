@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import Extension from "@vease/components/Extension.vue";
 import { importExtensionFile } from "@ogw_front/utils/extension";
@@ -86,10 +86,6 @@ describe("the Extension component", () => {
 
     vi.mocked(importExtensionFile).mockReset();
     vi.mocked(importExtensionFile).mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders header and drag and drop area when in desktop mode", () => {

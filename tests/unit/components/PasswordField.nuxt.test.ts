@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import PasswordField from "@vease/components/PasswordField.vue";
 
@@ -13,10 +13,6 @@ describe("the PasswordField component", () => {
   beforeEach(() => {
     setupActivePinia();
     toggleVisibilityMock.mockReset();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders text field with password type initially", () => {

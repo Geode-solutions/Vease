@@ -1,5 +1,5 @@
 import { VueWrapper, flushPromises } from "@vue/test-utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreatePolygonalSurface from "@vease/components/tools/CreatePolygonalSurface.vue";
@@ -51,10 +51,6 @@ describe("the CreatePolygonalSurface component", () => {
       remoteRender: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
     } as unknown as ReturnType<typeof getHybridViewerStore>);
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders surface creation form with default 3 points", () => {

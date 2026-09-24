@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import Account from "@vease/components/Auth/Account.vue";
@@ -49,11 +49,6 @@ describe("account component", () => {
       login: loginMock,
       resetPassword: resetPasswordMock,
     } as unknown as ReturnType<typeof useAuth>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders user email and logged as label", () => {

@@ -1,5 +1,5 @@
 import { type DataManagerTab, useUIStore } from "@vease/stores/ui";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import { navigateTo } from "#app/composables/router";
@@ -34,11 +34,6 @@ const mockCustomTab: DataManagerTab = {
 describe("data manager header component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders default data tab and additional tabs", () => {

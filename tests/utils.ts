@@ -44,6 +44,14 @@ if (globalThis.ResizeObserver === undefined) {
 
 const vuetify = createVuetify({ components, directives });
 
+// Shared stub for GlassCard.vue's plain, no-extra-props usage. Components
+// That pass GlassCard extra props (variant, padding, escapeFunction, ...)
+// Need their own stub instead, since this one wouldn't render them.
+const GLASS_CARD_STUB = {
+  name: "GlassCard",
+  template: "<div class='glass-card-stub'><slot /></div>",
+};
+
 // Wraps @vue/test-utils' mount() with the Vuetify plugin every component
 // Test needs, so individual test files don't each repeat
 // `global: { plugins: [vuetify] }`.
@@ -127,4 +135,59 @@ function withSetup<TValue>(composable: () => TValue): WithSetupResult<TValue> {
   };
 }
 
-export { setupActivePinia, vuetify, mountWithPlugins, toHTTPMethod, assertDefined, withSetup };
+interface TrackedMount<TValue> {
+  result: TValue;
+  unmount: () => void;
+}
+
+interface ToolMounter {
+  mountTool: <TValue>(composable: () => TValue) => TrackedMount<TValue>;
+  unmountAll: () => void;
+}
+
+// Some composables register global listeners (e.g. a window-level Escape
+// Handler via onKeyStroke), so leaving an instance mounted lets it observe
+// (and potentially react to) later tests' events. Call unmountAll() in
+// AfterEach to unmount every instance mounted through mountTool().
+function createToolMounter(): ToolMounter {
+  interface MountedTool {
+    unmount: () => void;
+  }
+  let mountedTools: MountedTool[] = [];
+
+  function mountTool<TValue>(composable: () => TValue): TrackedMount<TValue> {
+    const handle = withSetup(composable);
+    let unmounted = false;
+    const tracked: MountedTool = {
+      unmount: () => {
+        if (unmounted) {
+          return;
+        }
+        unmounted = true;
+        handle.unmount();
+      },
+    };
+    mountedTools.push(tracked);
+    return { result: handle.result, unmount: tracked.unmount };
+  }
+
+  function unmountAll(): void {
+    for (const tool of mountedTools) {
+      tool.unmount();
+    }
+    mountedTools = [];
+  }
+
+  return { mountTool, unmountAll };
+}
+
+export {
+  setupActivePinia,
+  vuetify,
+  mountWithPlugins,
+  toHTTPMethod,
+  assertDefined,
+  withSetup,
+  createToolMounter,
+  GLASS_CARD_STUB,
+};

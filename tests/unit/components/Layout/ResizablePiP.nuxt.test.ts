@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 
@@ -23,11 +23,6 @@ vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
 describe("resizablepip component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders slot content inside teleported container", () => {

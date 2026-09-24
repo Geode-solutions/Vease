@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { createMockEvent } from "@vease_tests/server_utils";
 import { getLlamaStatus } from "@vease_server/utils/llama_cpp";
 import handler from "@vease_server/api/llm/status.get";
@@ -10,11 +10,6 @@ vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
 }));
 
 describe("the GET /api/llm/status endpoint", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
-  });
-
   test("reports a running server's connection info", () => {
     vi.mocked(getLlamaStatus).mockReturnValue({
       running: true,

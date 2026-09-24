@@ -8,7 +8,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { appMode } from "@ogw_shared/app_mode";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useAPIStore } from "@vease/stores/api";
@@ -52,10 +52,6 @@ describe("the useAuth composable", () => {
     vi.clearAllMocks();
     vi.mocked(useFirebaseAuth).mockReturnValue({} as Auth);
     mockUserRef.value = mockUser;
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("throws error if Firebase auth is not initialized", () => {

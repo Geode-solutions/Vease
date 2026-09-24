@@ -1,7 +1,7 @@
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { VBtn, VProgressCircular } from "vuetify/components";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
@@ -16,10 +16,7 @@ vi.mock(import("@ogw_front/utils/extension"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
@@ -71,10 +68,6 @@ describe("the MarketplaceDetails component", () => {
 
     vi.mocked(importExtensionURL).mockReset();
     vi.mocked(importExtensionURL).mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders empty marketplace placeholder when no extension is provided", () => {

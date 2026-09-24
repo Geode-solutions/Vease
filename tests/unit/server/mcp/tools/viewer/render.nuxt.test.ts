@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
-import { errResult, okResult } from "@vease_tests/server_utils";
+import { describe, expect, test, vi } from "vitest";
+import { errResult, identityMcpToolDefinition, okResult } from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import tool from "@vease_server/mcp/tools/viewer/render";
 
@@ -11,15 +11,10 @@ vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
 
 // The real @nuxtjs/mcp-toolkit/server pulls in Nitro internals vitest can't resolve.
 vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
-  defineMcpTool: <TDefinition>(definition: TDefinition): TDefinition => definition,
+  defineMcpTool: identityMcpToolDefinition,
 }));
 
 describe("render-viewer MCP tool", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
-  });
-
   test("triggers a render and reports success", async () => {
     vi.mocked(callControllerApi).mockResolvedValue(okResult({ rendered: true }));
 

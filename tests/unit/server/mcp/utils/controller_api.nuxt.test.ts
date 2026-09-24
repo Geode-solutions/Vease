@@ -28,8 +28,6 @@ describe("callControllerApi()", () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
     vi.unstubAllGlobals();
   });
 

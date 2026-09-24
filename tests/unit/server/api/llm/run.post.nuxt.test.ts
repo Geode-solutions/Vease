@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
-import { createMockEvent } from "@vease_tests/server_utils";
+import { describe, expect, test, vi } from "vitest";
+import { eventWithBody } from "@vease_tests/server_utils";
 import handler from "@vease_server/api/llm/run.post";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
@@ -9,20 +9,7 @@ vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
   runLlamaServer: vi.fn<typeof runLlamaServer>(),
 }));
 
-function eventWithBody(body: unknown): ReturnType<typeof createMockEvent> {
-  return createMockEvent({
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    rawBody: JSON.stringify(body),
-  });
-}
-
 describe("the POST /api/llm/run endpoint", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
-  });
-
   test("starts the llama server with the requested model and returns its connection info", async () => {
     vi.mocked(runLlamaServer).mockResolvedValue({
       port: 4891,

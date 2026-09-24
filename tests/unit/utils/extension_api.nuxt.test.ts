@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Database } from "@geode/opengeodeweb-front/internal/database/database.js";
 import { VeaseExtensionAPI } from "@vease/utils/extension_api";
 import { getInfraStore } from "@vease/utils/external_stores";
@@ -28,11 +28,6 @@ vi.mock(import("@ogw_front/stores/hybrid_viewer"), () => ({
 describe("the VeaseExtensionAPI object", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   describe("registerTool", () => {

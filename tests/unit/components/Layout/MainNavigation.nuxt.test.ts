@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 
@@ -21,10 +21,6 @@ vi.mock(import("@vease/components/Layout/TopBar.vue"), () => ({
 describe("mainnavigation component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders topbar and sidebar child components", () => {

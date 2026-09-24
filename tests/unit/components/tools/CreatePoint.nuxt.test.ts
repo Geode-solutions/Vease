@@ -1,5 +1,5 @@
 import { VueWrapper, flushPromises } from "@vue/test-utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreatePoint from "@vease/components/tools/CreatePoint.vue";
@@ -39,10 +39,6 @@ describe("the CreatePoint component", () => {
       remoteRender: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
     } as unknown as ReturnType<typeof getHybridViewerStore>);
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders point set form with default initial fields", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
@@ -85,11 +85,6 @@ describe("drawermanager component", () => {
   beforeEach(() => {
     setupActivePinia();
     mockViewerStore(false);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders overlay and stepimport when showstepper is true", async () => {

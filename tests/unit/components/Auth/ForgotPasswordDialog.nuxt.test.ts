@@ -1,24 +1,16 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import ForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 describe("forgot password dialog component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders forgot password fields", () => {

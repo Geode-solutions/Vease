@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { backEventHandlers } from "@vease/utils/events/back";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow";
@@ -25,11 +25,6 @@ describe("the backEventHandlers map", () => {
     vi.mocked(getHybridViewerStore).mockReturnValue({
       remoteRender: remoteRenderMock,
     } as unknown as ReturnType<typeof getHybridViewerStore>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("registers exactly one handler, for save_viewable_file", () => {

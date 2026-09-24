@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
 import { useAuth } from "@vease/composables/auth";
 
@@ -11,10 +11,7 @@ vi.mock(import("@vease/composables/auth"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 describe("delete account dialog component", () => {
@@ -34,11 +31,6 @@ describe("delete account dialog component", () => {
       logout: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
     } as unknown as ReturnType<typeof useAuth>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders dialog content when modelValue is true", () => {

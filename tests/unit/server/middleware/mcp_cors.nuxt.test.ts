@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { getHeader, setHeader, setResponseStatus } from "h3";
 import { createMockEvent } from "@vease_tests/server_utils";
 import handler from "@vease_server/middleware/mcp_cors";
@@ -14,10 +14,6 @@ describe("mcp_cors middleware", () => {
     vi.stubGlobal("getHeader", getHeader);
     vi.stubGlobal("setHeader", setHeader);
     vi.stubGlobal("setResponseStatus", setResponseStatus);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   afterAll(() => {

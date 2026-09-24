@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import { navigateTo } from "#app/composables/router";
@@ -44,11 +44,6 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
 describe("data manager pip component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders pip header title and child content", () => {

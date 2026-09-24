@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { useAuth } from "@vease/composables/auth";
 import { useAuthPage } from "@vease/composables/auth_page";
 
@@ -42,11 +42,6 @@ describe("useAuthPage composable", () => {
       logout: vi.fn<() => Promise<void>>(),
     } as unknown as ReturnType<typeof useAuth>);
     resetAuthPageState();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   describe("toggleMode", () => {

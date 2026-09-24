@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { errResult, okResult } from "@vease_tests/server_utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { errResult, identityMcpToolDefinition, okResult } from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { readFile } from "node:fs/promises";
 import tool from "@vease_server/mcp/tools/data/load";
@@ -14,7 +14,7 @@ vi.mock(import("node:fs/promises"), () => {
 
 // The real @nuxtjs/mcp-toolkit/server pulls in Nitro internals vitest can't resolve.
 vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
-  defineMcpTool: <TDefinition>(definition: TDefinition): TDefinition => definition,
+  defineMcpTool: identityMcpToolDefinition,
 }));
 
 vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
@@ -24,11 +24,6 @@ vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
 describe("load-file MCP tool", () => {
   beforeEach(() => {
     vi.mocked(readFile).mockResolvedValue(Buffer.from("binary-data"));
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("uploads the file's contents and reports success", async () => {

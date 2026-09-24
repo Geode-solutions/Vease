@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { createToolMounter, setupActivePinia } from "@vease_tests/utils";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { setupActivePinia, withSetup } from "@vease_tests/utils";
 import { flushPromises } from "@vue/test-utils";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useCreateObjectTool } from "@vease/composables/create_object";
@@ -23,27 +23,9 @@ const schema = { $id: "/test/create-object", methods: ["POST"] };
 // The composable registers a window-level Escape listener via onKeyStroke.
 // Leaving a test's instance mounted lets it observe (and potentially call
 // StopImmediatePropagation on) later tests' Escape events, so every
-// Instance created through mountTool is unmounted in afterEach.
-interface MountedTool {
-  unmount: () => void;
-}
-let mountedTools: MountedTool[] = [];
-
-function mountTool<TValue>(composable: () => TValue): { result: TValue; unmount: () => void } {
-  const handle = withSetup(composable);
-  let unmounted = false;
-  const tracked: MountedTool = {
-    unmount: () => {
-      if (unmounted) {
-        return;
-      }
-      unmounted = true;
-      handle.unmount();
-    },
-  };
-  mountedTools.push(tracked);
-  return { result: handle.result, unmount: tracked.unmount };
-}
+// Instance created through mountTool is unmounted in afterEach. See
+// CreateToolMounter()'s comment in tests/utils.ts for details.
+const { mountTool, unmountAll } = createToolMounter();
 
 describe("useCreateObjectTool composable", () => {
   beforeEach(() => {
@@ -62,11 +44,7 @@ describe("useCreateObjectTool composable", () => {
   });
 
   afterEach(() => {
-    for (const tool of mountedTools) {
-      tool.unmount();
-    }
-    mountedTools = [];
-    vi.restoreAllMocks();
+    unmountAll();
   });
 
   describe("points management", () => {

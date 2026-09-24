@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import { VueWrapper } from "@vue/test-utils";
@@ -10,10 +10,6 @@ const FIRST_CALL_INDEX = 0;
 describe("the PickButton component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders default pick button state when inactive", () => {

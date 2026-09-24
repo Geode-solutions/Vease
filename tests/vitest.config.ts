@@ -91,7 +91,10 @@ const resolveOgwAliasPlugin = {
 
 export default defineConfig(async () => ({
   test: {
-    setupFiles: [path.resolve(__dirname, "./setup_indexeddb.ts")],
+    setupFiles: [
+      path.resolve(__dirname, "./setup_indexeddb.ts"),
+      path.resolve(__dirname, "./setup_global_hooks.ts"),
+    ],
     projects: [
       await defineVitestProject({
         plugins: [resolveOgwAliasPlugin],
@@ -107,7 +110,10 @@ export default defineConfig(async () => ({
           alias: aliases,
           testTimeout: TIMEOUTS.unit,
           hookTimeout: HOOK_TIMEOUT,
-          setupFiles: [path.resolve(__dirname, "./setup_indexeddb.ts")],
+          setupFiles: [
+            path.resolve(__dirname, "./setup_indexeddb.ts"),
+            path.resolve(__dirname, "./setup_global_hooks.ts"),
+          ],
           server: {
             deps: {
               inline: ["vuetify"],
@@ -131,7 +137,10 @@ export default defineConfig(async () => ({
           maxWorkers,
           testTimeout: TIMEOUTS.integration,
           hookTimeout: HOOK_TIMEOUT,
-          setupFiles: [path.resolve(__dirname, "./setup_indexeddb.ts")],
+          setupFiles: [
+            path.resolve(__dirname, "./setup_indexeddb.ts"),
+            path.resolve(__dirname, "./setup_global_hooks.ts"),
+          ],
           server: {
             deps: {
               inline: ["vuetify"],

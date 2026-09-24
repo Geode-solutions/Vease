@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { ref } from "vue";
 import { useAuthPage } from "@vease/composables/auth_page";
@@ -66,11 +66,6 @@ describe("form component", () => {
       handleForgotPassword: handleForgotPasswordMock,
       toggleMode: toggleModeMock,
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders login form elements by default", () => {

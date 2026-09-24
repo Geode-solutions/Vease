@@ -1,6 +1,6 @@
 import { type MockInstance, afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { createToolMounter, setupActivePinia, withSetup } from "@vease_tests/utils";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { setupActivePinia, withSetup } from "@vease_tests/utils";
 import { flushPromises } from "@vue/test-utils";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useCreateObjectTool } from "@vease/composables/create_object";
@@ -21,27 +21,8 @@ const schema = { $id: "/test/create-object", methods: ["POST"] };
 const OUT_OF_RANGE_INDEX = 5;
 
 // Same window-Escape-listener leak concern as create_object.nuxt.test.ts:
-// See that file's comment for details.
-interface MountedTool {
-  unmount: () => void;
-}
-let mountedTools: MountedTool[] = [];
-
-function mountTool<TValue>(composable: () => TValue): { result: TValue; unmount: () => void } {
-  const handle = withSetup(composable);
-  let unmounted = false;
-  const tracked: MountedTool = {
-    unmount: () => {
-      if (unmounted) {
-        return;
-      }
-      unmounted = true;
-      handle.unmount();
-    },
-  };
-  mountedTools.push(tracked);
-  return { result: handle.result, unmount: tracked.unmount };
-}
+// See createToolMounter()'s comment in tests/utils.ts for details.
+const { mountTool, unmountAll } = createToolMounter();
 
 function makePasteEvent(text: string): ClipboardEvent {
   return {
@@ -74,11 +55,7 @@ describe("useCreateObjectTool composable interactions", () => {
   });
 
   afterEach(() => {
-    for (const tool of mountedTools) {
-      tool.unmount();
-    }
-    mountedTools = [];
-    vi.restoreAllMocks();
+    unmountAll();
   });
 
   describe("escape key handling", () => {

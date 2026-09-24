@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import OpenProject from "@vease/components/OpenProject.vue";
 
@@ -7,11 +7,6 @@ vi.setConfig({ testTimeout: 10_000 });
 describe("the OpenProject component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders open project dialog content when showDialog is true", () => {

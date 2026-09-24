@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { assertDefined, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { api_fetch } from "@ogw_internal/utils/api_fetch";
 import { useAPIStore } from "@vease/stores/api";
 
@@ -22,10 +22,6 @@ function lastApiFetchCallbacks(): ApiFetchCallbacks {
 describe("the API store", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   describe("state and counter", () => {

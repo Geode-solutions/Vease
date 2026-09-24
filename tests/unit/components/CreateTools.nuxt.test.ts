@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateTools from "@vease/components/CreateTools.vue";
 import { useUIStore } from "@vease/stores/ui";
@@ -42,10 +42,6 @@ describe("the CreateTools component", () => {
       },
     ];
     uiStore.showCreateTools = true;
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders the list of active tools when no tool is selected", () => {

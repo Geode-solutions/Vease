@@ -63,9 +63,6 @@ describe("useExtensions composable", () => {
   });
 
   afterEach(() => {
-    // Restoring only resets spyOn spies; module-mock vi.fn()s need clearing too.
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
     vi.unstubAllEnvs();
   });
 

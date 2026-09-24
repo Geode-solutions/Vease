@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import Marketplace from "@vease/components/Extensions/Marketplace.vue";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
@@ -19,10 +19,7 @@ vi.mock(import("@vease/composables/extensions"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
@@ -63,10 +60,6 @@ describe("the Marketplace component", () => {
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
     });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders authentication required view when user is not logged in", () => {

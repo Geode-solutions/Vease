@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import SideBar from "@vease/components/Layout/SideBar.vue";
 import { VLayout } from "vuetify/components";
@@ -57,12 +57,6 @@ describe("sidebar component", () => {
   beforeEach(() => {
     setupActivePinia();
     mockAuthComposable(false);
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders top navigation buttons", () => {

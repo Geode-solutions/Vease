@@ -1,5 +1,5 @@
 import { VueWrapper, flushPromises } from "@vue/test-utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateCurve from "@vease/components/tools/CreateCurve.vue";
@@ -45,10 +45,6 @@ describe("the CreateCurve component", () => {
       remoteRender: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
     } as unknown as ReturnType<typeof getHybridViewerStore>);
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders curve creation form with default fields", () => {

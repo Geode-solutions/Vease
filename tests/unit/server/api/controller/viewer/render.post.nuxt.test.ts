@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { callSchema } from "@ogw_shared/utils/call_schema";
 import { createMockEvent } from "@vease_tests/server_utils";
 import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
@@ -21,11 +21,6 @@ describe("the POST /api/controller/viewer/render endpoint", () => {
     vi.mocked(getViewerWebSocketClient).mockResolvedValue(
       fakeClient as unknown as Awaited<ReturnType<typeof getViewerWebSocketClient>>,
     );
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("renders the viewer and returns the response", async () => {

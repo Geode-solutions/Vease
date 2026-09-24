@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -7,10 +7,6 @@ vi.setConfig({ testTimeout: 10_000 });
 describe("the UI store", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   describe("state & setters", () => {

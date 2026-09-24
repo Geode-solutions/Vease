@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import { viewerEventHandlers } from "@vease/utils/events/viewer";
@@ -27,11 +27,6 @@ describe("the viewerEventHandlers map", () => {
     vi.mocked(getHybridViewerStore).mockReturnValue({
       remoteRender: remoteRenderMock,
     } as unknown as ReturnType<typeof getHybridViewerStore>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("registers handlers for mesh points visibility and viewer render", () => {

@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ImportFile from "@vease/components/ImportFile.vue";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
@@ -19,10 +19,6 @@ describe("the ImportFile component", () => {
     setupActivePinia();
     vi.mocked(importWorkflow).mockReset();
     vi.mocked(importWorkflow).mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   test("renders import and cancel buttons", () => {

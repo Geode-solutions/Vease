@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { deleteCredentials, getCredentials, parseArgs, saveCredentials } from "~~/utils/desktop";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -62,10 +62,6 @@ vi.mock(import("@geode/opengeodeweb-front/shared/scripts.js"), () => ({
 describe("desktop (electron main process) utils", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   describe("saveCredentials()", () => {

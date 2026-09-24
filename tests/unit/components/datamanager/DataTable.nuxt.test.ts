@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
@@ -27,11 +27,6 @@ const mockItem2: DataItem = {
 describe("data table component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders items in data table", () => {

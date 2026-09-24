@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
 import type { DataItem } from "@vease/types/data_item";
@@ -27,11 +27,6 @@ const mockItem2: DataItem = {
 describe("batch action banner component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("does not render banner when selectedIds is empty", () => {

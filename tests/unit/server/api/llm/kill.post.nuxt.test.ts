@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { createMockEvent } from "@vease_tests/server_utils";
 import handler from "@vease_server/api/llm/kill.post";
 import { stopLlamaServer } from "@vease_server/utils/llama_cpp";
@@ -10,11 +10,6 @@ vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
 }));
 
 describe("the POST /api/llm/kill endpoint", () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
-  });
-
   test("stops the llama server and returns 200", () => {
     const result = handler(createMockEvent({ method: "POST" }));
 

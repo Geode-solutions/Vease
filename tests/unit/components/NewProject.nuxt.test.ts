@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import NewProject from "@vease/components/NewProject.vue";
 
@@ -7,11 +7,6 @@ vi.setConfig({ testTimeout: 10_000 });
 describe("the NewProject component", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders dialog content when showDialog is true", () => {

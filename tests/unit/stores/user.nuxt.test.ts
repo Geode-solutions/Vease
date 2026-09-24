@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from "vitest";
+import { beforeEach, describe, expect, expectTypeOf, test, vi } from "vitest";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useUserStore } from "@vease/stores/user";
 
@@ -7,10 +7,6 @@ vi.setConfig({ testTimeout: 10_000 });
 describe("the user store", () => {
   beforeEach(() => {
     setupActivePinia();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   describe("state", () => {

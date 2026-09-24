@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { callSchema } from "@ogw_shared/utils/call_schema";
-import { createMockEvent } from "@vease_tests/server_utils";
+import { eventWithBody } from "@vease_tests/server_utils";
 import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 import handler from "@vease_server/api/controller/viewer/mesh/points/visibility.post";
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
@@ -16,24 +16,11 @@ vi.mock(import("@ogw_server/utils/server_config"), () => ({
 
 const fakeClient = { isOpen: () => true };
 
-function eventWithBody(body: unknown): ReturnType<typeof createMockEvent> {
-  return createMockEvent({
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    rawBody: JSON.stringify(body),
-  });
-}
-
 describe("the POST /api/controller/viewer/mesh/points/visibility endpoint", () => {
   beforeEach(() => {
     vi.mocked(getViewerWebSocketClient).mockResolvedValue(
       fakeClient as unknown as Awaited<ReturnType<typeof getViewerWebSocketClient>>,
     );
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("parses the visibility flag and forwards it to the viewer", async () => {

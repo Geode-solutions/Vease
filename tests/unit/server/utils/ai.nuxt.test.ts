@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getChatModel, getChatTools } from "@vease_server/utils/ai";
 import { runLlamaServer, stopLlamaServer } from "@vease_server/utils/llama_cpp";
 import { createMCPClient } from "@ai-sdk/mcp";
@@ -37,10 +37,6 @@ vi.mock(import("@geode/opengeodeweb-front/server/utils/server_config"), () => ({
 describe("the AI server utilities", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
   });
 
   describe("the getChatModel helper", () => {

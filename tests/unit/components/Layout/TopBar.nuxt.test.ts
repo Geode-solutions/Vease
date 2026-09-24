@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import TopBar from "@vease/components/Layout/TopBar.vue";
 import { VLayout } from "vuetify/components";
 import { getInfraStore } from "@vease/utils/external_stores";
@@ -18,10 +18,7 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
-    name: "GlassCard",
-    template: "<div class='glass-card-stub'><slot /></div>",
-  },
+  default: GLASS_CARD_STUB,
 }));
 
 function mockInfraStore(connected = true): void {
@@ -58,12 +55,6 @@ describe("topbar component", () => {
   beforeEach(() => {
     setupActivePinia();
     mockInfraStore(true);
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
-    vi.restoreAllMocks();
-    document.body.innerHTML = "";
   });
 
   test("renders title logo and action buttons", () => {

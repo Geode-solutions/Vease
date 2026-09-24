@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { assertDefined, setupActivePinia } from "@vease_tests/utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { connectToEventSource, connectToWebSocket } from "@vease/utils/events/index";
 import {
   getBackStore,
@@ -92,11 +92,6 @@ describe("events/index", () => {
     vi.mocked(getDataStyleStore).mockReturnValue({
       setVisibility: setVisibilityMock,
     } as unknown as ReturnType<typeof getDataStyleStore>);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   describe("connectToEventSource()", () => {

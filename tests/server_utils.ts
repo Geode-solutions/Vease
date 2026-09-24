@@ -34,6 +34,21 @@ function createMockEvent({
   return event;
 }
 
+// Mirrors @nuxtjs/mcp-toolkit/server's defineMcpTool: real usage wraps a
+// Definition in schema/handler validation, but tests only need it passed
+// Through unchanged.
+function identityMcpToolDefinition<TDefinition>(definition: TDefinition): TDefinition {
+  return definition;
+}
+
+function eventWithBody(body: unknown): H3Event {
+  return createMockEvent({
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    rawBody: JSON.stringify(body),
+  });
+}
+
 interface MultipartPart {
   name: string;
   filename?: string;
@@ -68,4 +83,11 @@ function errResult(message: string): { ok: false; message: string } {
   return { ok: false, message };
 }
 
-export { createMockEvent, buildMultipartBody, okResult, errResult };
+export {
+  createMockEvent,
+  eventWithBody,
+  identityMcpToolDefinition,
+  buildMultipartBody,
+  okResult,
+  errResult,
+};

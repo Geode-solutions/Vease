@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { buildMultipartBody, createMockEvent } from "@vease_tests/server_utils";
 import {
   getAllowedFileExtensions,
@@ -46,11 +46,6 @@ describe("the POST /api/controller/data/load endpoint", () => {
     vi.mocked(uploadFile).mockResolvedValue(undefined);
     vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue("BRep");
     vi.mocked(saveViewableFile).mockResolvedValue({ id: "item-1" });
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   test("uploads an allowed file and saves it as its resolved geode object type", async () => {
