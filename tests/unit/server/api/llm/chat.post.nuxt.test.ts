@@ -24,9 +24,7 @@ vi.mock(import("ai"), () => ({
   ),
   stepCountIs: vi.fn<(count: number) => unknown>((count) => ({ type: "step-count", count })),
   streamText: streamTextMock,
-  toUIMessageStream: vi.fn<(options: { stream: unknown }) => unknown>(
-    ({ stream }) => stream,
-  ),
+  toUIMessageStream: vi.fn<(options: { stream: unknown }) => unknown>(({ stream }) => stream),
 }));
 
 function eventWithBody(body: unknown): ReturnType<typeof createMockEvent> {

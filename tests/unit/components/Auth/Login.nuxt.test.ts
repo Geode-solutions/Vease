@@ -47,36 +47,28 @@ describe("login component", () => {
     document.body.innerHTML = "";
   });
 
-  test(
-    "renders vease title and login subtitle when isLogin is true",
-    () => {
-      const wrapper = mount(Login, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("renders vease title and login subtitle when isLogin is true", () => {
+    const wrapper = mount(Login, {
+      global: {
+        plugins: [vuetify],
+      },
+      attachTo: document.body,
+    });
 
-      expect(wrapper.text()).toContain("Vease");
-      expect(wrapper.text()).toContain("Welcome back! Please login to your account");
-      expect(wrapper.findComponent({ name: "AuthFormStub" }).exists()).toBe(true);
-    },
-    10_000,
-  );
+    expect(wrapper.text()).toContain("Vease");
+    expect(wrapper.text()).toContain("Welcome back! Please login to your account");
+    expect(wrapper.findComponent({ name: "AuthFormStub" }).exists()).toBe(true);
+  }, 10_000);
 
-  test(
-    "renders registration subtitle when isLogin is false",
-    () => {
-      isLoginRef.value = false;
-      const wrapper = mount(Login, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("renders registration subtitle when isLogin is false", () => {
+    isLoginRef.value = false;
+    const wrapper = mount(Login, {
+      global: {
+        plugins: [vuetify],
+      },
+      attachTo: document.body,
+    });
 
-      expect(wrapper.text()).toContain("Create an account to get started");
-    },
-    10_000,
-  );
+    expect(wrapper.text()).toContain("Create an account to get started");
+  }, 10_000);
 });

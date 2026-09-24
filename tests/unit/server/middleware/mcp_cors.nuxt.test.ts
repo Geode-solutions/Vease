@@ -44,10 +44,7 @@ describe("mcp_cors middleware", () => {
 
     handler(event);
 
-    expect(setHeaderSpy).toHaveBeenCalledWith(
-      "Access-Control-Allow-Origin",
-      "https://example.com",
-    );
+    expect(setHeaderSpy).toHaveBeenCalledWith("Access-Control-Allow-Origin", "https://example.com");
     expect(setHeaderSpy).toHaveBeenCalledWith("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     expect(setHeaderSpy).toHaveBeenCalledWith(
       "Access-Control-Allow-Headers",

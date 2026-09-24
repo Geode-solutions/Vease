@@ -51,37 +51,29 @@ describe("wrapper component", () => {
     document.body.innerHTML = "";
   });
 
-  test(
-    "renders login component when user is not authenticated",
-    () => {
-      isAuthenticatedRef.value = false;
-      const wrapper = mount(Wrapper, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("renders login component when user is not authenticated", () => {
+    isAuthenticatedRef.value = false;
+    const wrapper = mount(Wrapper, {
+      global: {
+        plugins: [vuetify],
+      },
+      attachTo: document.body,
+    });
 
-      expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(true);
-      expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(false);
-    },
-    10_000,
-  );
+    expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(false);
+  }, 10_000);
 
-  test(
-    "renders account component when user is authenticated",
-    () => {
-      isAuthenticatedRef.value = true;
-      const wrapper = mount(Wrapper, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("renders account component when user is authenticated", () => {
+    isAuthenticatedRef.value = true;
+    const wrapper = mount(Wrapper, {
+      global: {
+        plugins: [vuetify],
+      },
+      attachTo: document.body,
+    });
 
-      expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(true);
-      expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(false);
-    },
-    10_000,
-  );
+    expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(false);
+  }, 10_000);
 });

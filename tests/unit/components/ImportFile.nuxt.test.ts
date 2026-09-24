@@ -8,11 +8,7 @@ import ImportFile from "@vease/components/ImportFile.vue";
 
 vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
   importWorkflow:
-    vi.fn<
-      (
-        files: Array<{ filename: string; geode_object_type: string }>,
-      ) => Promise<void>
-    >(),
+    vi.fn<(files: Array<{ filename: string; geode_object_type: string }>) => Promise<void>>(),
 }));
 
 const SAMPLE_FILENAME = "grid.vtp";

@@ -65,11 +65,11 @@ describe("the POST /api/controller/viewer/mesh/points/visibility endpoint", () =
   test("wraps a downstream failure into a 500 h3 error", async () => {
     vi.mocked(callSchema).mockRejectedValue(new Error("mesh not found"));
 
-    await expect(
-      handler(eventWithBody({ id: "missing", visibility: true })),
-    ).rejects.toMatchObject({
-      statusCode: 500,
-      statusMessage: "mesh not found",
-    });
+    await expect(handler(eventWithBody({ id: "missing", visibility: true }))).rejects.toMatchObject(
+      {
+        statusCode: 500,
+        statusMessage: "mesh not found",
+      },
+    );
   });
 });

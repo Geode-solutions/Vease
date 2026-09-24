@@ -9,8 +9,7 @@ vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   default: {
     name: "GlassCard",
     props: ["variant", "padding", "escapeFunction"],
-    template:
-      "<div class='glass-card-stub' @click='$emit(\"click\")'><slot /></div>",
+    template: "<div class='glass-card-stub' @click='$emit(\"click\")'><slot /></div>",
   },
 }));
 

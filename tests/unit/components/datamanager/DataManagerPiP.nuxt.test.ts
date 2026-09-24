@@ -23,7 +23,14 @@ vi.mock(import("@vease/components/datamanager/DataManagerContent.vue"), () => ({
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
   default: {
     name: "ResizablePiP",
-    props: ["storageKey", "escapeFunction", "defaultWidth", "defaultHeight", "minWidth", "minHeight"],
+    props: [
+      "storageKey",
+      "escapeFunction",
+      "defaultWidth",
+      "defaultHeight",
+      "minWidth",
+      "minHeight",
+    ],
     template: `
       <div class="resizable-pip-stub" :data-storage-key="storageKey">
         <slot name="handle" />

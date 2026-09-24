@@ -38,9 +38,7 @@ vi.mock(import("@ogw_front/utils/extension"), () => ({
 }));
 
 vi.mock(import("@vease/utils/format_date"), () => ({
-  formatRelativeTime: vi
-    .fn<(dateString: string) => string>()
-    .mockReturnValue("2 hours ago"),
+  formatRelativeTime: vi.fn<(dateString: string) => string>().mockReturnValue("2 hours ago"),
 }));
 
 vi.mock(import("@vease/composables/extension_metadata"), () => ({
@@ -49,8 +47,7 @@ vi.mock(import("@vease/composables/extension_metadata"), () => ({
     getExtensionDescription: (ext: any) => (ext ? ext.description || "" : ""),
     getExtensionVersion: (ext: any) => (ext ? ext.version || "" : ""),
     getExtensionTools: (ext: any) => (ext && ext.tools ? ext.tools : []),
-    getExtensionToolsCount: (ext: any) =>
-      ext && ext.tools ? ext.tools.length : 0,
+    getExtensionToolsCount: (ext: any) => (ext && ext.tools ? ext.tools.length : 0),
   }),
 }));
 
@@ -163,9 +160,7 @@ describe("the Extension component", () => {
     });
     await dragAndDrop.vm.$emit("files-selected", [invalidFile]);
 
-    expect(wrapper.text()).toContain(
-      "Please drop valid extension files (.vext)",
-    );
+    expect(wrapper.text()).toContain("Please drop valid extension files (.vext)");
   });
 
   test("processes valid .vext files with importExtensionFile", async () => {

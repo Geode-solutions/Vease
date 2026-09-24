@@ -13,12 +13,12 @@
     "eslint/id-length": [
       "error",
       {
-        "exceptions": ["x", "y", "z", "i", "j", "k", "id", "ID", "fs", "os", "_", "ok", "on"],
+        "exceptions": ["x", "y", "z", "i", "j", "k", "id", "ID", "fs", "os", "_"],
         "min": 3
       }
     ],
-    "eslint/max-statements": ["off", 20],
-    "eslint/no-console": "off", // Disable for debugging. Disable later to not have browser logs
+    "eslint/max-statements": ["warn", 20],
+    "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
     "eslint/no-magic-numbers": [
       "error",
       {
@@ -38,7 +38,7 @@
     "eslint/sort-keys": "off",
     "import/consistent-type-specifier-style": ["error", "prefer-top-level-if-only-type-imports"],
     "import/max-dependencies": [
-      "off",
+      "warn",
       {
         "max": 10
       }
@@ -62,7 +62,7 @@
       }
     ],
     "max-lines-per-function": [
-      "off",
+      "warn",
       {
         "max": 50,
         "skipBlankLines": true,
@@ -70,7 +70,7 @@
       }
     ],
     "max-params": [
-      "off",
+      "warn",
       {
         "max": 4
       }
@@ -97,7 +97,6 @@
     ],
     "unicorn/no-useless-undefined": "off",
     "unicorn/prefer-ternary": "off",
-    "vitest/prefer-called-once": "off",
     "vitest/require-hook": "off",
     "vue/max-props": [
       "error",
@@ -119,17 +118,9 @@
       }
     },
     {
-      "files": [
-        "app/plugins/**",
-        "node_scripts/**",
-        "server/**",
-        "*.config.js",
-        "*.config.ts",
-        "tests/vitest.config.ts"
-      ],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
       "rules": {
-        "import/no-default-export": "off",
-        "node/no-top-level-await": "off"
+        "import/no-default-export": "off"
       }
     },
     {
@@ -149,7 +140,7 @@
         "vitest/prefer-to-be-falsy": "off",
         "vitest/prefer-to-be-truthy": "off",
         "vitest/require-hook": "off",
-        "vitest/require-test-timeout": "off"
+        "vitest/require-test-timeout": "warn"
       }
     },
     {
