@@ -76,10 +76,10 @@ async function uploadFile(file: MultiPartData): Promise<unknown> {
   const { filename, type, data } = file;
   console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
 
-  const params = new FormData();
-  params.append("file", new Blob([new Uint8Array(data)], { type }), filename);
+  const route = `${schema.$id}?filename=${encodeURIComponent(filename ?? "")}`;
+  const params = new Blob([new Uint8Array(data)], { type });
   const response = await fetchRaw({
-    route: schema.$id,
+    route,
     method: schema.methods.find((method) => method !== "OPTIONS"),
     params,
     baseURL: backBaseUrl,
