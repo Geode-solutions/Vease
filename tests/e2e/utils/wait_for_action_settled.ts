@@ -1,5 +1,5 @@
 // Third party imports
-import type { ConsoleMessage, Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 // Local imports
 import { afterActionWait } from "./constants";
@@ -8,56 +8,19 @@ function noopCleanup(): unknown {
   return undefined;
 }
 
-// App/utils/log.ts logs every microservice RPC as "[id] Request:" / "[id] Request completed:".
-// Camera moves and colormap changes go through such an RPC and get drawn to a canvas by vtk.js.
-// That canvas draw never touches the DOM, so a DOM-mutation-only settle check can resolve early.
-// Tracking these logs instead gives the real RPC completion signal.
-const REQUEST_STARTED_MARKER = "Request:";
-const REQUEST_COMPLETED_MARKER = "Request completed:";
-
-interface PageActivityState {
-  pendingRequests: number;
-  lastRequestActivityAt: number;
-}
-
-const pageActivityStates = new WeakMap<Page, PageActivityState>();
-
-function trackRequestActivity(window: Page): PageActivityState {
-  const existing = pageActivityStates.get(window);
-  if (existing) {
-    return existing;
-  }
-  const state: PageActivityState = { pendingRequests: 0, lastRequestActivityAt: Date.now() };
-  pageActivityStates.set(window, state);
-  window.on("console", (msg: ConsoleMessage) => {
-    const text = msg.text();
-    if (text.includes(REQUEST_COMPLETED_MARKER)) {
-      state.pendingRequests = Math.max(0, state.pendingRequests - 1);
-      state.lastRequestActivityAt = Date.now();
-    } else if (text.includes(REQUEST_STARTED_MARKER)) {
-      state.pendingRequests += 1;
-      state.lastRequestActivityAt = Date.now();
-    }
-  });
-  return state;
-}
-
+// App/layouts/default.vue renders a fixed top-of-page progress bar (data-testid "microservicesBusyIndicator") whenever infraStore.microservices_busy is true.
+// That getter is driven by each microservice's own request counter, so the indicator is the app's own authoritative signal that a backend or viewer RPC is in flight — waiting on it directly is more reliable than inferring activity from console log text.
+const BUSY_INDICATOR_TEST_ID = "microservicesBusyIndicator";
 const REQUEST_DISPATCH_GRACE_MS = 50;
-const REQUEST_QUIET_MS = 150;
-const REQUEST_POLL_INTERVAL_MS = 20;
+// Some backend RPCs (attribute-name lookups on a component with many items, for example) occasionally take several seconds under CI load, so the indicator gets generous headroom to clear.
+const BUSY_INDICATOR_HARD_CEILING_MS = 10_000;
 
-async function waitForRequestsSettled(window: Page, budgetMs: number): Promise<void> {
-  const state = trackRequestActivity(window);
-  const deadline = Date.now() + budgetMs;
+async function waitForMicroservicesIdle(window: Page, budgetMs: number): Promise<void> {
   await window.waitForTimeout(Math.min(REQUEST_DISPATCH_GRACE_MS, budgetMs));
-  while (Date.now() < deadline) {
-    const quietFor = Date.now() - state.lastRequestActivityAt;
-    if (state.pendingRequests === 0 && quietFor >= REQUEST_QUIET_MS) {
-      return;
-    }
-    // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(REQUEST_POLL_INTERVAL_MS);
-  }
+  await window
+    .getByTestId(BUSY_INDICATOR_TEST_ID)
+    .waitFor({ state: "hidden", timeout: Math.max(budgetMs, BUSY_INDICATOR_HARD_CEILING_MS) })
+    .catch(noopCleanup);
 }
 
 const MUTATION_QUIET_MS = 250;
@@ -92,11 +55,28 @@ async function waitForDomSettled(window: Page, budgetMs: number): Promise<void> 
     .catch(noopCleanup);
 }
 
+const MIN_DOM_SETTLE_BUDGET_MS = 250;
+
+// Vtk.js draws camera/colormap results straight to a <canvas>; that paint never touches the DOM, so neither the busy indicator nor the mutation observer can see it.
+// Waiting for two real animation frames after everything else has settled ensures the last frame is actually on screen before a screenshot is taken.
+async function waitForNextPaint(window: Page): Promise<void> {
+  await window
+    .evaluate(
+      () =>
+        // oxlint-disable-next-line promise/avoid-new
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    )
+    .catch(noopCleanup);
+}
+
 async function waitForActionSettled(window: Page, ceilingMs = afterActionWait): Promise<void> {
   const startedAt = Date.now();
-  await waitForRequestsSettled(window, ceilingMs);
-  const remainingMs = Math.max(0, ceilingMs - (Date.now() - startedAt));
+  await waitForMicroservicesIdle(window, ceilingMs);
+  const remainingMs = Math.max(MIN_DOM_SETTLE_BUDGET_MS, ceilingMs - (Date.now() - startedAt));
   await waitForDomSettled(window, remainingMs);
+  await waitForNextPaint(window);
 }
 
 export { waitForActionSettled };
