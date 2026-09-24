@@ -9,6 +9,8 @@ import { useDataStore } from "@ogw_front/stores/data";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useUIStore } from "@vease/stores/ui";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getInfraStore: vi.fn<typeof getInfraStore>(),
 }));

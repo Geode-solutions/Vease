@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/components/Layout/SideBar.vue"), () => ({
   default: {
@@ -28,9 +28,7 @@ describe("mainnavigation component", () => {
   });
 
   test("renders topbar and sidebar child components", () => {
-    const wrapper = mount(MainNavigation, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(MainNavigation);
 
     expect(wrapper.find("[data-testid='topbar-stub']").exists()).toBe(true);
     expect(wrapper.find("[data-testid='sidebar-stub']").exists()).toBe(true);

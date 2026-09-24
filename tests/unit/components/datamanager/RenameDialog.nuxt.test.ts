@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
-import { mount } from "@vue/test-utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
@@ -33,14 +34,11 @@ describe("rename dialog component", () => {
   });
 
   test("renders dialog when show prop is true", () => {
-    mount(RenameDialog, {
+    mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "Original Name",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -50,14 +48,11 @@ describe("rename dialog component", () => {
   });
 
   test("emits update:show false when cancel button is clicked", async () => {
-    const wrapper = mount(RenameDialog, {
+    const wrapper = mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "Original Name",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -73,14 +68,11 @@ describe("rename dialog component", () => {
   });
 
   test("emits confirm with current name on confirm button click", async () => {
-    const wrapper = mount(RenameDialog, {
+    const wrapper = mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "New Name",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -96,14 +88,11 @@ describe("rename dialog component", () => {
   });
 
   test("does not emit confirm when current name is empty", async () => {
-    const wrapper = mount(RenameDialog, {
+    const wrapper = mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -117,14 +106,11 @@ describe("rename dialog component", () => {
   });
 
   test("emits confirm when enter key is pressed in input field", async () => {
-    const wrapper = mount(RenameDialog, {
+    const wrapper = mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "Renamed Via Enter",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -140,14 +126,11 @@ describe("rename dialog component", () => {
   });
 
   test("updates current name when initialName prop changes", async () => {
-    const wrapper = mount(RenameDialog, {
+    const wrapper = mountWithPlugins(RenameDialog, {
       props: {
         show: true,
         item: mockItem,
         initialName: "Initial",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });

@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
-import { mount } from "@vue/test-utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   default: {
@@ -21,13 +22,10 @@ describe("forgot password dialog component", () => {
   });
 
   test("renders forgot password fields", () => {
-    mount(ForgotPasswordDialog, {
+    mountWithPlugins(ForgotPasswordDialog, {
       props: {
         modelValue: true,
         email: "user@example.com",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -39,13 +37,10 @@ describe("forgot password dialog component", () => {
   });
 
   test("displays error alert when error prop is provided", () => {
-    mount(ForgotPasswordDialog, {
+    mountWithPlugins(ForgotPasswordDialog, {
       props: {
         modelValue: true,
         error: "Failed to send reset email",
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });

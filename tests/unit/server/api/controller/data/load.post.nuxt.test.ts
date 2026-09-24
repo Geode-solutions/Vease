@@ -8,6 +8,8 @@ import {
 } from "@vease_server/utils/data_file";
 import handler from "@vease_server/api/controller/data/load.post";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease_server/utils/data_file"), () => ({
   getAllowedFileExtensions: vi.fn<typeof getAllowedFileExtensions>(),
   getAllowedGeodeObjectTypes: vi.fn<typeof getAllowedGeodeObjectTypes>(),

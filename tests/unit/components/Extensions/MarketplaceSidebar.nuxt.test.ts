@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
 import { VListItem } from "vuetify/components";
-import { mount } from "@vue/test-utils";
 import { useAppStore } from "@ogw_front/stores/app";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
   useAppStore: vi.fn<typeof useAppStore>(),
@@ -45,36 +46,32 @@ describe("the MarketplaceSidebar component", () => {
   });
 
   test("shows a loading indicator while pending", () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [], pending: true },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.findComponent({ name: "VProgressCircular" }).exists()).toBe(true);
   });
 
   test("shows an error message when fetching failed", () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [], fetchError: true },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("Failed to load extensions");
   });
 
   test("shows an empty state when there are no extensions", () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [] },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("No extensions found");
   });
 
   test("lists every provided extension with its version", () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [firstExtension, secondExtension] },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("ext-alpha");
@@ -84,9 +81,8 @@ describe("the MarketplaceSidebar component", () => {
   });
 
   test("filters extensions by the search query, matching id or description", async () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [firstExtension, secondExtension] },
-      global: { plugins: [vuetify] },
     });
 
     const searchField = wrapper.find("input");
@@ -97,9 +93,8 @@ describe("the MarketplaceSidebar component", () => {
   });
 
   test("emits update:modelValue with the clicked extension", async () => {
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [firstExtension, secondExtension] },
-      global: { plugins: [vuetify] },
     });
 
     const items = wrapper.findAllComponents(VListItem);
@@ -111,9 +106,8 @@ describe("the MarketplaceSidebar component", () => {
   test("marks an already installed extension with the checked puzzle icon", () => {
     mockInstalledExtensions([firstExtension.id]);
 
-    const wrapper = mount(MarketplaceSidebar, {
+    const wrapper = mountWithPlugins(MarketplaceSidebar, {
       props: { extensions: [firstExtension, secondExtension] },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.find(".mdi-puzzle-check-outline").exists()).toBe(true);

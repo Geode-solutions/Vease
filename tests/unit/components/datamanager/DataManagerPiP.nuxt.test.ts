@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
-import { mount } from "@vue/test-utils";
 import { navigateTo } from "#app/composables/router";
 import { useUIStore } from "@vease/stores/ui";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("#app/composables/router"), async (importOriginal) => {
   const actual = await importOriginal<typeof import("#app/composables/router")>();
@@ -51,33 +52,21 @@ describe("data manager pip component", () => {
   });
 
   test("renders pip header title and child content", () => {
-    const wrapper = mount(DataManagerPiP, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerPiP);
 
     expect(wrapper.text()).toContain("Data Manager");
     expect(wrapper.find(".data-manager-content-stub").exists()).toBe(true);
   });
 
   test("passes compact prop to data manager content", () => {
-    const wrapper = mount(DataManagerPiP, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerPiP);
 
     const contentComponent = wrapper.findComponent({ name: "DataManagerContent" });
     expect(contentComponent.props("compact")).toBe(true);
   });
 
   test("expands to full page on expand button click", async () => {
-    const wrapper = mount(DataManagerPiP, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerPiP);
 
     const uiStore = useUIStore();
     uiStore.setShowDataManagerPiP(true);
@@ -90,11 +79,7 @@ describe("data manager pip component", () => {
   });
 
   test("closes pip on close button click", async () => {
-    const wrapper = mount(DataManagerPiP, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerPiP);
 
     const uiStore = useUIStore();
     uiStore.setShowDataManagerPiP(true);

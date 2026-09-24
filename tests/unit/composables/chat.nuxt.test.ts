@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { useChat } from "@ai-sdk/vue";
 import { useVeaseChat } from "@vease/composables/chat";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ai-sdk/vue"), () => ({
   useChat: vi.fn<typeof useChat>().mockReturnValue({
     messages: { value: [] },

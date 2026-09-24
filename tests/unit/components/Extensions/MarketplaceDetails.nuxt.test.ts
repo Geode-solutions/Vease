@@ -1,14 +1,14 @@
-// oxlint-disable sort-imports, vitest/require-test-timeout
+import { VBtn, VProgressCircular } from "vuetify/components";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
-import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useExtensions } from "@vease/composables/extensions";
 import { useInfraStore } from "@ogw_front/stores/infra";
-import { VBtn, VProgressCircular } from "vuetify/components";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/utils/extension"), () => ({
   importExtensionFile: vi.fn<typeof importExtensionFile>(),
@@ -78,9 +78,8 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("renders empty marketplace placeholder when no extension is provided", () => {
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: undefined, pending: false },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("Marketplace");
@@ -90,9 +89,8 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("renders loading circular progress when pending is true", () => {
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: undefined, pending: true },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.findComponent(VProgressCircular).exists()).toBe(true);
@@ -100,9 +98,8 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("renders extension details header and readme when extension is passed", () => {
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("ext-alpha");
@@ -112,9 +109,8 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("renders fallback readme message when extension lacks a readme", () => {
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: extensionWithoutReadme },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("No README provided for this extension.");
@@ -125,9 +121,8 @@ describe("the MarketplaceDetails component", () => {
       getExtension: vi.fn<(id: string) => unknown>().mockReturnValue({ id: "ext-alpha" }),
     } as unknown as ReturnType<typeof useAppStore>);
 
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },
-      global: { plugins: [vuetify] },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -136,9 +131,8 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("installs extension successfully when clicking the install button", async () => {
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },
-      global: { plugins: [vuetify] },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -153,9 +147,8 @@ describe("the MarketplaceDetails component", () => {
     const failureMessage = "Network error downloading extension";
     downloadExtensionMock.mockRejectedValue(new Error(failureMessage));
 
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },
-      global: { plugins: [vuetify] },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -167,9 +160,8 @@ describe("the MarketplaceDetails component", () => {
   test("displays generic installation error message when thrown value is not Error instance", async () => {
     downloadExtensionMock.mockRejectedValue("unexpected error string");
 
-    const wrapper = mount(MarketplaceDetails, {
+    const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },
-      global: { plugins: [vuetify] },
     });
 
     const button = wrapper.findComponent(VBtn);

@@ -1,13 +1,11 @@
-/* oxlint-disable eslint/sort-imports */
-/* oxlint-disable vitest/prefer-called-once */
-/* oxlint-disable eslint/no-magic-numbers */
-import { useAuth } from "@vease/composables/auth";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { useAuth } from "@vease/composables/auth";
 
 import Wrapper from "@vease/components/Auth/Wrapper.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
@@ -53,27 +51,21 @@ describe("wrapper component", () => {
 
   test("renders login component when user is not authenticated", () => {
     isAuthenticatedRef.value = false;
-    const wrapper = mount(Wrapper, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Wrapper, {
       attachTo: document.body,
     });
 
     expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(true);
     expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(false);
-  }, 10_000);
+  });
 
   test("renders account component when user is authenticated", () => {
     isAuthenticatedRef.value = true;
-    const wrapper = mount(Wrapper, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Wrapper, {
       attachTo: document.body,
     });
 
     expect(wrapper.findComponent({ name: "AuthAccountStub" }).exists()).toBe(true);
     expect(wrapper.findComponent({ name: "AuthLoginStub" }).exists()).toBe(false);
-  }, 10_000);
+  });
 });

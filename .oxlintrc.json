@@ -13,7 +13,7 @@
     "eslint/id-length": [
       "error",
       {
-        "exceptions": ["x", "y", "z", "i", "j", "k", "id", "ID", "fs", "os", "_"],
+        "exceptions": ["x", "y", "z", "i", "j", "k", "id", "ID", "fs", "os", "_", "ok", "on"],
         "min": 3
       }
     ],
@@ -97,6 +97,7 @@
     ],
     "unicorn/no-useless-undefined": "off",
     "unicorn/prefer-ternary": "off",
+    "vitest/prefer-called-times": "off",
     "vitest/require-hook": "off",
     "vue/max-props": [
       "error",
@@ -118,7 +119,7 @@
       }
     },
     {
-      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js", "tests/vitest.config.ts"],
       "rules": {
         "import/no-default-export": "off"
       }

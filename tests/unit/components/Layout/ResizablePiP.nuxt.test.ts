@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const DEFAULT_TEST_WIDTH = 560;
 const DEFAULT_TEST_HEIGHT = 480;
@@ -31,12 +31,11 @@ describe("resizablepip component", () => {
   });
 
   test("renders slot content inside teleported container", () => {
-    mount(ResizablePiP, {
+    mountWithPlugins(ResizablePiP, {
       slots: {
         default: "<div data-testid='pip-content'>Main Content</div>",
         handle: "<div data-testid='pip-handle'>Handle Content</div>",
       },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 
@@ -45,8 +44,7 @@ describe("resizablepip component", () => {
   });
 
   test("applies default width height and z-index styles", () => {
-    mount(ResizablePiP, {
-      global: { plugins: [vuetify] },
+    mountWithPlugins(ResizablePiP, {
       attachTo: document.body,
     });
 
@@ -58,13 +56,12 @@ describe("resizablepip component", () => {
   });
 
   test("applies custom width height and z-index props", () => {
-    mount(ResizablePiP, {
+    mountWithPlugins(ResizablePiP, {
       props: {
         defaultWidth: CUSTOM_TEST_WIDTH,
         defaultHeight: CUSTOM_TEST_HEIGHT,
         zIndex: CUSTOM_TEST_Z_INDEX,
       },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 
@@ -75,12 +72,11 @@ describe("resizablepip component", () => {
   });
 
   test("handles resize events on pointerdown pointermove and pointerup", () => {
-    mount(ResizablePiP, {
+    mountWithPlugins(ResizablePiP, {
       props: {
         defaultWidth: CUSTOM_TEST_WIDTH,
         defaultHeight: CUSTOM_TEST_HEIGHT,
       },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 

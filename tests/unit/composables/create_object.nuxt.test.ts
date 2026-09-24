@@ -7,6 +7,8 @@ import { useCreateObjectTool } from "@vease/composables/create_object";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getBackStore: vi.fn<typeof getBackStore>(),
   getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),

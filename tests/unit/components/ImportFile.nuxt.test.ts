@@ -1,10 +1,10 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import ImportFile from "@vease/components/ImportFile.vue";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
-import { mount } from "@vue/test-utils";
-import ImportFile from "@vease/components/ImportFile.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
   importWorkflow:
@@ -26,12 +26,11 @@ describe("the ImportFile component", () => {
   });
 
   test("renders import and cancel buttons", () => {
-    const wrapper = mount(ImportFile, {
+    const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectType: GEODE_TYPE,
       },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("Import");
@@ -42,12 +41,11 @@ describe("the ImportFile component", () => {
     const uiStore = useUIStore();
     const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
 
-    const wrapper = mount(ImportFile, {
+    const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectType: GEODE_TYPE,
       },
-      global: { plugins: [vuetify] },
     });
 
     const importBtn = wrapper.find('[data-testid="finalizeImportButton"]');
@@ -64,12 +62,11 @@ describe("the ImportFile component", () => {
     const uiStore = useUIStore();
     const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
 
-    const wrapper = mount(ImportFile, {
+    const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectType: GEODE_TYPE,
       },
-      global: { plugins: [vuetify] },
     });
 
     const [, cancelBtn] = wrapper.findAll("button");

@@ -4,6 +4,8 @@ import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
 }));

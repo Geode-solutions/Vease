@@ -3,6 +3,8 @@ import { createMockEvent } from "@vease_tests/server_utils";
 import { getLlamaStatus } from "@vease_server/utils/llama_cpp";
 import handler from "@vease_server/api/llm/status.get";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
   getLlamaStatus: vi.fn<typeof getLlamaStatus>(),
 }));

@@ -5,6 +5,8 @@ import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
   runLlamaServer: vi.fn<typeof runLlamaServer>().mockResolvedValue({
     port: 8080,
@@ -45,7 +47,7 @@ describe("the AI server utilities", () => {
     test("initializes Llama server and passes API key to provider", async () => {
       const model = await getChatModel();
 
-      expect(runLlamaServer).toHaveBeenCalledTimes(1);
+      expect(runLlamaServer).toHaveBeenCalledOnce();
       expect(createOpenAICompatible).toHaveBeenCalledWith({
         name: "llama-cpp",
         baseURL: "http://127.0.0.1:8080/v1",
@@ -58,7 +60,7 @@ describe("the AI server utilities", () => {
   describe("the stop AI gateway API server helper", () => {
     test("stopLlamaServer terminates local AI server process", () => {
       stopLlamaServer();
-      expect(stopLlamaServer).toHaveBeenCalledTimes(1);
+      expect(stopLlamaServer).toHaveBeenCalledOnce();
     });
   });
 

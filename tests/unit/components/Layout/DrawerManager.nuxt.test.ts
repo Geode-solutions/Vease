@@ -1,10 +1,10 @@
-/* oxlint-disable sort-imports */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import { useViewerStore } from "@ogw_front/stores/viewer";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/stores/viewer"), () => ({
   useViewerStore: vi.fn<typeof useViewerStore>(),
@@ -94,11 +94,10 @@ describe("drawermanager component", () => {
 
   test("renders overlay and stepimport when showstepper is true", async () => {
     const mockUi = createMockUiStore({ showStepper: true });
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 
@@ -113,11 +112,10 @@ describe("drawermanager component", () => {
 
   test("renders createtools when showcreatetools is true", () => {
     const mockUi = createMockUiStore({ showCreateTools: true });
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.find("[data-testid='create-tools-stub']").exists()).toBe(true);
@@ -125,11 +123,10 @@ describe("drawermanager component", () => {
 
   test("renders extension when showextensions is true", () => {
     const mockUi = createMockUiStore({ showExtensions: true });
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.find("[data-testid='extension-stub']").exists()).toBe(true);
@@ -137,11 +134,10 @@ describe("drawermanager component", () => {
 
   test("emits files-dropped when draganddrop emits files-selected", () => {
     const mockUi = createMockUiStore();
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
     });
 
     const testFile = new File(["content"], "test.txt", { type: "text/plain" });
@@ -156,11 +152,10 @@ describe("drawermanager component", () => {
       showDataManagerPiP: true,
       showChatPiP: true,
     });
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.find("[data-testid='data-manager-pip-stub']").exists()).toBe(true);
@@ -170,11 +165,10 @@ describe("drawermanager component", () => {
   test("hides overlay when picking_mode is active", () => {
     mockViewerStore(true);
     const mockUi = createMockUiStore({ showStepper: true });
-    const wrapper = mount(DrawerManager, {
+    const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         uiStore: mockUi as unknown as ReturnType<typeof createMockUiStore>,
       },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 

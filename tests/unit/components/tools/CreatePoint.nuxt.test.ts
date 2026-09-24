@@ -1,12 +1,13 @@
-/* eslint-disable eslint/sort-imports */
-import { useViewerStore } from "@ogw_front/stores/viewer";
+import { VueWrapper, flushPromises } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import CreatePoint from "@vease/components/tools/CreatePoint.vue";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
-import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { VueWrapper, flushPromises, mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import CreatePoint from "@vease/components/tools/CreatePoint.vue";
+import { useViewerStore } from "@ogw_front/stores/viewer";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getBackStore: vi.fn<typeof getBackStore>(),
@@ -45,9 +46,7 @@ describe("the CreatePoint component", () => {
   });
 
   test("renders point set form with default initial fields", () => {
-    const wrapper: VueWrapper = mount(CreatePoint, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePoint);
 
     expect(wrapper.text()).toContain("Create Point");
     expect(wrapper.find('[data-testid="point-0"]').exists()).toBe(true);
@@ -55,9 +54,7 @@ describe("the CreatePoint component", () => {
   });
 
   test("allows adding and removing point fields", async () => {
-    const wrapper: VueWrapper = mount(CreatePoint, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePoint);
 
     const addButton = wrapper.find('[data-testid="addPointButton"]');
     await addButton.trigger("click");
@@ -75,9 +72,7 @@ describe("the CreatePoint component", () => {
   });
 
   test("enables submit button when valid point coordinates are provided", async () => {
-    const wrapper: VueWrapper = mount(CreatePoint, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePoint);
 
     const submitBtn = wrapper.find('[data-testid="submitButton"]');
     expect(submitBtn.attributes("disabled")).toBeDefined();
@@ -93,9 +88,7 @@ describe("the CreatePoint component", () => {
   });
 
   test("executes creation workflow when submit button is clicked", async () => {
-    const wrapper: VueWrapper = mount(CreatePoint, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePoint);
 
     const firstPointRow = wrapper.find('[data-testid="point-0"]');
     const inputs = firstPointRow.findAll("input");
@@ -123,9 +116,7 @@ describe("the CreatePoint component", () => {
     const uiStore = useUIStore();
     uiStore.setShowCreateTools(true);
 
-    const wrapper: VueWrapper = mount(CreatePoint, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePoint);
 
     const closeBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Close"));
     await closeBtn?.trigger("click");

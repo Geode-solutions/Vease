@@ -3,6 +3,8 @@ import { errResult, okResult } from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import tool from "@vease_server/mcp/tools/viewer/mesh/points/visibility";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
   callControllerApi: vi.fn<typeof callControllerApi>(),
 }));

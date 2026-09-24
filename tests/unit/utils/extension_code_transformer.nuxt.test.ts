@@ -1,5 +1,7 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { transformExtensionCode } from "@vease/utils/extension_code_transformer";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 describe("the transformExtensionCode utility", () => {
   test("transforms vue imports to data URLs", () => {

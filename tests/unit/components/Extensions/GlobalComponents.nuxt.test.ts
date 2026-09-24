@@ -1,8 +1,9 @@
 import { describe, expect, test, vi } from "vitest";
 import GlobalComponents from "@vease/components/Extensions/GlobalComponents.vue";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins } from "@vease_tests/utils";
 import { useAppStore } from "@ogw_front/stores/app";
-import { vuetify } from "@vease_tests/utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
   useAppStore: vi.fn<typeof useAppStore>(),
@@ -18,7 +19,7 @@ describe("the GlobalComponents component", () => {
   test("renders no elements when no extension registered a global component", () => {
     mockGlobalComponents(new Map());
 
-    const wrapper = mount(GlobalComponents, { global: { plugins: [vuetify] } });
+    const wrapper = mountWithPlugins(GlobalComponents);
 
     expect(wrapper.findAll("*")).toHaveLength(0);
   });
@@ -32,7 +33,7 @@ describe("the GlobalComponents component", () => {
     ]);
     mockGlobalComponents(globalComponents);
 
-    const wrapper = mount(GlobalComponents, { global: { plugins: [vuetify] } });
+    const wrapper = mountWithPlugins(GlobalComponents);
 
     expect(wrapper.text()).toContain("Alpha content");
     expect(wrapper.text()).toContain("Beta content");
@@ -52,7 +53,7 @@ describe("the GlobalComponents component", () => {
     ]);
     mockGlobalComponents(globalComponents);
 
-    const wrapper = mount(GlobalComponents, { global: { plugins: [vuetify] } });
+    const wrapper = mountWithPlugins(GlobalComponents);
 
     expect(wrapper.findAll(".comp-a")).toHaveLength(1);
     expect(wrapper.findAll(".comp-c")).toHaveLength(1);

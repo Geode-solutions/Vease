@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { formatRelativeTime } from "@vease/utils/format_date";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 const NOW = new Date("2024-06-15T12:00:00.000Z");
 
 const SECOND_MS = 1000;

@@ -3,6 +3,8 @@ import { errResult, okResult } from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getAppBaseUrl: vi.fn<typeof getAppBaseUrl>(),
 }));

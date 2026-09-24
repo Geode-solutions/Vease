@@ -1,9 +1,9 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { useUIStore } from "@vease/stores/ui";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateTools from "@vease/components/CreateTools.vue";
+import { useUIStore } from "@vease/stores/ui";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   default: {
@@ -49,9 +49,7 @@ describe("the CreateTools component", () => {
   });
 
   test("renders the list of active tools when no tool is selected", () => {
-    const wrapper = mount(CreateTools, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(CreateTools);
 
     expect(wrapper.text()).toContain("Create New Object");
     expect(wrapper.text()).toContain("Choose a drawing tool to get started.");
@@ -60,9 +58,7 @@ describe("the CreateTools component", () => {
   });
 
   test("selects a tool card and displays its component", async () => {
-    const wrapper = mount(CreateTools, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(CreateTools);
 
     const card = wrapper.find(`[data-testid="createToolCard-${TOOL_ID_ONE}"]`);
     await card.trigger("click");
@@ -71,9 +67,7 @@ describe("the CreateTools component", () => {
   });
 
   test("returns to tool selection list when back button is clicked", async () => {
-    const wrapper = mount(CreateTools, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(CreateTools);
 
     const card = wrapper.find(`[data-testid="createToolCard-${TOOL_ID_ONE}"]`);
     await card.trigger("click");
@@ -90,9 +84,7 @@ describe("the CreateTools component", () => {
     const uiStore = useUIStore();
     const setShowCreateToolsSpy = vi.spyOn(uiStore, "setShowCreateTools");
 
-    const wrapper = mount(CreateTools, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(CreateTools);
 
     const card = wrapper.find(`[data-testid="createToolCard-${TOOL_ID_ONE}"]`);
     await card.trigger("click");
@@ -107,9 +99,7 @@ describe("the CreateTools component", () => {
     const uiStore = useUIStore();
     uiStore.toolsDefinitions = [];
 
-    const wrapper = mount(CreateTools, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(CreateTools);
 
     const card = wrapper.find(`[data-testid="createToolCard-${TOOL_ID_ONE}"]`);
     await card.trigger("click");

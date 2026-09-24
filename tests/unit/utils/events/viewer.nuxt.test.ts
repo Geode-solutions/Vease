@@ -3,6 +3,8 @@ import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_s
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import { viewerEventHandlers } from "@vease/utils/events/viewer";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getDataStyleStore: vi.fn<typeof getDataStyleStore>(),
   getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),

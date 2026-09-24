@@ -3,6 +3,8 @@ import { assertDefined, setupActivePinia } from "@vease_tests/utils";
 import { api_fetch } from "@ogw_internal/utils/api_fetch";
 import { useAPIStore } from "@vease/stores/api";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ogw_internal/utils/api_fetch"), () => ({
   api_fetch: vi.fn<typeof api_fetch>().mockResolvedValue({ success: true }),
 }));

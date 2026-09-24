@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { flushPromises, mount } from "@vue/test-utils";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
+import { flushPromises } from "@vue/test-utils";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/components/datamanager/DataManagerHeader.vue"), () => ({
   default: {
@@ -127,22 +129,14 @@ describe("data manager content component", () => {
   });
 
   test("renders header and data table subcomponents", () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     expect(wrapper.find(".data-manager-header-stub").exists()).toBe(true);
     expect(wrapper.find(".data-table-stub").exists()).toBe(true);
   });
 
   test("toggles item visibility and updates data store and treeview store", async () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent({ name: "DataTable" });
     await dataTable.vm.$emit("toggle-visibility", mockItem1, false);
@@ -154,11 +148,7 @@ describe("data manager content component", () => {
   });
 
   test("focuses camera when focus-camera event is emitted", async () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent({ name: "DataTable" });
     await dataTable.vm.$emit("focus-camera", mockItem1);
@@ -168,11 +158,7 @@ describe("data manager content component", () => {
   });
 
   test("isolates item by making target visible and others invisible", async () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent({ name: "DataTable" });
     await dataTable.vm.$emit("isolate", mockItem1);
@@ -184,11 +170,7 @@ describe("data manager content component", () => {
   });
 
   test("opens rename dialog and executes rename", async () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent({ name: "DataTable" });
     await dataTable.vm.$emit("rename", mockItem1);
@@ -204,11 +186,7 @@ describe("data manager content component", () => {
   });
 
   test("opens delete dialog and executes delete", async () => {
-    const wrapper = mount(DataManagerContent, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent({ name: "DataTable" });
     await dataTable.vm.$emit("delete", mockItem1);

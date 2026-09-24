@@ -1,12 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import Account from "@vease/components/Auth/Account.vue";
-import { mount } from "@vue/test-utils";
 import { navigateTo } from "#app/composables/router";
 import { useAuth } from "@vease/composables/auth";
 
-const TEST_TIMEOUT = 10_000;
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("#app/composables/router"), async (importOriginal) => {
   const actual = await importOriginal();
@@ -57,82 +56,52 @@ describe("account component", () => {
     document.body.innerHTML = "";
   });
 
-  test(
-    "renders user email and logged as label",
-    () => {
-      const wrapper = mount(Account, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("renders user email and logged as label", () => {
+    const wrapper = mountWithPlugins(Account, {
+      attachTo: document.body,
+    });
 
-      expect(wrapper.text()).toContain("Logged as");
-      expect(wrapper.text()).toContain("user@example.com");
-    },
-    TEST_TIMEOUT,
-  );
+    expect(wrapper.text()).toContain("Logged as");
+    expect(wrapper.text()).toContain("user@example.com");
+  });
 
-  test(
-    "invokes logout function when logout button is clicked",
-    async () => {
-      const wrapper = mount(Account, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("invokes logout function when logout button is clicked", async () => {
+    const wrapper = mountWithPlugins(Account, {
+      attachTo: document.body,
+    });
 
-      const logoutBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Logout"));
-      expect(logoutBtn).toBeDefined();
-      await logoutBtn?.trigger("click");
+    const logoutBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Logout"));
+    expect(logoutBtn).toBeDefined();
+    await logoutBtn?.trigger("click");
 
-      expect(logoutMock).toHaveBeenCalledTimes(1);
-    },
-    TEST_TIMEOUT,
-  );
+    expect(logoutMock).toHaveBeenCalledOnce();
+  });
 
-  test(
-    "navigates to root path when back to viewer button is clicked",
-    async () => {
-      const wrapper = mount(Account, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("navigates to root path when back to viewer button is clicked", async () => {
+    const wrapper = mountWithPlugins(Account, {
+      attachTo: document.body,
+    });
 
-      const backBtn = wrapper
-        .findAll("button")
-        .find((btn) => btn.text().includes("Back to Viewer"));
-      expect(backBtn).toBeDefined();
-      await backBtn?.trigger("click");
+    const backBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Back to Viewer"));
+    expect(backBtn).toBeDefined();
+    await backBtn?.trigger("click");
 
-      expect(navigateTo).toHaveBeenCalledWith("/");
-    },
-    TEST_TIMEOUT,
-  );
+    expect(navigateTo).toHaveBeenCalledWith("/");
+  });
 
-  test(
-    "opens delete account dialog when delete account button is clicked",
-    async () => {
-      const wrapper = mount(Account, {
-        global: {
-          plugins: [vuetify],
-        },
-        attachTo: document.body,
-      });
+  test("opens delete account dialog when delete account button is clicked", async () => {
+    const wrapper = mountWithPlugins(Account, {
+      attachTo: document.body,
+    });
 
-      const deleteBtn = wrapper
-        .findAll("button")
-        .find((btn) => btn.text().includes("Delete my account"));
-      expect(deleteBtn).toBeDefined();
-      await deleteBtn?.trigger("click");
+    const deleteBtn = wrapper
+      .findAll("button")
+      .find((btn) => btn.text().includes("Delete my account"));
+    expect(deleteBtn).toBeDefined();
+    await deleteBtn?.trigger("click");
 
-      const dialogStub = wrapper.findComponent({ name: "AuthDeleteAccountDialogStub" });
-      expect(dialogStub.exists()).toBe(true);
-      expect(dialogStub.props("modelValue")).toBe(true);
-    },
-    TEST_TIMEOUT,
-  );
+    const dialogStub = wrapper.findComponent({ name: "AuthDeleteAccountDialogStub" });
+    expect(dialogStub.exists()).toBe(true);
+    expect(dialogStub.props("modelValue")).toBe(true);
+  });
 });

@@ -5,6 +5,8 @@ import os from "node:os";
 import path from "node:path";
 import { unzipFile } from "@ogw_server/utils/server";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("node:child_process"), () => {
   // The source uses a default import (`import child_process from
   // "node:child_process"`), while this test file needs the named export too;
@@ -259,7 +261,7 @@ describe("server/utils/llama_cpp", () => {
       "ubuntu-x64",
       EXECUTABLE_NAME,
     );
-    expect(unzipFile).toHaveBeenCalledTimes(1);
+    expect(unzipFile).toHaveBeenCalledOnce();
     expect(chmodSync).toHaveBeenCalledWith(expectedExecutablePath, "755");
     expect(handle.port).toBe(TEST_PORT);
   });

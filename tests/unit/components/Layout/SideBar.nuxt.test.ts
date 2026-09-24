@@ -1,12 +1,12 @@
-/* oxlint-disable sort-imports */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import SideBar from "@vease/components/Layout/SideBar.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { VLayout } from "vuetify/components";
+import { navigateTo } from "#app/composables/router";
 import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
-import { navigateTo } from "#app/composables/router";
-import { VLayout } from "vuetify/components";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_INDEX = 0;
 const SECOND_INDEX = 1;
@@ -35,14 +35,13 @@ function mockAuthComposable(isAuthenticated = false): void {
 }
 
 function mountSideBar() {
-  return mount(
+  return mountWithPlugins(
     {
       components: { SideBar, VLayout },
       template: "<v-layout><SideBar /></v-layout>",
     },
     {
       global: {
-        plugins: [vuetify],
         stubs: {
           VTooltip: {
             template: "<div><slot name='activator' :props='{}' /></div>",

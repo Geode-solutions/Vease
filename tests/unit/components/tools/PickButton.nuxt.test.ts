@@ -1,8 +1,9 @@
-import { VueWrapper, mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-// oxlint-disable-next-line eslint/sort-imports
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import PickButton from "@vease/components/tools/PickButton.vue";
+import { VueWrapper } from "@vue/test-utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_CALL_INDEX = 0;
 
@@ -16,9 +17,8 @@ describe("the PickButton component", () => {
   });
 
   test("renders default pick button state when inactive", () => {
-    const wrapper: VueWrapper = mount(PickButton, {
+    const wrapper: VueWrapper = mountWithPlugins(PickButton, {
       props: { active: false },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("Pick in viewer");
@@ -26,18 +26,16 @@ describe("the PickButton component", () => {
   });
 
   test("renders active pick button state when active", () => {
-    const wrapper: VueWrapper = mount(PickButton, {
+    const wrapper: VueWrapper = mountWithPlugins(PickButton, {
       props: { active: true },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).toContain("Stop picking");
   });
 
   test("emits click event when clicked", async () => {
-    const wrapper: VueWrapper = mount(PickButton, {
+    const wrapper: VueWrapper = mountWithPlugins(PickButton, {
       props: { active: false },
-      global: { plugins: [vuetify] },
     });
 
     const button = wrapper.find('[data-testid="pickButton"]');

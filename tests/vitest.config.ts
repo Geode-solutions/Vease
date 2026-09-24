@@ -8,7 +8,7 @@ const __dirname = import.meta.dirname;
 const RETRIES = 3;
 const DEFAULT_RETRY = 0;
 const TIMEOUTS = {
-  unit: 15_000,
+  unit: 10_000,
   integration: 30_000,
 };
 const HOOK_TIMEOUT = 30_000;
@@ -89,7 +89,7 @@ const resolveOgwAliasPlugin = {
   },
 };
 
-export default defineConfig({
+export default defineConfig(async () => ({
   test: {
     setupFiles: [path.resolve(__dirname, "./setup_indexeddb.ts")],
     projects: [
@@ -142,4 +142,4 @@ export default defineConfig({
       }),
     ],
   },
-});
+}));

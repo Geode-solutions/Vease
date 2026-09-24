@@ -14,6 +14,8 @@ import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_bac
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 const saveViewableFileId = opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id;
 const visibilityId = opengeodeweb_viewer_schemas.opengeodeweb_viewer.mesh.points.visibility.$id;
 

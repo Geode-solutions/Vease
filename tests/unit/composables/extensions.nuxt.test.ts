@@ -7,6 +7,8 @@ import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
 }));

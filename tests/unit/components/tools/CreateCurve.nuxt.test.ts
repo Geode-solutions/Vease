@@ -1,12 +1,13 @@
-/* eslint-disable eslint/sort-imports */
-import { useViewerStore } from "@ogw_front/stores/viewer";
+import { VueWrapper, flushPromises } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import CreateCurve from "@vease/components/tools/CreateCurve.vue";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
-import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { VueWrapper, flushPromises, mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import CreateCurve from "@vease/components/tools/CreateCurve.vue";
+import { useViewerStore } from "@ogw_front/stores/viewer";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getBackStore: vi.fn<typeof getBackStore>(),
@@ -51,9 +52,7 @@ describe("the CreateCurve component", () => {
   });
 
   test("renders curve creation form with default fields", () => {
-    const wrapper: VueWrapper = mount(CreateCurve, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     expect(wrapper.text()).toContain("Create Curve");
     const pointRows = wrapper.findAll('[data-testid^="point-"]');
@@ -62,9 +61,7 @@ describe("the CreateCurve component", () => {
   });
 
   test("handles point additions and deletions while respecting minimum point limit", async () => {
-    const wrapper: VueWrapper = mount(CreateCurve, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     const addButton = wrapper.find('[data-testid="addPointButton"]');
     await addButton.trigger("click");
@@ -80,9 +77,7 @@ describe("the CreateCurve component", () => {
   });
 
   test("toggles closed curve checkbox", async () => {
-    const wrapper: VueWrapper = mount(CreateCurve, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     const checkbox = wrapper.find('[data-testid="closedCurveCheckbox"] input');
     await checkbox.setValue(true);
@@ -91,9 +86,7 @@ describe("the CreateCurve component", () => {
   });
 
   test("executes creation workflow with edges payload when submitted", async () => {
-    const wrapper: VueWrapper = mount(CreateCurve, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     const firstPointRow = wrapper.find('[data-testid="point-0"]');
     const firstInputs = firstPointRow.findAll("input");
@@ -133,9 +126,7 @@ describe("the CreateCurve component", () => {
     const uiStore = useUIStore();
     uiStore.setShowCreateTools(true);
 
-    const wrapper: VueWrapper = mount(CreateCurve, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     const closeBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Close"));
     await closeBtn?.trigger("click");

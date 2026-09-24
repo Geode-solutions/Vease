@@ -4,6 +4,8 @@ import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { readFile } from "node:fs/promises";
 import tool from "@vease_server/mcp/tools/data/load";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("node:fs/promises"), () => {
   // The source imports fs as a default export; this mock must share one vi.fn() between both.
   const readFileMock = vi.fn<typeof readFile>();

@@ -1,14 +1,14 @@
-// oxlint-disable sort-imports, vitest/require-test-timeout
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import Marketplace from "@vease/components/Extensions/Marketplace.vue";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
@@ -81,9 +81,7 @@ describe("the Marketplace component", () => {
       resetPassword: vi.fn<() => Promise<void>>(),
     });
 
-    const wrapper = mount(Marketplace, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Marketplace);
 
     expect(wrapper.text()).toContain("Authentication Required");
     expect(wrapper.text()).toContain("You must be logged in to access the marketplace");
@@ -92,18 +90,14 @@ describe("the Marketplace component", () => {
   });
 
   test("renders sidebar and details components when user is logged in", () => {
-    const wrapper = mount(Marketplace, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Marketplace);
 
     expect(wrapper.findComponent(MarketplaceSidebar).exists()).toBe(true);
     expect(wrapper.findComponent(MarketplaceDetails).exists()).toBe(true);
   });
 
   test("updates selected extension in details when sidebar emits update:modelValue", async () => {
-    const wrapper = mount(Marketplace, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Marketplace);
 
     const sidebar = wrapper.findComponent(MarketplaceSidebar);
     await sidebar.vm.$emit("update:modelValue", sampleExtension);

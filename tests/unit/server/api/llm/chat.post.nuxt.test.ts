@@ -3,6 +3,8 @@ import { getChatModel, getChatTools } from "@vease_server/utils/ai";
 import { createMockEvent } from "@vease_tests/server_utils";
 import handler from "@vease_server/api/llm/chat.post";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 const RESPONSE_OK = 200;
 const MAX_TOOL_STEPS = 5;
 

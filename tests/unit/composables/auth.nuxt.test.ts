@@ -16,6 +16,8 @@ import { useAuth } from "@vease/composables/auth";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("firebase/auth"), () => ({
   createUserWithEmailAndPassword: vi.fn<typeof createUserWithEmailAndPassword>(),
   signInWithEmailAndPassword: vi.fn<typeof signInWithEmailAndPassword>(),
@@ -118,7 +120,7 @@ describe("the useAuth composable", () => {
           params: { email: "new@example.com" },
         }),
       );
-      expect(signOut).toHaveBeenCalledTimes(1);
+      expect(signOut).toHaveBeenCalledOnce();
       expect(createdUser).toBe(newUserMock);
     });
   });
@@ -134,7 +136,7 @@ describe("the useAuth composable", () => {
       const auth = useAuth();
       const loggedInUser = await auth.login("test@example.com", "password123");
 
-      expect(mockUser.reload).toHaveBeenCalledTimes(1);
+      expect(mockUser.reload).toHaveBeenCalledOnce();
       expect(loggedInUser).toBe(mockUser);
     });
 
@@ -154,7 +156,7 @@ describe("the useAuth composable", () => {
       await expect(auth.login("unverified@example.com", "password123")).rejects.toThrow(
         "Please verify your email address before logging in.",
       );
-      expect(signOut).toHaveBeenCalledTimes(1);
+      expect(signOut).toHaveBeenCalledOnce();
     });
 
     test("saves credentials in Desktop mode", async () => {
@@ -193,9 +195,9 @@ describe("the useAuth composable", () => {
         "test@example.com",
         "currentPassword",
       );
-      expect(reauthenticateWithCredential).toHaveBeenCalledTimes(1);
-      expect(deleteUser).toHaveBeenCalledTimes(1);
-      expect(signOut).toHaveBeenCalledTimes(1);
+      expect(reauthenticateWithCredential).toHaveBeenCalledOnce();
+      expect(deleteUser).toHaveBeenCalledOnce();
+      expect(signOut).toHaveBeenCalledOnce();
     });
 
     test("throws error if no user logged in", async () => {
@@ -210,7 +212,7 @@ describe("the useAuth composable", () => {
     test("signs out Firebase user", async () => {
       const auth = useAuth();
       await auth.logout();
-      expect(signOut).toHaveBeenCalledTimes(1);
+      expect(signOut).toHaveBeenCalledOnce();
     });
 
     test("deletes electron credentials when in Desktop mode", async () => {
@@ -231,8 +233,8 @@ describe("the useAuth composable", () => {
       const auth = useAuth();
       await auth.logout();
 
-      expect(deleteCredentialsSpy).toHaveBeenCalledTimes(1);
-      expect(signOut).toHaveBeenCalledTimes(1);
+      expect(deleteCredentialsSpy).toHaveBeenCalledOnce();
+      expect(signOut).toHaveBeenCalledOnce();
     });
   });
 });

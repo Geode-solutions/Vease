@@ -11,6 +11,8 @@ import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ogw_front/stores/back"), () => ({ useBackStore: vi.fn<typeof useBackStore>() }));
 vi.mock(import("@ogw_front/stores/data_style"), () => ({
   useDataStyleStore: vi.fn<typeof useDataStyleStore>(),

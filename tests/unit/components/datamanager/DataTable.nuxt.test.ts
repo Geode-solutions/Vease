@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
-import { mount } from "@vue/test-utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
@@ -34,12 +35,9 @@ describe("data table component", () => {
   });
 
   test("renders items in data table", () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1, mockItem2],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -50,12 +48,9 @@ describe("data table component", () => {
   });
 
   test("renders empty state message when no items provided", () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -63,12 +58,9 @@ describe("data table component", () => {
   });
 
   test("emits toggle-visibility event on item visibility button click", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -82,12 +74,9 @@ describe("data table component", () => {
   });
 
   test("emits focus-camera event on focus camera button click", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -101,12 +90,9 @@ describe("data table component", () => {
   });
 
   test("emits isolate event on isolate item button click", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -120,12 +106,9 @@ describe("data table component", () => {
   });
 
   test("emits rename event on rename button click and double click on name", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -139,12 +122,9 @@ describe("data table component", () => {
   });
 
   test("emits delete event on row delete button click", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -158,12 +138,9 @@ describe("data table component", () => {
   });
 
   test("emits toggle-visibility-selected on header visibility button click", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -177,13 +154,10 @@ describe("data table component", () => {
   });
 
   test("emits delete-selected on header delete all button click when items are selected", async () => {
-    const wrapper = mount(DataTable, {
+    const wrapper = mountWithPlugins(DataTable, {
       props: {
         items: [mockItem1],
         selectedIds: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 

@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { computed, ref } from "vue";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
-import { mount } from "@vue/test-utils";
 import { useAuth } from "@vease/composables/auth";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
@@ -41,12 +42,9 @@ describe("delete account dialog component", () => {
   });
 
   test("renders dialog content when modelValue is true", () => {
-    mount(DeleteAccountDialog, {
+    mountWithPlugins(DeleteAccountDialog, {
       props: {
         modelValue: true,
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });
@@ -56,12 +54,9 @@ describe("delete account dialog component", () => {
   });
 
   test("disables delete button when password input is empty", () => {
-    mount(DeleteAccountDialog, {
+    mountWithPlugins(DeleteAccountDialog, {
       props: {
         modelValue: true,
-      },
-      global: {
-        plugins: [vuetify],
       },
       attachTo: document.body,
     });

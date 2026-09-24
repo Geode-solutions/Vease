@@ -1,6 +1,7 @@
 // Third party imports
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import { type ComponentMountingOptions, mount } from "@vue/test-utils";
 import type { HTTPMethod } from "h3";
 import { createApp } from "vue";
 import { createTestingPinia } from "@pinia/testing";
@@ -42,6 +43,22 @@ if (globalThis.ResizeObserver === undefined) {
 }
 
 const vuetify = createVuetify({ components, directives });
+
+// Wraps @vue/test-utils' mount() with the Vuetify plugin every component
+// Test needs, so individual test files don't each repeat
+// `global: { plugins: [vuetify] }`.
+function mountWithPlugins<TComponent>(
+  component: TComponent,
+  options: ComponentMountingOptions<TComponent> = {},
+): ReturnType<typeof mount<TComponent>> {
+  return mount(component, {
+    ...options,
+    global: {
+      ...options.global,
+      plugins: [vuetify, ...(options.global?.plugins ?? [])],
+    },
+  });
+}
 
 function setupActivePinia(): ReturnType<typeof createTestingPinia> {
   const pinia = createTestingPinia({
@@ -110,4 +127,4 @@ function withSetup<TValue>(composable: () => TValue): WithSetupResult<TValue> {
   };
 }
 
-export { setupActivePinia, vuetify, toHTTPMethod, assertDefined, withSetup };
+export { setupActivePinia, vuetify, mountWithPlugins, toHTTPMethod, assertDefined, withSetup };

@@ -1,11 +1,11 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import Extension from "@vease/components/Extension.vue";
 import { importExtensionFile } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
-import { mount } from "@vue/test-utils";
-import Extension from "@vease/components/Extension.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/DragAndDrop.vue"), () => ({
   default: {
@@ -93,9 +93,7 @@ describe("the Extension component", () => {
   });
 
   test("renders header and drag and drop area when in desktop mode", () => {
-    const wrapper = mount(Extension, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Extension);
 
     expect(wrapper.text()).toContain("Extensions");
     expect(wrapper.text()).toContain(
@@ -106,9 +104,8 @@ describe("the Extension component", () => {
   });
 
   test("hides header when hideHeader prop is true", () => {
-    const wrapper = mount(Extension, {
+    const wrapper = mountWithPlugins(Extension, {
       props: { hideHeader: true },
-      global: { plugins: [vuetify] },
     });
 
     expect(wrapper.text()).not.toContain(
@@ -121,9 +118,7 @@ describe("the Extension component", () => {
       app_mode: "CLOUD",
     } as unknown as ReturnType<typeof useInfraStore>);
 
-    const wrapper = mount(Extension, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Extension);
 
     expect(wrapper.text()).toContain("Feature disabled in cloud mode");
     expect(wrapper.find(".drag-and-drop-stub").exists()).toBe(false);
@@ -141,18 +136,14 @@ describe("the Extension component", () => {
       },
     ]);
 
-    const wrapper = mount(Extension, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Extension);
 
     expect(wrapper.text()).toContain("Active Extensions");
     expect(wrapper.text()).toContain(EXT_NAME);
   });
 
   test("shows error message when dropping invalid non-vext files", async () => {
-    const wrapper = mount(Extension, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Extension);
 
     const dragAndDrop = wrapper.findComponent({ name: "DragAndDrop" });
     const invalidFile = new File(["dummy"], FILE_INVALID_NAME, {
@@ -164,9 +155,7 @@ describe("the Extension component", () => {
   });
 
   test("processes valid .vext files with importExtensionFile", async () => {
-    const wrapper = mount(Extension, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(Extension);
 
     const dragAndDrop = wrapper.findComponent({ name: "DragAndDrop" });
     const validFile = new File(["dummy"], FILE_VALID_NAME, {

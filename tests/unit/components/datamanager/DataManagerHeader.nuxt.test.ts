@@ -1,9 +1,10 @@
 import { type DataManagerTab, useUIStore } from "@vease/stores/ui";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
-import { mount } from "@vue/test-utils";
 import { navigateTo } from "#app/composables/router";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
@@ -41,13 +42,10 @@ describe("data manager header component", () => {
   });
 
   test("renders default data tab and additional tabs", () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         activeTab: "data",
         tabs: [mockCustomTab],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -56,13 +54,10 @@ describe("data manager header component", () => {
   });
 
   test("emits update:activeTab when a tab is clicked", async () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         activeTab: "data",
         tabs: [mockCustomTab],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -77,12 +72,9 @@ describe("data manager header component", () => {
   });
 
   test("renders picture in picture button when compact is false", () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: false,
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -90,12 +82,9 @@ describe("data manager header component", () => {
   });
 
   test("does not render picture in picture button when compact is true", () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: true,
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -103,12 +92,9 @@ describe("data manager header component", () => {
   });
 
   test("enters PiP and navigates to root on PiP button click", async () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: false,
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -121,12 +107,9 @@ describe("data manager header component", () => {
   });
 
   test("emits update:searchValue when search input changes", async () => {
-    const wrapper = mount(DataManagerHeader, {
+    const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         searchValue: "",
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -140,11 +123,7 @@ describe("data manager header component", () => {
   });
 
   test("exposes focusSearch method", () => {
-    const wrapper = mount(DataManagerHeader, {
-      global: {
-        plugins: [vuetify],
-      },
-    });
+    const wrapper = mountWithPlugins(DataManagerHeader);
 
     const exposed = wrapper.vm as unknown as { focusSearch: () => void };
     expect(exposed.focusSearch).toBeTypeOf("function");

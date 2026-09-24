@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import FileInput from "@vease/components/FileInput.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FILE_NAME = "sample_file.txt";
 const FILE_LABEL = "Select target file";
@@ -20,7 +20,7 @@ describe("the FileInput component", () => {
 
   test("renders v-file-input with correct props and label", () => {
     const sampleFile = new File(["content"], FILE_NAME, { type: "text/plain" });
-    const wrapper = mount(FileInput, {
+    const wrapper = mountWithPlugins(FileInput, {
       props: {
         value: sampleFile,
         label: FILE_LABEL,
@@ -28,7 +28,6 @@ describe("the FileInput component", () => {
         prependIcon: PREPEND_ICON,
         accept: ACCEPT_PATTERN,
       },
-      global: { plugins: [vuetify] },
     });
 
     const fileInputComponent = wrapper.findComponent({ name: "VFileInput" });
@@ -42,12 +41,11 @@ describe("the FileInput component", () => {
       type: "text/plain",
     });
 
-    const wrapper = mount(FileInput, {
+    const wrapper = mountWithPlugins(FileInput, {
       props: {
         value: sampleFile,
         label: FILE_LABEL,
       },
-      global: { plugins: [vuetify] },
     });
 
     const fileInputComponent = wrapper.findComponent({ name: "VFileInput" });

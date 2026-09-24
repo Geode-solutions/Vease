@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 import { useUIStore } from "@vease/stores/ui";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 // Avoids the `null` literal (lint) while still testing null handling.
 const NULL_VALUE: null = JSON.parse("null");

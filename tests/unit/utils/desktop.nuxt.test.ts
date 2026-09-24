@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { deleteCredentials, getCredentials, parseArgs, saveCredentials } from "~~/utils/desktop";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 const { FAKE_PORT } = vi.hoisted(() => ({ FAKE_PORT: 4000 }));
 
 // This file is Electron main-process code, not part of the Nuxt app

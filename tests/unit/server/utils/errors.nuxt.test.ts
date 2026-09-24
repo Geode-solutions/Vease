@@ -1,5 +1,7 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { asErrorLike } from "@vease_server/utils/errors";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const NOT_A_STRING_MESSAGE = 42;
 

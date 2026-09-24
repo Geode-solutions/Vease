@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import NewProject from "@vease/components/NewProject.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 describe("the NewProject component", () => {
   beforeEach(() => {
@@ -15,9 +15,8 @@ describe("the NewProject component", () => {
   });
 
   test("renders dialog content when showDialog is true", () => {
-    mount(NewProject, {
+    mountWithPlugins(NewProject, {
       props: { showDialog: true },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 
@@ -28,9 +27,8 @@ describe("the NewProject component", () => {
   });
 
   test("emits close when Close or Create button is clicked", async () => {
-    const wrapper = mount(NewProject, {
+    const wrapper = mountWithPlugins(NewProject, {
       props: { showDialog: true },
-      global: { plugins: [vuetify] },
       attachTo: document.body,
     });
 

@@ -1,10 +1,10 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import StepImport from "@vease/components/StepImport.vue";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
-import { mount } from "@vue/test-utils";
-import StepImport from "@vease/components/StepImport.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/Stepper.vue"), () => ({
   default: {
@@ -38,9 +38,7 @@ describe("the StepImport component", () => {
   });
 
   test("renders Stepper container component", () => {
-    const wrapper = mount(StepImport, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(StepImport);
 
     expect(wrapper.find(".stepper-stub").exists()).toBe(true);
   });
@@ -50,9 +48,8 @@ describe("the StepImport component", () => {
     const setDroppedFilesSpy = vi.spyOn(uiStore, "setDroppedFiles");
 
     const sampleFile = new File(["dummy"], FILE_NAME);
-    const wrapper = mount(StepImport, {
+    const wrapper = mountWithPlugins(StepImport, {
       props: { files: [sampleFile] },
-      global: { plugins: [vuetify] },
     });
 
     const closeBtn = wrapper.find(".close-btn");
@@ -67,9 +64,7 @@ describe("the StepImport component", () => {
     const uiStore = useUIStore();
     uiStore.showStepper = true;
 
-    mount(StepImport, {
-      global: { plugins: [vuetify] },
-    });
+    mountWithPlugins(StepImport);
 
     uiStore.setShowStepper(false);
     await nextTick();

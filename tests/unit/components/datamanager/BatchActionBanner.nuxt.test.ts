@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
 import type { DataItem } from "@vease/types/data_item";
-import { mount } from "@vue/test-utils";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
@@ -34,12 +35,9 @@ describe("batch action banner component", () => {
   });
 
   test("does not render banner when selectedIds is empty", () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -47,12 +45,9 @@ describe("batch action banner component", () => {
   });
 
   test("displays singular item text when one item is selected", () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -60,12 +55,9 @@ describe("batch action banner component", () => {
   });
 
   test("displays plural items text when multiple items are selected", () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [mockItem1, mockItem2],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -73,12 +65,9 @@ describe("batch action banner component", () => {
   });
 
   test("emits toggle-visibility-selected event on visibility button click", async () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -92,12 +81,9 @@ describe("batch action banner component", () => {
   });
 
   test("emits delete event on delete button click", async () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 
@@ -111,12 +97,9 @@ describe("batch action banner component", () => {
   });
 
   test("emits clear event on close button click", async () => {
-    const wrapper = mount(BatchActionBanner, {
+    const wrapper = mountWithPlugins(BatchActionBanner, {
       props: {
         selectedIds: [mockItem1],
-      },
-      global: {
-        plugins: [vuetify],
       },
     });
 

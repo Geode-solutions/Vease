@@ -1,13 +1,11 @@
-/* oxlint-disable eslint/sort-imports */
-/* oxlint-disable vitest/prefer-called-once */
-/* oxlint-disable eslint/no-magic-numbers */
-import { useAuthPage } from "@vease/composables/auth_page";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { ref } from "vue";
+import { useAuthPage } from "@vease/composables/auth_page";
 
 import Form from "@vease/components/Auth/Form.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/composables/auth_page"), () => ({
   useAuthPage: vi.fn<typeof useAuthPage>(),
@@ -76,10 +74,7 @@ describe("form component", () => {
   });
 
   test("renders login form elements by default", () => {
-    const wrapper = mount(Form, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Form, {
       attachTo: document.body,
     });
 
@@ -88,27 +83,21 @@ describe("form component", () => {
     expect(wrapper.find("[data-testid='signInButton']").text()).toContain("Sign In");
     expect(wrapper.text()).toContain("Forgot your password?");
     expect(wrapper.text()).toContain("Create an account");
-  }, 10_000);
+  });
 
   test("renders registration fields when isLogin is false", () => {
     isLoginRef.value = false;
-    const wrapper = mount(Form, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Form, {
       attachTo: document.body,
     });
 
     expect(wrapper.find("[data-testid='signInButton']").text()).toContain("Get Started");
     expect(wrapper.text()).toContain("Confirm Password");
     expect(wrapper.text()).toContain("Log in");
-  }, 10_000);
+  });
 
   test("invokes toggleMode when mode toggle button is clicked", async () => {
-    const wrapper = mount(Form, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Form, {
       attachTo: document.body,
     });
 
@@ -118,14 +107,11 @@ describe("form component", () => {
     expect(toggleBtn).toBeDefined();
     await toggleBtn?.trigger("click");
 
-    expect(toggleModeMock).toHaveBeenCalledTimes(1);
-  }, 10_000);
+    expect(toggleModeMock).toHaveBeenCalledOnce();
+  });
 
   test("opens forgot password dialog when forgot password button is clicked", async () => {
-    const wrapper = mount(Form, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Form, {
       attachTo: document.body,
     });
 
@@ -136,19 +122,16 @@ describe("form component", () => {
     await forgotBtn?.trigger("click");
 
     expect(showForgotPasswordRef.value).toBe(true);
-  }, 10_000);
+  });
 
   test("renders error and success alerts when message refs are populated", () => {
     errorRef.value = "Invalid email or password.";
     successMessageRef.value = "Account registered successfully!";
-    const wrapper = mount(Form, {
-      global: {
-        plugins: [vuetify],
-      },
+    const wrapper = mountWithPlugins(Form, {
       attachTo: document.body,
     });
 
     expect(wrapper.text()).toContain("Invalid email or password.");
     expect(wrapper.text()).toContain("Account registered successfully!");
-  }, 10_000);
+  });
 });

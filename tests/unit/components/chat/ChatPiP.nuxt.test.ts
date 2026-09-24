@@ -1,10 +1,10 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
-import ChatPiP from "@vease/components/chat/ChatPiP.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
   default: {
@@ -58,9 +58,7 @@ describe("the ChatPiP component", () => {
   });
 
   test("renders the chat component header and messages", () => {
-    const wrapper = mount(ChatPiP, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(ChatPiP);
 
     expect(wrapper.text()).toContain("Chat (beta)");
     expect(wrapper.text()).toContain("User prompt");
@@ -71,9 +69,7 @@ describe("the ChatPiP component", () => {
     const uiStore = useUIStore();
     const setShowChatPiPSpy = vi.spyOn(uiStore, "setShowChatPiP");
 
-    const wrapper = mount(ChatPiP, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(ChatPiP);
 
     const closeBtn = wrapper.find(".pip-header button");
     await closeBtn.trigger("click");
@@ -82,9 +78,7 @@ describe("the ChatPiP component", () => {
   });
 
   test("submits input text when status is ready", async () => {
-    const wrapper = mount(ChatPiP, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(ChatPiP);
 
     const input = wrapper.find("input");
     await input.setValue(INPUT_TEXT);
@@ -102,9 +96,7 @@ describe("the ChatPiP component", () => {
       error: ref<{ message: string } | undefined>(undefined),
     } as unknown as ReturnType<typeof useVeaseChat>);
 
-    const wrapper = mount(ChatPiP, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(ChatPiP);
 
     const sendBtn = wrapper.find("form button");
     expect(sendBtn.attributes("disabled")).toBeDefined();
@@ -119,9 +111,7 @@ describe("the ChatPiP component", () => {
       error: ref<{ message: string } | undefined>({ message: errorMessageText }),
     } as unknown as ReturnType<typeof useVeaseChat>);
 
-    const wrapper = mount(ChatPiP, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper = mountWithPlugins(ChatPiP);
 
     expect(wrapper.text()).toContain(errorMessageText);
   });

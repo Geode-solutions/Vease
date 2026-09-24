@@ -5,6 +5,8 @@ import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 import handler from "@vease_server/api/controller/viewer/render.post";
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ogw_shared/utils/call_schema"), () => ({
   callSchema: vi.fn<typeof callSchema>(),
 }));

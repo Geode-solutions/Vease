@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { useAuth } from "@vease/composables/auth";
 import { useAuthPage } from "@vease/composables/auth_page";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
 }));

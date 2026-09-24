@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import PasswordField from "@vease/components/PasswordField.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const FIELD_LABEL = "Enter your password";
 const SAMPLE_PASSWORD = "secret_password_123";
@@ -20,14 +20,13 @@ describe("the PasswordField component", () => {
   });
 
   test("renders text field with password type initially", () => {
-    const wrapper = mount(PasswordField, {
+    const wrapper = mountWithPlugins(PasswordField, {
       props: {
         value: SAMPLE_PASSWORD,
         label: FIELD_LABEL,
         required: true,
         toggleVisibility: toggleVisibilityMock,
       },
-      global: { plugins: [vuetify] },
     });
 
     const textField = wrapper.findComponent({ name: "VTextField" });
@@ -37,13 +36,12 @@ describe("the PasswordField component", () => {
   });
 
   test("emits input event when text field receives input", async () => {
-    const wrapper = mount(PasswordField, {
+    const wrapper = mountWithPlugins(PasswordField, {
       props: {
         value: "",
         label: FIELD_LABEL,
         toggleVisibility: toggleVisibilityMock,
       },
-      global: { plugins: [vuetify] },
     });
 
     const textField = wrapper.findComponent({ name: "VTextField" });
@@ -53,13 +51,12 @@ describe("the PasswordField component", () => {
   });
 
   test("calls toggleVisibility when append icon is clicked", async () => {
-    const wrapper = mount(PasswordField, {
+    const wrapper = mountWithPlugins(PasswordField, {
       props: {
         value: SAMPLE_PASSWORD,
         label: FIELD_LABEL,
         toggleVisibility: toggleVisibilityMock,
       },
-      global: { plugins: [vuetify] },
     });
 
     const textField = wrapper.findComponent({ name: "VTextField" });

@@ -1,12 +1,12 @@
-/* oxlint-disable sort-imports */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import TopBar from "@vease/components/Layout/TopBar.vue";
-import { mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import TopBar from "@vease/components/Layout/TopBar.vue";
+import { VLayout } from "vuetify/components";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useUIStore } from "@vease/stores/ui";
-import { VLayout } from "vuetify/components";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/composables/project_manager"), () => ({
   exportProject: vi.fn<typeof exportProject>(),
@@ -36,14 +36,13 @@ function mockInfraStore(connected = true): void {
 }
 
 function mountTopBar() {
-  return mount(
+  return mountWithPlugins(
     {
       components: { TopBar, VLayout },
       template: "<v-layout><TopBar /></v-layout>",
     },
     {
       global: {
-        plugins: [vuetify],
         stubs: {
           VMenu: {
             template: "<div><slot name='activator' :props='{}' /><slot /></div>",

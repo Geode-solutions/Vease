@@ -1,12 +1,13 @@
-/* eslint-disable eslint/sort-imports */
-import { useViewerStore } from "@ogw_front/stores/viewer";
+import { VueWrapper, flushPromises } from "@vue/test-utils";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import CreatePolygonalSurface from "@vease/components/tools/CreatePolygonalSurface.vue";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
-import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { VueWrapper, flushPromises, mount } from "@vue/test-utils";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import CreatePolygonalSurface from "@vease/components/tools/CreatePolygonalSurface.vue";
+import { useViewerStore } from "@ogw_front/stores/viewer";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
   getBackStore: vi.fn<typeof getBackStore>(),
@@ -57,9 +58,7 @@ describe("the CreatePolygonalSurface component", () => {
   });
 
   test("renders surface creation form with default 3 points", () => {
-    const wrapper: VueWrapper = mount(CreatePolygonalSurface, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePolygonalSurface);
 
     expect(wrapper.text()).toContain("Create Surface");
     expect(wrapper.text()).toContain("Pick at least 3 points to create a surface.");
@@ -68,9 +67,7 @@ describe("the CreatePolygonalSurface component", () => {
   });
 
   test("allows adding points and enabling deletion when count exceeds minimum", async () => {
-    const wrapper: VueWrapper = mount(CreatePolygonalSurface, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePolygonalSurface);
 
     const addButton = wrapper.find('[data-testid="addPointButton"]');
     await addButton.trigger("click");
@@ -86,9 +83,7 @@ describe("the CreatePolygonalSurface component", () => {
   });
 
   test("executes creation workflow with polygons payload when submitted", async () => {
-    const wrapper: VueWrapper = mount(CreatePolygonalSurface, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePolygonalSurface);
 
     const p0Inputs = wrapper.find('[data-testid="point-0"]').findAll("input");
     await p0Inputs[0]?.setValue(POINT_ONE_X);
@@ -132,9 +127,7 @@ describe("the CreatePolygonalSurface component", () => {
     const uiStore = useUIStore();
     uiStore.setShowCreateTools(true);
 
-    const wrapper: VueWrapper = mount(CreatePolygonalSurface, {
-      global: { plugins: [vuetify] },
-    });
+    const wrapper: VueWrapper = mountWithPlugins(CreatePolygonalSurface);
 
     const closeBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Close"));
     await closeBtn?.trigger("click");

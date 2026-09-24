@@ -1,8 +1,8 @@
-/* oxlint-disable sort-imports, vitest/require-test-timeout */
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import { mount } from "@vue/test-utils";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import TextField from "@vease/components/TextField.vue";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 const INPUT_LABEL = "Project Name";
 const INITIAL_VALUE = "My Project";
@@ -19,14 +19,13 @@ describe("the TextField component", () => {
   });
 
   test("renders v-text-field with passed props", () => {
-    const wrapper = mount(TextField, {
+    const wrapper = mountWithPlugins(TextField, {
       props: {
         value: INITIAL_VALUE,
         label: INPUT_LABEL,
         required: true,
         counter: MAX_COUNTER,
       },
-      global: { plugins: [vuetify] },
     });
 
     const textField = wrapper.findComponent({ name: "VTextField" });
@@ -37,12 +36,11 @@ describe("the TextField component", () => {
   });
 
   test("emits input event when text is modified in input field", async () => {
-    const wrapper = mount(TextField, {
+    const wrapper = mountWithPlugins(TextField, {
       props: {
         value: INITIAL_VALUE,
         label: INPUT_LABEL,
       },
-      global: { plugins: [vuetify] },
     });
 
     const textField = wrapper.findComponent({ name: "VTextField" });

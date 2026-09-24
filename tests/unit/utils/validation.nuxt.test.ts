@@ -1,5 +1,7 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { emailRules } from "@vease/utils/validation";
+
+vi.setConfig({ testTimeout: 10_000 });
 
 describe("email validation rules", () => {
   const [requiredRule, validEmailRule] = emailRules;

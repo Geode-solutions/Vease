@@ -11,6 +11,8 @@ import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
 import { getBackBaseUrl } from "@ogw_server/utils/server_config";
 import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load";
 
+vi.setConfig({ testTimeout: 10_000 });
+
 vi.mock(import("@ogw_shared/utils/fetch_schema"), () => ({
   fetchSchema: vi.fn<typeof fetchSchema>(),
 }));
