@@ -8,9 +8,7 @@
             "visibility": {
               "$id": "api/controller/viewer/mesh/points/visibility",
               "route": "/visibility",
-              "methods": [
-                "POST"
-              ],
+              "methods": ["POST"],
               "type": "object",
               "properties": {
                 "id": {
@@ -22,10 +20,7 @@
                   "type": "boolean"
                 }
               },
-              "required": [
-                "id",
-                "visibility"
-              ],
+              "required": ["id", "visibility"],
               "additionalProperties": false
             }
           }
@@ -36,9 +31,7 @@
       "status": {
         "$id": "api/llm/status",
         "route": "/status",
-        "methods": [
-          "GET"
-        ],
+        "methods": ["GET"],
         "type": "object",
         "properties": {},
         "required": [],
@@ -47,9 +40,7 @@
       "run": {
         "$id": "api/llm/run",
         "route": "/run",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {
           "model": {
@@ -57,17 +48,13 @@
             "minLength": 1
           }
         },
-        "required": [
-          "model"
-        ],
+        "required": ["model"],
         "additionalProperties": false
       },
       "kill": {
         "$id": "api/llm/kill",
         "route": "/kill",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {},
         "required": [],
@@ -76,9 +63,7 @@
       "chat": {
         "$id": "api/llm/chat",
         "route": "/chat",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {
           "messages": {
@@ -98,11 +83,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "messages",
-          "provider",
-          "model"
-        ],
+        "required": ["messages", "provider", "model"],
         "additionalProperties": false
       }
     }
