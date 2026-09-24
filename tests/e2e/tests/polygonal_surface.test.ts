@@ -2,7 +2,11 @@
 // Node imports
 
 // Third party imports
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import {
+  closeAllMenus,
+  closeFeedbackSnackbar,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/app_interaction";
 import {
   closeObjectsTree,
   expandMainObjectTree,
@@ -185,4 +189,5 @@ test("polygons visibility", async ({ window }) => {
 test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
+  await closeFeedbackSnackbar(window);
 });
