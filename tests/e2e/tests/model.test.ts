@@ -187,7 +187,55 @@ test("blocks paste color in input", async ({ window }) => {
   await pasteModelPolyhedraColorInput(window);
 });
 
+test("blocks vertex attribute all blocks one component", async ({ window }) => {
+  await expandMeshComponentType(window, "Blocks");
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, {
+    item: 0,
+    colorMap: "vikO",
+  });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks vertex attribute unmapped elements color one component", async ({ window }) => {
+  await setModelPolyhedraVertexAttributeNoDataColor(window);
+});
+
+test("blocks vertex attribute all blocks change item one component", async ({ window }) => {
+  await setModelPolyhedraVertexAttribute(window, vertexAttributeName, { item: 1 });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks vertex attribute one block one component", async ({ window }) => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: vertexAttributeType,
+    attributeName: vertexAttributeName,
+    colorMap: "roma",
+  });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks polyhedron attribute all blocks one component", async ({ window }) => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  await setModelPolyhedraPolyhedronAttribute(window, polyhedronAttributeName);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("blocks polyhedron attribute one block one component", async ({ window }) => {
+  await openModelComponentContextMenu(window, "00000000-", 0);
+  const componentOptions = window.getByTestId("modelComponentOptions");
+  await applyAttribute(window, componentOptions, {
+    attributeType: polyhedronAttributeType,
+    attributeName: polyhedronAttributeName,
+  });
+  await moveMouseOutOfTheWay(window);
+});
+
 test("corners visibility", async ({ window }) => {
+  await closeAllMenus(window);
+  await collapseMeshComponentType(window, "Blocks");
   await toggleModelTreeRow(window, "Blocks");
   await toggleModelTreeRow(window, "Corners");
 });

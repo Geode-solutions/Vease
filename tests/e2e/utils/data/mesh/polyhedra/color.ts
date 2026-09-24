@@ -1,3 +1,4 @@
+import type { Locator, Page } from "@playwright/test";
 import { meshViewerObjectType, polyhedraFeatureName } from "@tests/utils/constants";
 import {
   setFeatureColor,
@@ -9,7 +10,6 @@ import {
   setFeatureOpacity,
   setFeaturePasteColorInput,
 } from "@tests/utils/data/helpers/color";
-import type { Page } from "@playwright/test";
 
 async function setMeshPolyhedraOpacity(window: Page, percent: number): Promise<void> {
   await setFeatureOpacity(window, meshViewerObjectType, polyhedraFeatureName, percent);
@@ -27,16 +27,19 @@ async function setMeshPolyhedraColorWithSlider(window: Page): Promise<void> {
   await setFeatureColorWithSlider(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
-function copyMeshPolyhedraColor(window) {
-  return setFeatureCopyColor(window, meshViewerObjectType, polyhedraFeatureName);
+async function copyMeshPolyhedraColor(window: Page): Promise<void> {
+  await setFeatureCopyColor(window, meshViewerObjectType, polyhedraFeatureName);
 }
 
-function setMeshPolyhedraColorInput(window, colorText) {
-  return setFeatureColorInput(window, meshViewerObjectType, polyhedraFeatureName, colorText);
+async function setMeshPolyhedraColorInput(window: Page, colorText: string): Promise<void> {
+  await setFeatureColorInput(window, meshViewerObjectType, polyhedraFeatureName, colorText);
 }
 
-function pasteMeshPolyhedraColorInput(window, container = window) {
-  return setFeaturePasteColorInput(window, meshViewerObjectType, polyhedraFeatureName, container);
+async function pasteMeshPolyhedraColorInput(
+  window: Page,
+  container: Page | Locator = window,
+): Promise<void> {
+  await setFeaturePasteColorInput(window, meshViewerObjectType, polyhedraFeatureName, container);
 }
 
 async function setMeshPolyhedraColoringStyle(window: Page, style: string): Promise<void> {
