@@ -10,9 +10,13 @@ async function closeAllMenus(window: Page): Promise<void> {
 }
 
 // Snackbars auto-dismiss after 10s (see feedback store), which is too slow to rely on between tests.
+// Not every action produces a snackbar (e.g. a successful visibility toggle doesn't), so only close it if present.
 async function closeFeedbackSnackbar(window: Page): Promise<void> {
-  await window.getByTestId("feedbackSnackbar").getByRole("button").click();
-  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible();
+  const snackbar = window.getByTestId("feedbackSnackbar");
+  if (await snackbar.isVisible()) {
+    await snackbar.getByRole("button").click();
+    await expect(snackbar).not.toBeVisible();
+  }
 }
 
 export { closeAllMenus, closeFeedbackSnackbar, moveMouseOutOfTheWay };
