@@ -11,6 +11,7 @@ import {
 } from "@tests/utils/object_trees/model_components_object_tree";
 import { moveMouseOutOfTheWay, waitForActionSettled } from "@tests/utils/viewer_interaction";
 import { brepGeodeObjectType } from "@tests/utils/constants";
+import { closeFeedbackSnackbar } from "@tests/utils/app_interaction";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
@@ -24,6 +25,7 @@ test.describe.configure({ mode: "serial" });
 test("import project", async ({ window }) => {
   const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
   await importProject(window, projectFilePath);
+  await closeFeedbackSnackbar(window);
 });
 
 test("toggle surfaces visibility", async ({ window }) => {
