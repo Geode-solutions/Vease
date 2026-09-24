@@ -165,6 +165,8 @@ test("object tree hover lines", async ({ window }) => {
 
 test("object tree hover first surface", async ({ window }) => {
   await hoverSurfaces(window, "00000000-");
+  const timeout = 2000;
+  await window.waitForTimeout(timeout);
 });
 
 test("blocks visibility", async ({ window }) => {
