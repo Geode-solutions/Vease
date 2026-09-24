@@ -1,6 +1,7 @@
 import { type Dirent, chmodSync, existsSync, readdirSync } from "node:fs";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
+import { executableName } from "@ogw_server/utils/path";
 import os from "node:os";
 import path from "node:path";
 import { unzipFile } from "@ogw_server/utils/server";
@@ -45,7 +46,10 @@ vi.mock(import("@ogw_server/utils/server"), () => ({
   unzipFile: vi.fn<typeof unzipFile>(),
 }));
 
-const EXECUTABLE_NAME = "llama";
+// The source computes the extracted executable's expected filename via this
+// Same helper (it's "llama" on POSIX, "llama.exe" on Windows), so the mocked
+// Filesystem entries below need to match it exactly on every platform.
+const EXECUTABLE_NAME = executableName("llama");
 const TEST_PORT = 4891;
 const FAKE_PID = 4242;
 
