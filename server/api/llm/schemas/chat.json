@@ -14,6 +14,10 @@
     "model": {
       "type": "string",
       "minLength": 1
+    },
+    "gatewayApiKey": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": ["messages", "provider", "model"],

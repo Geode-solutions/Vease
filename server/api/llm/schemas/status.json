@@ -1,6 +1,6 @@
 {
   "route": "/status",
-  "methods": ["POST"],
+  "methods": ["GET"],
   "type": "object",
   "properties": {},
   "required": [],

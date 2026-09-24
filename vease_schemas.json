@@ -8,7 +8,9 @@
             "visibility": {
               "$id": "api/controller/viewer/mesh/points/visibility",
               "route": "/visibility",
-              "methods": ["POST"],
+              "methods": [
+                "POST"
+              ],
               "type": "object",
               "properties": {
                 "id": {
@@ -20,7 +22,10 @@
                   "type": "boolean"
                 }
               },
-              "required": ["id", "visibility"],
+              "required": [
+                "id",
+                "visibility"
+              ],
               "additionalProperties": false
             }
           }
@@ -31,7 +36,9 @@
       "status": {
         "$id": "api/llm/status",
         "route": "/status",
-        "methods": ["POST"],
+        "methods": [
+          "GET"
+        ],
         "type": "object",
         "properties": {},
         "required": [],
@@ -40,7 +47,9 @@
       "run": {
         "$id": "api/llm/run",
         "route": "/run",
-        "methods": ["POST"],
+        "methods": [
+          "POST"
+        ],
         "type": "object",
         "properties": {
           "model": {
@@ -48,36 +57,17 @@
             "minLength": 1
           }
         },
-        "required": ["model"],
+        "required": [
+          "model"
+        ],
         "additionalProperties": false
       },
       "kill": {
         "$id": "api/llm/kill",
         "route": "/kill",
-        "methods": ["POST"],
-        "type": "object",
-        "properties": {},
-        "required": [],
-        "additionalProperties": false
-      },
-      "gateway_key": {
-        "$id": "api/llm/gateway_key",
-        "route": "/gateway_key",
-        "methods": ["POST"],
-        "type": "object",
-        "properties": {
-          "apiKey": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": ["apiKey"],
-        "additionalProperties": false
-      },
-      "delete_gateway_key": {
-        "$id": "api/llm/delete_gateway_key",
-        "route": "/delete_gateway_key",
-        "methods": ["POST"],
+        "methods": [
+          "POST"
+        ],
         "type": "object",
         "properties": {},
         "required": [],
@@ -86,7 +76,9 @@
       "chat": {
         "$id": "api/llm/chat",
         "route": "/chat",
-        "methods": ["POST"],
+        "methods": [
+          "POST"
+        ],
         "type": "object",
         "properties": {
           "messages": {
@@ -100,9 +92,17 @@
           "model": {
             "type": "string",
             "minLength": 1
+          },
+          "gatewayApiKey": {
+            "type": "string",
+            "minLength": 1
           }
         },
-        "required": ["messages", "provider", "model"],
+        "required": [
+          "messages",
+          "provider",
+          "model"
+        ],
         "additionalProperties": false
       }
     }

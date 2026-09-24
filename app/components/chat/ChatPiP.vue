@@ -13,6 +13,8 @@ const {
   toggleProvider,
   isCloudAiAllowed,
   CHAT_PROVIDER,
+  llamaStatus,
+  killLlamaServer,
 } = useVeaseChat();
 
 const input = ref("");
@@ -64,6 +66,23 @@ watch(
         <v-icon size="18" color="primary" class="mr-2">mdi-chat-outline</v-icon>
         <span class="text-subtitle-2 font-weight-bold text-white">Chat (beta)</span>
         <v-spacer />
+        <span v-if="provider === CHAT_PROVIDER.LLAMA" class="mr-1 d-flex align-center">
+          <v-icon size="10" :color="llamaStatus.running ? 'success' : 'grey'" class="mr-1">
+            mdi-circle
+          </v-icon>
+          <span class="text-caption text-white mr-1">
+            {{ llamaStatus.running ? "Local model running" : "Local model stopped" }}
+          </span>
+          <span v-if="llamaStatus.running">
+            <v-btn size="x-small" variant="tonal" color="error" @click="killLlamaServer">
+              <v-icon size="14" class="mr-1">mdi-stop-circle-outline</v-icon>
+              Stop
+            </v-btn>
+            <v-tooltip activator="parent" location="top">
+              Stop the local model to free up resources
+            </v-tooltip>
+          </span>
+        </span>
         <span class="mr-1">
           <v-btn
             size="x-small"

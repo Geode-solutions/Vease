@@ -1,12 +1,11 @@
 // Third party imports
 import { DefaultChatTransport } from "ai";
-import { useAppStore } from "@ogw_front/stores/app";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
+import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
-
 import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
 
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
@@ -30,6 +29,8 @@ const KEY_SCHEMA = {
   additionalProperties: false,
 };
 
+type LlamaStatus = { running: false } | { running: true };
+
 interface VeaseChatReturn extends Pick<
   ReturnType<typeof useChat>,
   "messages" | "sendMessage" | "status" | "error" | "stop" | "clearError"
@@ -38,15 +39,30 @@ interface VeaseChatReturn extends Pick<
   toggleProvider: () => Promise<void>;
   isCloudAiAllowed: Ref<boolean>;
   CHAT_PROVIDER: typeof CHAT_PROVIDER;
+  llamaStatus: Ref<LlamaStatus>;
+  killLlamaServer: () => Promise<void>;
 }
 
+// oxlint-disable eslint/max-lines-per-function
 export function useVeaseChat(): VeaseChatReturn {
   const { user } = useAuth();
   const APIStore = useAPIStore();
   const appStore = useAppStore();
   const provider = ref<ChatProvider>(CHAT_PROVIDER.LLAMA);
   const isCloudAiAllowed = ref(false);
-  let gatewayKeyReady = false;
+  const gatewayApiKey = ref<string | undefined>(undefined);
+  const llamaStatus = ref<LlamaStatus>({ running: false });
+
+  async function refreshLlamaStatus(): Promise<void> {
+    llamaStatus.value = (await appStore.request({
+      schema: vease_schemas.api.llm.status,
+    })) as LlamaStatus;
+  }
+
+  async function killLlamaServer(): Promise<void> {
+    await appStore.request({ schema: vease_schemas.api.llm.kill });
+    llamaStatus.value = { running: false };
+  }
 
   async function refreshCloudEntitlement(): Promise<void> {
     if (!user.value) {
@@ -65,7 +81,7 @@ export function useVeaseChat(): VeaseChatReturn {
   watch(user, refreshCloudEntitlement, { immediate: true });
 
   async function ensureGatewayKey(): Promise<void> {
-    if (gatewayKeyReady || !user.value) {
+    if (gatewayApiKey.value || !user.value) {
       return;
     }
     const token = await user.value.getIdToken();
@@ -73,20 +89,25 @@ export function useVeaseChat(): VeaseChatReturn {
     const { apiKeyString } = (await APIStore.request({ schema: KEY_SCHEMA, headers })) as {
       apiKeyString?: string;
     };
-    const params = { apiKey: apiKeyString };
-    await appStore.request({ schema: vease_schemas.api.llm.gateway_key, params });
-    gatewayKeyReady = true;
+    gatewayApiKey.value = apiKeyString;
   }
 
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/llm/chat",
-      headers: async () => {
+      headers: async (): Promise<Record<string, string>> => {
         const token = await user.value?.getIdToken();
         return token ? { Authorization: `Bearer ${token}` } : {};
       },
-      body: () => ({ provider: provider.value }),
+      body: () => ({ provider: provider.value, gatewayApiKey: gatewayApiKey.value }),
     }),
+  });
+
+  refreshLlamaStatus();
+  watch(status, (chatStatus) => {
+    if (chatStatus === "ready" && provider.value === CHAT_PROVIDER.LLAMA) {
+      refreshLlamaStatus();
+    }
   });
 
   async function toggleProvider(): Promise<void> {
@@ -112,5 +133,7 @@ export function useVeaseChat(): VeaseChatReturn {
     toggleProvider,
     isCloudAiAllowed,
     CHAT_PROVIDER,
+    llamaStatus,
+    killLlamaServer,
   };
 }

@@ -6,7 +6,6 @@ import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 // Local imports
-import { clearGatewayApiKey, getGatewayApiKey } from "@vease_server/utils/server_config.js";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 const LLAMA_HOST = "127.0.0.1";
@@ -31,10 +30,12 @@ async function getLlamaChatModel(model: string | undefined): Promise<LanguageMod
   return provider.chatModel(resolvedModel);
 }
 
-function getGatewayChatModel(model: string | undefined): LanguageModelV4 {
-  const apiKey = getGatewayApiKey();
+function getGatewayChatModel(
+  model: string | undefined,
+  apiKey: string | undefined,
+): LanguageModelV4 {
   if (!apiKey) {
-    throw new Error("No AI Gateway key cached for this session yet");
+    throw new Error("Missing AI Gateway key for this request");
   }
   const provider = createGateway({ apiKey });
   return provider.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
@@ -43,9 +44,14 @@ function getGatewayChatModel(model: string | undefined): LanguageModelV4 {
 async function getChatModel({
   provider = CHAT_PROVIDER.LLAMA,
   model,
-}: { provider?: ChatProvider; model?: string } = {}): Promise<LanguageModelV4> {
+  gatewayApiKey,
+}: {
+  provider?: ChatProvider;
+  model?: string;
+  gatewayApiKey?: string;
+} = {}): Promise<LanguageModelV4> {
   if (provider === CHAT_PROVIDER.GATEWAY) {
-    return getGatewayChatModel(model);
+    return getGatewayChatModel(model, gatewayApiKey);
   }
   return await getLlamaChatModel(model);
 }
@@ -63,8 +69,4 @@ async function getChatTools(): Promise<Awaited<ReturnType<MCPClient["tools"]>>> 
   return client.tools();
 }
 
-function deleteGatewayKey(): void {
-  clearGatewayApiKey();
-}
-
-export { CHAT_PROVIDER, deleteGatewayKey, getChatModel, getChatTools, type ChatProvider };
+export { CHAT_PROVIDER, getChatModel, getChatTools, type ChatProvider };

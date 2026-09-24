@@ -1,8 +1,0 @@
-{
-  "route": "/delete_gateway_key",
-  "methods": ["POST"],
-  "type": "object",
-  "properties": {},
-  "required": [],
-  "additionalProperties": false
-}
