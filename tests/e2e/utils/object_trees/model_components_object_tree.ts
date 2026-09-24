@@ -15,6 +15,10 @@ function getModelComponentsObjectTree(window: Page): Locator {
   return window.getByTestId("modelComponentsObjectTree");
 }
 
+function getModelComponentTypeOptions(window: Page): Locator {
+  return window.getByTestId("modelComponentTypeOptions");
+}
+
 async function collapseModelComponentsObjectTree(window: Page): Promise<void> {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await clickCollapseOrExpandAll(window, modelComponentsObjectTree, "mdi-collapse-all-outline");
@@ -179,6 +183,7 @@ export {
   collapseModelComponentTypes,
   expandMeshComponentType,
   expandModelComponentsObjectTree,
+  getModelComponentTypeOptions,
   getModelComponentsObjectTree,
   hideAllComponentLeafRows,
   hoverCorners,

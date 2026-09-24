@@ -370,6 +370,7 @@ export {
   setPolygonsTextures,
   setPolygonsVisibility,
   setPolyhedraVisibility,
+  setVisibilityGeneric,
   stabilizeHoverTooltip,
   toggleInfoCard,
   viewerContextMenu,

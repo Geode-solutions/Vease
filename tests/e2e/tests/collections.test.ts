@@ -4,6 +4,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import { defaultDataName, structuralModelGeodeObjectType } from "@tests/utils/constants";
 import {
+  getModelComponentTypeOptions,
   getModelComponentsObjectTree,
   openModelCollectionsTree,
   openModelComponentContextMenu,
@@ -14,8 +15,8 @@ import {
   setModelColor,
   setModelColoringStyle,
   setModelPolygonsVertexAttribute,
+  setModelSurfacesVisibility,
 } from "@tests/utils/data";
-import { afterActionWait } from "@tests/utils/viewer_interaction";
 import { expandGeodeObjectTypeInTree } from "@tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
@@ -54,22 +55,20 @@ test("hide blocks", async ({ window }) => {
 
 test("collection type color", async ({ window }) => {
   await openModelComponentContextMenu(window, collectionTypeRowName);
-  await expect(window.getByTestId("modelComponentTypeOptions")).toContainText("Surfaces Options");
+  await expect(getModelComponentTypeOptions(window)).toContainText("Surfaces Options");
   await setModelColor(window);
   await moveMouseOutOfTheWay(window);
 });
 
 test("collection visibility", async ({ window }) => {
   await openModelComponentContextMenu(window, collectionRowName);
-  await window.getByTestId("modelSurfacesVisibilitySwitch").getByRole("checkbox").uncheck();
-  await window.waitForTimeout(afterActionWait);
+  await setModelSurfacesVisibility(window, false);
   await moveMouseOutOfTheWay(window);
 });
 
 test("collection vertex attribute", async ({ window }) => {
   await openModelComponentContextMenu(window, collectionRowName);
-  await window.getByTestId("modelSurfacesVisibilitySwitch").getByRole("checkbox").check();
-  await window.waitForTimeout(afterActionWait);
+  await setModelSurfacesVisibility(window, true);
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
   await moveMouseOutOfTheWay(window);
 });
