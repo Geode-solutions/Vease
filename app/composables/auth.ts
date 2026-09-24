@@ -15,10 +15,7 @@ import { useInfraStore } from "@ogw_front/stores/infra.js";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
-
-function deleteGatewayKey() {
-  return $fetch("/api/llm/delete_gateway_key", { method: "POST" });
-}
+import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
 
 interface DesktopElectronAPI {
   save_credentials: (args: { email: string; password: string }) => void;
@@ -125,7 +122,7 @@ function useAuth(): UseAuthReturn {
   }
 
   async function logout(): Promise<void> {
-    await deleteGatewayKey();
+    await APIStore.request({ schema: vease_schemas.api.llm.delete_gateway_key });
     if (infraStore.app_mode === appMode.DESKTOP) {
       try {
         const { success } = await getDesktopElectronAPI().delete_credentials();

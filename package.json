@@ -25,7 +25,11 @@
   "type": "module",
   "main": "dist-electron/main.js",
   "exports": {
-    "./tests/e2e/utils/*": "./tests/e2e/utils/*"
+    "./tests/e2e/utils/*": "./tests/e2e/utils/*",
+    "./vease_schemas.json": {
+      "import": "./vease_schemas.json",
+      "require": "./vease_schemas.json"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -54,7 +58,7 @@
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "test": "echo \"Error: no test specified\" && exit 0",
     "test:e2e": "npx playwright test --config ./tests/e2e/playwright.config.ts",
-    "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",
+    "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome --headed",
     "test:e2e:browser:firefox": "npm run test:e2e -- --project=browser-firefox",
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
     "test:e2e:cloud": "npm run test:e2e -- --project=cloud",

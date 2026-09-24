@@ -1,10 +1,13 @@
 // Third party imports
 import { DefaultChatTransport } from "ai";
+import { useAppStore } from "@ogw_front/stores/app";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
 import { useAuth } from "@vease/composables/auth";
+
+import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
 
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
@@ -40,6 +43,7 @@ interface VeaseChatReturn extends Pick<
 export function useVeaseChat(): VeaseChatReturn {
   const { user } = useAuth();
   const APIStore = useAPIStore();
+  const appStore = useAppStore();
   const provider = ref<ChatProvider>(CHAT_PROVIDER.LLAMA);
   const isCloudAiAllowed = ref(false);
   let gatewayKeyReady = false;
@@ -69,13 +73,18 @@ export function useVeaseChat(): VeaseChatReturn {
     const { apiKeyString } = (await APIStore.request({ schema: KEY_SCHEMA, headers })) as {
       apiKeyString?: string;
     };
-    await $fetch("/api/llm/gateway_key", { method: "POST", body: { apiKey: apiKeyString } });
+    const params = { apiKey: apiKeyString };
+    await appStore.request({ schema: vease_schemas.api.llm.gateway_key, params });
     gatewayKeyReady = true;
   }
 
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/llm/chat",
+      headers: async () => {
+        const token = await user.value?.getIdToken();
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      },
       body: () => ({ provider: provider.value }),
     }),
   });
