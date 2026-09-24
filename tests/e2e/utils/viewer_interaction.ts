@@ -5,7 +5,7 @@ import type { Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line unicorn/prefer-export-from
 import { afterActionWait, halfSecondWait } from "./constants";
 // oxlint-disable-next-line unicorn/prefer-export-from
-import { moveMouseOutOfTheWay } from "./app_interaction";
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "./app_interaction";
 // oxlint-disable-next-line unicorn/prefer-export-from
 import { waitForActionSettled } from "./wait_for_action_settled";
 
@@ -353,6 +353,7 @@ async function viewerQuickColormap(window: Page, x?: number, y?: number): Promis
 export {
   afterActionWait,
   noopCleanup,
+  closeFeedbackSnackbar,
   dragContextMenu,
   dragElement,
   ensureFeatureVisible,

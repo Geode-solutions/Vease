@@ -1,8 +1,5 @@
 // Node imports
 
-// Third party imports
-import { expect } from "@playwright/test";
-
 // Local imports
 import {
   brepGeodeObjectType,
@@ -22,7 +19,11 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@tests/utils/data_manager";
-import { moveMouseOutOfTheWay, waitForActionSettled } from "@tests/utils/viewer_interaction";
+import {
+  closeFeedbackSnackbar,
+  moveMouseOutOfTheWay,
+  waitForActionSettled,
+} from "@tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { navigateToDataManagerPage } from "@tests/utils/navigate";
 import { test } from "@tests/utils/fixtures";
@@ -61,7 +62,7 @@ test("rename object", async ({ window }) => {
 test("toggle visibility off", async ({ window }) => {
   await toggleRowVisibility(window, pointSetGeodeObjectType);
   await moveMouseOutOfTheWay(window);
-  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("open picture in picture and expand objects", async ({ window }) => {
@@ -86,7 +87,7 @@ test("isolate object", async ({ window }) => {
   await isolateRowItem(window, pointSetGeodeObjectType);
   await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
-  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("expand pip", async ({ window }) => {

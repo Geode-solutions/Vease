@@ -37,7 +37,11 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@tests/utils/camera_interaction";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import {
+  closeAllMenus,
+  closeFeedbackSnackbar,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/app_interaction";
 import {
   dragContextMenu,
   findOverlappingObjectsPicker,
@@ -285,7 +289,7 @@ test("screenshot file without background", async ({ window }) => {
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").uncheck();
   await window.getByTestId("screenshotActionButton").click();
   await waitForActionSettled(window);
-  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("screenshot clipboard with background", async ({ window }) => {
@@ -294,7 +298,7 @@ test("screenshot clipboard with background", async ({ window }) => {
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
   await waitForActionSettled(window);
-  await expect(window.getByTestId("feedbackSnackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("open shrink filter tool", async ({ window }) => {
