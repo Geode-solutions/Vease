@@ -1,9 +1,11 @@
+import { createRequire } from "node:module";
 import { defineConfig } from "vitest/config";
 import { defineVitestProject } from "@nuxt/test-utils/config";
 import fs from "node:fs";
 import path from "node:path";
 
 const __dirname = import.meta.dirname;
+const require = createRequire(import.meta.url);
 
 const RETRIES = 3;
 const DEFAULT_RETRY = 0;
@@ -18,42 +20,11 @@ const EXTENSION_LENGTH_JS = 3;
 const globalRetry = process.env.CI ? RETRIES : DEFAULT_RETRY;
 const maxWorkers = process.env.CI ? CI_WORKERS : undefined;
 
-const ogwFrontApp = path.resolve(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "OpenGeodeWeb",
-  "OpenGeodeWeb-Front",
-  "app",
-);
-const ogwShared = path.resolve(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "OpenGeodeWeb",
-  "OpenGeodeWeb-Front",
-  "shared",
-);
-const ogwInternal = path.resolve(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "OpenGeodeWeb",
-  "OpenGeodeWeb-Front",
-  "internal",
-);
-const ogwTests = path.resolve(
-  __dirname,
-  "..",
-  "..",
-  "..",
-  "OpenGeodeWeb",
-  "OpenGeodeWeb-Front",
-  "tests",
-);
+const ogwFrontRoot = path.dirname(require.resolve("@geode/opengeodeweb-front/package.json"));
+const ogwFrontApp = path.resolve(ogwFrontRoot, "app");
+const ogwShared = path.resolve(ogwFrontRoot, "shared");
+const ogwInternal = path.resolve(ogwFrontRoot, "internal");
+const ogwTests = path.resolve(ogwFrontRoot, "tests");
 
 const aliases = {
   "@vease": path.resolve(__dirname, "..", "app"),
