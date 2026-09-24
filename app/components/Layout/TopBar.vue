@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  exportProject,
-  importProject,
-} from "@ogw_front/composables/project_manager";
+import { exportProject, importProject } from "@ogw_front/composables/project_manager";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { Status } from "@ogw_front/utils/status";
 import { getInfraStore } from "@vease/utils/external_stores";
@@ -41,14 +38,7 @@ function onImportFileSelected(event): void {
     class="d-flex align-center w-100 px-8"
     @mousedown.stop
   >
-    <v-img
-      :src="logo"
-      max-height="32"
-      max-width="32"
-      class="mr-2"
-      contain
-      draggable="false"
-    />
+    <v-img :src="logo" max-height="32" max-width="32" class="mr-2" contain draggable="false" />
     <h2 class="title-text font-michroma mr-8 text-h5">Vease</h2>
 
     <div class="d-flex ga-2">
@@ -66,11 +56,7 @@ function onImportFileSelected(event): void {
             <v-icon end size="18">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
-        <GlassCard
-          variant="panel"
-          padding="pa-0"
-          class="border-0 mt-2 rounded-lg"
-        >
+        <GlassCard variant="panel" padding="pa-0" class="border-0 mt-2 rounded-lg">
           <v-list density="compact" bg-color="transparent" theme="dark">
             <v-list-item
               prepend-icon="mdi-download"
