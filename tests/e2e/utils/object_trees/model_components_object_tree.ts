@@ -144,6 +144,19 @@ async function openModelComponentsTree(
   await window.waitForTimeout(afterActionWait);
 }
 
+async function openModelCollectionsTree(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = getMainObjectTree(window);
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
+  await row.getByTestId("expandModelCollectionsButton").first().click();
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(afterActionWait);
+}
+
 async function hideAllComponentLeafRows(window: Page, categoryName: string): Promise<void> {
   const tree = getModelComponentsObjectTree(window);
   await expandGeodeObjectTypeInTree(window, categoryName, tree);
@@ -173,6 +186,7 @@ export {
   hoverModelBlock,
   hoverSurfaces,
   openModelComponentContextMenu,
+  openModelCollectionsTree,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
