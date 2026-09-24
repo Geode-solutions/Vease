@@ -10,7 +10,11 @@ import {
   openModelComponentsTree,
   toggleModelTreeRow,
 } from "@tests/utils/object_trees/model_components_object_tree";
-import { setModelColor, setModelPolygonsVertexAttribute } from "@tests/utils/data";
+import {
+  setModelColor,
+  setModelColoringStyle,
+  setModelPolygonsVertexAttribute,
+} from "@tests/utils/data";
 import { afterActionWait } from "@tests/utils/viewer_interaction";
 import { expandGeodeObjectTypeInTree } from "@tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@tests/utils/load";
@@ -67,5 +71,11 @@ test("collection vertex attribute", async ({ window }) => {
   await window.getByTestId("modelSurfacesVisibilitySwitch").getByRole("checkbox").check();
   await window.waitForTimeout(afterActionWait);
   await setModelPolygonsVertexAttribute(window, vertexAttributeName, { item: 0, colorMap: "vikO" });
+  await moveMouseOutOfTheWay(window);
+});
+
+test("collection type random color", async ({ window }) => {
+  await openModelComponentContextMenu(window, collectionTypeRowName);
+  await setModelColoringStyle(window, "Random");
   await moveMouseOutOfTheWay(window);
 });
