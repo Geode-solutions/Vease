@@ -67,6 +67,8 @@ export function useVeaseChat(): VeaseChatReturn {
   async function refreshCloudEntitlement(): Promise<void> {
     if (!user.value) {
       isCloudAiAllowed.value = false;
+      gatewayApiKey.value = undefined;
+      provider.value = CHAT_PROVIDER.LLAMA;
       return;
     }
     const token = await user.value.getIdToken();
