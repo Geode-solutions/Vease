@@ -20,7 +20,8 @@
     "url": "git+https://github.com/Geode-solutions/Vease.git"
   },
   "files": [
-    "tests/e2e/utils"
+    "tests/e2e/utils",
+    ".build/tests/e2e/utils"
   ],
   "type": "module",
   "main": "dist-electron/main.js",
