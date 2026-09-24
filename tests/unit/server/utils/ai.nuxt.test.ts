@@ -43,6 +43,7 @@ describe("the AI server utilities", () => {
     test("initializes Llama server and passes API key to provider", async () => {
       const model = await getChatModel();
 
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(runLlamaServer).toHaveBeenCalledOnce();
       expect(createOpenAICompatible).toHaveBeenCalledWith({
         name: "llama-cpp",
@@ -56,6 +57,7 @@ describe("the AI server utilities", () => {
   describe("the stop AI gateway API server helper", () => {
     test("stopLlamaServer terminates local AI server process", () => {
       stopLlamaServer();
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(stopLlamaServer).toHaveBeenCalledOnce();
     });
   });

@@ -74,7 +74,10 @@ function buildMultipartBody(parts: MultipartPart[]): { contentType: string; body
   return { contentType: `multipart/form-data; boundary=${MULTIPART_BOUNDARY}`, body };
 }
 
-// "ok" matches callControllerApi's real 2-letter field name.
+// "ok" matches callControllerApi's real 2-letter field name. The shared
+// Oxlint config (Geode-solutions/actions) doesn't allow customizing
+// Id-length's exceptions list, so there's no code-level fix here.
+/* oxlint-disable eslint/id-length */
 function okResult<TPayload>(payload: TPayload): { ok: true; payload: TPayload } {
   return { ok: true, payload };
 }
@@ -82,6 +85,7 @@ function okResult<TPayload>(payload: TPayload): { ok: true; payload: TPayload } 
 function errResult(message: string): { ok: false; message: string } {
   return { ok: false, message };
 }
+/* oxlint-enable eslint/id-length */
 
 export {
   createMockEvent,

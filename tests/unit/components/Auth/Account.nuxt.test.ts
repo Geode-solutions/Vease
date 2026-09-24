@@ -69,6 +69,7 @@ describe("account component", () => {
     expect(logoutBtn).toBeDefined();
     await logoutBtn?.trigger("click");
 
+    // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
     expect(logoutMock).toHaveBeenCalledOnce();
   });
 

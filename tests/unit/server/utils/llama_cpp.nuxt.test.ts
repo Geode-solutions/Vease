@@ -79,6 +79,9 @@ class FakeChildProcess {
 
   private readonly listeners = new Map<string, Set<Listener>>();
 
+  // "on" must match Node's ChildProcess.on() exactly; the shared oxlint
+  // Config doesn't allow customizing id-length's exceptions list.
+  // oxlint-disable-next-line eslint/id-length
   public on(event: string, listener: Listener): this {
     const set = this.listeners.get(event) ?? new Set<Listener>();
     set.add(listener);
@@ -256,6 +259,7 @@ describe("server/utils/llama_cpp", () => {
       "ubuntu-x64",
       EXECUTABLE_NAME,
     );
+    // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
     expect(unzipFile).toHaveBeenCalledOnce();
     expect(chmodSync).toHaveBeenCalledWith(expectedExecutablePath, "755");
     expect(handle.port).toBe(TEST_PORT);

@@ -102,6 +102,7 @@ describe("form component", () => {
     expect(toggleBtn).toBeDefined();
     await toggleBtn?.trigger("click");
 
+    // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
     expect(toggleModeMock).toHaveBeenCalledOnce();
   });
 

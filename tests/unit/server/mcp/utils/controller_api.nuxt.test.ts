@@ -10,7 +10,10 @@ vi.mock(import("@ogw_server/utils/server_config"), () => ({
 }));
 
 // Mirrors the real Fetch API Response shape; "ok" is the platform's own
-// 2-letter field name, same unavoidable id-length tradeoff as elsewhere.
+// 2-letter field name. The shared oxlint config (Geode-solutions/actions)
+// Doesn't allow customizing id-length's exceptions list, so every use of
+// That field below needs this disabled — there's no code-level fix.
+/* oxlint-disable eslint/id-length */
 function fakeFetchResponse(options: {
   ok: boolean;
   statusText?: string;

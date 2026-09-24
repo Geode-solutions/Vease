@@ -116,6 +116,7 @@ describe("the useAuth composable", () => {
           params: { email: "new@example.com" },
         }),
       );
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(signOut).toHaveBeenCalledOnce();
       expect(createdUser).toBe(newUserMock);
     });
@@ -132,6 +133,7 @@ describe("the useAuth composable", () => {
       const auth = useAuth();
       const loggedInUser = await auth.login("test@example.com", "password123");
 
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(mockUser.reload).toHaveBeenCalledOnce();
       expect(loggedInUser).toBe(mockUser);
     });
@@ -152,6 +154,7 @@ describe("the useAuth composable", () => {
       await expect(auth.login("unverified@example.com", "password123")).rejects.toThrow(
         "Please verify your email address before logging in.",
       );
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(signOut).toHaveBeenCalledOnce();
     });
 
@@ -191,8 +194,11 @@ describe("the useAuth composable", () => {
         "test@example.com",
         "currentPassword",
       );
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(reauthenticateWithCredential).toHaveBeenCalledOnce();
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(deleteUser).toHaveBeenCalledOnce();
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(signOut).toHaveBeenCalledOnce();
     });
 
@@ -208,6 +214,7 @@ describe("the useAuth composable", () => {
     test("signs out Firebase user", async () => {
       const auth = useAuth();
       await auth.logout();
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(signOut).toHaveBeenCalledOnce();
     });
 
@@ -229,7 +236,9 @@ describe("the useAuth composable", () => {
       const auth = useAuth();
       await auth.logout();
 
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(deleteCredentialsSpy).toHaveBeenCalledOnce();
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
       expect(signOut).toHaveBeenCalledOnce();
     });
   });
