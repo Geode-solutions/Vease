@@ -1,0 +1,122 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
+import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
+import { VListItem } from "vuetify/components";
+import { mount } from "@vue/test-utils";
+import { useAppStore } from "@ogw_front/stores/app";
+
+vi.mock(import("@ogw_front/stores/app"), () => ({
+  useAppStore: vi.fn<typeof useAppStore>(),
+}));
+
+vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
+  default: {
+    name: "GlassCard",
+    template: "<div class='glass-card-stub'><slot /></div>",
+  },
+}));
+
+const firstExtension: MarketplaceExtension = {
+  id: "ext-alpha",
+  description: "Alpha extension",
+  version: "1.0.0",
+};
+const secondExtension: MarketplaceExtension = {
+  id: "ext-beta",
+  description: "Beta extension",
+  version: "2.0.0",
+};
+
+function mockInstalledExtensions(installedIds: string[]): void {
+  vi.mocked(useAppStore).mockReturnValue({
+    getExtension: (id: string) => (installedIds.includes(id) ? { id } : undefined),
+  } as unknown as ReturnType<typeof useAppStore>);
+}
+
+describe("the MarketplaceSidebar component", () => {
+  beforeEach(() => {
+    setupActivePinia();
+    mockInstalledExtensions([]);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test("shows a loading indicator while pending", () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [], pending: true },
+      global: { plugins: [vuetify] },
+    });
+
+    expect(wrapper.findComponent({ name: "VProgressCircular" }).exists()).toBe(true);
+  });
+
+  test("shows an error message when fetching failed", () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [], fetchError: true },
+      global: { plugins: [vuetify] },
+    });
+
+    expect(wrapper.text()).toContain("Failed to load extensions");
+  });
+
+  test("shows an empty state when there are no extensions", () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [] },
+      global: { plugins: [vuetify] },
+    });
+
+    expect(wrapper.text()).toContain("No extensions found");
+  });
+
+  test("lists every provided extension with its version", () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [firstExtension, secondExtension] },
+      global: { plugins: [vuetify] },
+    });
+
+    expect(wrapper.text()).toContain("ext-alpha");
+    expect(wrapper.text()).toContain("v1.0.0");
+    expect(wrapper.text()).toContain("ext-beta");
+    expect(wrapper.text()).toContain("v2.0.0");
+  });
+
+  test("filters extensions by the search query, matching id or description", async () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [firstExtension, secondExtension] },
+      global: { plugins: [vuetify] },
+    });
+
+    const searchField = wrapper.find("input");
+    await searchField.setValue("beta");
+
+    expect(wrapper.text()).not.toContain("ext-alpha");
+    expect(wrapper.text()).toContain("ext-beta");
+  });
+
+  test("emits update:modelValue with the clicked extension", async () => {
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [firstExtension, secondExtension] },
+      global: { plugins: [vuetify] },
+    });
+
+    const items = wrapper.findAllComponents(VListItem);
+    await items[0]?.trigger("click");
+
+    expect(wrapper.emitted("update:modelValue")).toStrictEqual([[firstExtension]]);
+  });
+
+  test("marks an already installed extension with the checked puzzle icon", () => {
+    mockInstalledExtensions([firstExtension.id]);
+
+    const wrapper = mount(MarketplaceSidebar, {
+      props: { extensions: [firstExtension, secondExtension] },
+      global: { plugins: [vuetify] },
+    });
+
+    expect(wrapper.find(".mdi-puzzle-check-outline").exists()).toBe(true);
+    expect(wrapper.find(".mdi-puzzle-outline").exists()).toBe(true);
+  });
+});

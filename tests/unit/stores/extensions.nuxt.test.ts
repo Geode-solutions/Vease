@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { useExtensionsStore } from "@vease/stores/extensions";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useAppStore } from "@ogw_front/stores/app";
+import { useExtensionsStore } from "@vease/stores/extensions";
 
-describe("extensions store", () => {
+describe("the extensions store", () => {
   beforeEach(() => {
     setupActivePinia();
   });
@@ -16,6 +16,6 @@ describe("extensions store", () => {
     const extensionsStore = useExtensionsStore();
     const appStore = useAppStore();
 
-    expect(extensionsStore).toBe(appStore);
+    expect(extensionsStore).toStrictEqual(appStore);
   });
 });

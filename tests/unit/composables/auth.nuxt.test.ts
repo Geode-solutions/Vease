@@ -1,40 +1,54 @@
+import {
+  type Auth,
+  EmailAuthProvider,
+  type User,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  reauthenticateWithCredential,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { setupActivePinia } from "@vease_tests/utils";
-import { useAuth } from "@vease/composables/auth";
-import * as firebaseAuth from "firebase/auth";
-import * as vuefire from "vuefire";
-import { useAPIStore } from "@vease/stores/api";
-import { useInfraStore } from "@ogw_front/stores/infra";
 import { appMode } from "@ogw_shared/app_mode";
+import { setupActivePinia } from "@vease_tests/utils";
+import { useAPIStore } from "@vease/stores/api";
+import { useAuth } from "@vease/composables/auth";
+import { useFirebaseAuth } from "vuefire";
+import { useInfraStore } from "@ogw_front/stores/infra";
 
-vi.mock("firebase/auth", () => ({
-  createUserWithEmailAndPassword: vi.fn(),
-  signInWithEmailAndPassword: vi.fn(),
-  signOut: vi.fn().mockResolvedValue(undefined),
-  reauthenticateWithCredential: vi.fn().mockResolvedValue(undefined),
-  deleteUser: vi.fn().mockResolvedValue(undefined),
+vi.mock(import("firebase/auth"), () => ({
+  createUserWithEmailAndPassword: vi.fn<typeof createUserWithEmailAndPassword>(),
+  signInWithEmailAndPassword: vi.fn<typeof signInWithEmailAndPassword>(),
+  signOut: vi.fn<typeof signOut>().mockResolvedValue(undefined),
+  reauthenticateWithCredential: vi
+    .fn<typeof reauthenticateWithCredential>()
+    .mockResolvedValue(undefined),
+  deleteUser: vi.fn<typeof deleteUser>().mockResolvedValue(undefined),
   EmailAuthProvider: {
-    credential: vi.fn().mockReturnValue({ providerId: "password" }),
+    credential: vi
+      .fn<typeof EmailAuthProvider.credential>()
+      .mockReturnValue({ providerId: "password" }),
   },
 }));
 
-const mockUserRef = ref<unknown>(null);
+const mockUserRef = ref<unknown>(undefined);
 
-vi.mock("vuefire", () => ({
-  useFirebaseAuth: vi.fn(),
+vi.mock(import("vuefire"), () => ({
+  useFirebaseAuth: vi.fn<typeof useFirebaseAuth>(),
   useCurrentUser: () => mockUserRef,
 }));
 
-describe("useAuth composable", () => {
+describe("the useAuth composable", () => {
   const mockUser = {
     email: "test@example.com",
     emailVerified: true,
-    reload: vi.fn().mockResolvedValue(undefined),
+    reload: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
   };
 
   beforeEach(() => {
     setupActivePinia();
-    vi.mocked(vuefire.useFirebaseAuth).mockReturnValue({} as firebaseAuth.Auth);
+    vi.clearAllMocks();
+    vi.mocked(useFirebaseAuth).mockReturnValue({} as Auth);
     mockUserRef.value = mockUser;
   });
 
@@ -43,11 +57,11 @@ describe("useAuth composable", () => {
   });
 
   test("throws error if Firebase auth is not initialized", () => {
-    vi.mocked(vuefire.useFirebaseAuth).mockReturnValue(null);
+    vi.mocked(useFirebaseAuth).mockReturnValue(undefined as unknown as Auth);
     expect(() => useAuth()).toThrow("Firebase auth is not initialized");
   });
 
-  describe("resetPassword", () => {
+  describe("the resetPassword action", () => {
     test("sends password reset email request successfully", async () => {
       const apiStore = useAPIStore();
       const apiSpy = vi.spyOn(apiStore, "request").mockResolvedValue({ success: true });
@@ -64,7 +78,7 @@ describe("useAuth composable", () => {
         }),
         { skip_feedback_error: true },
       );
-      expect(result).toEqual({ success: true });
+      expect(result).toStrictEqual({ success: true });
     });
 
     test("throws error if API request returns an error property", async () => {
@@ -76,12 +90,12 @@ describe("useAuth composable", () => {
     });
   });
 
-  describe("register", () => {
+  describe("the register action", () => {
     test("creates user, sends verification email, and signs out", async () => {
       const newUserMock = { email: "new@example.com" };
-      vi.mocked(firebaseAuth.createUserWithEmailAndPassword).mockResolvedValue({
-        user: newUserMock as firebaseAuth.User,
-        providerId: null,
+      vi.mocked(createUserWithEmailAndPassword).mockResolvedValue({
+        user: newUserMock as User,
+        providerId: undefined as unknown as string,
         operationType: "signIn",
       });
 
@@ -91,7 +105,7 @@ describe("useAuth composable", () => {
       const auth = useAuth();
       const createdUser = await auth.register("new@example.com", "password123");
 
-      expect(firebaseAuth.createUserWithEmailAndPassword).toHaveBeenCalledWith(
+      expect(createUserWithEmailAndPassword).toHaveBeenCalledWith(
         expect.anything(),
         "new@example.com",
         "password123",
@@ -104,23 +118,23 @@ describe("useAuth composable", () => {
           params: { email: "new@example.com" },
         }),
       );
-      expect(firebaseAuth.signOut).toHaveBeenCalled();
+      expect(signOut).toHaveBeenCalledTimes(1);
       expect(createdUser).toBe(newUserMock);
     });
   });
 
-  describe("login", () => {
+  describe("the login action", () => {
     test("logs in user with verified email", async () => {
-      vi.mocked(firebaseAuth.signInWithEmailAndPassword).mockResolvedValue({
-        user: mockUser as unknown as firebaseAuth.User,
-        providerId: null,
+      vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
+        user: mockUser as unknown as User,
+        providerId: undefined as unknown as string,
         operationType: "signIn",
       });
 
       const auth = useAuth();
       const loggedInUser = await auth.login("test@example.com", "password123");
 
-      expect(mockUser.reload).toHaveBeenCalled();
+      expect(mockUser.reload).toHaveBeenCalledTimes(1);
       expect(loggedInUser).toBe(mockUser);
     });
 
@@ -128,11 +142,11 @@ describe("useAuth composable", () => {
       const unverifiedUser = {
         email: "unverified@example.com",
         emailVerified: false,
-        reload: vi.fn().mockResolvedValue(undefined),
+        reload: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
       };
-      vi.mocked(firebaseAuth.signInWithEmailAndPassword).mockResolvedValue({
-        user: unverifiedUser as unknown as firebaseAuth.User,
-        providerId: null,
+      vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
+        user: unverifiedUser as unknown as User,
+        providerId: undefined as unknown as string,
         operationType: "signIn",
       });
 
@@ -140,23 +154,23 @@ describe("useAuth composable", () => {
       await expect(auth.login("unverified@example.com", "password123")).rejects.toThrow(
         "Please verify your email address before logging in.",
       );
-      expect(firebaseAuth.signOut).toHaveBeenCalled();
+      expect(signOut).toHaveBeenCalledTimes(1);
     });
 
     test("saves credentials in Desktop mode", async () => {
       const infraStore = useInfraStore();
       infraStore.app_mode = appMode.DESKTOP;
 
-      const saveCredentialsSpy = vi.fn();
+      const saveCredentialsSpy = vi.fn<(args: { email: string; password: string }) => void>();
       (
         globalThis as unknown as { electronAPI: { save_credentials: typeof saveCredentialsSpy } }
       ).electronAPI = {
         save_credentials: saveCredentialsSpy,
       };
 
-      vi.mocked(firebaseAuth.signInWithEmailAndPassword).mockResolvedValue({
-        user: mockUser as unknown as firebaseAuth.User,
-        providerId: null,
+      vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
+        user: mockUser as unknown as User,
+        providerId: undefined as unknown as string,
         operationType: "signIn",
       });
 
@@ -170,40 +184,42 @@ describe("useAuth composable", () => {
     });
   });
 
-  describe("deleteAccount", () => {
+  describe("the deleteAccount action", () => {
     test("reauthenticates and deletes logged-in user", async () => {
       const auth = useAuth();
       await auth.deleteAccount("currentPassword");
 
-      expect(firebaseAuth.EmailAuthProvider.credential).toHaveBeenCalledWith(
+      expect(EmailAuthProvider.credential).toHaveBeenCalledWith(
         "test@example.com",
         "currentPassword",
       );
-      expect(firebaseAuth.reauthenticateWithCredential).toHaveBeenCalled();
-      expect(firebaseAuth.deleteUser).toHaveBeenCalled();
-      expect(firebaseAuth.signOut).toHaveBeenCalled();
+      expect(reauthenticateWithCredential).toHaveBeenCalledTimes(1);
+      expect(deleteUser).toHaveBeenCalledTimes(1);
+      expect(signOut).toHaveBeenCalledTimes(1);
     });
 
     test("throws error if no user logged in", async () => {
-      mockUserRef.value = null;
+      mockUserRef.value = undefined;
 
       const auth = useAuth();
       await expect(auth.deleteAccount("password")).rejects.toThrow("No user logged in");
     });
   });
 
-  describe("logout", () => {
+  describe("the logout action", () => {
     test("signs out Firebase user", async () => {
       const auth = useAuth();
       await auth.logout();
-      expect(firebaseAuth.signOut).toHaveBeenCalled();
+      expect(signOut).toHaveBeenCalledTimes(1);
     });
 
     test("deletes electron credentials when in Desktop mode", async () => {
       const infraStore = useInfraStore();
       infraStore.app_mode = appMode.DESKTOP;
 
-      const deleteCredentialsSpy = vi.fn().mockResolvedValue({ success: true });
+      const deleteCredentialsSpy = vi
+        .fn<() => Promise<{ success: boolean }>>()
+        .mockResolvedValue({ success: true });
       (
         globalThis as unknown as {
           electronAPI: { delete_credentials: typeof deleteCredentialsSpy };
@@ -215,8 +231,8 @@ describe("useAuth composable", () => {
       const auth = useAuth();
       await auth.logout();
 
-      expect(deleteCredentialsSpy).toHaveBeenCalled();
-      expect(firebaseAuth.signOut).toHaveBeenCalled();
+      expect(deleteCredentialsSpy).toHaveBeenCalledTimes(1);
+      expect(signOut).toHaveBeenCalledTimes(1);
     });
   });
 });

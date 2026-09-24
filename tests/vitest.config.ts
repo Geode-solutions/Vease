@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config";
 import { defineVitestProject } from "@nuxt/test-utils/config";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
 
 const __dirname = import.meta.dirname;
 
@@ -13,6 +13,7 @@ const TIMEOUTS = {
 };
 const HOOK_TIMEOUT = 30_000;
 const CI_WORKERS = 4;
+const EXTENSION_LENGTH_JS = 3;
 
 const globalRetry = process.env.CI ? RETRIES : DEFAULT_RETRY;
 const maxWorkers = process.env.CI ? CI_WORKERS : undefined;
@@ -77,23 +78,21 @@ const resolveOgwAliasPlugin = {
           return candidate;
         }
         if (basePath.endsWith(".js") && ext === ".ts") {
-          const candidateTs = `${basePath.slice(0, -3)}.ts`;
+          const candidateTs = `${basePath.slice(0, -EXTENSION_LENGTH_JS)}.ts`;
           if (fs.existsSync(candidateTs) && fs.statSync(candidateTs).isFile()) {
             return candidateTs;
           }
         }
       }
     }
-    return null;
+    return undefined;
   },
 };
 
-// oxlint-disable-next-line import/no-default-export
 export default defineConfig({
   test: {
     setupFiles: [path.resolve(__dirname, "./setup_indexeddb.ts")],
     projects: [
-      // oxlint-disable-next-line no-top-level-await
       await defineVitestProject({
         plugins: [resolveOgwAliasPlugin],
         resolve: {
@@ -117,7 +116,6 @@ export default defineConfig({
           retry: globalRetry,
         },
       }),
-      // oxlint-disable-next-line no-top-level-await
       await defineVitestProject({
         plugins: [resolveOgwAliasPlugin],
         resolve: {

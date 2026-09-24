@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { useUIStore } from "@vease/stores/ui";
 import { setupActivePinia } from "@vease_tests/utils";
+import { useUIStore } from "@vease/stores/ui";
 
-describe("UI store", () => {
+describe("the UI store", () => {
   beforeEach(() => {
     setupActivePinia();
   });

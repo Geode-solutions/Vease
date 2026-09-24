@@ -1,16 +1,16 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mount } from "@vue/test-utils";
-import ForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
 import { setupActivePinia, vuetify } from "@vease_tests/utils";
+import ForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
+import { mount } from "@vue/test-utils";
 
-vi.mock("@ogw_front/components/GlassCard.vue", () => ({
+vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   default: {
     name: "GlassCard",
     template: "<div class='glass-card-stub'><slot /></div>",
   },
 }));
 
-describe("ForgotPasswordDialog.vue", () => {
+describe("forgot password dialog component", () => {
   beforeEach(() => {
     setupActivePinia();
   });

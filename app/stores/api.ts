@@ -63,6 +63,7 @@ export const useAPIStore = defineStore("api", () => {
   }
   return {
     base_url,
+    request_counter,
     request,
     start_request,
     stop_request,

@@ -2,12 +2,13 @@
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import type { HTTPMethod } from "h3";
+import { createApp } from "vue";
 import { createTestingPinia } from "@pinia/testing";
 import { createVuetify } from "vuetify";
 import { setActivePinia } from "pinia";
 import { vi } from "vitest";
 
-if (typeof globalThis.visualViewport === "undefined") {
+if (globalThis.visualViewport === undefined) {
   (globalThis as unknown as { visualViewport: unknown }).visualViewport = {
     width: 1024,
     height: 768,
@@ -16,18 +17,28 @@ if (typeof globalThis.visualViewport === "undefined") {
     pageLeft: 0,
     pageTop: 0,
     scale: 1,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
+    addEventListener: vi.fn<(type: string, listener: EventListener) => void>(),
+    removeEventListener: vi.fn<(type: string, listener: EventListener) => void>(),
+    dispatchEvent: vi.fn<(event: Event) => boolean>(),
   };
 }
 
-if (typeof globalThis.ResizeObserver === "undefined") {
-  (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+interface FakeResizeObserver {
+  observe: () => void;
+  unobserve: () => void;
+  disconnect: () => void;
+}
+
+function createFakeResizeObserver(): FakeResizeObserver {
+  return {
+    observe: vi.fn<() => void>(),
+    unobserve: vi.fn<() => void>(),
+    disconnect: vi.fn<() => void>(),
   };
+}
+
+if (globalThis.ResizeObserver === undefined) {
+  (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = createFakeResizeObserver;
 }
 
 const vuetify = createVuetify({ components, directives });
@@ -74,4 +85,29 @@ function assertDefined<TValue>(
   return value;
 }
 
-export { setupActivePinia, vuetify, toHTTPMethod, assertDefined };
+interface WithSetupResult<TValue> {
+  result: TValue;
+  unmount: () => void;
+}
+
+// Runs a composable inside a real component instance so lifecycle hooks
+// (onUnmounted, onKeyStroke, ...) behave as they would in the app instead of
+// Warning about a missing active instance.
+function withSetup<TValue>(composable: () => TValue): WithSetupResult<TValue> {
+  let result: TValue | undefined = undefined;
+  const app = createApp({
+    setup() {
+      result = composable();
+      return () => undefined;
+    },
+  });
+  app.mount(document.createElement("div"));
+  return {
+    result: assertDefined(result, "Composable did not run during setup"),
+    unmount: () => {
+      app.unmount();
+    },
+  };
+}
+
+export { setupActivePinia, vuetify, toHTTPMethod, assertDefined, withSetup };

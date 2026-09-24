@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, expectTypeOf, test, vi } from "vitest";
-import { useUserStore } from "@vease/stores/user";
 import { setupActivePinia } from "@vease_tests/utils";
+import { useUserStore } from "@vease/stores/user";
 
-describe("user store", () => {
+describe("the user store", () => {
   beforeEach(() => {
     setupActivePinia();
   });

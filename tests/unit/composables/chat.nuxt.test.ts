@@ -1,19 +1,19 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { useChat } from "@ai-sdk/vue";
 import { useVeaseChat } from "@vease/composables/chat";
-import * as aiSdkVue from "@ai-sdk/vue";
 
-vi.mock("@ai-sdk/vue", () => ({
-  useChat: vi.fn().mockReturnValue({
+vi.mock(import("@ai-sdk/vue"), () => ({
+  useChat: vi.fn<typeof useChat>().mockReturnValue({
     messages: { value: [] },
-    sendMessage: vi.fn(),
+    sendMessage: vi.fn<() => void>(),
     status: { value: "ready" },
-    error: { value: null },
-    stop: vi.fn(),
-    clearError: vi.fn(),
-  }),
+    error: { value: undefined },
+    stop: vi.fn<() => void>(),
+    clearError: vi.fn<() => void>(),
+  } as unknown as ReturnType<typeof useChat>),
 }));
 
-describe("useVeaseChat composable", () => {
+describe("the useVeaseChat composable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -25,12 +25,12 @@ describe("useVeaseChat composable", () => {
   test("initializes useChat with /api/llm/chat endpoint", () => {
     const chat = useVeaseChat();
 
-    expect(aiSdkVue.useChat).toHaveBeenCalledWith(
+    expect(useChat).toHaveBeenCalledWith(
       expect.objectContaining({
         transport: expect.anything(),
       }),
     );
-    expect(chat.messages.value).toEqual([]);
+    expect(chat.messages.value).toStrictEqual([]);
     expect(chat.status.value).toBe("ready");
   });
 });

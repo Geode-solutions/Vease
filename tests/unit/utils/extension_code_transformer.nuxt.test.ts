@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { transformExtensionCode } from "@vease/utils/extension_code_transformer";
 
-describe("transformExtensionCode", () => {
+describe("the transformExtensionCode utility", () => {
   test("transforms vue imports to data URLs", () => {
     const inputCode = 'import { ref } from "vue";';
     const outputCode = transformExtensionCode(inputCode);

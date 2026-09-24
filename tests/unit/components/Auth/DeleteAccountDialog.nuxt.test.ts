@@ -1,35 +1,38 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { mount } from "@vue/test-utils";
-import DeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
+import { computed, ref } from "vue";
 import { setupActivePinia, vuetify } from "@vease_tests/utils";
-import * as authComposable from "@vease/composables/auth";
+import DeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
+import { mount } from "@vue/test-utils";
+import { useAuth } from "@vease/composables/auth";
 
-vi.mock("@vease/composables/auth", () => ({
-  useAuth: vi.fn(),
+vi.mock(import("@vease/composables/auth"), () => ({
+  useAuth: vi.fn<typeof useAuth>(),
 }));
 
-vi.mock("@ogw_front/components/GlassCard.vue", () => ({
+vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   default: {
     name: "GlassCard",
     template: "<div class='glass-card-stub'><slot /></div>",
   },
 }));
 
-describe("DeleteAccountDialog.vue", () => {
-  const deleteAccountMock = vi.fn().mockResolvedValue(undefined);
+describe("delete account dialog component", () => {
+  const deleteAccountMock = vi
+    .fn<(password: string) => Promise<void>>()
+    .mockResolvedValue(undefined);
 
   beforeEach(() => {
     setupActivePinia();
-    vi.mocked(authComposable.useAuth).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       deleteAccount: deleteAccountMock,
       user: ref({ email: "test@example.com" }),
       isUserAuthenticated: computed(() => true),
-      autoLogin: vi.fn(),
-      register: vi.fn(),
-      login: vi.fn(),
-      logout: vi.fn(),
-      resetPassword: vi.fn(),
-    });
+      autoLogin: vi.fn<() => Promise<void>>(),
+      register: vi.fn<() => Promise<void>>(),
+      login: vi.fn<() => Promise<void>>(),
+      logout: vi.fn<() => Promise<void>>(),
+      resetPassword: vi.fn<() => Promise<void>>(),
+    } as unknown as ReturnType<typeof useAuth>);
   });
 
   afterEach(() => {
@@ -52,7 +55,7 @@ describe("DeleteAccountDialog.vue", () => {
     expect(document.body.innerHTML).toContain("Are you sure you want to delete your account?");
   });
 
-  test("disables Delete button when password input is empty", () => {
+  test("disables delete button when password input is empty", () => {
     mount(DeleteAccountDialog, {
       props: {
         modelValue: true,
@@ -64,7 +67,7 @@ describe("DeleteAccountDialog.vue", () => {
     });
 
     const submitBtn = document.body.querySelector("button[type='submit']");
-    expect(submitBtn).not.toBeNull();
+    expect(submitBtn).toBeDefined();
     expect(submitBtn?.hasAttribute("disabled")).toBe(true);
   });
 });
