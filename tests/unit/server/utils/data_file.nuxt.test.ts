@@ -55,7 +55,7 @@ describe("server/utils/data_file", () => {
 
   describe("getAllowedGeodeObjectTypes()", () => {
     test("resolves the selected geode object type for a filename", async () => {
-      const allowedObjects = { BRep: [".msh"] };
+      const allowedObjects = { BRep: { is_loadable: 1 } };
       vi.mocked(fetchSchema).mockResolvedValue({
         allowed_objects: allowedObjects,
       });
@@ -113,10 +113,13 @@ describe("server/utils/data_file", () => {
 
       expect(fetchRaw).toHaveBeenCalledWith(
         expect.objectContaining({
-          route: `${back_schemas.opengeodeweb_back.upload_file.$id}?filename=model.msh`,
+          route:
+            `${back_schemas.opengeodeweb_back.upload_file.$id}?filename=model.msh` +
+            `&chunk_index=0&total_chunks=1`,
           method: "PUT",
           baseURL: "http://back.local",
-          params: expect.any(Blob),
+          // oxlint-disable-next-line no-unsafe-type-assertion -- expect.any() is typed as any by vitest
+          params: expect.any(Blob) as Blob,
         }),
       );
       expect(result).toStrictEqual({ success: true });
