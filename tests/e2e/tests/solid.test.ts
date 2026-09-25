@@ -3,12 +3,8 @@
 // Third party imports
 
 // Local imports
-import {
-  afterActionWait,
-  defaultDataName,
-  hybridSolidGeodeObjectType,
-} from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { defaultDataName, hybridSolidGeodeObjectType } from "@vease_tests/utils/constants";
 import {
   expandMainObjectTree,
   highlightData,
@@ -19,6 +15,7 @@ import {
   getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
+  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 import {
   openMeshPolyhedraMenu,
@@ -175,7 +172,7 @@ test("reopen treeview over zoomed dark data adaptive style", async ({ window }) 
   const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await hybridViewerCanvas.hover({ position: { x: box.width / 2, y: box.height / 2 } });
   await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await toggleObjectsTree(window);
   await toggleObjectsTree(window);
   await moveMouseOutOfTheWay(window);

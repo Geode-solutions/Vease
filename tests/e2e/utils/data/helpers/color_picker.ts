@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
-import { afterActionWait } from "@vease_tests/utils/viewer_interaction";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;
@@ -12,7 +12,7 @@ async function clickColorPickerCanvas(
 ): Promise<void> {
   await container.getByTestId("colorPicker").locator(".v-color-picker-canvas").first().click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function clickColorPickerSlider(
@@ -30,13 +30,13 @@ async function clickColorPickerSlider(
   await rgbaSlider.click({
     position: { x: rgbaBox.width * targetPercentage, y: rgbaBox.height / 2 },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function clickCopyColorBtn(window: Page, container: Page | Locator = window): Promise<void> {
   await container.getByTestId("copyColorBtn").click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setColorInputText(
@@ -47,7 +47,7 @@ async function setColorInputText(
   const input = container.getByTestId("colorInput");
   await input.fill(text);
   await input.press("Enter");
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function pasteColorInputText(
@@ -67,7 +67,7 @@ async function pasteColorInputText(
       new ClipboardEvent("paste", { clipboardData: dataTransfer, bubbles: true }),
     );
   }, textToPaste);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

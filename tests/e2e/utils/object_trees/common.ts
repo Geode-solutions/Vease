@@ -1,7 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import { afterActionWait } from "@vease_tests/utils/viewer_interaction";
 import { modalTransitionWait } from "@vease_tests/utils/constants";
+import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
 
 async function clickCollapseOrExpandAll(
   window: Page,
@@ -13,7 +13,7 @@ async function clickCollapseOrExpandAll(
   if (await targetIcon.isVisible()) {
     await btn.click();
     await moveMouseOutOfTheWay(window);
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -30,7 +30,7 @@ async function collapseTreeGroup(window: Page, tree: Locator, groupName: string)
 async function toggleSortObjects(window: Page): Promise<void> {
   await window.getByTestId("sortObjectsButton").click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function openFilterMenu(window: Page, tree: Locator): Promise<void> {
@@ -45,26 +45,26 @@ async function checkFilterCategory(window: Page, categoryId: string): Promise<vo
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
   await checkbox.waitFor({ state: "attached" });
   await checkbox.check();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function uncheckFilterCategory(window: Page, categoryId: string): Promise<void> {
   const checkbox = window.getByTestId(`filterCheckbox-${categoryId}`).getByRole("checkbox");
   await checkbox.waitFor({ state: "attached" });
   await checkbox.uncheck();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleSearchObjects(window: Page): Promise<void> {
   await window.getByTestId("searchObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function fillSearchQuery(window: Page, query: string, tree: Locator): Promise<void> {
   const searchInput = tree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill(query);
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function getTreeRowByTextAndParent(
@@ -122,7 +122,7 @@ async function expandGeodeObjectTypeInTree(
   const expandButton = treeRow.getByTestId("expandTreeRowButton").first();
   if (await expandButton.isVisible()) {
     await expandButton.click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -135,7 +135,7 @@ async function collapseGeodeObjectTypeInTree(
   const collapseButton = treeRow.getByTestId("collapseTreeRowButton").first();
   if (await collapseButton.isVisible()) {
     await collapseButton.click({ force: true });
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -157,11 +157,11 @@ async function copyTreeRowId(
   const label = row.getByTestId("treeItemLabel").first();
   const id = await getTreeRowId(row.locator('[data-testid^="treeRow-"]').first(), objectName);
   await label.hover();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const copyBtn = window.locator(".v-overlay--active").getByTestId("copyIdBtn");
   await copyBtn.hover();
   await copyBtn.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   return id;
 }
 
@@ -177,7 +177,7 @@ async function hideObjectInTree(
   if (await btn.isVisible()) {
     await btn.click({ force: true });
     await moveMouseOutOfTheWay(window);
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -190,7 +190,7 @@ async function openObjectTreeContextMenu(
   await row.click({
     button: "right",
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

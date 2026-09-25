@@ -8,9 +8,9 @@ import {
   setColorInputText,
 } from "@vease_tests/utils/data/helpers/color_picker";
 import {
-  afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
+  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 
@@ -24,7 +24,7 @@ async function setColoringStyle(
   await ensureFeatureVisible(window, menuTestId);
 
   await container.getByTestId("coloringStyleSelector").first().click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const listItem = window
     .locator(".v-overlay-container")
@@ -34,7 +34,7 @@ async function setColoringStyle(
   await listItem.waitFor({ state: "visible", timeout: 15_000 });
   await listItem.click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setColor(
@@ -73,7 +73,7 @@ async function setOpacity(window: Page, menuTestId: string, percent: number): Pr
     position: { x: (box.width * percent) / MAX_PERCENTAGE, y: box.height / 2 },
   });
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 const COLOR_CANVAS_OFFSET = 5;
@@ -92,7 +92,7 @@ async function setColorBlack(
   await canvas.click({
     position: { x: COLOR_CANVAS_OFFSET, y: box.height - COLOR_CANVAS_OFFSET },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function copyColor(

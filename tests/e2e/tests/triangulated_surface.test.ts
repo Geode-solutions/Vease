@@ -27,6 +27,7 @@ import {
   setMeshPolygonsVisibility,
 } from "@vease_tests/utils/data";
 import { toggleInfoCard, viewerContextMenu } from "@vease_tests/utils/viewer_interaction";
+import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 
@@ -148,4 +149,5 @@ test("polygons visibility", async ({ window }) => {
 test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
+  await closeFeedbackSnackbar(window);
 });

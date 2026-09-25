@@ -1,10 +1,6 @@
 // Node imports
 
-// Third party imports
-import { expect } from "@playwright/test";
-
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
@@ -23,6 +19,11 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@vease_tests/utils/data_manager";
+import {
+  closeFeedbackSnackbar,
+  moveMouseOutOfTheWay,
+  waitForActionSettled,
+} from "@vease_tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
 import { test } from "@vease_tests/utils/fixtures";
@@ -61,7 +62,7 @@ test("rename object", async ({ window }) => {
 test("toggle visibility off", async ({ window }) => {
   await toggleRowVisibility(window, pointSetGeodeObjectType);
   await moveMouseOutOfTheWay(window);
-  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("open picture in picture and expand objects", async ({ window }) => {
@@ -84,14 +85,14 @@ test("rename object via button", async ({ window }) => {
 
 test("isolate object", async ({ window }) => {
   await isolateRowItem(window, pointSetGeodeObjectType);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
-  await expect(window.locator(".v-snackbar")).not.toBeVisible({ timeout: 6000 });
+  await closeFeedbackSnackbar(window);
 });
 
 test("expand pip", async ({ window }) => {
   await expandDataManagerPiP(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("delete object", async ({ window }) => {

@@ -7,13 +7,6 @@
 
 // Local imports
 import {
-  afterActionWait,
-  getHybridViewerCanvas,
-  getHybridViewerCanvasBoundingBox,
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@vease_tests/utils/viewer_interaction";
-import {
   brepGeodeObjectType,
   defaultDataName,
   edgeAttributeType,
@@ -36,19 +29,6 @@ import {
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
-import {
-  expandGeodeObjectType,
-  expandMainObjectTree,
-  getMainObjectTree,
-  highlightData,
-  toggleObjectsTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
-import {
-  expandGeodeObjectTypeInTree,
-  hideObjectInTree,
-} from "@vease_tests/utils/object_trees/common";
-import { resetCamera, rotateCamera } from "@vease_tests/utils/camera_interaction";
-
 import {
   copyModelEdgesColor,
   copyModelPointsColor,
@@ -81,6 +61,22 @@ import {
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
 } from "@vease_tests/utils/data";
+import {
+  expandGeodeObjectType,
+  expandMainObjectTree,
+  getMainObjectTree,
+  highlightData,
+  toggleObjectsTree,
+} from "@vease_tests/utils/object_trees/main_object_tree";
+import { expandGeodeObjectTypeInTree, hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import {
+  getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
+  toggleInfoCard,
+  viewerContextMenu,
+  waitForActionSettled,
+} from "@vease_tests/utils/viewer_interaction";
+import { resetCamera, rotateCamera } from "@vease_tests/utils/camera_interaction";
 import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
@@ -146,7 +142,7 @@ test("object tree context menu", async ({ window }) => {
   const mainObjectTree = getMainObjectTree(window);
   const testItem = mainObjectTree.getByText("test", { exact: true }).first();
   await testItem.click({ button: "right", force: true });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("edges visibility", async ({ window }) => {
@@ -159,7 +155,7 @@ test("object tree model components", async ({ window }) => {
   await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await hideAllComponentLeafRows(window, "Surfaces");
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("object tree hover lines", async ({ window }) => {
@@ -445,7 +441,7 @@ test("context menu through non visible surface", async ({ window }) => {
     .locator(".mdi-eye-off-outline")
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
   await viewerContextMenu(window, box.width / 2, box.height / 2);

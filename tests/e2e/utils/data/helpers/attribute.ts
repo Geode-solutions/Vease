@@ -5,10 +5,10 @@ import {
   clickColorPickerSlider,
 } from "@vease_tests/utils/data/helpers/color_picker";
 import {
-  afterActionWait,
   ensureFeatureVisible,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
+  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 
 async function resetMenuScroll(window: Page, scrollTop = 0): Promise<void> {
@@ -36,7 +36,7 @@ async function setFeatureItem(
   const itemSelector = container.getByTestId("itemSelector").first();
   await itemSelector.waitFor({ state: "visible" });
   await itemSelector.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const itemText = `Item ${item + 1}`;
   await window
@@ -45,7 +45,7 @@ async function setFeatureItem(
     .filter({ hasText: itemText, visible: true })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
 }
@@ -59,12 +59,12 @@ async function setFeatureColorMap(
   const colorMapPicker = container.getByTestId("colorMapPicker").first();
   await colorMapPicker.waitFor({ state: "visible" });
   await colorMapPicker.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const colorMapListFilter = window.getByTestId("colorMapListFilter");
   await colorMapListFilter.filter({ visible: true }).first().locator("input").fill(colorMap);
   const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await window
     .getByTestId("colorMapList")
@@ -72,11 +72,11 @@ async function setFeatureColorMap(
     .filter({ visible: true })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 interface ApplyAttributeOptions {
@@ -100,7 +100,7 @@ async function applyAttribute(
 
   const container = getMenuContainer(window, menuTestId);
   await container.getByTestId("coloringStyleSelector").first().click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await window
     .locator(".v-overlay-container")
@@ -108,12 +108,12 @@ async function applyAttribute(
     .filter({ hasText: attributeType, visible: true })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const attributeSelector = container.getByTestId("attributeSelector").first();
   await attributeSelector.waitFor({ state: "visible" });
   await attributeSelector.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await window
     .locator(".v-overlay-container")
@@ -121,7 +121,7 @@ async function applyAttribute(
     .filter({ hasText: attributeName, visible: true })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   if (item !== undefined) {
     await setFeatureItem(window, menuTestId, item);
@@ -135,16 +135,16 @@ async function applyAttribute(
     const input = container.getByTestId("attributeMinInput").first().locator("input");
     await input.fill(min.toString());
     await input.press("Enter");
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
   if (max !== undefined) {
     const input = container.getByTestId("attributeMaxInput").first().locator("input");
     await input.fill(max.toString());
     await input.press("Enter");
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
   await resetMenuScroll(window, 0);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
 }
 
@@ -179,7 +179,7 @@ async function setQuickColorMap(window: Page, colorMap: string): Promise<void> {
   await colorMapListFilter.locator("input").fill(colorMap);
   const colorMapListLoading = window.getByTestId("colorMapListLoading");
   await colorMapListLoading.waitFor({ state: "detached" });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await window
     .getByTestId("colorMapList")
@@ -187,7 +187,7 @@ async function setQuickColorMap(window: Page, colorMap: string): Promise<void> {
     .filter({ visible: true })
     .first()
     .click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
 }
 
@@ -199,7 +199,7 @@ async function setFeatureNoDataColor(window: Page, menuTestId: string | Locator)
   const noDataColorBtn = container.getByTestId("noDataColorBtn").first();
   await noDataColorBtn.waitFor({ state: "visible" });
   await noDataColorBtn.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window
     .getByTestId("colorPicker")
     .filter({ visible: true })
@@ -210,7 +210,7 @@ async function setFeatureNoDataColor(window: Page, menuTestId: string | Locator)
   await noDataColorBtn.click();
   await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {
