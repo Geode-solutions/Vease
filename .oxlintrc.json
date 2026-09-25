@@ -159,12 +159,9 @@
       }
     },
     {
-      "files": ["electron/preload.ts"],
+      "files": ["**/preload.js"],
       "rules": {
-        "import/no-commonjs": "off",
-        "typescript/no-require-imports": "off",
-        "typescript/no-var-requires": "off",
-        "unicorn/prefer-module": "off"
+        "import/no-commonjs": "off"
       }
     }
   ]
