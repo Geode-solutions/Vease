@@ -63,7 +63,7 @@ function onImportFileSelected(event): void {
               title="Import Project"
               class="rounded-md"
               data-testid="importProjectButton"
-              @click="triggerImport"
+              @click="triggerImport()"
             />
             <v-list-item
               prepend-icon="mdi-upload"
