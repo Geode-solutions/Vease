@@ -6,7 +6,7 @@ import {
   setColorWithSlider,
   setColoringStyle,
   setOpacity,
-} from "@tests/utils/data/helpers/color";
+} from "@vease_tests/utils/data/helpers/color";
 import type { Page } from "@playwright/test";
 
 async function setModelOpacity(window: Page, percent: number): Promise<void> {

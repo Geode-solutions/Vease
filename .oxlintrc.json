@@ -1,4 +1,5 @@
 {
+  "ignorePatterns": ["nuxt.config.ts"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -7,7 +8,21 @@
     "style": "error",
     "restriction": "error"
   },
-  "plugins": ["import", "node", "oxc", "promise", "unicorn", "vitest", "vue"],
+  "options": {
+    "typeAware": true,
+    "typeCheck": true
+  },
+  "plugins": [
+    "eslint",
+    "import",
+    "node",
+    "oxc",
+    "promise",
+    "typescript",
+    "unicorn",
+    "vitest",
+    "vue"
+  ],
   "rules": {
     "eslint/func-style": ["error", "declaration"],
     "eslint/id-length": [
@@ -118,7 +133,7 @@
       }
     },
     {
-      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.js"],
+      "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.{js,ts}"],
       "rules": {
         "import/no-default-export": "off"
       }
