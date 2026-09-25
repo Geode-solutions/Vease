@@ -101,7 +101,7 @@ describe("server/utils/data_file", () => {
   });
 
   describe("uploadFile()", () => {
-    test("sends the file as form data to the back microservice", async () => {
+    test("sends the file as a raw blob to the back microservice", async () => {
       vi.mocked(fetchRaw).mockResolvedValue({ success: true });
 
       const result = await uploadFile({
@@ -113,9 +113,10 @@ describe("server/utils/data_file", () => {
 
       expect(fetchRaw).toHaveBeenCalledWith(
         expect.objectContaining({
-          route: back_schemas.opengeodeweb_back.upload_file.$id,
+          route: `${back_schemas.opengeodeweb_back.upload_file.$id}?filename=model.msh`,
+          method: "PUT",
           baseURL: "http://back.local",
-          params: expect.any(FormData),
+          params: expect.any(Blob),
         }),
       );
       expect(result).toStrictEqual({ success: true });
