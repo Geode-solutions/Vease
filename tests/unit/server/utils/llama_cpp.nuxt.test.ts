@@ -249,23 +249,43 @@ describe("server/utils/llama_cpp", () => {
     expect(llamaCpp.getLlamaStatus()).toStrictEqual({ running: false });
   });
 
-  test("extracts the bundled archive when no cached executable is found yet", async () => {
-    const { llamaCpp } = current();
-    vi.mocked(existsSync).mockReturnValue(false);
-    vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
+  test.runIf(process.platform !== "win32")(
+    "extracts the bundled archive and makes it executable when no cached executable is found yet",
+    async () => {
+      const { llamaCpp } = current();
+      vi.mocked(existsSync).mockReturnValue(false);
+      vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
 
-    const handle = await llamaCpp.runLlamaServer({ model: "custom-model" });
+      const handle = await llamaCpp.runLlamaServer({ model: "custom-model" });
 
-    const expectedExecutablePath = path.join(
-      os.homedir(),
-      ".vease",
-      "llama_cpp",
-      "ubuntu-x64",
-      EXECUTABLE_NAME,
-    );
-    // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
-    expect(unzipFile).toHaveBeenCalledOnce();
-    expect(chmodSync).toHaveBeenCalledWith(expectedExecutablePath, "755");
-    expect(handle.port).toBe(TEST_PORT);
-  });
+      const expectedExecutablePath = path.join(
+        os.homedir(),
+        ".vease",
+        "llama_cpp",
+        "ubuntu-x64",
+        EXECUTABLE_NAME,
+      );
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
+      expect(unzipFile).toHaveBeenCalledOnce();
+      expect(chmodSync).toHaveBeenCalledWith(expectedExecutablePath, "755");
+      expect(handle.port).toBe(TEST_PORT);
+    },
+  );
+
+  // Windows has no chmod bit to set, so the source skips that call there.
+  test.runIf(process.platform === "win32")(
+    "extracts the bundled archive without chmod when no cached executable is found yet",
+    async () => {
+      const { llamaCpp } = current();
+      vi.mocked(existsSync).mockReturnValue(false);
+      vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
+
+      const handle = await llamaCpp.runLlamaServer({ model: "custom-model" });
+
+      // oxlint-disable-next-line vitest/prefer-called-times -- shared config also enables the contradictory prefer-called-once
+      expect(unzipFile).toHaveBeenCalledOnce();
+      expect(chmodSync).not.toHaveBeenCalled();
+      expect(handle.port).toBe(TEST_PORT);
+    },
+  );
 });
