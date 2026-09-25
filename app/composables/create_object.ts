@@ -37,6 +37,16 @@ function createEmptyPoint(): Point {
   return { x: "", y: "", z: "" };
 }
 
+const COORDINATE_FIELDS: (keyof Point)[] = ["x", "y", "z"];
+
+function fillEmptyCoordinatesWithZero(point: Point, filledField: keyof Point): void {
+  for (const coordinate of COORDINATE_FIELDS) {
+    if (coordinate !== filledField && point[coordinate] === "") {
+      point[coordinate] = "0";
+    }
+  }
+}
+
 function formatPoints(pts: Point[]): FormattedPoint[] {
   return pts.map((point) => ({
     x: Number(String(point.x).replaceAll(",", ".")),
@@ -203,6 +213,9 @@ export function useCreateObjectTool({
       .replaceAll(/[^0-9eE+\-.]/gu, "");
     const parts = val.split(/[eE]/u);
     point[field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
+    if (point[field] !== "") {
+      fillEmptyCoordinatesWithZero(point, field);
+    }
   }
 
   function handlePaste(event: ClipboardEvent, index: number, field: keyof Point): void {
@@ -221,6 +234,9 @@ export function useCreateObjectTool({
       point.z = coords[2] ?? "0";
     } else {
       point[field] = coords[0] ?? "";
+      if (point[field] !== "") {
+        fillEmptyCoordinatesWithZero(point, field);
+      }
     }
     event.preventDefault();
   }
