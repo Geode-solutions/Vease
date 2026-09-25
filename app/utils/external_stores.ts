@@ -25,7 +25,8 @@ interface BackStoreExtra {
 }
 
 function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
-  return useBackStore();
+  const { $pinia } = useNuxtApp();
+  return useBackStore($pinia);
 }
 
 interface HybridViewerStoreExtra {
@@ -35,7 +36,8 @@ interface HybridViewerStoreExtra {
 }
 
 function getHybridViewerStore(): ReturnType<typeof useHybridViewerStore> & HybridViewerStoreExtra {
-  return useHybridViewerStore();
+  const { $pinia } = useNuxtApp();
+  return useHybridViewerStore($pinia);
 }
 
 interface MicroserviceStore {
@@ -58,7 +60,8 @@ interface InfraStoreExtra {
 
 function getInfraStore(): Omit<ReturnType<typeof useInfraStore>, keyof InfraStoreExtra> &
   InfraStoreExtra {
-  return useInfraStore() as unknown as Omit<
+  const { $pinia } = useNuxtApp();
+  return useInfraStore($pinia) as unknown as Omit<
     ReturnType<typeof useInfraStore>,
     keyof InfraStoreExtra
   > &
@@ -70,7 +73,8 @@ interface DataStyleStoreExtra {
 }
 
 function getDataStyleStore(): ReturnType<typeof useDataStyleStore> & DataStyleStoreExtra {
-  return useDataStyleStore();
+  const { $pinia } = useNuxtApp();
+  return useDataStyleStore($pinia);
 }
 
 interface ViewerSession {
