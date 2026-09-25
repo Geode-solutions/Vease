@@ -1,3 +1,4 @@
+import type { RequestHandlers } from "@ogw_shared/utils/types";
 import { api_fetch } from "@ogw_internal/utils/api_fetch";
 
 interface ApiSchema {
@@ -6,12 +7,9 @@ interface ApiSchema {
   [key: string]: unknown;
 }
 
-interface ApiCallbacks {
-  response_function?: (response: unknown) => unknown;
-  request_error_function?: (error: unknown) => unknown;
-  response_error_function?: (response: unknown) => unknown;
+type ApiCallbacks = RequestHandlers & {
   skip_feedback_error?: boolean;
-}
+};
 
 const MILLISECONDS_IN_SECOND = 1000;
 

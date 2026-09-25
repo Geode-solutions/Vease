@@ -95,8 +95,6 @@ function getViewerClient(viewerStore: ReturnType<typeof useViewerStore>): Viewer
 
 export type {
   ApiSchema,
-  ApiCallbacks,
-  BackStoreExtra,
   HybridViewerStoreExtra,
   MicroserviceStore,
   InfraStoreExtra,
