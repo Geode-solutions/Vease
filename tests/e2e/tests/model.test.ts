@@ -78,7 +78,6 @@ import {
   toggleInfoCard,
   viewerContextMenu,
 } from "@vease_tests/utils/viewer_interaction";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import { resetCamera, rotateCamera } from "@vease_tests/utils/camera_interaction";
 import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";

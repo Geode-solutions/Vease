@@ -34,7 +34,7 @@ function getGatewayChatModel(
   model: string | undefined,
   apiKey: string | undefined,
 ): LanguageModelV4 {
-  if (!apiKey) {
+  if (apiKey === undefined || apiKey === "") {
     throw new Error("Missing AI Gateway key for this request");
   }
   const provider = createGateway({ apiKey });
@@ -50,10 +50,11 @@ async function getChatModel({
   model?: string;
   gatewayApiKey?: string;
 } = {}): Promise<LanguageModelV4> {
-  if (provider === CHAT_PROVIDER.GATEWAY) {
-    return getGatewayChatModel(model, gatewayApiKey);
-  }
-  return await getLlamaChatModel(model);
+  const chatModel =
+    provider === CHAT_PROVIDER.GATEWAY
+      ? getGatewayChatModel(model, gatewayApiKey)
+      : await getLlamaChatModel(model);
+  return chatModel;
 }
 
 async function getMcpClient(): Promise<MCPClient> {

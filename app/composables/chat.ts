@@ -54,9 +54,9 @@ export function useVeaseChat(): VeaseChatReturn {
   const llamaStatus = ref<LlamaStatus>({ running: false });
 
   async function refreshLlamaStatus(): Promise<void> {
-    llamaStatus.value = (await appStore.request({
+    llamaStatus.value = await appStore.request<LlamaStatus>({
       schema: vease_schemas.api.llm.status,
-    })) as LlamaStatus;
+    });
   }
 
   async function killLlamaServer(): Promise<void> {
@@ -73,24 +73,25 @@ export function useVeaseChat(): VeaseChatReturn {
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { cloudAllowed } = (await APIStore.request({
+    const { cloudAllowed } = await APIStore.request<{ cloudAllowed?: boolean }>({
       schema: ENTITLEMENT_SCHEMA,
       headers,
-    })) as { cloudAllowed?: boolean };
+    });
     isCloudAiAllowed.value = Boolean(cloudAllowed);
   }
 
   watch(user, refreshCloudEntitlement, { immediate: true });
 
   async function ensureGatewayKey(): Promise<void> {
-    if (gatewayApiKey.value || !user.value) {
+    if (gatewayApiKey.value !== undefined || !user.value) {
       return;
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { apiKeyString } = (await APIStore.request({ schema: KEY_SCHEMA, headers })) as {
-      apiKeyString?: string;
-    };
+    const { apiKeyString } = await APIStore.request<{ apiKeyString?: string }>({
+      schema: KEY_SCHEMA,
+      headers,
+    });
     gatewayApiKey.value = apiKeyString;
   }
 
@@ -99,16 +100,19 @@ export function useVeaseChat(): VeaseChatReturn {
       api: "/api/llm/chat",
       headers: async (): Promise<Record<string, string>> => {
         const token = await user.value?.getIdToken();
-        return token ? { Authorization: `Bearer ${token}` } : {};
+        return token === undefined ? {} : { Authorization: `Bearer ${token}` };
       },
-      body: () => ({ provider: provider.value, gatewayApiKey: gatewayApiKey.value }),
+      body: (): { provider: ChatProvider; gatewayApiKey: string | undefined } => ({
+        provider: provider.value,
+        gatewayApiKey: gatewayApiKey.value,
+      }),
     }),
   });
 
-  refreshLlamaStatus();
+  void refreshLlamaStatus();
   watch(status, (chatStatus) => {
     if (chatStatus === "ready" && provider.value === CHAT_PROVIDER.LLAMA) {
-      refreshLlamaStatus();
+      void refreshLlamaStatus();
     }
   });
 

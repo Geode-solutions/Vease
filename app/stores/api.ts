@@ -25,14 +25,15 @@ export const useAPIStore = defineStore("api", () => {
     request_counter.value -= 1;
   }
 
-  async function request(
+  // `TResult` is asserted, not verified: the response is only checked against `schema` at runtime
+  async function request<TResult = unknown>(
     {
       schema,
       params = {},
       headers = {},
     }: { schema: ApiSchema; params?: Record<string, unknown>; headers?: Record<string, string> },
     callbacks: ApiCallbacks = {},
-  ): Promise<unknown> {
+  ): Promise<TResult> {
     console.log("[API] Request:", schema.$id);
     const start = Date.now();
 
@@ -55,7 +56,8 @@ export const useAPIStore = defineStore("api", () => {
         },
       },
     );
-    return result;
+    // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; see comment above.
+    return result as TResult;
   }
   return {
     base_url,
