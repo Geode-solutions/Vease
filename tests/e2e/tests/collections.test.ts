@@ -2,7 +2,7 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { defaultDataName, structuralModelGeodeObjectType } from "@tests/utils/constants";
+import { defaultDataName, structuralModelGeodeObjectType } from "@vease_tests/utils/constants";
 import {
   getModelComponentTypeOptions,
   getModelComponentsObjectTree,
@@ -10,18 +10,18 @@ import {
   openModelComponentContextMenu,
   openModelComponentsTree,
   toggleModelTreeRow,
-} from "@tests/utils/object_trees/model_components_object_tree";
+} from "@vease_tests/utils/object_trees/model_components_object_tree";
 import {
   setModelColor,
   setModelColoringStyle,
   setModelPolygonsVertexAttribute,
   setModelSurfacesVisibility,
-} from "@tests/utils/data";
-import { expandGeodeObjectTypeInTree } from "@tests/utils/object_trees/common";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
-import { resetCamera } from "@tests/utils/camera_interaction";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data";
+import { expandGeodeObjectTypeInTree } from "@vease_tests/utils/object_trees/common";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { resetCamera } from "@vease_tests/utils/camera_interaction";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const structuralModelFilename = "test.og_strm";
