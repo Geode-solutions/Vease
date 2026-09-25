@@ -7,11 +7,8 @@ import {
   getTreeRowByTextAndParent,
 } from "./common";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import {
-  ensureMenuOpen,
-  resetMenuScroll,
-  waitForActionSettled,
-} from "@vease_tests/utils/viewer_interaction";
+import { ensureMenuOpen, resetMenuScroll } from "@vease_tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import { expandGeodeObjectType, getMainObjectTree } from "./main_object_tree";
 import { setModelColor } from "@vease_tests/utils/data/model/color";
 

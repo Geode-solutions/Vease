@@ -15,8 +15,8 @@ import {
   getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
-  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import {
   openMeshPolyhedraMenu,
   setMeshEdgesColor,

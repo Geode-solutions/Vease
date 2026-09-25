@@ -27,7 +27,8 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
-import { moveMouseOutOfTheWay, waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import { assertDefined } from "@vease_tests/utils/other";
 import { brepGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeAllMenus } from "@vease_tests/utils/app_interaction";
