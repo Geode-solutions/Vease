@@ -6,14 +6,14 @@ import {
   closeAllMenus,
   closeFeedbackSnackbar,
   moveMouseOutOfTheWay,
-} from "@tests/utils/app_interaction";
+} from "@vease_tests/utils/app_interaction";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   highlightData,
   openObjectsTree,
-} from "@tests/utils/object_trees/main_object_tree";
-import { defaultDataName, polygonalSurfaceGeodeObjectType } from "@tests/utils/constants";
+} from "@vease_tests/utils/object_trees/main_object_tree";
+import { defaultDataName, polygonalSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
 import {
   openMeshPolygonsMenu,
   setMeshEdgesColor,
@@ -31,16 +31,16 @@ import {
   setMeshPolygonsTextures,
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsVisibility,
-} from "@tests/utils/data";
+} from "@vease_tests/utils/data";
 import {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
   waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { setQuickColorMap } from "@tests/utils/data/helpers/attribute";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { setQuickColorMap } from "@vease_tests/utils/data/helpers/attribute";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const inputFilename = "test.og_psf3d";

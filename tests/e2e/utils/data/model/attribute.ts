@@ -1,11 +1,11 @@
-import { applyAttribute, setFeatureNoDataColor } from "@tests/utils/data/helpers/attribute";
+import { applyAttribute, setFeatureNoDataColor } from "@vease_tests/utils/data/helpers/attribute";
 import {
   cellAttributeType,
   edgeAttributeType,
   polygonAttributeType,
   polyhedronAttributeType,
   vertexAttributeType,
-} from "@tests/utils/constants";
+} from "@vease_tests/utils/constants";
 import type { Page } from "@playwright/test";
 
 interface AttributeOptions {
