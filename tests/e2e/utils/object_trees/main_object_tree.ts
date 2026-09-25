@@ -6,7 +6,7 @@ import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "./common";
-import { afterActionWait } from "@tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@tests/utils/viewer_interaction";
 
 function getMainObjectTree(window: Page): Locator {
   return window.getByTestId("mainObjectTree");
@@ -47,7 +47,7 @@ async function highlightData(
     .getByTestId("tooltipIdValue")
     .filter({ hasNotText: geodeObjectType })
     .waitFor({ state: "visible" });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function focusObjectInTree(
@@ -59,7 +59,7 @@ async function focusObjectInTree(
   const mainObjectTree = getMainObjectTree(window);
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
   await row.locator("button:has(.mdi-target)").click({ force: true });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function showObjectInTree(window: Page, objectName: string): Promise<void> {
@@ -72,13 +72,13 @@ async function showObjectInTree(window: Page, objectName: string): Promise<void>
     .first();
   if (await btn.isVisible()) {
     await btn.click({ force: true });
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
 async function toggleObjectsTree(window: Page): Promise<void> {
   await window.getByTestId("toggleObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function closeObjectsTree(window: Page): Promise<void> {
@@ -88,7 +88,7 @@ async function closeObjectsTree(window: Page): Promise<void> {
     .catch(() => false);
   if (isVisible) {
     await window.getByTestId("toggleObjectsButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -99,7 +99,7 @@ async function openObjectsTree(window: Page): Promise<void> {
     .catch(() => false);
   if (!isVisible) {
     await window.getByTestId("toggleObjectsButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
