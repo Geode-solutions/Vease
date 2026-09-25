@@ -54,7 +54,6 @@ import {
   hoverViewer,
   stabilizeHoverTooltip,
   viewerContextMenu,
-  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 import {
   expandGeodeObjectType,
@@ -63,6 +62,7 @@ import {
   getMainObjectTree,
   showObjectInTree,
 } from "@vease_tests/utils/object_trees/main_object_tree";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 import { confirmDelete } from "@vease_tests/utils/data_manager";
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";

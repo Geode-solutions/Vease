@@ -5,7 +5,7 @@ import type { Locator, Page } from "@playwright/test";
 
 // Local imports
 import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { waitForActionSettled } from "./viewer_interaction";
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 async function openDataManagerPiP(window: Page): Promise<void> {
   await window.getByTestId("dataManagerPiPButton").click();

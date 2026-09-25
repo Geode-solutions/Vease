@@ -1,4 +1,5 @@
 // Electron's sandboxed preload scripts only support CommonJS
+// oxlint-disable-next-line typescript/no-require-imports
 import electron = require("electron");
 
 const { contextBridge, ipcRenderer } = electron;
