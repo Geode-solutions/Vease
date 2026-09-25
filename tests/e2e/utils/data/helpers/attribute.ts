@@ -3,13 +3,13 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/data/helpers/color_picker";
+} from "@vease_tests/utils/data/helpers/color_picker";
 import {
   ensureFeatureVisible,
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 
 async function resetMenuScroll(window: Page, scrollTop = 0): Promise<void> {
   await window.evaluate((top) => {

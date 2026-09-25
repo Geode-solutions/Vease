@@ -12,8 +12,8 @@ import {
   selectCreateTool,
   submitCreateObject,
   toggleClosedCurve,
-} from "@tests/utils/create_objects";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/create_objects";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const POINTS_COORDS = [

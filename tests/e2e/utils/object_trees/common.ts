@@ -1,7 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
-import { modalTransitionWait } from "@tests/utils/constants";
-import { waitForActionSettled } from "@tests/utils/viewer_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { modalTransitionWait } from "@vease_tests/utils/constants";
+import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
 
 async function clickCollapseOrExpandAll(
   window: Page,

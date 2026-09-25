@@ -6,14 +6,14 @@ import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "./common";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import {
   ensureMenuOpen,
   resetMenuScroll,
   waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 import { expandGeodeObjectType, getMainObjectTree } from "./main_object_tree";
-import { setModelColor } from "@tests/utils/data/model/color";
+import { setModelColor } from "@vease_tests/utils/data/model/color";
 
 function getModelComponentsObjectTree(window: Page): Locator {
   return window.getByTestId("modelComponentsObjectTree");
