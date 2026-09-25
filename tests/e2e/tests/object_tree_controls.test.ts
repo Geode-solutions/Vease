@@ -4,7 +4,6 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import {
   checkFilterCategory,
   copyTreeRowId,
@@ -28,6 +27,7 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
 } from "@tests/utils/object_trees/model_components_object_tree";
+import { moveMouseOutOfTheWay, waitForActionSettled } from "@tests/utils/viewer_interaction";
 import { assertDefined } from "@tests/utils/other";
 import { brepGeodeObjectType } from "@tests/utils/constants";
 import { closeAllMenus } from "@tests/utils/app_interaction";
@@ -122,34 +122,34 @@ test("hide model blocks", async ({ window }) => {
 test("filter model components", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("filterObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("filterCheckbox-Blocks").getByRole("checkbox").uncheck();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("filterCheckbox-Lines").getByRole("checkbox").uncheck();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("sort model components by id", async ({ window }) => {
   await closeAllMenus(window);
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
 });
 
 test("sort model components by name", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("search model components by text", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("searchObjectsButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const searchInput = modelComponentsObjectTree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill("ff");
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
 
 test("hide filtered corners", async ({ window }) => {

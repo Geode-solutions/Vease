@@ -1,5 +1,4 @@
 import type { Locator, Page } from "@playwright/test";
-import { afterActionWait, ensureMenuOpen, resetMenuScroll } from "@tests/utils/viewer_interaction";
 import {
   clickCollapseOrExpandAll,
   collapseGeodeObjectTypeInTree,
@@ -8,6 +7,11 @@ import {
   getTreeRowByTextAndParent,
 } from "./common";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+import {
+  ensureMenuOpen,
+  resetMenuScroll,
+  waitForActionSettled,
+} from "@tests/utils/viewer_interaction";
 import { expandGeodeObjectType, getMainObjectTree } from "./main_object_tree";
 import { setModelColor } from "@tests/utils/data/model/color";
 
@@ -66,7 +70,7 @@ async function hoverModelComponentRow(
     modelComponentsObjectTree,
   );
   await modelComponentRow.hover();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function hoverCorners(window: Page, modelComponentName?: string): Promise<void> {
@@ -103,7 +107,7 @@ async function toggleModelTreeRow(
     .or(row.getByTestId("hiddenObjectEyeButton"))
     .first();
   await btn.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function openModelComponentContextMenu(
@@ -121,7 +125,7 @@ async function openModelComponentContextMenu(
     .nth(rowIndex);
   const label = row.locator(".tree-item-label").first();
   await label.click({ button: "right", force: true });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await ensureMenuOpen(window, "modelStyleMenu");
   await resetMenuScroll(window, 0);
 }
@@ -145,7 +149,7 @@ async function openModelComponentsTree(
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
   await row.getByTestId("expandModelComponentsButton").first().click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function openModelCollectionsTree(
@@ -173,7 +177,7 @@ async function hideAllComponentLeafRows(window: Page, categoryName: string): Pro
       await eyeBtn.click({ force: true });
     }
   }
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

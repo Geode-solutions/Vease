@@ -1,12 +1,12 @@
 import type { Page } from "@playwright/test";
 
-import { afterActionWait, dragElement, getHybridViewerCanvas } from "./viewer_interaction";
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
+import { dragElement, getHybridViewerCanvas, waitForActionSettled } from "./viewer_interaction";
 
 async function resetCamera(window: Page): Promise<void> {
   await window.getByTestId("resetCameraButton").click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function rotateCamera(window: Page, deltaX: number, deltaY = 0): Promise<void> {
@@ -16,82 +16,82 @@ async function rotateCamera(window: Page, deltaX: number, deltaY = 0): Promise<v
 
 async function toggleCenterOnClick(window: Page): Promise<void> {
   await window.getByTestId("centerOnClickButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleGridScale(window: Page): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("gridScaleButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setZScaling(window: Page, zScaleValue: number): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("zScalingButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const panel = window.getByTestId("zScaleInput");
   if (!(await panel.isVisible())) {
     await window.getByTestId("zScalingButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 
   const input = panel.locator("input");
   await input.fill(zScaleValue.toString());
   await input.press("Enter");
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("toolPanelActionButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleCameraManager(window: Page): Promise<void> {
   await window.getByTestId("cameraManagerButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function saveCameraPosition(window: Page, name: string): Promise<void> {
   const input = window.getByTestId("cameraPositionNameInput").locator("input");
   await input.fill(name);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("saveCameraPositionButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function closeCameraManager(window: Page): Promise<void> {
   await window.getByTestId("closeCameraManagerButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleCameraOrientation(window: Page): Promise<void> {
   await window.getByTestId("cameraOrientationButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function selectCameraOrientation(window: Page, label: string): Promise<void> {
   const vtkKey = label.replace("+", "Plus").replace("-", "Minus");
   await window.getByTestId(`cameraOrientation${vtkKey}Button`).click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function restoreCameraPosition(window: Page, name: string): Promise<void> {
   await window.getByTestId(`restoreCameraPosition${name}Button`).click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function ensureHighlightMenuOpen(window: Page, childButtonTestId: string): Promise<void> {
   if (!(await window.getByTestId(childButtonTestId).isVisible())) {
     await window.getByTestId("highlightOnHoverButton").click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
     if (!(await window.getByTestId(childButtonTestId).isVisible())) {
       await window.getByTestId("highlightOnHoverButton").click();
-      await window.waitForTimeout(afterActionWait);
+      await waitForActionSettled(window);
     }
   }
 }
 
 async function toggleShrinkFilter(window: Page): Promise<void> {
   await window.getByTestId("shrinkFilterButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setShrinkFactor(window: Page, shrinkFactorValue: number): Promise<void> {
@@ -102,43 +102,43 @@ async function setShrinkFactor(window: Page, shrinkFactorValue: number): Promise
   }
   const clickX = box.width * shrinkFactorValue;
   await slider.click({ position: { x: clickX, y: box.height / 2 } });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function resetShrinkFilter(window: Page): Promise<void> {
   await window.getByTestId("resetShrinkButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleShrinkTargetAllVisible(window: Page): Promise<void> {
   const switchElement = window.getByTestId("shrinkTargetAllVisibleSwitch");
   const checkbox = switchElement.getByRole("checkbox");
   await checkbox.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function selectShrinkDatasets(window: Page, datasetName: string, index = 0): Promise<void> {
   const select = window.getByTestId("shrinkSelectedDatasetsSelect");
   await select.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   const option = window.getByRole("option", { name: datasetName }).nth(index);
   await option.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await select.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleRuler(window: Page): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("rulerButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleRulerSnap(window: Page): Promise<void> {
   const switchElement = window.getByTestId("rulerSnapToggle");
   const checkbox = switchElement.getByRole("checkbox");
   await checkbox.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setRulerPointInput(
@@ -153,12 +153,12 @@ async function setRulerPointInput(
     await input.fill(coords[axis].toString());
   }
   await window.getByTestId("rulerApplyButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function clearRuler(window: Page): Promise<void> {
   await window.getByTestId("rulerClearButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

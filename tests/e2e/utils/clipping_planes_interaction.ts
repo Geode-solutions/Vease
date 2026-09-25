@@ -1,14 +1,14 @@
 import type { Page } from "@playwright/test";
-import { afterActionWait } from "./viewer_interaction";
+import { waitForActionSettled } from "./viewer_interaction";
 
 async function toggleClippingPlanes(window: Page): Promise<void> {
   await window.getByTestId("clippingPlanesButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function invertPlaneNormal(window: Page, planeIndex = 0): Promise<void> {
   await window.getByTestId("invertNormalButton").nth(planeIndex).click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setPlaneOrigin(window: Page, planeIndex: number, origin: number[]): Promise<void> {
@@ -19,7 +19,7 @@ async function setPlaneOrigin(window: Page, planeIndex: number, origin: number[]
     await input.fill(origin[axis].toString());
     await input.press("Enter");
   }
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setPlaneNormal(window: Page, planeIndex: number, normal: number[]): Promise<void> {
@@ -30,26 +30,26 @@ async function setPlaneNormal(window: Page, planeIndex: number, normal: number[]
     await input.press("Enter");
     // oxlint-enable no-await-in-loop
   }
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function addClippingPlane(window: Page): Promise<void> {
   await window.getByTestId("addPlaneButton").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function toggleTargetAllVisible(window: Page): Promise<void> {
   await window.getByTestId("targetAllVisibleSwitch").getByRole("checkbox").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function selectClippingDatasets(window: Page, datasetName: string, index = 0): Promise<void> {
   await window.getByTestId("selectedDatasetsSelect").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByRole("option", { name: datasetName }).nth(index).click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window.getByTestId("selectedDatasetsSelect").click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {
