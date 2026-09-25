@@ -47,8 +47,6 @@ test("load", async ({ window }) => {
 test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, rgd2dGeodeObjectType, defaultDataName);
   screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
-  const timeout = 2000;
-  await window.waitForTimeout(timeout);
 });
 
 test("viewer context menu", async ({ window }) => {
@@ -116,8 +114,6 @@ test("cells color", async ({ window }) => {
 
 test("points color", async ({ window }) => {
   await setMeshPointsColorWithSlider(window);
-  const timeout = 2000;
-  await window.waitForTimeout(timeout);
 });
 
 test("edges color", async ({ window }) => {

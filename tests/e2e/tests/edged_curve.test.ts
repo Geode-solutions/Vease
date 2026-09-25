@@ -43,8 +43,6 @@ test("load", async ({ window }) => {
 test("highlight", async ({ window, screenshotMask }) => {
   await highlightData(window, edgedCurveGeodeObjectType, defaultDataName);
   screenshotMask.locators = [window.getByTestId("tooltipIdValue")];
-  const timeout = 2000;
-  await window.waitForTimeout(timeout);
 });
 
 test("viewer context menu", async ({ window }) => {
