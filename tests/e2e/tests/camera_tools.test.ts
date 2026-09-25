@@ -13,7 +13,11 @@ import {
   toggleClippingPlanes,
   toggleTargetAllVisible,
 } from "@vease_tests/utils/clipping_planes_interaction";
-import { brepGeodeObjectType, defaultDataName, rgd3dGeodeObjectType } from "@vease_tests/utils/constants";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  rgd3dGeodeObjectType,
+} from "@vease_tests/utils/constants";
 import {
   clearRuler,
   closeCameraManager,

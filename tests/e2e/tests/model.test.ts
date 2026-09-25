@@ -68,7 +68,10 @@ import {
   highlightData,
   toggleObjectsTree,
 } from "@vease_tests/utils/object_trees/main_object_tree";
-import { expandGeodeObjectTypeInTree, hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import {
+  expandGeodeObjectTypeInTree,
+  hideObjectInTree,
+} from "@vease_tests/utils/object_trees/common";
 import {
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
