@@ -1,0 +1,91 @@
+{
+  "api": {
+    "controller": {
+      "data": {},
+      "viewer": {
+        "mesh": {
+          "points": {
+            "visibility": {
+              "$id": "api/controller/viewer/mesh/points/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["id", "visibility"],
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    },
+    "llm": {
+      "status": {
+        "$id": "api/llm/status",
+        "route": "/status",
+        "methods": ["GET"],
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "run": {
+        "$id": "api/llm/run",
+        "route": "/run",
+        "methods": ["POST"],
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["model"],
+        "additionalProperties": false
+      },
+      "kill": {
+        "$id": "api/llm/kill",
+        "route": "/kill",
+        "methods": ["POST"],
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "chat": {
+        "$id": "api/llm/chat",
+        "route": "/chat",
+        "methods": ["POST"],
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1
+          },
+          "gatewayApiKey": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["messages", "provider", "model"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

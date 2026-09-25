@@ -10,9 +10,19 @@ async function resetCamera(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function rotateCamera(window: Page, deltaX: number, deltaY = 0): Promise<void> {
+async function rotateCamera(
+  window: Page,
+  deltaX: number,
+  deltaY = 0,
+  start: { x?: number; y?: number } = {},
+): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  await dragElement(window, hybridViewerCanvas, { deltaX, deltaY });
+  await dragElement(window, hybridViewerCanvas, {
+    startX: start.x,
+    startY: start.y,
+    deltaX,
+    deltaY,
+  });
 }
 
 async function toggleCenterOnClick(window: Page): Promise<void> {

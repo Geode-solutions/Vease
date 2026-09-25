@@ -11,7 +11,7 @@ const LINUX_TIMEOUT_DESKTOP = 50;
 const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 180;
 const CI_RETRIES = 1;
-const CI_WORKERS = 2;
+const CI_WORKERS = 4;
 
 const isCI = process.env.CI !== undefined && process.env.CI !== "";
 const retries = isCI ? CI_RETRIES : 0;

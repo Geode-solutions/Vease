@@ -26,6 +26,10 @@
   "type": "module",
   "main": "dist-electron/main.js",
   "exports": {
+    "./vease_schemas.json": {
+      "import": "./vease_schemas.json",
+      "require": "./vease_schemas.json"
+    },
     "./tests/e2e/utils/*.js": {
       "types": "./tests/e2e/utils/*.ts",
       "default": "./.build/tests/e2e/utils/*.js"
@@ -44,6 +48,7 @@
     "build:back": "npx opengeodeweb-microservice-pyinstaller ../Vease-Back ../../OpenGeodeWeb/OpenGeodeWeb-Back",
     "build:viewer": "npx opengeodeweb-microservice-pyinstaller ../Vease-Viewer ../../OpenGeodeWeb/OpenGeodeWeb-Viewer",
     "build:microservices": "concurrently \"npm run build:back\" \"npm run build:viewer\"",
+    "prebuild": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "build": "cross-env MODE=NODE nuxt prepare && rolldown -c rolldown.config.ts",
     "build:front": "nuxi build",
     "build:browser": "npm run build && cross-env MODE=BROWSER npm run build:front",
@@ -53,10 +58,11 @@
     "build:desktop:unpacked": "cross-env MODE=DESKTOP npm run build:front && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
+    "json": "npx opengeodeweb-microservice-generate --startDir server/api --key route --separator / --prefix api",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "test:e2e": "npx playwright test --config ./tests/e2e/playwright.config.ts",
+    "test:e2e": "npm run pretest && npx playwright test --config ./tests/e2e/playwright.config.ts",
     "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test:e2e -- --project=browser-firefox",
     "test:e2e:browser": "npm run test:e2e:browser:chrome",
@@ -66,6 +72,7 @@
     "typecheck": "cross-env MODE=BROWSER nuxi prepare && vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p .nuxt/tsconfig.server.json --noImplicitAny false && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tests/e2e/tsconfig.json"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "4.0.75",
     "@ai-sdk/mcp": "2.0.45",
     "@ai-sdk/openai-compatible": "3.0.44",
     "@ai-sdk/vue": "4.0.93",
