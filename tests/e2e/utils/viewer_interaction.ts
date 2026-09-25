@@ -119,6 +119,8 @@ async function ensureFeatureVisible(window: Page, menuTestId: string): Promise<v
 }
 
 interface DragOptions {
+  startX?: number;
+  startY?: number;
   targetX?: number;
   targetY?: number;
   deltaX?: number;
@@ -128,15 +130,15 @@ interface DragOptions {
 async function dragElement(
   window: Page,
   locator: Locator,
-  { targetX, targetY, deltaX = 0, deltaY = 0 }: DragOptions = {},
+  { startX: fromX, startY: fromY, targetX, targetY, deltaX = 0, deltaY = 0 }: DragOptions = {},
 ): Promise<void> {
   const box = await locator.boundingBox();
   if (!box) {
     throw new Error("Could not get bounding box of the element to drag.");
   }
   const { x, y, width, height } = box;
-  const startX = x + width / 2;
-  const startY = y + height / 2;
+  const startX = fromX ?? x + width / 2;
+  const startY = fromY ?? y + height / 2;
   await window.mouse.move(startX, startY);
   await window.mouse.down();
   await window.mouse.move(targetX ?? startX + deltaX, targetY ?? startY + deltaY, { steps: 20 });

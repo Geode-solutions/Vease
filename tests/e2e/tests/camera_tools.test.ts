@@ -88,6 +88,8 @@ const RULER_POINT_2_Z = 44.9;
 const RULER_SNAP_X_RATIO = 0.5;
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
+const ROTATE_DRAG_EDGE_MARGIN = 2;
+const ROTATE_DRAG_Y_RATIO = 0.85;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -149,7 +151,15 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
 test("rotate camera 180 degrees", async ({ window }) => {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
-  await rotateCamera(window, -box.width);
+  /* Keep the whole drag inside the window: off-screen mouse events are
+   * delivered differently on each OS, which changes the final angle.
+   * Start below the ruler panel and release just left of the canvas so the
+   * pointerup doesn't register as a ruler click. */
+  await rotateCamera(window, -box.width, 0, {
+    x: box.x + box.width - ROTATE_DRAG_EDGE_MARGIN,
+    y: box.y + box.height * ROTATE_DRAG_Y_RATIO,
+  });
+  await moveMouseOutOfTheWay(window);
 });
 
 test("overlapping objects context menu", async ({ window }) => {
