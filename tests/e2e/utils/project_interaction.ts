@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test";
-import { waitForActionSettled } from "./viewer_interaction";
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 async function exportProject(window: Page): Promise<void> {
   await window.getByTestId("projectMenuButton").click();

@@ -7,16 +7,17 @@ import {
   getTreeRowByTextAndParent,
 } from "./common";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import {
-  ensureMenuOpen,
-  resetMenuScroll,
-  waitForActionSettled,
-} from "@vease_tests/utils/viewer_interaction";
+import { ensureMenuOpen, resetMenuScroll } from "@vease_tests/utils/viewer_interaction";
 import { expandGeodeObjectType, getMainObjectTree } from "./main_object_tree";
 import { setModelColor } from "@vease_tests/utils/data/model/color";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 function getModelComponentsObjectTree(window: Page): Locator {
   return window.getByTestId("modelComponentsObjectTree");
+}
+
+function getModelComponentTypeOptions(window: Page): Locator {
+  return window.getByTestId("modelComponentTypeOptions");
 }
 
 async function collapseModelComponentsObjectTree(window: Page): Promise<void> {
@@ -148,6 +149,19 @@ async function openModelComponentsTree(
   await waitForActionSettled(window);
 }
 
+async function openModelCollectionsTree(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = getMainObjectTree(window);
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
+  await row.getByTestId("expandModelCollectionsButton").first().click();
+  await moveMouseOutOfTheWay(window);
+  await waitForActionSettled(window);
+}
+
 async function hideAllComponentLeafRows(window: Page, categoryName: string): Promise<void> {
   const tree = getModelComponentsObjectTree(window);
   await expandGeodeObjectTypeInTree(window, categoryName, tree);
@@ -170,6 +184,7 @@ export {
   collapseModelComponentTypes,
   expandMeshComponentType,
   expandModelComponentsObjectTree,
+  getModelComponentTypeOptions,
   getModelComponentsObjectTree,
   hideAllComponentLeafRows,
   hoverCorners,
@@ -177,6 +192,7 @@ export {
   hoverModelBlock,
   hoverSurfaces,
   openModelComponentContextMenu,
+  openModelCollectionsTree,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
