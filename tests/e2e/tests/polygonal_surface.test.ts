@@ -3,12 +3,10 @@
 
 // Third party imports
 import {
-  afterActionWait,
-  toggleInfoCard,
-  viewerContextMenu,
-  viewerQuickColormap,
-} from "@tests/utils/viewer_interaction";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+  closeAllMenus,
+  closeFeedbackSnackbar,
+  moveMouseOutOfTheWay,
+} from "@tests/utils/app_interaction";
 import {
   closeObjectsTree,
   expandMainObjectTree,
@@ -34,6 +32,12 @@ import {
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsVisibility,
 } from "@tests/utils/data";
+import {
+  toggleInfoCard,
+  viewerContextMenu,
+  viewerQuickColormap,
+  waitForActionSettled,
+} from "@tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { setQuickColorMap } from "@tests/utils/data/helpers/attribute";
 import { test } from "@tests/utils/fixtures";
@@ -92,7 +96,7 @@ test("polygon attribute reopen menu", async ({ window }) => {
 test("quick colormap picker change colormap", async ({ window }) => {
   await window.keyboard.press("Escape");
   await closeObjectsTree(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   await viewerQuickColormap(window);
   await setQuickColorMap(window, colorMapName);
@@ -102,7 +106,7 @@ test("quick colormap picker change colormap", async ({ window }) => {
 test("quick colormap picker change range", async ({ window }) => {
   await window.keyboard.press("Escape");
   await closeObjectsTree(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await viewerQuickColormap(window);
   const minInput = window
     .getByTestId("attributeMinInput")
@@ -111,7 +115,7 @@ test("quick colormap picker change range", async ({ window }) => {
     .locator("input");
   await minInput.fill("0.2");
   await minInput.press("Enter");
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await moveMouseOutOfTheWay(window);
 });
 
@@ -185,4 +189,5 @@ test("polygons visibility", async ({ window }) => {
 test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
+  await closeFeedbackSnackbar(window);
 });

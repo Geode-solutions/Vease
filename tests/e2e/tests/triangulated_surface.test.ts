@@ -24,6 +24,7 @@ import {
   setMeshPolygonsVisibility,
 } from "@tests/utils/data";
 import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
+import { closeFeedbackSnackbar } from "@tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@tests/utils/load";
 import { test } from "@tests/utils/fixtures";
 
@@ -145,4 +146,5 @@ test("polygons visibility", async ({ window }) => {
 test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
+  await closeFeedbackSnackbar(window);
 });

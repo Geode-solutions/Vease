@@ -5,7 +5,9 @@ import type { Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line unicorn/prefer-export-from
 import { afterActionWait, halfSecondWait } from "./constants";
 // oxlint-disable-next-line unicorn/prefer-export-from
-import { moveMouseOutOfTheWay } from "./app_interaction";
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "./app_interaction";
+// oxlint-disable-next-line unicorn/prefer-export-from
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 function noopCleanup(): unknown {
   return undefined;
@@ -31,7 +33,7 @@ async function viewerContextMenu(window: Page, x: number, y: number): Promise<vo
     button: "right",
     position: { x, y },
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function findOverlappingObjectsPicker(window: Page): Promise<void> {
@@ -61,7 +63,7 @@ async function findOverlappingObjectsPicker(window: Page): Promise<void> {
       delay: 100,
     });
     // oxlint-disable-next-line no-await-in-loop
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
 
     // oxlint-disable-next-line no-await-in-loop
     const items = await window.locator(".intermediate-picker-item").count();
@@ -95,14 +97,14 @@ async function ensureMenuOpen(window: Page, menuTestId: string): Promise<void> {
     const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
     if (await activeMenuButton.isVisible()) {
       await activeMenuButton.click();
-      await window.waitForTimeout(afterActionWait);
+      await waitForActionSettled(window);
     }
     const menuButton = menuContainer
       .getByTestId("circularMenuItemButton")
       .or(menuContainer.getByTestId("activeCircularMenuItemButton"))
       .first();
     await menuButton.click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
 }
 
@@ -139,7 +141,7 @@ async function dragElement(
   await window.mouse.down();
   await window.mouse.move(targetX ?? startX + deltaX, targetY ?? startY + deltaY, { steps: 20 });
   await window.mouse.up();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function dragContextMenu(
@@ -161,7 +163,7 @@ async function setFeatureTextures(
   const container = window.getByTestId(menuTestId);
   const selector = container.getByTestId("coloringStyleSelector").first();
   await selector.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const listItem = window
     .locator(".v-overlay-container")
@@ -169,7 +171,7 @@ async function setFeatureTextures(
     .filter({ hasText: "Textures", visible: true })
     .first();
   await listItem.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setPolygonsTextures(window: Page, viewerObjectType: string): Promise<void> {
@@ -186,7 +188,7 @@ async function hoverViewer(window: Page, position?: { x: number; y: number }): P
   await hybridViewerCanvas.hover({
     position: hoverPosition,
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function stabilizeHoverTooltip(window: Page): Promise<void> {
@@ -208,7 +210,7 @@ async function setVisibilityGeneric(
   } else {
     await checkbox.uncheck();
   }
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function setFeatureVisibility(
@@ -245,7 +247,7 @@ async function setFeatureSizeOrWidth(
       node.dispatchEvent(new Event("input", { bubbles: true }));
       node.dispatchEvent(new Event("change", { bubbles: true }));
     }, value.toString());
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 // Specific feature functions
@@ -304,7 +306,7 @@ async function setEdgesWidth(window: Page, viewerObjectType: string, value: numb
 async function toggleInfoCard(window: Page): Promise<void> {
   const centerButton = window.getByTestId("circularMenuCenterButton");
   await centerButton.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function resetMenuScroll(window: Page, scrollTop = 0): Promise<void> {
@@ -320,12 +322,12 @@ async function openStyleMenu(window: Page, menuTestId: string): Promise<void> {
   const activeMenuButton = window.getByTestId("activeCircularMenuItemButton");
   if (await activeMenuButton.isVisible()) {
     await activeMenuButton.click();
-    await window.waitForTimeout(afterActionWait);
+    await waitForActionSettled(window);
   }
   await ensureMenuOpen(window, menuTestId);
   await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 const SCALAR_BAR_X_RATIO = 0.25;
@@ -345,12 +347,13 @@ async function viewerQuickColormap(window: Page, x?: number, y?: number): Promis
     position: { x: targetX, y: targetY },
     force: true,
   });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {
   afterActionWait,
   noopCleanup,
+  closeFeedbackSnackbar,
   dragContextMenu,
   dragElement,
   ensureFeatureVisible,
@@ -374,4 +377,5 @@ export {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
+  waitForActionSettled,
 };
