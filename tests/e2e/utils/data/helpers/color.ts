@@ -6,13 +6,13 @@ import {
   clickCopyColorBtn,
   pasteColorInputText,
   setColorInputText,
-} from "@tests/utils/data/helpers/color_picker";
+} from "@vease_tests/utils/data/helpers/color_picker";
 import {
   ensureFeatureVisible,
   ensureMenuOpen,
   waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
+} from "@vease_tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 
 async function setColoringStyle(
   window: Page,

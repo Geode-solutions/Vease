@@ -2,24 +2,24 @@ import {
   SLIDER_PINK,
   clickColorPickerCanvas,
   clickColorPickerSlider,
-} from "@tests/utils/data/helpers/color_picker";
+} from "@vease_tests/utils/data/helpers/color_picker";
 import {
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
   waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 import {
   meshViewerObjectType,
   polyhedraFeatureName,
   polyhedronAttributeType,
   vertexAttributeType,
-} from "@tests/utils/constants";
+} from "@vease_tests/utils/constants";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
-} from "@tests/utils/data/helpers/attribute";
+} from "@vease_tests/utils/data/helpers/attribute";
 import type { Page } from "@playwright/test";
 
 interface AttributeOptions {

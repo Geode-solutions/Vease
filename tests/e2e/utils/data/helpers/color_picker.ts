@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
-import { moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
-import { waitForActionSettled } from "@tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
 
 const MAX_PERCENTAGE = 100;
 const SLIDER_BLUE = 0.7;
