@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "preserve",
     "moduleResolution": "Bundler",
     "strict": true,
     "noImplicitAny": false,
