@@ -22,15 +22,19 @@ import {
   clearRuler,
   closeCameraManager,
   ensureHighlightMenuOpen,
+  removeThresholdFilter,
   resetCamera,
   resetShrinkFilter,
+  resetThresholdFilter,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
   selectShrinkDatasets,
+  selectThresholdAttribute,
   setRulerPointInput,
   setShrinkFactor,
+  setThresholdMinimum,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
@@ -40,6 +44,7 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
+  toggleThresholdFilter,
 } from "@vease_tests/utils/camera_interaction";
 import {
   closeAllMenus,
@@ -82,6 +87,7 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
@@ -378,6 +384,36 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+});
+
+test("threshold filter mesh cell attribute", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await toggleThresholdFilter(window);
+  await selectThresholdAttribute(window, "grid", "cell attribute", "test_cell");
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter reset", async ({ window }) => {
+  await resetThresholdFilter(window);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter model block polyhedron attribute", async ({ window }) => {
+  await selectThresholdAttribute(
+    window,
+    defaultDataName,
+    "Block polyhedron attribute",
+    "test_polyhedron",
+  );
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter remove", async ({ window }) => {
+  await removeThresholdFilter(window);
+  await toggleThresholdFilter(window);
+  await moveMouseOutOfTheWay(window);
 });
 
 test("delete all data", async ({ window }) => {
