@@ -8,8 +8,8 @@ import {
   setColorInputText,
 } from "@vease_tests/utils/data/helpers/color_picker";
 import { ensureFeatureVisible, ensureMenuOpen } from "@vease_tests/utils/viewer_interaction";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 async function setColoringStyle(
   window: Page,

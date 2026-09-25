@@ -9,13 +9,13 @@ import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
-import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 import { brepGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import { setColor } from "@vease_tests/utils/data/helpers/color";
 import { test } from "@vease_tests/utils/fixtures";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const inputFilename = "test_project.vease";
