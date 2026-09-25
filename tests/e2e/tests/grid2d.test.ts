@@ -3,8 +3,11 @@
 // Third party imports
 
 // Local imports
-import { defaultDataName, rgd2dGeodeObjectType } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
+import { defaultDataName, rgd2dGeodeObjectType } from "@vease_tests/utils/constants";
+import {
+  expandMainObjectTree,
+  highlightData,
+} from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
@@ -21,10 +24,10 @@ import {
   setMeshPointsColorWithSlider,
   setMeshPointsSize,
   setMeshPointsVisibility,
-} from "@tests/utils/data";
-import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data";
+import { toggleInfoCard, viewerContextMenu } from "@vease_tests/utils/viewer_interaction";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const inputFilename = "test.og_rgd2d";

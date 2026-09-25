@@ -3,8 +3,11 @@
 // Third party imports
 
 // Local imports
-import { defaultDataName, triangulatedSurfaceGeodeObjectType } from "@tests/utils/constants";
-import { expandMainObjectTree, highlightData } from "@tests/utils/object_trees/main_object_tree";
+import { defaultDataName, triangulatedSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
+import {
+  expandMainObjectTree,
+  highlightData,
+} from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   openMeshPolygonsMenu,
   setMeshEdgesColor,
@@ -22,11 +25,11 @@ import {
   setMeshPolygonsTextures,
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsVisibility,
-} from "@tests/utils/data";
-import { toggleInfoCard, viewerContextMenu } from "@tests/utils/viewer_interaction";
-import { closeFeedbackSnackbar } from "@tests/utils/app_interaction";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data";
+import { toggleInfoCard, viewerContextMenu } from "@vease_tests/utils/viewer_interaction";
+import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const inputFilename = "test.og_tsf3d";
