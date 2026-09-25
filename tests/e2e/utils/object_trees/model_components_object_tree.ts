@@ -162,7 +162,7 @@ async function openModelCollectionsTree(
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
   await row.getByTestId("expandModelCollectionsButton").first().click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 async function hideAllComponentLeafRows(window: Page, categoryName: string): Promise<void> {
