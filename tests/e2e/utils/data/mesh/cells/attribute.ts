@@ -4,17 +4,17 @@ import {
   clickColorPickerSlider,
 } from "@tests/utils/data/helpers/color_picker";
 import {
-  afterActionWait,
-  ensureMenuOpen,
-  moveMouseOutOfTheWay,
-  openStyleMenu,
-} from "@tests/utils/viewer_interaction";
-import {
   cellAttributeType,
   cellsFeatureName,
   meshViewerObjectType,
   vertexAttributeType,
 } from "@tests/utils/constants";
+import {
+  ensureMenuOpen,
+  moveMouseOutOfTheWay,
+  openStyleMenu,
+  waitForActionSettled,
+} from "@tests/utils/viewer_interaction";
 import {
   setFeatureAttribute,
   setFeatureColorMap,
@@ -80,7 +80,7 @@ async function setMeshCellsNoDataColor(window: Page): Promise<void> {
   const noDataColorBtn = window.getByTestId("noDataColorBtn").first();
   await noDataColorBtn.waitFor({ state: "visible" });
   await noDataColorBtn.click();
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
   await window
     .getByTestId("colorPicker")
     .filter({ visible: true })
@@ -90,7 +90,7 @@ async function setMeshCellsNoDataColor(window: Page): Promise<void> {
   await clickColorPickerCanvas(window);
   await noDataColorBtn.click();
   await moveMouseOutOfTheWay(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 }
 
 export {

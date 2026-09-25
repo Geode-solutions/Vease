@@ -4,13 +4,14 @@ import path from "node:path";
 // Third party imports
 
 // Local imports
-import { afterActionWait, moveMouseOutOfTheWay } from "@tests/utils/viewer_interaction";
 import { exportProject, importProject } from "@tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
 } from "@tests/utils/object_trees/model_components_object_tree";
+import { moveMouseOutOfTheWay, waitForActionSettled } from "@tests/utils/viewer_interaction";
 import { brepGeodeObjectType } from "@tests/utils/constants";
+import { closeFeedbackSnackbar } from "@tests/utils/app_interaction";
 import { hideObjectInTree } from "@tests/utils/object_trees/common";
 import { setColor } from "@tests/utils/data/helpers/color";
 import { test } from "@tests/utils/fixtures";
@@ -24,6 +25,7 @@ test.describe.configure({ mode: "serial" });
 test("import project", async ({ window }) => {
   const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
   await importProject(window, projectFilePath);
+  await closeFeedbackSnackbar(window);
 });
 
 test("toggle surfaces visibility", async ({ window }) => {
@@ -34,7 +36,7 @@ test("change lines color", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   const item = modelComponentsObjectTree.getByText("Lines", { exact: true }).first();
   await item.click({ button: "right" });
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 
   const container = window.locator(".options-section", { hasText: "Lines Options" });
   await setColor(window, "modelStyleMenu", container);
@@ -48,5 +50,5 @@ test("collapse model tree in main tree", async ({ window }) => {
 
 test("export project", async ({ window }) => {
   await exportProject(window);
-  await window.waitForTimeout(afterActionWait);
+  await waitForActionSettled(window);
 });
