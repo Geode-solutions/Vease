@@ -6,7 +6,7 @@ import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "./common";
-import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 function getMainObjectTree(window: Page): Locator {
   return window.getByTestId("mainObjectTree");
