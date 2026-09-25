@@ -128,6 +128,53 @@ async function selectShrinkDatasets(window: Page, datasetName: string, index = 0
   await waitForActionSettled(window);
 }
 
+async function toggleThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("thresholdFilterButton").click();
+  await waitForActionSettled(window);
+}
+
+async function selectThresholdOption(
+  window: Page,
+  selectTestId: string,
+  name: string,
+): Promise<void> {
+  await window.getByTestId(selectTestId).click();
+  await waitForActionSettled(window);
+  await window.getByRole("option", { name, exact: true }).click();
+  await waitForActionSettled(window);
+}
+
+async function selectThresholdAttribute(
+  window: Page,
+  datasetName: string,
+  attributeType: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdOption(window, "thresholdDatasetSelect", datasetName);
+  await selectThresholdOption(window, "thresholdAttributeTypeSelect", attributeType);
+  await selectThresholdOption(window, "thresholdAttributeSelect", attributeName);
+}
+
+async function setThresholdMinimum(window: Page, minimum: number): Promise<void> {
+  const input = window
+    .getByTestId("thresholdFilterPanel")
+    .getByTestId("attributeMinInput")
+    .locator("input");
+  await input.fill(minimum.toString());
+  await input.press("Enter");
+  await waitForActionSettled(window);
+}
+
+async function resetThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("resetThresholdButton").click();
+  await waitForActionSettled(window);
+}
+
+async function removeThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("removeThresholdButton").click();
+  await waitForActionSettled(window);
+}
+
 async function toggleRuler(window: Page): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("rulerButton").click();
@@ -179,6 +226,11 @@ export {
   resetShrinkFilter,
   toggleShrinkTargetAllVisible,
   selectShrinkDatasets,
+  toggleThresholdFilter,
+  selectThresholdAttribute,
+  setThresholdMinimum,
+  resetThresholdFilter,
+  removeThresholdFilter,
   toggleRuler,
   toggleRulerSnap,
   setRulerPointInput,
