@@ -10,8 +10,23 @@ interface ApiSchema {
   [key: string]: unknown;
 }
 
-function getBackStore(): ReturnType<typeof useBackStore> {
-  return useBackStore();
+interface ApiCallbacks {
+  response_function?: (response: unknown) => unknown;
+  request_error_function?: (error: unknown) => unknown;
+  response_error_function?: (response: unknown) => unknown;
+}
+
+interface BackStoreExtra {
+  base_url: string;
+  request: (
+    args: { schema: ApiSchema; params?: Record<string, unknown> },
+    callbacks?: ApiCallbacks,
+  ) => Promise<unknown>;
+}
+
+function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
+  const { $pinia } = useNuxtApp();
+  return useBackStore($pinia) as unknown as ReturnType<typeof useBackStore> & BackStoreExtra;
 }
 
 interface HybridViewerStoreExtra {
@@ -21,7 +36,8 @@ interface HybridViewerStoreExtra {
 }
 
 function getHybridViewerStore(): ReturnType<typeof useHybridViewerStore> & HybridViewerStoreExtra {
-  return useHybridViewerStore();
+  const { $pinia } = useNuxtApp();
+  return useHybridViewerStore($pinia);
 }
 
 interface MicroserviceStore {
@@ -44,7 +60,8 @@ interface InfraStoreExtra {
 
 function getInfraStore(): Omit<ReturnType<typeof useInfraStore>, keyof InfraStoreExtra> &
   InfraStoreExtra {
-  return useInfraStore() as unknown as Omit<
+  const { $pinia } = useNuxtApp();
+  return useInfraStore($pinia) as unknown as Omit<
     ReturnType<typeof useInfraStore>,
     keyof InfraStoreExtra
   > &
@@ -56,7 +73,8 @@ interface DataStyleStoreExtra {
 }
 
 function getDataStyleStore(): ReturnType<typeof useDataStyleStore> & DataStyleStoreExtra {
-  return useDataStyleStore();
+  const { $pinia } = useNuxtApp();
+  return useDataStyleStore($pinia);
 }
 
 interface ViewerSession {

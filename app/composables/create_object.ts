@@ -234,9 +234,6 @@ export function useCreateObjectTool({
       point.z = coords[2] ?? "0";
     } else {
       point[field] = coords[0] ?? "";
-      if (point[field] !== "") {
-        fillEmptyCoordinatesWithZero(point, field);
-      }
     }
     event.preventDefault();
   }

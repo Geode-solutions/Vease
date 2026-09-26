@@ -55,7 +55,9 @@
     "generate": "nuxt generate",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "npm run test:unit",
+    "test:base": "cross-env MODE=BROWSER nuxt prepare && cross-env MODE=BROWSER vitest run --config ./tests/vitest.config.ts",
+    "test:unit": "npm run test:base -- --project unit",
     "test:e2e": "npx playwright test --config ./tests/e2e/playwright.config.ts",
     "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test:e2e -- --project=browser-firefox",
@@ -92,19 +94,26 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^4.1.0",
+    "@pinia/testing": "^2.0.1",
     "@playwright/test": "1.54.1",
     "@types/busboy": "1.5.4",
     "@types/ws": "8.18.1",
+    "@vue/test-utils": "^2.4.11",
     "concurrently": "9.2.1",
     "cross-env": "10.0.0",
     "electron": "36.4.0",
     "electron-builder": "26.0.12",
     "electron-playwright-helpers": "1.7.1",
+    "happy-dom": "^20.0.11",
     "nuxt-electron": "0.7.0",
     "playwright": "1.54.1",
     "rolldown": "1.2.8",
     "std-env": "3.9.0",
     "typescript": "5.9.3",
+    "vitest": "^4.1.10",
+    "vitest-environment-nuxt": "^2.0.0",
+    "vitest-indexeddb": "^0.0.1",
     "vue-tsc": "3.3.11"
   }
 }
