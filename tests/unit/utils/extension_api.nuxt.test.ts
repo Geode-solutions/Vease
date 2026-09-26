@@ -42,18 +42,18 @@ describe("the VeaseExtensionAPI object", () => {
     });
 
     test("throws when the tool definition has no id", () => {
-      expect(() => VeaseExtensionAPI.registerTool("ext-1", { id: "", component: {} })).toThrow(
-        "Tool definition must have an id",
-      );
+      expect(() => {
+        VeaseExtensionAPI.registerTool("ext-1", { id: "", component: {} });
+      }).toThrow("Tool definition must have an id");
     });
 
     test("throws when the tool definition has no component", () => {
-      expect(() =>
+      expect(() => {
         VeaseExtensionAPI.registerTool("ext-1", {
           id: "tool-1",
-          component: undefined as unknown as object,
-        }),
-      ).toThrow("Tool definition must have a component");
+          component: undefined,
+        });
+      }).toThrow("Tool definition must have a component");
     });
   });
 
@@ -94,6 +94,7 @@ describe("the VeaseExtensionAPI object", () => {
       const registerStoreMock = vi.fn<(store: unknown) => void>();
       vi.mocked(useAppStore).mockReturnValue({
         registerStore: registerStoreMock,
+        // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       } as unknown as ReturnType<typeof useAppStore>);
 
       const store = { $id: "custom-store" };
@@ -111,6 +112,7 @@ describe("the VeaseExtensionAPI object", () => {
     test("delegates DataBaseStore to useDataStore", () => {
       const sentinel = { addItem: vi.fn<(item: unknown) => void>() };
       vi.mocked(useDataStore).mockReturnValue(
+        // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
         sentinel as unknown as ReturnType<typeof useDataStore>,
       );
       expect(VeaseExtensionAPI.DataBaseStore).toBe(sentinel);
@@ -119,6 +121,7 @@ describe("the VeaseExtensionAPI object", () => {
     test("delegates HybridViewerStore to useHybridViewerStore", () => {
       const sentinel = { remoteRender: vi.fn<() => Promise<void>>() };
       vi.mocked(useHybridViewerStore).mockReturnValue(
+        // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
         sentinel as unknown as ReturnType<typeof useHybridViewerStore>,
       );
       expect(VeaseExtensionAPI.HybridViewerStore).toBe(sentinel);
@@ -126,6 +129,7 @@ describe("the VeaseExtensionAPI object", () => {
 
     test("delegates AppStore to useAppStore", () => {
       const sentinel = { registerStore: vi.fn<(store: unknown) => void>() };
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       vi.mocked(useAppStore).mockReturnValue(sentinel as unknown as ReturnType<typeof useAppStore>);
       expect(VeaseExtensionAPI.AppStore).toBe(sentinel);
     });
@@ -142,6 +146,7 @@ describe("the VeaseExtensionAPI object", () => {
       vi.mocked(getInfraStore).mockReturnValue({
         register_microservice: registerMicroserviceMock,
         create_connection: createConnectionMock,
+        // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       } as unknown as ReturnType<typeof getInfraStore>);
 
       const store = { $id: "microservice-1" };
@@ -155,6 +160,7 @@ describe("the VeaseExtensionAPI object", () => {
       const unregisterMicroserviceMock = vi.fn<(id: string) => void>();
       vi.mocked(getInfraStore).mockReturnValue({
         unregister_microservice: unregisterMicroserviceMock,
+        // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       } as unknown as ReturnType<typeof getInfraStore>);
 
       VeaseExtensionAPI.unregister_microservice("microservice-1");

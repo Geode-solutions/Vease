@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
+import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
 
@@ -18,7 +19,8 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
       "minHeight",
     ],
     template: "<div class='resizable-pip-stub'><slot name='handle' /><slot /></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof ResizablePiP,
 }));
 
 vi.mock(import("@vease/composables/chat"), () => ({
@@ -50,6 +52,7 @@ describe("the ChatPiP component", () => {
       sendMessage: sendMessageMock,
       status: ref<string>("ready"),
       error: ref<{ message: string } | undefined>(undefined),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     } as unknown as ReturnType<typeof useVeaseChat>);
   });
 
@@ -90,6 +93,7 @@ describe("the ChatPiP component", () => {
       sendMessage: sendMessageMock,
       status: ref<string>("streaming"),
       error: ref<{ message: string } | undefined>(undefined),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     } as unknown as ReturnType<typeof useVeaseChat>);
 
     const wrapper = mountWithPlugins(ChatPiP);
@@ -105,6 +109,7 @@ describe("the ChatPiP component", () => {
       sendMessage: sendMessageMock,
       status: ref<string>("ready"),
       error: ref<{ message: string } | undefined>({ message: errorMessageText }),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     } as unknown as ReturnType<typeof useVeaseChat>);
 
     const wrapper = mountWithPlugins(ChatPiP);

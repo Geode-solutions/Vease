@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import PasswordField from "@vease/components/PasswordField.vue";
+import { VTextField } from "vuetify/components";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -25,13 +26,13 @@ describe("the PasswordField component", () => {
       },
     });
 
-    const textField = wrapper.findComponent({ name: "VTextField" });
+    const textField = wrapper.findComponent(VTextField);
     expect(textField.exists()).toBe(true);
     expect(textField.props("type")).toBe("password");
     expect(textField.props("appendIcon")).toBe("mdi-eye-off");
   });
 
-  test("emits input event when text field receives input", async () => {
+  test("emits input event when text field receives input", () => {
     const wrapper = mountWithPlugins(PasswordField, {
       props: {
         value: "",
@@ -40,13 +41,13 @@ describe("the PasswordField component", () => {
       },
     });
 
-    const textField = wrapper.findComponent({ name: "VTextField" });
-    await textField.vm.$emit("input", SAMPLE_PASSWORD);
+    const textField = wrapper.findComponent(VTextField);
+    textField.vm.$emit("input", SAMPLE_PASSWORD);
 
     expect(wrapper.emitted("input")).toStrictEqual([[SAMPLE_PASSWORD]]);
   });
 
-  test("calls toggleVisibility when append icon is clicked", async () => {
+  test("calls toggleVisibility when append icon is clicked", () => {
     const wrapper = mountWithPlugins(PasswordField, {
       props: {
         value: SAMPLE_PASSWORD,
@@ -55,8 +56,8 @@ describe("the PasswordField component", () => {
       },
     });
 
-    const textField = wrapper.findComponent({ name: "VTextField" });
-    await textField.vm.$emit("click:append");
+    const textField = wrapper.findComponent(VTextField);
+    textField.vm.$emit("click:append");
 
     expect(toggleVisibilityMock).toHaveBeenCalledWith();
   });

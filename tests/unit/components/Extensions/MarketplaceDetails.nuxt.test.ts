@@ -1,7 +1,8 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { VBtn, VProgressCircular } from "vuetify/components";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
+import { type importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
+import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
@@ -16,7 +17,8 @@ vi.mock(import("@ogw_front/utils/extension"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  // oxlint-disable-next-line no-unsafe-type-assertion -- simplified component stub cast to the real component's module type, established repo pattern.
+  default: GLASS_CARD_STUB as unknown as typeof GlassCardComponent,
 }));
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
@@ -55,19 +57,31 @@ describe("the MarketplaceDetails component", () => {
     downloadExtensionMock.mockReset();
     downloadExtensionMock.mockResolvedValue(mockExtensionUrl);
 
-    vi.mocked(useExtensions).mockReturnValue({
+    const extensionsStub = {
       downloadExtension: downloadExtensionMock,
       allowedExtensions: vi.fn<() => Promise<MarketplaceExtension[]>>(),
-    } as unknown as ReturnType<typeof useExtensions>);
+    };
+    vi.mocked(useExtensions).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full composable return type, established repo pattern.
+      extensionsStub as unknown as ReturnType<typeof useExtensions>,
+    );
 
-    vi.mocked(useAppStore).mockReturnValue({
+    const appStoreStub = {
       getExtension: vi.fn<(id: string) => unknown>().mockReturnValue(undefined),
-    } as unknown as ReturnType<typeof useAppStore>);
+    };
+    vi.mocked(useAppStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      appStoreStub as unknown as ReturnType<typeof useAppStore>,
+    );
 
-    vi.mocked(useInfraStore).mockReturnValue({} as unknown as ReturnType<typeof useInfraStore>);
+    const infraStoreStub = {};
+    vi.mocked(useInfraStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      infraStoreStub as unknown as ReturnType<typeof useInfraStore>,
+    );
 
     vi.mocked(importExtensionURL).mockReset();
-    vi.mocked(importExtensionURL).mockResolvedValue(undefined);
+    vi.mocked(importExtensionURL).mockResolvedValue([]);
   });
 
   test("renders empty marketplace placeholder when no extension is provided", () => {
@@ -110,9 +124,13 @@ describe("the MarketplaceDetails component", () => {
   });
 
   test("disables install button and shows installed text if extension is already installed", () => {
-    vi.mocked(useAppStore).mockReturnValue({
+    const installedAppStoreStub = {
       getExtension: vi.fn<(id: string) => unknown>().mockReturnValue({ id: "ext-alpha" }),
-    } as unknown as ReturnType<typeof useAppStore>);
+    };
+    vi.mocked(useAppStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      installedAppStoreStub as unknown as ReturnType<typeof useAppStore>,
+    );
 
     const wrapper = mountWithPlugins(MarketplaceDetails, {
       props: { extension: sampleExtension },

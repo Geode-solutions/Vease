@@ -3,7 +3,7 @@ import { getChatModel, getChatTools } from "@vease_server/utils/ai";
 import { runLlamaServer, stopLlamaServer } from "@vease_server/utils/llama_cpp";
 import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config";
+import type { getAppBaseUrl } from "@geode/opengeodeweb-front/server/utils/server_config.ts";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -19,6 +19,7 @@ vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
 vi.mock(import("@ai-sdk/openai-compatible"), () => ({
   createOpenAICompatible: vi.fn<typeof createOpenAICompatible>().mockReturnValue({
     chatModel: vi.fn<() => { modelId: string }>().mockReturnValue({ modelId: "llama-3-8b" }),
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `chatModel` member this codebase uses, not the full SDK provider shape
   } as unknown as ReturnType<typeof createOpenAICompatible>),
 }));
 
@@ -27,10 +28,11 @@ vi.mock(import("@ai-sdk/mcp"), () => ({
     tools: vi
       .fn<() => Promise<{ search_tools: Record<string, unknown> }>>()
       .mockResolvedValue({ search_tools: {} }),
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `tools` member this codebase uses, not the full SDK client shape
   } as unknown as Awaited<ReturnType<typeof createMCPClient>>),
 }));
 
-vi.mock(import("@geode/opengeodeweb-front/server/utils/server_config"), () => ({
+vi.mock(import("@geode/opengeodeweb-front/server/utils/server_config.ts"), () => ({
   getAppBaseUrl: vi.fn<typeof getAppBaseUrl>().mockReturnValue("http://localhost:3000"),
 }));
 

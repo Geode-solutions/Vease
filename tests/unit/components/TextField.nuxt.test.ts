@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import TextField from "@vease/components/TextField.vue";
+import { VTextField } from "vuetify/components";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -24,14 +25,14 @@ describe("the TextField component", () => {
       },
     });
 
-    const textField = wrapper.findComponent({ name: "VTextField" });
+    const textField = wrapper.findComponent(VTextField);
     expect(textField.exists()).toBe(true);
     expect(textField.props("label")).toBe(INPUT_LABEL);
     expect(textField.props("counter")).toBe(MAX_COUNTER);
     expect((wrapper.find("input").element as HTMLInputElement).value).toBe(INITIAL_VALUE);
   });
 
-  test("emits input event when text is modified in input field", async () => {
+  test("emits input event when text is modified in input field", () => {
     const wrapper = mountWithPlugins(TextField, {
       props: {
         value: INITIAL_VALUE,
@@ -39,8 +40,8 @@ describe("the TextField component", () => {
       },
     });
 
-    const textField = wrapper.findComponent({ name: "VTextField" });
-    await textField.vm.$emit("input", NEW_VALUE);
+    const textField = wrapper.findComponent(VTextField);
+    textField.vm.$emit("input", NEW_VALUE);
 
     expect(wrapper.emitted("input")).toStrictEqual([[NEW_VALUE]]);
   });

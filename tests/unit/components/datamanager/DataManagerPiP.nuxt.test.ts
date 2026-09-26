@@ -1,13 +1,15 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import type DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
+import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { navigateTo } from "#app/composables/router";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("#app/composables/router"), async (importOriginal) => {
-  const actual = await importOriginal<typeof import("#app/composables/router")>();
+  const actual = await importOriginal();
   return { ...actual, navigateTo: vi.fn<typeof navigateTo>() };
 });
 
@@ -18,7 +20,8 @@ vi.mock(import("@vease/components/datamanager/DataManagerContent.vue"), () => ({
       compact: Boolean,
     },
     template: "<div class='data-manager-content-stub'></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of DataManagerContent this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof DataManagerContent,
 }));
 
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
@@ -38,7 +41,8 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
         <slot />
       </div>
     `,
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof ResizablePiP,
 }));
 
 describe("data manager pip component", () => {
@@ -81,7 +85,7 @@ describe("data manager pip component", () => {
 
     const [, closeButton] = wrapper.findAll(".v-btn");
     expect(closeButton).toBeDefined();
-    await closeButton.trigger("click");
+    await closeButton?.trigger("click");
 
     expect(uiStore.showDataManagerPiP).toBe(false);
   });

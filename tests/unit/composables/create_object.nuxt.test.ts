@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { createToolMounter, setupActivePinia } from "@vease_tests/utils";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { flushPromises } from "@vue/test-utils";
-import { importItem } from "@ogw_front/utils/import_workflow";
+import type { importItem } from "@ogw_front/utils/import_workflow";
 import { useCreateObjectTool } from "@vease/composables/create_object";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
@@ -33,13 +33,21 @@ describe("useCreateObjectTool composable", () => {
     // The composable calls both getters eagerly at setup, even though none
     // Of the tests in this file exercise createObject() or the preview
     // Watcher, so a minimal stub is enough here.
-    vi.mocked(getBackStore).mockReturnValue({
+    const backStoreStub = {
       base_url: "http://localhost",
       request: vi.fn<() => Promise<unknown>>(),
-    } as unknown as ReturnType<typeof getBackStore>);
-    vi.mocked(getHybridViewerStore).mockReturnValue({
+    };
+    vi.mocked(getBackStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      backStoreStub as unknown as ReturnType<typeof getBackStore>,
+    );
+    const hybridViewerStoreStub = {
       remoteRender: vi.fn<() => Promise<void>>(),
-    } as unknown as ReturnType<typeof getHybridViewerStore>);
+    };
+    vi.mocked(getHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      hybridViewerStoreStub as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
   });
 
@@ -173,7 +181,15 @@ describe("useCreateObjectTool composable", () => {
       const viewerStore = useViewerStore();
       result.togglePickMode();
 
-      viewerStore.picked_point = { x: "1,5", y: 2, z: 3 };
+      // The real picked_point type only allows numbers, but the composable
+      // Defensively coerces string coordinates (e.g. locale-formatted
+      // Values with a comma decimal separator) via String(...).replaceAll.
+      viewerStore.picked_point = {
+        // oxlint-disable-next-line no-unsafe-type-assertion -- exercising picked_point's defensive string-coordinate handling, which isn't represented in its declared type.
+        x: "1,5" as unknown as number,
+        y: 2,
+        z: 3,
+      };
       await flushPromises();
 
       expect(result.points.value[0]).toStrictEqual({ x: 1.5, y: 2, z: 3 });
@@ -198,7 +214,12 @@ describe("useCreateObjectTool composable", () => {
 
     test("skips filling a point when onPickedPoint handles it and returns true", async () => {
       const onPickedPoint = vi
-        .fn<(point: { x: number; y: number; z: number }, points: unknown[]) => boolean>()
+        .fn<
+          (
+            point: { x: number | string; y: number | string; z: number | string },
+            points: unknown[],
+          ) => boolean
+        >()
         .mockReturnValue(true);
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema, onPickedPoint }),

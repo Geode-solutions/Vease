@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { defineComponent, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import { ref } from "vue";
 import { useAuthPage } from "@vease/composables/auth_page";
 
 import Form from "@vease/components/Auth/Form.vue";
@@ -12,11 +12,11 @@ vi.mock(import("@vease/composables/auth_page"), () => ({
 }));
 
 vi.mock(import("@vease/components/Auth/ForgotPasswordDialog.vue"), () => ({
-  default: {
+  default: defineComponent({
     name: "AuthForgotPasswordDialogStub",
     props: ["modelValue", "email", "loading", "error"],
     template: "<div class='forgot-password-stub' />",
-  },
+  }),
 }));
 
 describe("form component", () => {

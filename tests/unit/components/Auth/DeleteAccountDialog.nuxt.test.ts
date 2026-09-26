@@ -1,6 +1,6 @@
-import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { computed, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DeleteAccountDialog from "@vease/components/Auth/DeleteAccountDialog.vue";
 import { useAuth } from "@vease/composables/auth";
 
@@ -10,8 +10,12 @@ vi.mock(import("@vease/composables/auth"), () => ({
   useAuth: vi.fn<typeof useAuth>(),
 }));
 
+// Defined inline (instead of reusing the shared GLASS_CARD_STUB) so TypeScript infers this call's type from GlassCard.vue's own default export, which vi.mock(import(...)) checks the factory result against.
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  default: defineComponent({
+    name: "GlassCard",
+    template: "<div class='glass-card-stub'><slot /></div>",
+  }),
 }));
 
 describe("delete account dialog component", () => {
@@ -30,6 +34,7 @@ describe("delete account dialog component", () => {
       login: vi.fn<() => Promise<void>>(),
       logout: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 

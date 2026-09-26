@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { computed, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import Account from "@vease/components/Auth/Account.vue";
 import { navigateTo } from "#app/composables/router";
@@ -20,11 +20,11 @@ vi.mock(import("@vease/composables/auth"), () => ({
 }));
 
 vi.mock(import("@vease/components/Auth/DeleteAccountDialog.vue"), () => ({
-  default: {
+  default: defineComponent({
     name: "AuthDeleteAccountDialogStub",
     props: ["modelValue"],
     template: "<div class='delete-account-stub' />",
-  },
+  }),
 }));
 
 describe("account component", () => {
@@ -48,6 +48,7 @@ describe("account component", () => {
       register: registerMock,
       login: loginMock,
       resetPassword: resetPasswordMock,
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 

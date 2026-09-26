@@ -1,4 +1,13 @@
-import { type MockInstance, afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import {
+  type Mock,
+  type MockInstance,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
 import { createToolMounter, setupActivePinia, withSetup } from "@vease_tests/utils";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { flushPromises } from "@vue/test-utils";
@@ -24,30 +33,45 @@ const OUT_OF_RANGE_INDEX = 5;
 // See createToolMounter()'s comment in tests/utils.ts for details.
 const { mountTool, unmountAll } = createToolMounter();
 
-function makePasteEvent(text: string): ClipboardEvent {
+function makePasteEvent(text: string): { event: ClipboardEvent; preventDefault: Mock<() => void> } {
+  const preventDefault = vi.fn<() => void>();
+  const eventStub = {
+    clipboardData: { getData: (): string => text },
+    preventDefault,
+  };
   return {
-    clipboardData: { getData: () => text },
-    preventDefault: vi.fn<() => void>(),
-  } as unknown as ClipboardEvent;
+    // oxlint-disable-next-line no-unsafe-type-assertion -- partial ClipboardEvent mock for testing paste handling, established repo pattern.
+    event: eventStub as unknown as ClipboardEvent,
+    preventDefault,
+  };
 }
+
+type ViewerStore = ReturnType<typeof useViewerStore>;
 
 describe("useCreateObjectTool composable interactions", () => {
   const requestMock = vi.fn<() => Promise<{ id: string }>>().mockResolvedValue({ id: "created" });
   const remoteRenderMock = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
-  let viewerRequestMock: MockInstance<(...args: unknown[]) => unknown> =
-    vi.fn<(...args: unknown[]) => unknown>();
+  let viewerRequestMock: MockInstance<ViewerStore["request"]> = vi.fn<ViewerStore["request"]>();
 
   beforeEach(() => {
     setupActivePinia();
     requestMock.mockClear();
     remoteRenderMock.mockClear();
-    vi.mocked(getBackStore).mockReturnValue({
+    const backStoreStub = {
       base_url: "http://localhost",
       request: requestMock,
-    } as unknown as ReturnType<typeof getBackStore>);
-    vi.mocked(getHybridViewerStore).mockReturnValue({
+    };
+    vi.mocked(getBackStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      backStoreStub as unknown as ReturnType<typeof getBackStore>,
+    );
+    const hybridViewerStoreStub = {
       remoteRender: remoteRenderMock,
-    } as unknown as ReturnType<typeof getHybridViewerStore>);
+    };
+    vi.mocked(getHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      hybridViewerStoreStub as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
     // The preview watcher calls the real viewer store, which validates params
     // Against the JSON-RPC schema; stub it out so preview assertions don't
     // Depend on knowing every allowed schema value.
@@ -107,7 +131,9 @@ describe("useCreateObjectTool composable interactions", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
-      expect(() => result.sanitizeInput("1", OUT_OF_RANGE_INDEX, "x")).not.toThrow();
+      expect(() => {
+        result.sanitizeInput("1", OUT_OF_RANGE_INDEX, "x");
+      }).not.toThrow();
     });
   });
 
@@ -116,19 +142,19 @@ describe("useCreateObjectTool composable interactions", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
-      const event = makePasteEvent("1.5 2.5 3.5");
+      const { event, preventDefault } = makePasteEvent("1.5 2.5 3.5");
 
       result.handlePaste(event, 0, "x");
 
       expect(result.points.value[0]).toStrictEqual({ x: "1.5", y: "2.5", z: "3.5" });
-      expect(event.preventDefault).toHaveBeenCalledWith();
+      expect(preventDefault).toHaveBeenCalledWith();
     });
 
     test("defaults z to 0 when only two numbers are pasted", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
-      const event = makePasteEvent("1.5, 2.5");
+      const { event } = makePasteEvent("1.5, 2.5");
 
       result.handlePaste(event, 0, "x");
 
@@ -139,7 +165,7 @@ describe("useCreateObjectTool composable interactions", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
-      const event = makePasteEvent("42");
+      const { event } = makePasteEvent("42");
 
       result.handlePaste(event, 0, "z");
 
@@ -150,12 +176,12 @@ describe("useCreateObjectTool composable interactions", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
-      const event = makePasteEvent("not a number");
+      const { event, preventDefault } = makePasteEvent("not a number");
 
       result.handlePaste(event, 0, "x");
 
       expect(result.points.value[0]).toStrictEqual({ x: "", y: "", z: "" });
-      expect(event.preventDefault).not.toHaveBeenCalled();
+      expect(preventDefault).not.toHaveBeenCalled();
     });
   });
 
@@ -228,7 +254,7 @@ describe("useCreateObjectTool composable interactions", () => {
 
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: expect.objectContaining({ points: [], style: "dashed", color: "red" }),
+          params: { points: [], style: "dashed", color: "red" },
         }),
       );
 
@@ -238,11 +264,7 @@ describe("useCreateObjectTool composable interactions", () => {
 
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: expect.objectContaining({
-            points: [{ x: 1, y: 2, z: 3 }],
-            style: "dashed",
-            color: "red",
-          }),
+          params: { points: [{ x: 1, y: 2, z: 3 }], style: "dashed", color: "red" },
         }),
       );
     });
@@ -272,7 +294,7 @@ describe("useCreateObjectTool composable interactions", () => {
       expect(toggleSpy).toHaveBeenCalledWith(false);
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: expect.objectContaining({ points: [], style: "dashed" }),
+          params: { points: [], style: "dashed" },
         }),
       );
     });

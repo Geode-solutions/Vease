@@ -1,7 +1,7 @@
 import {
   type Auth,
   EmailAuthProvider,
-  type User,
+  type UserCredential,
   createUserWithEmailAndPassword,
   deleteUser,
   reauthenticateWithCredential,
@@ -18,27 +18,42 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("firebase/auth"), () => ({
-  createUserWithEmailAndPassword: vi.fn<typeof createUserWithEmailAndPassword>(),
-  signInWithEmailAndPassword: vi.fn<typeof signInWithEmailAndPassword>(),
-  signOut: vi.fn<typeof signOut>().mockResolvedValue(undefined),
-  reauthenticateWithCredential: vi
-    .fn<typeof reauthenticateWithCredential>()
-    .mockResolvedValue(undefined),
-  deleteUser: vi.fn<typeof deleteUser>().mockResolvedValue(undefined),
-  EmailAuthProvider: {
-    credential: vi
-      .fn<typeof EmailAuthProvider.credential>()
-      .mockReturnValue({ providerId: "password" }),
-  },
-}));
+vi.mock(import("firebase/auth"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    createUserWithEmailAndPassword: vi.fn<typeof createUserWithEmailAndPassword>(),
+    signInWithEmailAndPassword: vi.fn<typeof signInWithEmailAndPassword>(),
+    signOut: vi.fn<typeof signOut>().mockResolvedValue(undefined),
+    reauthenticateWithCredential: vi
+      .fn<typeof reauthenticateWithCredential>()
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; the resolved value is unused by this suite, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      .mockResolvedValue(undefined as unknown as UserCredential),
+    deleteUser: vi.fn<typeof deleteUser>().mockResolvedValue(undefined),
+  };
+});
 
 const mockUserRef = ref<unknown>(undefined);
 
-vi.mock(import("vuefire"), () => ({
-  useFirebaseAuth: vi.fn<typeof useFirebaseAuth>(),
-  useCurrentUser: () => mockUserRef,
-}));
+// Avoids the `null` literal (lint) while still exercising useFirebaseAuth's `null` branch.
+function parseNull(): null {
+  const value: unknown = JSON.parse("null");
+  if (value !== null) {
+    throw new Error("Expected JSON.parse to return null");
+  }
+  return value;
+}
+
+vi.mock(import("vuefire"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useFirebaseAuth: vi.fn<typeof useFirebaseAuth>(),
+    useCurrentUser: (): ReturnType<typeof actual.useCurrentUser> =>
+      // oxlint-disable-next-line no-unsafe-type-assertion -- test doubles only implement the User fields this suite touches, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      mockUserRef as unknown as ReturnType<typeof actual.useCurrentUser>,
+  };
+});
 
 describe("the useAuth composable", () => {
   const mockUser = {
@@ -50,12 +65,17 @@ describe("the useAuth composable", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.clearAllMocks();
+    // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the Auth type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
     vi.mocked(useFirebaseAuth).mockReturnValue({} as Auth);
     mockUserRef.value = mockUser;
+    // Re-spied every test: the global afterEach hook (tests/setup_global_hooks.ts)
+    // Calls vi.restoreAllMocks(), which un-spies EmailAuthProvider.credential
+    // Set up in the vi.mock() factory (which only runs once, at module load).
+    vi.spyOn(EmailAuthProvider, "credential");
   });
 
   test("throws error if Firebase auth is not initialized", () => {
-    vi.mocked(useFirebaseAuth).mockReturnValue(undefined as unknown as Auth);
+    vi.mocked(useFirebaseAuth).mockReturnValue(parseNull());
     expect(() => useAuth()).toThrow("Firebase auth is not initialized");
   });
 
@@ -69,6 +89,7 @@ describe("the useAuth composable", () => {
 
       expect(apiSpy).toHaveBeenCalledWith(
         expect.objectContaining({
+          // oxlint-disable-next-line no-unsafe-assignment -- expect.objectContaining() is typed as any by vitest
           schema: expect.objectContaining({
             $id: "/auth/send-password-reset",
           }),
@@ -92,10 +113,11 @@ describe("the useAuth composable", () => {
     test("creates user, sends verification email, and signs out", async () => {
       const newUserMock = { email: "new@example.com" };
       vi.mocked(createUserWithEmailAndPassword).mockResolvedValue({
-        user: newUserMock as User,
-        providerId: undefined as unknown as string,
+        user: newUserMock,
+        providerId: undefined,
         operationType: "signIn",
-      });
+        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      } as unknown as UserCredential);
 
       const apiStore = useAPIStore();
       const apiSpy = vi.spyOn(apiStore, "request").mockResolvedValue({ success: true });
@@ -110,6 +132,7 @@ describe("the useAuth composable", () => {
       );
       expect(apiSpy).toHaveBeenCalledWith(
         expect.objectContaining({
+          // oxlint-disable-next-line no-unsafe-assignment -- expect.objectContaining() is typed as any by vitest
           schema: expect.objectContaining({
             $id: "/auth/send-verification",
           }),
@@ -125,10 +148,11 @@ describe("the useAuth composable", () => {
   describe("the login action", () => {
     test("logs in user with verified email", async () => {
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
-        user: mockUser as unknown as User,
-        providerId: undefined as unknown as string,
+        user: mockUser,
+        providerId: undefined,
         operationType: "signIn",
-      });
+        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      } as unknown as UserCredential);
 
       const auth = useAuth();
       const loggedInUser = await auth.login("test@example.com", "password123");
@@ -145,10 +169,11 @@ describe("the useAuth composable", () => {
         reload: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
       };
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
-        user: unverifiedUser as unknown as User,
-        providerId: undefined as unknown as string,
+        user: unverifiedUser,
+        providerId: undefined,
         operationType: "signIn",
-      });
+        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      } as unknown as UserCredential);
 
       const auth = useAuth();
       await expect(auth.login("unverified@example.com", "password123")).rejects.toThrow(
@@ -163,17 +188,16 @@ describe("the useAuth composable", () => {
       infraStore.app_mode = appMode.DESKTOP;
 
       const saveCredentialsSpy = vi.fn<(args: { email: string; password: string }) => void>();
-      (
-        globalThis as unknown as { electronAPI: { save_credentials: typeof saveCredentialsSpy } }
-      ).electronAPI = {
-        save_credentials: saveCredentialsSpy,
-      };
+      const electronAPI = { save_credentials: saveCredentialsSpy };
+      // oxlint-disable-next-line no-unsafe-type-assertion -- no ambient type declares electronAPI on globalThis; this test-only augmentation mirrors app/composables/auth.ts's DesktopElectronAPI
+      (globalThis as unknown as { electronAPI: typeof electronAPI }).electronAPI = electronAPI;
 
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
-        user: mockUser as unknown as User,
-        providerId: undefined as unknown as string,
+        user: mockUser,
+        providerId: undefined,
         operationType: "signIn",
-      });
+        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      } as unknown as UserCredential);
 
       const auth = useAuth();
       await auth.login("test@example.com", "password123");
@@ -190,6 +214,7 @@ describe("the useAuth composable", () => {
       const auth = useAuth();
       await auth.deleteAccount("currentPassword");
 
+      // oxlint-disable-next-line typescript/unbound-method -- EmailAuthProvider.credential is a vi.fn() mock that doesn't use `this`
       expect(EmailAuthProvider.credential).toHaveBeenCalledWith(
         "test@example.com",
         "currentPassword",
@@ -225,13 +250,9 @@ describe("the useAuth composable", () => {
       const deleteCredentialsSpy = vi
         .fn<() => Promise<{ success: boolean }>>()
         .mockResolvedValue({ success: true });
-      (
-        globalThis as unknown as {
-          electronAPI: { delete_credentials: typeof deleteCredentialsSpy };
-        }
-      ).electronAPI = {
-        delete_credentials: deleteCredentialsSpy,
-      };
+      const electronAPI = { delete_credentials: deleteCredentialsSpy };
+      // oxlint-disable-next-line no-unsafe-type-assertion -- no ambient type declares electronAPI on globalThis; this test-only augmentation mirrors app/composables/auth.ts's DesktopElectronAPI
+      (globalThis as unknown as { electronAPI: typeof electronAPI }).electronAPI = electronAPI;
 
       const auth = useAuth();
       await auth.logout();

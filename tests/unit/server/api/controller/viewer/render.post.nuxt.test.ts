@@ -14,11 +14,12 @@ vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getViewerWebSocketClient: vi.fn<typeof getViewerWebSocketClient>(),
 }));
 
-const fakeClient = { isOpen: () => true };
+const fakeClient = { isOpen: (): boolean => true };
 
 describe("the POST /api/controller/viewer/render endpoint", () => {
   beforeEach(() => {
     vi.mocked(getViewerWebSocketClient).mockResolvedValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `isOpen` member this codebase reads, not the full ServerWsRpcClient shape
       fakeClient as unknown as Awaited<ReturnType<typeof getViewerWebSocketClient>>,
     );
   });

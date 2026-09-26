@@ -38,14 +38,21 @@ function getEventSourceState(): EventSourceState {
 }
 
 vi.mock(import("@vueuse/core"), async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@vueuse/core")>();
+  const actual = await importOriginal();
   eventSourceStateHolder.current = {
     event: ref<string | undefined>(undefined),
     data: ref<string | undefined>(undefined),
     status: ref("CLOSED"),
     error: ref<unknown>(undefined),
   };
-  return { ...actual, useEventSource: vi.fn<() => EventSourceState>(() => getEventSourceState()) };
+  const mocked = {
+    ...actual,
+    useEventSource: vi.fn<() => EventSourceState>(() => getEventSourceState()),
+  };
+  // `useEventSource`'s real signature is a generic overload set; the mock only
+  // Implements the plain { event, data, status, error } shape this codebase reads.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock can't reproduce useEventSource's full generic overload set
+  return mocked as unknown as typeof actual;
 });
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
@@ -66,10 +73,10 @@ function mockSession(subscribe: SubscribeFn): void {
   // `session === subscribedSession` check relies on to avoid resubscribing.
   const session = { subscribe };
   vi.mocked(getViewerClient).mockReturnValue({
-    getConnection: () => ({
-      getSession: () => session,
+    getConnection: (): { getSession: () => typeof session } => ({
+      getSession: (): typeof session => session,
     }),
-  } as unknown as ReturnType<typeof getViewerClient>);
+  });
 }
 
 describe("events/index", () => {
@@ -85,12 +92,15 @@ describe("events/index", () => {
 
     vi.mocked(getBackStore).mockReturnValue({
       base_url: "http://localhost:5000",
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getBackStore>);
     vi.mocked(getHybridViewerStore).mockReturnValue({
       remoteRender: remoteRenderMock,
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getHybridViewerStore>);
     vi.mocked(getDataStyleStore).mockReturnValue({
       setVisibility: setVisibilityMock,
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getDataStyleStore>);
   });
 

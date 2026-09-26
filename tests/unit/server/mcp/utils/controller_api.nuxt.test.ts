@@ -19,6 +19,7 @@ function fakeFetchResponse(options: {
   statusText?: string;
   json: () => Promise<unknown>;
 }): Response {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `ok`/`statusText`/`json` members callControllerApi reads, not the full Response shape
   return options as unknown as Response;
 }
 
@@ -36,7 +37,13 @@ describe("callControllerApi()", () => {
 
   test("returns the parsed JSON payload on a successful response", async () => {
     fetchMock.mockResolvedValue(
-      fakeFetchResponse({ ok: true, json: () => Promise.resolve({ id: "item-1" }) }),
+      fakeFetchResponse({
+        ok: true,
+        json: async () => {
+          await Promise.resolve();
+          return { id: "item-1" };
+        },
+      }),
     );
 
     const result = await callControllerApi("/api/controller/data/load", {
@@ -52,7 +59,15 @@ describe("callControllerApi()", () => {
   });
 
   test("passes through a custom method, headers and body", async () => {
-    fetchMock.mockResolvedValue(fakeFetchResponse({ ok: true, json: () => Promise.resolve({}) }));
+    fetchMock.mockResolvedValue(
+      fakeFetchResponse({
+        ok: true,
+        json: async () => {
+          await Promise.resolve();
+          return {};
+        },
+      }),
+    );
 
     await callControllerApi("/api/controller/viewer/render", {
       method: "GET",
@@ -73,7 +88,10 @@ describe("callControllerApi()", () => {
       fakeFetchResponse({
         ok: false,
         statusText: "Bad Request",
-        json: () => Promise.resolve({ statusMessage: "Invalid file type" }),
+        json: async () => {
+          await Promise.resolve();
+          return { statusMessage: "Invalid file type" };
+        },
       }),
     );
 
@@ -89,7 +107,10 @@ describe("callControllerApi()", () => {
       fakeFetchResponse({
         ok: false,
         statusText: "Bad Request",
-        json: () => Promise.resolve({ data: { message: "nested" } }),
+        json: async () => {
+          await Promise.resolve();
+          return { data: { message: "nested" } };
+        },
       }),
     );
     const nested = await callControllerApi("/x", { errorPrefix: "Error" });
@@ -99,7 +120,10 @@ describe("callControllerApi()", () => {
       fakeFetchResponse({
         ok: false,
         statusText: "Bad Request",
-        json: () => Promise.reject(new Error("not json")),
+        json: async () => {
+          await Promise.resolve();
+          throw new Error("not json");
+        },
       }),
     );
     const fallsBackToStatusText = await callControllerApi("/x", { errorPrefix: "Error" });

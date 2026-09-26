@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { defineComponent, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import { ref } from "vue";
 import { useAuthPage } from "@vease/composables/auth_page";
 
 import Login from "@vease/components/Auth/Login.vue";
@@ -16,10 +16,10 @@ vi.mock(import("@vease/composables/auth_page"), () => ({
 }));
 
 vi.mock(import("@vease/components/Auth/Form.vue"), () => ({
-  default: {
+  default: defineComponent({
     name: "AuthFormStub",
     template: "<div class='auth-form-stub' />",
-  },
+  }),
 }));
 
 describe("login component", () => {
@@ -37,6 +37,7 @@ describe("login component", () => {
       isLogin: isLoginRef,
       email: emailRef,
       password: passwordRef,
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuthPage>);
   });
 

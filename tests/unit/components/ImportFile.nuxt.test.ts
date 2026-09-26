@@ -7,8 +7,7 @@ import { useUIStore } from "@vease/stores/ui";
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
-  importWorkflow:
-    vi.fn<(files: Array<{ filename: string; geode_object_type: string }>) => Promise<void>>(),
+  importWorkflow: vi.fn<typeof importWorkflow>(),
 }));
 
 const SAMPLE_FILENAME = "grid.vtp";
@@ -18,7 +17,7 @@ describe("the ImportFile component", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.mocked(importWorkflow).mockReset();
-    vi.mocked(importWorkflow).mockResolvedValue(undefined);
+    vi.mocked(importWorkflow).mockResolvedValue([]);
   });
 
   test("renders import and cancel buttons", () => {

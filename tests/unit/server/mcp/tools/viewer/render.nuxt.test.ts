@@ -1,5 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
-import { errResult, identityMcpToolDefinition, okResult } from "@vease_tests/server_utils";
+import {
+  errResult,
+  fakeMcpRequestExtra,
+  identityMcpToolDefinition,
+  okResult,
+} from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import tool from "@vease_server/mcp/tools/viewer/render";
 
@@ -18,7 +23,7 @@ describe("render-viewer MCP tool", () => {
   test("triggers a render and reports success", async () => {
     vi.mocked(callControllerApi).mockResolvedValue(okResult({ rendered: true }));
 
-    const result = await tool.handler({});
+    const result = await tool.handler({}, fakeMcpRequestExtra());
 
     expect(callControllerApi).toHaveBeenCalledWith("/api/controller/viewer/render", {
       headers: { "Content-Type": "application/json" },
@@ -32,7 +37,7 @@ describe("render-viewer MCP tool", () => {
       errResult("Error rendering viewer: viewer unreachable"),
     );
 
-    const result = await tool.handler({});
+    const result = await tool.handler({}, fakeMcpRequestExtra());
 
     expect(result).toBe("Error rendering viewer: viewer unreachable");
   });

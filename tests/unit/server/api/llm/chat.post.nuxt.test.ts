@@ -19,15 +19,24 @@ const { streamTextMock } = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock(import("ai"), () => ({
-  convertToModelMessages: vi.fn<(messages: unknown) => unknown>((messages) => messages),
-  createUIMessageStreamResponse: vi.fn<(options: unknown) => Response>(
-    () => new Response(undefined, { status: RESPONSE_OK }),
-  ),
-  stepCountIs: vi.fn<(count: number) => unknown>((count) => ({ type: "step-count", count })),
-  streamText: streamTextMock,
-  toUIMessageStream: vi.fn<(options: { stream: unknown }) => unknown>(({ stream }) => stream),
-}));
+vi.mock(import("ai"), async (importOriginal) => {
+  const actual = await importOriginal();
+  const mocked = {
+    ...actual,
+    convertToModelMessages: vi.fn<(messages: unknown) => unknown>((messages) => messages),
+    createUIMessageStreamResponse: vi.fn<(options: unknown) => Response>(
+      () => new Response(undefined, { status: RESPONSE_OK }),
+    ),
+    stepCountIs: vi.fn<(count: number) => unknown>((count) => ({ type: "step-count", count })),
+    streamText: streamTextMock,
+    toUIMessageStream: vi.fn<(options: { stream: unknown }) => unknown>(({ stream }) => stream),
+  };
+  // The "ai" package's exports (convertToModelMessages, etc.) have large generic
+  // Overload sets; these vi.fn mocks only implement the narrow shapes this
+  // Codebase actually calls.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock can't reproduce ai's full generic overload set
+  return mocked as unknown as typeof actual;
+});
 
 describe("the POST /api/llm/chat endpoint", () => {
   const fakeModel = { modelId: "llama-3-8b" };
@@ -35,9 +44,11 @@ describe("the POST /api/llm/chat endpoint", () => {
 
   beforeEach(() => {
     vi.mocked(getChatModel).mockResolvedValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       fakeModel as unknown as Awaited<ReturnType<typeof getChatModel>>,
     );
     vi.mocked(getChatTools).mockResolvedValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       fakeTools as unknown as Awaited<ReturnType<typeof getChatTools>>,
     );
   });

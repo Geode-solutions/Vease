@@ -1,6 +1,12 @@
+import type { ChildProcess, SpawnOptions } from "node:child_process";
 import { type Dirent, chmodSync, existsSync, readdirSync } from "node:fs";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
+import type {
+  getLlamaStatus,
+  runLlamaServer,
+  stopLlamaServer,
+} from "@vease_server/utils/llama_cpp";
 import { executableName } from "@ogw_server/utils/path";
 import os from "node:os";
 import path from "node:path";
@@ -8,22 +14,30 @@ import { unzipFile } from "@ogw_server/utils/server";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("node:child_process"), () => {
+vi.mock(import("node:child_process"), async (importOriginal) => {
   // The source uses a default import (`import child_process from
   // "node:child_process"`), while this test file needs the named export too;
   // Both must resolve to the exact same mock function.
-  const spawn = vi.fn<(...args: unknown[]) => unknown>();
-  return { default: { spawn }, spawn };
+  const actual = await importOriginal();
+  const spawn =
+    vi.fn<(command: string, args: readonly string[], options: SpawnOptions) => ChildProcess>();
+  const mocked = { ...actual, default: { ...actual, spawn }, spawn };
+  // `node:child_process`'s `spawn` has a large overload set; a vi.fn mock can
+  // Only implement the single (command, args, options) form this codebase calls.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock can't reproduce spawn's full native overload set
+  return mocked as unknown as typeof actual;
 });
 
+type ReaddirWithFileTypes = (dir: string, options: { withFileTypes: true }) => Dirent[];
+
 vi.mock(import("node:fs"), async (importOriginal) => {
-  const actual = await importOriginal<typeof import("node:fs")>();
+  const actual = await importOriginal();
   // The source uses a default import (`import fs from "node:fs"`), while this
   // Test file uses named exports; both must resolve to the same mocks.
   const existsSyncMock = vi.fn<typeof existsSync>();
-  const readdirSyncMock = vi.fn<typeof readdirSync>();
+  const readdirSyncMock = vi.fn<ReaddirWithFileTypes>();
   const chmodSyncMock = vi.fn<typeof chmodSync>();
-  return {
+  const mocked = {
     ...actual,
     existsSync: existsSyncMock,
     readdirSync: readdirSyncMock,
@@ -35,6 +49,10 @@ vi.mock(import("node:fs"), async (importOriginal) => {
       chmodSync: chmodSyncMock,
     },
   };
+  // `node:fs`'s `readdirSync` has a large overload set; a vi.fn mock can only
+  // Implement the single withFileTypes form this codebase calls.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock can't reproduce readdirSync's full native overload set
+  return mocked as unknown as typeof actual;
 });
 
 vi.mock(import("@ogw_server/utils/scripts"), () => ({
@@ -57,6 +75,9 @@ function createFakeDirent(name: string, isDirectory: boolean): Dirent {
   return {
     name,
     parentPath: "",
+    // `path` is a required field on Dirent (deprecated alias for parentPath); there is
+    // No way to construct a valid Dirent without setting it.
+    // oxlint-disable-next-line no-deprecated -- required field, deprecated alias for parentPath
     path: "",
     isFile: () => !isDirectory,
     isDirectory: () => isDirectory,
@@ -66,6 +87,15 @@ function createFakeDirent(name: string, isDirectory: boolean): Dirent {
     isFIFO: () => false,
     isSocket: () => false,
   };
+}
+
+// `vi.mocked(readdirSync)` types mockReturnValue against readdirSync's LAST
+// Overload (the "buffer" encoding form, returning Dirent<Buffer<ArrayBuffer>>[]),
+// Even though every call in this file uses the withFileTypes-only form and
+// The mock always returns plain Dirent<string> entries.
+function mockReaddirEntries(entries: Dirent[]): void {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- vi.mocked(readdirSync) resolves to node:fs's last (buffer) overload, not the withFileTypes-only one actually used
+  vi.mocked(readdirSync).mockReturnValue(entries as unknown as Dirent<Buffer<ArrayBuffer>>[]);
 }
 
 type Listener = (...args: unknown[]) => void;
@@ -105,11 +135,15 @@ class FakeChildProcess {
 // UnzipFile path is never exercised, unless a test overrides these mocks.
 function mockExecutableAlreadyExtracted(): void {
   vi.mocked(existsSync).mockReturnValue(true);
-  vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
+  mockReaddirEntries([createFakeDirent(EXECUTABLE_NAME, false)]);
 }
 
 interface LlamaCppModule {
-  llamaCpp: typeof import("@vease_server/utils/llama_cpp");
+  llamaCpp: {
+    getLlamaStatus: typeof getLlamaStatus;
+    runLlamaServer: typeof runLlamaServer;
+    stopLlamaServer: typeof stopLlamaServer;
+  };
   spawnedChildren: FakeChildProcess[];
 }
 
@@ -120,6 +154,9 @@ async function loadLlamaCppModule(): Promise<LlamaCppModule> {
   vi.mocked(childProcessModule.spawn).mockImplementation(() => {
     const child = new FakeChildProcess();
     spawnedChildren.push(child);
+    // FakeChildProcess is a minimal hand-rolled test double (see its class comment);
+    // It deliberately doesn't implement the full ChildProcess surface.
+    // oxlint-disable-next-line no-unsafe-type-assertion -- FakeChildProcess is a deliberately minimal ChildProcess test double
     return child as unknown as ReturnType<typeof childProcessModule.spawn>;
   });
 
@@ -254,7 +291,7 @@ describe("server/utils/llama_cpp", () => {
     async () => {
       const { llamaCpp } = current();
       vi.mocked(existsSync).mockReturnValue(false);
-      vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
+      mockReaddirEntries([createFakeDirent(EXECUTABLE_NAME, false)]);
 
       const handle = await llamaCpp.runLlamaServer({ model: "custom-model" });
 
@@ -278,7 +315,7 @@ describe("server/utils/llama_cpp", () => {
     async () => {
       const { llamaCpp } = current();
       vi.mocked(existsSync).mockReturnValue(false);
-      vi.mocked(readdirSync).mockReturnValue([createFakeDirent(EXECUTABLE_NAME, false)]);
+      mockReaddirEntries([createFakeDirent(EXECUTABLE_NAME, false)]);
 
       const handle = await llamaCpp.runLlamaServer({ model: "custom-model" });
 

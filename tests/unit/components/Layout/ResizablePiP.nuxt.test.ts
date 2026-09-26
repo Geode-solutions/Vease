@@ -1,8 +1,17 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
+
+function getResizablePipElement(): HTMLElement {
+  const pipElement = document.querySelector<HTMLElement>(".resizable-pip");
+  if (pipElement === null) {
+    throw new Error("Expected .resizable-pip element to be rendered");
+  }
+  return pipElement;
+}
 
 const DEFAULT_TEST_WIDTH = 560;
 const DEFAULT_TEST_HEIGHT = 480;
@@ -17,7 +26,8 @@ vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
     name: "GlassCard",
     props: ["escapeFunction"],
     template: "<div class='glass-card-stub'><slot name='handle' /><slot /></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of GlassCard this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof GlassCard,
 }));
 
 describe("resizablepip component", () => {
@@ -43,7 +53,7 @@ describe("resizablepip component", () => {
       attachTo: document.body,
     });
 
-    const pipElement = document.querySelector(".resizable-pip") as HTMLElement;
+    const pipElement = getResizablePipElement();
     expect(pipElement).toBeDefined();
     expect(pipElement.style.width).toBe(`${DEFAULT_TEST_WIDTH}px`);
     expect(pipElement.style.height).toBe(`${DEFAULT_TEST_HEIGHT}px`);
@@ -60,7 +70,7 @@ describe("resizablepip component", () => {
       attachTo: document.body,
     });
 
-    const pipElement = document.querySelector(".resizable-pip") as HTMLElement;
+    const pipElement = getResizablePipElement();
     expect(pipElement.style.width).toBe(`${CUSTOM_TEST_WIDTH}px`);
     expect(pipElement.style.height).toBe(`${CUSTOM_TEST_HEIGHT}px`);
     expect(pipElement.style.zIndex).toBe(`${CUSTOM_TEST_Z_INDEX}`);
@@ -90,7 +100,7 @@ describe("resizablepip component", () => {
     const pointerUpEvent = new Event("pointerup", { bubbles: true });
     document.dispatchEvent(pointerUpEvent);
 
-    const pipElement = document.querySelector(".resizable-pip") as HTMLElement;
+    const pipElement = getResizablePipElement();
     expect(pipElement.style.width).not.toBe("");
   });
 });

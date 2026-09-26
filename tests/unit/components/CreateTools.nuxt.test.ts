@@ -1,16 +1,22 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateTools from "@vease/components/CreateTools.vue";
+import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: {
+const { glassCardStub } = vi.hoisted(() => ({
+  glassCardStub: {
     name: "GlassCard",
     props: ["variant", "padding", "escapeFunction"],
     template: "<div class='glass-card-stub' @click='$emit(\"click\")'><slot /></div>",
   },
+}));
+
+vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- simplified component stub cast to the real component's module type, established repo pattern.
+  default: glassCardStub as unknown as typeof GlassCardComponent,
 }));
 
 const TOOL_ID_ONE = "tool-alpha";
@@ -22,18 +28,13 @@ describe("the CreateTools component", () => {
   beforeEach(() => {
     setupActivePinia();
     const uiStore = useUIStore();
-    uiStore.activeTools = [
+    uiStore.toolsDefinitions = [
       {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
         description: TOOL_DESC_ONE,
         iconType: "mdi",
         iconSource: "mdi-pencil",
-      },
-    ];
-    uiStore.toolsDefinitions = [
-      {
-        id: TOOL_ID_ONE,
         component: {
           name: DUMMY_COMPONENT_NAME,
           template:
@@ -93,7 +94,19 @@ describe("the CreateTools component", () => {
 
   test("displays alert message when selected tool component is missing", async () => {
     const uiStore = useUIStore();
-    uiStore.toolsDefinitions = [];
+    // ActiveTools is derived from toolsDefinitions, so to exercise the
+    // "component missing" fallback the tool must still be listed but have
+    // No registered component.
+    uiStore.toolsDefinitions = [
+      {
+        id: TOOL_ID_ONE,
+        title: TOOL_TITLE_ONE,
+        description: TOOL_DESC_ONE,
+        iconType: "mdi",
+        iconSource: "mdi-pencil",
+        component: undefined,
+      },
+    ];
 
     const wrapper = mountWithPlugins(CreateTools);
 

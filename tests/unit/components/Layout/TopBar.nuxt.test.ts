@@ -1,6 +1,7 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
+import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import TopBar from "@vease/components/Layout/TopBar.vue";
 import { VLayout } from "vuetify/components";
 import { getInfraStore } from "@vease/utils/external_stores";
@@ -18,7 +19,8 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of GlassCard this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  default: GLASS_CARD_STUB as unknown as typeof GlassCard,
 }));
 
 function mockInfraStore(connected = true): void {
@@ -29,10 +31,11 @@ function mockInfraStore(connected = true): void {
     register_microservice: vi.fn<() => void>(),
     unregister_microservice: vi.fn<() => void>(),
     create_connection: vi.fn<() => Promise<void>>(),
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a Pinia store return type
   } as unknown as ReturnType<typeof getInfraStore>);
 }
 
-function mountTopBar() {
+function mountTopBar(): ReturnType<typeof mountWithPlugins> {
   return mountWithPlugins(
     {
       components: { TopBar, VLayout },

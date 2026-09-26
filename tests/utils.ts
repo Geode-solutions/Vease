@@ -10,6 +10,7 @@ import { setActivePinia } from "pinia";
 import { vi } from "vitest";
 
 if (globalThis.visualViewport === undefined) {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- test stub intentionally implements only the subset of VisualViewport this suite touches
   (globalThis as unknown as { visualViewport: unknown }).visualViewport = {
     width: 1024,
     height: 768,
@@ -39,6 +40,7 @@ function createFakeResizeObserver(): FakeResizeObserver {
 }
 
 if (globalThis.ResizeObserver === undefined) {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- test stub intentionally implements only the subset of ResizeObserver this suite touches
   (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = createFakeResizeObserver;
 }
 
@@ -58,8 +60,8 @@ const GLASS_CARD_STUB = {
 function mountWithPlugins<TComponent>(
   component: TComponent,
   options: ComponentMountingOptions<TComponent> = {},
-): ReturnType<typeof mount<TComponent>> {
-  return mount(component, {
+): ReturnType<typeof mount<TComponent, TComponent>> {
+  return mount<TComponent, TComponent>(component, {
     ...options,
     global: {
       ...options.global,
@@ -121,14 +123,15 @@ interface WithSetupResult<TValue> {
 function withSetup<TValue>(composable: () => TValue): WithSetupResult<TValue> {
   let result: TValue | undefined = undefined;
   const app = createApp({
-    setup() {
+    setup(): () => undefined {
       result = composable();
       return () => undefined;
     },
   });
   app.mount(document.createElement("div"));
+  const composableResult = assertDefined<TValue>(result, "Composable did not run during setup");
   return {
-    result: assertDefined(result, "Composable did not run during setup"),
+    result: composableResult,
     unmount: () => {
       app.unmount();
     },

@@ -1,9 +1,11 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
 import Marketplace from "@vease/components/Extensions/Marketplace.vue";
 import MarketplaceDetails from "@vease/components/Extensions/MarketplaceDetails.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
+import { nextTick } from "vue";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
@@ -19,7 +21,8 @@ vi.mock(import("@vease/composables/extensions"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  // oxlint-disable-next-line no-unsafe-type-assertion -- simplified component stub cast to the real component's module type, established repo pattern.
+  default: GLASS_CARD_STUB as unknown as typeof GlassCardComponent,
 }));
 
 vi.mock(import("@ogw_front/stores/app"), () => ({
@@ -41,16 +44,24 @@ describe("the Marketplace component", () => {
     allowedExtensionsMock.mockReset();
     allowedExtensionsMock.mockResolvedValue([sampleExtension]);
 
-    vi.mocked(useAppStore).mockReturnValue({
+    const appStoreStub = {
       getExtension: vi.fn<(id: string) => unknown>().mockReturnValue(undefined),
-    } as unknown as ReturnType<typeof useAppStore>);
+    };
+    vi.mocked(useAppStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      appStoreStub as unknown as ReturnType<typeof useAppStore>,
+    );
 
-    vi.mocked(useExtensions).mockReturnValue({
+    const extensionsStub = {
       allowedExtensions: allowedExtensionsMock,
       downloadExtension: vi.fn<() => Promise<string>>(),
-    } as unknown as ReturnType<typeof useExtensions>);
+    };
+    vi.mocked(useExtensions).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full composable return type, established repo pattern.
+      extensionsStub as unknown as ReturnType<typeof useExtensions>,
+    );
 
-    vi.mocked(useAuth).mockReturnValue({
+    const authStoreStub = {
       user: ref<{ email: string } | undefined>({ email: "user@example.com" }),
       isUserAuthenticated: computed(() => true),
       autoLogin: vi.fn<() => Promise<void>>(),
@@ -59,11 +70,15 @@ describe("the Marketplace component", () => {
       logout: vi.fn<() => Promise<void>>(),
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
-    });
+    };
+    vi.mocked(useAuth).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full composable return type, established repo pattern.
+      authStoreStub as unknown as ReturnType<typeof useAuth>,
+    );
   });
 
   test("renders authentication required view when user is not logged in", () => {
-    vi.mocked(useAuth).mockReturnValue({
+    const unauthenticatedAuthStoreStub = {
       user: ref<{ email: string } | undefined>(undefined),
       isUserAuthenticated: computed(() => false),
       autoLogin: vi.fn<() => Promise<void>>(),
@@ -72,7 +87,11 @@ describe("the Marketplace component", () => {
       logout: vi.fn<() => Promise<void>>(),
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
-    });
+    };
+    vi.mocked(useAuth).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full composable return type, established repo pattern.
+      unauthenticatedAuthStoreStub as unknown as ReturnType<typeof useAuth>,
+    );
 
     const wrapper = mountWithPlugins(Marketplace);
 
@@ -93,7 +112,8 @@ describe("the Marketplace component", () => {
     const wrapper = mountWithPlugins(Marketplace);
 
     const sidebar = wrapper.findComponent(MarketplaceSidebar);
-    await sidebar.vm.$emit("update:modelValue", sampleExtension);
+    sidebar.vm.$emit("update:modelValue", sampleExtension);
+    await nextTick();
 
     const details = wrapper.findComponent(MarketplaceDetails);
     expect(details.props("extension")).toStrictEqual(sampleExtension);

@@ -1,6 +1,7 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { DataItem } from "@vease/types/data_item";
+import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -9,13 +10,15 @@ const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  default: GLASS_CARD_STUB as unknown as typeof GlassCard,
 }));
 
 const mockItem: DataItem = {
   id: "item-1",
   name: "Original Name",
   geode_object_type: "BRep",
+  viewer_type: "3D",
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
 };

@@ -10,9 +10,10 @@ vi.mock(import("@ogw_front/stores/app"), () => ({
 }));
 
 function mockGlobalComponents(globalComponents: Map<string, Map<string, unknown>>): void {
-  vi.mocked(useAppStore).mockReturnValue({
-    globalComponents,
-  } as unknown as ReturnType<typeof useAppStore>);
+  vi.mocked(useAppStore).mockReturnValue(
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial Pinia store, see tests/unit/server/utils/data_file.nuxt.test.ts
+    { globalComponents } as unknown as ReturnType<typeof useAppStore>,
+  );
 }
 
 describe("the GlobalComponents component", () => {

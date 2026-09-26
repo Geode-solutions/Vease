@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type { User } from "firebase/auth";
 import { useAuth } from "@vease/composables/auth";
 import { useAuthPage } from "@vease/composables/auth_page";
 
@@ -40,6 +41,7 @@ describe("useAuthPage composable", () => {
       autoLogin: vi.fn<() => Promise<void>>(),
       deleteAccount: vi.fn<(password: string) => Promise<void>>(),
       logout: vi.fn<() => Promise<void>>(),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
     resetAuthPageState();
   });
@@ -63,7 +65,8 @@ describe("useAuthPage composable", () => {
 
   describe("onSubmit in login mode", () => {
     test("logs in with the current credentials and clears the password afterwards", async () => {
-      loginMock.mockResolvedValue(undefined);
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase User type; the resolved value is unused by this suite, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      loginMock.mockResolvedValue({ email: "user@example.com" } as unknown as User);
       const authPage = resetAuthPageState();
       authPage.email.value = "user@example.com";
       authPage.password.value = "secret";
@@ -130,7 +133,8 @@ describe("useAuthPage composable", () => {
     });
 
     test("registers, shows a success message and switches back to login mode", async () => {
-      registerMock.mockResolvedValue(undefined);
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase User type; the resolved value is unused by this suite, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
+      registerMock.mockResolvedValue({ email: "new@example.com" } as unknown as User);
       const authPage = resetAuthPageState();
       authPage.isLogin.value = false;
       authPage.email.value = "new@example.com";

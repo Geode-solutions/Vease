@@ -1,5 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
-import { errResult, identityMcpToolDefinition, okResult } from "@vease_tests/server_utils";
+import {
+  errResult,
+  fakeMcpRequestExtra,
+  identityMcpToolDefinition,
+  okResult,
+} from "@vease_tests/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import tool from "@vease_server/mcp/tools/viewer/mesh/points/visibility";
 
@@ -18,7 +23,7 @@ describe("set-mesh-points-visibility MCP tool", () => {
   test("sends the id and visibility flag and reports success", async () => {
     vi.mocked(callControllerApi).mockResolvedValue(okResult({ success: true }));
 
-    const result = await tool.handler({ id: "mesh-1", visibility: false });
+    const result = await tool.handler({ id: "mesh-1", visibility: false }, fakeMcpRequestExtra());
 
     expect(callControllerApi).toHaveBeenCalledWith(
       "/api/controller/viewer/mesh/points/visibility",
@@ -36,7 +41,7 @@ describe("set-mesh-points-visibility MCP tool", () => {
       errResult("Error setting mesh points visibility: mesh not found"),
     );
 
-    const result = await tool.handler({ id: "missing", visibility: true });
+    const result = await tool.handler({ id: "missing", visibility: true }, fakeMcpRequestExtra());
 
     expect(result).toBe("Error setting mesh points visibility: mesh not found");
   });

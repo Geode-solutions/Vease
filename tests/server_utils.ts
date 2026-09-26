@@ -1,5 +1,6 @@
 import { type H3Event, createEvent } from "h3";
 import { IncomingMessage, ServerResponse } from "node:http";
+import type { McpRequestExtra } from "@nuxtjs/mcp-toolkit/server";
 import { Socket } from "node:net";
 
 interface MockEventOptions {
@@ -28,8 +29,12 @@ function createMockEvent({
 
   const event = createEvent(req, res);
   if (rawBody !== undefined) {
+    const buffer = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody);
     // H3Event's own public field name; bracket access avoids no-underscore-dangle.
-    event["_requestBody"] = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody);
+    // The project's tsconfig includes both "dom" and "webworker" libs, which
+    // Conflict and leave BodyInit unusable for a genuine Buffer assignment here.
+    // oxlint-disable-next-line dot-notation no-unsafe-type-assertion -- bracket access avoids no-underscore-dangle; BodyInit is unusable due to dom/webworker lib conflict in tsconfig (not ours to fix), Buffer is a valid runtime BodyInit value.
+    event["_requestBody"] = buffer as unknown as BodyInit;
   }
   return event;
 }
@@ -39,6 +44,15 @@ function createMockEvent({
 // Through unchanged.
 function identityMcpToolDefinition<TDefinition>(definition: TDefinition): TDefinition {
   return definition;
+}
+
+// MCP tool/prompt/resource handlers take a second `extra` argument (abort
+// Signal, auth info, session ID, request metadata) from the MCP SDK. None of
+// This codebase's handlers read it, so tests only need a stand-in value that
+// Satisfies the parameter, not a real McpRequestExtra.
+function fakeMcpRequestExtra(): McpRequestExtra {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- MCP SDK's RequestHandlerExtra has many fields no handler in this codebase reads; only a minimal stand-in is needed
+  return {} as unknown as McpRequestExtra;
 }
 
 function eventWithBody(body: unknown): H3Event {
@@ -91,6 +105,7 @@ export {
   createMockEvent,
   eventWithBody,
   identityMcpToolDefinition,
+  fakeMcpRequestExtra,
   buildMultipartBody,
   okResult,
   errResult,

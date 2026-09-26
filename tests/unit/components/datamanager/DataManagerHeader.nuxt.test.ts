@@ -2,6 +2,7 @@ import { type DataManagerTab, useUIStore } from "@vease/stores/ui";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
+import type SearchBar from "@ogw_front/components/SearchBar.vue";
 import { navigateTo } from "#app/composables/router";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -10,7 +11,7 @@ const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
 
 vi.mock(import("#app/composables/router"), async (importOriginal) => {
-  const actual = await importOriginal<typeof import("#app/composables/router")>();
+  const actual = await importOriginal();
   return { ...actual, navigateTo: vi.fn<typeof navigateTo>() };
 });
 
@@ -21,7 +22,8 @@ vi.mock(import("@ogw_front/components/SearchBar.vue"), () => ({
     emits: ["update:modelValue"],
     template:
       "<input class='search-bar-stub' :value='modelValue' @input=\"$emit('update:modelValue', $event.target.value)\" />",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  } as unknown as typeof SearchBar,
 }));
 
 const mockCustomTab: DataManagerTab = {
@@ -120,6 +122,9 @@ describe("data manager header component", () => {
   test("exposes focusSearch method", () => {
     const wrapper = mountWithPlugins(DataManagerHeader);
 
+    // MountWithPlugins's shared generics don't propagate defineExpose() types, so the
+    // Exposed member has to be re-typed from the component's own definition here.
+    // oxlint-disable-next-line no-unsafe-type-assertion -- see comment above; there's no clean fix without changing the shared mountWithPlugins helper
     const exposed = wrapper.vm as unknown as { focusSearch: () => void };
     expect(exposed.focusSearch).toBeTypeOf("function");
     expect(() => {

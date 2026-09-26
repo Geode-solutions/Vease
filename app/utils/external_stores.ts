@@ -26,7 +26,7 @@ interface BackStoreExtra {
 
 function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
   const { $pinia } = useNuxtApp();
-  return useBackStore($pinia);
+  return useBackStore($pinia) as unknown as ReturnType<typeof useBackStore> & BackStoreExtra;
 }
 
 interface HybridViewerStoreExtra {

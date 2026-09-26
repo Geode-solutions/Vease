@@ -1,11 +1,18 @@
-import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+// oxlint-disable-next-line eslint/sort-imports -- must run before the ForgotPasswordDialog.vue import below so `defineComponent` is initialized before that import eagerly evaluates GlassCard.vue and runs the vi.mock factory referencing it
+import { defineComponent } from "vue";
+// oxlint-disable-next-line eslint/sort-imports -- see the comment above the "vue" import
 import ForgotPasswordDialog from "@vease/components/Auth/ForgotPasswordDialog.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
 
+// Defined inline (instead of reusing the shared GLASS_CARD_STUB) so TypeScript infers this call's type from GlassCard.vue's own default export, which vi.mock(import(...)) checks the factory result against.
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  default: defineComponent({
+    name: "GlassCard",
+    template: "<div class='glass-card-stub'><slot /></div>",
+  }),
 }));
 
 describe("forgot password dialog component", () => {

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import FileInput from "@vease/components/FileInput.vue";
+import { VFileInput } from "vuetify/components";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -26,12 +27,12 @@ describe("the FileInput component", () => {
       },
     });
 
-    const fileInputComponent = wrapper.findComponent({ name: "VFileInput" });
+    const fileInputComponent = wrapper.findComponent(VFileInput);
     expect(fileInputComponent.exists()).toBe(true);
     expect(wrapper.text()).toContain(FILE_LABEL);
   });
 
-  test("emits update:value event when a new file is selected", async () => {
+  test("emits update:value event when a new file is selected", () => {
     const sampleFile = new File(["initial"], FILE_NAME, { type: "text/plain" });
     const newFile = new File(["new data"], "new_file.txt", {
       type: "text/plain",
@@ -44,8 +45,8 @@ describe("the FileInput component", () => {
       },
     });
 
-    const fileInputComponent = wrapper.findComponent({ name: "VFileInput" });
-    await fileInputComponent.vm.$emit("update:modelValue", newFile);
+    const fileInputComponent = wrapper.findComponent(VFileInput);
+    fileInputComponent.vm.$emit("update:modelValue", newFile);
 
     expect(wrapper.emitted("update:value")).toStrictEqual([[newFile]]);
   });

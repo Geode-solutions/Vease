@@ -1,8 +1,12 @@
+import { assertDefined, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type { DataItem } from "@vease/types/data_item";
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
+import type DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
+import DataTable from "@vease/components/datamanager/DataTable.vue";
+import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
+import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
@@ -15,7 +19,8 @@ vi.mock(import("@vease/components/datamanager/DataManagerHeader.vue"), () => ({
     props: ["searchValue", "activeTab", "tabs", "compact"],
     emits: ["update:searchValue", "update:activeTab"],
     template: "<div class='data-manager-header-stub'></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  } as unknown as typeof DataManagerHeader,
 }));
 
 vi.mock(import("@vease/components/datamanager/DataTable.vue"), () => ({
@@ -33,7 +38,8 @@ vi.mock(import("@vease/components/datamanager/DataTable.vue"), () => ({
       "delete-selected",
     ],
     template: "<div class='data-table-stub'></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  } as unknown as typeof DataTable,
 }));
 
 vi.mock(import("@ogw_front/components/DeleteDialog.vue"), () => ({
@@ -42,7 +48,8 @@ vi.mock(import("@ogw_front/components/DeleteDialog.vue"), () => ({
     props: ["show", "item", "selectedCount"],
     emits: ["update:show", "confirm"],
     template: "<div class='delete-dialog-stub'></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  } as unknown as typeof DeleteDialog,
 }));
 
 vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
@@ -51,7 +58,8 @@ vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
     props: ["show", "item", "initialName"],
     emits: ["update:show", "confirm"],
     template: "<div class='rename-dialog-stub'></div>",
-  },
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  } as unknown as typeof RenameDialog,
 }));
 
 vi.mock(import("@ogw_front/stores/data"), () => ({
@@ -100,27 +108,40 @@ describe("data manager content component", () => {
     setupActivePinia();
 
     const itemsRef = ref([mockItem1, mockItem2]);
-    vi.mocked(useDataStore).mockReturnValue({
-      refAllItems: () => itemsRef,
+    const mockDataStore = {
+      refAllItems: (): typeof itemsRef => itemsRef,
       updateItem: mockUpdateItem,
       deregisterObject: mockDeregisterObject,
       deleteItem: mockDeleteItem,
-    } as unknown as ReturnType<typeof useDataStore>);
+    };
+    vi.mocked(useDataStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
+      mockDataStore as unknown as ReturnType<typeof useDataStore>,
+    );
 
-    vi.mocked(useTreeviewStore).mockReturnValue({
+    const mockTreeviewStore = {
       addItem: mockAddItem,
       removeItem: mockRemoveItem,
       renameItem: mockRenameItem,
-    } as unknown as ReturnType<typeof useTreeviewStore>);
+    };
+    vi.mocked(useTreeviewStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
+      mockTreeviewStore as unknown as ReturnType<typeof useTreeviewStore>,
+    );
 
-    vi.mocked(getDataStyleStore).mockReturnValue({
-      setVisibility: mockSetVisibility,
-    } as unknown as ReturnType<typeof getDataStyleStore>);
+    vi.mocked(getDataStyleStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
+      { setVisibility: mockSetVisibility } as unknown as ReturnType<typeof getDataStyleStore>,
+    );
 
-    vi.mocked(getHybridViewerStore).mockReturnValue({
+    const mockHybridViewerStore = {
       focusCameraOnObject: mockFocusCameraOnObject,
       removeItem: mockRemoveViewerItem,
-    } as unknown as ReturnType<typeof getHybridViewerStore>);
+    };
+    vi.mocked(getHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
+      mockHybridViewerStore as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
   });
 
   test("renders header and data table subcomponents", () => {
@@ -133,8 +154,8 @@ describe("data manager content component", () => {
   test("toggles item visibility and updates data store and treeview store", async () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
-    const dataTable = wrapper.findComponent({ name: "DataTable" });
-    await dataTable.vm.$emit("toggle-visibility", mockItem1, false);
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("toggle-visibility", mockItem1, false);
     await flushPromises();
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: false });
@@ -145,8 +166,8 @@ describe("data manager content component", () => {
   test("focuses camera when focus-camera event is emitted", async () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
-    const dataTable = wrapper.findComponent({ name: "DataTable" });
-    await dataTable.vm.$emit("focus-camera", mockItem1);
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("focus-camera", mockItem1);
     await flushPromises();
 
     expect(mockFocusCameraOnObject).toHaveBeenCalledWith("item-1");
@@ -155,8 +176,8 @@ describe("data manager content component", () => {
   test("isolates item by making target visible and others invisible", async () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
-    const dataTable = wrapper.findComponent({ name: "DataTable" });
-    await dataTable.vm.$emit("isolate", mockItem1);
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("isolate", mockItem1);
     await flushPromises();
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: true });
@@ -167,13 +188,14 @@ describe("data manager content component", () => {
   test("opens rename dialog and executes rename", async () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
-    const dataTable = wrapper.findComponent({ name: "DataTable" });
-    await dataTable.vm.$emit("rename", mockItem1);
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("rename", mockItem1);
+    await flushPromises();
 
-    const renameDialog = wrapper.findComponent({ name: "RenameDialog" });
+    const renameDialog = wrapper.findComponent(RenameDialog);
     expect(renameDialog.props("show")).toBe(true);
 
-    await renameDialog.vm.$emit("confirm", "New Name");
+    renameDialog.vm.$emit("confirm", "New Name");
     await flushPromises();
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { name: "New Name" });
@@ -183,13 +205,17 @@ describe("data manager content component", () => {
   test("opens delete dialog and executes delete", async () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
-    const dataTable = wrapper.findComponent({ name: "DataTable" });
-    await dataTable.vm.$emit("delete", mockItem1);
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("delete", mockItem1);
+    await flushPromises();
 
-    const [singleDeleteDialog] = wrapper.findAllComponents({ name: "DeleteDialog" });
+    const singleDeleteDialog = assertDefined(
+      wrapper.findAllComponents(DeleteDialog)[0],
+      "Expected a single DeleteDialog component to be rendered",
+    );
     expect(singleDeleteDialog.props("show")).toBe(true);
 
-    await singleDeleteDialog.vm.$emit("confirm");
+    singleDeleteDialog.vm.$emit("confirm");
     await flushPromises();
 
     expect(mockDeregisterObject).toHaveBeenCalledWith("item-1");

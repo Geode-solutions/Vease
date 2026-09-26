@@ -28,28 +28,38 @@ const fsMocks = vi.hoisted(() => ({
   unlinkSync: vi.fn<(path: string) => void>(),
 }));
 
-vi.mock(import("electron"), () => ({
-  app: {
-    getPath: electronMocks.getPath,
-    setPath: electronMocks.setPath,
-    get isPackaged() {
-      return electronMocks.isPackaged;
+vi.mock(import("electron"), () => {
+  const mocked = {
+    app: {
+      getPath: electronMocks.getPath,
+      setPath: electronMocks.setPath,
+      get isPackaged(): boolean {
+        return electronMocks.isPackaged;
+      },
     },
-  },
-  safeStorage: {
-    isEncryptionAvailable: electronMocks.isEncryptionAvailable,
-    encryptString: electronMocks.encryptString,
-    decryptString: electronMocks.decryptString,
-  },
-  shell: { openExternal: vi.fn<(url: string) => Promise<void>>() },
-  BrowserWindow: vi.fn<new () => unknown>(),
-  utilityProcess: { fork: vi.fn<(path: string) => unknown>() },
-}));
+    safeStorage: {
+      isEncryptionAvailable: electronMocks.isEncryptionAvailable,
+      encryptString: electronMocks.encryptString,
+      decryptString: electronMocks.decryptString,
+    },
+    shell: { openExternal: vi.fn<(url: string) => Promise<void>>() },
+    BrowserWindow: vi.fn<new () => unknown>(),
+    utilityProcess: { fork: vi.fn<(path: string) => unknown>() },
+  };
+  // Electron can't be imported for real outside an Electron process (see comment
+  // Above); the mock only implements the members this codebase uses, not the
+  // Full CrossProcessExports shape.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- electron mock can't reproduce the full CrossProcessExports shape
+  return mocked as unknown as typeof Electron.CrossProcessExports;
+});
 
-vi.mock(import("node:fs"), () => ({
-  default: fsMocks,
-  ...fsMocks,
-}));
+vi.mock(import("node:fs"), async (importOriginal) => {
+  const actual = await importOriginal();
+  const mocked = { ...actual, ...fsMocks, default: { ...actual, ...fsMocks } };
+  // Node:fs's full type has many more members than this codebase's fs mocks implement.
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the members this codebase calls, not node:fs's full overload set
+  return mocked as unknown as typeof actual;
+});
 
 vi.mock(import("@geode/opengeodeweb-front/server/utils/scripts.js"), () => ({
   getAvailablePort: vi.fn<() => Promise<number>>().mockResolvedValue(FAKE_PORT),

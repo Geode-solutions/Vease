@@ -27,6 +27,7 @@ vi.mock(import("@ogw_front/stores/infra"), () => ({
 describe("external_stores", () => {
   test("getBackStore returns whatever useBackStore returns", () => {
     const sentinel = { base_url: "http://localhost", request: vi.fn<() => Promise<unknown>>() };
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useBackStore).mockReturnValue(sentinel as unknown as ReturnType<typeof useBackStore>);
 
     expect(getBackStore()).toBe(sentinel);
@@ -35,6 +36,7 @@ describe("external_stores", () => {
   test("getDataStyleStore returns whatever useDataStyleStore returns", () => {
     const sentinel = { setVisibility: vi.fn<(id: string, visible: boolean) => void>() };
     vi.mocked(useDataStyleStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       sentinel as unknown as ReturnType<typeof useDataStyleStore>,
     );
 
@@ -44,6 +46,7 @@ describe("external_stores", () => {
   test("getHybridViewerStore returns whatever useHybridViewerStore returns", () => {
     const sentinel = { remoteRender: vi.fn<() => Promise<void>>() };
     vi.mocked(useHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       sentinel as unknown as ReturnType<typeof useHybridViewerStore>,
     );
 
@@ -56,6 +59,7 @@ describe("external_stores", () => {
       register_microservice: vi.fn<(store: unknown) => void>(),
     };
     vi.mocked(useInfraStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
       sentinel as unknown as ReturnType<typeof useInfraStore>,
     );
 
@@ -64,6 +68,7 @@ describe("external_stores", () => {
 
   test("getViewerClient reads the client off the given viewer store", () => {
     const client = { getConnection: vi.fn<() => unknown>() };
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     const viewerStore = { client } as unknown as Parameters<typeof getViewerClient>[0];
 
     expect(getViewerClient(viewerStore)).toBe(client);

@@ -1,5 +1,6 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import MarketplaceSidebar from "@vease/components/Extensions/MarketplaceSidebar.vue";
 import { VListItem } from "vuetify/components";
@@ -12,7 +13,8 @@ vi.mock(import("@ogw_front/stores/app"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
-  default: GLASS_CARD_STUB,
+  // oxlint-disable-next-line no-unsafe-type-assertion -- simplified component stub cast to the real component's module type, established repo pattern.
+  default: GLASS_CARD_STUB as unknown as typeof GlassCardComponent,
 }));
 
 const firstExtension: MarketplaceExtension = {
@@ -27,9 +29,14 @@ const secondExtension: MarketplaceExtension = {
 };
 
 function mockInstalledExtensions(installedIds: string[]): void {
-  vi.mocked(useAppStore).mockReturnValue({
-    getExtension: (id: string) => (installedIds.includes(id) ? { id } : undefined),
-  } as unknown as ReturnType<typeof useAppStore>);
+  const appStoreStub = {
+    getExtension: (id: string): { id: string } | undefined =>
+      installedIds.includes(id) ? { id } : undefined,
+  };
+  vi.mocked(useAppStore).mockReturnValue(
+    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+    appStoreStub as unknown as ReturnType<typeof useAppStore>,
+  );
 }
 
 describe("the MarketplaceSidebar component", () => {

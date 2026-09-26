@@ -1,8 +1,9 @@
-import { VueWrapper, flushPromises } from "@vue/test-utils";
+import { type VueWrapper, flushPromises } from "@vue/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreatePolygonalSurface from "@vease/components/tools/CreatePolygonalSurface.vue";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
@@ -43,13 +44,21 @@ const NUM_THREE_Z = Number(POINT_THREE_Z);
 describe("the CreatePolygonalSurface component", () => {
   beforeEach(() => {
     setupActivePinia();
-    vi.mocked(getBackStore).mockReturnValue({
+    const backStoreStub = {
       base_url: "http://localhost",
       request: vi.fn<() => Promise<unknown>>().mockResolvedValue({ id: "surface-id" }),
-    } as unknown as ReturnType<typeof getBackStore>);
-    vi.mocked(getHybridViewerStore).mockReturnValue({
+    };
+    vi.mocked(getBackStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      backStoreStub as unknown as ReturnType<typeof getBackStore>,
+    );
+    const hybridViewerStoreStub = {
       remoteRender: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
-    } as unknown as ReturnType<typeof getHybridViewerStore>);
+    };
+    vi.mocked(getHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+      hybridViewerStoreStub as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
   });
 
@@ -108,7 +117,7 @@ describe("the CreatePolygonalSurface component", () => {
     const expectedPolygons = [[0, 1, 2]];
 
     expect(getBackStore().request).toHaveBeenCalledWith({
-      schema: expect.anything(),
+      schema: back_schemas.opengeodeweb_back.create.polygonal_surface,
       params: {
         name: "New Surface",
         points: expectedPoints,

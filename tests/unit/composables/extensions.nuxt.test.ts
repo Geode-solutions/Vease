@@ -21,14 +21,20 @@ vi.mock(import("@ogw_front/utils/extension"), () => ({
   importExtensionURL: vi.fn<typeof importExtensionURL>().mockResolvedValue([]),
 }));
 
-vi.mock(import("bowser"), () => ({
-  default: { getParser: vi.fn<typeof Bowser.getParser>() },
-}));
+vi.mock(import("bowser"), () => {
+  const bowserStub = { getParser: vi.fn<typeof Bowser.getParser>() };
+  return {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full module export type, established repo pattern.
+    default: bowserStub as unknown as typeof Bowser,
+  };
+});
+
+type ApiRequestArgs = Parameters<ReturnType<typeof useAPIStore>["request"]>[0];
 
 const mockUser = { getIdToken: vi.fn<() => Promise<string>>().mockResolvedValue("token-123") };
 
 function mockAuth(authenticated: boolean): void {
-  vi.mocked(useAuth).mockReturnValue({
+  const authStoreStub = {
     isUserAuthenticated: computed(() => authenticated),
     user: ref(authenticated ? mockUser : undefined),
     autoLogin: vi.fn<() => Promise<void>>(),
@@ -37,21 +43,33 @@ function mockAuth(authenticated: boolean): void {
     login: vi.fn<(email: string, password: string) => Promise<unknown>>(),
     logout: vi.fn<() => Promise<void>>(),
     resetPassword: vi.fn<(email: string) => Promise<unknown>>(),
-  } as unknown as ReturnType<typeof useAuth>);
+  };
+  vi.mocked(useAuth).mockReturnValue(
+    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full composable return type, established repo pattern.
+    authStoreStub as unknown as ReturnType<typeof useAuth>,
+  );
 }
 
 function mockPlatform(osName: string): void {
-  vi.mocked(Bowser.getParser).mockReturnValue({
-    getOS: () => ({ name: osName }),
-  } as unknown as ReturnType<typeof Bowser.getParser>);
+  const parserStub = {
+    getOS: (): { name: string } => ({ name: osName }),
+  };
+  vi.mocked(Bowser.getParser).mockReturnValue(
+    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full return type, established repo pattern.
+    parserStub as unknown as ReturnType<typeof Bowser.getParser>,
+  );
 }
 
 function mockAppStoreWithLoadedExtensions(
   loadedExtensions: { id: string; metadata: unknown }[],
 ): void {
-  vi.mocked(useAppStore).mockReturnValue({
+  const appStoreStub = {
     getLoadedExtensions: vi.fn<() => typeof loadedExtensions>().mockReturnValue(loadedExtensions),
-  } as unknown as ReturnType<typeof useAppStore>);
+  };
+  vi.mocked(useAppStore).mockReturnValue(
+    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
+    appStoreStub as unknown as ReturnType<typeof useAppStore>,
+  );
 }
 
 describe("useExtensions composable", () => {
@@ -89,8 +107,13 @@ describe("useExtensions composable", () => {
       const result = await allowedExtensions();
 
       expect(mockUser.getIdToken).toHaveBeenCalledWith();
+      /* oxlint-disable no-unsafe-type-assertion -- expect.objectContaining is typed as `any`; this matcher genuinely satisfies ApiRequestArgs["schema"] at runtime. */
+      const listSchema = expect.objectContaining({
+        $id: "/extensions/list",
+      }) as ApiRequestArgs["schema"];
+      /* oxlint-enable no-unsafe-type-assertion */
       expect(apiSpy).toHaveBeenCalledWith({
-        schema: expect.objectContaining({ $id: "/extensions/list" }),
+        schema: listSchema,
         headers: { Authorization: "Bearer token-123" },
       });
       expect(result).toStrictEqual([{ id: "ext-1", version: "1.0.0" }]);
@@ -125,8 +148,13 @@ describe("useExtensions composable", () => {
       const { downloadExtension } = useExtensions();
       const result = await downloadExtension("ext-1");
 
+      /* oxlint-disable no-unsafe-type-assertion -- expect.objectContaining is typed as `any`; this matcher genuinely satisfies ApiRequestArgs["schema"] at runtime. */
+      const downloadSchema = expect.objectContaining({
+        $id: "/extensions/download",
+      }) as ApiRequestArgs["schema"];
+      /* oxlint-enable no-unsafe-type-assertion */
       expect(apiSpy).toHaveBeenCalledWith({
-        schema: expect.objectContaining({ $id: "/extensions/download" }),
+        schema: downloadSchema,
         params: { extension: "ext-1", platform: "win32" },
         headers: { Authorization: "Bearer token-123" },
       });
@@ -180,8 +208,11 @@ describe("useExtensions composable", () => {
         ["/extensions/download", { url: "https://example.com/ext-1.vext" }],
       ]);
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockImplementation(({ schema }: { schema: { $id: string } }) =>
-        Promise.resolve(responseBySchemaId.get(schema.$id)),
+      vi.spyOn(apiStore, "request").mockImplementation(
+        async ({ schema }: { schema: { $id: string } }) => {
+          await Promise.resolve();
+          return responseBySchemaId.get(schema.$id);
+        },
       );
 
       const { updateExtensions } = useExtensions();

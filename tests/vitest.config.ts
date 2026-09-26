@@ -17,8 +17,8 @@ const HOOK_TIMEOUT = 30_000;
 const CI_WORKERS = 4;
 const EXTENSION_LENGTH_JS = 3;
 
-const globalRetry = process.env.CI ? RETRIES : DEFAULT_RETRY;
-const maxWorkers = process.env.CI ? CI_WORKERS : undefined;
+const globalRetry = process.env.CI !== undefined && process.env.CI !== "" ? RETRIES : DEFAULT_RETRY;
+const maxWorkers = process.env.CI !== undefined && process.env.CI !== "" ? CI_WORKERS : undefined;
 
 const ogwFrontRoot = path.dirname(require.resolve("@geode/opengeodeweb-front/package.json"));
 const ogwFrontApp = path.resolve(ogwFrontRoot, "app");
@@ -39,7 +39,7 @@ const aliases = {
 const resolveOgwAliasPlugin = {
   name: "resolve-ogw-alias",
   enforce: "pre" as const,
-  resolveId(id: string) {
+  resolveId(id: string): string | undefined {
     if (id.startsWith("@ogw_front/")) {
       const relativePath = id.replace("@ogw_front/", "");
       const basePath = path.join(ogwFrontApp, relativePath);

@@ -6,7 +6,15 @@ import { useUIStore } from "@vease/stores/ui";
 vi.setConfig({ testTimeout: 10_000 });
 
 // Avoids the `null` literal (lint) while still testing null handling.
-const NULL_VALUE: null = JSON.parse("null");
+function parseNull(): null {
+  const value: unknown = JSON.parse("null");
+  if (value !== null) {
+    throw new Error("Expected JSON.parse to return null");
+  }
+  return value;
+}
+
+const NULL_VALUE = parseNull();
 
 describe("useExtensionMetadata composable", () => {
   beforeEach(() => {

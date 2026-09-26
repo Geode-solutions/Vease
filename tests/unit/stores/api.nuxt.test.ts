@@ -102,7 +102,8 @@ describe("the API store", () => {
       const responseFunction = vi.fn<(response: unknown) => void>();
 
       await apiStore.request({ schema: mockSchema }, { response_function: responseFunction });
-      await lastApiFetchCallbacks().response_function({ data: 1 });
+      const { response_function } = lastApiFetchCallbacks();
+      await assertDefined(response_function, "response_function was not provided")({ data: 1 });
 
       expect(responseFunction).toHaveBeenCalledWith({ data: 1 });
     });
@@ -112,7 +113,10 @@ describe("the API store", () => {
 
       await apiStore.request({ schema: mockSchema });
 
-      await expect(lastApiFetchCallbacks().response_function({})).resolves.toBeUndefined();
+      const { response_function } = lastApiFetchCallbacks();
+      await expect(
+        assertDefined(response_function, "response_function was not provided")({}),
+      ).resolves.toBeUndefined();
     });
   });
 });

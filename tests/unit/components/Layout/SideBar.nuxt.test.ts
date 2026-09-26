@@ -31,10 +31,11 @@ function mockAuthComposable(isAuthenticated = false): void {
     login: vi.fn<() => void>(),
     deleteAccount: vi.fn<() => void>(),
     resetPassword: vi.fn<() => void>(),
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
   } as unknown as ReturnType<typeof useAuth>);
 }
 
-function mountSideBar() {
+function mountSideBar(): ReturnType<typeof mountWithPlugins> {
   return mountWithPlugins(
     {
       components: { SideBar, VLayout },

@@ -22,9 +22,10 @@ describe("the backEventHandlers map", () => {
 
   beforeEach(() => {
     remoteRenderMock.mockClear();
-    vi.mocked(getHybridViewerStore).mockReturnValue({
-      remoteRender: remoteRenderMock,
-    } as unknown as ReturnType<typeof getHybridViewerStore>);
+    vi.mocked(getHybridViewerStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial Pinia store, see tests/unit/server/utils/data_file.nuxt.test.ts
+      { remoteRender: remoteRenderMock } as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
   });
 
   test("registers exactly one handler, for save_viewable_file", () => {

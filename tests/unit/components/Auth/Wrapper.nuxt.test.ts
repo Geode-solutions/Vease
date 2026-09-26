@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { computed, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { useAuth } from "@vease/composables/auth";
 
@@ -12,17 +12,17 @@ vi.mock(import("@vease/composables/auth"), () => ({
 }));
 
 vi.mock(import("@vease/components/Auth/Login.vue"), () => ({
-  default: {
+  default: defineComponent({
     name: "AuthLoginStub",
     template: "<div class='auth-login-stub' />",
-  },
+  }),
 }));
 
 vi.mock(import("@vease/components/Auth/Account.vue"), () => ({
-  default: {
+  default: defineComponent({
     name: "AuthAccountStub",
     template: "<div class='auth-account-stub' />",
-  },
+  }),
 }));
 
 describe("wrapper component", () => {
@@ -41,6 +41,7 @@ describe("wrapper component", () => {
       login: vi.fn<() => Promise<never>>(),
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<unknown>>(),
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 
