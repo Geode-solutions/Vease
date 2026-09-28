@@ -1,0 +1,8 @@
+{
+  "route": "/status",
+  "methods": ["GET"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

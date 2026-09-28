@@ -10,15 +10,28 @@ import {
 import { createError, defineEventHandler, readBody } from "h3";
 
 // Local imports
-import { getChatModel, getChatTools } from "@vease_server/utils/ai";
+import { type ChatProvider, getChatModel, getChatTools } from "@vease_server/utils/llm";
 import { asErrorLike } from "@vease_server/utils/errors";
 
 const MAX_TOOL_STEPS = 5;
 
 export default defineEventHandler(async (event) => {
   try {
-    const { messages } = await readBody<{ messages: Omit<UIMessage, "id">[] }>(event);
-    const [model, tools] = await Promise.all([getChatModel(), getChatTools()]);
+    const {
+      messages,
+      provider,
+      model: modelId,
+      gatewayApiKey,
+    } = await readBody<{
+      messages: Omit<UIMessage, "id">[];
+      provider?: ChatProvider;
+      model?: string;
+      gatewayApiKey?: string;
+    }>(event);
+    const [model, tools] = await Promise.all([
+      getChatModel({ provider, model: modelId, gatewayApiKey }),
+      getChatTools(),
+    ]);
 
     const result = streamText({
       model,

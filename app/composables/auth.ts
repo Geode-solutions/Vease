@@ -11,7 +11,7 @@ import { appMode } from "@ogw_shared/app_mode";
 import { useFirebaseAuth } from "vuefire";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { Auth, User } from "firebase/auth";
-import { useInfraStore } from "@ogw_front/stores/infra";
+import { useInfraStore } from "@ogw_front/stores/infra.js";
 
 // Local imports
 import { useAPIStore } from "@vease/stores/api";
