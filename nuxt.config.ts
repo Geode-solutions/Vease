@@ -10,7 +10,7 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local", "microservice", "serverless", "cloud"];
+const serverDirectories = ["local", "microservice", "cloud"];
 
 // Oxlint's type-aware linter auto-discovers each file's nearest tsconfig.json
 // By walking up directories, and any "extends" on that discovered file makes
@@ -34,18 +34,6 @@ function remap_path_to_root(target: string, build_dir: string): string {
   return relative.startsWith("./") || relative.startsWith("../") ? relative : `./${relative}`;
 }
 
-const VEASE_API_BASE_URL = "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net";
-const RELEASE_VERSION_REGEX = /^\d+\.\d+\.\d+$/u;
-
-// Master builds ("latest" on cloud/docker, plain semver on desktop) target the
-// Production api; next builds ("next", "x.y.z-rc.n") and local dev ("0.0.0")
-// Target api-next.
-function veaseApiUrl(version: string): string {
-  const is_master =
-    version === "latest" || (RELEASE_VERSION_REGEX.test(version) && version !== "0.0.0");
-  return `${VEASE_API_BASE_URL}/${is_master ? "api" : "api-next"}`;
-}
-
 function getIgnoredDirectories(directoriesToKeep) {
   return serverDirectories
     .filter((directory) => !directoriesToKeep.includes(directory))
@@ -61,7 +49,7 @@ function nitroIgnoreConfig() {
     return getIgnoredDirectories(["local", "microservice"]);
   }
   if (mode === "CLOUD") {
-    return getIgnoredDirectories(["serverless"]);
+    return getIgnoredDirectories([]);
   }
   if (mode === "CLOUD_SERVER") {
     return getIgnoredDirectories(["cloud", "microservice"]);
@@ -80,8 +68,6 @@ export default defineNuxtConfig({
       COMMAND_BACK: "vease-back",
       COMMAND_VIEWER: "vease-viewer",
       NUXT_ROOT_PATH: __dirname,
-      PROJECT: package_json.name,
-      VEASE_API_URL: veaseApiUrl(package_json.version),
     },
   },
   extends: ["@geode/opengeodeweb-front"],
