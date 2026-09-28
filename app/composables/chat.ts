@@ -3,7 +3,7 @@ import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
-import { useAPIStore } from "@vease/stores/api";
+import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
