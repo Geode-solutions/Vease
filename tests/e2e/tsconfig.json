@@ -11,7 +11,7 @@
     "types": ["node"],
     "noEmit": true,
     "paths": {
-      "@tests/*": ["./*"]
+      "@vease_tests/*": ["./*"]
     }
   }
 }

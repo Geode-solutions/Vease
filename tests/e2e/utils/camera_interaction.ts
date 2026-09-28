@@ -1,7 +1,8 @@
 import type { Page } from "@playwright/test";
 
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
-import { dragElement, getHybridViewerCanvas, waitForActionSettled } from "./viewer_interaction";
+import { dragElement, getHybridViewerCanvas } from "./viewer_interaction";
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 async function resetCamera(window: Page): Promise<void> {
   await window.getByTestId("resetCameraButton").click();

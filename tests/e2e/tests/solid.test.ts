@@ -3,20 +3,19 @@
 // Third party imports
 
 // Local imports
-import { closeAllMenus, moveMouseOutOfTheWay } from "@tests/utils/app_interaction";
-import { defaultDataName, hybridSolidGeodeObjectType } from "@tests/utils/constants";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { defaultDataName, hybridSolidGeodeObjectType } from "@vease_tests/utils/constants";
 import {
   expandMainObjectTree,
   highlightData,
   toggleObjectsTree,
-} from "@tests/utils/object_trees/main_object_tree";
+} from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
-  waitForActionSettled,
-} from "@tests/utils/viewer_interaction";
+} from "@vease_tests/utils/viewer_interaction";
 import {
   openMeshPolyhedraMenu,
   setMeshEdgesColor,
@@ -36,9 +35,10 @@ import {
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
   setMeshPolyhedraVisibility,
-} from "@tests/utils/data";
-import { loadVeaseTestDatas } from "@tests/utils/load";
-import { test } from "@tests/utils/fixtures";
+} from "@vease_tests/utils/data";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { test } from "@vease_tests/utils/fixtures";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const inputFilename = "test.og_hso3d";

@@ -38,23 +38,33 @@ function getErrorMessage(error: unknown): string {
   return "";
 }
 
-function extractApiError(error: Record<string, unknown> | null | undefined): string {
-  if (!error) {
-    return "";
+function getField(value: unknown, key: string): unknown {
+  if (typeof value !== "object" || value === null || !(key in value)) {
+    return undefined;
   }
-  const data = error.data as Record<string, unknown> | undefined;
-  const response = error.response as { _data?: Record<string, unknown> } | undefined;
-  const resData = response?._data;
+  const field: unknown = Reflect.get(value, key);
+  return field;
+}
 
-  const errVal = data?.error || resData?.error || data?.message || resData?.message;
-  return typeof errVal === "string" ? errVal : "";
+function extractApiError(error: unknown): string {
+  const data = getField(error, "data");
+  const responseData = getField(getField(error, "response"), "_data");
+  const candidates = [
+    getField(data, "error"),
+    getField(responseData, "error"),
+    getField(data, "message"),
+    getField(responseData, "message"),
+  ];
+  const apiError = candidates.find(
+    (candidate): candidate is string => typeof candidate === "string" && candidate !== "",
+  );
+  return apiError ?? "";
 }
 
 function getFriendlyErrorMessage(error: unknown): string {
-  const errObj = error as Record<string, unknown> | null | undefined;
-  const apiError = extractApiError(errObj);
-  const code = (getErrorCode(error) || String(errObj?.code || "")).toLowerCase();
-  const message = (getErrorMessage(error) || String(errObj?.message || "")).toLowerCase();
+  const apiError = extractApiError(error);
+  const code = getErrorCode(error).toLowerCase();
+  const message = getErrorMessage(error).toLowerCase();
   const fullError = `${code} ${message} ${apiError.toLowerCase()}`;
 
   for (const [patterns, friendlyMessage] of ERROR_MESSAGE_MAP) {
@@ -98,6 +108,7 @@ interface UseAuthPageReturn {
   showForgotPassword: typeof showForgotPassword;
   forgotPasswordEmail: typeof forgotPasswordEmail;
   forgotPasswordLoading: typeof forgotPasswordLoading;
+  forgotPasswordError: typeof forgotPasswordError;
   onSubmit: () => Promise<void>;
   handleForgotPassword: () => Promise<void>;
   toggleMode: () => void;

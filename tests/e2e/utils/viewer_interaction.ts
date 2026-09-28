@@ -373,9 +373,9 @@ export {
   setPolygonsTextures,
   setPolygonsVisibility,
   setPolyhedraVisibility,
+  setVisibilityGeneric,
   stabilizeHoverTooltip,
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-  waitForActionSettled,
 };

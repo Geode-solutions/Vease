@@ -1,4 +1,5 @@
 // Third party imports
+import { CHUNK_SIZE_BYTES } from "@ogw_shared/utils/file";
 import type { MultiPartData } from "h3";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
@@ -76,17 +77,30 @@ async function uploadFile(file: MultiPartData): Promise<unknown> {
   const { filename, type, data } = file;
   console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
 
-  const route = `${schema.$id}?filename=${encodeURIComponent(filename ?? "")}`;
-  const params = new Blob([new Uint8Array(data)], { type });
-  const response = await fetchRaw({
-    route,
-    method: schema.methods.find((method) => method !== "OPTIONS"),
-    params,
-    baseURL: backBaseUrl,
-    headers: undefined,
-    max_retry: undefined,
-    timeout: undefined,
-  });
+  const safeFilename = encodeURIComponent(filename ?? "");
+  const method = schema.methods.find((candidate) => candidate !== "OPTIONS");
+  const totalChunks = Math.max(1, Math.ceil(data.length / CHUNK_SIZE_BYTES));
+
+  let response: unknown = undefined;
+  for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex += 1) {
+    const start = chunkIndex * CHUNK_SIZE_BYTES;
+    const chunk = data.subarray(start, start + CHUNK_SIZE_BYTES);
+    const route =
+      `${schema.$id}?filename=${safeFilename}` +
+      `&chunk_index=${chunkIndex}&total_chunks=${totalChunks}`;
+    const params = new Blob([new Uint8Array(chunk)], { type });
+
+    // oxlint-disable-next-line no-await-in-loop
+    response = await fetchRaw({
+      route,
+      method,
+      params,
+      baseURL: backBaseUrl,
+      headers: undefined,
+      max_retry: undefined,
+      timeout: undefined,
+    });
+  }
 
   return response;
 }

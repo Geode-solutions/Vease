@@ -160,11 +160,14 @@ function useAuth(): UseAuthReturn {
     };
     const params = { email };
     try {
-      const res = (await APIStore.request({ schema, params }, { skip_feedback_error: true })) as {
-        success?: boolean;
-        error?: string;
-      };
-      if (res && res.error) {
+      const res = await APIStore.request({ schema, params }, { skip_feedback_error: true });
+      if (
+        typeof res === "object" &&
+        res !== null &&
+        "error" in res &&
+        typeof res.error === "string" &&
+        res.error !== ""
+      ) {
         throw new Error(res.error);
       }
       return res;

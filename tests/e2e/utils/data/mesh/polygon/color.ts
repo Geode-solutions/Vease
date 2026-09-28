@@ -1,5 +1,5 @@
 import type { Locator, Page } from "@playwright/test";
-import { meshViewerObjectType, polygonsFeatureName } from "@tests/utils/constants";
+import { meshViewerObjectType, polygonsFeatureName } from "@vease_tests/utils/constants";
 import {
   setFeatureColor,
   setFeatureColorInput,
@@ -8,7 +8,7 @@ import {
   setFeatureCopyColor,
   setFeatureOpacity,
   setFeaturePasteColorInput,
-} from "@tests/utils/data/helpers/color";
+} from "@vease_tests/utils/data/helpers/color";
 
 async function setMeshPolygonsOpacity(window: Page, percent: number): Promise<void> {
   await setFeatureOpacity(window, meshViewerObjectType, polygonsFeatureName, percent);
