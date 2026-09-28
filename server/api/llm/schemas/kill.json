@@ -1,0 +1,8 @@
+{
+  "route": "/kill",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false
+}

@@ -8,5 +8,5 @@ import { getLlamaStatus } from "@vease_server/utils/llama_cpp";
 
 export default defineEventHandler(() => ({
   statusCode: 200,
-  ...getLlamaStatus(),
+  running: getLlamaStatus().running,
 }));
