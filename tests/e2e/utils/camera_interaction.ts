@@ -162,6 +162,23 @@ async function clearRuler(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function toggleZoomToBox(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  await window.getByTestId("zoomToBoxButton").click();
+  await waitForActionSettled(window);
+}
+
+async function drawZoomBox(window: Page, deltaX: number, deltaY: number): Promise<void> {
+  const overlay = window.getByTestId("zoomBoxOverlay");
+  await dragElement(window, overlay, { deltaX, deltaY });
+}
+
+async function applyZoomBox(window: Page): Promise<void> {
+  await window.getByTestId("zoomBoxApplyButton").click();
+  await moveMouseOutOfTheWay(window);
+  await waitForActionSettled(window);
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -184,4 +201,7 @@ export {
   toggleRulerSnap,
   setRulerPointInput,
   clearRuler,
+  toggleZoomToBox,
+  drawZoomBox,
+  applyZoomBox,
 };

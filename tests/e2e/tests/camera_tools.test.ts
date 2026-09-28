@@ -14,13 +14,10 @@ import {
   toggleTargetAllVisible,
 } from "@vease_tests/utils/clipping_planes_interaction";
 import {
-  brepGeodeObjectType,
-  defaultDataName,
-  rgd3dGeodeObjectType,
-} from "@vease_tests/utils/constants";
-import {
+  applyZoomBox,
   clearRuler,
   closeCameraManager,
+  drawZoomBox,
   ensureHighlightMenuOpen,
   resetCamera,
   resetShrinkFilter,
@@ -40,7 +37,13 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
+  toggleZoomToBox,
 } from "@vease_tests/utils/camera_interaction";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  rgd3dGeodeObjectType,
+} from "@vease_tests/utils/constants";
 import {
   closeAllMenus,
   closeFeedbackSnackbar,
@@ -88,6 +91,8 @@ const RULER_POINT_2_Z = 44.9;
 const RULER_SNAP_X_RATIO = 0.5;
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
+const ZOOM_BOX_DELTA_X = -150;
+const ZOOM_BOX_DELTA_Y = -100;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -378,6 +383,21 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+});
+
+test("zoom to box draw rectangle", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await toggleZoomToBox(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
+  await expect(window.getByTestId("zoomBoxApplyButton")).toBeDisabled();
+  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
+  await expect(window.getByTestId("zoomBoxRectangle")).toBeVisible();
+  await expect(window.getByTestId("zoomBoxApplyButton")).toBeEnabled();
+});
+
+test("zoom to box apply", async ({ window }) => {
+  await applyZoomBox(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
 });
 
 test("delete all data", async ({ window }) => {
