@@ -38,6 +38,9 @@ const WAIT_TIMES = {
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
+// Fixed so number/date formatting matches the shared baselines on every OS
+const LOCALE = "en-US";
+const TIMEZONE = "UTC";
 
 function findAppExecutable(): string {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
@@ -90,7 +93,7 @@ async function runDesktopBuild(): Promise<{
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
+    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader", `--lang=${LOCALE}`],
     executablePath: appInfo,
     timeout: 60_000,
     env: {
@@ -201,6 +204,8 @@ async function navigateToApp(
 ): Promise<{ window: Page; cleanup: () => Promise<void> }> {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+    locale: LOCALE,
+    timezoneId: TIMEZONE,
     permissions: ["clipboard-read", "clipboard-write"],
   });
   context.on("page", (newPage) => {

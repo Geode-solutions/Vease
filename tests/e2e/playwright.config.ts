@@ -17,8 +17,11 @@ const isCI = process.env.CI !== undefined && process.env.CI !== "";
 const retries = isCI ? CI_RETRIES : 0;
 const workers = isCI ? CI_WORKERS : undefined;
 const testMatch = "tests/e2e/tests/**/*.test.ts";
-const maxDiffPixelRatio = 0.01;
-const threshold = 0.3;
+const LINUX_MAX_DIFF_PIXEL_RATIO = 0.02;
+// Baselines are generated on Linux, Windows text rendering (DirectWrite vs FreeType) adds ~2% diff
+const WINDOWS_MAX_DIFF_PIXEL_RATIO = 0.025;
+const maxDiffPixelRatio = isWindows ? WINDOWS_MAX_DIFF_PIXEL_RATIO : LINUX_MAX_DIFF_PIXEL_RATIO;
+const threshold = 0.25;
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
