@@ -15,9 +15,7 @@ const MILLISECONDS_IN_SECOND = 1000;
 
 export const useAPIStore = defineStore("api", () => {
   const request_counter = ref(0);
-  const base_url = ref(
-    "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
-  );
+  const base_url = ref(useRuntimeConfig().public.VEASE_API_BASE_URL);
 
   function start_request(): void {
     request_counter.value += 1;
@@ -27,14 +25,15 @@ export const useAPIStore = defineStore("api", () => {
     request_counter.value -= 1;
   }
 
-  async function request(
+  // `TResult` is asserted, not verified: the response is only checked against `schema` at runtime
+  async function request<TResult = unknown>(
     {
       schema,
       params = {},
       headers = {},
     }: { schema: ApiSchema; params?: Record<string, unknown>; headers?: Record<string, string> },
     callbacks: ApiCallbacks = {},
-  ): Promise<unknown> {
+  ): Promise<TResult> {
     console.log("[API] Request:", schema.$id);
     const start = Date.now();
 
@@ -57,7 +56,8 @@ export const useAPIStore = defineStore("api", () => {
         },
       },
     );
-    return result;
+    // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; see comment above.
+    return result as TResult;
   }
   return {
     base_url,

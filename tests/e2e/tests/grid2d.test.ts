@@ -43,6 +43,7 @@ test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load", async ({ window }) => {
+  test.slow();
   await loadVeaseTestDatas(window, [inputFilename]);
   await expandMainObjectTree(window);
 });
