@@ -10,7 +10,10 @@ import {
   invertPlaneNormal,
   selectClippingDatasets,
   setPlaneNormal,
+  setSliceAxis,
+  setSliceIndex,
   toggleClippingPlanes,
+  toggleSlice,
   toggleTargetAllVisible,
 } from "@vease_tests/utils/clipping_planes_interaction";
 import {
@@ -82,6 +85,7 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const CUSTOM_SLICE_INDEX = 5;
 const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
@@ -388,6 +392,23 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+});
+
+test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
+  await expect(window.getByTestId("sliceSwitch")).toHaveCount(0);
+});
+
+test("clipping planes slice on grid", async ({ window }) => {
+  await selectClippingDatasets(window, "test");
+  await toggleSlice(window);
+});
+
+test("clipping planes slice index", async ({ window }) => {
+  await setSliceIndex(window, CUSTOM_SLICE_INDEX);
+});
+
+test("clipping planes slice YZ axis", async ({ window }) => {
+  await setSliceAxis(window, "YZ");
 });
 
 test("delete all data", async ({ window }) => {
