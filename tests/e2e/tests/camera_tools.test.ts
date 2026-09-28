@@ -6,14 +6,7 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  addClippingPlane,
-  invertPlaneNormal,
-  selectClippingDatasets,
-  setPlaneNormal,
-  toggleClippingPlanes,
-  toggleTargetAllVisible,
-} from "@vease_tests/utils/clipping_planes_interaction";
-import {
+  activateZoomToBox,
   applyZoomBox,
   clearRuler,
   closeCameraManager,
@@ -37,8 +30,15 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
-  toggleZoomToBox,
 } from "@vease_tests/utils/camera_interaction";
+import {
+  addClippingPlane,
+  invertPlaneNormal,
+  selectClippingDatasets,
+  setPlaneNormal,
+  toggleClippingPlanes,
+  toggleTargetAllVisible,
+} from "@vease_tests/utils/clipping_planes_interaction";
 import {
   brepGeodeObjectType,
   defaultDataName,
@@ -387,17 +387,12 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
 
 test("zoom to box draw rectangle", async ({ window }) => {
   await toggleClippingPlanes(window);
-  await toggleZoomToBox(window);
-  await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
-  await expect(window.getByTestId("zoomBoxApplyButton")).toBeDisabled();
+  await activateZoomToBox(window);
   await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
-  await expect(window.getByTestId("zoomBoxRectangle")).toBeVisible();
-  await expect(window.getByTestId("zoomBoxApplyButton")).toBeEnabled();
 });
 
 test("zoom to box apply", async ({ window }) => {
   await applyZoomBox(window);
-  await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
 });
 
 test("delete all data", async ({ window }) => {

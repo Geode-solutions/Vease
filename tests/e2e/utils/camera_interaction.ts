@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
 import { dragElement, getHybridViewerCanvas } from "./viewer_interaction";
@@ -162,21 +162,26 @@ async function clearRuler(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function toggleZoomToBox(window: Page): Promise<void> {
+async function activateZoomToBox(window: Page): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("zoomToBoxButton").click();
   await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
+  await expect(window.getByTestId("zoomBoxApplyButton")).toBeDisabled();
 }
 
 async function drawZoomBox(window: Page, deltaX: number, deltaY: number): Promise<void> {
   const overlay = window.getByTestId("zoomBoxOverlay");
   await dragElement(window, overlay, { deltaX, deltaY });
+  await expect(window.getByTestId("zoomBoxRectangle")).toBeVisible();
+  await expect(window.getByTestId("zoomBoxApplyButton")).toBeEnabled();
 }
 
 async function applyZoomBox(window: Page): Promise<void> {
   await window.getByTestId("zoomBoxApplyButton").click();
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
 }
 
 export {
@@ -201,7 +206,7 @@ export {
   toggleRulerSnap,
   setRulerPointInput,
   clearRuler,
-  toggleZoomToBox,
+  activateZoomToBox,
   drawZoomBox,
   applyZoomBox,
 };
