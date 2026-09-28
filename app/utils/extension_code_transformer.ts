@@ -1,6 +1,9 @@
 declare global {
   var Vue: Record<string, unknown> | undefined;
   var Pinia: Record<string, unknown> | undefined;
+  var __VEASE_STORES__: Record<string, unknown> | undefined;
+  var __VEASE_UTILS__: Record<string, unknown> | undefined;
+  var __VEASE_SCHEMAS__: Record<string, unknown> | undefined;
 }
 
 function transformCoreImports(code: string): string {

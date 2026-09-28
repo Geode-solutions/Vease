@@ -36,11 +36,11 @@ import {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { setQuickColorMap } from "@vease_tests/utils/data/helpers/attribute";
 import { test } from "@vease_tests/utils/fixtures";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const inputFilename = "test.og_psf3d";

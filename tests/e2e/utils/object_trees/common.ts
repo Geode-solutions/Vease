@@ -1,7 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import { modalTransitionWait } from "@vease_tests/utils/constants";
-import { waitForActionSettled } from "@vease_tests/utils/viewer_interaction";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 async function clickCollapseOrExpandAll(
   window: Page,
@@ -23,7 +22,8 @@ async function collapseTreeGroup(window: Page, tree: Locator, groupName: string)
 
   if (await collapseBtn.isVisible()) {
     await collapseBtn.click();
-    await window.waitForTimeout(modalTransitionWait);
+    await collapseBtn.waitFor({ state: "hidden" });
+    await waitForActionSettled(window);
   }
 }
 

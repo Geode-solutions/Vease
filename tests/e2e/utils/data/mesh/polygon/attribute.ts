@@ -7,7 +7,6 @@ import {
   ensureMenuOpen,
   moveMouseOutOfTheWay,
   openStyleMenu,
-  waitForActionSettled,
 } from "@vease_tests/utils/viewer_interaction";
 import {
   meshViewerObjectType,
@@ -21,6 +20,7 @@ import {
   setFeatureItem,
 } from "@vease_tests/utils/data/helpers/attribute";
 import type { Page } from "@playwright/test";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 interface AttributeOptions {
   item?: number;

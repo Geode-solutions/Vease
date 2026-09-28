@@ -1,6 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 
-import { getHybridViewerCanvas, waitForActionSettled } from "./viewer_interaction";
+import { getHybridViewerCanvas } from "./viewer_interaction";
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 interface PointCoords {
   x: number;

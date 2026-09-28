@@ -378,5 +378,4 @@ export {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-  waitForActionSettled,
 };

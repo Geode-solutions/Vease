@@ -1,6 +1,8 @@
-// oxlint-disable unicorn/prefer-module
-// oxlint-disable-next-line import/no-commonjs
-const { contextBridge, ipcRenderer } = require("electron");
+// Electron's sandboxed preload scripts only support CommonJS
+// oxlint-disable-next-line typescript/no-require-imports
+import electron = require("electron");
+
+const { contextBridge, ipcRenderer } = electron;
 
 contextBridge.exposeInMainWorld("electronAPI", {
   project_folder_path: async (args: { projectFolderPath: string }): Promise<unknown> => {

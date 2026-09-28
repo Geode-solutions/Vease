@@ -85,13 +85,16 @@ const {
                 variant="outlined"
                 color="white"
                 density="compact"
-                :rules="[(v) => !!v || `${coord.toUpperCase()} is required`]"
+                :rules="[
+                  (value) =>
+                    (value !== '' && value != null) || `${coord.toUpperCase()} is required`,
+                ]"
                 class="rounded-lg text-caption"
                 theme="dark"
                 base-color="white"
                 bg-color="rgba(255, 255, 255, 0.15)"
                 @paste="handlePaste($event, index, coord)"
-                @update:modelValue="(v) => sanitizeInput(v, index, coord)"
+                @update:modelValue="(value) => sanitizeInput(value, index, coord)"
               >
                 <template #label>
                   <span class="text-white text-caption">{{ coord.toUpperCase() }}</span>

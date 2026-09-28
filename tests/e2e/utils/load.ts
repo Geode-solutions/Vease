@@ -4,6 +4,9 @@ import path from "node:path";
 // Third party imports
 import { type Locator, type Page, expect } from "@playwright/test";
 
+// Local imports
+import { waitForActionSettled } from "./wait_for_action_settled";
+
 const __dirname = import.meta.dirname;
 const loadWorkflowTimeout = 8000;
 
@@ -40,7 +43,7 @@ async function loadVeaseTestDatas(
   const finalizeImportButton = window.getByTestId("finalizeImportButton");
   await finalizeImportButton.click();
   await dataImportStepper.waitFor({ state: "detached" });
-  await window.waitForTimeout(loadTimeout);
+  await waitForActionSettled(window, loadTimeout);
 }
 
 export { loadVeaseTestDatas };
