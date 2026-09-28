@@ -177,18 +177,11 @@ async function activateZoomToBox(window: Page): Promise<void> {
   await window.getByTestId("zoomToBoxButton").click();
   await waitForActionSettled(window);
   await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
-  await expect(window.getByTestId("zoomBoxApplyButton")).toBeDisabled();
 }
 
 async function drawZoomBox(window: Page, deltaX: number, deltaY: number): Promise<void> {
   const overlay = window.getByTestId("zoomBoxOverlay");
   await dragElement(window, overlay, { deltaX, deltaY });
-  await expect(window.getByTestId("zoomBoxRectangle")).toBeVisible();
-  await expect(window.getByTestId("zoomBoxApplyButton")).toBeEnabled();
-}
-
-async function applyZoomBox(window: Page): Promise<void> {
-  await window.getByTestId("zoomBoxApplyButton").click();
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
   await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
@@ -218,5 +211,4 @@ export {
   clearRuler,
   activateZoomToBox,
   drawZoomBox,
-  applyZoomBox,
 };

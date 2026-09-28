@@ -7,7 +7,6 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   activateZoomToBox,
-  applyZoomBox,
   clearRuler,
   closeCameraManager,
   drawZoomBox,
@@ -395,14 +394,10 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
   await resetCamera(window);
 });
 
-test("zoom to box draw rectangle", async ({ window }) => {
+test("zoom to box", async ({ window }) => {
   await toggleClippingPlanes(window);
   await activateZoomToBox(window);
   await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
-});
-
-test("zoom to box apply", async ({ window }) => {
-  await applyZoomBox(window);
 });
 
 test("delete all data", async ({ window }) => {
