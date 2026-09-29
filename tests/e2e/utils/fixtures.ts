@@ -70,7 +70,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     async ({ window, screenshotMask }, use, testInfo): Promise<void> => {
       await use(undefined);
       if (testInfo.status === testInfo.expectedStatus) {
-        await expect(window).toHaveScreenshot({ mask: screenshotMask.locators });
+        // The account icon depends on login state (only cloud is logged in)
+        await expect(window).toHaveScreenshot({
+          mask: [window.getByTestId("accountNavButton"), ...screenshotMask.locators],
+        });
       }
     },
     { auto: true },
