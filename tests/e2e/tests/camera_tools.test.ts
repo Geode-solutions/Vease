@@ -11,15 +11,20 @@ import {
   closeCameraManager,
   drawZoomBox,
   ensureHighlightMenuOpen,
+  removeThresholdFilter,
   resetCamera,
   resetShrinkFilter,
+  resetThresholdFilter,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
   selectShrinkDatasets,
+  selectThresholdBlockPolyhedron,
+  selectThresholdCellAttribute,
   setRulerPointInput,
   setShrinkFactor,
+  setThresholdMinimum,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
@@ -29,6 +34,7 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
+  toggleThresholdFilter,
 } from "@vease_tests/utils/camera_interaction";
 import {
   addClippingPlane,
@@ -77,6 +83,8 @@ import { test } from "@vease_tests/utils/fixtures";
 // Constants
 const brepFilename = "test.og_brep";
 const rgd3dFilename = "grid.og_rgd3d";
+const cellAttributeName = "test_cell";
+const polyhedronAttributeName = "test_polyhedron";
 const ZSCALE_VALUE = 6.6;
 const TARGET_TOP = 100;
 const CUSTOM_NORMAL_VALUE = -0.2;
@@ -84,6 +92,7 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
@@ -392,6 +401,31 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+});
+
+test("threshold filter mesh cell attribute", async ({ window }) => {
+  await closeAllMenus(window);
+  await toggleThresholdFilter(window);
+  await selectThresholdCellAttribute(window, "grid", cellAttributeName);
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter reset", async ({ window }) => {
+  await resetThresholdFilter(window);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter model block polyhedron attribute", async ({ window }) => {
+  await selectThresholdBlockPolyhedron(window, defaultDataName, polyhedronAttributeName);
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter remove", async ({ window }) => {
+  await removeThresholdFilter(window);
+  await closeAllMenus(window);
+  await moveMouseOutOfTheWay(window);
 });
 
 test("zoom to box", async ({ window }) => {
