@@ -16,50 +16,69 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function handleTreeMenu({
-  event,
+async function treeMenuTarget({
   itemId,
   context_type,
   modelId,
   modelComponentType,
   targetComponentIds,
-}): Promise<void> {
+  targetIds,
+}): Promise<{ id: string; meta_data: unknown } | undefined> {
+  if (context_type === "geode_object_type") {
+    const [referenceId] = targetIds;
+    if (referenceId === undefined) {
+      return undefined;
+    }
+    return { id: referenceId, meta_data: { ...(await dataStore.item(referenceId)), targetIds } };
+  }
+  if (context_type === "model_component") {
+    return {
+      id: itemId,
+      meta_data: {
+        viewer_type: "model_component",
+        geode_object_type: "component",
+        modelId,
+        pickedComponentId: itemId,
+      },
+    };
+  }
+  if (context_type === "model_component_type") {
+    return {
+      id: itemId,
+      meta_data: {
+        viewer_type: "model_component_type",
+        geode_object_type: "type",
+        modelId,
+        modelComponentType,
+        targetComponentIds,
+      },
+    };
+  }
+  return { id: itemId, meta_data: await dataStore.item(itemId) };
+}
+
+async function handleTreeMenu(payload): Promise<void> {
   if (!cardContainer.value) {
     return;
   }
   const rect = cardContainer.value.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const yUI = event.clientY - rect.top;
+  const x = payload.event.clientX - rect.left;
+  const yUI = payload.event.clientY - rect.top;
 
-  let meta_data: unknown = undefined;
-  if (context_type === "model_component") {
-    meta_data = {
-      viewer_type: "model_component",
-      geode_object_type: "component",
-      modelId,
-      pickedComponentId: itemId,
-    };
-  } else if (context_type === "model_component_type") {
-    meta_data = {
-      viewer_type: "model_component_type",
-      geode_object_type: "type",
-      modelId,
-      modelComponentType,
-      targetComponentIds,
-    };
-  } else {
-    meta_data = await dataStore.item(itemId);
+  const target = await treeMenuTarget(payload);
+  if (!target) {
+    return;
   }
 
   menuStore.openMenu({
-    id: itemId,
+    id: target.id,
     x,
     y: yUI,
     width: containerWidth.value,
     height: containerHeight.value,
     top: rect.top,
     left: rect.left,
-    meta_data,
+    meta_data: target.meta_data,
   });
 }
 
