@@ -166,6 +166,22 @@ async function selectThresholdAttribute(
   await selectThresholdOption(window, "thresholdAttributeSelect", attributeName);
 }
 
+async function selectThresholdCellAttribute(
+  window: Page,
+  datasetName: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdAttribute(window, datasetName, "cell attribute", attributeName);
+}
+
+async function selectThresholdBlockPolyhedron(
+  window: Page,
+  datasetName: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdAttribute(window, datasetName, "Block polyhedron attribute", attributeName);
+}
+
 async function setThresholdMinimum(window: Page, minimum: number): Promise<void> {
   const input = window
     .getByTestId("thresholdFilterPanel")
@@ -238,7 +254,8 @@ export {
   toggleShrinkTargetAllVisible,
   selectShrinkDatasets,
   toggleThresholdFilter,
-  selectThresholdAttribute,
+  selectThresholdCellAttribute,
+  selectThresholdBlockPolyhedron,
   setThresholdMinimum,
   resetThresholdFilter,
   removeThresholdFilter,
