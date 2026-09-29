@@ -433,12 +433,6 @@ test("threshold filter remove", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("zoom to box", async ({ window }) => {
-  await toggleClippingPlanes(window);
-  await activateZoomToBox(window);
-  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
-});
-
 test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
   await toggleClippingPlanes(window);
   await expect(window.getByTestId("sliceSwitch")).toHaveCount(0);
@@ -461,6 +455,12 @@ test("clipping planes add second slice", async ({ window }) => {
   await addSlice(window);
   await setSliceAxis(window, "XY", 1);
   await setSliceIndex(window, CUSTOM_SLICE_INDEX, 1);
+});
+
+test("zoom to box", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await activateZoomToBox(window);
+  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
 });
 
 test("delete all data", async ({ window }) => {
