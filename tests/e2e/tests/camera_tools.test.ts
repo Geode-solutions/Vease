@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   addClippingPlane,
+  addSlice,
   invertPlaneNormal,
   selectClippingDatasets,
   setPlaneNormal,
@@ -409,6 +410,12 @@ test("clipping planes slice index", async ({ window }) => {
 
 test("clipping planes slice YZ axis", async ({ window }) => {
   await setSliceAxis(window, "YZ");
+});
+
+test("clipping planes add second slice", async ({ window }) => {
+  await addSlice(window);
+  await setSliceAxis(window, "XY", 1);
+  await setSliceIndex(window, CUSTOM_SLICE_INDEX, 1);
 });
 
 test("delete all data", async ({ window }) => {
