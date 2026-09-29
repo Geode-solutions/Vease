@@ -45,6 +45,7 @@ test("open collections tree", async ({ window }) => {
     collectionTypeRowName,
     getModelComponentsObjectTree(window),
   );
+  await moveMouseOutOfTheWay(window);
 });
 
 test("hide blocks", async ({ window }) => {

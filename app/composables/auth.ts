@@ -1,6 +1,8 @@
 // Third-party imports
 import {
+  type Auth,
   EmailAuthProvider,
+  type User,
   createUserWithEmailAndPassword,
   deleteUser,
   reauthenticateWithCredential,
@@ -9,12 +11,10 @@ import {
 } from "firebase/auth";
 import { appMode } from "@ogw_shared/app_mode";
 import { useFirebaseAuth } from "vuefire";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import type { Auth, User } from "firebase/auth";
-import { useInfraStore } from "@ogw_front/stores/infra.js";
+import { useInfraStore } from "@ogw_front/stores/infra";
 
 // Local imports
-import { useAPIStore } from "@vease/stores/api";
+import { useAPIStore } from "@ogw_front/stores/api";
 
 interface DesktopElectronAPI {
   save_credentials: (args: { email: string; password: string }) => void;
