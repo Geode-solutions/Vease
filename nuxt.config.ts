@@ -10,7 +10,9 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local", "microservice", "serverless", "cloud"];
+const serverDirectories = ["local", "microservice", "cloud"];
+
+let build_dir = path.resolve(__dirname, ".nuxt");
 
 // Oxlint's type-aware linter auto-discovers each file's nearest tsconfig.json
 // By walking up directories, and any "extends" on that discovered file makes
@@ -34,13 +36,13 @@ function remap_path_to_root(target: string, build_dir: string): string {
   return relative.startsWith("./") || relative.startsWith("../") ? relative : `./${relative}`;
 }
 
-function getIgnoredDirectories(directoriesToKeep) {
+function getIgnoredDirectories(directoriesToKeep: string[]): string[] {
   return serverDirectories
     .filter((directory) => !directoriesToKeep.includes(directory))
     .map((directory) => `api/${directory}/**`);
 }
 
-function nitroIgnoreConfig() {
+function nitroIgnoreConfig(): string[] {
   const mode = process.env.MODE;
   if (!mode) {
     throw new Error("No mode provided");
@@ -49,7 +51,7 @@ function nitroIgnoreConfig() {
     return getIgnoredDirectories(["local", "microservice"]);
   }
   if (mode === "CLOUD") {
-    return getIgnoredDirectories(["serverless"]);
+    return getIgnoredDirectories([]);
   }
   if (mode === "CLOUD_SERVER") {
     return getIgnoredDirectories(["cloud", "microservice"]);
@@ -68,7 +70,6 @@ export default defineNuxtConfig({
       COMMAND_BACK: "vease-back",
       COMMAND_VIEWER: "vease-viewer",
       NUXT_ROOT_PATH: __dirname,
-      PROJECT: package_json.name,
     },
   },
   extends: ["@geode/opengeodeweb-front"],
@@ -93,7 +94,8 @@ export default defineNuxtConfig({
     ],
     "@vueuse/nuxt",
     "nuxt-vuefire",
-  ],
+    "@nuxtjs/mcp-toolkit",
+  ].filter(Boolean),
 
   plugins: ["@geode/opengeodeweb-front/app/plugins/auto_store_register.ts"],
 
@@ -242,12 +244,16 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    // The build dir isn't always .nuxt (some runs use node_modules/.cache/nuxt/.nuxt),
+    // And tsConfig paths are relative to it
+    ready: (nuxt) => {
+      build_dir = nuxt.options.buildDir;
+    },
     "prepare:types": ({ tsConfig }) => {
       const paths = tsConfig.compilerOptions?.paths;
       if (!paths) {
         return;
       }
-      const build_dir = path.resolve(__dirname, ".nuxt");
       const root_paths = Object.fromEntries(
         Object.entries(paths).map(([alias, targets]) => [
           alias,
@@ -259,7 +265,7 @@ export default defineNuxtConfig({
         `${JSON.stringify(
           {
             compilerOptions: { ...tsConfig.compilerOptions, paths: root_paths },
-            include: ["**/*", "./.nuxt/nuxt.d.ts"],
+            include: ["**/*", remap_path_to_root("./nuxt.d.ts", build_dir)],
           },
           undefined,
           2,

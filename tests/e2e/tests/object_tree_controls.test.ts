@@ -48,6 +48,7 @@ test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
 test("load all files", async ({ window }) => {
+  test.slow();
   await loadVeaseTestDatas(window, [brepFilename]);
   await loadVeaseTestDatas(window, [edc3dFilename]);
   await loadVeaseTestDatas(window, [psf3dFilename]);

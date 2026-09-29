@@ -131,6 +131,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
               v-bind="props"
               flat
               color="transparent"
+              :data-testid="item.testId"
               @click="item.click"
               class="icon-style pa-2 rounded-lg"
               width="48"
