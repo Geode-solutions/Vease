@@ -11,15 +11,20 @@ import {
   closeCameraManager,
   drawZoomBox,
   ensureHighlightMenuOpen,
+  removeThresholdFilter,
   resetCamera,
   resetShrinkFilter,
+  resetThresholdFilter,
   restoreCameraPosition,
   rotateCamera,
   saveCameraPosition,
   selectCameraOrientation,
   selectShrinkDatasets,
+  selectThresholdBlockPolyhedron,
+  selectThresholdCellAttribute,
   setRulerPointInput,
   setShrinkFactor,
+  setThresholdMinimum,
   setZScaling,
   toggleCameraManager,
   toggleCameraOrientation,
@@ -29,6 +34,7 @@ import {
   toggleRulerSnap,
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
+  toggleThresholdFilter,
 } from "@vease_tests/utils/camera_interaction";
 import {
   addClippingPlane,
@@ -81,6 +87,8 @@ import { test } from "@vease_tests/utils/fixtures";
 // Constants
 const brepFilename = "test.og_brep";
 const rgd3dFilename = "grid.og_rgd3d";
+const cellAttributeName = "test_cell";
+const polyhedronAttributeName = "test_polyhedron";
 const ZSCALE_VALUE = 6.6;
 const TARGET_TOP = 100;
 const CUSTOM_NORMAL_VALUE = -0.2;
@@ -89,6 +97,7 @@ const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
 const CUSTOM_SLICE_INDEX = 5;
+const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
@@ -399,6 +408,37 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
   await resetCamera(window);
 });
 
+test("threshold filter mesh cell attribute", async ({ window }) => {
+  await closeAllMenus(window);
+  await toggleThresholdFilter(window);
+  await selectThresholdCellAttribute(window, "grid", cellAttributeName);
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter reset", async ({ window }) => {
+  await resetThresholdFilter(window);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter model block polyhedron attribute", async ({ window }) => {
+  await selectThresholdBlockPolyhedron(window, defaultDataName, polyhedronAttributeName);
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter remove", async ({ window }) => {
+  await removeThresholdFilter(window);
+  await closeAllMenus(window);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("zoom to box", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await activateZoomToBox(window);
+  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
+});
+
 test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
   await toggleClippingPlanes(window);
   await expect(window.getByTestId("sliceSwitch")).toHaveCount(0);
@@ -421,12 +461,6 @@ test("clipping planes add second slice", async ({ window }) => {
   await addSlice(window);
   await setSliceAxis(window, "XY", 1);
   await setSliceIndex(window, CUSTOM_SLICE_INDEX, 1);
-});
-
-test("zoom to box", async ({ window }) => {
-  await toggleClippingPlanes(window);
-  await activateZoomToBox(window);
-  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
 });
 
 test("delete all data", async ({ window }) => {
