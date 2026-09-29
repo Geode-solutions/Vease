@@ -3,7 +3,7 @@ import { compare } from "compare-versions";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
-import { useAPIStore } from "@vease/stores/api";
+import { useAPIStore } from "@ogw_front/stores/api";
 import { useAuth } from "./auth";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 // oxlint-disable-next-line eslint/no-duplicate-imports

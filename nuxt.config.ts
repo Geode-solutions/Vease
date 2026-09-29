@@ -10,7 +10,7 @@ import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
 
-const serverDirectories = ["local", "microservice", "serverless", "cloud"];
+const serverDirectories = ["local", "microservice", "cloud"];
 
 let build_dir = path.resolve(__dirname, ".nuxt");
 
@@ -51,7 +51,7 @@ function nitroIgnoreConfig(): string[] {
     return getIgnoredDirectories(["local", "microservice"]);
   }
   if (mode === "CLOUD") {
-    return getIgnoredDirectories(["serverless"]);
+    return getIgnoredDirectories([]);
   }
   if (mode === "CLOUD_SERVER") {
     return getIgnoredDirectories(["cloud", "microservice"]);
@@ -70,9 +70,6 @@ export default defineNuxtConfig({
       COMMAND_BACK: "vease-back",
       COMMAND_VIEWER: "vease-viewer",
       NUXT_ROOT_PATH: __dirname,
-      PROJECT: package_json.name,
-      VEASE_API_BASE_URL:
-        "https://europe-west9-project-98b129be-91e9-491b-8ce.cloudfunctions.net/api",
     },
   },
   extends: ["@geode/opengeodeweb-front"],
