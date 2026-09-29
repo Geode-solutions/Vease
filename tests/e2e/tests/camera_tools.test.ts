@@ -6,25 +6,10 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import {
-  addClippingPlane,
-  addSlice,
-  invertPlaneNormal,
-  selectClippingDatasets,
-  setPlaneNormal,
-  setSliceAxis,
-  setSliceIndex,
-  toggleClippingPlanes,
-  toggleSlice,
-  toggleTargetAllVisible,
-} from "@vease_tests/utils/clipping_planes_interaction";
-import {
-  brepGeodeObjectType,
-  defaultDataName,
-  rgd3dGeodeObjectType,
-} from "@vease_tests/utils/constants";
-import {
+  activateZoomToBox,
   clearRuler,
   closeCameraManager,
+  drawZoomBox,
   ensureHighlightMenuOpen,
   resetCamera,
   resetShrinkFilter,
@@ -45,6 +30,23 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
 } from "@vease_tests/utils/camera_interaction";
+import {
+  addClippingPlane,
+  addSlice,
+  invertPlaneNormal,
+  selectClippingDatasets,
+  setPlaneNormal,
+  setSliceAxis,
+  setSliceIndex,
+  toggleClippingPlanes,
+  toggleSlice,
+  toggleTargetAllVisible,
+} from "@vease_tests/utils/clipping_planes_interaction";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+  rgd3dGeodeObjectType,
+} from "@vease_tests/utils/constants";
 import {
   closeAllMenus,
   closeFeedbackSnackbar,
@@ -95,6 +97,8 @@ const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 const ROTATE_DRAG_EDGE_MARGIN = 2;
 const ROTATE_DRAG_Y_RATIO = 0.85;
+const ZOOM_BOX_DELTA_X = -150;
+const ZOOM_BOX_DELTA_Y = -100;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -395,7 +399,14 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
   await resetCamera(window);
 });
 
+test("zoom to box", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await activateZoomToBox(window);
+  await drawZoomBox(window, ZOOM_BOX_DELTA_X, ZOOM_BOX_DELTA_Y);
+});
+
 test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
+  await toggleClippingPlanes(window);
   await expect(window.getByTestId("sliceSwitch")).toHaveCount(0);
 });
 

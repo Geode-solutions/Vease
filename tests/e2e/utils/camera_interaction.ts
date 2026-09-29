@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
 import { dragElement, getHybridViewerCanvas } from "./viewer_interaction";
@@ -172,6 +172,21 @@ async function clearRuler(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function activateZoomToBox(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  await window.getByTestId("zoomToBoxButton").click();
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
+}
+
+async function drawZoomBox(window: Page, deltaX: number, deltaY: number): Promise<void> {
+  const overlay = window.getByTestId("zoomBoxOverlay");
+  await dragElement(window, overlay, { deltaX, deltaY });
+  await moveMouseOutOfTheWay(window);
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -194,4 +209,6 @@ export {
   toggleRulerSnap,
   setRulerPointInput,
   clearRuler,
+  activateZoomToBox,
+  drawZoomBox,
 };
