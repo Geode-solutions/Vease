@@ -14,6 +14,11 @@ const CI_RETRIES = 1;
 const CI_WORKERS = 3;
 
 const isCI = process.env.CI !== undefined && process.env.CI !== "";
+
+if (isCI) {
+  // Reaches the spawned Nitro server through process.env: the app logs plain text instead of styled consola output
+  process.env.NUXT_PUBLIC_PLAIN_LOGS = "true";
+}
 const retries = isCI ? CI_RETRIES : 0;
 const workers = isCI ? CI_WORKERS : undefined;
 const testMatch = "tests/e2e/tests/**/*.test.ts";

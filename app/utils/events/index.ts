@@ -1,4 +1,5 @@
 // Third party imports
+import { consola } from "consola";
 
 // Local imports
 import { Status } from "@ogw_front/utils/status";
@@ -30,7 +31,7 @@ function dispatchEvent(
   handlerMap: EventHandlerMap,
   source: string,
 ): void {
-  console.log(`[${source}] Event received:`, eventName, rawPayload);
+  consola.debug(`[${source}] Event received:`, eventName, rawPayload);
 
   const handler = getEventHandler(eventName, handlerMap);
 
@@ -38,7 +39,7 @@ function dispatchEvent(
   try {
     payload = typeof rawPayload === "string" ? (JSON.parse(rawPayload) as unknown) : rawPayload;
   } catch (error) {
-    console.error(`[${source}] Failed to parse payload for "${eventName}":`, rawPayload, error);
+    consola.error(`[${source}] Failed to parse payload for "${eventName}":`, rawPayload, error);
     return;
   }
 
@@ -47,21 +48,19 @@ function dispatchEvent(
 
 function connectToEventSource(): void {
   const backStore = getBackStore();
-  console.log("[PLUGIN] Connecting to EventSource...");
+  consola.info("[PLUGIN] Connecting to EventSource...");
   const url = computed(() => `${backStore.base_url}/events`);
-  console.log("[PLUGIN] EventSource URL:", url.value);
+  consola.info("[PLUGIN] EventSource URL:", url.value);
 
-  const { event, data, status, error } = useEventSource(url, Object.keys(backEventHandlers), {
+  const { event, data } = useEventSource(url, Object.keys(backEventHandlers), {
     autoReconnect: {
       retries: 3,
       delay: 1000,
       onFailed() {
-        console.error("[PLUGIN] EventSource connection failed after 3 retries.");
+        consola.error("[PLUGIN] EventSource connection failed after 3 retries.");
       },
     },
   });
-
-  console.log("[PLUGIN]", { event, data, status, error });
 
   watch(
     [event, data],
@@ -69,7 +68,7 @@ function connectToEventSource(): void {
       if (typeof eventName !== "string" || eventName === "") {
         return;
       }
-      console.log("[Back] Event received:", eventName, rawData);
+      consola.debug("[Back] Event received:", eventName, rawData);
       dispatchEvent(eventName, rawData, backEventHandlers, "BACK");
     },
     { immediate: true },

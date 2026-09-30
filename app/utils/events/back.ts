@@ -1,4 +1,5 @@
 // Third party imports
+import { consola } from "consola";
 import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 
 // Local imports
@@ -24,11 +25,11 @@ const backEventHandlers = {
     payload: unknown,
   ): Promise<void> => {
     if (!isNewDataItem(payload)) {
-      console.error("[GEODE] Invalid save_viewable_file payload:", payload);
+      consola.error("[GEODE] Invalid save_viewable_file payload:", payload);
       return;
     }
     const hybridViewerStore = getHybridViewerStore();
-    console.log("[GEODE] save_viewable_file:", payload);
+    consola.debug("[GEODE] save_viewable_file:", payload);
     await importItem(payload);
     await hybridViewerStore.remoteRender();
   },

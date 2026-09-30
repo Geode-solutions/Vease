@@ -2,6 +2,7 @@
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { appMode } from "@geode/opengeodeweb-front/shared/app_mode.js";
+import { consola } from "consola";
 import { importExtensionFile } from "@ogw_front/utils/extension";
 
 import { useAppStore } from "@ogw_front/stores/app";
@@ -53,7 +54,7 @@ async function processFiles(filesToProcess): Promise<void> {
       if (result.status === "fulfilled") {
         successCount += 1;
       } else {
-        console.error("[Extension.vue] Failed to import extension:", result.reason);
+        consola.error("[Extension.vue] Failed to import extension:", result.reason);
         errorMessage.value = `${result.reason.message}`;
       }
     }

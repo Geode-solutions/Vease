@@ -1,5 +1,6 @@
 import Bowser from "bowser";
 import { compare } from "compare-versions";
+import { consola } from "consola";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
@@ -91,22 +92,21 @@ export function useExtensions(): UseExtensionsReturn {
     const params = { extension: extensionId, platform };
     const headers = { Authorization: `Bearer ${token}` };
     const { url } = await APIStore.request<ExtensionDownloadResponse>({ schema, params, headers });
-    console.log({ url });
     const extensionFileName = `${extensionId}-${platform}.vext`;
     return { url, extensionFileName };
   }
 
   async function updateExtensions(): Promise<void> {
-    console.log("[Extensions] Updating extensions...");
+    consola.info("[Extensions] Updating extensions...");
     if (process.env.NODE_ENV === "development") {
-      console.log("[Extensions] Skipping extension update in development mode");
+      consola.info("[Extensions] Skipping extension update in development mode");
       return;
     }
     const appStore = useAppStore();
     const loadedExtensions = appStore.getLoadedExtensions();
     const extensions = await allowedExtensions();
 
-    console.log("[Extensions] Allowed extensions:", extensions);
+    consola.debug("[Extensions] Allowed extensions:", extensions);
     const extensionsFilesToDownload: ReturnType<typeof downloadExtension>[] = [];
     for (const loadedExtension of loadedExtensions) {
       const matchingExtension = extensions.find((extension) => extension.id === loadedExtension.id);
@@ -114,9 +114,9 @@ export function useExtensions(): UseExtensionsReturn {
         continue;
       }
       const latestVersion = matchingExtension.version;
-      console.log(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
+      consola.info(`[Extensions] Latest version of ${loadedExtension.id}: ${latestVersion}`);
       const currentVersion = getExtensionVersion(toExtension(loadedExtension));
-      console.log(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
+      consola.info(`[Extensions] Current version of ${loadedExtension.id}: ${currentVersion}`);
       if (
         latestVersion &&
         currentVersion !== undefined &&

@@ -1,3 +1,4 @@
+// oxlint-disable max-dependencies
 // Node imports
 import child_process from "node:child_process";
 // oxlint-disable-next-line eslint/no-duplicate-imports
@@ -7,6 +8,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+
+// Third party imports
+import { consola } from "consola";
 
 // Local imports
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
@@ -104,7 +108,7 @@ async function ensureLlamaExtracted(nuxtRootPath: string): Promise<string> {
   }
 
   const archivePath = resolveArchivePath(nuxtRootPath);
-  console.log(`Extracting bundled llama.cpp from ${archivePath} to ${extractDir}`);
+  consola.info(`Extracting bundled llama.cpp from ${archivePath} to ${extractDir}`);
   await unzipFile(archivePath, extractDir);
   executablePath = findExecutable(extractDir, executableFileName);
   if (executablePath === undefined) {
@@ -121,7 +125,7 @@ async function llamaServeArgs(
   apiKey: string,
 ): Promise<{ args: string[]; port: number }> {
   const port = await getAvailablePort();
-  console.log(`Starting llama.cpp server on http://${LLAMA_HOST}:${port} with model ${model}`);
+  consola.info(`Starting llama.cpp server on http://${LLAMA_HOST}:${port} with model ${model}`);
   const args = [
     "serve",
     "-hf",
@@ -169,13 +173,12 @@ async function startLlamaServer(model: string): Promise<LlamaServerHandle> {
   const command = await ensureLlamaExtracted(nuxtRootPath);
   const apiKey = randomUUID();
   const { args, port } = await llamaServeArgs(model, apiKey);
-  console.log("runLlamaServer", command, args);
 
   const child = child_process.spawn(command, args, {
     stdio: ["ignore", "pipe", "pipe"] as const,
   });
   child.on("spawn", () => {
-    console.log(`[llama] spawned, pid=${child.pid}`);
+    consola.info(`[llama] spawned, pid=${child.pid}`);
   });
   child.on("exit", () => {
     if (runningServer?.child === child) {
@@ -206,13 +209,12 @@ async function startLlamaServer(model: string): Promise<LlamaServerHandle> {
 async function runLlamaServer({
   model = DEFAULT_MODEL,
 }: { model?: string } = {}): Promise<LlamaServerHandle> {
-  console.log("runLlamaServer", { model });
+  consola.debug("runLlamaServer", { model });
   if (runningServer && !runningServer.child.killed) {
     return { port: runningServer.port, apiKey: runningServer.apiKey, model: runningServer.model };
   }
 
   if (startingServer) {
-    console.log("runLlamaServer", { startingServer });
     return startingServer;
   }
 

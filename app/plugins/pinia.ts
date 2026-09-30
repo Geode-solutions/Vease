@@ -82,6 +82,4 @@ const piniaPlugin = defineNuxtPlugin((nuxtApp) => {
   // $pinia.use(piniaSharedState());
 });
 
-console.log("PINIA PLUGIN");
-
 export default piniaPlugin;
