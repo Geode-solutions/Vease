@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { type MenuMetaData, useMenuStore } from "@ogw_front/stores/menu";
+import type { TreeMenuPayload } from "@ogw_front/utils/treeview";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useMenuStore } from "@ogw_front/stores/menu";
 
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView.vue";
 import Launcher from "@ogw_front/components/Launcher.vue";
@@ -16,48 +17,44 @@ const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
 
-async function treeMenuTarget({
-  itemId,
-  context_type,
-  modelId,
-  modelComponentType,
-  targetComponentIds,
-  targetIds,
-}): Promise<{ id: string; meta_data: unknown } | undefined> {
-  if (context_type === "geode_object_type") {
-    const [referenceId] = targetIds;
+async function treeMenuTarget(
+  payload: TreeMenuPayload,
+): Promise<{ id: string; meta_data: MenuMetaData } | undefined> {
+  if (payload.context_type === "geode_object_type") {
+    const [referenceId] = payload.targetIds;
     if (referenceId === undefined) {
       return undefined;
     }
-    return { id: referenceId, meta_data: { ...(await dataStore.item(referenceId)), targetIds } };
+    const referenceItem = await dataStore.item(referenceId);
+    return { id: referenceId, meta_data: { ...referenceItem, targetIds: payload.targetIds } };
   }
-  if (context_type === "model_component") {
+  if (payload.context_type === "model_component") {
     return {
-      id: itemId,
+      id: payload.itemId,
       meta_data: {
         viewer_type: "model_component",
         geode_object_type: "component",
-        modelId,
-        pickedComponentId: itemId,
+        modelId: payload.modelId,
+        pickedComponentId: payload.itemId,
       },
     };
   }
-  if (context_type === "model_component_type") {
+  if (payload.context_type === "model_component_type") {
     return {
-      id: itemId,
+      id: payload.itemId,
       meta_data: {
         viewer_type: "model_component_type",
         geode_object_type: "type",
-        modelId,
-        modelComponentType,
-        targetComponentIds,
+        modelId: payload.modelId,
+        modelComponentType: payload.modelComponentType,
+        targetComponentIds: payload.targetComponentIds,
       },
     };
   }
-  return { id: itemId, meta_data: await dataStore.item(itemId) };
+  return { id: payload.itemId, meta_data: { ...(await dataStore.item(payload.itemId)) } };
 }
 
-async function handleTreeMenu(payload): Promise<void> {
+async function handleTreeMenu(payload: TreeMenuPayload): Promise<void> {
   if (!cardContainer.value) {
     return;
   }
