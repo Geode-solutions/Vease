@@ -3,6 +3,7 @@ import path from "node:path";
 
 // Third party imports
 import { type Locator, type Page, expect } from "@playwright/test";
+import { consola } from "consola";
 
 // Local imports
 import { waitForActionSettled } from "./wait_for_action_settled";
@@ -22,7 +23,7 @@ async function loadVeaseTestDatas(
     inputDataPath = path.join(__dirname, "..", "tests", "data"),
   }: { loadTimeout?: number; inputDataPath?: string } = {},
 ): Promise<void> {
-  console.log(`Loading datas: ${inputDataFilenames.join(", ")} from ${inputDataPath}`);
+  consola.info(`Loading datas: ${inputDataFilenames.join(", ")} from ${inputDataPath}`);
   const [firstInputDataFilename] = inputDataFilenames;
   if (firstInputDataFilename === undefined) {
     throw new Error("No input data filenames provided");

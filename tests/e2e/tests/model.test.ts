@@ -4,6 +4,7 @@
 // Node imports
 
 // Third party imports
+import { consola } from "consola";
 
 // Local imports
 import {
@@ -140,7 +141,7 @@ test("random coloring", async ({ window }) => {
 });
 
 test("object tree context menu", async ({ window }) => {
-  console.log("Right click on the BRep from object tree");
+  consola.info("Right click on the BRep from object tree");
   await expandGeodeObjectType(window, "BRep");
   const mainObjectTree = getMainObjectTree(window);
   const testItem = mainObjectTree.getByText("test", { exact: true }).first();

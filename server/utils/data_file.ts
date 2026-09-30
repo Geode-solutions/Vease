@@ -2,6 +2,7 @@
 import { CHUNK_SIZE_BYTES } from "@ogw_shared/utils/file";
 import type { MultiPartData } from "h3";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import { consola } from "consola";
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
 import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
 import { getBackBaseUrl } from "@ogw_server/utils/server_config";
@@ -39,7 +40,7 @@ function isAllowedObjectsResponse(value: unknown): value is AllowedObjectsRespon
 
 async function getAllowedFileExtensions(): Promise<string[]> {
   const backBaseUrl = getBackBaseUrl();
-  console.log(`Fetching allowed file extensions from ${backBaseUrl}`);
+  consola.info(`Fetching allowed file extensions from ${backBaseUrl}`);
   const schema = back_schemas.opengeodeweb_back.allowed_files;
   const response = await fetchSchema({
     schema,
@@ -75,7 +76,7 @@ async function uploadFile(file: MultiPartData): Promise<unknown> {
   const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.upload_file;
   const { filename, type, data } = file;
-  console.log(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
+  consola.info(`Received file: ${filename}, type: ${type}, size: ${data.length} bytes`);
 
   const safeFilename = encodeURIComponent(filename ?? "");
   const method = schema.methods.find((candidate) => candidate !== "OPTIONS");

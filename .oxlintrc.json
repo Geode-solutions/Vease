@@ -33,7 +33,7 @@
       }
     ],
     "eslint/max-statements": ["warn", 20],
-    "eslint/no-console": "warn", // Disable for debugging. Disable later to not have browser logs
+    "eslint/no-console": "error",
     "eslint/no-magic-numbers": [
       "error",
       {

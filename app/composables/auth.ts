@@ -10,6 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { appMode } from "@ogw_shared/app_mode";
+import { consola } from "consola";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
@@ -98,7 +99,7 @@ function useAuth(): UseAuthReturn {
     try {
       const { success, credentials, error } = await getDesktopElectronAPI().get_credentials();
       if (!success) {
-        console.error("Failed to get credentials:", error);
+        consola.error("Failed to get credentials:", error);
         return;
       }
       if (credentials) {
@@ -106,12 +107,12 @@ function useAuth(): UseAuthReturn {
         try {
           await login(email, password);
         } catch (loginError) {
-          console.error("Auto-login failed:", loginError);
+          consola.error("Auto-login failed:", loginError);
           await getDesktopElectronAPI().delete_credentials();
         }
       }
     } catch (error) {
-      console.error("Failed to get credentials:", error);
+      consola.error("Failed to get credentials:", error);
     }
   }
 
@@ -120,11 +121,11 @@ function useAuth(): UseAuthReturn {
       try {
         const { success } = await getDesktopElectronAPI().delete_credentials();
         if (!success) {
-          console.error("Failed to delete credentials");
+          consola.error("Failed to delete credentials");
           return;
         }
       } catch (error) {
-        console.error("Failed to delete credentials:", error);
+        consola.error("Failed to delete credentials:", error);
       }
     }
     await signOut(auth);
