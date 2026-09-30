@@ -18,7 +18,9 @@ import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
 
-consola.info("Nuxt server url", globalThis.location.host);
+// The e2e desktop harness parses this line from Electron stdout (tests/e2e/utils/navigate.ts); consola's styled browser output breaks that match, so it stays a plain console.log.
+// oxlint-disable-next-line no-console
+console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
 const infraStore = getInfraStore();
