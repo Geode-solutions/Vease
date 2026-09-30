@@ -5,6 +5,7 @@ import {
   collapseTreeGroup,
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
+  openObjectTreeContextMenu,
 } from "./common";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
@@ -76,6 +77,25 @@ async function showObjectInTree(window: Page, objectName: string): Promise<void>
   }
 }
 
+async function openGeodeObjectTypeContextMenu(
+  window: Page,
+  geodeObjectType: string,
+): Promise<void> {
+  await openObjectTreeContextMenu(window, geodeObjectType, getMainObjectTree(window));
+}
+
+async function openDataContextMenu(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
+  await expandGeodeObjectType(window, geodeObjectType);
+  const mainObjectTree = getMainObjectTree(window);
+  const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
+  await row.getByTestId("treeItemLabel").first().click({ button: "right" });
+  await waitForActionSettled(window);
+}
+
 async function toggleObjectsTree(window: Page): Promise<void> {
   await window.getByTestId("toggleObjectsButton").click();
   await waitForActionSettled(window);
@@ -113,6 +133,8 @@ export {
   focusObjectInTree,
   getMainObjectTree,
   highlightData,
+  openDataContextMenu,
+  openGeodeObjectTypeContextMenu,
   openObjectsTree,
   showObjectInTree,
   toggleObjectsTree,
