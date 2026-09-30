@@ -3,40 +3,23 @@ import { compare } from "compare-versions";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
+import type {
+  ExtensionDownloadResponse,
+  ExtensionInfo,
+  ExtensionsListResponse,
+} from "@geode/cloud-api/types";
+import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAuth } from "./auth";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { Extension } from "@vease/composables/extension_metadata";
 
-interface RemoteExtensionInfo {
-  id: string;
-  version: string;
-}
+// The API returns the Firestore extension documents as stored: `version` is not guaranteed.
+type RemoteExtensionInfo = ExtensionInfo & { version: string };
 
-function isRemoteExtensionInfo(value: unknown): value is RemoteExtensionInfo {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "id" in value &&
-    typeof value.id === "string" &&
-    "version" in value &&
-    typeof value.version === "string"
-  );
-}
-
-function isRemoteExtensionInfoArray(value: unknown): value is RemoteExtensionInfo[] {
-  return Array.isArray(value) && value.every((item) => isRemoteExtensionInfo(item));
-}
-
-interface DownloadExtensionResponse {
-  url: string;
-}
-
-function isDownloadExtensionResponse(value: unknown): value is DownloadExtensionResponse {
-  return (
-    typeof value === "object" && value !== null && "url" in value && typeof value.url === "string"
-  );
+function hasVersion(info: ExtensionInfo): info is RemoteExtensionInfo {
+  return typeof info.version === "string";
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -90,17 +73,10 @@ export function useExtensions(): UseExtensionsReturn {
       return [];
     }
     const token = await user.value.getIdToken();
-    const schema = {
-      $id: "/extensions/list",
-      methods: ["GET"],
-      type: "object",
-      properties: {},
-      required: [],
-      additionalProperties: false,
-    };
+    const schema = cloud_api_schemas.cloud_api.extensions.list;
     const headers = { Authorization: `Bearer ${token}` };
-    const result = await APIStore.request({ schema, headers });
-    return isRemoteExtensionInfoArray(result) ? result : [];
+    const result = await APIStore.request<ExtensionsListResponse>({ schema, headers });
+    return result.every((info) => hasVersion(info)) ? result : [];
   }
 
   async function downloadExtension(
@@ -110,22 +86,11 @@ export function useExtensions(): UseExtensionsReturn {
       throw new Error("User not authenticated");
     }
     const token = await user.value.getIdToken();
-    const schema = {
-      $id: "/extensions/download",
-      methods: ["POST"],
-      type: "object",
-      properties: { extension: { type: "string" }, platform: { type: "string" } },
-      required: ["extension", "platform"],
-      additionalProperties: false,
-    };
+    const schema = cloud_api_schemas.cloud_api.extensions.download;
     const platform = getUserPlatform();
     const params = { extension: extensionId, platform };
     const headers = { Authorization: `Bearer ${token}` };
-    const result = await APIStore.request({ schema, params, headers });
-    if (!isDownloadExtensionResponse(result)) {
-      throw new Error("Invalid download extension response");
-    }
-    const { url } = result;
+    const { url } = await APIStore.request<ExtensionDownloadResponse>({ schema, params, headers });
     console.log({ url });
     const extensionFileName = `${extensionId}-${platform}.vext`;
     return { url, extensionFileName };
