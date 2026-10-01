@@ -1,5 +1,5 @@
 // Third party imports
-import { createError, defineEventHandler, readMultipartFormData } from "h3";
+import { createError, readMultipartFormData } from "h3";
 import { consola } from "consola";
 
 // Local imports
@@ -10,11 +10,15 @@ import {
   uploadFile,
 } from "@vease_server/utils/data_file";
 
-import { asErrorLike } from "@vease_server/utils/errors";
 import { getFileExtension } from "@ogw_shared/utils/response_handlers/load";
 
-export default defineEventHandler(async (event) => {
-  try {
+import schemas, { type ControllerDataLoadResponse } from "vease/vease_typed_schemas.js";
+import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
+
+// Multipart file upload: the body is not JSON, so the route cannot go through defineTypedEventHandler
+export default defineRawEventHandler(
+  schemas.api.controller.data.load,
+  async (event): Promise<ControllerDataLoadResponse> => {
     const formData = (await readMultipartFormData(event)) ?? [];
     const filePart = formData.find((part) => part.name === "file");
     if (!filePart) {
@@ -42,12 +46,5 @@ export default defineEventHandler(async (event) => {
     const response = await saveViewableFile(filename, allowedGeodeObjectType);
 
     return { statusCode: 200, response };
-  } catch (error) {
-    consola.info(error);
-    const err = asErrorLike(error);
-    throw createError({
-      statusCode: err.statusCode,
-      statusMessage: err.statusMessage ?? err.message,
-    });
-  }
-});
+  },
+);

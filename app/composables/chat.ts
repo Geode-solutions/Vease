@@ -8,7 +8,7 @@ import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
-import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
+import vease_schemas from "vease/vease_typed_schemas.js";
 
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
@@ -38,7 +38,7 @@ export function useVeaseChat(): VeaseChatReturn {
   const llamaStatus = ref<LlamaStatus>({ running: false });
 
   async function refreshLlamaStatus(): Promise<void> {
-    llamaStatus.value = await appStore.request<LlamaStatus>({
+    llamaStatus.value = await appStore.request({
       schema: vease_schemas.api.llm.status,
     });
   }

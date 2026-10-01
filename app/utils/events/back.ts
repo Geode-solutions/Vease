@@ -1,6 +1,6 @@
 // Third party imports
 import { consola } from "consola";
-import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 
 // Local imports
 import type { NewDataItem } from "@ogw_front/stores/data";

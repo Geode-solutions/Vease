@@ -4,5 +4,18 @@
   "type": "object",
   "properties": {},
   "required": [],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "running": {
+        "type": "boolean"
+      }
+    },
+    "required": ["statusCode", "running"],
+    "additionalProperties": false
+  }
 }
