@@ -1,129 +1,25 @@
 <script setup lang="ts">
-import { type MenuMetaData, useMenuStore } from "@ogw_front/stores/menu";
-import type { TreeMenuPayload } from "@ogw_front/utils/treeview";
-import { useDataStore } from "@ogw_front/stores/data";
+import { useMenuStore } from "@ogw_front/stores/menu";
+import { useViewerContextMenu } from "@ogw_front/composables/viewer_context_menu";
 
 import HybridRenderingView from "@ogw_front/components/HybridRenderingView.vue";
 import Launcher from "@ogw_front/components/Launcher.vue";
 import ViewerUI from "@ogw_front/components/Viewer/Ui.vue";
 
 const menuStore = useMenuStore();
-const dataStore = useDataStore();
-
-const containerWidth = ref(0);
-const containerHeight = ref(0);
 const cardContainer = useTemplateRef("cardContainer");
 const viewerUI = useTemplateRef("viewerUI");
 
 const { display_menu } = storeToRefs(menuStore);
-
-async function treeMenuTarget(
-  payload: TreeMenuPayload,
-): Promise<{ id: string; meta_data: MenuMetaData } | undefined> {
-  if (payload.context_type === "geode_object_type") {
-    const [referenceId] = payload.targetIds;
-    if (referenceId === undefined) {
-      return undefined;
-    }
-    const referenceItem = await dataStore.item(referenceId);
-    return { id: referenceId, meta_data: { ...referenceItem, targetIds: payload.targetIds } };
-  }
-  if (payload.context_type === "model_component") {
-    return {
-      id: payload.itemId,
-      meta_data: {
-        viewer_type: "model_component",
-        geode_object_type: "component",
-        modelId: payload.modelId,
-        pickedComponentId: payload.itemId,
-      },
-    };
-  }
-  if (payload.context_type === "model_component_type") {
-    return {
-      id: payload.itemId,
-      meta_data: {
-        viewer_type: "model_component_type",
-        geode_object_type: "type",
-        modelId: payload.modelId,
-        modelComponentType: payload.modelComponentType,
-        targetComponentIds: payload.targetComponentIds,
-      },
-    };
-  }
-  return { id: payload.itemId, meta_data: { ...(await dataStore.item(payload.itemId)) } };
-}
-
-async function handleTreeMenu(payload: TreeMenuPayload): Promise<void> {
-  if (!cardContainer.value) {
-    return;
-  }
-  const rect = cardContainer.value.getBoundingClientRect();
-  const x = payload.event.clientX - rect.left;
-  const yUI = payload.event.clientY - rect.top;
-
-  const target = await treeMenuTarget(payload);
-  if (!target) {
-    return;
-  }
-
-  menuStore.openMenu({
-    id: target.id,
-    x,
-    y: yUI,
-    width: containerWidth.value,
-    height: containerHeight.value,
-    top: rect.top,
-    left: rect.left,
-    meta_data: target.meta_data,
-  });
-}
-
-async function openMenu(event): Promise<void> {
-  if (!cardContainer.value || !viewerUI.value) {
-    return;
-  }
-  const rect = cardContainer.value.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const yPicking = containerHeight.value - (event.clientY - rect.top);
-  const yUI = event.clientY - rect.top;
-
-  const { id: pickedId, viewer_id } = await viewerUI.value.get_viewer_id(x, yPicking);
-  if (!pickedId) {
-    return;
-  }
-  const item = await dataStore.item(pickedId);
-
-  if (item.viewer_type === "model" && viewer_id !== undefined) {
-    const component = await dataStore.getComponentByViewerId(pickedId, viewer_id);
-    if (component) {
-      item.pickedComponentId = component.geode_id;
-    }
-  }
-
-  menuStore.openMenu({
-    id: pickedId,
-    x,
-    y: yUI,
-    width: containerWidth.value,
-    height: containerHeight.value,
-    top: rect.top,
-    left: rect.left,
-    meta_data: item,
-  });
-}
-
-const { width: elWidth, height: elHeight } = useElementSize(cardContainer);
-
-watch([elWidth, elHeight], ([width, height]) => {
-  containerWidth.value = width;
-  containerHeight.value = height;
-});
+const { containerWidth, containerHeight, openTreeMenu, openViewerMenu } = useViewerContextMenu(
+  cardContainer,
+  viewerUI,
+);
 </script>
 
 <template>
   <InfraConnected>
-    <div ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openMenu">
+    <div ref="cardContainer" class="w-100 h-100 fill-height" @contextmenu.prevent="openViewerMenu">
       <HybridRenderingView>
         <template #ui>
           <ViewerUI
@@ -132,7 +28,7 @@ watch([elWidth, elHeight], ([width, height]) => {
             :display-menu="display_menu"
             :container-width="containerWidth"
             :container-height="containerHeight"
-            @show-menu="handleTreeMenu"
+            @show-menu="openTreeMenu"
           />
         </template>
       </HybridRenderingView>
