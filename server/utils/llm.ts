@@ -2,6 +2,7 @@
 import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
 import { getAppBaseUrl, getExtensionServerPorts } from "@ogw_server/utils/server_config";
 import type { LanguageModelV4 } from "@ai-sdk/provider";
+import { consola } from "consola";
 import { createGateway } from "@ai-sdk/gateway";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 
@@ -78,7 +79,7 @@ async function getToolsFromUrl(
     const client = await getMcpClient(url);
     return await client.tools();
   } catch (error) {
-    console.log(`Failed to load MCP tools from ${url}`, error);
+    consola.error(`Failed to load MCP tools from ${url}`, error);
     mcpClientsByUrl.delete(url);
     return undefined;
   }
