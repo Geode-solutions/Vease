@@ -132,6 +132,30 @@
       }
     },
     {
+      "files": ["server/api/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "h3",
+                "importNames": ["defineEventHandler", "eventHandler"],
+                "message": "Nitro routes must be typed by their schema: use defineTypedEventHandler (or defineRawEventHandler) from OpenGeodeWeb-Front server/utils/typed_handler."
+              }
+            ]
+          }
+        ],
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "defineEventHandler",
+            "message": "Nitro routes must be typed by their schema: use defineTypedEventHandler (or defineRawEventHandler) from OpenGeodeWeb-Front server/utils/typed_handler."
+          }
+        ]
+      }
+    },
+    {
       "files": ["app/plugins/**", "node_scripts/**", "server/**", "*.config.{js,ts}"],
       "rules": {
         "import/no-default-export": "off"
