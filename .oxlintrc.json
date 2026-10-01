@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["nuxt.config.ts"],
+  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
