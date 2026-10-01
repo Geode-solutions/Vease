@@ -1,10 +1,11 @@
 import child_process from "node:child_process";
+import { consola } from "consola";
 
 /**
  * @param {{ path: string }} configuration
  */
 export default function customSign(configuration) {
-  console.log("customSign", configuration);
+  consola.info("customSign", configuration);
 
   child_process.execSync(
     `AzureSignTool sign \

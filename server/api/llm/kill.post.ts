@@ -2,6 +2,7 @@
 
 // Third party imports
 import { createError, defineEventHandler } from "h3";
+import { consola } from "consola";
 
 // Local imports
 import { asErrorLike } from "@vease_server/utils/errors";
@@ -14,7 +15,7 @@ export default defineEventHandler(() => {
       statusCode: 200,
     };
   } catch (error) {
-    console.log(error);
+    consola.info(error);
     throw createError({
       statusCode: 500,
       statusMessage: asErrorLike(error).message,

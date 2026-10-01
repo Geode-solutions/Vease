@@ -3,6 +3,7 @@ import path from "node:path";
 
 // Third party imports
 import type { Page } from "@playwright/test";
+import { consola } from "consola";
 import { waitForLoadingScreen } from "./other";
 
 // Local imports
@@ -13,7 +14,7 @@ async function loadExtension(window: Page, extensionFilePath: string): Promise<v
   await waitForLoadingScreen(window);
   try {
     const inputFileExtension = path.extname(extensionFilePath);
-    console.log("loadExtension", { inputFileExtension, extensionFilePath });
+    consola.info("loadExtension", { inputFileExtension, extensionFilePath });
     await navigateToExtensionsPage(window);
     // Wait for modal transition
     await window.waitForTimeout(modalTransitionWait);
@@ -30,7 +31,7 @@ async function loadExtension(window: Page, extensionFilePath: string): Promise<v
     await window.waitForTimeout(modalTransitionWait);
     await waitForLoadingScreen(window);
   } catch (error) {
-    console.error("Failed to load extension:", error);
+    consola.error("Failed to load extension:", error);
     throw error;
   }
 }

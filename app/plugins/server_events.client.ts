@@ -1,3 +1,4 @@
+import { consola } from "consola";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
@@ -20,7 +21,7 @@ export default defineNuxtPlugin(() => {
           await setBackBaseUrl(appStore.base_url, backStore.base_url);
           connectToEventSource();
         } catch (error) {
-          console.error("[SYNC] back launch failed", error);
+          consola.error("[SYNC] back launch failed", error);
         }
       })();
     });
@@ -36,7 +37,7 @@ export default defineNuxtPlugin(() => {
           await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
           connectToWebSocket();
         } catch (error) {
-          console.error("[SYNC] viewer launch failed", error);
+          consola.error("[SYNC] viewer launch failed", error);
         }
       })();
     });

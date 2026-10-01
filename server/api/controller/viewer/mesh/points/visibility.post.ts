@@ -4,6 +4,7 @@ import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb
 
 // Third party imports
 import { callSchema } from "@ogw_shared/utils/call_schema";
+import { consola } from "consola";
 import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 import { parseBoolean } from "@ogw_shared/utils/parse_boolean";
 
@@ -34,7 +35,7 @@ export default defineEventHandler(async (event) => {
       response,
     };
   } catch (error) {
-    console.log(error);
+    consola.info(error);
     throw createError({
       statusCode: 500,
       statusMessage: asErrorLike(error).message,
