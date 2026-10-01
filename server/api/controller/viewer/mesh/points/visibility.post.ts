@@ -1,27 +1,20 @@
 // Node imports
-import { createError, defineEventHandler, readBody } from "h3";
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 // Third party imports
 import { callSchema } from "@ogw_shared/utils/call_schema";
-import { consola } from "consola";
 import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 import { parseBoolean } from "@ogw_shared/utils/parse_boolean";
 
 // Local imports
-import { asErrorLike } from "@vease_server/utils/errors";
+import { defineTypedEventHandler } from "@ogw_server/utils/typed_handler";
+import schemas from "vease/vease_typed_schemas.js";
 
-interface MeshPointsVisibilityBody {
-  id: string;
-  visibility: string | number | boolean;
-}
-
-export default defineEventHandler(async (event) => {
-  try {
-    const { id, visibility } = await readBody<MeshPointsVisibilityBody>(event);
+export default defineTypedEventHandler(
+  schemas.api.controller.viewer.mesh.points.visibility,
+  async ({ id, visibility }) => {
     const schema = opengeodeweb_viewer_schemas.opengeodeweb_viewer.mesh.points.visibility;
-    const visibilityBool = parseBoolean(visibility);
-    const params = { id, visibility: visibilityBool };
+    const params = { id, visibility: parseBoolean(visibility) };
     const client = await getViewerWebSocketClient();
     const response = await callSchema({
       schema,
@@ -29,16 +22,6 @@ export default defineEventHandler(async (event) => {
       client,
       timeout: undefined,
     });
-
-    return {
-      statusCode: 200,
-      response,
-    };
-  } catch (error) {
-    consola.info(error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: asErrorLike(error).message,
-    });
-  }
-});
+    return { statusCode: 200, response };
+  },
+);

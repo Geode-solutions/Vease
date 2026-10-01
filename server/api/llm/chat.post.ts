@@ -7,48 +7,42 @@ import {
   streamText,
   toUIMessageStream,
 } from "ai";
-import { createError, defineEventHandler, readBody } from "h3";
-import { consola } from "consola";
+import { readBody } from "h3";
 
 // Local imports
 import { type ChatProvider, getChatModel, getChatTools } from "@vease_server/utils/llm";
-import { asErrorLike } from "@vease_server/utils/errors";
+
+import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
+import schemas from "vease/vease_typed_schemas.js";
 
 const MAX_TOOL_STEPS = 5;
 
-export default defineEventHandler(async (event) => {
-  try {
-    const {
-      messages,
-      provider,
-      model: modelId,
-      gatewayApiKey,
-    } = await readBody<{
-      messages: Omit<UIMessage, "id">[];
-      provider?: ChatProvider;
-      model?: string;
-      gatewayApiKey?: string;
-    }>(event);
-    const [model, tools] = await Promise.all([
-      getChatModel({ provider, model: modelId, gatewayApiKey }),
-      getChatTools(),
-    ]);
+// Streams the answer (AI SDK UI message stream), so the route cannot go through defineTypedEventHandler
+export default defineRawEventHandler(schemas.api.llm.chat, async (event) => {
+  const {
+    messages,
+    provider,
+    model: modelId,
+    gatewayApiKey,
+  } = await readBody<{
+    messages: Omit<UIMessage, "id">[];
+    provider?: ChatProvider;
+    model?: string;
+    gatewayApiKey?: string;
+  }>(event);
+  const [model, tools] = await Promise.all([
+    getChatModel({ provider, model: modelId, gatewayApiKey }),
+    getChatTools(),
+  ]);
 
-    const result = streamText({
-      model,
-      messages: await convertToModelMessages(messages),
-      tools,
-      stopWhen: stepCountIs(MAX_TOOL_STEPS),
-    });
+  const result = streamText({
+    model,
+    messages: await convertToModelMessages(messages),
+    tools,
+    stopWhen: stepCountIs(MAX_TOOL_STEPS),
+  });
 
-    return createUIMessageStreamResponse({
-      stream: toUIMessageStream({ stream: result.stream }),
-    });
-  } catch (error) {
-    consola.info(error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: asErrorLike(error).message,
-    });
-  }
+  return createUIMessageStreamResponse({
+    stream: toUIMessageStream({ stream: result.stream }),
+  });
 });

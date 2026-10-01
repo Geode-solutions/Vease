@@ -4,8 +4,11 @@
   "type": "object",
   "properties": {
     "messages": {
-      "type": "string",
-      "minLength": 1
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
     },
     "provider": {
       "type": "string",
@@ -20,6 +23,9 @@
       "minLength": 1
     }
   },
-  "required": ["messages", "provider", "model"],
-  "additionalProperties": false
+  "required": ["messages"],
+  "additionalProperties": true,
+  "response": {
+    "format": "binary"
+  }
 }
