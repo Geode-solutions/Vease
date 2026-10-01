@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["nuxt.config.ts"],
+  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -127,6 +127,30 @@
           "error",
           {
             "case": "pascalCase"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["server/api/**"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "h3",
+                "importNames": ["defineEventHandler", "eventHandler"],
+                "message": "Nitro routes must be typed by their schema: use defineTypedEventHandler (or defineRawEventHandler) from OpenGeodeWeb-Front server/utils/typed_handler."
+              }
+            ]
+          }
+        ],
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "defineEventHandler",
+            "message": "Nitro routes must be typed by their schema: use defineTypedEventHandler (or defineRawEventHandler) from OpenGeodeWeb-Front server/utils/typed_handler."
           }
         ]
       }

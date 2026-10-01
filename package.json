@@ -30,6 +30,10 @@
       "import": "./vease_schemas.json",
       "require": "./vease_schemas.json"
     },
+    "./vease_typed_schemas.js": {
+      "types": "./vease_typed_schemas.d.ts",
+      "default": "./vease_typed_schemas.js"
+    },
     "./tests/e2e/utils/*.js": {
       "types": "./tests/e2e/utils/*.ts",
       "default": "./.build/tests/e2e/utils/*.js"
@@ -58,7 +62,7 @@
     "build:desktop:unpacked": "cross-env MODE=DESKTOP npm run build:front && electron-builder --dir",
     "preview:browser": "node .output/server/index.mjs",
     "generate": "nuxt generate",
-    "json": "npx opengeodeweb-microservice-generate --startDir server/api --key route --separator / --prefix api",
+    "json": "npx opengeodeweb-microservice-generate --startDir server/api --key route --separator / --prefix api --requireResponse",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "test": "echo \"Error: no test specified\" && exit 0",
