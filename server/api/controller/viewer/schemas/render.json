@@ -1,18 +1,9 @@
 {
-  "route": "/visibility",
+  "route": "/render",
   "methods": ["POST"],
   "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
-    },
-    "visibility": {
-      "type": ["boolean", "string", "number"]
-    }
-  },
-  "required": ["id", "visibility"],
+  "properties": {},
+  "required": [],
   "additionalProperties": false,
   "response": {
     "type": "object",

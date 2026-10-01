@@ -8,6 +8,22 @@
       "minLength": 1
     }
   },
-  "required": ["model"],
-  "additionalProperties": false
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "port": {
+        "type": "integer"
+      },
+      "apiKey": {
+        "type": "string"
+      }
+    },
+    "required": ["statusCode", "port", "apiKey"],
+    "additionalProperties": false
+  }
 }
