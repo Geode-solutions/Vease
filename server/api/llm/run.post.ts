@@ -1,28 +1,14 @@
 // Node imports
 
 // Third party imports
-import { createError, defineEventHandler, readBody } from "h3";
-import { consola } from "consola";
 
 // Local imports
-import { asErrorLike } from "@vease_server/utils/errors";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
-export default defineEventHandler(async (event) => {
-  try {
-    const { model } = await readBody<{ model?: string }>(event);
-    const { port, apiKey } = await runLlamaServer({ model });
+import { defineTypedEventHandler } from "@ogw_server/utils/typed_handler";
+import schemas from "vease/vease_typed_schemas.js";
 
-    return {
-      statusCode: 200,
-      port,
-      apiKey,
-    };
-  } catch (error) {
-    consola.info(error);
-    throw createError({
-      statusCode: 500,
-      statusMessage: asErrorLike(error).message,
-    });
-  }
+export default defineTypedEventHandler(schemas.api.llm.run, async ({ model }) => {
+  const { port, apiKey } = await runLlamaServer({ model });
+  return { statusCode: 200, port, apiKey };
 });

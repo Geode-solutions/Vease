@@ -16,6 +16,11 @@ function extractErrorMessage(value: unknown): string | undefined {
     return undefined;
   }
 
+  // ErrorResponse body sent by the typed routes
+  if ("description" in value && typeof value.description === "string") {
+    return value.description;
+  }
+
   if ("statusMessage" in value && typeof value.statusMessage === "string") {
     return value.statusMessage;
   }
