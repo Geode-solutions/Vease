@@ -1,13 +1,48 @@
-import { type Page, expect } from "@playwright/test";
+import { type Locator, type Page, expect } from "@playwright/test";
 
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
-import { dragElement, getHybridViewerCanvas } from "./viewer_interaction";
+import {
+  dragElement,
+  getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
+} from "./viewer_interaction";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
 async function resetCamera(window: Page): Promise<void> {
   await window.getByTestId("resetCameraButton").click();
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
+}
+
+const ROTATE_DRAG_STEPS = 20;
+
+// Vtk.js' RenderWindowInteractor turns a pointermove arriving more than 200ms after the previous one into a StartMouseMove, which InteractorStyleTrackballCamera ignores.
+// A skipped move mid-drag is caught up by the next handled one (rotation uses the delta from the last handled position), but a skipped final move is lost for good.
+// On slow runners (Windows + swiftshader) the last step regularly lands late, leaving the camera one step short of the requested angle.
+// Dispatching two moves at the final position within the same task guarantees the second one is handled, so the full delta is always applied.
+async function commitPointerPosition(
+  hybridViewerCanvas: Locator,
+  clientX: number,
+  clientY: number,
+): Promise<void> {
+  await hybridViewerCanvas.evaluate(
+    (canvas, position) => {
+      for (let index = 0; index < 2; index += 1) {
+        canvas.dispatchEvent(
+          new PointerEvent("pointermove", {
+            bubbles: true,
+            buttons: 1,
+            clientX: position.x,
+            clientY: position.y,
+            isPrimary: true,
+            pointerId: 1,
+            pointerType: "mouse",
+          }),
+        );
+      }
+    },
+    { x: clientX, y: clientY },
+  );
 }
 
 async function rotateCamera(
@@ -17,12 +52,17 @@ async function rotateCamera(
   start: { x?: number; y?: number } = {},
 ): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  await dragElement(window, hybridViewerCanvas, {
-    startX: start.x,
-    startY: start.y,
-    deltaX,
-    deltaY,
-  });
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
+  const startX = start.x ?? box.x + box.width / 2;
+  const startY = start.y ?? box.y + box.height / 2;
+  const endX = startX + deltaX;
+  const endY = startY + deltaY;
+  await window.mouse.move(startX, startY);
+  await window.mouse.down();
+  await window.mouse.move(endX, endY, { steps: ROTATE_DRAG_STEPS });
+  await commitPointerPosition(hybridViewerCanvas, endX, endY);
+  await window.mouse.up();
+  await waitForActionSettled(window);
 }
 
 async function toggleCenterOnClick(window: Page): Promise<void> {

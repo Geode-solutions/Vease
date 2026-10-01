@@ -5,6 +5,7 @@ import GlobalComponents from "@vease/components/Extensions/GlobalComponents.vue"
 import InfraConnected from "@ogw_front/components/InfraConnected.vue";
 import Launcher from "@ogw_front/components/Launcher.vue";
 import { Status } from "@ogw_front/utils/status";
+import { consola } from "consola";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
@@ -17,6 +18,8 @@ import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
 
+// The e2e desktop harness parses this line from Electron stdout (tests/e2e/utils/navigate.ts); consola's styled browser output breaks that match, so it stays a plain console.log.
+// oxlint-disable-next-line no-console
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
@@ -28,7 +31,7 @@ const { isUserAuthenticated, autoLogin } = useAuth();
 autoLogin();
 
 runFunctionWhenMicroservicesConnected(() => {
-  console.log("[APP] App is ready");
+  consola.info("[APP] App is ready");
   setIsAppReady(appStore.base_url, true);
 });
 

@@ -1,4 +1,5 @@
 // Third party imports
+import { consola } from "consola";
 import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 // Local imports
@@ -22,7 +23,7 @@ const viewerEventHandlers = {
     payload: unknown,
   ): void => {
     if (!isMeshPointsVisibilityPayload(payload)) {
-      console.error("[VIEWER] Invalid mesh points visibility payload:", payload);
+      consola.error("[VIEWER] Invalid mesh points visibility payload:", payload);
       return;
     }
     const dataStyleStore = getDataStyleStore();

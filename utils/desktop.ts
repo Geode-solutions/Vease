@@ -13,6 +13,7 @@ import {
   shell,
   utilityProcess,
 } from "electron";
+import { consola } from "consola";
 import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 import { setAppBaseUrl } from "@geode/opengeodeweb-front/shared/scripts.js";
 
@@ -22,7 +23,7 @@ if (process.env.CI === "e2e") {
   const defaultUserDataPath = app.getPath("userData");
   app.setPath("userData", `${defaultUserDataPath}-e2e-worker-${workerIndex}`);
 }
-console.log(`[Electron] userData path: ${app.getPath("userData")}`);
+consola.info(`[Electron] userData path: ${app.getPath("userData")}`);
 
 // Local constants
 const __dirname = import.meta.dirname;
@@ -72,9 +73,9 @@ function setupBrowserWindow(): BrowserWindow {
   void (async (): Promise<void> => {
     try {
       await window.webContents.session.clearCache();
-      console.log("Vease cache cleared!");
+      consola.info("Vease cache cleared!");
     } catch (error) {
-      console.error("[Electron] Failed to clear cache", error);
+      consola.error("[Electron] Failed to clear cache", error);
     }
   })();
 
@@ -84,7 +85,7 @@ function setupBrowserWindow(): BrowserWindow {
     const logLevels = ["VERBOSE", "INFO", "ERROR"];
     const logLevel = logLevels[level] ?? "UNKNOWN";
     // Print the console message to the terminal
-    console.log(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`);
+    consola.info(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`);
   });
   return window;
 }
@@ -92,7 +93,7 @@ function setupBrowserWindow(): BrowserWindow {
 async function createServer(): Promise<{ server: UtilityProcess; PORT: number }> {
   const serverPath = path.join(process.resourcesPath, "web", "server", "index.mjs");
 
-  console.log(`Starting server ${serverPath}`);
+  consola.info(`Starting server ${serverPath}`);
 
   const PORT = await getAvailablePort();
   const server = utilityProcess.fork(serverPath, [], {
@@ -106,10 +107,10 @@ async function createServer(): Promise<{ server: UtilityProcess; PORT: number }>
   });
 
   server.stdout?.on("data", (data: Buffer) => {
-    console.log(`[NITRO] ${data.toString()}`);
+    consola.info(`[NITRO] ${data.toString()}`);
   });
   server.stderr?.on("data", (data: Buffer) => {
-    console.log(`[NITRO] ${data.toString()}`);
+    consola.info(`[NITRO] ${data.toString()}`);
   });
   return { server, PORT };
 }
@@ -169,10 +170,10 @@ async function createNewWindow(): Promise<{
 
   // oxlint-disable-next-line eslint/func-names, eslint/func-style, unicorn/consistent-function-scoping
   let cleanup: () => void | Promise<void> = function () {
-    console.log("No cleanup function defined");
+    consola.info("No cleanup function defined");
   };
 
-  console.log("app.isPackaged", app.isPackaged);
+  consola.info("app.isPackaged", app.isPackaged);
 
   if (app.isPackaged) {
     const { server, PORT } = await createServer();
@@ -185,12 +186,12 @@ async function createNewWindow(): Promise<{
 
     // oxlint-disable-next-line eslint/func-names
     cleanup = async function (): Promise<void> {
-      console.log("Killing server process", { PORT });
+      consola.info("Killing server process", { PORT });
       await fetch(`http://localhost:${PORT}/api/local/app/kill`, { method: "POST" });
     };
   } else {
     const devServerUrl = process.env.VITE_DEV_SERVER_URL;
-    console.log("VITE_DEV_SERVER_URL", devServerUrl);
+    consola.info("VITE_DEV_SERVER_URL", devServerUrl);
     if (devServerUrl === undefined || devServerUrl === "") {
       throw new Error("VITE_DEV_SERVER_URL is not set in development mode");
     }
@@ -237,7 +238,7 @@ function isCredentialsPayload(value: unknown): value is CredentialsPayload {
 
 function saveCredentials(email: string, password: string): OperationResult {
   if (!safeStorage.isEncryptionAvailable()) {
-    console.error("[Electron] Encryption is not available on this system");
+    consola.error("[Electron] Encryption is not available on this system");
     return { success: false, error: "Encryption not available" };
   }
 
@@ -247,7 +248,7 @@ function saveCredentials(email: string, password: string): OperationResult {
     fs.writeFileSync(credentialsFilePath, encrypted);
     return { success: true };
   } catch (error) {
-    console.error("[Electron] Failed to save credentials", error);
+    consola.error("[Electron] Failed to save credentials", error);
     return { success: false, error: errorMessage(error) };
   }
 }
@@ -265,7 +266,7 @@ function getCredentials(): CredentialsResult {
     }
     return { success: true, credentials: parsed };
   } catch (error) {
-    console.error("[Electron] Failed to read credentials", error);
+    consola.error("[Electron] Failed to read credentials", error);
     return { success: false, error: errorMessage(error) };
   }
 }
@@ -277,7 +278,7 @@ function deleteCredentials(): OperationResult {
     }
     return { success: true };
   } catch (error) {
-    console.error("[Electron] Failed to delete credentials", error);
+    consola.error("[Electron] Failed to delete credentials", error);
     return { success: false, error: errorMessage(error) };
   }
 }
