@@ -5,7 +5,7 @@ import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/ru
 import { useAppStore } from "@ogw_front/stores/app";
 import { useClipboard } from "@vueuse/core";
 import { useViewerStore } from "@ogw_front/stores/viewer";
-import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
+import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
 
 interface PackageVersion {
