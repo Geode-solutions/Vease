@@ -8,6 +8,7 @@ import {
   toUIMessageStream,
 } from "ai";
 import { createError, defineEventHandler, readBody } from "h3";
+import { consola } from "consola";
 
 // Local imports
 import { type ChatProvider, getChatModel, getChatTools } from "@vease_server/utils/llm";
@@ -44,7 +45,7 @@ export default defineEventHandler(async (event) => {
       stream: toUIMessageStream({ stream: result.stream }),
     });
   } catch (error) {
-    console.log(error);
+    consola.info(error);
     throw createError({
       statusCode: 500,
       statusMessage: asErrorLike(error).message,

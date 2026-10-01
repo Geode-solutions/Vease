@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
+import { consola } from "consola";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -35,7 +36,7 @@ async function import_files(): Promise<void> {
   try {
     await importWorkflow(files_array);
   } catch (error) {
-    console.error("Import failed:", error);
+    consola.error("Import failed:", error);
   } finally {
     emit("reset_values");
     UIStore.setShowStepper(false);

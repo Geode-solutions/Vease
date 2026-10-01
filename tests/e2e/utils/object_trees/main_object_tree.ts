@@ -6,7 +6,13 @@ import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "./common";
+import { consola } from "consola";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
+
+// On the Windows desktop build the tree row sometimes receives a stray mouseleave while the (slow) highlight render runs, which drops both the tooltip and the highlight before the screenshot.
+// The cursor is never moved by the test in between, so re-hovering restores the intended state.
+const HIGHLIGHT_HOVER_ATTEMPTS = 3;
 
 function getMainObjectTree(window: Page): Locator {
   return window.getByTestId("mainObjectTree");
@@ -42,12 +48,32 @@ async function highlightData(
   await expandGeodeObjectType(window, geodeObjectType);
   const mainObjectTree = getMainObjectTree(window);
   const row = await getTreeRowByTextAndParent(window, geodeObjectType, dataName, mainObjectTree);
-  await row.getByTestId("treeItemLabel").hover();
-  await window
+  const label = row.getByTestId("treeItemLabel");
+  const tooltipIdValue = window
     .getByTestId("tooltipIdValue")
-    .filter({ hasNotText: geodeObjectType })
-    .waitFor({ state: "visible" });
-  await waitForActionSettled(window);
+    .filter({ hasNotText: geodeObjectType });
+  for (let attempt = 1; attempt <= HIGHLIGHT_HOVER_ATTEMPTS; attempt += 1) {
+    // oxlint-disable-next-line no-await-in-loop
+    await label.hover();
+    // oxlint-disable-next-line no-await-in-loop
+    await tooltipIdValue.waitFor({ state: "visible" });
+    // oxlint-disable-next-line no-await-in-loop
+    await waitForActionSettled(window);
+    // oxlint-disable-next-line no-await-in-loop
+    if (await tooltipIdValue.isVisible()) {
+      return;
+    }
+    consola.warn(
+      `highlightData: hover on "${dataName}" was lost while the highlight rendered (attempt ${attempt}/${HIGHLIGHT_HOVER_ATTEMPTS})`,
+    );
+    // oxlint-disable-next-line no-await-in-loop
+    await moveMouseOutOfTheWay(window);
+    // oxlint-disable-next-line no-await-in-loop
+    await waitForActionSettled(window);
+  }
+  throw new Error(
+    `highlightData: hover on "${dataName}" kept being lost after ${HIGHLIGHT_HOVER_ATTEMPTS} attempts`,
+  );
 }
 
 async function focusObjectInTree(

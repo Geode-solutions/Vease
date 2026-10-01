@@ -1,5 +1,6 @@
 // Third party imports
 import { createError, defineEventHandler, readMultipartFormData } from "h3";
+import { consola } from "consola";
 
 // Local imports
 import {
@@ -37,12 +38,12 @@ export default defineEventHandler(async (event) => {
         statusMessage: "No allowed geode object type found for file",
       });
     }
-    console.log(`Saving file as ${allowedGeodeObjectType}...`);
+    consola.info(`Saving file as ${allowedGeodeObjectType}...`);
     const response = await saveViewableFile(filename, allowedGeodeObjectType);
 
     return { statusCode: 200, response };
   } catch (error) {
-    console.log(error);
+    consola.info(error);
     const err = asErrorLike(error);
     throw createError({
       statusCode: err.statusCode,

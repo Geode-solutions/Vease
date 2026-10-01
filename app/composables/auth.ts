@@ -10,10 +10,13 @@ import {
   signOut,
 } from "firebase/auth";
 import { appMode } from "@ogw_shared/app_mode";
+import { consola } from "consola";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 // Local imports
+import type { SendEmailResponse } from "@geode/cloud-api/types";
+import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
 import { useAPIStore } from "@ogw_front/stores/api";
 
 interface DesktopElectronAPI {
@@ -66,14 +69,7 @@ function useAuth(): UseAuthReturn {
 
   async function register(email: string, password: string): Promise<User> {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
-    const schema = {
-      $id: "/auth/send-verification",
-      methods: ["POST"],
-      type: "object",
-      properties: { email: { type: "string" } },
-      required: ["email"],
-      additionalProperties: false,
-    };
+    const schema = cloud_api_schemas.cloud_api.auth.send_verification;
     const params = { email };
     await APIStore.request({ schema, params });
     await signOut(auth);
@@ -103,7 +99,7 @@ function useAuth(): UseAuthReturn {
     try {
       const { success, credentials, error } = await getDesktopElectronAPI().get_credentials();
       if (!success) {
-        console.error("Failed to get credentials:", error);
+        consola.error("Failed to get credentials:", error);
         return;
       }
       if (credentials) {
@@ -111,12 +107,12 @@ function useAuth(): UseAuthReturn {
         try {
           await login(email, password);
         } catch (loginError) {
-          console.error("Auto-login failed:", loginError);
+          consola.error("Auto-login failed:", loginError);
           await getDesktopElectronAPI().delete_credentials();
         }
       }
     } catch (error) {
-      console.error("Failed to get credentials:", error);
+      consola.error("Failed to get credentials:", error);
     }
   }
 
@@ -125,11 +121,11 @@ function useAuth(): UseAuthReturn {
       try {
         const { success } = await getDesktopElectronAPI().delete_credentials();
         if (!success) {
-          console.error("Failed to delete credentials");
+          consola.error("Failed to delete credentials");
           return;
         }
       } catch (error) {
-        console.error("Failed to delete credentials:", error);
+        consola.error("Failed to delete credentials:", error);
       }
     }
     await signOut(auth);
@@ -149,28 +145,14 @@ function useAuth(): UseAuthReturn {
     await logout();
   }
 
-  async function resetPassword(email: string): Promise<unknown> {
-    const schema = {
-      $id: "/auth/send-password-reset",
-      methods: ["POST"],
-      type: "object",
-      properties: { email: { type: "string" } },
-      required: ["email"],
-      additionalProperties: false,
-    };
+  async function resetPassword(email: string): Promise<SendEmailResponse> {
+    const schema = cloud_api_schemas.cloud_api.auth.send_password_reset;
     const params = { email };
     try {
-      const res = await APIStore.request({ schema, params }, { skip_feedback_error: true });
-      if (
-        typeof res === "object" &&
-        res !== null &&
-        "error" in res &&
-        typeof res.error === "string" &&
-        res.error !== ""
-      ) {
-        throw new Error(res.error);
-      }
-      return res;
+      return await APIStore.request<SendEmailResponse>(
+        { schema, params },
+        { skip_feedback_error: true },
+      );
     } catch (error: unknown) {
       if (error instanceof Error && error.message) {
         throw error;
