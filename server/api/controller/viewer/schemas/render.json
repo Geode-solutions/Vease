@@ -1,6 +1,8 @@
 {
   "route": "/render",
-  "methods": ["POST"],
+  "methods": [
+    "POST"
+  ],
   "type": "object",
   "properties": {},
   "required": [],
@@ -11,9 +13,17 @@
       "statusCode": {
         "type": "integer"
       },
-      "response": {}
+      "response": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
     },
-    "required": ["statusCode", "response"],
+    "required": [
+      "statusCode",
+      "response"
+    ],
     "additionalProperties": false
   }
 }

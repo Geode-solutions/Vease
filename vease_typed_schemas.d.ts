@@ -14,16 +14,23 @@ export interface ControllerViewerMeshPointsVisibilityParams {
 }
 
 export interface ControllerViewerMeshPointsVisibilityResponse {
-  response: any;
+  response: ControllerViewerMeshPointsVisibilityResponseResponse;
   statusCode: number;
+}
+
+export interface ControllerViewerMeshPointsVisibilityResponseResponse {
+  id: string;
+  visibility: boolean;
 }
 
 export interface ControllerViewerRenderParams {}
 
 export interface ControllerViewerRenderResponse {
-  response: any;
+  response: ControllerViewerRenderResponseResponse;
   statusCode: number;
 }
+
+export interface ControllerViewerRenderResponseResponse {}
 
 export interface LlmStatusParams {}
 
