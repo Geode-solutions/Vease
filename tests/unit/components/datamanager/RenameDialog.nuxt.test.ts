@@ -16,6 +16,7 @@ vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
 
 const mockItem: DataItem = {
   id: "item-1",
+  geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Original Name",
   geode_object_type: "BRep",
   viewer_type: "3D",
