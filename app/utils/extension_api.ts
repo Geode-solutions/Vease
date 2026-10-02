@@ -19,18 +19,15 @@ export const VeaseExtensionAPI = {
     if (toolDefinition.component === undefined) {
       throw new Error("Tool definition must have a component");
     }
-    const { $pinia } = useNuxtApp();
-    useUIStore($pinia).registerToolComponent(toolDefinition, extensionId);
+    useUIStore().registerToolComponent(toolDefinition, extensionId);
   },
 
   unregisterTool(toolId: string): void {
-    const { $pinia } = useNuxtApp();
-    useUIStore($pinia).unregisterTool(toolId);
+    useUIStore().unregisterTool(toolId);
   },
 
   unregisterToolsByExtension(extensionId: string): void {
-    const { $pinia } = useNuxtApp();
-    useUIStore($pinia).unregisterToolsByExtension(extensionId);
+    useUIStore().unregisterToolsByExtension(extensionId);
   },
 
   getSchemas(): {
@@ -50,30 +47,25 @@ export const VeaseExtensionAPI = {
   },
 
   registerStore(store: unknown): void {
-    const { $pinia } = useNuxtApp();
-    const appStore = useAppStore($pinia);
+    const appStore = useAppStore();
     // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided stores are expected to match RegisterableStore.
     appStore.registerStore(store as RegisterableStore);
   },
 
   get UIStore(): ReturnType<typeof useUIStore> {
-    const { $pinia } = useNuxtApp();
-    return useUIStore($pinia);
+    return useUIStore();
   },
 
   get DataBaseStore(): ReturnType<typeof useDataStore> {
-    const { $pinia } = useNuxtApp();
-    return useDataStore($pinia);
+    return useDataStore();
   },
 
   get HybridViewerStore(): ReturnType<typeof useHybridViewerStore> {
-    const { $pinia } = useNuxtApp();
-    return useHybridViewerStore($pinia);
+    return useHybridViewerStore();
   },
 
   get AppStore(): ReturnType<typeof useAppStore> {
-    const { $pinia } = useNuxtApp();
-    return useAppStore($pinia);
+    return useAppStore();
   },
 
   get Database(): typeof Database {

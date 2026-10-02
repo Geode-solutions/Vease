@@ -161,7 +161,7 @@ describe("useCreateObjectTool composable interactions", () => {
       expect(result.points.value[0]).toStrictEqual({ x: "1.5", y: "2.5", z: "0" });
     });
 
-    test("fills only the target field when a single number is pasted", () => {
+    test("fills the target field and zero-fills the others when a single number is pasted", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema }),
       );
@@ -169,7 +169,7 @@ describe("useCreateObjectTool composable interactions", () => {
 
       result.handlePaste(event, 0, "z");
 
-      expect(result.points.value[0]).toStrictEqual({ x: "", y: "", z: "42" });
+      expect(result.points.value[0]).toStrictEqual({ x: "0", y: "0", z: "42" });
     });
 
     test("does nothing when the clipboard has no numbers", () => {
