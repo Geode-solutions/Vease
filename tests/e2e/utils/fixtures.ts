@@ -1,4 +1,6 @@
 // Node imports
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 // Third party imports
@@ -42,10 +44,17 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   window: [
-    async ({ mode, browser }, use): Promise<void> => {
+    async ({ mode, browser }, use, workerInfo): Promise<void> => {
+      // Each worker runs its own app: give it its own config folder (where extensions are installed) so parallel installs don't overwrite each other
+      const configPath = fs.mkdtempSync(
+        path.join(os.tmpdir(), `vease-e2e-worker${workerInfo.parallelIndex}-`),
+      );
+      process.env.XDG_CONFIG_HOME = configPath;
+      process.env.APPDATA = configPath;
       const { window, cleanup } = await navigateToApp(mode, browser);
       await use(window);
       await cleanup();
+      fs.rmSync(configPath, { recursive: true, force: true });
     },
     { scope: "worker" },
   ],
