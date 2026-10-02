@@ -77,6 +77,7 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
 
 const mockItem1: DataItem = {
   id: "item-1",
+  geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Item 1",
   geode_object_type: "BRep",
   visible: true,
@@ -86,6 +87,7 @@ const mockItem1: DataItem = {
 
 const mockItem2: DataItem = {
   id: "item-2",
+  geode_id: "00000000-0000-0000-0000-000000000002",
   name: "Item 2",
   geode_object_type: "TriangulatedSurface3D",
   visible: false,
