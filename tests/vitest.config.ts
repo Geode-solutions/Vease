@@ -64,8 +64,8 @@ const resolveOgwAliasPlugin = {
 export default defineConfig(async () => ({
   test: {
     setupFiles: [
-      path.resolve(__dirname, "./setup_indexeddb.ts"),
-      path.resolve(__dirname, "./setup_global_hooks.ts"),
+      path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
+      path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
     ],
     projects: [
       await defineVitestProject({
@@ -83,8 +83,8 @@ export default defineConfig(async () => ({
           testTimeout: TIMEOUTS.unit,
           hookTimeout: HOOK_TIMEOUT,
           setupFiles: [
-            path.resolve(__dirname, "./setup_indexeddb.ts"),
-            path.resolve(__dirname, "./setup_global_hooks.ts"),
+            path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
+            path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
           ],
           server: {
             deps: {
@@ -110,8 +110,8 @@ export default defineConfig(async () => ({
           testTimeout: TIMEOUTS.integration,
           hookTimeout: HOOK_TIMEOUT,
           setupFiles: [
-            path.resolve(__dirname, "./setup_indexeddb.ts"),
-            path.resolve(__dirname, "./setup_global_hooks.ts"),
+            path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
+            path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
           ],
           server: {
             deps: {

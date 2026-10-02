@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { createMockEvent, eventWithBody } from "@vease_tests/server_utils";
+import { createMockEvent, eventWithBody } from "@vease_tests/utils/server_utils";
 import { consola } from "consola";
 import { getResponseStatus } from "h3";
 import handler from "@vease_server/api/llm/kill.post";

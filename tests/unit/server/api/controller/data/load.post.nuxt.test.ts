@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { buildMultipartBody, createMockEvent } from "@vease_tests/server_utils";
+import { buildMultipartBody, createMockEvent } from "@vease_tests/utils/server_utils";
 import { createError, getResponseStatus } from "h3";
 import {
   getAllowedFileExtensions,

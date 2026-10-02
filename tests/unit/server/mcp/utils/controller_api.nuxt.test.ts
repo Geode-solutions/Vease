@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { errResult, okResult } from "@vease_tests/server_utils";
+import { errResult, okResult } from "@vease_tests/utils/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 

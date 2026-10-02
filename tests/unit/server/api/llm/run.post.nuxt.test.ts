@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { consola } from "consola";
-import { eventWithBody } from "@vease_tests/server_utils";
+import { eventWithBody } from "@vease_tests/utils/server_utils";
 import { getResponseStatus } from "h3";
 import handler from "@vease_server/api/llm/run.post";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";

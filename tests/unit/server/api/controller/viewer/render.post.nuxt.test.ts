@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { createMockEvent, eventWithBody } from "@vease_tests/server_utils";
+import { createMockEvent, eventWithBody } from "@vease_tests/utils/server_utils";
 import { callSchema } from "@ogw_shared/utils/call_schema";
 import { consola } from "consola";
 import { getResponseStatus } from "h3";

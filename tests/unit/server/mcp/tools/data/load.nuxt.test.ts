@@ -4,7 +4,7 @@ import {
   fakeMcpRequestExtra,
   identityMcpToolDefinition,
   okResult,
-} from "@vease_tests/server_utils";
+} from "@vease_tests/utils/server_utils";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { readFile } from "node:fs/promises";
 import tool from "@vease_server/mcp/tools/data/load";

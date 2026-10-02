@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { consola } from "consola";
-import { createMockEvent } from "@vease_tests/server_utils";
+import { createMockEvent } from "@vease_tests/utils/server_utils";
 import { getLlamaStatus } from "@vease_server/utils/llama_cpp";
 import { getResponseStatus } from "h3";
 import handler from "@vease_server/api/llm/status.get";

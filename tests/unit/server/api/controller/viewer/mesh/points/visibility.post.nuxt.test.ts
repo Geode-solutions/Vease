@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { callSchema } from "@ogw_shared/utils/call_schema";
 import { consola } from "consola";
-import { eventWithBody } from "@vease_tests/server_utils";
+import { eventWithBody } from "@vease_tests/utils/server_utils";
 import { getResponseStatus } from "h3";
 import { getViewerWebSocketClient } from "@ogw_server/utils/server_config";
 import handler from "@vease_server/api/controller/viewer/mesh/points/visibility.post";

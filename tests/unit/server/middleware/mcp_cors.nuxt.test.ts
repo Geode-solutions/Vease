@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 import { getHeader, setHeader, setResponseStatus } from "h3";
-import { createMockEvent } from "@vease_tests/server_utils";
+import { createMockEvent } from "@vease_tests/utils/server_utils";
 import handler from "@vease_server/middleware/mcp_cors";
 
 vi.setConfig({ testTimeout: 10_000 });
