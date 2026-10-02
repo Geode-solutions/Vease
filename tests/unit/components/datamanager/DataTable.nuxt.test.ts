@@ -10,6 +10,7 @@ const EXPECTED_EVENT_COUNT = 1;
 
 const mockItem1: DataItem = {
   id: "item-1",
+  geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Mesh Model",
   geode_object_type: "BRep",
   viewer_type: "3D",
@@ -19,6 +20,7 @@ const mockItem1: DataItem = {
 
 const mockItem2: DataItem = {
   id: "item-2",
+  geode_id: "00000000-0000-0000-0000-000000000002",
   name: "Surface Data",
   geode_object_type: "TriangulatedSurface3D",
   viewer_type: "3D",
