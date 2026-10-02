@@ -1,9 +1,9 @@
 import { CHAT_PROVIDER, getChatModel, getChatTools } from "@vease_server/utils/llm";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type { getAppBaseUrl, getExtensionServerPorts } from "@ogw_server/utils/server_config";
 import { createGateway } from "@ai-sdk/gateway";
 import { createMCPClient } from "@ai-sdk/mcp";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import type { getAppBaseUrl } from "@ogw_server/utils/server_config";
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -45,6 +45,7 @@ vi.mock(import("@ai-sdk/mcp"), () => ({
 
 vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getAppBaseUrl: vi.fn<typeof getAppBaseUrl>().mockReturnValue("http://localhost:3000"),
+  getExtensionServerPorts: vi.fn<typeof getExtensionServerPorts>().mockReturnValue(new Map()),
 }));
 
 describe("the LLM server utilities", () => {
