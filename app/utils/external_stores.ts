@@ -10,8 +10,22 @@ interface ApiSchema {
   [key: string]: unknown;
 }
 
-function getBackStore(): ReturnType<typeof useBackStore> {
-  return useBackStore();
+interface ApiCallbacks {
+  response_function?: (response: unknown) => unknown;
+  request_error_function?: (error: unknown) => unknown;
+  response_error_function?: (response: unknown) => unknown;
+}
+
+interface BackStoreExtra {
+  base_url: string;
+  request: (
+    args: { schema: ApiSchema; params?: Record<string, unknown> },
+    callbacks?: ApiCallbacks,
+  ) => Promise<unknown>;
+}
+
+function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
+  return useBackStore() as unknown as ReturnType<typeof useBackStore> & BackStoreExtra;
 }
 
 interface HybridViewerStoreExtra {

@@ -27,6 +27,7 @@ function stateHasKey(key: string, $state: StateTree): boolean {
 // oxlint-disable-next-line eslint/no-unused-vars
 function piniaSharedState() {
   return async ({ store, options }: PiniaPluginContext): Promise<void> => {
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     const omittedKeys = (options as ShareOptions).share?.omit ?? [];
     store.is_sync = false;
     const channel = new BroadcastChannel<SharedStateMessage | undefined>(store.$id);
