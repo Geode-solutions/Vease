@@ -5,9 +5,7 @@
         "load": {
           "$id": "api/controller/data/load",
           "route": "/load",
-          "methods": [
-            "POST"
-          ],
+          "methods": ["POST"],
           "type": "object",
           "properties": {},
           "required": [],
@@ -20,10 +18,7 @@
               },
               "response": {}
             },
-            "required": [
-              "statusCode",
-              "response"
-            ],
+            "required": ["statusCode", "response"],
             "additionalProperties": false
           }
         }
@@ -34,9 +29,7 @@
             "visibility": {
               "$id": "api/controller/viewer/mesh/points/visibility",
               "route": "/visibility",
-              "methods": [
-                "POST"
-              ],
+              "methods": ["POST"],
               "type": "object",
               "properties": {
                 "id": {
@@ -45,17 +38,10 @@
                   "maxLength": 32
                 },
                 "visibility": {
-                  "type": [
-                    "boolean",
-                    "string",
-                    "number"
-                  ]
+                  "type": ["boolean", "string", "number"]
                 }
               },
-              "required": [
-                "id",
-                "visibility"
-              ],
+              "required": ["id", "visibility"],
               "additionalProperties": false,
               "response": {
                 "type": "object",
@@ -73,17 +59,11 @@
                         "type": "boolean"
                       }
                     },
-                    "required": [
-                      "id",
-                      "visibility"
-                    ],
+                    "required": ["id", "visibility"],
                     "additionalProperties": false
                   }
                 },
-                "required": [
-                  "statusCode",
-                  "response"
-                ],
+                "required": ["statusCode", "response"],
                 "additionalProperties": false
               }
             }
@@ -92,9 +72,7 @@
         "render": {
           "$id": "api/controller/viewer/render",
           "route": "/render",
-          "methods": [
-            "POST"
-          ],
+          "methods": ["POST"],
           "type": "object",
           "properties": {},
           "required": [],
@@ -112,10 +90,7 @@
                 "additionalProperties": false
               }
             },
-            "required": [
-              "statusCode",
-              "response"
-            ],
+            "required": ["statusCode", "response"],
             "additionalProperties": false
           }
         }
@@ -125,9 +100,7 @@
       "status": {
         "$id": "api/llm/status",
         "route": "/status",
-        "methods": [
-          "GET"
-        ],
+        "methods": ["GET"],
         "type": "object",
         "properties": {},
         "required": [],
@@ -142,19 +115,14 @@
               "type": "boolean"
             }
           },
-          "required": [
-            "statusCode",
-            "running"
-          ],
+          "required": ["statusCode", "running"],
           "additionalProperties": false
         }
       },
       "run": {
         "$id": "api/llm/run",
         "route": "/run",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {
           "model": {
@@ -177,20 +145,14 @@
               "type": "string"
             }
           },
-          "required": [
-            "statusCode",
-            "port",
-            "apiKey"
-          ],
+          "required": ["statusCode", "port", "apiKey"],
           "additionalProperties": false
         }
       },
       "kill": {
         "$id": "api/llm/kill",
         "route": "/kill",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {},
         "required": [],
@@ -202,18 +164,14 @@
               "type": "integer"
             }
           },
-          "required": [
-            "statusCode"
-          ],
+          "required": ["statusCode"],
           "additionalProperties": false
         }
       },
       "chat": {
         "$id": "api/llm/chat",
         "route": "/chat",
-        "methods": [
-          "POST"
-        ],
+        "methods": ["POST"],
         "type": "object",
         "properties": {
           "messages": {
@@ -236,9 +194,7 @@
             "minLength": 1
           }
         },
-        "required": [
-          "messages"
-        ],
+        "required": ["messages"],
         "additionalProperties": true,
         "response": {
           "format": "binary"

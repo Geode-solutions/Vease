@@ -1,8 +1,6 @@
 {
   "route": "/visibility",
-  "methods": [
-    "POST"
-  ],
+  "methods": ["POST"],
   "type": "object",
   "properties": {
     "id": {
@@ -11,17 +9,10 @@
       "maxLength": 32
     },
     "visibility": {
-      "type": [
-        "boolean",
-        "string",
-        "number"
-      ]
+      "type": ["boolean", "string", "number"]
     }
   },
-  "required": [
-    "id",
-    "visibility"
-  ],
+  "required": ["id", "visibility"],
   "additionalProperties": false,
   "response": {
     "type": "object",
@@ -39,17 +30,11 @@
             "type": "boolean"
           }
         },
-        "required": [
-          "id",
-          "visibility"
-        ],
+        "required": ["id", "visibility"],
         "additionalProperties": false
       }
     },
-    "required": [
-      "statusCode",
-      "response"
-    ],
+    "required": ["statusCode", "response"],
     "additionalProperties": false
   }
 }
