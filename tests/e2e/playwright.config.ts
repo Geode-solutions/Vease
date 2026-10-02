@@ -12,6 +12,8 @@ const WINDOWS_TIMEOUT_BROWSER = 80;
 const WINDOWS_TIMEOUT_DESKTOP = 180;
 const CI_RETRIES = 1;
 const CI_WORKERS = 3;
+// Only counts tests that still fail after their retry, so flaky tests don't stop the run
+const CI_MAX_FAILURES = 1;
 
 const isCI = process.env.CI !== undefined && process.env.CI !== "";
 
@@ -21,6 +23,7 @@ if (isCI) {
 }
 const retries = isCI ? CI_RETRIES : 0;
 const workers = isCI ? CI_WORKERS : undefined;
+const maxFailures = isCI ? CI_MAX_FAILURES : undefined;
 const testMatch = "tests/e2e/tests/**/*.test.ts";
 const LINUX_MAX_DIFF_PIXEL_RATIO = 0.02;
 // Baselines are generated on Linux, Windows text rendering (DirectWrite vs FreeType) adds ~2% diff
@@ -60,6 +63,7 @@ export default defineConfig<{ mode: string }>({
   fullyParallel: true,
   workers,
   forbidOnly: Boolean(process.env.CI),
+  maxFailures,
   reporter: "html",
   use: {
     screenshot: "only-on-failure",
