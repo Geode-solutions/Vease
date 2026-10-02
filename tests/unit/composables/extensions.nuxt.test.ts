@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import Bowser from "bowser";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { setupActivePinia } from "@vease_tests/utils";
-import { useAPIStore } from "@vease/stores/api";
+import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
@@ -109,7 +109,7 @@ describe("useExtensions composable", () => {
       expect(mockUser.getIdToken).toHaveBeenCalledWith();
       /* oxlint-disable no-unsafe-type-assertion -- expect.objectContaining is typed as `any`; this matcher genuinely satisfies ApiRequestArgs["schema"] at runtime. */
       const listSchema = expect.objectContaining({
-        $id: "/extensions/list",
+        $id: "cloud_api/extensions/list",
       }) as ApiRequestArgs["schema"];
       /* oxlint-enable no-unsafe-type-assertion */
       expect(apiSpy).toHaveBeenCalledWith({
@@ -119,9 +119,12 @@ describe("useExtensions composable", () => {
       expect(result).toStrictEqual([{ id: "ext-1", version: "1.0.0" }]);
     });
 
-    test("returns an empty array when the response has an unexpected shape", async () => {
+    test("returns an empty array when an extension has no version", async () => {
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue({ not: "an array" });
+      vi.spyOn(apiStore, "request").mockResolvedValue([
+        { id: "ext-1", version: "1.0.0" },
+        { id: "ext-2" },
+      ]);
 
       const { allowedExtensions } = useExtensions();
       const result = await allowedExtensions();
@@ -150,7 +153,7 @@ describe("useExtensions composable", () => {
 
       /* oxlint-disable no-unsafe-type-assertion -- expect.objectContaining is typed as `any`; this matcher genuinely satisfies ApiRequestArgs["schema"] at runtime. */
       const downloadSchema = expect.objectContaining({
-        $id: "/extensions/download",
+        $id: "cloud_api/extensions/download",
       }) as ApiRequestArgs["schema"];
       /* oxlint-enable no-unsafe-type-assertion */
       expect(apiSpy).toHaveBeenCalledWith({
@@ -174,16 +177,6 @@ describe("useExtensions composable", () => {
 
       expect(result.extensionFileName).toBe("ext-1-unknown.vext");
     });
-
-    test("throws when the response has an unexpected shape", async () => {
-      const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue({ not: "a url" });
-
-      const { downloadExtension } = useExtensions();
-      await expect(downloadExtension("ext-1")).rejects.toThrow(
-        "Invalid download extension response",
-      );
-    });
   });
 
   describe("updateExtensions", () => {
@@ -204,8 +197,8 @@ describe("useExtensions composable", () => {
       vi.stubEnv("NODE_ENV", "production");
       mockAppStoreWithLoadedExtensions([{ id: "ext-1", metadata: { version: "1.0.0" } }]);
       const responseBySchemaId = new Map<string, unknown>([
-        ["/extensions/list", [{ id: "ext-1", version: "2.0.0" }]],
-        ["/extensions/download", { url: "https://example.com/ext-1.vext" }],
+        ["cloud_api/extensions/list", [{ id: "ext-1", version: "2.0.0" }]],
+        ["cloud_api/extensions/download", { url: "https://example.com/ext-1.vext" }],
       ]);
       const apiStore = useAPIStore();
       vi.spyOn(apiStore, "request").mockImplementation(

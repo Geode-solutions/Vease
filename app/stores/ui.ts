@@ -1,3 +1,4 @@
+import { consola } from "consola";
 import { useExtensionsStore } from "@vease/stores/extensions";
 
 interface ToolDefinition {
@@ -57,7 +58,7 @@ const useUIStore = defineStore("UI", () => {
       return;
     }
     toolsDefinitions.value.splice(index, 1);
-    console.log(`[UIStore] Tool unregistered: ${toolId}`);
+    consola.info(`[UIStore] Tool unregistered: ${toolId}`);
   }
 
   function unregisterToolsByExtension(extensionPath: string): void {
@@ -66,7 +67,7 @@ const useUIStore = defineStore("UI", () => {
       (tool) => tool.extensionPath !== extensionPath,
     );
     const removedCount = beforeCount - toolsDefinitions.value.length;
-    console.log(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
+    consola.info(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
   }
 
   function getActiveTools(): ToolDefinition[] {

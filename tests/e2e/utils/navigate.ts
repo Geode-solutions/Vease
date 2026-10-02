@@ -9,6 +9,7 @@ import { type Browser, type Page, expect } from "@playwright/test";
 import { type ElectronApplication, _electron as electron } from "playwright";
 import { findLatestBuild, parseElectronApp } from "electron-playwright-helpers";
 import type { BrowserWindow } from "electron";
+import { consola } from "consola";
 import { isWindows } from "std-env";
 import kill from "kill-port";
 
@@ -38,6 +39,9 @@ const WAIT_TIMES = {
 
 const PAGE_WIDTH = 1200;
 const PAGE_HEIGHT = 800;
+// Fixed so number/date formatting matches the shared baselines on every OS
+const LOCALE = "en-US";
+const TIMEZONE = "UTC";
 
 function findAppExecutable(): string {
   const appExecutablePath = process.env.DESKTOP_EXECUTABLE_PATH;
@@ -46,11 +50,11 @@ function findAppExecutable(): string {
     appExecutablePath !== "" &&
     fs.existsSync(appExecutablePath)
   ) {
-    console.log({ appExecutablePath });
+    consola.debug({ appExecutablePath });
     return path.join(appExecutablePath, executableName(packageJson.name));
   }
   const buildReleasePath = path.join(__dirname, "../../../release", "0.0.0");
-  console.log([buildReleasePath]);
+  consola.debug([buildReleasePath]);
   const buildPath = findLatestBuild(buildReleasePath);
   return parseElectronApp(buildPath).executable;
 }
@@ -68,14 +72,14 @@ async function waitForAppReady(url: string, timeoutMs: number): Promise<boolean>
   while (Date.now() - startTime < timeoutMs) {
     // oxlint-disable-next-line no-await-in-loop
     const response = await getIsAppReady(url);
-    console.log(`App ready check response: ${JSON.stringify(response)}`);
+    consola.info(`App ready check response: ${JSON.stringify(response)}`);
     if (isAppReadyResponse(response) && response.isReady === true) {
       return true;
     }
     // oxlint-disable-next-line no-await-in-loop
     await setTimeout(MILLISECONDS);
   }
-  console.log("Timed out waiting for app to become ready");
+  consola.info("Timed out waiting for app to become ready");
   return false;
 }
 
@@ -85,12 +89,12 @@ async function runDesktopBuild(): Promise<{
 }> {
   // Find the latest build in the out directory
   const appInfo = findAppExecutable();
-  console.log({ appInfo });
+  consola.debug({ appInfo });
   // Set the CI environment variable to true
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
   const electronApp = await electron.launch({
-    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader"],
+    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader", `--lang=${LOCALE}`],
     executablePath: appInfo,
     timeout: 60_000,
     env: {
@@ -112,18 +116,18 @@ async function runDesktopBuild(): Promise<{
   }
   stdout.on("data", (data: Buffer) => {
     const line = data.toString();
-    console.log(`stdout: ${line}`);
+    consola.info(`stdout: ${line}`);
     const match = urlRegex.exec(line);
     if (match && resolveAppUrl) {
       resolveAppUrl(`http://${match.groups?.host}`);
     }
   });
   stderr.on("data", (data: Buffer) => {
-    console.log(`stderr: ${data.toString()}`);
+    consola.info(`stderr: ${data.toString()}`);
   });
 
   electronApp.on("close", () => {
-    console.log("electronApp close");
+    consola.info("electronApp close");
   });
   const firstWindow = await electronApp.firstWindow();
   const browserWindow = await electronApp.browserWindow(firstWindow);
@@ -141,26 +145,26 @@ async function runDesktopBuild(): Promise<{
 }
 
 async function navigateToCloudApp(page: Page, url: string, maxRetries: number): Promise<void> {
-  console.log(`Navigating to: ${url}`);
+  consola.info(`Navigating to: ${url}`);
   const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
   let lastError: unknown = undefined;
   let succeeded = false;
 
   for (let attempt = 1; attempt <= maxRetries; attempt += 1) {
     try {
-      console.log(`Navigation attempt ${attempt}/${maxRetries}`);
+      consola.info(`Navigation attempt ${attempt}/${maxRetries}`);
       // oxlint-disable-next-line no-await-in-loop
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: navigationTimeout,
       });
-      console.log(`Attempt ${attempt} succeeded`);
+      consola.info(`Attempt ${attempt} succeeded`);
       succeeded = true;
       break;
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
-      console.log(`Attempt ${attempt} failed: ${message}`);
+      consola.info(`Attempt ${attempt} failed: ${message}`);
       if (attempt < maxRetries) {
         // oxlint-disable-next-line no-await-in-loop
         await setTimeout(MILLISECONDS);
@@ -173,7 +177,7 @@ async function navigateToCloudApp(page: Page, url: string, maxRetries: number): 
       cause: lastError,
     });
   }
-  console.log("Navigated to", page.url());
+  consola.info("Navigated to", page.url());
 }
 
 async function signInToCloudApp(page: Page): Promise<void> {
@@ -190,7 +194,7 @@ async function signInToCloudApp(page: Page): Promise<void> {
 
   const loadAppButton = page.getByTestId("loadAppButton");
   await loadAppButton.click();
-  console.log(`Waiting up to ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
+  consola.info(`Waiting up to ${WAIT_TIMES.cloud / MILLISECONDS} seconds for the app to load...`);
   await expect(page.getByTestId("layoutImportButton")).toBeEnabled({ timeout: WAIT_TIMES.cloud });
   await page.waitForFunction(() => document.readyState === "complete");
 }
@@ -201,25 +205,27 @@ async function navigateToApp(
 ): Promise<{ window: Page; cleanup: () => Promise<void> }> {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
+    locale: LOCALE,
+    timezoneId: TIMEZONE,
     permissions: ["clipboard-read", "clipboard-write"],
   });
   context.on("page", (newPage) => {
-    console.log("NEW PAGE CREATED:", newPage.url());
+    consola.info("NEW PAGE CREATED:", newPage.url());
     newPage.on("close", () => {
-      console.log("PAGE CLOSED:", newPage.url());
+      consola.info("PAGE CLOSED:", newPage.url());
     });
   });
   const page = await context.newPage();
-  console.log(`Testing app in ${mode} mode`);
+  consola.info(`Testing app in ${mode} mode`);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
     page.on("console", (msg) => {
-      console.log(`Browser console: ${msg.text()}`);
+      consola.info(`Browser console: ${msg.text()}`);
     });
     const appUrl = `http://localhost:${nuxtPort}`;
     await page.goto(appUrl);
-    console.log("Navigated to", page.url());
-    console.log(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
+    consola.info("Navigated to", page.url());
+    consola.info(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await waitForAppReady(appUrl, WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
 
@@ -232,14 +238,14 @@ async function navigateToApp(
     };
   } else if (mode === "CLOUD") {
     page.on("console", (msg) => {
-      console.log(`Browser console: ${msg.text()}`);
+      consola.info(`Browser console: ${msg.text()}`);
     });
 
     let prefix = "";
     const branch = execSync("git branch --show-current", {
       encoding: "utf8",
     }).trim();
-    console.log("Current branch:", branch);
+    consola.info("Current branch:", branch);
     if (branch === "next") {
       prefix = "next.";
     }
@@ -256,7 +262,7 @@ async function navigateToApp(
     };
   } else if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
-    console.log(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+    consola.info(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,

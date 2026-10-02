@@ -11,7 +11,7 @@ import {
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { appMode } from "@ogw_shared/app_mode";
 import { setupActivePinia } from "@vease_tests/utils";
-import { useAPIStore } from "@vease/stores/api";
+import { useAPIStore } from "@ogw_front/stores/api";
 import { useAuth } from "@vease/composables/auth";
 import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
@@ -91,7 +91,7 @@ describe("the useAuth composable", () => {
         expect.objectContaining({
           // oxlint-disable-next-line no-unsafe-assignment -- expect.objectContaining() is typed as any by vitest
           schema: expect.objectContaining({
-            $id: "/auth/send-password-reset",
+            $id: "cloud_api/auth/send-password-reset",
           }),
           params: { email: "test@example.com" },
         }),
@@ -100,12 +100,22 @@ describe("the useAuth composable", () => {
       expect(result).toStrictEqual({ success: true });
     });
 
-    test("throws error if API request returns an error property", async () => {
+    test("rethrows the API request error", async () => {
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue({ error: "User not found" });
+      vi.spyOn(apiStore, "request").mockRejectedValue(new Error("User not found"));
 
       const auth = useAuth();
       await expect(auth.resetPassword("nonexistent@example.com")).rejects.toThrow("User not found");
+    });
+
+    test("throws a generic error if the API request rejects with a non-Error value", async () => {
+      const apiStore = useAPIStore();
+      vi.spyOn(apiStore, "request").mockRejectedValue("network down");
+
+      const auth = useAuth();
+      await expect(auth.resetPassword("nonexistent@example.com")).rejects.toThrow(
+        "Failed to send password reset email.",
+      );
     });
   });
 
@@ -134,7 +144,7 @@ describe("the useAuth composable", () => {
         expect.objectContaining({
           // oxlint-disable-next-line no-unsafe-assignment -- expect.objectContaining() is typed as any by vitest
           schema: expect.objectContaining({
-            $id: "/auth/send-verification",
+            $id: "cloud_api/auth/send-verification",
           }),
           params: { email: "new@example.com" },
         }),

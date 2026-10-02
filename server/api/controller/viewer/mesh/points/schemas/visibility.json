@@ -3,9 +3,26 @@
   "methods": ["POST"],
   "type": "object",
   "properties": {
-    "id": { "type": "string", "minLength": 32, "maxLength": 32 },
-    "visibility": { "type": "boolean" }
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "visibility": {
+      "type": ["boolean", "string", "number"]
+    }
   },
   "required": ["id", "visibility"],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
 }

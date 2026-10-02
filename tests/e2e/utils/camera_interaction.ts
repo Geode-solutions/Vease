@@ -1,7 +1,11 @@
-import type { Page } from "@playwright/test";
+import { type Locator, type Page, expect } from "@playwright/test";
 
 import { closeAllMenus, moveMouseOutOfTheWay } from "./app_interaction";
-import { dragElement, getHybridViewerCanvas } from "./viewer_interaction";
+import {
+  dragElement,
+  getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
+} from "./viewer_interaction";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
 async function resetCamera(window: Page): Promise<void> {
@@ -10,9 +14,55 @@ async function resetCamera(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function rotateCamera(window: Page, deltaX: number, deltaY = 0): Promise<void> {
+const ROTATE_DRAG_STEPS = 20;
+
+// Vtk.js' RenderWindowInteractor turns a pointermove arriving more than 200ms after the previous one into a StartMouseMove, which InteractorStyleTrackballCamera ignores.
+// A skipped move mid-drag is caught up by the next handled one (rotation uses the delta from the last handled position), but a skipped final move is lost for good.
+// On slow runners (Windows + swiftshader) the last step regularly lands late, leaving the camera one step short of the requested angle.
+// Dispatching two moves at the final position within the same task guarantees the second one is handled, so the full delta is always applied.
+async function commitPointerPosition(
+  hybridViewerCanvas: Locator,
+  clientX: number,
+  clientY: number,
+): Promise<void> {
+  await hybridViewerCanvas.evaluate(
+    (canvas, position) => {
+      for (let index = 0; index < 2; index += 1) {
+        canvas.dispatchEvent(
+          new PointerEvent("pointermove", {
+            bubbles: true,
+            buttons: 1,
+            clientX: position.x,
+            clientY: position.y,
+            isPrimary: true,
+            pointerId: 1,
+            pointerType: "mouse",
+          }),
+        );
+      }
+    },
+    { x: clientX, y: clientY },
+  );
+}
+
+async function rotateCamera(
+  window: Page,
+  deltaX: number,
+  deltaY = 0,
+  start: { x?: number; y?: number } = {},
+): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
-  await dragElement(window, hybridViewerCanvas, { deltaX, deltaY });
+  const box = await getHybridViewerCanvasBoundingBox(hybridViewerCanvas);
+  const startX = start.x ?? box.x + box.width / 2;
+  const startY = start.y ?? box.y + box.height / 2;
+  const endX = startX + deltaX;
+  const endY = startY + deltaY;
+  await window.mouse.move(startX, startY);
+  await window.mouse.down();
+  await window.mouse.move(endX, endY, { steps: ROTATE_DRAG_STEPS });
+  await commitPointerPosition(hybridViewerCanvas, endX, endY);
+  await window.mouse.up();
+  await waitForActionSettled(window);
 }
 
 async function toggleCenterOnClick(window: Page): Promise<void> {
@@ -129,6 +179,69 @@ async function selectShrinkDatasets(window: Page, datasetName: string, index = 0
   await waitForActionSettled(window);
 }
 
+async function toggleThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("thresholdFilterButton").click();
+  await waitForActionSettled(window);
+}
+
+async function selectThresholdOption(
+  window: Page,
+  selectTestId: string,
+  name: string,
+): Promise<void> {
+  await window.getByTestId(selectTestId).click();
+  await waitForActionSettled(window);
+  await window.getByRole("option", { name, exact: true }).click();
+  await waitForActionSettled(window);
+}
+
+async function selectThresholdAttribute(
+  window: Page,
+  datasetName: string,
+  attributeType: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdOption(window, "thresholdDatasetSelect", datasetName);
+  await selectThresholdOption(window, "thresholdAttributeTypeSelect", attributeType);
+  await selectThresholdOption(window, "thresholdAttributeSelect", attributeName);
+}
+
+async function selectThresholdCellAttribute(
+  window: Page,
+  datasetName: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdAttribute(window, datasetName, "cell attribute", attributeName);
+}
+
+async function selectThresholdBlockPolyhedron(
+  window: Page,
+  datasetName: string,
+  attributeName: string,
+): Promise<void> {
+  await selectThresholdAttribute(window, datasetName, "Block polyhedron attribute", attributeName);
+}
+
+async function setThresholdMinimum(window: Page, minimum: number): Promise<void> {
+  const input = window
+    .getByTestId("thresholdFilterPanel")
+    .getByTestId("attributeMinInput")
+    .locator("input");
+  await input.fill(minimum.toString());
+  await input.press("Enter");
+  await waitForActionSettled(window);
+}
+
+async function resetThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("resetThresholdButton").click();
+  await waitForActionSettled(window);
+}
+
+async function removeThresholdFilter(window: Page): Promise<void> {
+  await window.getByTestId("removeThresholdButton").click();
+  await waitForActionSettled(window);
+}
+
 async function toggleRuler(window: Page): Promise<void> {
   await closeAllMenus(window);
   await window.getByTestId("rulerButton").click();
@@ -162,6 +275,21 @@ async function clearRuler(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function activateZoomToBox(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  await window.getByTestId("zoomToBoxButton").click();
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeVisible();
+}
+
+async function drawZoomBox(window: Page, deltaX: number, deltaY: number): Promise<void> {
+  const overlay = window.getByTestId("zoomBoxOverlay");
+  await dragElement(window, overlay, { deltaX, deltaY });
+  await moveMouseOutOfTheWay(window);
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("zoomBoxActiveChip")).toBeHidden();
+}
+
 export {
   setZScaling,
   resetCamera,
@@ -180,8 +308,16 @@ export {
   resetShrinkFilter,
   toggleShrinkTargetAllVisible,
   selectShrinkDatasets,
+  toggleThresholdFilter,
+  selectThresholdCellAttribute,
+  selectThresholdBlockPolyhedron,
+  setThresholdMinimum,
+  resetThresholdFilter,
+  removeThresholdFilter,
   toggleRuler,
   toggleRulerSnap,
   setRulerPointInput,
   clearRuler,
+  activateZoomToBox,
+  drawZoomBox,
 };

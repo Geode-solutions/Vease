@@ -1,0 +1,31 @@
+{
+  "route": "/chat",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 1
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "gatewayApiKey": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": ["messages"],
+  "additionalProperties": true,
+  "response": {
+    "format": "binary"
+  }
+}

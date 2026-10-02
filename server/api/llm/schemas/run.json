@@ -1,0 +1,29 @@
+{
+  "route": "/run",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "model": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "port": {
+        "type": "integer"
+      },
+      "apiKey": {
+        "type": "string"
+      }
+    },
+    "required": ["statusCode", "port", "apiKey"],
+    "additionalProperties": false
+  }
+}

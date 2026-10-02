@@ -1,0 +1,18 @@
+{
+  "route": "/kill",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      }
+    },
+    "required": ["statusCode"],
+    "additionalProperties": false
+  }
+}

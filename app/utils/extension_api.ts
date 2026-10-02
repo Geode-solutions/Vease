@@ -1,12 +1,12 @@
 import { Database } from "@geode/opengeodeweb-front/internal/database/database.js";
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow.js";
 import { useUIStore } from "@vease/stores/ui";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { ToolDefinition } from "@vease/stores/ui";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
-import vease_back_schemas from "@geode/vease-back/vease_back_schemas.json";
+import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
 
 import { type NewDataItem, useDataStore } from "@ogw_front/stores/data";
 import { type RegisterableStore, useAppStore } from "@ogw_front/stores/app";

@@ -1,4 +1,5 @@
 import { VeaseExtensionAPI } from "@vease/utils/extension_api";
+import { consola } from "consola";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useExtensionsStore } from "@vease/stores/extensions";
@@ -36,5 +37,5 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   extensionsStore.setExtensionAPI(extensionAPI);
   nuxtApp.vueApp.provide("extensionAPI", extensionAPI);
 
-  console.log("[Vease] Extension system initialized");
+  consola.info("[Vease] Extension system initialized");
 });
