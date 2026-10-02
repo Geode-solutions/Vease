@@ -54,6 +54,7 @@ defineExpose({
         :variant="activeTab === 'data' ? 'elevated' : 'text'"
         :elevation="activeTab === 'data' ? 4 : 0"
         :border="activeTab === 'data' ? true : false"
+        data-testid="dataManagerTab-data"
       >
         <v-icon start size="20">mdi-database</v-icon>
         Data Manager
@@ -66,6 +67,7 @@ defineExpose({
         class="text-none font-weight-medium text-white px-6 rounded-t-lg"
         :variant="activeTab === tab.id ? 'elevated' : 'text'"
         :elevation="activeTab === tab.id ? 4 : 0"
+        :data-testid="`dataManagerTab-${tab.id}`"
       >
         <v-icon v-if="tab.icon" start size="20">{{ tab.icon }}</v-icon>
         {{ tab.title }}
