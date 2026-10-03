@@ -246,7 +246,7 @@ describe("useCreateObjectTool composable interactions", () => {
           namePrefix: "Curve",
           minPoints: 1,
           schema,
-          previewStyle: "dashed",
+          previewStyle: "curve",
           getPreviewParams: () => ({ color: "red" }),
         }),
       );
@@ -254,7 +254,7 @@ describe("useCreateObjectTool composable interactions", () => {
 
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: { points: [], style: "dashed", color: "red" },
+          params: { points: [], style: "curve", color: "red" },
         }),
       );
 
@@ -264,7 +264,7 @@ describe("useCreateObjectTool composable interactions", () => {
 
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: { points: [{ x: 1, y: 2, z: 3 }], style: "dashed", color: "red" },
+          params: { points: [{ x: 1, y: 2, z: 3 }], style: "curve", color: "red" },
         }),
       );
     });
@@ -280,7 +280,7 @@ describe("useCreateObjectTool composable interactions", () => {
   describe("unmount cleanup", () => {
     test("stops picking mode and clears the preview on unmount", async () => {
       const { result, unmount } = withSetup(() =>
-        useCreateObjectTool({ namePrefix: "Curve", minPoints: 1, schema, previewStyle: "dashed" }),
+        useCreateObjectTool({ namePrefix: "Curve", minPoints: 1, schema, previewStyle: "curve" }),
       );
       await flushPromises();
       const viewerStore = useViewerStore();
@@ -294,7 +294,7 @@ describe("useCreateObjectTool composable interactions", () => {
       expect(toggleSpy).toHaveBeenCalledWith(false);
       expect(viewerRequestMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          params: { points: [], style: "dashed" },
+          params: { points: [], style: "curve" },
         }),
       );
     });
