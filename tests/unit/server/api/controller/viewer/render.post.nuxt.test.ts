@@ -9,9 +9,7 @@ import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("@ogw_shared/utils/call_schema"), () => ({
-  callSchema: vi.fn<typeof callSchema>(),
-}));
+vi.mock(import("@ogw_shared/utils/call_schema"));
 vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getViewerWebSocketClient: vi.fn<typeof getViewerWebSocketClient>(),
 }));
@@ -30,7 +28,7 @@ describe("the POST /api/controller/viewer/render endpoint", () => {
   });
 
   test("renders the viewer and returns the response", async () => {
-    vi.mocked(callSchema).mockResolvedValue({ success: true });
+    vi.mocked(callSchema).mockResolvedValue({});
 
     const result = await handler(createMockEvent({ method: "POST" }));
 
@@ -39,7 +37,7 @@ describe("the POST /api/controller/viewer/render endpoint", () => {
       client: fakeClient,
       timeout: undefined,
     });
-    expect(result).toStrictEqual({ statusCode: 200, response: { success: true } });
+    expect(result).toStrictEqual({ statusCode: 200, response: {} });
   });
 
   test("returns a 400 error response when the body has unexpected properties", async () => {

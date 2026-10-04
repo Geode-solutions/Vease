@@ -9,9 +9,7 @@ import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("@ogw_shared/utils/call_schema"), () => ({
-  callSchema: vi.fn<typeof callSchema>(),
-}));
+vi.mock(import("@ogw_shared/utils/call_schema"));
 vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getViewerWebSocketClient: vi.fn<typeof getViewerWebSocketClient>(),
 }));
@@ -32,7 +30,7 @@ describe("the POST /api/controller/viewer/mesh/points/visibility endpoint", () =
   });
 
   test("parses the visibility flag and forwards it to the viewer", async () => {
-    vi.mocked(callSchema).mockResolvedValue({ success: true });
+    vi.mocked(callSchema).mockResolvedValue({ id: MESH_ID, visibility: true });
 
     const result = await handler(eventWithBody({ id: MESH_ID, visibility: "true" }));
 
@@ -42,11 +40,11 @@ describe("the POST /api/controller/viewer/mesh/points/visibility endpoint", () =
       client: fakeClient,
       timeout: undefined,
     });
-    expect(result).toStrictEqual({ statusCode: 200, response: { success: true } });
+    expect(result).toStrictEqual({ statusCode: 200, response: { id: MESH_ID, visibility: true } });
   });
 
   test("accepts boolean and numeric visibility values", async () => {
-    vi.mocked(callSchema).mockResolvedValue({ success: true });
+    vi.mocked(callSchema).mockResolvedValue({ id: MESH_ID, visibility: true });
 
     await handler(eventWithBody({ id: MESH_ID, visibility: false }));
     expect(callSchema).toHaveBeenLastCalledWith(
