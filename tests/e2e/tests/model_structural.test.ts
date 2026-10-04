@@ -24,6 +24,7 @@ import {
   openModelComponentsTree,
   toggleModelTreeRow,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { resetCamera, rotateCamera } from "@vease_tests/utils/camera_interaction";
 import {
   setModelEdgesVisibility,
   setModelPointsVisibility,
@@ -34,7 +35,6 @@ import {
 import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import { resetCamera } from "@vease_tests/utils/camera_interaction";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
@@ -42,6 +42,7 @@ const brepFilename = "test.og_brep";
 const structuralModelFilename = "test.og_strm";
 const vertexAttributeName = "test_vertex";
 const polyhedronAttributeName = "test_polyhedron";
+const ROTATE_LEFT_A_LITTLE = -180;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -49,6 +50,7 @@ test.describe.configure({ mode: "serial" });
 test("load brep and open model components", async ({ window }) => {
   await loadVeaseTestDatas(window, [brepFilename]);
   await expandMainObjectTree(window);
+  await rotateCamera(window, ROTATE_LEFT_A_LITTLE, 0);
   await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
 });
@@ -56,6 +58,7 @@ test("load brep and open model components", async ({ window }) => {
 test("load structural model", async ({ window }) => {
   await loadVeaseTestDatas(window, [structuralModelFilename]);
   await expandMainObjectTree(window);
+  await resetCamera(window);
 });
 
 test("toggle both model component trees", async ({ window }) => {
