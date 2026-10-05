@@ -102,6 +102,7 @@ describe("data manager content component", () => {
   const mockSetVisibility = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
   const mockAddItem = vi.fn<(type: string, name: string, id: string, viewerType: string) => void>();
   const mockRemoveItem = vi.fn<(id: string) => void>();
+  const mockCloseView = vi.fn<(id: string) => void>();
   const mockRenameItem = vi.fn<(id: string, name: string) => void>();
   const mockFocusCameraOnObject = vi.fn<(id: string) => void>();
   const mockRemoveViewerItem = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
@@ -125,6 +126,7 @@ describe("data manager content component", () => {
       addItem: mockAddItem,
       removeItem: mockRemoveItem,
       renameItem: mockRenameItem,
+      closeView: mockCloseView,
     };
     vi.mocked(useTreeviewStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
