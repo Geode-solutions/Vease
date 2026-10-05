@@ -6,7 +6,6 @@ import { defaultDataName, structuralModelGeodeObjectType } from "@vease_tests/ut
 import {
   getModelComponentTypeOptions,
   getModelComponentsObjectTree,
-  openModelCollectionsTree,
   openModelComponentContextMenu,
   openModelComponentsTree,
   toggleModelTreeRow,
@@ -27,7 +26,6 @@ import { test } from "@vease_tests/utils/fixtures";
 const structuralModelFilename = "test.og_strm";
 const collectionTypeRowName = "ModelBoundaries";
 const collectionRowName = "019ea684-373";
-const componentsTreeIndex = 1;
 const vertexAttributeName = "test_vertex";
 
 test.use({ suiteId: import.meta.url });
@@ -39,7 +37,7 @@ test("load structural model", async ({ window }) => {
 });
 
 test("open collections tree", async ({ window }) => {
-  await openModelCollectionsTree(window, structuralModelGeodeObjectType, defaultDataName);
+  await openModelComponentsTree(window, structuralModelGeodeObjectType, defaultDataName);
   await expandGeodeObjectTypeInTree(
     window,
     collectionTypeRowName,
@@ -49,8 +47,7 @@ test("open collections tree", async ({ window }) => {
 });
 
 test("hide blocks", async ({ window }) => {
-  await openModelComponentsTree(window, structuralModelGeodeObjectType, defaultDataName);
-  await toggleModelTreeRow(window, "Blocks", 0, componentsTreeIndex);
+  await toggleModelTreeRow(window, "Blocks");
   await moveMouseOutOfTheWay(window);
 });
 
