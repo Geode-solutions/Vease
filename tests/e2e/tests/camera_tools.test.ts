@@ -439,20 +439,23 @@ test("threshold filter remove", async ({ window }) => {
 });
 
 test("exploded view open on brep", async ({ window }) => {
+  await hideObjectInTree(window, "RegularGrid3D", undefined, getMainObjectTree(window));
   await toggleExplodeFilter(window);
+  await resetCamera(window);
 });
 
 test("exploded view factor change", async ({ window }) => {
   await setExplodeFactor(window, CUSTOM_EXPLODE_FACTOR);
-});
-
-test("exploded view reset", async ({ window }) => {
-  await resetExplodeFilter(window);
+  await resetCamera(window);
 });
 
 test("exploded view remove", async ({ window }) => {
+  await resetExplodeFilter(window);
+  await resetCamera(window);
   await removeExplodeFilter(window);
   await toggleExplodeFilter(window);
+  await showObjectInTree(window, "RegularGrid3D");
+  await resetCamera(window);
 });
 
 test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
