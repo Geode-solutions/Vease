@@ -1,0 +1,24 @@
+{
+  "route": "/render",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

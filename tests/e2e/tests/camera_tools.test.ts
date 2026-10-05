@@ -38,10 +38,14 @@ import {
 } from "@vease_tests/utils/camera_interaction";
 import {
   addClippingPlane,
+  addSlice,
   invertPlaneNormal,
   selectClippingDatasets,
   setPlaneNormal,
+  setSliceAxis,
+  setSliceIndex,
   toggleClippingPlanes,
+  toggleSlice,
   toggleTargetAllVisible,
 } from "@vease_tests/utils/clipping_planes_interaction";
 import {
@@ -92,6 +96,7 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const CUSTOM_SLICE_INDEX = 5;
 const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
@@ -426,6 +431,30 @@ test("threshold filter remove", async ({ window }) => {
   await removeThresholdFilter(window);
   await closeAllMenus(window);
   await moveMouseOutOfTheWay(window);
+});
+
+test("clipping planes slice hidden for mixed datasets", async ({ window }) => {
+  await toggleClippingPlanes(window);
+  await expect(window.getByTestId("sliceSwitch")).toHaveCount(0);
+});
+
+test("clipping planes slice on grid", async ({ window }) => {
+  await selectClippingDatasets(window, "test");
+  await toggleSlice(window);
+});
+
+test("clipping planes slice index", async ({ window }) => {
+  await setSliceIndex(window, CUSTOM_SLICE_INDEX);
+});
+
+test("clipping planes slice YZ axis", async ({ window }) => {
+  await setSliceAxis(window, "YZ");
+});
+
+test("clipping planes add second slice", async ({ window }) => {
+  await addSlice(window);
+  await setSliceAxis(window, "XY", 1);
+  await setSliceIndex(window, CUSTOM_SLICE_INDEX, 1);
 });
 
 test("zoom to box", async ({ window }) => {

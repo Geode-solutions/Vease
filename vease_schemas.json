@@ -1,7 +1,28 @@
 {
   "api": {
     "controller": {
-      "data": {},
+      "data": {
+        "load": {
+          "$id": "api/controller/data/load",
+          "route": "/load",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "viewer": {
         "mesh": {
           "points": {
@@ -17,12 +38,60 @@
                   "maxLength": 32
                 },
                 "visibility": {
-                  "type": "boolean"
+                  "type": ["boolean", "string", "number"]
                 }
               },
               "required": ["id", "visibility"],
-              "additionalProperties": false
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["id", "visibility"],
+                    "additionalProperties": false
+                  }
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
             }
+          }
+        },
+        "render": {
+          "$id": "api/controller/viewer/render",
+          "route": "/render",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
           }
         }
       }
@@ -35,7 +104,20 @@
         "type": "object",
         "properties": {},
         "required": [],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "integer"
+            },
+            "running": {
+              "type": "boolean"
+            }
+          },
+          "required": ["statusCode", "running"],
+          "additionalProperties": false
+        }
       },
       "run": {
         "$id": "api/llm/run",
@@ -48,8 +130,24 @@
             "minLength": 1
           }
         },
-        "required": ["model"],
-        "additionalProperties": false
+        "required": [],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "integer"
+            },
+            "port": {
+              "type": "integer"
+            },
+            "apiKey": {
+              "type": "string"
+            }
+          },
+          "required": ["statusCode", "port", "apiKey"],
+          "additionalProperties": false
+        }
       },
       "kill": {
         "$id": "api/llm/kill",
@@ -58,7 +156,17 @@
         "type": "object",
         "properties": {},
         "required": [],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "integer"
+            }
+          },
+          "required": ["statusCode"],
+          "additionalProperties": false
+        }
       },
       "chat": {
         "$id": "api/llm/chat",
@@ -67,8 +175,11 @@
         "type": "object",
         "properties": {
           "messages": {
-            "type": "string",
-            "minLength": 1
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "minItems": 1
           },
           "provider": {
             "type": "string",
@@ -83,8 +194,11 @@
             "minLength": 1
           }
         },
-        "required": ["messages", "provider", "model"],
-        "additionalProperties": false
+        "required": ["messages"],
+        "additionalProperties": true,
+        "response": {
+          "format": "binary"
+        }
       }
     }
   }

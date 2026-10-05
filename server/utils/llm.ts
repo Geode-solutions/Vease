@@ -1,22 +1,27 @@
 // Third party imports
 import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
+import { getAppBaseUrl, getExtensionServerPorts } from "@ogw_server/utils/server_config";
 import type { LanguageModelV4 } from "@ai-sdk/provider";
+import { consola } from "consola";
 import { createGateway } from "@ai-sdk/gateway";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 // Local imports
 import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
-const LLAMA_HOST = "127.0.0.1";
+const LOOPBACK_HOST = "127.0.0.1";
 const DEFAULT_GATEWAY_MODEL = "openai/gpt-4o-mini";
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
-let mcpClientPromise: Promise<MCPClient> | undefined = undefined;
+const mcpClientsByUrl = new Map<string, Promise<MCPClient>>();
 
-function getMcpBaseUrl(): string {
-  return `${getAppBaseUrl()}/mcp`;
+function getMcpBaseUrls(): string[] {
+  const urls = [`${getAppBaseUrl()}/mcp`];
+  for (const port of getExtensionServerPorts().values()) {
+    urls.push(`http://${LOOPBACK_HOST}:${port}/mcp`);
+  }
+  return urls;
 }
 
 async function getLlamaChatModel(model: string | undefined): Promise<LanguageModelV4> {
@@ -24,7 +29,7 @@ async function getLlamaChatModel(model: string | undefined): Promise<LanguageMod
 
   const provider = createOpenAICompatible({
     name: "llama-cpp",
-    baseURL: `http://${LLAMA_HOST}:${port}/v1`,
+    baseURL: `http://${LOOPBACK_HOST}:${port}/v1`,
     apiKey,
   });
   return provider.chatModel(resolvedModel);
@@ -57,17 +62,42 @@ async function getChatModel({
   return chatModel;
 }
 
-async function getMcpClient(): Promise<MCPClient> {
-  mcpClientPromise ??= createMCPClient({
-    transport: { type: "http", url: getMcpBaseUrl() },
-  });
-  const client = await mcpClientPromise;
+async function getMcpClient(url: string): Promise<MCPClient> {
+  let clientPromise = mcpClientsByUrl.get(url);
+  if (!clientPromise) {
+    clientPromise = createMCPClient({ transport: { type: "http", url } });
+    mcpClientsByUrl.set(url, clientPromise);
+  }
+  const client = await clientPromise;
   return client;
 }
 
+async function getToolsFromUrl(
+  url: string,
+): Promise<Awaited<ReturnType<MCPClient["tools"]>> | undefined> {
+  try {
+    const client = await getMcpClient(url);
+    return await client.tools();
+  } catch (error) {
+    consola.error(`Failed to load MCP tools from ${url}`, error);
+    mcpClientsByUrl.delete(url);
+    return undefined;
+  }
+}
+
 async function getChatTools(): Promise<Awaited<ReturnType<MCPClient["tools"]>>> {
-  const client = await getMcpClient();
-  return client.tools();
+  // Wrapping this in an arrow to appease no-array-callback-reference trips
+  // Typescript/promise-function-async + eslint/require-await against each other instead (an arrow
+  // Around an already-async call has no `await` of its own) — no phrasing satisfies all three.
+  // oxlint-disable-next-line unicorn/no-array-callback-reference
+  const toolSets = await Promise.all(getMcpBaseUrls().map(getToolsFromUrl));
+  const mergedTools: Awaited<ReturnType<MCPClient["tools"]>> = {};
+  for (const toolSet of toolSets) {
+    if (toolSet !== undefined) {
+      Object.assign(mergedTools, toolSet);
+    }
+  }
+  return mergedTools;
 }
 
 export { CHAT_PROVIDER, getChatModel, getChatTools, type ChatProvider };

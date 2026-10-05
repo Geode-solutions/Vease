@@ -2,6 +2,7 @@
 import { importExtensionFile, importExtensionURL } from "@ogw_front/utils/extension";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
+import { consola } from "consola";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
@@ -27,7 +28,6 @@ const installed = computed(() => {
   }
   return true;
 });
-console.log({ installed });
 
 async function installSelectedExtension(): Promise<void> {
   if (!extension) {
@@ -40,11 +40,10 @@ async function installSelectedExtension(): Promise<void> {
 
   try {
     const urlHandler = await downloadExtension(extension.id);
-    console.log({ urlHandler });
     await importExtensionURL(urlHandler);
     installSuccess.value = "Extension installed successfully!";
   } catch (error) {
-    console.error(error);
+    consola.error(error);
     installError.value = error instanceof Error ? error.message : "Failed to install extension.";
   } finally {
     installing.value = false;

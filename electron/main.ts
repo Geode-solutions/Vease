@@ -4,6 +4,7 @@
 import { app, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import { cleanupBackend } from "@geode/opengeodeweb-front/server/utils/cleanup.js";
+import { consola } from "consola";
 
 // Local imports
 import {
@@ -16,7 +17,7 @@ import {
 } from "../utils/desktop";
 
 const appArgs = parseArgs();
-console.log(`App launched with args: ${JSON.stringify(appArgs)}`);
+consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
 if (!appArgs.flags.includes("--no-update")) {
   void autoUpdater.checkForUpdatesAndNotify();
 }
@@ -31,7 +32,7 @@ ipcMain.handle("new_window", () => {
 
 ipcMain.handle("project_folder_path", (_event, args: { projectFolderPath: string }) => {
   ({ projectFolderPath } = args);
-  console.log(`[Electron] Updated projectFolderPath: ${projectFolderPath}`);
+  consola.info(`[Electron] Updated projectFolderPath: ${projectFolderPath}`);
 });
 
 ipcMain.handle("save_credentials", (_event, args: { email: string; password: string }) => {
@@ -40,13 +41,13 @@ ipcMain.handle("save_credentials", (_event, args: { email: string; password: str
 });
 
 ipcMain.handle("get_credentials", () => {
-  console.log("Getting credentials");
+  consola.info("Getting credentials");
   const credentials = getCredentials();
   return credentials;
 });
 
 ipcMain.handle("delete_credentials", () => {
-  console.log("Deleting credentials");
+  consola.info("Deleting credentials");
   return deleteCredentials();
 });
 
@@ -59,13 +60,13 @@ void app.whenReady().then(async () => {
 let cleaned = false;
 
 async function clean_up(): Promise<void> {
-  console.log("Shutting down microservices");
+  consola.info("Shutting down microservices");
   await cleanupBackend(projectFolderPath);
   if (serverCleanup) {
     serverCleanup();
   }
   cleaned = true;
-  console.log("end clean");
+  consola.info("end clean");
 }
 
 app.on("before-quit", (event) => {
@@ -76,7 +77,7 @@ app.on("before-quit", (event) => {
         await clean_up();
         app.quit();
       } catch (error) {
-        console.error("Cleanup failed", error);
+        consola.error("Cleanup failed", error);
         // oxlint-disable-next-line no-process-exit
         process.exit(1);
       }
@@ -85,10 +86,10 @@ app.on("before-quit", (event) => {
 });
 
 app.on("window-all-closed", () => {
-  console.log("All windows are closed");
+  consola.info("All windows are closed");
   app.quit();
 });
 
 app.on("quit", () => {
-  console.log("Quitting Vease...");
+  consola.info("Quitting Vease...");
 });

@@ -3,31 +3,15 @@ import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
+import type { EntitlementResponse, GatewayKeyResponse } from "@geode/cloud-api/types";
+import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
-import vease_schemas from "vease/vease_schemas.json" with { type: "json" };
+import vease_schemas from "vease/vease_typed_schemas.js";
 
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
-
-const ENTITLEMENT_SCHEMA = {
-  $id: "/ai/entitlement",
-  methods: ["GET"],
-  type: "object",
-  properties: {},
-  required: [],
-  additionalProperties: false,
-};
-
-const KEY_SCHEMA = {
-  $id: "/ai/key",
-  methods: ["GET"],
-  type: "object",
-  properties: {},
-  required: [],
-  additionalProperties: false,
-};
 
 type LlamaStatus = { running: false } | { running: true };
 
@@ -54,7 +38,7 @@ export function useVeaseChat(): VeaseChatReturn {
   const llamaStatus = ref<LlamaStatus>({ running: false });
 
   async function refreshLlamaStatus(): Promise<void> {
-    llamaStatus.value = await appStore.request<LlamaStatus>({
+    llamaStatus.value = await appStore.request({
       schema: vease_schemas.api.llm.status,
     });
   }
@@ -73,11 +57,11 @@ export function useVeaseChat(): VeaseChatReturn {
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { cloudAllowed } = await APIStore.request<{ cloudAllowed?: boolean }>({
-      schema: ENTITLEMENT_SCHEMA,
+    const { cloudAllowed } = await APIStore.request<EntitlementResponse>({
+      schema: cloud_api_schemas.cloud_api.ai.entitlement,
       headers,
     });
-    isCloudAiAllowed.value = Boolean(cloudAllowed);
+    isCloudAiAllowed.value = cloudAllowed;
   }
 
   watch(user, refreshCloudEntitlement, { immediate: true });
@@ -88,8 +72,8 @@ export function useVeaseChat(): VeaseChatReturn {
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { apiKeyString } = await APIStore.request<{ apiKeyString?: string }>({
-      schema: KEY_SCHEMA,
+    const { apiKeyString } = await APIStore.request<GatewayKeyResponse>({
+      schema: cloud_api_schemas.cloud_api.ai.key,
       headers,
     });
     gatewayApiKey.value = apiKeyString;
