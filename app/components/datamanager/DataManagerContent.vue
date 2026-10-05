@@ -132,6 +132,7 @@ async function executeDelete(): Promise<void> {
   await dataStore.deleteItem(item.id);
   await hybridViewerStore.removeItem(item.id);
   treeviewStore.removeItem(item.id);
+  treeviewStore.closeView(item.id);
   selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
@@ -144,6 +145,7 @@ async function deleteSelected(): Promise<void> {
     await dataStore.deleteItem(id);
     await hybridViewerStore.removeItem(id);
     treeviewStore.removeItem(id);
+    treeviewStore.closeView(id);
   });
   await Promise.all(promises);
   selectedIds.value = [];
