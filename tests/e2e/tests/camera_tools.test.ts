@@ -11,8 +11,10 @@ import {
   closeCameraManager,
   drawZoomBox,
   ensureHighlightMenuOpen,
+  removeExplodeFilter,
   removeThresholdFilter,
   resetCamera,
+  resetExplodeFilter,
   resetShrinkFilter,
   resetThresholdFilter,
   restoreCameraPosition,
@@ -22,6 +24,7 @@ import {
   selectShrinkDatasets,
   selectThresholdBlockPolyhedron,
   selectThresholdCellAttribute,
+  setExplodeFactor,
   setRulerPointInput,
   setShrinkFactor,
   setThresholdMinimum,
@@ -29,6 +32,7 @@ import {
   toggleCameraManager,
   toggleCameraOrientation,
   toggleCenterOnClick,
+  toggleExplodeFilter,
   toggleGridScale,
   toggleRuler,
   toggleRulerSnap,
@@ -96,6 +100,7 @@ const CUSTOM_NORMAL_VALUE_X = -0.15;
 const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
+const CUSTOM_EXPLODE_FACTOR = 1.2;
 const CUSTOM_SLICE_INDEX = 5;
 const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
@@ -431,6 +436,23 @@ test("threshold filter remove", async ({ window }) => {
   await removeThresholdFilter(window);
   await closeAllMenus(window);
   await moveMouseOutOfTheWay(window);
+});
+
+test("exploded view open on brep", async ({ window }) => {
+  await toggleExplodeFilter(window);
+});
+
+test("exploded view factor change", async ({ window }) => {
+  await setExplodeFactor(window, CUSTOM_EXPLODE_FACTOR);
+});
+
+test("exploded view reset", async ({ window }) => {
+  await resetExplodeFilter(window);
+});
+
+test("exploded view remove", async ({ window }) => {
+  await removeExplodeFilter(window);
+  await toggleExplodeFilter(window);
 });
 
 test("clipping planes slice hidden for mixed datasets", async ({ window }) => {

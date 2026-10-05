@@ -15,6 +15,7 @@ async function resetCamera(window: Page): Promise<void> {
 }
 
 const ROTATE_DRAG_STEPS = 20;
+const MAX_EXPLODE_FACTOR = 2;
 
 // Vtk.js' RenderWindowInteractor turns a pointermove arriving more than 200ms after the previous one into a StartMouseMove, which InteractorStyleTrackballCamera ignores.
 // A skipped move mid-drag is caught up by the next handled one (rotation uses the delta from the last handled position), but a skipped final move is lost for good.
@@ -179,6 +180,32 @@ async function selectShrinkDatasets(window: Page, datasetName: string, index = 0
   await waitForActionSettled(window);
 }
 
+async function toggleExplodeFilter(window: Page): Promise<void> {
+  await window.getByTestId("explodeFilterButton").click();
+  await waitForActionSettled(window);
+}
+
+async function setExplodeFactor(window: Page, explodeFactorValue: number): Promise<void> {
+  const slider = window.getByTestId("explodeFactorSlider");
+  const box = await slider.boundingBox();
+  if (!box) {
+    throw new Error("Could not get bounding box of the explode factor slider.");
+  }
+  const clickX = (box.width * explodeFactorValue) / MAX_EXPLODE_FACTOR;
+  await slider.click({ position: { x: clickX, y: box.height / 2 } });
+  await waitForActionSettled(window);
+}
+
+async function resetExplodeFilter(window: Page): Promise<void> {
+  await window.getByTestId("resetExplodeButton").click();
+  await waitForActionSettled(window);
+}
+
+async function removeExplodeFilter(window: Page): Promise<void> {
+  await window.getByTestId("removeExplodeButton").click();
+  await waitForActionSettled(window);
+}
+
 async function toggleThresholdFilter(window: Page): Promise<void> {
   await window.getByTestId("thresholdFilterButton").click();
   await waitForActionSettled(window);
@@ -308,6 +335,10 @@ export {
   resetShrinkFilter,
   toggleShrinkTargetAllVisible,
   selectShrinkDatasets,
+  toggleExplodeFilter,
+  setExplodeFactor,
+  resetExplodeFilter,
+  removeExplodeFilter,
   toggleThresholdFilter,
   selectThresholdCellAttribute,
   selectThresholdBlockPolyhedron,
