@@ -11,7 +11,12 @@
       "statusCode": {
         "type": "integer"
       },
-      "response": {}
+      "response": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
     },
     "required": ["statusCode", "response"],
     "additionalProperties": false

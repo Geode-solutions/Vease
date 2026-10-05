@@ -294,11 +294,16 @@ async function navigateToInfosPage(window: Page): Promise<void> {
   const infosNavButton = window.getByTestId("infosNavButton");
   await infosNavButton.click();
 }
+async function navigateToDataManagerTab(window: Page, tabId: string): Promise<void> {
+  const dataManagerTabButton = window.getByTestId(`dataManagerTab-${tabId}`);
+  await dataManagerTabButton.click();
+}
 
 export {
   navigateToApp,
   navigateToAccountPage,
   navigateToDataManagerPage,
+  navigateToDataManagerTab,
   navigateToExtensionsPage,
   navigateToInfosPage,
   navigateToViewerPage,

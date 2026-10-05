@@ -49,7 +49,19 @@
                   "statusCode": {
                     "type": "integer"
                   },
-                  "response": {}
+                  "response": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": ["id", "visibility"],
+                    "additionalProperties": false
+                  }
                 },
                 "required": ["statusCode", "response"],
                 "additionalProperties": false
@@ -71,7 +83,12 @@
               "statusCode": {
                 "type": "integer"
               },
-              "response": {}
+              "response": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+              }
             },
             "required": ["statusCode", "response"],
             "additionalProperties": false

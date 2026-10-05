@@ -1,5 +1,5 @@
 // Node imports
-import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
+import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 
 // Third party imports
 import { callSchema } from "@ogw_shared/utils/call_schema";

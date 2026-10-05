@@ -49,7 +49,13 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
   await dataStyleStore.setVisibility(item.id, targetVisible, item);
   item.visible = targetVisible;
   if (targetVisible) {
-    await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
+    await treeviewStore.addItem(
+      item.geode_object_type,
+      item.name,
+      item.id,
+      item.geode_id,
+      item.viewer_type,
+    );
   } else {
     treeviewStore.removeItem(item.id);
   }

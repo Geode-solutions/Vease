@@ -4,12 +4,12 @@ import path from "node:path";
 // Third party imports
 
 // Local imports
-import { brepGeodeObjectType, defaultDataName } from "@vease_tests/utils/constants";
 import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { brepGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
@@ -46,7 +46,7 @@ test("change lines color", async ({ window }) => {
 
 test("collapse model tree in main tree", async ({ window }) => {
   await window.keyboard.press("Escape");
-  await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
+  await openModelComponentsTree(window, brepGeodeObjectType, "surface_cube");
 });
 
 test("export project", async ({ window }) => {
