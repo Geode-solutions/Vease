@@ -1,5 +1,6 @@
 export interface DataItem {
   id: string;
+  geode_id: string;
   name: string;
   visible: boolean;
   geode_object_type: string;

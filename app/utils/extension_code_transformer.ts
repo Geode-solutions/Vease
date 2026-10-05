@@ -64,7 +64,7 @@ function transformUtilImports(code: string): string {
   );
 
   transformedCode = transformedCode.replaceAll(
-    /from\s+["']@ogw_front\/app\/utils\/local\/app_mode\.js["']/gu,
+    /from\s+["'](?:@ogw_front\/app\/utils\/local\/app_mode\.js|@geode\/opengeodeweb-front\/shared\/app_mode\.js)["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       export const appMode = globalThis.__VEASE_UTILS__.appMode;
     `)}"`,
@@ -76,17 +76,33 @@ function transformUtilImports(code: string): string {
       export const api_fetch = globalThis.__VEASE_UTILS__.api_fetch;
     `)}"`,
   );
+
+  transformedCode = transformedCode.replaceAll(
+    /from\s+["']@geode\/opengeodeweb-front\/internal\/database\/database\.js["']/gu,
+    `from "data:text/javascript,${encodeURIComponent(`
+      export const database = globalThis.__VEASE_UTILS__.database;
+    `)}"`,
+  );
   return transformedCode;
 }
 
 function transformSchemaImports(code: string): string {
-  return code.replaceAll(
+  let transformedCode = code.replaceAll(
     /from\s+["']@geode\/vease-modeling-back\/vease_modeling_back_schemas\.json["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
       const schemas = globalThis.__VEASE_SCHEMAS__.vease_modeling_back;
       export default schemas;
     `)}"`,
   );
+
+  transformedCode = transformedCode.replaceAll(
+    /from\s+["']@geode\/opengeodeweb-back\/opengeodeweb_back_schemas\.json["']/gu,
+    `from "data:text/javascript,${encodeURIComponent(`
+      const schemas = globalThis.__VEASE_SCHEMAS__.opengeodeweb_back;
+      export default schemas;
+    `)}"`,
+  );
+  return transformedCode;
 }
 
 function transformGlobalFunctionCalls(code: string): string {

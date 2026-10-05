@@ -6,8 +6,10 @@ import { useViewerStore } from "@ogw_front/stores/viewer";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import type { ApiSchema } from "@vease/utils/external_stores";
 // oxlint-disable-next-line eslint/no-duplicate-imports
+import viewer_schemas, {
+  type ViewerPreviewPointsParams,
+} from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 import type { NewDataItem } from "@ogw_front/stores/data";
-import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 interface Point {
   x: number | string;
@@ -20,7 +22,7 @@ interface CreateObjectToolOptions {
   minPoints: number;
   schema: ApiSchema;
   getAdditionalPayload?: (points: Point[]) => Record<string, unknown>;
-  previewStyle?: string;
+  previewStyle?: ViewerPreviewPointsParams["style"];
   previewExtraSources?: unknown[];
   getPreviewParams?: () => Record<string, unknown>;
   onPickedPoint?: (point: Point, points: Point[]) => boolean | undefined;

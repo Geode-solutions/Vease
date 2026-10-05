@@ -6,6 +6,7 @@ import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "./common";
+import { consola } from "consola";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
@@ -62,7 +63,7 @@ async function highlightData(
     if (await tooltipIdValue.isVisible()) {
       return;
     }
-    console.warn(
+    consola.warn(
       `highlightData: hover on "${dataName}" was lost while the highlight rendered (attempt ${attempt}/${HIGHLIGHT_HOVER_ATTEMPTS})`,
     );
     // oxlint-disable-next-line no-await-in-loop

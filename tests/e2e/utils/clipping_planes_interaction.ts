@@ -52,6 +52,33 @@ async function selectClippingDatasets(window: Page, datasetName: string, index =
   await waitForActionSettled(window);
 }
 
+async function toggleSlice(window: Page): Promise<void> {
+  await window.getByTestId("sliceSwitch").getByRole("checkbox").click();
+  await waitForActionSettled(window);
+}
+
+async function addSlice(window: Page): Promise<void> {
+  await window.getByTestId("addSliceButton").click();
+  await waitForActionSettled(window);
+}
+
+async function setSliceAxis(window: Page, axis: "XY" | "YZ" | "XZ", sliceIndex = 0): Promise<void> {
+  const card = window.getByTestId("sliceCard").nth(sliceIndex);
+  await card.getByTestId("sliceAxisToggle").getByRole("button", { name: axis }).click();
+  await waitForActionSettled(window);
+}
+
+async function setSliceIndex(window: Page, index: number, sliceIndex = 0): Promise<void> {
+  const card = window.getByTestId("sliceCard").nth(sliceIndex);
+  await card.getByTestId("sliceIndexSlider").getByRole("slider").focus();
+  await window.keyboard.press("Home");
+  for (let step = 0; step < index; step += 1) {
+    // oxlint-disable-next-line no-await-in-loop
+    await window.keyboard.press("ArrowRight");
+  }
+  await waitForActionSettled(window);
+}
+
 export {
   toggleClippingPlanes,
   invertPlaneNormal,
@@ -60,4 +87,8 @@ export {
   addClippingPlane,
   toggleTargetAllVisible,
   selectClippingDatasets,
+  toggleSlice,
+  addSlice,
+  setSliceAxis,
+  setSliceIndex,
 };
