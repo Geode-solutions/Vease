@@ -15,7 +15,7 @@ async function resetCamera(window: Page): Promise<void> {
 }
 
 const ROTATE_DRAG_STEPS = 20;
-const MAX_EXPLODE_FACTOR = 2;
+const MAX_EXPLODE_FACTOR = 1;
 
 // Vtk.js' RenderWindowInteractor turns a pointermove arriving more than 200ms after the previous one into a StartMouseMove, which InteractorStyleTrackballCamera ignores.
 // A skipped move mid-drag is caught up by the next handled one (rotation uses the delta from the last handled position), but a skipped final move is lost for good.
