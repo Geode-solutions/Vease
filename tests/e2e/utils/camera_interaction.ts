@@ -15,8 +15,6 @@ async function resetCamera(window: Page): Promise<void> {
 }
 
 const ROTATE_DRAG_STEPS = 20;
-const MAX_EXPLODE_FACTOR = 1;
-
 // Vtk.js' RenderWindowInteractor turns a pointermove arriving more than 200ms after the previous one into a StartMouseMove, which InteractorStyleTrackballCamera ignores.
 // A skipped move mid-drag is caught up by the next handled one (rotation uses the delta from the last handled position), but a skipped final move is lost for good.
 // On slow runners (Windows + swiftshader) the last step regularly lands late, leaving the camera one step short of the requested angle.
@@ -146,15 +144,18 @@ async function toggleShrinkFilter(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function setShrinkFactor(window: Page, shrinkFactorValue: number): Promise<void> {
-  const slider = window.getByTestId("shrinkFactorSlider");
+async function setSliderRatio(window: Page, sliderTestId: string, ratio: number): Promise<void> {
+  const slider = window.getByTestId(sliderTestId);
   const box = await slider.boundingBox();
   if (!box) {
-    throw new Error("Could not get bounding box of the shrink factor slider.");
+    throw new Error(`Could not get bounding box of the ${sliderTestId} slider.`);
   }
-  const clickX = box.width * shrinkFactorValue;
-  await slider.click({ position: { x: clickX, y: box.height / 2 } });
+  await slider.click({ position: { x: box.width * ratio, y: box.height / 2 } });
   await waitForActionSettled(window);
+}
+
+async function setShrinkFactor(window: Page, shrinkFactorValue: number): Promise<void> {
+  await setSliderRatio(window, "shrinkFactorSlider", shrinkFactorValue);
 }
 
 async function resetShrinkFilter(window: Page): Promise<void> {
@@ -186,14 +187,7 @@ async function toggleExplodeFilter(window: Page): Promise<void> {
 }
 
 async function setExplodeFactor(window: Page, explodeFactorValue: number): Promise<void> {
-  const slider = window.getByTestId("explodeFactorSlider");
-  const box = await slider.boundingBox();
-  if (!box) {
-    throw new Error("Could not get bounding box of the explode factor slider.");
-  }
-  const clickX = (box.width * explodeFactorValue) / MAX_EXPLODE_FACTOR;
-  await slider.click({ position: { x: clickX, y: box.height / 2 } });
-  await waitForActionSettled(window);
+  await setSliderRatio(window, "explodeFactorSlider", explodeFactorValue);
 }
 
 async function resetExplodeFilter(window: Page): Promise<void> {
