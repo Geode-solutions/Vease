@@ -36,10 +36,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     // The value here must be the whole default export, not just its nested key. Only schemas from
     // Packages Vease core already depends on belong here — an extension-specific schema package
     // (Like vease-modeling-back's) would make Vease's own build depend on that one extension.
-    const opengeodewebBackSchemas = await import(
-      "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json",
-      { with: { type: "json" } }
-    );
+    const opengeodewebBackSchemas =
+      await import("@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js");
     globalThis.__VEASE_SCHEMAS__ = {
       opengeodeweb_back: opengeodewebBackSchemas.default,
     };
