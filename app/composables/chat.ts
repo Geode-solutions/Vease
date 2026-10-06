@@ -3,8 +3,7 @@ import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
-import type { EntitlementResponse, GatewayKeyResponse } from "@geode/cloud-api/types";
-import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
+import cloud_api_schemas from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
@@ -57,7 +56,7 @@ export function useVeaseChat(): VeaseChatReturn {
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { cloudAllowed } = await APIStore.request<EntitlementResponse>({
+    const { cloudAllowed } = await APIStore.request({
       schema: cloud_api_schemas.cloud_api.ai.entitlement,
       headers,
     });
@@ -72,7 +71,7 @@ export function useVeaseChat(): VeaseChatReturn {
     }
     const token = await user.value.getIdToken();
     const headers = { Authorization: `Bearer ${token}` };
-    const { apiKeyString } = await APIStore.request<GatewayKeyResponse>({
+    const { apiKeyString } = await APIStore.request({
       schema: cloud_api_schemas.cloud_api.ai.key,
       headers,
     });
