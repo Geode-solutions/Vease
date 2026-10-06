@@ -15,8 +15,9 @@ import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 // Local imports
-import type { SendEmailResponse } from "@geode/cloud-api/types";
-import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
+import cloud_api_schemas, {
+  type AuthSendPasswordResetResponse,
+} from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
 
 interface DesktopElectronAPI {
@@ -145,14 +146,11 @@ function useAuth(): UseAuthReturn {
     await logout();
   }
 
-  async function resetPassword(email: string): Promise<SendEmailResponse> {
+  async function resetPassword(email: string): Promise<AuthSendPasswordResetResponse> {
     const schema = cloud_api_schemas.cloud_api.auth.send_password_reset;
     const params = { email };
     try {
-      return await APIStore.request<SendEmailResponse>(
-        { schema, params },
-        { skip_feedback_error: true },
-      );
+      return await APIStore.request({ schema, params }, { skip_feedback_error: true });
     } catch (error: unknown) {
       if (error instanceof Error && error.message) {
         throw error;
