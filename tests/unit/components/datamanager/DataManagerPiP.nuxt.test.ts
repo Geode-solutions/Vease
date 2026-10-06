@@ -1,0 +1,92 @@
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import type DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
+import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
+import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
+import { navigateTo } from "#app/composables/router";
+import { useUIStore } from "@vease/stores/ui";
+
+vi.setConfig({ testTimeout: 10_000 });
+
+vi.mock(import("#app/composables/router"), async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, navigateTo: vi.fn<typeof navigateTo>() };
+});
+
+vi.mock(import("@vease/components/datamanager/DataManagerContent.vue"), () => ({
+  default: {
+    name: "DataManagerContent",
+    props: {
+      compact: Boolean,
+    },
+    template: "<div class='data-manager-content-stub'></div>",
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of DataManagerContent this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof DataManagerContent,
+}));
+
+vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
+  default: {
+    name: "ResizablePiP",
+    props: [
+      "storageKey",
+      "escapeFunction",
+      "defaultWidth",
+      "defaultHeight",
+      "minWidth",
+      "minHeight",
+    ],
+    template: `
+      <div class="resizable-pip-stub" :data-storage-key="storageKey">
+        <slot name="handle" />
+        <slot />
+      </div>
+    `,
+    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
+  } as unknown as typeof ResizablePiP,
+}));
+
+describe("data manager pip component", () => {
+  beforeEach(() => {
+    setupActivePinia();
+  });
+
+  test("renders pip header title and child content", () => {
+    const wrapper = mountWithPlugins(DataManagerPiP);
+
+    expect(wrapper.text()).toContain("Data Manager");
+    expect(wrapper.find(".data-manager-content-stub").exists()).toBe(true);
+  });
+
+  test("passes compact prop to data manager content", () => {
+    const wrapper = mountWithPlugins(DataManagerPiP);
+
+    const contentComponent = wrapper.findComponent({ name: "DataManagerContent" });
+    expect(contentComponent.props("compact")).toBe(true);
+  });
+
+  test("expands to full page on expand button click", async () => {
+    const wrapper = mountWithPlugins(DataManagerPiP);
+
+    const uiStore = useUIStore();
+    uiStore.setShowDataManagerPiP(true);
+
+    const expandButton = wrapper.find('[data-testid="dataManagerPiPExpandButton"]');
+    await expandButton.trigger("click");
+
+    expect(uiStore.showDataManagerPiP).toBe(false);
+    expect(navigateTo).toHaveBeenCalledWith("/data_manager");
+  });
+
+  test("closes pip on close button click", async () => {
+    const wrapper = mountWithPlugins(DataManagerPiP);
+
+    const uiStore = useUIStore();
+    uiStore.setShowDataManagerPiP(true);
+
+    const [, closeButton] = wrapper.findAll(".v-btn");
+    expect(closeButton).toBeDefined();
+    await closeButton?.trigger("click");
+
+    expect(uiStore.showDataManagerPiP).toBe(false);
+  });
+});

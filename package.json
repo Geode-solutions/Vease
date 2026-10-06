@@ -65,16 +65,17 @@
     "json": "npx opengeodeweb-microservice-generate --startDir server/api --key route --separator / --prefix api --requireResponse",
     "package": "cross-env MODE=DESKTOP npm run build:front && electron-builder build --publish=never",
     "pretest": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "npm run test:unit",
+    "test:base": "cross-env MODE=BROWSER nuxt prepare && cross-env MODE=BROWSER vitest run --config ./tests/vitest.config.ts",
+    "test:unit": "npm run test:base -- --project unit",
     "test:e2e": "npm run pretest && npx playwright test --config ./tests/e2e/playwright.config.ts",
     "test:e2e:browser:chrome": "npm run test:e2e -- --project=browser-chrome",
     "test:e2e:browser:firefox": "npm run test:e2e -- --project=browser-firefox",
-    "test:e2e:browser": "npm run test:e2e:browser:chrome",
+    "test:e2e:browser": "npm run test:e2e:browser:chrome --",
     "test:e2e:cloud": "npm run test:e2e -- --project=cloud",
     "test:e2e:desktop": "npm run test:e2e -- --project=desktop",
-    "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots=all",
-    "prepare:types": "cross-env MODE=BROWSER nuxi prepare",
-    "typecheck": "npm run prepare:types && vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p .nuxt/tsconfig.server.json --noImplicitAny false && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tests/e2e/tsconfig.json"
+    "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots",
+    "prepare:types": "cross-env MODE=BROWSER nuxi prepare"
   },
   "dependencies": {
     "@ai-sdk/gateway": "4.0.75",
@@ -105,19 +106,27 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "4.1.0",
+    "@pinia/testing": "2.0.1",
     "@playwright/test": "1.54.1",
     "@types/busboy": "1.5.4",
     "@types/ws": "8.18.1",
+    "@vue/test-utils": "2.4.11",
     "concurrently": "9.2.1",
     "cross-env": "10.0.0",
     "electron": "36.4.0",
-    "electron-builder": "26.0.12",
+    "electron-builder": "26.15.3",
     "electron-playwright-helpers": "1.7.1",
+    "happy-dom": "20.0.11",
     "nuxt-electron": "0.7.0",
+    "oxlint": "latest",
+    "oxlint-tsgolint": "latest",
+    "pinia": "4.0.2",
     "playwright": "1.54.1",
     "rolldown": "1.2.8",
     "std-env": "3.9.0",
-    "typescript": "5.9.3",
-    "vue-tsc": "3.3.11"
+    "vitest": "4.1.10",
+    "vitest-environment-nuxt": "2.0.0",
+    "vitest-indexeddb": "0.0.1"
   }
 }

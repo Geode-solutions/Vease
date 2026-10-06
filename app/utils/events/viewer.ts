@@ -1,13 +1,14 @@
 // Third party imports
+import opengeodeweb_viewer_schemas, {
+  type MeshPointsVisibilityParams,
+} from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 import { consola } from "consola";
-import opengeodeweb_viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_schemas.json";
 
 // Local imports
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 
-function isMeshPointsVisibilityPayload(
-  value: unknown,
-): value is { id: string; visibility: boolean } {
+// Pushed events carry the params of the RPC that published them
+function isMeshPointsVisibilityPayload(value: unknown): value is MeshPointsVisibilityParams {
   return (
     typeof value === "object" &&
     value !== null &&

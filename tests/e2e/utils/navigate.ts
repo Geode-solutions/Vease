@@ -199,10 +199,7 @@ async function signInToCloudApp(page: Page): Promise<void> {
   await page.waitForFunction(() => document.readyState === "complete");
 }
 
-async function navigateToApp(
-  mode: string,
-  browser: Browser,
-): Promise<{ window: Page; cleanup: () => Promise<void> }> {
+async function newBrowserPage(browser: Browser): Promise<Page> {
   const context = await browser.newContext({
     viewport: { width: PAGE_WIDTH, height: PAGE_HEIGHT },
     locale: LOCALE,
@@ -215,13 +212,36 @@ async function navigateToApp(
       consola.info("PAGE CLOSED:", newPage.url());
     });
   });
-  const page = await context.newPage();
+  return context.newPage();
+}
+
+async function navigateToApp(
+  mode: string,
+  launchBrowser: () => Promise<Browser>,
+): Promise<{ window: Page; cleanup: () => Promise<void> }> {
   consola.info(`Testing app in ${mode} mode`);
+  // The desktop app is driven through Electron: no browser is launched
+  if (mode === "DESKTOP") {
+    const { electronApp, firstWindow } = await runDesktopBuild();
+    consola.info(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
+    await firstWindow.waitForFunction(() => document.readyState === "complete");
+    return {
+      window: firstWindow,
+      cleanup: async () => {
+        await electronApp.close();
+      },
+    };
+  }
+  if (mode !== "BROWSER" && mode !== "CLOUD") {
+    throw new Error(`Unknown mode: ${mode}`);
+  }
+  const browser = await launchBrowser();
+  const page = await newBrowserPage(browser);
+  page.on("console", (msg) => {
+    consola.info(`Browser console: ${msg.text()}`);
+  });
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
-    page.on("console", (msg) => {
-      consola.info(`Browser console: ${msg.text()}`);
-    });
     const appUrl = `http://localhost:${nuxtPort}`;
     await page.goto(appUrl);
     consola.info("Navigated to", page.url());
@@ -233,45 +253,32 @@ async function navigateToApp(
       window: page,
       cleanup: async () => {
         await page.close();
+        await browser.close();
         await kill(nuxtPort);
       },
     };
-  } else if (mode === "CLOUD") {
-    page.on("console", (msg) => {
-      consola.info(`Browser console: ${msg.text()}`);
-    });
-
-    let prefix = "";
-    const branch = execSync("git branch --show-current", {
-      encoding: "utf8",
-    }).trim();
-    consola.info("Current branch:", branch);
-    if (branch === "next") {
-      prefix = "next.";
-    }
-    const url = `https://${prefix}vease.geode-solutions.com`;
-    const maxRetries = 10;
-    await navigateToCloudApp(page, url, maxRetries);
-    await signInToCloudApp(page);
-
-    return {
-      window: page,
-      cleanup: async () => {
-        await page.close();
-      },
-    };
-  } else if (mode === "DESKTOP") {
-    const { electronApp, firstWindow } = await runDesktopBuild();
-    consola.info(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
-    await firstWindow.waitForFunction(() => document.readyState === "complete");
-    return {
-      window: firstWindow,
-      cleanup: async () => {
-        await electronApp.close();
-      },
-    };
   }
-  throw new Error(`Unknown mode: ${mode}`);
+
+  let prefix = "";
+  const branch = execSync("git branch --show-current", {
+    encoding: "utf8",
+  }).trim();
+  consola.info("Current branch:", branch);
+  if (branch === "next") {
+    prefix = "next.";
+  }
+  const url = `https://${prefix}vease.geode-solutions.com`;
+  const maxRetries = 10;
+  await navigateToCloudApp(page, url, maxRetries);
+  await signInToCloudApp(page);
+
+  return {
+    window: page,
+    cleanup: async () => {
+      await page.close();
+      await browser.close();
+    },
+  };
 }
 
 async function navigateToViewerPage(window: Page): Promise<void> {
@@ -294,11 +301,16 @@ async function navigateToInfosPage(window: Page): Promise<void> {
   const infosNavButton = window.getByTestId("infosNavButton");
   await infosNavButton.click();
 }
+async function navigateToDataManagerTab(window: Page, tabId: string): Promise<void> {
+  const dataManagerTabButton = window.getByTestId(`dataManagerTab-${tabId}`);
+  await dataManagerTabButton.click();
+}
 
 export {
   navigateToApp,
   navigateToAccountPage,
   navigateToDataManagerPage,
+  navigateToDataManagerTab,
   navigateToExtensionsPage,
   navigateToInfosPage,
   navigateToViewerPage,

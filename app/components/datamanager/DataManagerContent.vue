@@ -49,7 +49,13 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
   await dataStyleStore.setVisibility(item.id, targetVisible, item);
   item.visible = targetVisible;
   if (targetVisible) {
-    await treeviewStore.addItem(item.geode_object_type, item.name, item.id, item.viewer_type);
+    await treeviewStore.addItem(
+      item.geode_object_type,
+      item.name,
+      item.id,
+      item.geode_id,
+      item.viewer_type,
+    );
   } else {
     treeviewStore.removeItem(item.id);
   }
@@ -126,6 +132,7 @@ async function executeDelete(): Promise<void> {
   await dataStore.deleteItem(item.id);
   await hybridViewerStore.removeItem(item.id);
   treeviewStore.removeItem(item.id);
+  treeviewStore.closeView(item.id);
   selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
@@ -138,6 +145,7 @@ async function deleteSelected(): Promise<void> {
     await dataStore.deleteItem(id);
     await hybridViewerStore.removeItem(id);
     treeviewStore.removeItem(id);
+    treeviewStore.closeView(id);
   });
   await Promise.all(promises);
   selectedIds.value = [];

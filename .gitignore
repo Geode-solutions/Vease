@@ -54,3 +54,4 @@ package-lock.json
 .netlify
 
 extensions
+*.nuxtrc

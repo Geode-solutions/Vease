@@ -6,7 +6,7 @@ import { useAppStore } from "@ogw_front/stores/app";
 import { useClipboard } from "@vueuse/core";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
-import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_schemas.json";
+import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_typed_schemas.js";
 
 interface PackageVersion {
   package: string;
@@ -50,9 +50,7 @@ function get_packages_versions(): void {
     { schema },
     {
       response_function: (response) => {
-        packages_versions.value = (
-          response as { packages_versions: PackageVersion[] }
-        ).packages_versions;
+        packages_versions.value = response.packages_versions;
       },
     },
   );
