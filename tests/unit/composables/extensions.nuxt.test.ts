@@ -101,7 +101,7 @@ describe("useExtensions composable", () => {
       const apiStore = useAPIStore();
       const apiSpy = vi
         .spyOn(apiStore, "request")
-        .mockResolvedValue([{ id: "ext-1", version: "1.0.0" }]);
+        .mockResolvedValue({ extensions: [{ id: "ext-1", version: "1.0.0" }] });
 
       const { allowedExtensions } = useExtensions();
       const result = await allowedExtensions();
@@ -121,10 +121,9 @@ describe("useExtensions composable", () => {
 
     test("returns an empty array when an extension has no version", async () => {
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue([
-        { id: "ext-1", version: "1.0.0" },
-        { id: "ext-2" },
-      ]);
+      vi.spyOn(apiStore, "request").mockResolvedValue({
+        extensions: [{ id: "ext-1", version: "1.0.0" }, { id: "ext-2" }],
+      });
 
       const { allowedExtensions } = useExtensions();
       const result = await allowedExtensions();
@@ -197,7 +196,7 @@ describe("useExtensions composable", () => {
       vi.stubEnv("NODE_ENV", "production");
       mockAppStoreWithLoadedExtensions([{ id: "ext-1", metadata: { version: "1.0.0" } }]);
       const responseBySchemaId = new Map<string, unknown>([
-        ["cloud_api/extensions/list", [{ id: "ext-1", version: "2.0.0" }]],
+        ["cloud_api/extensions/list", { extensions: [{ id: "ext-1", version: "2.0.0" }] }],
         ["cloud_api/extensions/download", { url: "https://example.com/ext-1.vext" }],
       ]);
       const apiStore = useAPIStore();
@@ -221,7 +220,9 @@ describe("useExtensions composable", () => {
       vi.stubEnv("NODE_ENV", "production");
       mockAppStoreWithLoadedExtensions([{ id: "ext-1", metadata: { version: "2.0.0" } }]);
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue([{ id: "ext-1", version: "2.0.0" }]);
+      vi.spyOn(apiStore, "request").mockResolvedValue({
+        extensions: [{ id: "ext-1", version: "2.0.0" }],
+      });
 
       const { updateExtensions } = useExtensions();
       await updateExtensions();
@@ -233,7 +234,9 @@ describe("useExtensions composable", () => {
       vi.stubEnv("NODE_ENV", "production");
       mockAppStoreWithLoadedExtensions([{ id: "ext-unlisted", metadata: { version: "1.0.0" } }]);
       const apiStore = useAPIStore();
-      vi.spyOn(apiStore, "request").mockResolvedValue([{ id: "ext-1", version: "2.0.0" }]);
+      vi.spyOn(apiStore, "request").mockResolvedValue({
+        extensions: [{ id: "ext-1", version: "2.0.0" }],
+      });
 
       const { updateExtensions } = useExtensions();
       await updateExtensions();
