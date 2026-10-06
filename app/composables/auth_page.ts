@@ -50,8 +50,8 @@ function extractApiError(error: unknown): string {
   const data = getField(error, "data");
   const responseData = getField(getField(error, "response"), "_data");
   const candidates = [
-    getField(data, "error"),
-    getField(responseData, "error"),
+    getField(data, "description"),
+    getField(responseData, "description"),
     getField(data, "message"),
     getField(responseData, "message"),
   ];

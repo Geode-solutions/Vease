@@ -110,7 +110,7 @@ describe("useAuthPage composable", () => {
     });
 
     test("surfaces a nested API error message instead of the raw error", async () => {
-      loginMock.mockRejectedValue({ data: { error: "Account locked" } });
+      loginMock.mockRejectedValue({ data: { description: "Account locked" } });
       const authPage = resetAuthPageState();
 
       await authPage.onSubmit();

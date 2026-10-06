@@ -4,12 +4,9 @@ import { consola } from "consola";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
-import type {
-  ExtensionDownloadResponse,
-  ExtensionInfo,
-  ExtensionsListResponse,
-} from "@geode/cloud-api/types";
-import cloud_api_schemas from "@geode/cloud-api/cloud_api_schemas.json";
+import cloud_api_schemas, {
+  type ExtensionsListResponse,
+} from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAuth } from "./auth";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
@@ -17,6 +14,7 @@ import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 import type { Extension } from "@vease/composables/extension_metadata";
 
 // The API returns the Firestore extension documents as stored: `version` is not guaranteed.
+type ExtensionInfo = ExtensionsListResponse["extensions"][number];
 type RemoteExtensionInfo = ExtensionInfo & { version: string };
 
 function hasVersion(info: ExtensionInfo): info is RemoteExtensionInfo {
@@ -76,8 +74,8 @@ export function useExtensions(): UseExtensionsReturn {
     const token = await user.value.getIdToken();
     const schema = cloud_api_schemas.cloud_api.extensions.list;
     const headers = { Authorization: `Bearer ${token}` };
-    const result = await APIStore.request<ExtensionsListResponse>({ schema, headers });
-    return result.every((info) => hasVersion(info)) ? result : [];
+    const { extensions } = await APIStore.request({ schema, headers });
+    return extensions.every((info) => hasVersion(info)) ? extensions : [];
   }
 
   async function downloadExtension(
@@ -91,7 +89,7 @@ export function useExtensions(): UseExtensionsReturn {
     const platform = getUserPlatform();
     const params = { extension: extensionId, platform };
     const headers = { Authorization: `Bearer ${token}` };
-    const { url } = await APIStore.request<ExtensionDownloadResponse>({ schema, params, headers });
+    const { url } = await APIStore.request({ schema, params, headers });
     const extensionFileName = `${extensionId}-${platform}.vext`;
     return { url, extensionFileName };
   }

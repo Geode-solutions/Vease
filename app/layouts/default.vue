@@ -61,9 +61,14 @@ watch(
 );
 
 const { user } = useAuth();
+
+// Token sent to the Cloud API on launch; it expires after an hour, reloading the page gets a new one
+const authToken = ref<string>();
+
 watch(
   user,
-  (newUser) => {
+  async (newUser) => {
+    authToken.value = await newUser?.getIdToken();
     if (newUser) {
       runFunctionWhenMicroservicesConnected(updateExtensions);
     }
@@ -86,7 +91,7 @@ watch(
           app-name="Vease"
           logo="/logo.png"
           :isUserAuthenticated="isUserAuthenticated"
-          :email="user?.email ?? undefined"
+          :auth-token="authToken"
         >
           <template #auth>
             <AuthWrapper />
