@@ -18,13 +18,21 @@ interface ScreenshotMask {
   locators: Locator[];
 }
 
+interface RunningApp {
+  window: Page;
+  cleanup: () => Promise<void>;
+  restart: () => Promise<void>;
+}
+
 interface WorkerFixtures {
   mode: string;
   suiteId: string;
-  window: Page;
+  app: RunningApp;
+  restartApp: () => Promise<void>;
 }
 
 interface TestFixtures {
+  window: Page;
   screenshotMask: ScreenshotMask;
   logTestProgress: undefined;
   autoScreenshot: undefined;
@@ -43,7 +51,8 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "test" },
   ],
 
-  window: [
+  // Mutable so restartApp can swap in a freshly launched app for the following tests
+  app: [
     async (
       { mode, playwright, browserName, headless, channel, launchOptions },
       use,
@@ -64,12 +73,35 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         return browser;
       }
-      const { window, cleanup } = await navigateToApp(mode, launchBrowser);
-      await use(window);
-      await cleanup();
+      const app: RunningApp = {
+        ...(await navigateToApp(mode, launchBrowser)),
+        restart: async (): Promise<void> => {
+          await app.cleanup();
+          const { window, cleanup } = await navigateToApp(mode, launchBrowser);
+          app.window = window;
+          app.cleanup = cleanup;
+        },
+      };
+      await use(app);
+      await app.cleanup();
       fs.rmSync(configPath, { recursive: true, force: true });
     },
     { scope: "worker" },
+  ],
+
+  // Kills the running app and launches a new one, like a user closing and reopening it
+  restartApp: [
+    async ({ app }, use): Promise<void> => {
+      await use(app.restart);
+    },
+    { scope: "worker" },
+  ],
+
+  window: [
+    async ({ app }, use): Promise<void> => {
+      await use(app.window);
+    },
+    { scope: "test" },
   ],
 
   logTestProgress: [
@@ -90,8 +122,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   autoScreenshot: [
-    async ({ window, screenshotMask }, use, testInfo): Promise<void> => {
+    async ({ app, screenshotMask }, use, testInfo): Promise<void> => {
       await use(undefined);
+      // Read at teardown: the test may have restarted the app
+      const { window } = app;
       if (testInfo.status === testInfo.expectedStatus) {
         // The account icon depends on login state (only cloud is logged in)
         await expect(window).toHaveScreenshot({

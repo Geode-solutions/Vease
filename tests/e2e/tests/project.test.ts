@@ -5,6 +5,7 @@ import type { Page } from "@playwright/test";
 
 // Local imports
 import {
+  beforeAllTimeout,
   brepGeodeObjectType,
   defaultDataName,
   polygonalSurfaceGeodeObjectType,
@@ -16,6 +17,7 @@ import {
 } from "@vease_tests/utils/object_trees/main_object_tree";
 import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
+  getModelComponentsObjectTree,
   openModelComponentsTree,
   toggleModelTreeRow,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
@@ -48,6 +50,15 @@ async function openMeshMenu(window: Page): Promise<void> {
   await openDataContextMenu(window, polygonalSurfaceGeodeObjectType, defaultDataName);
 }
 
+async function toggleModelCorners(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  if (!(await getModelComponentsObjectTree(window).first().isVisible())) {
+    await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
+  }
+  await toggleModelTreeRow(window, "Corners");
+  await moveMouseOutOfTheWay(window);
+}
+
 test("load mesh and model", async ({ window }) => {
   await loadVeaseTestDatas(window, [meshFilename]);
   await loadVeaseTestDatas(window, [brepFilename]);
@@ -70,15 +81,18 @@ test("mesh edges width", async ({ window }) => {
 });
 
 test("model corners visibility off", async ({ window }) => {
-  await closeAllMenus(window);
-  await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
-  await toggleModelTreeRow(window, "Corners");
-  await moveMouseOutOfTheWay(window);
+  await toggleModelCorners(window);
 });
 
 test("export project", async ({ window }, testInfo) => {
   exportedProjectPath = testInfo.outputPath("project.vease");
   await exportProject(window, exportedProjectPath);
+});
+
+// Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
+test("restart app before import", async ({ restartApp }) => {
+  test.setTimeout(beforeAllTimeout);
+  await restartApp();
 });
 
 test("import exported project", async ({ window }) => {
@@ -91,15 +105,17 @@ test("modify imported project", async ({ window }) => {
   await setMeshPolygonsVertexAttribute(window, modifiedVertexAttributeName);
   await openMeshMenu(window);
   await setMeshEdgesWidth(window, modifiedEdgesWidth);
-  await closeAllMenus(window);
-  await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
-  await toggleModelTreeRow(window, "Corners");
-  await moveMouseOutOfTheWay(window);
+  await toggleModelCorners(window);
 });
 
 test("export modified project", async ({ window }, testInfo) => {
   modifiedProjectPath = testInfo.outputPath("modified_project.vease");
   await exportProject(window, modifiedProjectPath);
+});
+
+test("restart app before modified import", async ({ restartApp }) => {
+  test.setTimeout(beforeAllTimeout);
+  await restartApp();
 });
 
 test("import modified project", async ({ window }) => {
