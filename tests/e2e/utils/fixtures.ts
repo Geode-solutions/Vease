@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 
 // Third party imports
-import type { Locator, Page } from "@playwright/test";
+import type { Browser, Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
 import { consola } from "consola";
@@ -44,14 +44,27 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   window: [
-    async ({ mode, browser }, use, workerInfo): Promise<void> => {
+    async (
+      { mode, playwright, browserName, headless, channel, launchOptions },
+      use,
+      workerInfo,
+    ): Promise<void> => {
       // Each worker runs its own app: give it its own config folder (where extensions are installed) so parallel installs don't overwrite each other
       const configPath = fs.mkdtempSync(
         path.join(os.tmpdir(), `vease-e2e-worker${workerInfo.parallelIndex}-`),
       );
       process.env.XDG_CONFIG_HOME = configPath;
       process.env.APPDATA = configPath;
-      const { window, cleanup } = await navigateToApp(mode, browser);
+      // Launched on demand instead of using the browser fixture, which would start (and require installing) a browser in DESKTOP mode too
+      async function launchBrowser(): Promise<Browser> {
+        const browser = await playwright[browserName].launch({
+          ...launchOptions,
+          headless,
+          channel,
+        });
+        return browser;
+      }
+      const { window, cleanup } = await navigateToApp(mode, launchBrowser);
       await use(window);
       await cleanup();
       fs.rmSync(configPath, { recursive: true, force: true });
