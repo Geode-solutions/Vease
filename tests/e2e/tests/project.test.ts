@@ -90,12 +90,9 @@ test("export project", async ({ window, app }, testInfo) => {
 });
 
 // Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
-test("restart app before import", async ({ restartApp }) => {
+test("import exported project", async ({ restartApp }) => {
   test.setTimeout(beforeAllTimeout);
-  await restartApp();
-});
-
-test("import exported project", async ({ window }) => {
+  const window = await restartApp();
   await importProject(window, exportedProjectPath);
   await moveMouseOutOfTheWay(window);
 });
@@ -113,12 +110,9 @@ test("export modified project", async ({ window, app }, testInfo) => {
   await exportProject(window, modifiedProjectPath, app.electronApp);
 });
 
-test("restart app before modified import", async ({ restartApp }) => {
+test("import modified project", async ({ restartApp }) => {
   test.setTimeout(beforeAllTimeout);
-  await restartApp();
-});
-
-test("import modified project", async ({ window }) => {
+  const window = await restartApp();
   await importProject(window, modifiedProjectPath);
   await moveMouseOutOfTheWay(window);
 });

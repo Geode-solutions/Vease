@@ -24,14 +24,14 @@ interface RunningApp {
   cleanup: () => Promise<void>;
   // Only set in DESKTOP mode
   electronApp?: ElectronApplication;
-  restart: () => Promise<void>;
+  restart: () => Promise<Page>;
 }
 
 interface WorkerFixtures {
   mode: string;
   suiteId: string;
   app: RunningApp;
-  restartApp: () => Promise<void>;
+  restartApp: () => Promise<Page>;
 }
 
 interface TestFixtures {
@@ -54,7 +54,7 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "test" },
   ],
 
-  // Mutable so restartApp can swap in a freshly launched app for the following tests
+  // Mutable so restartApp can swap in a freshly launched app
   app: [
     async (
       { mode, playwright, browserName, headless, channel, launchOptions },
@@ -78,12 +78,13 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       }
       const app: RunningApp = {
         ...(await navigateToApp(mode, launchBrowser)),
-        restart: async (): Promise<void> => {
+        restart: async (): Promise<Page> => {
           await app.cleanup();
           const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
           app.window = window;
           app.cleanup = cleanup;
           app.electronApp = electronApp;
+          return window;
         },
       };
       await use(app);
