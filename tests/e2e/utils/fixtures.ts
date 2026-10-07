@@ -7,6 +7,7 @@ import path from "node:path";
 import type { Browser, Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
+import type { ElectronApplication } from "playwright";
 import { consola } from "consola";
 
 // Local imports
@@ -18,9 +19,19 @@ interface ScreenshotMask {
   locators: Locator[];
 }
 
+interface RunningApp {
+  window: Page;
+  cleanup: () => Promise<void>;
+  // Only set in DESKTOP mode
+  electronApp?: ElectronApplication;
+  restart: () => Promise<Page>;
+}
+
 interface WorkerFixtures {
   mode: string;
   suiteId: string;
+  app: RunningApp;
+  restartApp: () => Promise<Page>;
   window: Page;
 }
 
@@ -43,7 +54,8 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "test" },
   ],
 
-  window: [
+  // Mutable so restartApp can swap in a freshly launched app
+  app: [
     async (
       { mode, playwright, browserName, headless, channel, launchOptions },
       use,
@@ -64,10 +76,36 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         return browser;
       }
-      const { window, cleanup } = await navigateToApp(mode, launchBrowser);
-      await use(window);
-      await cleanup();
+      const app: RunningApp = {
+        ...(await navigateToApp(mode, launchBrowser)),
+        restart: async (): Promise<Page> => {
+          await app.cleanup();
+          const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
+          app.window = window;
+          app.cleanup = cleanup;
+          app.electronApp = electronApp;
+          return window;
+        },
+      };
+      await use(app);
+      await app.cleanup();
       fs.rmSync(configPath, { recursive: true, force: true });
+    },
+    { scope: "worker" },
+  ],
+
+  // Kills the running app and launches a new one, like a user closing and reopening it
+  restartApp: [
+    async ({ app }, use): Promise<void> => {
+      await use(app.restart);
+    },
+    { scope: "worker" },
+  ],
+
+  // Page of the app launched with the worker: after restartApp, use the returned page or app.window
+  window: [
+    async ({ app }, use): Promise<void> => {
+      await use(app.window);
     },
     { scope: "worker" },
   ],
@@ -90,8 +128,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
   ],
 
   autoScreenshot: [
-    async ({ window, screenshotMask }, use, testInfo): Promise<void> => {
+    async ({ app, screenshotMask }, use, testInfo): Promise<void> => {
       await use(undefined);
+      // Read at teardown: the test may have restarted the app
+      const { window } = app;
       if (testInfo.status === testInfo.expectedStatus) {
         // The account icon depends on login state (only cloud is logged in)
         await expect(window).toHaveScreenshot({

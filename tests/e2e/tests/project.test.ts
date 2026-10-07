@@ -1,55 +1,121 @@
 // Node imports
-import path from "node:path";
 
 // Third party imports
+import type { Page } from "@playwright/test";
 
 // Local imports
+import {
+  beforeAllTimeout,
+  brepGeodeObjectType,
+  defaultDataName,
+  polygonalSurfaceGeodeObjectType,
+} from "@vease_tests/utils/constants";
+import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import {
+  expandMainObjectTree,
+  openDataContextMenu,
+} from "@vease_tests/utils/object_trees/main_object_tree";
 import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
+  toggleModelTreeRow,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
-import { brepGeodeObjectType } from "@vease_tests/utils/constants";
-import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
-import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
-import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
-import { setColor } from "@vease_tests/utils/data/helpers/color";
+import {
+  setMeshEdgesColor,
+  setMeshEdgesWidth,
+  setMeshPolygonsVertexAttribute,
+} from "@vease_tests/utils/data";
+import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
-const inputFilename = "test_project.vease";
+const meshFilename = "test.og_psf3d";
+const brepFilename = "test.og_brep";
+const vertexAttributeName = "test_vertex";
+const modifiedVertexAttributeName = "test_vertex2";
+const colorMapName = "vikO";
+const edgesWidth = 5;
+const modifiedEdgesWidth = 2;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
-test("import project", async ({ window }) => {
-  const projectFilePath = path.join(import.meta.dirname, "data", inputFilename);
-  await importProject(window, projectFilePath);
-  await closeFeedbackSnackbar(window);
+// Exported project files are shared between the serial tests below
+let exportedProjectPath = "";
+let modifiedProjectPath = "";
+
+async function openMeshMenu(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  await openDataContextMenu(window, polygonalSurfaceGeodeObjectType, defaultDataName);
+}
+
+async function toggleModelCorners(window: Page): Promise<void> {
+  await closeAllMenus(window);
+  if (!(await getModelComponentsObjectTree(window).first().isVisible())) {
+    await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
+  }
+  await toggleModelTreeRow(window, "Corners");
+  await moveMouseOutOfTheWay(window);
+}
+
+test("load mesh and model", async ({ window }) => {
+  await loadVeaseTestDatas(window, [meshFilename]);
+  await loadVeaseTestDatas(window, [brepFilename]);
+  await expandMainObjectTree(window);
 });
 
-test("toggle surfaces visibility", async ({ window }) => {
-  await hideObjectInTree(window, "Surfaces", undefined, getModelComponentsObjectTree(window));
+test("mesh vertex attribute", async ({ window }) => {
+  await openMeshMenu(window);
+  await setMeshPolygonsVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
 });
 
-test("change lines color", async ({ window }) => {
-  const modelComponentsObjectTree = getModelComponentsObjectTree(window);
-  const item = modelComponentsObjectTree.getByText("Lines", { exact: true }).first();
-  await item.click({ button: "right" });
-  await waitForActionSettled(window);
+test("mesh edges color", async ({ window }) => {
+  await openMeshMenu(window);
+  await setMeshEdgesColor(window);
+});
 
-  const container = window.locator(".options-section", { hasText: "Lines Options" });
-  await setColor(window, "modelStyleMenu", container);
+test("mesh edges width", async ({ window }) => {
+  await openMeshMenu(window);
+  await setMeshEdgesWidth(window, edgesWidth);
+});
+
+test("model corners visibility off", async ({ window }) => {
+  await toggleModelCorners(window);
+});
+
+test("export project", async ({ window, app }, testInfo) => {
+  exportedProjectPath = testInfo.outputPath("project.vease");
+  await exportProject(window, exportedProjectPath, app.electronApp);
+});
+
+// Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
+test("import exported project", async ({ restartApp }) => {
+  test.setTimeout(beforeAllTimeout);
+  const window = await restartApp();
+  await importProject(window, exportedProjectPath);
   await moveMouseOutOfTheWay(window);
 });
 
-test("collapse model tree in main tree", async ({ window }) => {
-  await window.keyboard.press("Escape");
-  await openModelComponentsTree(window, brepGeodeObjectType, "surface_cube");
+// The app was restarted by the previous test: the window fixture still points to the closed page
+test("modify imported project", async ({ app }) => {
+  const { window } = app;
+  await openMeshMenu(window);
+  await setMeshPolygonsVertexAttribute(window, modifiedVertexAttributeName);
+  await openMeshMenu(window);
+  await setMeshEdgesWidth(window, modifiedEdgesWidth);
+  await toggleModelCorners(window);
 });
 
-test("export project", async ({ window }) => {
-  await exportProject(window);
-  await waitForActionSettled(window);
+test("export modified project", async ({ app }, testInfo) => {
+  const { window } = app;
+  modifiedProjectPath = testInfo.outputPath("modified_project.vease");
+  await exportProject(window, modifiedProjectPath, app.electronApp);
+});
+
+test("import modified project", async ({ restartApp }) => {
+  test.setTimeout(beforeAllTimeout);
+  const window = await restartApp();
+  await importProject(window, modifiedProjectPath);
+  await moveMouseOutOfTheWay(window);
 });
