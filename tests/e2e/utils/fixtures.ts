@@ -32,10 +32,10 @@ interface WorkerFixtures {
   suiteId: string;
   app: RunningApp;
   restartApp: () => Promise<Page>;
+  window: Page;
 }
 
 interface TestFixtures {
-  window: Page;
   screenshotMask: ScreenshotMask;
   logTestProgress: undefined;
   autoScreenshot: undefined;
@@ -102,11 +102,12 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "worker" },
   ],
 
+  // Page of the app launched with the worker: after restartApp, use the returned page or app.window
   window: [
     async ({ app }, use): Promise<void> => {
       await use(app.window);
     },
-    { scope: "test" },
+    { scope: "worker" },
   ],
 
   logTestProgress: [

@@ -97,7 +97,9 @@ test("import exported project", async ({ restartApp }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("modify imported project", async ({ window }) => {
+// The app was restarted by the previous test: the window fixture still points to the closed page
+test("modify imported project", async ({ app }) => {
+  const { window } = app;
   await openMeshMenu(window);
   await setMeshPolygonsVertexAttribute(window, modifiedVertexAttributeName);
   await openMeshMenu(window);
@@ -105,7 +107,8 @@ test("modify imported project", async ({ window }) => {
   await toggleModelCorners(window);
 });
 
-test("export modified project", async ({ window, app }, testInfo) => {
+test("export modified project", async ({ app }, testInfo) => {
+  const { window } = app;
   modifiedProjectPath = testInfo.outputPath("modified_project.vease");
   await exportProject(window, modifiedProjectPath, app.electronApp);
 });
