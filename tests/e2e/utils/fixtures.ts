@@ -7,6 +7,7 @@ import path from "node:path";
 import type { Browser, Locator, Page } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
+import type { ElectronApplication } from "playwright";
 import { consola } from "consola";
 
 // Local imports
@@ -21,6 +22,8 @@ interface ScreenshotMask {
 interface RunningApp {
   window: Page;
   cleanup: () => Promise<void>;
+  // Only set in DESKTOP mode
+  electronApp?: ElectronApplication;
   restart: () => Promise<void>;
 }
 
@@ -77,9 +80,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         ...(await navigateToApp(mode, launchBrowser)),
         restart: async (): Promise<void> => {
           await app.cleanup();
-          const { window, cleanup } = await navigateToApp(mode, launchBrowser);
+          const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
           app.window = window;
           app.cleanup = cleanup;
+          app.electronApp = electronApp;
         },
       };
       await use(app);

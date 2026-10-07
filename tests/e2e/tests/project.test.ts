@@ -84,9 +84,9 @@ test("model corners visibility off", async ({ window }) => {
   await toggleModelCorners(window);
 });
 
-test("export project", async ({ window }, testInfo) => {
+test("export project", async ({ window, app }, testInfo) => {
   exportedProjectPath = testInfo.outputPath("project.vease");
-  await exportProject(window, exportedProjectPath);
+  await exportProject(window, exportedProjectPath, app.electronApp);
 });
 
 // Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
@@ -108,9 +108,9 @@ test("modify imported project", async ({ window }) => {
   await toggleModelCorners(window);
 });
 
-test("export modified project", async ({ window }, testInfo) => {
+test("export modified project", async ({ window, app }, testInfo) => {
   modifiedProjectPath = testInfo.outputPath("modified_project.vease");
-  await exportProject(window, modifiedProjectPath);
+  await exportProject(window, modifiedProjectPath, app.electronApp);
 });
 
 test("restart app before modified import", async ({ restartApp }) => {

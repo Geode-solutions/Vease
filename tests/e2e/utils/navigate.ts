@@ -218,7 +218,7 @@ async function newBrowserPage(browser: Browser): Promise<Page> {
 async function navigateToApp(
   mode: string,
   launchBrowser: () => Promise<Browser>,
-): Promise<{ window: Page; cleanup: () => Promise<void> }> {
+): Promise<{ window: Page; cleanup: () => Promise<void>; electronApp?: ElectronApplication }> {
   consola.info(`Testing app in ${mode} mode`);
   // The desktop app is driven through Electron: no browser is launched
   if (mode === "DESKTOP") {
@@ -227,6 +227,7 @@ async function navigateToApp(
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
       window: firstWindow,
+      electronApp,
       cleanup: async () => {
         await electronApp.close();
       },
