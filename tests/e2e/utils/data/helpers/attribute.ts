@@ -213,6 +213,31 @@ async function setFeatureNoDataColor(window: Page, menuTestId: string | Locator)
   await waitForActionSettled(window);
 }
 
+async function setFeatureTimeStep(
+  window: Page,
+  menuTestId: string | Locator,
+  timeStep: number,
+): Promise<void> {
+  if (typeof menuTestId === "string") {
+    await ensureMenuOpen(window, menuTestId);
+  }
+  const container = getMenuContainer(window, menuTestId);
+  const sliderThumb = container.getByTestId("timeStepSlider").first().getByRole("slider");
+  await sliderThumb.waitFor({ state: "visible" });
+  await sliderThumb.focus();
+  await sliderThumb.press("Home");
+  for (let step = 0; step < timeStep; step += 1) {
+    // oxlint-disable-next-line no-await-in-loop -- each key press moves the slider by one step
+    await sliderThumb.press("ArrowRight");
+  }
+  await waitForActionSettled(window);
+  // Keyboard focus keeps the thumb label visible: release it before the screenshot
+  await sliderThumb.blur();
+  await resetMenuScroll(window, 0);
+  await moveMouseOutOfTheWay(window);
+  await waitForActionSettled(window);
+}
+
 export {
   applyAttribute,
   resetMenuScroll,
@@ -220,5 +245,6 @@ export {
   setFeatureColorMap,
   setFeatureItem,
   setFeatureNoDataColor,
+  setFeatureTimeStep,
   setQuickColorMap,
 };
