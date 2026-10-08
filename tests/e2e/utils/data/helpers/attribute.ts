@@ -231,6 +231,8 @@ async function setFeatureTimeStep(
     await sliderThumb.press("ArrowRight");
   }
   await waitForActionSettled(window);
+  // Keyboard focus keeps the thumb label visible: release it before the screenshot
+  await sliderThumb.blur();
   await resetMenuScroll(window, 0);
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
