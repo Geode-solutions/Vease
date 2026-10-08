@@ -18,6 +18,7 @@ import {
   setFeatureAttribute,
   setFeatureColorMap,
   setFeatureItem,
+  setFeatureTimeStep,
 } from "@vease_tests/utils/data/helpers/attribute";
 import type { Page } from "@playwright/test";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
@@ -64,6 +65,11 @@ async function setMeshPolygonsItem(window: Page, item: number): Promise<void> {
   await setFeatureItem(window, menuTestId, item);
 }
 
+async function setMeshPolygonsTimeStep(window: Page, timeStep: number): Promise<void> {
+  const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
+  await setFeatureTimeStep(window, menuTestId, timeStep);
+}
+
 async function setMeshPolygonsColorMap(window: Page, colorMap: string): Promise<void> {
   const menuTestId = `${meshViewerObjectType}${polygonsFeatureName}Menu`;
   await setFeatureColorMap(window, menuTestId, colorMap);
@@ -99,5 +105,6 @@ export {
   setMeshPolygonsItem,
   setMeshPolygonsNoDataColor,
   setMeshPolygonsPolygonAttribute,
+  setMeshPolygonsTimeStep,
   setMeshPolygonsVertexAttribute,
 };

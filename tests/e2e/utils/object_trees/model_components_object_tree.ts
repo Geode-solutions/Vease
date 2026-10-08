@@ -127,6 +127,24 @@ async function openModelComponentContextMenu(
   await resetMenuScroll(window, 0);
 }
 
+// Opens the style menu of the first component of a type (e.g. "Surfaces")
+async function openModelComponentTypeContextMenu(
+  window: Page,
+  componentType: string,
+): Promise<void> {
+  await closeAllMenus(window);
+  const row = await getTreeRowByTextAndParent(
+    window,
+    componentType,
+    "00000000-",
+    getModelComponentsObjectTree(window),
+  );
+  await row.locator(".tree-item-label").first().click({ button: "right", force: true });
+  await waitForActionSettled(window);
+  await ensureMenuOpen(window, "modelStyleMenu");
+  await resetMenuScroll(window, 0);
+}
+
 async function setModelTreeRowColorRandom(
   window: Page,
   rowName: string,
@@ -179,6 +197,7 @@ export {
   hoverModelBlock,
   hoverSurfaces,
   openModelComponentContextMenu,
+  openModelComponentTypeContextMenu,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
