@@ -3,8 +3,10 @@
 import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import {
+  closeObjectsTree,
   expandMainObjectTree,
   getMainObjectTree,
+  openObjectsTree,
 } from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   expandMeshComponentType,
@@ -28,6 +30,7 @@ import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { setFeatureTimeStep } from "@vease_tests/utils/data/helpers/attribute";
 import { test } from "@vease_tests/utils/fixtures";
+import { viewerQuickColormap } from "@vease_tests/utils/viewer_interaction";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
@@ -64,8 +67,20 @@ test("time series middle time step", async ({ window }) => {
   await setMeshPolygonsTimeStep(window, middleTimeStep);
 });
 
+test("time series color bar time step", async ({ window }) => {
+  await closeAllMenus(window);
+  await closeObjectsTree(window);
+  await viewerQuickColormap(window);
+  const quickColormapPicker = window
+    .locator(".v-overlay__content")
+    .filter({ has: window.getByTestId("colorMapListFilter") });
+  await setFeatureTimeStep(window, quickColormapPicker, lastTimeStep);
+});
+
 test("model load brep and open model components", async ({ window }) => {
   await closeAllMenus(window);
+  await openObjectsTree(window);
+  await expandMainObjectTree(window);
   await hideObjectInTree(
     window,
     polygonalSurfaceGeodeObjectType,
