@@ -1,6 +1,63 @@
 {
   "api": {
     "controller": {
+      "commands": {
+        "stream": {
+          "$id": "api/controller/commands/stream",
+          "route": "/stream",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
+        "reply": {
+          "$id": "api/controller/commands/reply",
+          "route": "/reply",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "requestId": {
+              "type": "string"
+            },
+            "ok": {
+              "type": "boolean"
+            },
+            "result": {},
+            "error": {
+              "type": "string"
+            }
+          },
+          "required": ["requestId", "ok"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "data": {
         "load": {
           "$id": "api/controller/data/load",
