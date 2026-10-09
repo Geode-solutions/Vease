@@ -114,24 +114,36 @@ async function getResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
   if (client === undefined) {
     return [];
   }
-  try {
-    const [{ resources }, { resourceTemplates }] = await Promise.all([
-      client.listResources(),
-      client.listResourceTemplates(),
-    ]);
-    return [
-      ...resources.map(({ uri, name, description }) => ({ client, uri, name, description })),
-      ...resourceTemplates.map(({ uriTemplate, name, description }) => ({
+  const [resourcesResult, templatesResult] = await Promise.allSettled([
+    client.listResources(),
+    client.listResourceTemplates(),
+  ]);
+  const entries: ResourceEntry[] = [];
+  if (resourcesResult.status === "fulfilled") {
+    entries.push(
+      ...resourcesResult.value.resources.map(({ uri, name, description }) => ({
+        client,
+        uri,
+        name,
+        description,
+      })),
+    );
+  } else {
+    consola.error(`Failed to list MCP resources from ${url}`, resourcesResult.reason);
+  }
+  if (templatesResult.status === "fulfilled") {
+    entries.push(
+      ...templatesResult.value.resourceTemplates.map(({ uriTemplate, name, description }) => ({
         client,
         uriTemplate,
         name,
         description,
       })),
-    ];
-  } catch (error) {
-    consola.error(`Failed to load MCP resources from ${url}`, error);
-    return [];
+    );
+  } else {
+    consola.error(`Failed to list MCP resource templates from ${url}`, templatesResult.reason);
   }
+  return entries;
 }
 
 async function getResourceCatalog(): Promise<ResourceEntry[]> {

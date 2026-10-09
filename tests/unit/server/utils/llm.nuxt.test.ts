@@ -308,6 +308,22 @@ describe("the LLM server utilities", () => {
       expect(tools).toHaveProperty("read-resource");
     });
 
+    test("keeps the templates when listing the plain resources fails, and vice versa", async () => {
+      const noResources = dataClient();
+      noResources.listResources.mockRejectedValue(new Error("no resources"));
+      const noTemplates = fakeClient({
+        resources: [{ uri: "vease-modeling://stacks", name: "stacks", description: "Stacks" }],
+      });
+      noTemplates.listResourceTemplates.mockRejectedValue(new Error("no templates"));
+      const llm = await loadLlm({ [DATA_URL]: noResources, [MODELING_URL]: noTemplates }, true);
+
+      const tool = await readResourceTool(llm);
+
+      expect(tool.description).toContain("- vease://data/{id}: One object");
+      expect(tool.description).not.toContain("- vease://data: Loaded objects");
+      expect(tool.description).toContain("- vease-modeling://stacks: Stacks");
+    });
+
     test("reuses the client across calls when listing resources fails", async () => {
       const broken = fakeClient();
       broken.listResources.mockRejectedValue(new Error("no resources capability"));
