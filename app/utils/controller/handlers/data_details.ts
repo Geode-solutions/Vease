@@ -1,21 +1,23 @@
 // Third party imports
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
-import { consola } from "consola";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports
 import {
   type AttributeKind,
   type BackAttribute,
-  MODEL_COMPONENT_KINDS,
   MODEL_COMPONENT_TYPE,
   type ModelComponentTarget,
   type ModelWholeTarget,
-  fetchAttributes,
   getDataItem,
-  meshAttributeKinds,
   meshTargetsOf,
 } from "@vease/utils/controller/targets";
+import {
+  type SourceAttributes,
+  fetchSourceAttributes,
+  meshAttributeSources,
+  modelAttributeSources,
+} from "@vease/utils/controller/attributes";
 import { ControllerError } from "@vease/utils/controller/errors";
 import { getDataStyleStore } from "@vease/utils/external_stores";
 
@@ -64,40 +66,19 @@ function summarizeAttribute(
   return summary;
 }
 
-function settledAttributes(
-  result: PromiseSettledResult<BackAttribute[]> | undefined,
-  id: string,
-  kind: AttributeKind,
-): BackAttribute[] {
-  if (result?.status === "fulfilled") {
-    return result.value;
-  }
-  consola.warn(`[CONTROLLER] ${kind} attributes of ${id} are unavailable`, result?.reason);
-  return [];
+function summarizeSources(sourceAttributes: SourceAttributes[]): AttributeSummary[] {
+  return sourceAttributes.flatMap(({ source, attributes }) =>
+    attributes.map((attribute) => summarizeAttribute(source.target, source.kind, attribute)),
+  );
 }
 
 async function describeMesh({ id, geode_object_type }: DataItem): Promise<TargetsDescription> {
   const targets = meshTargetsOf(id);
-  const kinds = [
-    ...new Set(targets.flatMap((target) => meshAttributeKinds(geode_object_type, target))),
-  ];
-  const results = await Promise.allSettled(
-    kinds.map(async (kind) => {
-      const attributes = await fetchAttributes(id, kind);
-      return attributes;
-    }),
+  const sourceAttributes = await fetchSourceAttributes(
+    id,
+    meshAttributeSources(geode_object_type, targets),
   );
-  const attributesByKind = new Map(
-    kinds.map((kind, index) => [kind, settledAttributes(results[index], id, kind)] as const),
-  );
-  const attributes = targets.flatMap((target) =>
-    meshAttributeKinds(geode_object_type, target).flatMap((kind) =>
-      (attributesByKind.get(kind) ?? []).map((attribute) =>
-        summarizeAttribute(target, kind, attribute),
-      ),
-    ),
-  );
-  return { targets, attributes };
+  return { targets, attributes: summarizeSources(sourceAttributes) };
 }
 
 async function describeModel(id: string): Promise<TargetsDescription> {
@@ -113,24 +94,14 @@ async function describeModel(id: string): Promise<TargetsDescription> {
       .filter(({ type }) => type === MODEL_COMPONENT_TYPE[target])
       .map(({ geode_id }) => geode_id),
   })).filter(({ geodeIds }) => geodeIds.length > 0);
-  const requests = componentTargets.flatMap(({ target, geodeIds }) =>
-    MODEL_COMPONENT_KINDS[target].map((kind) => ({ target, kind, geodeIds })),
-  );
-  const results = await Promise.allSettled(
-    requests.map(async ({ kind, geodeIds }) => {
-      const attributes = await fetchAttributes(id, kind, geodeIds);
-      return attributes;
-    }),
-  );
-  const attributeLists = requests.map(({ target, kind }, index) =>
-    settledAttributes(results[index], id, kind).map((attribute) =>
-      summarizeAttribute(target, kind, attribute),
-    ),
+  const sourceAttributes = await fetchSourceAttributes(
+    id,
+    componentTargets.flatMap(({ target, geodeIds }) => modelAttributeSources(target, geodeIds)),
   );
   return {
     targets: [...MODEL_WHOLE_TARGETS, ...componentTargets.map(({ target }) => target)],
     components,
-    attributes: attributeLists.flat(),
+    attributes: summarizeSources(sourceAttributes),
   };
 }
 

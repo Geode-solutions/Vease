@@ -227,6 +227,82 @@
             "required": ["statusCode", "response"],
             "additionalProperties": false
           }
+        },
+        "attribute": {
+          "$id": "api/controller/style/attribute",
+          "route": "/attribute",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "target": {
+              "type": "string",
+              "enum": [
+                "points",
+                "edges",
+                "cells",
+                "polygons",
+                "polyhedra",
+                "corners",
+                "lines",
+                "surfaces",
+                "blocks"
+              ]
+            },
+            "componentIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "attribute": {
+              "type": "string",
+              "minLength": 1
+            },
+            "location": {
+              "type": "string",
+              "enum": ["vertex", "edge", "cell", "polygon", "polyhedron"]
+            },
+            "item": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "colormap": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            },
+            "timeStep": {
+              "type": "number"
+            },
+            "noDataColor": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+            }
+          },
+          "required": ["id", "attribute"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
         }
       },
       "viewer": {

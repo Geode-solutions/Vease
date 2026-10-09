@@ -85,6 +85,27 @@ export interface ControllerStyleSetResponse {
   statusCode: number;
 }
 
+export interface ControllerStyleAttributeParams {
+  attribute: string;
+  colormap?: string;
+  componentIds?: string[];
+  id: string;
+  item?: number;
+  location?: Location;
+  maximum?: number;
+  minimum?: number;
+  noDataColor?: string;
+  target?: Target;
+  timeStep?: number;
+}
+
+export type Location = "vertex" | "edge" | "cell" | "polygon" | "polyhedron";
+
+export interface ControllerStyleAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerViewerMeshPointsVisibilityParams {
   id: string;
   visibility: boolean | number | string;
@@ -182,6 +203,8 @@ export interface Schemas {
       readonly style: {
         readonly set: (typeof json)["api"]["controller"]["style"]["set"] &
           TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
+        readonly attribute: (typeof json)["api"]["controller"]["style"]["attribute"] &
+          TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
       };
       readonly viewer: {
         readonly mesh: {

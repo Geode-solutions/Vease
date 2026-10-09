@@ -4,15 +4,10 @@ import { z } from "zod";
 
 // Local imports
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
 
 const HEX_COLOR = /^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$/u;
 const DATA_ID_LENGTH = 32;
-
-function responseOf(payload: unknown): unknown {
-  return typeof payload === "object" && payload !== null && "response" in payload
-    ? payload.response
-    : payload;
-}
 
 export default defineMcpTool({
   name: "set-style",
@@ -71,6 +66,6 @@ export default defineMcpTool({
     if (!result.ok) {
       return result.message;
     }
-    return `Style updated: ${JSON.stringify(responseOf(result.payload))}`;
+    return `Style updated: ${JSON.stringify(controllerResponse(result.payload))}`;
   },
 });
