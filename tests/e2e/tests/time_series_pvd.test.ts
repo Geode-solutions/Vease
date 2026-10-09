@@ -21,6 +21,7 @@ import {
 } from "@vease_tests/utils/object_trees/main_object_tree";
 import {
   expandMeshComponentType,
+  getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
@@ -81,6 +82,7 @@ test("blocks pressure time series", async ({ window }) => {
   await closeAllMenus(window);
   await hideObjectInTree(window, brepGeodeObjectType, defaultDataName, getMainObjectTree(window));
   await openModelComponentsTree(window, brepGeodeObjectType, modelDataName);
+  await hideObjectInTree(window, "Surfaces", undefined, getModelComponentsObjectTree(window));
   await expandMeshComponentType(window, "Blocks");
   await openModelComponentTypeContextMenu(window, "Blocks");
   await setModelPolyhedraPolyhedronAttribute(window, timeSeriesName);
