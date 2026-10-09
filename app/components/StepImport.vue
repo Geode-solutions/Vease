@@ -34,9 +34,7 @@ const target_id = ref("");
 const time_series = ref<string[]>([]);
 const extensions_loaded = ref(false);
 const time_series_files = computed(() =>
-  files.value.filter((file) =>
-    time_series.value.includes(fileExtension(uploadPath(file))),
-  ),
+  files.value.filter((file) => time_series.value.includes(fileExtension(uploadPath(file)))),
 );
 // A time series file is imported alone; its referenced files come in the additional files step.
 const main_time_series_path = computed(() => {
