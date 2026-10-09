@@ -40,8 +40,19 @@ describe("load-file MCP tool", () => {
     vi.mocked(readFile).mockResolvedValue(Buffer.from("binary-data"));
   });
 
-  test("uploads the file's contents and reports success", async () => {
-    vi.mocked(callControllerApi).mockResolvedValue(okResult({ id: "item-1" }));
+  test("uploads the file's contents and reports the loaded data", async () => {
+    vi.mocked(callControllerApi).mockResolvedValue(
+      okResult({
+        statusCode: 200,
+        response: {
+          id: "item-1",
+          name: "model",
+          geode_object_type: "BRep",
+          viewer_type: "model",
+          native_file: "native.og_brep",
+        },
+      }),
+    );
 
     const result = await tool.handler({ filePath: "/data/model.msh" }, fakeMcpRequestExtra());
 
@@ -54,7 +65,19 @@ describe("load-file MCP tool", () => {
         errorPrefix: "Error loading file",
       }),
     );
-    expect(result).toBe('File loaded successfully: {"id":"item-1"}');
+    expect(result).toBe(
+      'File loaded successfully: {"id":"item-1","name":"model","geode_object_type":"BRep"}',
+    );
+  });
+
+  test("reports the opened project for a .vease file", async () => {
+    vi.mocked(callControllerApi).mockResolvedValue(
+      okResult({ statusCode: 200, response: { project: "scene.vease" } }),
+    );
+
+    const result = await tool.handler({ filePath: "/data/scene.vease" }, fakeMcpRequestExtra());
+
+    expect(result).toBe('File loaded successfully: {"project":"scene.vease"}');
   });
 
   test("reports a friendly error when the file cannot be read", async () => {

@@ -13,12 +13,10 @@ const point = z.array(z.number()).length(POINT_LENGTH);
 export default defineMcpTool({
   name: "create-data",
   description:
-    "The required way to create a point, a curve or a surface from coordinates in Vease. " +
-    "Always use this tool instead of calling /api/controller/data/create directly or " +
-    "writing custom fetch/curl code. points are [x, y, z] coordinates: a point needs at " +
-    "least 1, a curve 2 (closed joins the last point to the first) and a surface 3 (one " +
-    "polygon through the points in order). The new data is loaded in the viewer; its id " +
-    "and name are returned.",
+    "The required way to create a point, a curve or a surface from coordinates in Vease. points " +
+    "are [x, y, z] coordinates: a point needs at least 1, a curve 2 (closed joins the last point " +
+    "to the first) and a surface 3 (one polygon through the points in order). The new data is " +
+    "loaded in the viewer; its id and name are returned.",
   inputSchema: {
     kind: z.enum(["point", "curve", "surface"]).describe("Kind of data to create"),
     name: z.string().min(1).describe("Name of the new data"),

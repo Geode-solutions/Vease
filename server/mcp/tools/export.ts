@@ -8,12 +8,11 @@ import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 export default defineMcpTool({
   name: "export",
   description:
-    "The required way to export from Vease to a file on disk: a screenshot of the viewer " +
-    "(.png or .jpg) or the whole project (.vease, reloadable with load-file). Always use this " +
-    "tool instead of calling /api/controller/export directly or writing custom fetch/curl " +
-    "code. Vease must be open. filePath must be absolute, its directory must exist and the " +
-    "file must not exist yet: existing files are never overwritten, choose another path. " +
-    "includeBackground only applies to .png screenshots; .jpg always keeps the background.",
+    "The required way to export from Vease to a file on disk: a screenshot of the viewer (.png " +
+    "or .jpg) or the whole project (.vease, reloadable with load-file). Vease must be open. " +
+    "filePath must be absolute, its directory must exist and the file must not exist yet: " +
+    "existing files are never overwritten, choose another path. includeBackground only applies " +
+    "to .png screenshots; .jpg always keeps the background.",
   inputSchema: {
     kind: z.enum(["screenshot", "project"]).describe("What to export"),
     filePath: z
