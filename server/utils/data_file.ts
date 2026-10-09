@@ -11,7 +11,7 @@ import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load"
 // Local imports
 
 interface AllowedFilesResponse {
-  extensions: string[];
+  data_extensions: string[];
 }
 
 interface AllowedObjectsResponse {
@@ -22,9 +22,9 @@ function isAllowedFilesResponse(value: unknown): value is AllowedFilesResponse {
   return (
     typeof value === "object" &&
     value !== null &&
-    "extensions" in value &&
-    Array.isArray(value.extensions) &&
-    value.extensions.every((extension) => typeof extension === "string")
+    "data_extensions" in value &&
+    Array.isArray(value.data_extensions) &&
+    value.data_extensions.every((extension) => typeof extension === "string")
   );
 }
 
@@ -51,7 +51,7 @@ async function getAllowedFileExtensions(): Promise<string[]> {
   if (!isAllowedFilesResponse(response)) {
     throw new Error(`${schema.$id}: unexpected response shape`);
   }
-  return response.extensions;
+  return response.data_extensions;
 }
 
 async function getAllowedGeodeObjectTypes(filename: string): Promise<string | undefined> {
