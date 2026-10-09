@@ -1,0 +1,59 @@
+{
+  "route": "/set",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["reset", "focus", "orient", "save", "restore", "scene"]
+    },
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "componentIds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "orientation": {
+      "type": "string",
+      "enum": ["xplus", "xminus", "yplus", "yminus", "zplus", "zminus"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "positionId": {
+      "type": "integer"
+    },
+    "zScaling": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "backgroundColor": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    },
+    "axes": {
+      "type": "boolean"
+    },
+    "grid": {
+      "type": "boolean"
+    }
+  },
+  "required": ["action"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

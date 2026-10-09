@@ -17,14 +17,19 @@ interface ViewerState {
 
 const ORIENTATIONS = ["xplus", "xminus", "yplus", "yminus", "zplus", "zminus"];
 
-async function viewerState(): Promise<ViewerState> {
+async function listCameraPositions(): Promise<CameraPositionRecord[]> {
   // The camera manager store only exposes positions as a live query ref, empty until its first emission
   const positions = await getTable<CameraPositionRecord>("camera_positions").toArray();
+  return positions.map(({ id, name }) => ({ id, name }));
+}
+
+async function viewerState(): Promise<ViewerState> {
   return {
     zScaling: getHybridViewerStore().zScale,
-    cameraPositions: positions.map(({ id, name }) => ({ id, name })),
+    cameraPositions: await listCameraPositions(),
     orientations: ORIENTATIONS,
   };
 }
 
-export { viewerState };
+export { listCameraPositions, viewerState };
+export type { CameraPositionRecord };

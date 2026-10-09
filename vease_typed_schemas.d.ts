@@ -45,6 +45,39 @@ export interface ControllerDataDetailsResponse {
   statusCode: number;
 }
 
+export interface ControllerFilterApplyParams {
+  attribute?: string;
+  factor?: number;
+  filter: Filter;
+  ids: string[];
+  item?: number;
+  location?: ControllerFilterApplyParamsLocation;
+  maximum?: number;
+  minimum?: number;
+  planes?: Plane[];
+  remove?: boolean;
+  slices?: Slice[];
+}
+
+export type Filter = "shrink" | "explode" | "slice" | "clip" | "threshold";
+
+export type ControllerFilterApplyParamsLocation = "point" | "cell";
+
+export interface Plane {
+  normal: number[];
+  origin: number[];
+}
+
+export interface Slice {
+  axis: number;
+  index: number;
+}
+
+export interface ControllerFilterApplyResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerColormapsParams {}
 
 export interface ControllerColormapsResponse {
@@ -91,7 +124,7 @@ export interface ControllerStyleAttributeParams {
   componentIds?: string[];
   id: string;
   item?: number;
-  location?: Location;
+  location?: ControllerStyleAttributeParamsLocation;
   maximum?: number;
   minimum?: number;
   noDataColor?: string;
@@ -99,9 +132,36 @@ export interface ControllerStyleAttributeParams {
   timeStep?: number;
 }
 
-export type Location = "vertex" | "edge" | "cell" | "polygon" | "polyhedron";
+export type ControllerStyleAttributeParamsLocation =
+  | "vertex"
+  | "edge"
+  | "cell"
+  | "polygon"
+  | "polyhedron";
 
 export interface ControllerStyleAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewSetParams {
+  action: Action;
+  axes?: boolean;
+  backgroundColor?: string;
+  componentIds?: string[];
+  grid?: boolean;
+  id?: string;
+  name?: string;
+  orientation?: Orientation;
+  positionId?: number;
+  zScaling?: number;
+}
+
+export type Action = "reset" | "focus" | "orient" | "save" | "restore" | "scene";
+
+export type Orientation = "xplus" | "xminus" | "yplus" | "yminus" | "zplus" | "zminus";
+
+export interface ControllerViewSetResponse {
   response: any;
   statusCode: number;
 }
@@ -174,6 +234,10 @@ export interface Schemas {
         readonly details: (typeof json)["api"]["controller"]["data"]["details"] &
           TypedSchema<ControllerDataDetailsParams, ControllerDataDetailsResponse>;
       };
+      readonly filter: {
+        readonly apply: (typeof json)["api"]["controller"]["filter"]["apply"] &
+          TypedSchema<ControllerFilterApplyParams, ControllerFilterApplyResponse>;
+      };
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly style: {
@@ -181,6 +245,10 @@ export interface Schemas {
           TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
         readonly attribute: (typeof json)["api"]["controller"]["style"]["attribute"] &
           TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
+      };
+      readonly view: {
+        readonly set: (typeof json)["api"]["controller"]["view"]["set"] &
+          TypedSchema<ControllerViewSetParams, ControllerViewSetResponse>;
       };
       readonly viewer: {
         readonly state: (typeof json)["api"]["controller"]["viewer"]["state"] &

@@ -126,6 +126,111 @@
           }
         }
       },
+      "filter": {
+        "apply": {
+          "$id": "api/controller/filter/apply",
+          "route": "/apply",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "string",
+              "enum": ["shrink", "explode", "slice", "clip", "threshold"]
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "minItems": 1
+            },
+            "remove": {
+              "type": "boolean"
+            },
+            "factor": {
+              "type": "number",
+              "minimum": 0
+            },
+            "slices": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "axis": {
+                    "type": "integer",
+                    "enum": [0, 1, 2]
+                  },
+                  "index": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                },
+                "required": ["axis", "index"],
+                "additionalProperties": false
+              }
+            },
+            "planes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "origin": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "normal": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  }
+                },
+                "required": ["origin", "normal"],
+                "additionalProperties": false
+              }
+            },
+            "attribute": {
+              "type": "string",
+              "minLength": 1
+            },
+            "location": {
+              "type": "string",
+              "enum": ["point", "cell"]
+            },
+            "item": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "minimum": {
+              "type": "number"
+            },
+            "maximum": {
+              "type": "number"
+            }
+          },
+          "required": ["filter", "ids"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "colormaps": {
         "$id": "api/controller/colormaps",
         "route": "/colormaps",
@@ -291,6 +396,70 @@
             }
           },
           "required": ["id", "attribute"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "view": {
+        "set": {
+          "$id": "api/controller/view/set",
+          "route": "/set",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["reset", "focus", "orient", "save", "restore", "scene"]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "componentIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "orientation": {
+              "type": "string",
+              "enum": ["xplus", "xminus", "yplus", "yminus", "zplus", "zminus"]
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "positionId": {
+              "type": "integer"
+            },
+            "zScaling": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "backgroundColor": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+            },
+            "axes": {
+              "type": "boolean"
+            },
+            "grid": {
+              "type": "boolean"
+            }
+          },
+          "required": ["action"],
           "additionalProperties": false,
           "response": {
             "type": "object",

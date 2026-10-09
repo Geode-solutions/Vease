@@ -40,7 +40,7 @@ interface FindAttributeArgs {
   id: string;
   name: string;
   target?: string;
-  location?: AttributeKind;
+  location?: AttributeKind | AttributeKind[];
   componentIds?: string[];
 }
 
@@ -167,6 +167,16 @@ function availableAttributes(sourceAttributes: SourceAttributes[]): string {
   return groups.length > 0 ? groups.join("; ") : "none";
 }
 
+function matchesLocation(
+  location: AttributeKind | AttributeKind[] | undefined,
+  kind: AttributeKind,
+): boolean {
+  if (location === undefined) {
+    return true;
+  }
+  return Array.isArray(location) ? location.includes(kind) : location === kind;
+}
+
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
   const sources =
@@ -176,7 +186,7 @@ async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const sourceAttributes = await fetchSourceAttributes(item.id, sources);
   for (const { source, attributes } of sourceAttributes) {
     const attribute = attributes.find(({ attribute_name }) => attribute_name === args.name);
-    if (attribute !== undefined && (args.location === undefined || args.location === source.kind)) {
+    if (attribute !== undefined && matchesLocation(args.location, source.kind)) {
       return { ...source, attribute };
     }
   }
