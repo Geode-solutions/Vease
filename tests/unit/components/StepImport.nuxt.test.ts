@@ -3,7 +3,6 @@ import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import StepImport from "@vease/components/StepImport.vue";
 import type Stepper from "@ogw_front/components/Stepper.vue";
 import { flushPromises } from "@vue/test-utils";
-import { useBackStore } from "@ogw_front/stores/back";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
@@ -31,7 +30,6 @@ describe("the StepImport component", () => {
 
   beforeEach(() => {
     setupActivePinia();
-    vi.spyOn(useBackStore(), "request").mockResolvedValue({ time_series: [] });
     resetValuesMock.mockReset();
 
     vi.mocked(useStepperTree).mockReturnValue({
@@ -65,17 +63,28 @@ describe("the StepImport component", () => {
     expect(wrapper.emitted("close")).toStrictEqual([[]]);
   });
 
-  test("refuses a time series file dropped with other files", async () => {
-    vi.spyOn(useBackStore(), "request").mockResolvedValue({ time_series: ["pvd"] });
+  test("refuses a time series file selected with other files", async () => {
+    const actual = await vi.importActual<{ useStepperTree: typeof useStepperTree }>(
+      "@ogw_front/composables/stepper_tree.js",
+    );
+    const stepperTrees: ReturnType<typeof useStepperTree>[] = [];
+    vi.mocked(useStepperTree).mockImplementation((steps, initialState) => {
+      const stepperTree = actual.useStepperTree(steps, initialState);
+      stepperTrees.push(stepperTree);
+      return stepperTree;
+    });
     const warningSpy = vi.spyOn(useFeedbackStore(), "add_warning");
 
-    mountWithPlugins(StepImport, {
-      props: { files: [new File(["pvd"], "series.pvd"), new File(["vtu"], "rank_0.vtu")] },
+    mountWithPlugins(StepImport);
+    const [stepperTree] = stepperTrees;
+    // What the file selector emits once the files are uploaded
+    stepperTree?.update_values({
+      files: [new File(["pvd"], "series.pvd"), new File(["vtu"], "rank_0.vtu")],
+      time_series: ["pvd"],
     });
     await flushPromises();
 
     expect(warningSpy).toHaveBeenCalledWith("Import the time series file alone");
-    expect(resetValuesMock).toHaveBeenCalledWith();
   });
 
   test("resets stepper tree values when showStepper becomes false", async () => {

@@ -6,6 +6,7 @@ import InfraConnected from "@ogw_front/components/InfraConnected.vue";
 import Launcher from "@ogw_front/components/Launcher.vue";
 import { Status } from "@ogw_front/utils/status";
 import { consola } from "consola";
+import { foldersIgnoredWarning } from "@ogw_front/utils/upload_path";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
@@ -45,7 +46,7 @@ function handleFilesDropped(files): void {
 
 function handleFoldersDropped(): void {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
-    useFeedbackStore().add_warning("Folders can't be dropped here");
+    useFeedbackStore().add_warning(foldersIgnoredWarning);
   }
 }
 

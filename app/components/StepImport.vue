@@ -7,8 +7,6 @@ import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue
 import ObjectSelector from "@ogw_front/components/ObjectSelector.vue";
 import Stepper from "@ogw_front/components/Stepper.vue";
 import TimeSeriesTargetSelector from "@ogw_front/components/TimeSeriesTargetSelector.vue";
-import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
-import { useBackStore } from "@ogw_front/stores/back";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
@@ -31,8 +29,8 @@ const autoUpload = ref(true);
 const geode_object_type = ref("");
 const additional_files = ref<File[]>([]);
 const target_id = ref("");
+// Time series extensions, given by the file selector along with the selected files
 const time_series = ref<string[]>([]);
-const extensions_loaded = ref(false);
 const time_series_files = computed(() =>
   files.value.filter((file) => time_series.value.includes(fileExtension(uploadPath(file)))),
 );
@@ -51,6 +49,7 @@ const select_files_step = {
       files,
       autoUpload,
       showOverlay: false,
+      timeSeries: true,
     },
   },
   chips: computed(() => files.value.map((file) => uploadPath(file))),
@@ -138,6 +137,7 @@ const stepper_tree = useStepperTree(import_steps, {
   geode_object_type,
   additional_files,
   target_id,
+  time_series,
 });
 
 function reset_values(): void {
@@ -164,19 +164,6 @@ watch(
   },
 );
 
-onMounted(async () => {
-  try {
-    const response = await useBackStore().request({
-      schema: back_schemas.opengeodeweb_back.allowed_files,
-    });
-    time_series.value = response.time_series;
-  } catch {
-    time_series.value = [];
-  } finally {
-    extensions_loaded.value = true;
-  }
-});
-
 watch(
   () => UIStore.showStepper,
   (newVal) => {
@@ -189,11 +176,6 @@ watch(
 
 <template>
   <div class="d-flex flex-column fill-height overflow-hidden">
-    <Stepper
-      v-if="extensions_loaded"
-      :stepperTree="stepper_tree"
-      @close="handleClose"
-      @reset_values="reset_values"
-    />
+    <Stepper :stepperTree="stepper_tree" @close="handleClose" @reset_values="reset_values" />
   </div>
 </template>

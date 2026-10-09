@@ -12,7 +12,6 @@ import {
   selectTimeSeriesFile,
   selectTimeSeriesFolder,
   selectTimeSeriesTarget,
-  uploadTimeSeriesFolder,
 } from "@vease_tests/utils/load";
 import { brepGeodeObjectType, defaultDataName } from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
@@ -67,10 +66,6 @@ test("import pvd select target model", async ({ window }) => {
 test("import pvd select a folder above the referenced files", async ({ window }) => {
   // The whole data folder, which also holds the brep and the pvd: only the referenced files are kept
   await selectTimeSeriesFolder(window, dataPath);
-});
-
-test("import pvd upload referenced files", async ({ window }) => {
-  await uploadTimeSeriesFolder(window);
 });
 
 test("import pvd apply on the existing model", async ({ window }) => {

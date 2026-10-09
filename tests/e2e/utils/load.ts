@@ -68,16 +68,11 @@ async function selectTimeSeriesTarget(window: Page, targetName: string): Promise
   await waitForActionSettled(window);
 }
 
+// The referenced files are found in the folder and uploaded level by level, then Apply shows up
 async function selectTimeSeriesFolder(window: Page, folderPath: string): Promise<void> {
-  const dataImportStepper = getDataImportStepper(window);
-  const folderInput = dataImportStepper.locator('input[type="file"][webkitdirectory]');
+  const folderInput = getDataImportStepper(window).locator('input[type="file"][webkitdirectory]');
   await folderInput.waitFor({ state: "attached" });
   await folderInput.setInputFiles(folderPath);
-  await dataImportStepper.locator(".custom-upload-btn").waitFor();
-}
-
-async function uploadTimeSeriesFolder(window: Page): Promise<void> {
-  await getDataImportStepper(window).locator(".custom-upload-btn").click();
   await window.getByTestId("applyTimeSeriesButton").waitFor();
   await waitForActionSettled(window);
 }
@@ -94,5 +89,4 @@ export {
   selectTimeSeriesFile,
   selectTimeSeriesFolder,
   selectTimeSeriesTarget,
-  uploadTimeSeriesFolder,
 };
