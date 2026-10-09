@@ -106,36 +106,12 @@ export interface ControllerStyleAttributeResponse {
   statusCode: number;
 }
 
-export interface ControllerViewerMeshPointsVisibilityParams {
-  id: string;
-  visibility: boolean | number | string;
-}
-
-export interface ControllerViewerMeshPointsVisibilityResponse {
-  response: ControllerViewerMeshPointsVisibilityResponseResponse;
-  statusCode: number;
-}
-
-export interface ControllerViewerMeshPointsVisibilityResponseResponse {
-  id: string;
-  visibility: boolean;
-}
-
 export interface ControllerViewerStateParams {}
 
 export interface ControllerViewerStateResponse {
   response: any;
   statusCode: number;
 }
-
-export interface ControllerViewerRenderParams {}
-
-export interface ControllerViewerRenderResponse {
-  response: ControllerViewerRenderResponseResponse;
-  statusCode: number;
-}
-
-export interface ControllerViewerRenderResponseResponse {}
 
 export interface LlmStatusParams {}
 
@@ -207,19 +183,8 @@ export interface Schemas {
           TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
       };
       readonly viewer: {
-        readonly mesh: {
-          readonly points: {
-            readonly visibility: (typeof json)["api"]["controller"]["viewer"]["mesh"]["points"]["visibility"] &
-              TypedSchema<
-                ControllerViewerMeshPointsVisibilityParams,
-                ControllerViewerMeshPointsVisibilityResponse
-              >;
-          };
-        };
         readonly state: (typeof json)["api"]["controller"]["viewer"]["state"] &
           TypedSchema<ControllerViewerStateParams, ControllerViewerStateResponse>;
-        readonly render: (typeof json)["api"]["controller"]["viewer"]["render"] &
-          TypedSchema<ControllerViewerRenderParams, ControllerViewerRenderResponse>;
       };
     };
     readonly llm: {

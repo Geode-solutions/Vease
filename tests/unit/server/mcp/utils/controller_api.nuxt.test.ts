@@ -69,14 +69,14 @@ describe("callControllerApi()", () => {
       }),
     );
 
-    await callControllerApi("/api/controller/viewer/render", {
+    await callControllerApi("/api/controller/viewer/state", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       body: "raw-body",
       errorPrefix: "Error",
     });
 
-    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/controller/viewer/render", {
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/controller/viewer/state", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       body: "raw-body",

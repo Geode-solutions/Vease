@@ -306,51 +306,6 @@
         }
       },
       "viewer": {
-        "mesh": {
-          "points": {
-            "visibility": {
-              "$id": "api/controller/viewer/mesh/points/visibility",
-              "route": "/visibility",
-              "methods": ["POST"],
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "minLength": 32,
-                  "maxLength": 32
-                },
-                "visibility": {
-                  "type": ["boolean", "string", "number"]
-                }
-              },
-              "required": ["id", "visibility"],
-              "additionalProperties": false,
-              "response": {
-                "type": "object",
-                "properties": {
-                  "statusCode": {
-                    "type": "integer"
-                  },
-                  "response": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "visibility": {
-                        "type": "boolean"
-                      }
-                    },
-                    "required": ["id", "visibility"],
-                    "additionalProperties": false
-                  }
-                },
-                "required": ["statusCode", "response"],
-                "additionalProperties": false
-              }
-            }
-          }
-        },
         "state": {
           "$id": "api/controller/viewer/state",
           "route": "/state",
@@ -366,31 +321,6 @@
                 "type": "integer"
               },
               "response": {}
-            },
-            "required": ["statusCode", "response"],
-            "additionalProperties": false
-          }
-        },
-        "render": {
-          "$id": "api/controller/viewer/render",
-          "route": "/render",
-          "methods": ["POST"],
-          "type": "object",
-          "properties": {},
-          "required": [],
-          "additionalProperties": false,
-          "response": {
-            "type": "object",
-            "properties": {
-              "statusCode": {
-                "type": "integer"
-              },
-              "response": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": false
-              }
             },
             "required": ["statusCode", "response"],
             "additionalProperties": false
