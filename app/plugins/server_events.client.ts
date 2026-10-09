@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
   const backStore = getBackStore();
 
   backStore.$onAction(({ name, after }) => {
-    if (name !== "launch") {
+    if (name !== "connect") {
       return;
     }
     after(() => {
@@ -19,7 +19,7 @@ export default defineNuxtPlugin(() => {
           await setBackBaseUrl(appStore.base_url, backStore.base_url);
           connectToEventSource();
         } catch (error) {
-          consola.error("[SYNC] back launch failed", error);
+          consola.error("[SYNC] back connect failed", error);
         }
       })();
     });

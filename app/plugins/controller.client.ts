@@ -7,33 +7,33 @@ export default defineNuxtPlugin(() => {
   const backStore = getBackStore();
   const viewerStore = useViewerStore();
 
-  let backLaunched = false;
-  let viewerLaunched = false;
-  let connected = false;
+  let backConnected = false;
+  let viewerConnected = false;
+  let clientStarted = false;
 
   function connectWhenReady(): void {
-    if (backLaunched && viewerLaunched && !connected) {
-      connected = true;
+    if (backConnected && viewerConnected && !clientStarted) {
+      clientStarted = true;
       connectControllerClient();
     }
   }
 
   backStore.$onAction(({ name, after }) => {
-    if (name !== "launch") {
+    if (name !== "connect") {
       return;
     }
     after(() => {
-      backLaunched = true;
+      backConnected = true;
       connectWhenReady();
     });
   });
 
   viewerStore.$onAction(({ name, after }) => {
-    if (name !== "launch") {
+    if (name !== "connect") {
       return;
     }
     after(() => {
-      viewerLaunched = true;
+      viewerConnected = true;
       connectWhenReady();
     });
   });
