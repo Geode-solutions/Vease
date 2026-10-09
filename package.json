@@ -44,6 +44,7 @@
   },
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
+    "cloud:load": "node node_scripts/cloud_load.js",
     "dev": "npm run dev:browser",
     "dev:browser": "cross-env MODE=BROWSER npm run dev:nuxt",
     "dev:cloud": "cross-env MODE=CLOUD npm run dev:nuxt",
