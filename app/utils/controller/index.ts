@@ -3,13 +3,14 @@ import { consola } from "consola";
 
 // Local imports
 import type { ControllerCommand, ControllerReply } from "@vease_server/utils/command_bus";
+import { commandHandlers } from "@vease/utils/controller/handlers/index";
 
 type ControllerHandler = (params: unknown) => Promise<unknown>;
 
 const COMMAND_STREAM_URL = "/api/controller/commands/stream";
 const COMMAND_REPLY_URL = "/api/controller/commands/reply";
 
-const controllerHandlers: Record<string, ControllerHandler> = {};
+const controllerHandlers: Record<string, ControllerHandler> = { ...commandHandlers };
 
 const queue: ControllerCommand[] = [];
 let draining = false;

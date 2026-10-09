@@ -29,6 +29,33 @@ export interface ControllerDataLoadResponse {
   statusCode: number;
 }
 
+export interface ControllerDataListParams {}
+
+export interface ControllerDataListResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerDataDetailsParams {
+  id: string;
+}
+
+export interface ControllerDataDetailsResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerColormapsParams {}
+
+export interface ControllerColormapsResponse {
+  response: ControllerColormapsResponseResponse;
+  statusCode: number;
+}
+
+export interface ControllerColormapsResponseResponse {
+  categories: { [key: string]: string[] };
+}
+
 export interface ControllerViewerMeshPointsVisibilityParams {
   id: string;
   visibility: boolean | number | string;
@@ -42,6 +69,13 @@ export interface ControllerViewerMeshPointsVisibilityResponse {
 export interface ControllerViewerMeshPointsVisibilityResponseResponse {
   id: string;
   visibility: boolean;
+}
+
+export interface ControllerViewerStateParams {}
+
+export interface ControllerViewerStateResponse {
+  response: any;
+  statusCode: number;
 }
 
 export interface ControllerViewerRenderParams {}
@@ -109,7 +143,13 @@ export interface Schemas {
       readonly data: {
         readonly load: (typeof json)["api"]["controller"]["data"]["load"] &
           TypedSchema<ControllerDataLoadParams, ControllerDataLoadResponse>;
+        readonly list: (typeof json)["api"]["controller"]["data"]["list"] &
+          TypedSchema<ControllerDataListParams, ControllerDataListResponse>;
+        readonly details: (typeof json)["api"]["controller"]["data"]["details"] &
+          TypedSchema<ControllerDataDetailsParams, ControllerDataDetailsResponse>;
       };
+      readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
+        TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly viewer: {
         readonly mesh: {
           readonly points: {
@@ -120,6 +160,8 @@ export interface Schemas {
               >;
           };
         };
+        readonly state: (typeof json)["api"]["controller"]["viewer"]["state"] &
+          TypedSchema<ControllerViewerStateParams, ControllerViewerStateResponse>;
         readonly render: (typeof json)["api"]["controller"]["viewer"]["render"] &
           TypedSchema<ControllerViewerRenderParams, ControllerViewerRenderResponse>;
       };

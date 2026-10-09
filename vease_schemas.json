@@ -78,6 +78,87 @@
             "required": ["statusCode", "response"],
             "additionalProperties": false
           }
+        },
+        "list": {
+          "$id": "api/controller/data/list",
+          "route": "/list",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
+        "details": {
+          "$id": "api/controller/data/details",
+          "route": "/details",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            }
+          },
+          "required": ["id"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "colormaps": {
+        "$id": "api/controller/colormaps",
+        "route": "/colormaps",
+        "methods": ["GET"],
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "integer"
+            },
+            "response": {
+              "type": "object",
+              "properties": {
+                "categories": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": ["categories"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["statusCode", "response"],
+          "additionalProperties": false
         }
       },
       "viewer": {
@@ -124,6 +205,26 @@
                 "additionalProperties": false
               }
             }
+          }
+        },
+        "state": {
+          "$id": "api/controller/viewer/state",
+          "route": "/state",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
           }
         },
         "render": {
