@@ -2,13 +2,14 @@
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
-import type {
-  AttributeKind,
-  MeshElement,
-  ModelComponentTarget,
+import {
+  type AttributeKind,
+  type MeshElement,
+  type ModelComponentTarget,
+  isModelComponentTarget,
 } from "@vease/utils/controller/targets";
-import { type FoundAttribute, isModelComponentTarget } from "@vease/utils/controller/attributes";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { FoundAttribute } from "@vease/utils/controller/attributes";
 import type { getDataStyleStore } from "@vease/utils/external_stores";
 
 type StyleStore = ReturnType<typeof getDataStyleStore>;

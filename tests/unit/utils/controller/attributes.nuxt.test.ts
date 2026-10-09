@@ -137,7 +137,7 @@ describe("the controller attribute lookup", () => {
     await expect(found).rejects.toBeInstanceOf(ControllerError);
     await expect(found).rejects.toThrow(
       'Attribute "pressure" not found on "surface". Available: polygons/polygon: depth; ' +
-        "polygons/vertex: height; points/vertex: height",
+        "polygons/vertex: height",
     );
   });
 

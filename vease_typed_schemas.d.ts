@@ -108,7 +108,13 @@ export interface ControllerFilterApplyParams {
 
 export type Filter = "shrink" | "explode" | "slice" | "clip" | "threshold";
 
-export type ControllerFilterApplyParamsLocation = "point" | "cell";
+export type ControllerFilterApplyParamsLocation =
+  | "vertex"
+  | "edge"
+  | "cell"
+  | "polygon"
+  | "polyhedron"
+  | "point";
 
 export interface Plane {
   normal: number[];

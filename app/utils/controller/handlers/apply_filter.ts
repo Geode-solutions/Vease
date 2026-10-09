@@ -4,11 +4,12 @@ import type { SliceAxis } from "@ogw_front/utils/slice";
 
 // Local imports
 import { type AttributeKind, getDataItem } from "@vease/utils/controller/targets";
-import { ControllerError } from "@vease/utils/controller/errors";
-import { findAttribute } from "@vease/utils/controller/attributes";
+import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
+import { need } from "@vease/utils/controller/errors";
 
 type FilterName = "shrink" | "explode" | "slice" | "clip" | "threshold";
+type ThresholdLocation = AttributeKind | "point";
 
 interface ApplyFilterParams {
   filter: FilterName;
@@ -18,7 +19,7 @@ interface ApplyFilterParams {
   slices?: { axis: SliceAxis; index: number }[];
   planes?: { origin: number[]; normal: number[] }[];
   attribute?: string;
-  location?: "point" | "cell";
+  location?: ThresholdLocation;
   item?: number;
   minimum?: number;
   maximum?: number;
@@ -32,24 +33,18 @@ const DEFAULT_EXPLODE_FACTOR = 0.2;
 const NO_EXPLODE_FACTOR = 0;
 // A time series is thresholded on its first step, the one the attribute selector starts on
 const FIRST_TIME_STEP = 0;
-const THRESHOLD_LOCATIONS: Record<
-  "point" | "cell" | "any",
-  AttributeKind | AttributeKind[] | undefined
-> = {
+// The viewer speaks of point and cell: cell stands for any element that is not a vertex
+const THRESHOLD_LOCATIONS: Record<ThresholdLocation, AttributeKind | AttributeKind[]> = {
+  vertex: "vertex",
   point: "vertex",
+  edge: "edge",
   cell: ["edge", "cell", "polygon", "polyhedron"],
-  any: undefined,
+  polygon: "polygon",
+  polyhedron: "polyhedron",
 };
 
 type Applied = Record<string, unknown>;
 type FilterHandler = (params: ApplyFilterParams, store: HybridViewerStore) => Promise<Applied>;
-
-function need<Value>(filter: FilterName, field: string, value: Value | undefined): Value {
-  if (value === undefined) {
-    throw new ControllerError(`${filter} needs ${field}`);
-  }
-  return value;
-}
 
 async function shrink(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
   const factor =
@@ -84,34 +79,22 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
     return {};
   }
   const name = need(params.filter, "attribute", params.attribute);
-  if ((minimum === undefined) !== (maximum === undefined)) {
-    throw new ControllerError("Give both minimum and maximum, or neither for the attribute range");
-  }
+  checkRange(minimum, maximum);
   const found = await findAttribute({
     id: ids[0] ?? "",
     name,
-    location: THRESHOLD_LOCATIONS[params.location ?? "any"],
+    location: params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location],
   });
-  const item = params.item ?? 0;
-  if (item >= found.attribute.nb_items) {
-    throw new ControllerError(
-      `item ${item} is out of range for "${name}" (nb_items ${found.attribute.nb_items})`,
-    );
-  }
+  const item = resolveItem(params.item, found.attribute);
   const range = getAttributeRange(found.attribute, item);
   const isSeries = (found.attribute.time_steps?.length ?? 0) > 0;
-  const location = found.kind === "vertex" ? "point" : "cell";
-  const applied = {
-    location,
-    item,
-    minimum: minimum ?? range.min,
-    maximum: maximum ?? range.max,
-  } as const;
+  const bounds = { item, minimum: minimum ?? range.min, maximum: maximum ?? range.max };
   await store.setThreshold(ids, {
     name: attributeArrayName(name, isSeries ? FIRST_TIME_STEP : undefined),
-    ...applied,
+    location: found.kind === "vertex" ? "point" : "cell",
+    ...bounds,
   });
-  return { attribute: name, ...applied };
+  return { attribute: name, location: found.kind, ...bounds };
 }
 
 const FILTERS: Record<FilterName, FilterHandler> = { shrink, explode, slice, clip, threshold };

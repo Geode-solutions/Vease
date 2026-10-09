@@ -4,7 +4,7 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
-import { deleteData, renameData } from "@vease/utils/data_actions";
+import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
@@ -47,20 +47,8 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
   if (item.visible === targetVisible) {
     return;
   }
-  await dataStore.updateItem(item.id, { visible: targetVisible });
-  await dataStyleStore.setVisibility(item.id, targetVisible, item);
+  await setDataVisibility(item.id, targetVisible);
   item.visible = targetVisible;
-  if (targetVisible) {
-    await treeviewStore.addItem(
-      item.geode_object_type,
-      item.name,
-      item.id,
-      item.geode_id,
-      item.viewer_type,
-    );
-  } else {
-    treeviewStore.removeItem(item.id);
-  }
 }
 
 async function toggleSelectedVisibility(): Promise<void> {

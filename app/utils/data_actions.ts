@@ -3,7 +3,7 @@ import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
 // Local imports
-import { getHybridViewerStore } from "@vease/utils/external_stores";
+import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 
 async function deleteData(id: string): Promise<void> {
   const dataStore = useDataStore();
@@ -20,4 +20,24 @@ async function renameData(id: string, name: string): Promise<void> {
   useTreeviewStore().renameItem(id, name);
 }
 
-export { deleteData, renameData };
+// Hidden data leaves the tree, so the visibility flag, the style and the tree change together
+async function setDataVisibility(id: string, visible: boolean): Promise<void> {
+  const dataStore = useDataStore();
+  const item = await dataStore.item(id);
+  const changed = item.visible !== visible;
+  if (changed) {
+    await dataStore.updateItem(id, { visible });
+  }
+  await getDataStyleStore().setVisibility(id, visible);
+  if (!changed) {
+    return;
+  }
+  const treeviewStore = useTreeviewStore();
+  if (visible) {
+    treeviewStore.addItem(item.geode_object_type, item.name, id, item.geode_id, item.viewer_type);
+  } else {
+    treeviewStore.removeItem(id);
+  }
+}
+
+export { deleteData, renameData, setDataVisibility };

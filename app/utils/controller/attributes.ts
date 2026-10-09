@@ -12,11 +12,13 @@ import {
   TARGET_PRIORITY,
   fetchAttributes,
   getDataItem,
+  isModelComponentTarget,
   meshAttributeKinds,
   meshTargetsOf,
   modelComponentGeodeIds,
+  resolveComponentIds,
 } from "@vease/utils/controller/targets";
-import { ControllerError } from "@vease/utils/controller/errors";
+import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
 
 interface AttributeSource {
   target: MeshElement | ModelComponentTarget;
@@ -65,7 +67,10 @@ function settledAttributes(
   if (result?.status === "fulfilled") {
     return result.value;
   }
-  consola.warn(`[CONTROLLER] ${kind} attributes of ${id} are unavailable`, result?.reason);
+  consola.warn(
+    `[CONTROLLER] ${kind} attributes of ${id} are unavailable`,
+    errorMessage(result?.reason),
+  );
   return [];
 }
 
@@ -94,10 +99,6 @@ async function fetchSourceAttributes(
     source,
     attributes: attributesByKey.get(requestKey(source)) ?? [],
   }));
-}
-
-function isModelComponentTarget(target: string): target is ModelComponentTarget {
-  return Object.hasOwn(MODEL_COMPONENT_KINDS, target);
 }
 
 function meshSearchSources(
@@ -144,25 +145,24 @@ async function modelSearchSources(
       `Model attributes are on corners, lines, surfaces or blocks, not "${target}"`,
     );
   }
-  const targetIds = await modelComponentGeodeIds(item.id, target);
-  if (targetIds.length === 0) {
-    throw new ControllerError(`"${item.name}" has no ${target}`);
-  }
-  const unknownIds = (componentIds ?? []).filter((componentId) => !targetIds.includes(componentId));
-  if (unknownIds.length > 0) {
-    throw new ControllerError(
-      `"${item.name}" has no ${target} with geode id ${unknownIds.join(", ")}; read vease://data/${item.id} for its components`,
-    );
-  }
-  return modelAttributeSources(target, componentIds ?? targetIds);
+  return modelAttributeSources(target, await resolveComponentIds(item, target, componentIds));
 }
 
+// Elements sharing vertex attributes list them once, under the first element searched
 function availableAttributes(sourceAttributes: SourceAttributes[]): string {
+  const listed = new Set<string>();
   const groups = sourceAttributes
-    .filter(({ attributes }) => attributes.length > 0)
+    .filter(({ source, attributes }) => {
+      const key = requestKey(source);
+      if (attributes.length === 0 || listed.has(key)) {
+        return false;
+      }
+      listed.add(key);
+      return true;
+    })
     .map(
       ({ source, attributes }) =>
-        `${source.target}/${source.kind}: ${attributes.map(({ attribute_name }) => attribute_name).join(", ")}`,
+        `${source.target}/${source.kind}: ${[...new Set(attributes.map(({ attribute_name }) => attribute_name))].join(", ")}`,
     );
   return groups.length > 0 ? groups.join("; ") : "none";
 }
@@ -175,6 +175,27 @@ function matchesLocation(
     return true;
   }
   return Array.isArray(location) ? location.includes(kind) : location === kind;
+}
+
+function checkRange(minimum: number | undefined, maximum: number | undefined): void {
+  if ((minimum === undefined) !== (maximum === undefined)) {
+    throw new ControllerError("Give both minimum and maximum, or neither for the attribute range");
+  }
+  if (minimum !== undefined && maximum !== undefined && minimum > maximum) {
+    throw new ControllerError(
+      `minimum (${minimum}) is greater than maximum (${maximum}); swap them or omit both for the attribute range`,
+    );
+  }
+}
+
+function resolveItem(item: number | undefined, attribute: BackAttribute): number {
+  const resolved = item ?? 0;
+  if (resolved >= attribute.nb_items) {
+    throw new ControllerError(
+      `item ${resolved} is out of range for "${attribute.attribute_name}" (nb_items ${attribute.nb_items})`,
+    );
+  }
+  return resolved;
 }
 
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
@@ -196,10 +217,11 @@ async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
 }
 
 export {
+  checkRange,
   fetchSourceAttributes,
   findAttribute,
-  isModelComponentTarget,
   meshAttributeSources,
   modelAttributeSources,
+  resolveItem,
 };
 export type { AttributeSource, FindAttributeArgs, FoundAttribute, SourceAttributes };

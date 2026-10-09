@@ -1,17 +1,21 @@
 // Third party imports
+import type { DataItem } from "@ogw_front/stores/data";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
 import {
+  MODEL_COMPONENT_TARGETS,
   type MeshElement,
   type ModelComponentTarget,
   getDataItem,
+  isModelComponentTarget,
   meshTargetsOf,
-  modelComponentGeodeIds,
+  resolveComponentIds,
 } from "@vease/utils/controller/targets";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
 import { hexToRgba } from "@vease/utils/controller/color";
+import { setDataVisibility } from "@vease/utils/data_actions";
 
 type Coloring = "constant" | "random" | "textures";
 type StyleStore = ReturnType<typeof getDataStyleStore>;
@@ -105,12 +109,6 @@ const MODEL_COMPONENT_SETTERS: Record<ModelComponentTarget, ModelComponentSetter
 };
 /* oxlint-enable typescript/promise-function-async */
 
-const MODEL_COMPONENT_TARGETS = Object.keys(MODEL_COMPONENT_SETTERS);
-
-function isModelComponentTarget(target: string): target is ModelComponentTarget {
-  return Object.hasOwn(MODEL_COMPONENT_SETTERS, target);
-}
-
 function isMeshElement(target: string): target is MeshElement {
   return Object.hasOwn(MESH_ELEMENT_SETTERS, target);
 }
@@ -142,7 +140,7 @@ async function styleWholeMesh(
   const { id, visibility, color } = params;
   rejectUnsupported(params, ["visibility", "color"], `the whole mesh "${name}"`);
   if (visibility !== undefined) {
-    await store.setMeshVisibility(id, visibility);
+    await setDataVisibility(id, visibility);
   }
   if (color !== undefined) {
     await store.setMeshColor(id, hexToRgba(color));
@@ -204,7 +202,7 @@ async function styleMesh(params: SetStyleParams, store: StyleStore, name: string
   await styleMeshElement(params, store, target);
 }
 
-async function styleWholeModel(params: SetStyleParams, store: StyleStore): Promise<void> {
+async function styleWholeModel(params: SetStyleParams): Promise<void> {
   const { id, visibility } = params;
   const onlyVisibility = appliedProperties(params).every((property) => property === "visibility");
   if (visibility === undefined || !onlyVisibility) {
@@ -212,7 +210,7 @@ async function styleWholeModel(params: SetStyleParams, store: StyleStore): Promi
       "Give a target to style a model: points, edges, corners, lines, surfaces or blocks",
     );
   }
-  await store.setModelVisibility(id, visibility);
+  await setDataVisibility(id, visibility);
 }
 
 async function styleModelPointsOrEdges(
@@ -243,7 +241,7 @@ async function styleModelComponents(
   params: SetStyleParams,
   store: StyleStore,
   target: ModelComponentTarget,
-  name: string,
+  item: DataItem,
 ): Promise<void> {
   const { id, componentIds, visibility, color, coloring } = params;
   rejectUnsupported(params, ["visibility", "color", "coloring"], `model ${target}`);
@@ -251,10 +249,7 @@ async function styleModelComponents(
     throw new ControllerError(`coloring "textures" cannot be set on model ${target}`);
   }
   const setters = MODEL_COMPONENT_SETTERS[target];
-  const ids = componentIds ?? (await modelComponentGeodeIds(id, target));
-  if (ids.length === 0) {
-    throw new ControllerError(`"${name}" has no ${target}`);
-  }
+  const ids = await resolveComponentIds(item, target, componentIds);
   if (visibility !== undefined) {
     await setters.visibility(store, id, ids, visibility);
   }
@@ -266,14 +261,18 @@ async function styleModelComponents(
   }
 }
 
-async function styleModel(params: SetStyleParams, store: StyleStore, name: string): Promise<void> {
+async function styleModel(
+  params: SetStyleParams,
+  store: StyleStore,
+  item: DataItem,
+): Promise<void> {
   const { target } = params;
   if (target === undefined) {
-    await styleWholeModel(params, store);
+    await styleWholeModel(params);
   } else if (target === "points" || target === "edges") {
     await styleModelPointsOrEdges(params, store, target);
   } else if (isModelComponentTarget(target)) {
-    await styleModelComponents(params, store, target, name);
+    await styleModelComponents(params, store, target, item);
   } else {
     throw new ControllerError(
       `"${target}" is not a model target; use points, edges, ${MODEL_COMPONENT_TARGETS.join(", ")}`,
@@ -291,7 +290,7 @@ async function setStyle(params: unknown): Promise<{ id: string; applied: string[
   const item = await getDataItem(style.id);
   const store = getDataStyleStore();
   await (item.viewer_type === "model"
-    ? styleModel(style, store, item.name)
+    ? styleModel(style, store, item)
     : styleMesh(style, store, item.name));
   await getHybridViewerStore().remoteRender();
   return { id: style.id, applied };

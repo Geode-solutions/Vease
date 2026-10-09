@@ -2,11 +2,16 @@ import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { controllerHandlers } from "@vease/utils/controller/index";
+import { setDataVisibility } from "@vease/utils/data_actions";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/stores/data"), () => ({
   useDataStore: vi.fn<typeof useDataStore>(),
+}));
+
+vi.mock(import("@vease/utils/data_actions"), () => ({
+  setDataVisibility: vi.fn<typeof setDataVisibility>(),
 }));
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
@@ -61,7 +66,7 @@ const styleStore = {
 };
 const dataStore = {
   item: vi.fn<(id: string) => Promise<DataItem>>(),
-  getMeshComponentGeodeIds: vi.fn<() => Promise<string[]>>(),
+  getMeshComponentGeodeIds: vi.fn<(id: string, type: string) => Promise<string[]>>(),
 };
 const hybridViewerStore = { remoteRender: vi.fn<() => Promise<void>>() };
 
@@ -85,6 +90,10 @@ describe("the set-style controller handler", () => {
     );
     /* oxlint-enable no-unsafe-type-assertion */
     dataStore.item.mockResolvedValue(MESH);
+    dataStore.getMeshComponentGeodeIds.mockImplementation(async (_id, type) => {
+      await Promise.resolve();
+      return type === "Surface" ? ["s1", "s2"] : [];
+    });
     styleStore.getStyle.mockReturnValue({ visibility: true, points: {}, polygons: {} });
   });
 
@@ -93,7 +102,15 @@ describe("the set-style controller handler", () => {
       id: MESH.id,
       applied: ["visibility"],
     });
-    expect(styleStore.setMeshVisibility).toHaveBeenCalledWith(MESH.id, false);
+    expect(setDataVisibility).toHaveBeenCalledWith(MESH.id, false);
+    expect(styleStore.setMeshVisibility).not.toHaveBeenCalled();
+  });
+
+  test("shows and colors the whole mesh", async () => {
+    await setStyle({ id: MESH.id, visibility: true, color: "#ff8800" });
+
+    expect(setDataVisibility).toHaveBeenCalledWith(MESH.id, true);
+    expect(styleStore.setMeshColor).toHaveBeenCalledWith(MESH.id, ORANGE);
   });
 
   test("colors mesh polygons and switches them to constant coloring", async () => {
@@ -130,7 +147,6 @@ describe("the set-style controller handler", () => {
   test("colors all surfaces of a model when no componentIds are given", async () => {
     dataStore.item.mockResolvedValue(MODEL);
     styleStore.getStyle.mockReturnValue({ visibility: true });
-    dataStore.getMeshComponentGeodeIds.mockResolvedValue(["s1", "s2"]);
 
     await setStyle({ id: MODEL.id, target: "surfaces", color: "#ff8800" });
 
@@ -147,13 +163,23 @@ describe("the set-style controller handler", () => {
     dataStore.item.mockResolvedValue(MODEL);
     await setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s2"], color: "#ff8800" });
 
-    expect(dataStore.getMeshComponentGeodeIds).not.toHaveBeenCalled();
     expect(styleStore.setModelSurfacesColor).toHaveBeenCalledWith(
       MODEL.id,
       ["s2"],
       ORANGE,
       "constant",
     );
+  });
+
+  test("rejects component ids the target does not have", async () => {
+    dataStore.item.mockResolvedValue(MODEL);
+
+    await expect(
+      setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s2", "b1"], visibility: false }),
+    ).rejects.toThrow(
+      `"brep" has no surfaces with geode id b1; read vease://data/${MODEL.id} for its components`,
+    );
+    expect(styleStore.setModelSurfacesVisibility).not.toHaveBeenCalled();
   });
 
   test("applies random coloring to model components", async () => {
@@ -179,7 +205,8 @@ describe("the set-style controller handler", () => {
     dataStore.item.mockResolvedValue(MODEL);
     await setStyle({ id: MODEL.id, visibility: false });
 
-    expect(styleStore.setModelVisibility).toHaveBeenCalledWith(MODEL.id, false);
+    expect(setDataVisibility).toHaveBeenCalledWith(MODEL.id, false);
+    expect(styleStore.setModelVisibility).not.toHaveBeenCalled();
   });
 
   test("rejects a color without target on a model", async () => {
@@ -209,7 +236,6 @@ describe("the set-style controller handler", () => {
 
   test("throws when the model has no component of the target type", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    dataStore.getMeshComponentGeodeIds.mockResolvedValue([]);
 
     await expect(setStyle({ id: MODEL.id, target: "blocks", visibility: true })).rejects.toThrow(
       '"brep" has no blocks',

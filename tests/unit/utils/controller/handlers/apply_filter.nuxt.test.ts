@@ -192,7 +192,7 @@ describe("the apply-filter controller handler", () => {
       filter: "threshold",
       ids: [MESH.id],
       attribute: "depth",
-      location: "cell",
+      location: "polygon",
       item: 0,
       minimum: 0,
       maximum: DEPTH_MAX,
@@ -225,6 +225,33 @@ describe("the apply-filter controller handler", () => {
       minimum: CUSTOM_MIN,
       maximum: CUSTOM_MAX,
     });
+  });
+
+  test.each(["vertex", "point"])(
+    "thresholds a vertex attribute on points with location %s",
+    async (location) => {
+      request.mockResolvedValue({ attributes: [DEPTH] });
+
+      await expect(
+        applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", location }),
+      ).resolves.toMatchObject({ location: "vertex" });
+      expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
+        [MESH.id],
+        expect.objectContaining({ location: "point" }),
+      );
+    },
+  );
+
+  test("thresholds a polygon attribute on cells with location polygon", async () => {
+    request.mockResolvedValue({ attributes: [DEPTH] });
+
+    await expect(
+      applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", location: "polygon" }),
+    ).resolves.toMatchObject({ location: "polygon" });
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
+      [MESH.id],
+      expect.objectContaining({ location: "cell" }),
+    );
   });
 
   test("a cell threshold does not match a vertex attribute", async () => {
@@ -261,6 +288,19 @@ describe("the apply-filter controller handler", () => {
     await expect(
       applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", minimum: 1 }),
     ).rejects.toThrow("Give both minimum and maximum");
+  });
+
+  test("threshold rejects a minimum greater than the maximum", async () => {
+    await expect(
+      applyFilter({
+        filter: "threshold",
+        ids: [MESH.id],
+        attribute: "depth",
+        minimum: CUSTOM_MAX,
+        maximum: CUSTOM_MIN,
+      }),
+    ).rejects.toThrow(`minimum (${CUSTOM_MAX}) is greater than maximum (${CUSTOM_MIN})`);
+    expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
 
   test("rejects an unknown id", async () => {

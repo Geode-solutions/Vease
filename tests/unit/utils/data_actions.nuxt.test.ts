@@ -1,7 +1,7 @@
+import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { deleteData, renameData } from "@vease/utils/data_actions";
-import { getHybridViewerStore } from "@vease/utils/external_stores";
-import { useDataStore } from "@ogw_front/stores/data";
+import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
+import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -15,19 +15,32 @@ vi.mock(import("@ogw_front/stores/treeview"), () => ({
 }));
 
 vi.mock(import("@vease/utils/external_stores"), () => ({
+  getDataStyleStore: vi.fn<typeof getDataStyleStore>(),
   getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
 }));
 
 const ID = "data-1";
+const ITEM: DataItem = {
+  id: ID,
+  geode_id: "geode-1",
+  name: "surface",
+  viewer_type: "mesh",
+  geode_object_type: "PolygonalSurface3D",
+  visible: true,
+  created_at: "2026-10-09",
+};
 const calls: string[] = [];
 
 const dataStore = {
   deregisterObject: vi.fn<(id: string) => Promise<void>>(),
   deleteItem: vi.fn<(id: string) => Promise<void>>(),
   updateItem: vi.fn<(id: string, changes: unknown) => Promise<void>>(),
+  item: vi.fn<(id: string) => Promise<DataItem>>(),
 };
 const hybridViewerStore = { removeItem: vi.fn<(id: string) => void>() };
+const dataStyleStore = { setVisibility: vi.fn<(id: string, visible: boolean) => Promise<void>>() };
 const treeviewStore = {
+  addItem: vi.fn<(...args: string[]) => void>(),
   removeItem: vi.fn<(id: string) => void>(),
   closeView: vi.fn<(id: string) => void>(),
   renameItem: vi.fn<(id: string, name: string) => void>(),
@@ -61,6 +74,14 @@ describe("data actions", () => {
     treeviewStore.renameItem.mockImplementation(() => {
       calls.push("treeview.renameItem");
     });
+    treeviewStore.addItem.mockImplementation(() => {
+      calls.push("treeview.addItem");
+    });
+    dataStyleStore.setVisibility.mockImplementation(async () => {
+      calls.push("dataStyle.setVisibility");
+      await Promise.resolve();
+    });
+    dataStore.item.mockResolvedValue(ITEM);
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
     vi.mocked(useDataStore).mockReturnValue(
       dataStore as unknown as ReturnType<typeof useDataStore>,
@@ -70,6 +91,9 @@ describe("data actions", () => {
     );
     vi.mocked(getHybridViewerStore).mockReturnValue(
       hybridViewerStore as unknown as ReturnType<typeof getHybridViewerStore>,
+    );
+    vi.mocked(getDataStyleStore).mockReturnValue(
+      dataStyleStore as unknown as ReturnType<typeof getDataStyleStore>,
     );
     /* oxlint-enable no-unsafe-type-assertion */
   });
@@ -93,5 +117,36 @@ describe("data actions", () => {
     expect(dataStore.updateItem).toHaveBeenCalledWith(ID, { name: "renamed" });
     expect(treeviewStore.renameItem).toHaveBeenCalledWith(ID, "renamed");
     expect(calls).toStrictEqual(["updateItem", "treeview.renameItem"]);
+  });
+
+  test("hiding updates the flag, the style and removes the data from the tree", async () => {
+    await setDataVisibility(ID, false);
+
+    expect(dataStyleStore.setVisibility).toHaveBeenCalledWith(ID, false);
+    expect(dataStore.updateItem).toHaveBeenCalledWith(ID, { visible: false });
+    expect(treeviewStore.removeItem).toHaveBeenCalledWith(ID);
+    expect(treeviewStore.addItem).not.toHaveBeenCalled();
+  });
+
+  test("showing hidden data adds it back to the tree", async () => {
+    dataStore.item.mockResolvedValue({ ...ITEM, visible: false });
+
+    await setDataVisibility(ID, true);
+
+    expect(dataStyleStore.setVisibility).toHaveBeenCalledWith(ID, true);
+    expect(dataStore.updateItem).toHaveBeenCalledWith(ID, { visible: true });
+    expect(treeviewStore.addItem).toHaveBeenCalledWith(
+      ITEM.geode_object_type,
+      ITEM.name,
+      ID,
+      ITEM.geode_id,
+      ITEM.viewer_type,
+    );
+  });
+
+  test("showing visible data only reapplies the style, without adding it twice to the tree", async () => {
+    await setDataVisibility(ID, true);
+
+    expect(calls).toStrictEqual(["dataStyle.setVisibility"]);
   });
 });

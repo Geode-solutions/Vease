@@ -14,9 +14,9 @@ import type {
   MeshElement,
   ModelComponentTarget,
 } from "@vease/utils/controller/targets";
+import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
-import { findAttribute } from "@vease/utils/controller/attributes";
 import { hexToRgba } from "@vease/utils/controller/color";
 
 const DEFAULT_COLORMAP = "batlow";
@@ -35,33 +35,12 @@ interface ColorByAttributeParams {
   noDataColor?: string;
 }
 
-function resolveItem(item: number | undefined, attribute: BackAttribute): number {
-  const resolved = item ?? 0;
-  if (resolved >= attribute.nb_items) {
-    throw new ControllerError(
-      `item ${resolved} is out of range for "${attribute.attribute_name}" (nb_items ${attribute.nb_items})`,
-    );
-  }
-  return resolved;
-}
-
 function resolveColorMap(colormap: string | undefined, binding: AttributeBinding): string {
   const resolved = colormap ?? binding.currentColorMap() ?? DEFAULT_COLORMAP;
   if (getPresetByName(resolved) === undefined) {
     throw new ControllerError(`Unknown colormap "${resolved}"; read vease://colormaps`);
   }
   return resolved;
-}
-
-function checkRange({ minimum, maximum }: ColorByAttributeParams): void {
-  if ((minimum === undefined) !== (maximum === undefined)) {
-    throw new ControllerError("Give both minimum and maximum, or neither for the attribute range");
-  }
-  if (minimum !== undefined && maximum !== undefined && minimum > maximum) {
-    throw new ControllerError(
-      `minimum (${minimum}) is greater than maximum (${maximum}); swap them or omit both for the attribute range`,
-    );
-  }
 }
 
 // The store keeps a step as an index into time_steps, while the tool speaks in time values
@@ -122,7 +101,7 @@ async function colorByAttribute(params: unknown): Promise<unknown> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const request = params as ColorByAttributeParams;
   const { id, target, componentIds, location } = request;
-  checkRange(request);
+  checkRange(request.minimum, request.maximum);
   const found = await findAttribute({
     id,
     name: request.attribute,

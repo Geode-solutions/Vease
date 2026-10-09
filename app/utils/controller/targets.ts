@@ -47,6 +47,8 @@ const MODEL_COMPONENT_TYPE: Record<ModelComponentTarget, "Corner" | "Line" | "Su
     blocks: "Block",
   };
 
+const MODEL_COMPONENT_TARGETS: ModelComponentTarget[] = ["corners", "lines", "surfaces", "blocks"];
+
 const TARGET_PRIORITY: { mesh: MeshElement[]; model: ModelComponentTarget[] } = {
   mesh: ["polyhedra", "cells", "polygons", "edges", "points"],
   model: ["blocks", "surfaces", "lines", "corners"],
@@ -68,6 +70,10 @@ const MODEL_COMPONENT_ATTRIBUTE_SCHEMAS: Partial<Record<AttributeKind, ApiSchema
   polygon: backSchemas.model_component_polygon_attribute_names,
   polyhedron: backSchemas.model_component_polyhedron_attribute_names,
 };
+
+function isModelComponentTarget(target: string): target is ModelComponentTarget {
+  return Object.hasOwn(MODEL_COMPONENT_TYPE, target);
+}
 
 function isMeshElement(key: string): key is MeshElement {
   return Object.hasOwn(MESH_ELEMENT_ATTRIBUTE_KINDS, key);
@@ -94,6 +100,35 @@ async function modelComponentGeodeIds(
     MODEL_COMPONENT_TYPE[target],
   );
   return geodeIds;
+}
+
+// Without target, the ids may be components of any type, as for a camera focus
+async function resolveComponentIds(
+  item: DataItem,
+  target: ModelComponentTarget | undefined,
+  componentIds: string[] | undefined,
+): Promise<string[]> {
+  const targets = target === undefined ? MODEL_COMPONENT_TARGETS : [target];
+  const knownIds = await Promise.all(
+    targets.map(async (component) => {
+      const ids = await modelComponentGeodeIds(item.id, component);
+      return ids;
+    }),
+  );
+  const geodeIds = knownIds.flat();
+  if (geodeIds.length === 0) {
+    throw new ControllerError(`"${item.name}" has no ${target ?? "components"}`);
+  }
+  if (componentIds === undefined) {
+    return geodeIds;
+  }
+  const unknownIds = componentIds.filter((componentId) => !geodeIds.includes(componentId));
+  if (unknownIds.length > 0) {
+    throw new ControllerError(
+      `"${item.name}" has no ${target ?? "component"} with geode id ${unknownIds.join(", ")}; read vease://data/${item.id} for its components`,
+    );
+  }
+  return componentIds;
 }
 
 async function getDataItem(id: string): Promise<DataItem> {
@@ -136,12 +171,15 @@ async function fetchAttributes(
 export {
   MESH_ELEMENT_ATTRIBUTE_KINDS,
   MODEL_COMPONENT_KINDS,
+  MODEL_COMPONENT_TARGETS,
   MODEL_COMPONENT_TYPE,
   TARGET_PRIORITY,
   fetchAttributes,
   getDataItem,
+  isModelComponentTarget,
   meshAttributeKinds,
   meshTargetsOf,
   modelComponentGeodeIds,
+  resolveComponentIds,
 };
 export type { AttributeKind, BackAttribute, MeshElement, ModelComponentTarget, ModelWholeTarget };

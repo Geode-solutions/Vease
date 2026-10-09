@@ -6,8 +6,8 @@ import { getAttributeRange } from "@ogw_front/utils/attributes";
 import {
   type AttributeKind,
   type BackAttribute,
+  MODEL_COMPONENT_TARGETS,
   MODEL_COMPONENT_TYPE,
-  type ModelComponentTarget,
   type ModelWholeTarget,
   getDataItem,
   meshTargetsOf,
@@ -44,7 +44,6 @@ interface TargetsDescription {
 }
 
 const MODEL_WHOLE_TARGETS: ModelWholeTarget[] = ["points", "edges"];
-const MODEL_COMPONENT_TARGETS: ModelComponentTarget[] = ["corners", "lines", "surfaces", "blocks"];
 
 function isDetailsParams(params: unknown): params is { id: string } {
   return (

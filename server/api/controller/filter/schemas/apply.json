@@ -59,7 +59,7 @@
     },
     "location": {
       "type": "string",
-      "enum": ["point", "cell"]
+      "enum": ["vertex", "edge", "cell", "polygon", "polyhedron", "point"]
     },
     "item": {
       "type": "integer",

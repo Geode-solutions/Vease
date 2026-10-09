@@ -9,9 +9,9 @@ import {
   type CameraPositionRecord,
   listCameraPositions,
 } from "@vease/utils/controller/handlers/viewer_state";
-import { ControllerError } from "@vease/utils/controller/errors";
+import { ControllerError, need } from "@vease/utils/controller/errors";
+import { getDataItem, resolveComponentIds } from "@vease/utils/controller/targets";
 import { applyScene } from "@vease/utils/controller/handlers/set_view_scene";
-import { getDataItem } from "@vease/utils/controller/targets";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
 type ViewAction = "reset" | "focus" | "orient" | "save" | "restore" | "scene";
@@ -32,13 +32,6 @@ interface SetViewParams {
 type Applied = Record<string, unknown>;
 type ViewActionHandler = (params: SetViewParams) => Applied | Promise<Applied>;
 
-function need<Value>(action: ViewAction, field: string, value: Value | undefined): Value {
-  if (value === undefined) {
-    throw new ControllerError(`${action} needs ${field}`);
-  }
-  return value;
-}
-
 function reset(): Applied {
   getHybridViewerStore().resetCamera();
   return {};
@@ -53,7 +46,10 @@ async function focus(params: SetViewParams): Promise<Applied> {
   const blockIds =
     params.componentIds === undefined
       ? []
-      : await useDataStore().getMeshComponentsViewerIds(id, params.componentIds);
+      : await useDataStore().getMeshComponentsViewerIds(
+          id,
+          await resolveComponentIds(item, undefined, params.componentIds),
+        );
   await getHybridViewerStore().focusCameraOnObject(id, blockIds);
   return { id };
 }

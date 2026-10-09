@@ -143,9 +143,15 @@ describe("the data-details controller handler", () => {
     item.mockResolvedValue(MESH);
     getStyle.mockReturnValue({ id: MESH.id, polygons: {} });
     // Polygons request their polygon attributes first, then their vertex ones
-    request.mockRejectedValueOnce(new Error("back unreachable")).mockResolvedValueOnce({
-      attributes: [{ attribute_name: "height", nb_items: 1, min_value: 0, max_value: 1 }],
-    });
+    request
+      .mockRejectedValueOnce(
+        Object.assign(new Error("[POST] polygon_attribute_names: 500"), {
+          data: { code: 500, name: "Internal Server Error", description: "back unreachable" },
+        }),
+      )
+      .mockResolvedValueOnce({
+        attributes: [{ attribute_name: "height", nb_items: 1, min_value: 0, max_value: 1 }],
+      });
 
     const details = await controllerHandlers["data-details"]?.({ id: MESH.id });
 
@@ -154,7 +160,7 @@ describe("the data-details controller handler", () => {
     ]);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining("polygon attributes"),
-      new Error("back unreachable"),
+      "back unreachable",
     );
   });
 

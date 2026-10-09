@@ -55,6 +55,7 @@ const CAMERA_OPTIONS: CameraOptions = {
 const dataStore = {
   item: vi.fn<(id: string) => Promise<DataItem>>(),
   getMeshComponentsViewerIds: vi.fn<() => Promise<number[]>>(),
+  getMeshComponentGeodeIds: vi.fn<(id: string, type: string) => Promise<string[]>>(),
 };
 const viewerStore = { request: vi.fn<(args: unknown) => Promise<unknown>>() };
 const hybridViewerStore = {
@@ -89,6 +90,10 @@ describe("the set-view controller handler", () => {
     /* oxlint-enable no-unsafe-type-assertion */
     dataStore.item.mockResolvedValue(MODEL);
     dataStore.getMeshComponentsViewerIds.mockResolvedValue(VIEWER_IDS);
+    dataStore.getMeshComponentGeodeIds.mockImplementation(async (_id, type) => {
+      await Promise.resolve();
+      return { Block: ["block-a", "block-b"], Surface: ["surface-a"] }[type] ?? [];
+    });
     hybridViewerStore.genericRenderWindow = {};
     await getTable("camera_positions").clear();
   });
@@ -112,6 +117,24 @@ describe("the set-view controller handler", () => {
       "block-b",
     ]);
     expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.id, VIEWER_IDS);
+  });
+
+  test("focus accepts components of different types", async () => {
+    await setView({ action: "focus", id: MODEL.id, componentIds: ["surface-a", "block-b"] });
+
+    expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.id, [
+      "surface-a",
+      "block-b",
+    ]);
+  });
+
+  test("focus rejects component ids the model does not have", async () => {
+    await expect(
+      setView({ action: "focus", id: MODEL.id, componentIds: ["block-a", "nope"] }),
+    ).rejects.toThrow(
+      `"${MODEL.name}" has no component with geode id nope; read vease://data/${MODEL.id} for its components`,
+    );
+    expect(hybridViewerStore.focusCameraOnObject).not.toHaveBeenCalled();
   });
 
   test("focus needs an id", async () => {
