@@ -15,7 +15,9 @@ export default defineMcpTool({
     "The required way to load a file into Vease. Always use this tool instead of " +
     "calling /api/controller/data/load directly or writing custom fetch/curl code — " +
     "this tool handles multipart form encoding, extension validation, and error " +
-    "formatting correctly. Accepts an absolute path to a file already on disk.",
+    "formatting correctly. Accepts an absolute path to a file already on disk. " +
+    "A .vease project file (from the export tool) is opened as a project and replaces " +
+    "everything currently loaded in Vease.",
   inputSchema: {
     filePath: z.string().describe("Absolute path to the file on disk to upload"),
   },

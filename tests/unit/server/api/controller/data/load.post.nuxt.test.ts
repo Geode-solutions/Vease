@@ -1,3 +1,4 @@
+import { LONG_COMMAND_TIMEOUT_MS, dispatchCommand } from "@vease_server/utils/command_bus";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { buildMultipartBody, createMockEvent } from "@vease_tests/utils/server_utils";
 import { createError, getResponseStatus } from "h3";
@@ -7,6 +8,7 @@ import {
   saveViewableFile,
   uploadFile,
 } from "@vease_server/utils/data_file";
+import { stageDownload, takeDownload } from "@vease_server/utils/file_transfer";
 import { consola } from "consola";
 import handler from "@vease_server/api/controller/data/load.post";
 
@@ -17,6 +19,16 @@ vi.mock(import("@vease_server/utils/data_file"), () => ({
   getAllowedGeodeObjectTypes: vi.fn<typeof getAllowedGeodeObjectTypes>(),
   uploadFile: vi.fn<typeof uploadFile>(),
   saveViewableFile: vi.fn<typeof saveViewableFile>(),
+}));
+
+vi.mock(import("@vease_server/utils/file_transfer"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  stageDownload: vi.fn<typeof stageDownload>(),
+}));
+
+vi.mock(import("@vease_server/utils/command_bus"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  dispatchCommand: vi.fn<(command: string, params: unknown) => Promise<never>>(),
 }));
 
 function eventWithFile(
@@ -69,6 +81,39 @@ describe("the POST /api/controller/data/load endpoint", () => {
     expect(uploadFile).toHaveBeenCalledWith(expect.objectContaining({ filename: "model.msh" }));
     expect(saveViewableFile).toHaveBeenCalledWith("model.msh", "BRep");
     expect(result).toStrictEqual({ statusCode: 200, response: { id: "item-1" } });
+  });
+
+  test("relays a .vease file to the browser as a project import", async () => {
+    vi.mocked(stageDownload).mockReturnValue("import-token");
+    vi.mocked(dispatchCommand).mockResolvedValue({});
+
+    await expect(handler(eventWithFile("scene.vease"))).resolves.toStrictEqual({
+      statusCode: 200,
+      response: { project: "scene.vease" },
+    });
+    expect(stageDownload).toHaveBeenCalledWith(Buffer.from("binary-data"), "scene.vease");
+    expect(dispatchCommand).toHaveBeenCalledWith(
+      "import-project",
+      { downloadUrl: "/api/controller/files/download?token=import-token", filename: "scene.vease" },
+      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    );
+    expect(getAllowedFileExtensions).not.toHaveBeenCalled();
+    expect(uploadFile).not.toHaveBeenCalled();
+  });
+
+  test("discards the staged project when the import fails", async () => {
+    const actual = await vi.importActual<{ stageDownload: typeof stageDownload }>(
+      "@vease_server/utils/file_transfer",
+    );
+    const token = actual.stageDownload(Buffer.from("binary-data"), "scene.vease");
+    vi.mocked(stageDownload).mockReturnValue(token);
+    vi.mocked(dispatchCommand).mockRejectedValue(new Error("Vease did not answer in time"));
+
+    await expect(runHandler(eventWithFile("scene.vease"))).resolves.toMatchObject({
+      body: { code: INTERNAL_SERVER_ERROR, description: "Vease did not answer in time" },
+      status: INTERNAL_SERVER_ERROR,
+    });
+    expect(takeDownload(token)).toBeUndefined();
   });
 
   test("returns a 400 error response when no file field is present", async () => {

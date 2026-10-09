@@ -1,19 +1,43 @@
 // Third party imports
-import { createError, readMultipartFormData } from "h3";
+import { type MultiPartData, createError, readMultipartFormData } from "h3";
 import { consola } from "consola";
 
 // Local imports
+import { LONG_COMMAND_TIMEOUT_MS, dispatchCommand } from "@vease_server/utils/command_bus";
 import {
   getAllowedFileExtensions,
   getAllowedGeodeObjectTypes,
   saveViewableFile,
   uploadFile,
 } from "@vease_server/utils/data_file";
+import { stageDownload, takeDownload } from "@vease_server/utils/file_transfer";
 
 import { getFileExtension } from "@ogw_shared/utils/response_handlers/load";
 
 import schemas, { type ControllerDataLoadResponse } from "vease/vease_typed_schemas.js";
 import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
+
+const DOWNLOAD_URL = "/api/controller/files/download";
+
+// The browser fetches the project bytes itself: binary content never goes through the command channel
+async function importProject(
+  filePart: MultiPartData,
+  filename: string,
+): Promise<ControllerDataLoadResponse> {
+  const token = stageDownload(filePart.data, filename);
+  try {
+    await dispatchCommand(
+      "import-project",
+      { downloadUrl: `${DOWNLOAD_URL}?token=${token}`, filename },
+      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    );
+  } catch (error) {
+    // A late download after a failed or timed out import must not replace the session anyway
+    takeDownload(token);
+    throw error;
+  }
+  return { statusCode: 200, response: { project: filename } };
+}
 
 // Multipart file upload: the body is not JSON, so the route cannot go through defineTypedEventHandler
 export default defineRawEventHandler(
@@ -27,6 +51,10 @@ export default defineRawEventHandler(
     const { filename } = filePart;
     if (filename === undefined || filename === "") {
       throw createError({ statusCode: 400, statusMessage: "No filename found" });
+    }
+
+    if (getFileExtension(filename).toLowerCase() === "vease") {
+      return importProject(filePart, filename);
     }
 
     const allowedFileExtensions = await getAllowedFileExtensions();

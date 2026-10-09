@@ -60,14 +60,34 @@ export interface ControllerDataDetailsResponse {
 
 export interface ControllerDataCreateParams {
   closed?: boolean;
-  kind: Kind;
+  kind: ControllerDataCreateParamsKind;
   name: string;
   points: Array<number[]>;
 }
 
-export type Kind = "point" | "curve" | "surface";
+export type ControllerDataCreateParamsKind = "point" | "curve" | "surface";
 
 export interface ControllerDataCreateResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerFilesUploadParams {
+  token: string;
+}
+
+export interface ControllerFilesUploadResponse {
+  response: ControllerFilesUploadResponseResponse;
+  statusCode: number;
+}
+
+export interface ControllerFilesUploadResponseResponse {}
+
+export interface ControllerFilesDownloadParams {
+  token: string;
+}
+
+export interface ControllerFilesDownloadResponse {
   response: any;
   statusCode: number;
 }
@@ -103,6 +123,23 @@ export interface Slice {
 export interface ControllerFilterApplyResponse {
   response: any;
   statusCode: number;
+}
+
+export interface ControllerExportParams {
+  filePath: string;
+  includeBackground?: boolean;
+  kind: ControllerExportParamsKind;
+}
+
+export type ControllerExportParamsKind = "screenshot" | "project";
+
+export interface ControllerExportResponse {
+  response: ControllerExportResponseResponse;
+  statusCode: number;
+}
+
+export interface ControllerExportResponseResponse {
+  filePath: string;
 }
 
 export interface ControllerColormapsParams {}
@@ -271,10 +308,18 @@ export interface Schemas {
         readonly create: (typeof json)["api"]["controller"]["data"]["create"] &
           TypedSchema<ControllerDataCreateParams, ControllerDataCreateResponse>;
       };
+      readonly files: {
+        readonly upload: (typeof json)["api"]["controller"]["files"]["upload"] &
+          TypedSchema<ControllerFilesUploadParams, ControllerFilesUploadResponse>;
+        readonly download: (typeof json)["api"]["controller"]["files"]["download"] &
+          TypedSchema<ControllerFilesDownloadParams, ControllerFilesDownloadResponse>;
+      };
       readonly filter: {
         readonly apply: (typeof json)["api"]["controller"]["filter"]["apply"] &
           TypedSchema<ControllerFilterApplyParams, ControllerFilterApplyResponse>;
       };
+      readonly export: (typeof json)["api"]["controller"]["export"] &
+        TypedSchema<ControllerExportParams, ControllerExportResponse>;
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly style: {

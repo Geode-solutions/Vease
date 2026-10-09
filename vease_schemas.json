@@ -204,6 +204,62 @@
           }
         }
       },
+      "files": {
+        "upload": {
+          "$id": "api/controller/files/upload",
+          "route": "/upload",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["token"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
+        "download": {
+          "$id": "api/controller/files/download",
+          "route": "/download",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["token"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "filter": {
         "apply": {
           "$id": "api/controller/filter/apply",
@@ -307,6 +363,47 @@
             "required": ["statusCode", "response"],
             "additionalProperties": false
           }
+        }
+      },
+      "export": {
+        "$id": "api/controller/export",
+        "route": "/export",
+        "methods": ["POST"],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["screenshot", "project"]
+          },
+          "filePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "includeBackground": {
+            "type": "boolean"
+          }
+        },
+        "required": ["kind", "filePath"],
+        "additionalProperties": false,
+        "response": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "integer"
+            },
+            "response": {
+              "type": "object",
+              "properties": {
+                "filePath": {
+                  "type": "string"
+                }
+              },
+              "required": ["filePath"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["statusCode", "response"],
+          "additionalProperties": false
         }
       },
       "colormaps": {
