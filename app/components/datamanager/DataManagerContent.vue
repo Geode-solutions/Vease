@@ -4,11 +4,13 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
+import { deleteData, renameData } from "@vease/utils/data_actions";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
+// oxlint-disable-next-line import/max-dependencies -- the data manager wires the dialogs, the stores and the data actions
 import { useUIStore } from "@vease/stores/ui";
 
 const { compact = false } = defineProps<{ compact?: boolean }>();
@@ -93,10 +95,7 @@ async function confirmRename(newName: string): Promise<void> {
   }
   try {
     item.name = newName;
-    await dataStore.updateItem(item.id, {
-      name: newName,
-    });
-    treeviewStore.renameItem(item.id, newName);
+    await renameData(item.id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
@@ -128,11 +127,7 @@ async function executeDelete(): Promise<void> {
   if (!item) {
     return;
   }
-  await dataStore.deregisterObject(item.id);
-  await dataStore.deleteItem(item.id);
-  await hybridViewerStore.removeItem(item.id);
-  treeviewStore.removeItem(item.id);
-  treeviewStore.closeView(item.id);
+  await deleteData(item.id);
   selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
@@ -140,14 +135,11 @@ async function executeDelete(): Promise<void> {
 
 async function deleteSelected(): Promise<void> {
   const idsToDelete = selectedIds.value.map((selected) => selected.id);
-  const promises = idsToDelete.map(async (id) => {
-    await dataStore.deregisterObject(id);
-    await dataStore.deleteItem(id);
-    await hybridViewerStore.removeItem(id);
-    treeviewStore.removeItem(id);
-    treeviewStore.closeView(id);
-  });
-  await Promise.all(promises);
+  await Promise.all(
+    idsToDelete.map(async (id) => {
+      await deleteData(id);
+    }),
+  );
   selectedIds.value = [];
   deleteSelectedDialog.value = false;
   showFeedback("Selected items deleted");

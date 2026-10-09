@@ -1,0 +1,33 @@
+{
+  "route": "/manage",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["rename", "delete"]
+    },
+    "id": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 32
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": ["action", "id"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import { curveEdges } from "@vease/utils/create_geometry";
 import { ref } from "vue";
 import { useCreateObjectTool } from "@vease/composables/create_object";
 
@@ -47,13 +48,7 @@ const {
   onReset: () => {
     closed.value = false;
   },
-  getAdditionalPayload: (validPts) => {
-    const edges = validPts.slice(0, -1).map((_, i) => [i, i + 1]);
-    if (closed.value && validPts.length >= 2) {
-      edges.push([validPts.length - 1, 0]);
-    }
-    return { edges };
-  },
+  getAdditionalPayload: (validPts) => ({ edges: curveEdges(validPts.length, closed.value) }),
 });
 </script>
 

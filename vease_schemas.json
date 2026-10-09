@@ -59,6 +59,40 @@
         }
       },
       "data": {
+        "manage": {
+          "$id": "api/controller/data/manage",
+          "route": "/manage",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["rename", "delete"]
+            },
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["action", "id"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
         "load": {
           "$id": "api/controller/data/load",
           "route": "/load",
@@ -112,6 +146,50 @@
             }
           },
           "required": ["id"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
+        "create": {
+          "$id": "api/controller/data/create",
+          "route": "/create",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": ["point", "curve", "surface"]
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "minItems": 1
+            },
+            "closed": {
+              "type": "boolean"
+            }
+          },
+          "required": ["kind", "name", "points"],
           "additionalProperties": false,
           "response": {
             "type": "object",

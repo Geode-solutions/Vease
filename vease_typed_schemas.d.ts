@@ -22,6 +22,19 @@ export interface ControllerCommandsReplyResponse {
 
 export interface ControllerCommandsReplyResponseResponse {}
 
+export interface ControllerDataManageParams {
+  action: ControllerDataManageParamsAction;
+  id: string;
+  name?: string;
+}
+
+export type ControllerDataManageParamsAction = "rename" | "delete";
+
+export interface ControllerDataManageResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerDataLoadParams {}
 
 export interface ControllerDataLoadResponse {
@@ -41,6 +54,20 @@ export interface ControllerDataDetailsParams {
 }
 
 export interface ControllerDataDetailsResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerDataCreateParams {
+  closed?: boolean;
+  kind: Kind;
+  name: string;
+  points: Array<number[]>;
+}
+
+export type Kind = "point" | "curve" | "surface";
+
+export interface ControllerDataCreateResponse {
   response: any;
   statusCode: number;
 }
@@ -145,7 +172,7 @@ export interface ControllerStyleAttributeResponse {
 }
 
 export interface ControllerViewSetParams {
-  action: Action;
+  action: ControllerViewSetParamsAction;
   axes?: boolean;
   backgroundColor?: string;
   componentIds?: string[];
@@ -157,7 +184,13 @@ export interface ControllerViewSetParams {
   zScaling?: number;
 }
 
-export type Action = "reset" | "focus" | "orient" | "save" | "restore" | "scene";
+export type ControllerViewSetParamsAction =
+  | "reset"
+  | "focus"
+  | "orient"
+  | "save"
+  | "restore"
+  | "scene";
 
 export type Orientation = "xplus" | "xminus" | "yplus" | "yminus" | "zplus" | "zminus";
 
@@ -227,12 +260,16 @@ export interface Schemas {
           TypedSchema<ControllerCommandsReplyParams, ControllerCommandsReplyResponse>;
       };
       readonly data: {
+        readonly manage: (typeof json)["api"]["controller"]["data"]["manage"] &
+          TypedSchema<ControllerDataManageParams, ControllerDataManageResponse>;
         readonly load: (typeof json)["api"]["controller"]["data"]["load"] &
           TypedSchema<ControllerDataLoadParams, ControllerDataLoadResponse>;
         readonly list: (typeof json)["api"]["controller"]["data"]["list"] &
           TypedSchema<ControllerDataListParams, ControllerDataListResponse>;
         readonly details: (typeof json)["api"]["controller"]["data"]["details"] &
           TypedSchema<ControllerDataDetailsParams, ControllerDataDetailsResponse>;
+        readonly create: (typeof json)["api"]["controller"]["data"]["create"] &
+          TypedSchema<ControllerDataCreateParams, ControllerDataCreateResponse>;
       };
       readonly filter: {
         readonly apply: (typeof json)["api"]["controller"]["filter"]["apply"] &
