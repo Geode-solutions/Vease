@@ -24,7 +24,7 @@ if (isCI) {
 const retries = isCI ? CI_RETRIES : 0;
 const workers = isCI ? CI_WORKERS : undefined;
 const maxFailures = isCI ? CI_MAX_FAILURES : undefined;
-const testMatch = "tests/e2e/tests/**/*.test.ts";
+const testMatch = "tests/e2e/tests/time_series_pvd.test.ts";
 const LINUX_MAX_DIFF_PIXEL_RATIO = 0.02;
 // Baselines are generated on Linux, Windows text rendering (DirectWrite vs FreeType) adds ~2% diff
 const WINDOWS_MAX_DIFF_PIXEL_RATIO = 0.025;

@@ -9,6 +9,7 @@ import { consola } from "consola";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
@@ -39,6 +40,12 @@ function handleFilesDropped(files): void {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
     UIStore.setDroppedFiles([...files]);
     UIStore.setShowStepper(true);
+  }
+}
+
+function handleFoldersDropped(): void {
+  if (!UIStore.showStepper && !UIStore.showExtensions) {
+    useFeedbackStore().add_warning("Folders can't be dropped here");
   }
 }
 
@@ -100,7 +107,11 @@ watch(
         <NuxtPage v-else style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
-        <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
+        <DrawerManager
+          :ui-store="UIStore"
+          @files-dropped="handleFilesDropped"
+          @folders-dropped="handleFoldersDropped"
+        />
       </InfraConnected>
     </v-main>
     <v-progress-linear

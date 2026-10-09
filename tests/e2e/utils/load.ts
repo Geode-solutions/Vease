@@ -47,4 +47,52 @@ async function loadVeaseTestDatas(
   await waitForActionSettled(window, loadTimeout);
 }
 
-export { loadVeaseTestDatas };
+function getDataImportStepper(window: Page): Locator {
+  return window.getByTestId("DataImportStepper");
+}
+
+async function selectTimeSeriesFile(window: Page, timeSeriesPath: string): Promise<void> {
+  consola.info(`Importing time series ${timeSeriesPath}`);
+  await getLayoutImportButton(window).click();
+  const fileInput = window.locator(`input[type="file"][accept*="${path.extname(timeSeriesPath)}"]`);
+  await fileInput.waitFor({ state: "attached" });
+  await fileInput.setInputFiles(timeSeriesPath);
+  await getDataImportStepper(window).getByTestId("timeSeriesTarget").first().waitFor();
+  await waitForActionSettled(window);
+}
+
+async function selectTimeSeriesTarget(window: Page, targetName: string): Promise<void> {
+  const dataImportStepper = getDataImportStepper(window);
+  await dataImportStepper.getByTestId("timeSeriesTarget").filter({ hasText: targetName }).click();
+  await dataImportStepper.getByText("Mandatory files:").waitFor();
+  await waitForActionSettled(window);
+}
+
+async function selectTimeSeriesFolder(window: Page, folderPath: string): Promise<void> {
+  const dataImportStepper = getDataImportStepper(window);
+  const folderInput = dataImportStepper.locator('input[type="file"][webkitdirectory]');
+  await folderInput.waitFor({ state: "attached" });
+  await folderInput.setInputFiles(folderPath);
+  await dataImportStepper.locator(".custom-upload-btn").waitFor();
+}
+
+async function uploadTimeSeriesFolder(window: Page): Promise<void> {
+  await getDataImportStepper(window).locator(".custom-upload-btn").click();
+  await window.getByTestId("applyTimeSeriesButton").waitFor();
+  await waitForActionSettled(window);
+}
+
+async function applyTimeSeries(window: Page, loadTimeout = loadWorkflowTimeout): Promise<void> {
+  await window.getByTestId("applyTimeSeriesButton").click();
+  await getDataImportStepper(window).waitFor({ state: "detached" });
+  await waitForActionSettled(window, loadTimeout);
+}
+
+export {
+  applyTimeSeries,
+  loadVeaseTestDatas,
+  selectTimeSeriesFile,
+  selectTimeSeriesFolder,
+  selectTimeSeriesTarget,
+  uploadTimeSeriesFolder,
+};
