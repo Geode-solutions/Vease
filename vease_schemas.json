@@ -161,6 +161,74 @@
           "additionalProperties": false
         }
       },
+      "style": {
+        "set": {
+          "$id": "api/controller/style/set",
+          "route": "/set",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            },
+            "target": {
+              "type": "string",
+              "enum": [
+                "points",
+                "edges",
+                "cells",
+                "polygons",
+                "polyhedra",
+                "corners",
+                "lines",
+                "surfaces",
+                "blocks"
+              ]
+            },
+            "componentIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "visibility": {
+              "type": "boolean"
+            },
+            "color": {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+            },
+            "size": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "coloring": {
+              "type": "string",
+              "enum": ["constant", "random", "textures"]
+            }
+          },
+          "required": ["id"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "viewer": {
         "mesh": {
           "points": {

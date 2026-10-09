@@ -56,6 +56,35 @@ export interface ControllerColormapsResponseResponse {
   categories: { [key: string]: string[] };
 }
 
+export interface ControllerStyleSetParams {
+  color?: string;
+  coloring?: Coloring;
+  componentIds?: string[];
+  id: string;
+  size?: number;
+  target?: Target;
+  visibility?: boolean;
+  width?: number;
+}
+
+export type Coloring = "constant" | "random" | "textures";
+
+export type Target =
+  | "points"
+  | "edges"
+  | "cells"
+  | "polygons"
+  | "polyhedra"
+  | "corners"
+  | "lines"
+  | "surfaces"
+  | "blocks";
+
+export interface ControllerStyleSetResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerViewerMeshPointsVisibilityParams {
   id: string;
   visibility: boolean | number | string;
@@ -150,6 +179,10 @@ export interface Schemas {
       };
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
+      readonly style: {
+        readonly set: (typeof json)["api"]["controller"]["style"]["set"] &
+          TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
+      };
       readonly viewer: {
         readonly mesh: {
           readonly points: {
