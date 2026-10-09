@@ -2,6 +2,7 @@
 // Local imports
 import type { ControllerHandler } from "@vease/utils/controller/index";
 import { applyFilter } from "@vease/utils/controller/handlers/apply_filter";
+import { awaitData } from "@vease/utils/controller/handlers/await_data";
 import { colorByAttribute } from "@vease/utils/controller/handlers/color_by_attribute";
 import { createData } from "@vease/utils/controller/handlers/create_data";
 import { dataDetails } from "@vease/utils/controller/handlers/data_details";
@@ -25,6 +26,7 @@ const commandHandlers: Record<string, ControllerHandler> = {
   "create-data": createData,
   export: exportFile,
   "import-project": importProjectFile,
+  "await-data": awaitData,
 };
 
 export { commandHandlers };

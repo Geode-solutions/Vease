@@ -5,6 +5,8 @@ interface ControllerCommand {
   requestId: string;
   command: string;
   params: unknown;
+  // Epoch ms after which the server no longer waits for the reply
+  deadline: number;
 }
 
 type ControllerReply =
@@ -21,13 +23,15 @@ interface PendingRequest {
   resolve: (result: unknown) => void;
   reject: (error: Error) => void;
   timer: ReturnType<typeof setTimeout>;
+  sink: CommandSink;
 }
 
 const COMMAND_TIMEOUT_MS = 30_000;
 const LONG_COMMAND_TIMEOUT_MS = 120_000;
 const SERVICE_UNAVAILABLE = 503;
 
-let currentSink: CommandSink | undefined = undefined;
+// Every open Vease tab subscribes; commands go to the most recent one still open
+const sinks: CommandSink[] = [];
 const pending = new Map<string, PendingRequest>();
 
 function notReadyError(): Error {
@@ -38,21 +42,25 @@ function notReadyError(): Error {
   });
 }
 
-function rejectAllPending(): void {
+function rejectPendingOf(sink: CommandSink): void {
   for (const [requestId, request] of pending) {
-    clearTimeout(request.timer);
-    request.reject(notReadyError());
-    pending.delete(requestId);
+    if (request.sink === sink) {
+      clearTimeout(request.timer);
+      request.reject(notReadyError());
+      pending.delete(requestId);
+    }
   }
 }
 
 function subscribeCommands(sink: CommandSink): () => void {
-  currentSink = sink;
+  sinks.push(sink);
   return () => {
-    if (currentSink === sink) {
-      currentSink = undefined;
-      rejectAllPending();
+    const index = sinks.indexOf(sink);
+    if (index === -1) {
+      return;
     }
+    sinks.splice(index, 1);
+    rejectPendingOf(sink);
   };
 }
 
@@ -62,13 +70,13 @@ function dispatchCommand<Result = unknown>(
   params: unknown,
   options: { timeout?: number } = {},
 ): Promise<Result> {
-  if (currentSink === undefined) {
+  const sink = sinks.at(-1);
+  if (sink === undefined) {
     return Promise.reject(notReadyError());
   }
-  const sink = currentSink;
   const { timeout = COMMAND_TIMEOUT_MS } = options;
   const requestId = crypto.randomUUID();
-  const message: ControllerCommand = { requestId, command, params };
+  const message: ControllerCommand = { requestId, command, params, deadline: Date.now() + timeout };
 
   // oxlint-disable-next-line promise/avoid-new -- the promise is settled later by resolveReply or the timeout
   return new Promise<Result>((resolve, reject) => {
@@ -83,6 +91,7 @@ function dispatchCommand<Result = unknown>(
       },
       reject,
       timer,
+      sink,
     });
     function fail(error: unknown): void {
       clearTimeout(timer);
@@ -113,7 +122,7 @@ function resolveReply(reply: ControllerReply): void {
 }
 
 function resetCommandBus(): void {
-  currentSink = undefined;
+  sinks.length = 0;
   for (const request of pending.values()) {
     clearTimeout(request.timer);
   }

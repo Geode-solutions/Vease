@@ -21,8 +21,8 @@ function createSink(): PushMock {
   return vi.fn<(message: string) => void>();
 }
 
-function pushedCommand(push: PushMock): ControllerCommand {
-  const [message] = push.mock.calls[0] ?? [];
+function pushedCommand(push: PushMock, call = 0): ControllerCommand {
+  const [message] = push.mock.calls[call] ?? [];
   const command: unknown = JSON.parse(message ?? "{}");
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- the bus pushes the JSON of a ControllerCommand
   return command as ControllerCommand;
@@ -49,7 +49,11 @@ describe("command bus", () => {
     const promise = dispatchCommand("set-style", { a: 1 });
     const { requestId, ...command } = pushedCommand(push);
     expect(requestId).toStrictEqual(expect.any(String));
-    expect(command).toStrictEqual({ command: "set-style", params: { a: 1 } });
+    expect(command).toStrictEqual({
+      command: "set-style",
+      params: { a: 1 },
+      deadline: Date.now() + COMMAND_TIMEOUT_MS,
+    });
 
     resolveReply({ requestId, ok: true, result: { done: true } });
     await expect(promise).resolves.toStrictEqual({ done: true });
@@ -81,9 +85,11 @@ describe("command bus", () => {
   });
 
   test("honors a custom timeout", async () => {
-    subscribeCommands({ push: createSink() });
+    const push = createSink();
+    subscribeCommands({ push });
 
     const promise = dispatchCommand("export", {}, { timeout: LONG_COMMAND_TIMEOUT_MS });
+    expect(pushedCommand(push).deadline).toBe(Date.now() + LONG_COMMAND_TIMEOUT_MS);
     await Promise.all([
       expect(promise).rejects.toThrow("in time"),
       (async (): Promise<void> => {
@@ -132,6 +138,48 @@ describe("command bus", () => {
     unsubscribeA();
     resolveReply({ requestId: pushedRequestId(pushB), ok: true, result: 1 });
     await expect(promise).resolves.toBe(1);
+  });
+
+  test("falls back to the previous subscriber when the latest one closes", async () => {
+    const pushA = createSink();
+    const pushB = createSink();
+    subscribeCommands({ push: pushA });
+    const unsubscribeB = subscribeCommands({ push: pushB });
+
+    unsubscribeB();
+    const promise = dispatchCommand("set-style", {});
+
+    expect(pushB).not.toHaveBeenCalled();
+    resolveReply({ requestId: pushedRequestId(pushA), ok: true, result: 1 });
+    await expect(promise).resolves.toBe(1);
+  });
+
+  test("rejects at once only the requests pushed to the closed subscriber", async () => {
+    const pushA = createSink();
+    const pushB = createSink();
+    subscribeCommands({ push: pushA });
+    const onA = dispatchCommand("set-style", {});
+    const unsubscribeB = subscribeCommands({ push: pushB });
+    const onB = dispatchCommand("set-view", {});
+
+    unsubscribeB();
+    await expect(onB).rejects.toThrow("Vease is not ready");
+
+    resolveReply({ requestId: pushedRequestId(pushA), ok: true, result: "a" });
+    await expect(onA).resolves.toBe("a");
+  });
+
+  test("is not ready once every subscriber closed, and ignores a second unsubscribe", async () => {
+    const unsubscribeA = subscribeCommands({ push: createSink() });
+    const unsubscribeB = subscribeCommands({ push: createSink() });
+
+    unsubscribeB();
+    unsubscribeB();
+    unsubscribeA();
+
+    await expect(dispatchCommand("set-style", {})).rejects.toMatchObject({
+      statusCode: SERVICE_UNAVAILABLE,
+    });
   });
 
   test("ignores late and unknown replies", async () => {

@@ -73,6 +73,8 @@ describe("the POST /api/controller/data/load endpoint", () => {
     vi.mocked(uploadFile).mockResolvedValue(undefined);
     vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue("BRep");
     vi.mocked(saveViewableFile).mockResolvedValue({ id: "item-1" });
+    vi.mocked(dispatchCommand).mockReset();
+    vi.mocked(dispatchCommand).mockResolvedValue({ id: "item-1" });
   });
 
   test("uploads an allowed file and saves it as its resolved geode object type", async () => {
@@ -81,6 +83,37 @@ describe("the POST /api/controller/data/load endpoint", () => {
     expect(uploadFile).toHaveBeenCalledWith(expect.objectContaining({ filename: "model.msh" }));
     expect(saveViewableFile).toHaveBeenCalledWith("model.msh", "BRep");
     expect(result).toStrictEqual({ statusCode: 200, response: { id: "item-1" } });
+  });
+
+  test("answers once the browser imported the saved data", async () => {
+    await handler(eventWithFile("model.msh"));
+
+    expect(dispatchCommand).toHaveBeenCalledExactlyOnceWith(
+      "await-data",
+      { id: "item-1" },
+      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    );
+  });
+
+  test("fails when the browser could not import the saved data", async () => {
+    vi.mocked(dispatchCommand).mockRejectedValue(
+      new Error('Data "item-1" was not imported in time'),
+    );
+
+    await expect(runHandler(eventWithFile("model.msh"))).resolves.toMatchObject({
+      body: { code: INTERNAL_SERVER_ERROR, description: 'Data "item-1" was not imported in time' },
+      status: INTERNAL_SERVER_ERROR,
+    });
+  });
+
+  test("fails with a 502 when the back returns no data id", async () => {
+    vi.mocked(saveViewableFile).mockResolvedValue({});
+
+    await expect(runHandler(eventWithFile("model.msh"))).resolves.toMatchObject({
+      body: { code: BAD_GATEWAY, name: "The back returned no data id" },
+      status: BAD_GATEWAY,
+    });
+    expect(dispatchCommand).not.toHaveBeenCalled();
   });
 
   test("relays a .vease file to the browser as a project import", async () => {

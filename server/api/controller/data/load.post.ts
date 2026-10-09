@@ -18,6 +18,19 @@ import schemas, { type ControllerDataLoadResponse } from "vease/vease_typed_sche
 import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
 
 const DOWNLOAD_URL = "/api/controller/files/download";
+const BAD_GATEWAY = 502;
+
+function savedDataId(response: unknown): string {
+  if (
+    typeof response === "object" &&
+    response !== null &&
+    "id" in response &&
+    typeof response.id === "string"
+  ) {
+    return response.id;
+  }
+  throw createError({ statusCode: BAD_GATEWAY, statusMessage: "The back returned no data id" });
+}
 
 // The browser fetches the project bytes itself: binary content never goes through the command channel
 async function importProject(
@@ -72,6 +85,12 @@ export default defineRawEventHandler(
     }
     consola.info(`Saving file as ${allowedGeodeObjectType}...`);
     const response = await saveViewableFile(filename, allowedGeodeObjectType);
+    // The browser imports the saved data on the back event: answer once it is ready to style
+    await dispatchCommand(
+      "await-data",
+      { id: savedDataId(response) },
+      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    );
 
     return { statusCode: 200, response };
   },
