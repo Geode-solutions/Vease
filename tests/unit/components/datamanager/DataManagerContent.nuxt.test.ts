@@ -113,6 +113,10 @@ describe("data manager content component", () => {
     const itemsRef = ref([mockItem1, mockItem2]);
     const mockDataStore = {
       refAllItems: (): typeof itemsRef => itemsRef,
+      item: async (id: string): Promise<DataItem | undefined> => {
+        await Promise.resolve();
+        return itemsRef.value.find((item) => item.id === id);
+      },
       updateItem: mockUpdateItem,
       deregisterObject: mockDeregisterObject,
       deleteItem: mockDeleteItem,
@@ -163,7 +167,7 @@ describe("data manager content component", () => {
     await flushPromises();
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: false });
-    expect(mockSetVisibility).toHaveBeenCalledWith("item-1", false, mockItem1);
+    expect(mockSetVisibility).toHaveBeenCalledWith("item-1", false);
     expect(mockRemoveItem).toHaveBeenCalledWith("item-1");
   });
 

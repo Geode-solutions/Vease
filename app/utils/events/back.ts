@@ -6,6 +6,7 @@ import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_bac
 import type { NewDataItem } from "@ogw_front/stores/data";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow.js";
+import { trackImport } from "@vease/utils/controller/pending_imports";
 
 function isNewDataItem(value: unknown): value is NewDataItem {
   return (
@@ -20,6 +21,11 @@ function isNewDataItem(value: unknown): value is NewDataItem {
   );
 }
 
+async function importAndRender(item: NewDataItem): Promise<void> {
+  await importItem(item);
+  await getHybridViewerStore().remoteRender();
+}
+
 const backEventHandlers = {
   [opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id]: async (
     payload: unknown,
@@ -28,10 +34,10 @@ const backEventHandlers = {
       consola.error("[GEODE] Invalid save_viewable_file payload:", payload);
       return;
     }
-    const hybridViewerStore = getHybridViewerStore();
     consola.debug("[GEODE] save_viewable_file:", payload);
-    await importItem(payload);
-    await hybridViewerStore.remoteRender();
+    const imported = importAndRender(payload);
+    trackImport(payload.id, imported);
+    await imported;
   },
 };
 

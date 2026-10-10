@@ -1,0 +1,34 @@
+{
+  "route": "/colormaps",
+  "methods": ["GET"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "required": ["categories"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

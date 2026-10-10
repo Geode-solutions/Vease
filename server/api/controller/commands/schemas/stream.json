@@ -1,0 +1,19 @@
+{
+  "route": "/stream",
+  "methods": ["GET"],
+  "type": "object",
+  "properties": {},
+  "required": [],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "route": "/create",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["point", "curve", "surface"]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "points": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": { "type": "number" },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 1
+    },
+    "closed": {
+      "type": "boolean"
+    }
+  },
+  "required": ["kind", "name", "points"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}
