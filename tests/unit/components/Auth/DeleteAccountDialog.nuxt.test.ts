@@ -25,6 +25,7 @@ describe("delete account dialog component", () => {
 
   beforeEach(() => {
     setupActivePinia();
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useAuth).mockReturnValue({
       deleteAccount: deleteAccountMock,
       user: ref({ email: "test@example.com" }),
@@ -34,7 +35,6 @@ describe("delete account dialog component", () => {
       login: vi.fn<() => Promise<void>>(),
       logout: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<void>>(),
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 

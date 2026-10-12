@@ -22,6 +22,7 @@ vi.mock(import("@vease/composables/auth"), () => ({
 }));
 
 function mockAuthComposable(isAuthenticated = false): void {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
   vi.mocked(useAuth).mockReturnValue({
     isUserAuthenticated: computed(() => isAuthenticated),
     user: ref<unknown>(undefined),
@@ -31,7 +32,6 @@ function mockAuthComposable(isAuthenticated = false): void {
     login: vi.fn<() => void>(),
     deleteAccount: vi.fn<() => void>(),
     resetPassword: vi.fn<() => void>(),
-    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
   } as unknown as ReturnType<typeof useAuth>);
 }
 

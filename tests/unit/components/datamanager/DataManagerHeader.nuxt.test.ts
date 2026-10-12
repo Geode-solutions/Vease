@@ -16,13 +16,13 @@ vi.mock(import("#app/composables/router"), async (importOriginal) => {
 });
 
 vi.mock(import("@ogw_front/components/SearchBar.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "SearchBar",
     props: ["modelValue"],
     emits: ["update:modelValue"],
     template:
       "<input class='search-bar-stub' :value='modelValue' @input=\"$emit('update:modelValue', $event.target.value)\" />",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof SearchBar,
 }));
 

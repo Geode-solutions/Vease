@@ -22,11 +22,11 @@ const CUSTOM_TEST_Z_INDEX = 2000;
 const RIGHT_RESIZE_ZONE_INDEX = 3;
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of GlassCard this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   default: {
     name: "GlassCard",
     props: ["escapeFunction"],
     template: "<div class='glass-card-stub'><slot name='handle' /><slot /></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of GlassCard this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   } as unknown as typeof GlassCard,
 }));
 

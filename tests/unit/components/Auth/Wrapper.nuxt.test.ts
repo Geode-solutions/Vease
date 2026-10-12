@@ -32,6 +32,7 @@ describe("wrapper component", () => {
     setupActivePinia();
     isAuthenticatedRef.value = false;
 
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useAuth).mockReturnValue({
       isUserAuthenticated: computed(() => isAuthenticatedRef.value),
       user: ref<unknown>(undefined),
@@ -41,7 +42,6 @@ describe("wrapper component", () => {
       login: vi.fn<() => Promise<never>>(),
       deleteAccount: vi.fn<() => Promise<void>>(),
       resetPassword: vi.fn<() => Promise<unknown>>(),
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 

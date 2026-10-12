@@ -21,13 +21,13 @@ describe("the viewerEventHandlers map", () => {
   beforeEach(() => {
     setVisibilityMock.mockClear();
     remoteRenderMock.mockClear();
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(getDataStyleStore).mockReturnValue({
       setVisibility: setVisibilityMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getDataStyleStore>);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(getHybridViewerStore).mockReturnValue({
       remoteRender: remoteRenderMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getHybridViewerStore>);
   });
 
