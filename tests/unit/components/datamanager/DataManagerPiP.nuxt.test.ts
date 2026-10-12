@@ -14,17 +14,18 @@ vi.mock(import("#app/composables/router"), async (importOriginal) => {
 });
 
 vi.mock(import("@vease/components/datamanager/DataManagerContent.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of DataManagerContent this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   default: {
     name: "DataManagerContent",
     props: {
       compact: Boolean,
     },
     template: "<div class='data-manager-content-stub'></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of DataManagerContent this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   } as unknown as typeof DataManagerContent,
 }));
 
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   default: {
     name: "ResizablePiP",
     props: [
@@ -41,7 +42,6 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
         <slot />
       </div>
     `,
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   } as unknown as typeof ResizablePiP,
 }));
 
