@@ -21,7 +21,10 @@
   },
   "files": [
     "tests/e2e/utils",
-    ".build/tests/e2e/utils"
+    ".build/tests/e2e/utils",
+    "vease_schemas.json",
+    "vease_typed_schemas.js",
+    "vease_typed_schemas.d.ts"
   ],
   "type": "module",
   "main": "dist-electron/main.js",
