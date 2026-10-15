@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { getBackStore, getInfraStore } from "@vease/utils/external_stores";
 import { Status } from "@ogw_front/utils/status";
+import UpdateSettings from "@vease/components/Updater/UpdateSettings.vue";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useClipboard } from "@vueuse/core";
+import { useUpdaterStore } from "@vease/stores/updater";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_typed_schemas.js";
@@ -15,6 +17,7 @@ interface PackageVersion {
 
 const version = useRuntimeConfig().public.VERSION;
 const appStore = useAppStore();
+const updaterStore = useUpdaterStore();
 const backStore = getBackStore();
 const viewerStore = useViewerStore();
 
@@ -115,6 +118,7 @@ runFunctionWhenMicroservicesConnected(() => {
             </v-row>
           </v-col>
         </v-row>
+        <UpdateSettings v-if="updaterStore.isAvailable" />
         <v-row class="pa-3">
           <p class="text-h4 text-white">Internal dependencies</p>
           <v-divider />

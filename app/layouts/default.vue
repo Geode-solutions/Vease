@@ -13,16 +13,19 @@ import { useAppStore } from "@ogw_front/stores/app";
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
+import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
+import { useUpdaterStore } from "@vease/stores/updater";
 
 // The e2e desktop harness parses this line from Electron stdout (tests/e2e/utils/navigate.ts); consola's styled browser output breaks that match, so it stays a plain console.log.
 // oxlint-disable-next-line no-console
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
+const updaterStore = useUpdaterStore();
 const infraStore = getInfraStore();
 const appStore = useAppStore();
 
@@ -112,6 +115,7 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
+    <UpdateSnackbar v-if="updaterStore.isAvailable" />
 
     <GlobalComponents />
   </v-app>
