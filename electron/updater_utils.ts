@@ -1,10 +1,35 @@
-// Pure helpers for the desktop updater, kept free of Electron imports so they can be unit tested
+// Pure helpers and IPC types for the desktop updater, kept free of Electron imports so they can be
+// Unit tested and shared with the renderer store
 
 type UpdateChannel = "master" | "next";
 
 interface UpdateSettings {
   channel: UpdateChannel;
   pinnedVersion?: string;
+}
+
+type UpdaterState =
+  | "idle"
+  | "checking"
+  | "available"
+  | "not-available"
+  | "downloading"
+  | "downloaded"
+  | "error"
+  | "unsupported";
+
+interface UpdaterStatus {
+  state: UpdaterState;
+  version?: string;
+  percent?: number;
+  bytesPerSecond?: number;
+  transferred?: number;
+  total?: number;
+  message?: string;
+}
+
+interface UpdaterInitialState extends UpdateSettings {
+  status: UpdaterStatus;
 }
 
 interface ParsedTag {
@@ -62,9 +87,10 @@ function compareVersions(first: string, second: string): number {
   return compareParsed(parsedFirst, parsedSecond);
 }
 
+const VERSION_PREFIX_REGEX = /^v/u;
+
 function sortedTags(tags: string[], filter: (parsed: ParsedTag) => boolean): string[] {
   return tags
-    .filter((tag) => tag.startsWith("v"))
     .map((tag) => ({ tag, parsed: parseTag(tag) }))
     .filter(
       (entry): entry is { tag: string; parsed: ParsedTag } =>
@@ -74,21 +100,21 @@ function sortedTags(tags: string[], filter: (parsed: ParsedTag) => boolean): str
     .map((entry) => entry.tag);
 }
 
-function selectTargetTag(tags: string[], settings: UpdateSettings): string | undefined {
-  if (settings.pinnedVersion !== undefined) {
-    const pinnedTag = `v${settings.pinnedVersion}`;
-    return tags.includes(pinnedTag) ? pinnedTag : undefined;
-  }
+function tagForVersion(version: string): string {
+  return `v${version.replace(VERSION_PREFIX_REGEX, "")}`;
+}
+
+function selectChannelTag(tags: string[], channel: UpdateChannel): string | undefined {
   const candidates = sortedTags(
     tags,
-    (parsed) => settings.channel === "next" || parsed.releaseCandidate === undefined,
+    (parsed) => channel === "next" || parsed.releaseCandidate === undefined,
   );
   return candidates[0];
 }
 
 function listStableVersions(tags: string[]): string[] {
   return sortedTags(tags, (parsed) => parsed.releaseCandidate === undefined).map((tag) =>
-    tag.slice(1),
+    tag.replace(VERSION_PREFIX_REGEX, ""),
   );
 }
 
@@ -101,8 +127,12 @@ export {
   defaultChannel,
   listStableVersions,
   parseTag,
-  selectTargetTag,
+  selectChannelTag,
+  tagForVersion,
   type ParsedTag,
   type UpdateChannel,
   type UpdateSettings,
+  type UpdaterInitialState,
+  type UpdaterState,
+  type UpdaterStatus,
 };

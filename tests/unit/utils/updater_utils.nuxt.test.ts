@@ -3,7 +3,8 @@ import {
   defaultChannel,
   listStableVersions,
   parseTag,
-  selectTargetTag,
+  selectChannelTag,
+  tagForVersion,
 } from "~~/electron/updater_utils";
 import { describe, expect, test, vi } from "vitest";
 
@@ -41,18 +42,22 @@ describe("the updater utils", () => {
     ).toStrictEqual(["1.53.3", "1.53.4-rc.2", "1.53.4-rc.10", "1.53.4"]);
   });
 
-  test("selectTargetTag picks the newest stable on master", () => {
-    expect(selectTargetTag(TAGS, { channel: "master" })).toBe("v1.53.4");
+  test("selectChannelTag picks the newest stable on master", () => {
+    expect(selectChannelTag(TAGS, "master")).toBe("v1.53.4");
   });
 
-  test("selectTargetTag picks the newest release on next", () => {
-    expect(selectTargetTag(TAGS, { channel: "next" })).toBe("v1.53.5-rc.1");
-    expect(selectTargetTag(["v1.53.4", "v1.53.4-rc.2"], { channel: "next" })).toBe("v1.53.4");
+  test("selectChannelTag picks the newest release on next", () => {
+    expect(selectChannelTag(TAGS, "next")).toBe("v1.53.5-rc.1");
+    expect(selectChannelTag(["v1.53.4", "v1.53.4-rc.2"], "next")).toBe("v1.53.4");
   });
 
-  test("selectTargetTag returns the pinned version when it exists", () => {
-    expect(selectTargetTag(TAGS, { channel: "next", pinnedVersion: "1.52.0" })).toBe("v1.52.0");
-    expect(selectTargetTag(TAGS, { channel: "master", pinnedVersion: "1.0.0" })).toBeUndefined();
+  test("selectChannelTag returns undefined without a matching release", () => {
+    expect(selectChannelTag(["v1.53.5-rc.1", "feat/pvd_import-tag"], "master")).toBeUndefined();
+  });
+
+  test("tagForVersion adds the v prefix once", () => {
+    expect(tagForVersion("1.52.0")).toBe("v1.52.0");
+    expect(tagForVersion("v1.52.0")).toBe("v1.52.0");
   });
 
   test("listStableVersions only lists stable versions, newest first", () => {

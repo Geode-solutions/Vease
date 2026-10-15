@@ -56,4 +56,22 @@ describe("the UpdateSnackbar component", () => {
     button?.click();
     expect(restartSpy).toHaveBeenCalledWith();
   });
+
+  test("hides errors from the background startup check", async () => {
+    const updaterStore = useUpdaterStore();
+    mountSnackbar();
+    updaterStore.status = { state: "error", message: "fetch failed" };
+    await flushPromises();
+    expect(document.querySelector("[data-testid='updateCloseButton']")).toBeNull();
+  });
+
+  test("shows errors once the user asked for an update", async () => {
+    const updaterStore = useUpdaterStore();
+    mountSnackbar();
+    updaterStore.notifyErrors = true;
+    updaterStore.status = { state: "error", message: "fetch failed" };
+    await flushPromises();
+    expect(document.querySelector("[data-testid='updateCloseButton']")).not.toBeNull();
+    expect(document.body.textContent).toContain("Update failed: fetch failed");
+  });
 });

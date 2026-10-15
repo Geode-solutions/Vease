@@ -1,6 +1,7 @@
 // Electron's sandboxed preload scripts only support CommonJS
 // oxlint-disable-next-line typescript/no-require-imports
 import electron = require("electron");
+import type { UpdateSettings } from "./updater_utils";
 
 const { contextBridge, ipcRenderer } = electron;
 
@@ -33,10 +34,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     const result = (await ipcRenderer.invoke("updater_list_versions")) as unknown;
     return result;
   },
-  updater_set_settings: async (args: {
-    channel: string;
-    pinnedVersion?: string;
-  }): Promise<unknown> => {
+  updater_set_settings: async (args: UpdateSettings): Promise<unknown> => {
     const result = (await ipcRenderer.invoke("updater_set_settings", args)) as unknown;
     return result;
   },

@@ -1,36 +1,14 @@
-type UpdateChannel = "master" | "next";
-
-type UpdaterState =
-  | "idle"
-  | "checking"
-  | "available"
-  | "not-available"
-  | "downloading"
-  | "downloaded"
-  | "error"
-  | "unsupported";
-
-interface UpdaterStatus {
-  state: UpdaterState;
-  version?: string;
-  percent?: number;
-  bytesPerSecond?: number;
-  transferred?: number;
-  total?: number;
-  message?: string;
-}
-
-interface UpdaterInitialState {
-  currentVersion: string;
-  channel: UpdateChannel;
-  pinnedVersion?: string;
-  status: UpdaterStatus;
-}
+import type {
+  UpdateChannel,
+  UpdateSettings,
+  UpdaterInitialState,
+  UpdaterStatus,
+} from "~~/electron/updater_utils";
 
 interface DesktopUpdaterAPI {
   updater_get_state: () => Promise<UpdaterInitialState>;
   updater_list_versions: () => Promise<string[]>;
-  updater_set_settings: (args: { channel: UpdateChannel; pinnedVersion?: string }) => Promise<void>;
+  updater_set_settings: (args: UpdateSettings) => Promise<void>;
   updater_check: () => Promise<void>;
   updater_quit_and_install: () => Promise<void>;
   on_updater_status: (callback: (status: UpdaterStatus) => void) => () => void;
@@ -52,80 +30,66 @@ function getDesktopUpdaterAPI(): DesktopUpdaterAPI | undefined {
   return hasDesktopUpdaterAPI(globalScope) ? globalScope.electronAPI : undefined;
 }
 
-async function check(): Promise<void> {
-  await getDesktopUpdaterAPI()?.updater_check();
+function isUpdaterAvailable(): boolean {
+  return getDesktopUpdaterAPI() !== undefined;
 }
 
-async function restart(): Promise<void> {
-  await getDesktopUpdaterAPI()?.updater_quit_and_install();
-}
-
-// oxlint-disable-next-line max-lines-per-function
 const useUpdaterStore = defineStore("Updater", () => {
+  const api = getDesktopUpdaterAPI();
   const status = ref<UpdaterStatus>({ state: "idle" });
-  const currentVersion = ref("");
   const channel = ref<UpdateChannel>("master");
   const pinnedVersion = ref<string | undefined>(undefined);
-  const versions = ref<string[]>([]);
-  const initialized = ref(false);
-
-  const isAvailable = computed(() => getDesktopUpdaterAPI() !== undefined);
+  // The startup check runs in the background and fails silently; errors are only reported
+  // Once the user has asked for an update
+  const notifyErrors = ref(false);
+  let initialized = false;
 
   async function init(): Promise<void> {
-    const api = getDesktopUpdaterAPI();
-    if (!api || initialized.value) {
+    if (!api || initialized) {
       return;
     }
-    initialized.value = true;
+    initialized = true;
     api.on_updater_status((newStatus) => {
       status.value = newStatus;
     });
     const state = await api.updater_get_state();
-    currentVersion.value = state.currentVersion;
     channel.value = state.channel;
     pinnedVersion.value = state.pinnedVersion;
     status.value = state.status;
   }
 
-  async function loadVersions(): Promise<void> {
-    const api = getDesktopUpdaterAPI();
-    if (!api) {
-      return;
-    }
-    versions.value = await api.updater_list_versions();
+  async function listVersions(): Promise<string[]> {
+    return (await api?.updater_list_versions()) ?? [];
   }
 
-  async function saveSettings(): Promise<void> {
-    await getDesktopUpdaterAPI()?.updater_set_settings({
-      channel: channel.value,
-      pinnedVersion: pinnedVersion.value,
-    });
+  async function saveSettings(settings: UpdateSettings): Promise<void> {
+    channel.value = settings.channel;
+    pinnedVersion.value = settings.pinnedVersion;
+    notifyErrors.value = true;
+    await api?.updater_set_settings(settings);
   }
 
-  async function setChannel(newChannel: UpdateChannel): Promise<void> {
-    channel.value = newChannel;
-    await saveSettings();
+  async function check(): Promise<void> {
+    notifyErrors.value = true;
+    await api?.updater_check();
   }
 
-  async function pin(version: string | undefined): Promise<void> {
-    pinnedVersion.value = version;
-    await saveSettings();
+  async function restart(): Promise<void> {
+    await api?.updater_quit_and_install();
   }
 
   return {
     status,
-    currentVersion,
     channel,
     pinnedVersion,
-    versions,
-    isAvailable,
+    notifyErrors,
     init,
-    loadVersions,
-    setChannel,
-    pin,
+    listVersions,
+    saveSettings,
     check,
     restart,
   };
 });
 
-export { useUpdaterStore, type UpdateChannel, type UpdaterState, type UpdaterStatus };
+export { isUpdaterAvailable, useUpdaterStore };
+export type { UpdateChannel, UpdaterState, UpdaterStatus } from "~~/electron/updater_utils";

@@ -18,7 +18,6 @@ import { initUpdater } from "./updater";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
-initUpdater({ autoCheck: !appArgs.flags.includes("--no-update") });
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let serverCleanup: (() => unknown) | undefined = undefined;
@@ -66,6 +65,8 @@ async function clean_up(): Promise<void> {
   cleaned = true;
   consola.info("end clean");
 }
+
+initUpdater({ autoCheck: !appArgs.flags.includes("--no-update"), beforeInstall: clean_up });
 
 app.on("before-quit", (event) => {
   if (!cleaned) {

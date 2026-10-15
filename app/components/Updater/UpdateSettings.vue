@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type UpdateChannel, useUpdaterStore } from "@vease/stores/updater";
+import { type UpdateChannel, type UpdaterState, useUpdaterStore } from "@vease/stores/updater";
 
 const updaterStore = useUpdaterStore();
 
-const STATUS_LABELS: Record<string, string> = {
+const STATUS_LABELS: Record<UpdaterState, string> = {
   idle: "Not checked yet",
   checking: "Checking for updates…",
   available: "Update available",
@@ -17,31 +17,38 @@ const STATUS_LABELS: Record<string, string> = {
 // Empty string stands for "no pinned version" in the select
 const NO_PIN = "";
 
+const versions = ref<string[]>([]);
+
 const versionItems = computed(() => [
   { title: "Follow channel (no pin)", value: NO_PIN },
-  ...updaterStore.versions.map((version) => ({ title: `v${version}`, value: version })),
+  ...versions.value.map((version) => ({ title: `v${version}`, value: version })),
 ]);
 
 const statusLabel = computed(() => {
   const { state, message } = updaterStore.status;
-  const label = STATUS_LABELS[state] ?? state;
+  const label = STATUS_LABELS[state];
   return message ? `${label}: ${message}` : label;
 });
 
 const busy = computed(() => ["checking", "downloading"].includes(updaterStore.status.state));
 const unsupported = computed(() => updaterStore.status.state === "unsupported");
+// Changing the target mid-download would queue a second download behind the current one
+const settingsLocked = computed(() => busy.value || unsupported.value);
 
 function onChannelChange(channel: UpdateChannel): void {
-  void updaterStore.setChannel(channel);
+  void updaterStore.saveSettings({ channel, pinnedVersion: updaterStore.pinnedVersion });
 }
 
 function onPinChange(version: string): void {
-  void updaterStore.pin(version === NO_PIN ? undefined : version);
+  void updaterStore.saveSettings({
+    channel: updaterStore.channel,
+    pinnedVersion: version === NO_PIN ? undefined : version,
+  });
 }
 
 onMounted(async () => {
   await updaterStore.init();
-  await updaterStore.loadVersions();
+  versions.value = await updaterStore.listVersions();
 });
 </script>
 
@@ -57,7 +64,7 @@ onMounted(async () => {
             mandatory
             density="compact"
             variant="outlined"
-            :disabled="unsupported || updaterStore.pinnedVersion !== undefined"
+            :disabled="settingsLocked || updaterStore.pinnedVersion !== undefined"
             data-testid="updateChannelToggle"
             @update:model-value="onChannelChange"
           >
@@ -71,7 +78,7 @@ onMounted(async () => {
             density="compact"
             hide-details
             max-width="260"
-            :disabled="unsupported"
+            :disabled="settingsLocked"
             data-testid="updatePinSelect"
             @update:model-value="onPinChange"
           />

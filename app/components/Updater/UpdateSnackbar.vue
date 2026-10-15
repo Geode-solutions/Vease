@@ -11,7 +11,9 @@ const state = computed(() => updaterStore.status.state);
 const visible = computed(
   () =>
     !dismissed.value &&
-    (state.value === "downloading" || state.value === "downloaded" || state.value === "error"),
+    (state.value === "downloading" ||
+      state.value === "downloaded" ||
+      (state.value === "error" && updaterStore.notifyErrors)),
 );
 const percent = computed(() => Math.round(updaterStore.status.percent ?? 0));
 
