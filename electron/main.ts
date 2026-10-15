@@ -2,7 +2,6 @@
 
 // Third party imports
 import { app, ipcMain } from "electron";
-import { autoUpdater } from "electron-updater";
 import { cleanupBackend } from "@geode/opengeodeweb-front/server/utils/cleanup.js";
 import { consola } from "consola";
 
@@ -15,12 +14,10 @@ import {
   saveCredentials,
   // oxlint-disable-next-line import/no-relative-parent-imports
 } from "../utils/desktop";
+import { initUpdater } from "./updater";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
-if (!appArgs.flags.includes("--no-update")) {
-  void autoUpdater.checkForUpdatesAndNotify();
-}
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let serverCleanup: (() => unknown) | undefined = undefined;
@@ -68,6 +65,8 @@ async function clean_up(): Promise<void> {
   cleaned = true;
   consola.info("end clean");
 }
+
+initUpdater({ autoCheck: !appArgs.flags.includes("--no-update"), beforeInstall: clean_up });
 
 app.on("before-quit", (event) => {
   if (!cleaned) {
