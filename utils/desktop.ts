@@ -17,6 +17,9 @@ import { consola } from "consola";
 import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 import { setAppBaseUrl } from "@geode/opengeodeweb-front/shared/scripts.js";
 
+// Local imports
+import { logBrowserConsole } from "./browser_console";
+
 // Isolate userData folder for concurrent Playwright workers during E2E tests
 if (process.env.CI === "e2e") {
   const workerIndex = process.env.TEST_WORKER_INDEX ?? "0";
@@ -79,13 +82,8 @@ function setupBrowserWindow(): BrowserWindow {
     }
   })();
 
-  window.webContents.on("console-message", (...args) => {
-    const [_event, level, message, line, sourceId] = args;
-    // Map log levels to readable names
-    const logLevels = ["VERBOSE", "INFO", "ERROR"];
-    const logLevel = logLevels[level] ?? "UNKNOWN";
-    // Print the console message to the terminal
-    consola.info(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`);
+  window.webContents.on("console-message", (details) => {
+    logBrowserConsole(details.level, details.message);
   });
   return window;
 }
