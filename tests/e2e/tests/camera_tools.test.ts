@@ -168,7 +168,6 @@ test("ruler tool pick vertex snap points", async ({ window }) => {
     },
   });
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("rotate camera 180 degrees", async ({ window }) => {
@@ -212,7 +211,6 @@ test("visibility off grid and expand brep focus", async ({ window }) => {
   await hideObjectInTree(window, rgd3dGeodeObjectType, "grid", getMainObjectTree(window));
   await focusObjectInTree(window, brepGeodeObjectType, defaultDataName);
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("center on click", async ({ window }) => {
@@ -221,7 +219,6 @@ test("center on click", async ({ window }) => {
   await hybridViewerCanvas.click({
     position: { x: 750, y: 250 },
   });
-  await waitForActionSettled(window);
 });
 
 test("toggle grid scale tool", async ({ window }) => {

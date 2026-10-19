@@ -15,7 +15,9 @@ import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
+import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
+import { isUpdaterAvailable } from "@vease/stores/updater";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
@@ -25,6 +27,7 @@ import { useUIStore } from "@vease/stores/ui";
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
+const updaterAvailable = isUpdaterAvailable();
 const infraStore = getInfraStore();
 const appStore = useAppStore();
 
@@ -124,6 +127,7 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
+    <UpdateSnackbar v-if="updaterAvailable" />
 
     <GlobalComponents />
   </v-app>

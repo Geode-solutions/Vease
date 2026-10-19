@@ -33,11 +33,11 @@ describe("login component", () => {
     emailRef.value = "";
     passwordRef.value = "";
 
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useAuthPage).mockReturnValue({
       isLogin: isLoginRef,
       email: emailRef,
       password: passwordRef,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuthPage>);
   });
 

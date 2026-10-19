@@ -12,7 +12,7 @@ export default defineNuxtPlugin(() => {
   const viewerStore = useViewerStore();
 
   backStore.$onAction(({ name, after }) => {
-    if (name !== "launch") {
+    if (name !== "connect") {
       return;
     }
     after(() => {
@@ -21,14 +21,14 @@ export default defineNuxtPlugin(() => {
           await setBackBaseUrl(appStore.base_url, backStore.base_url);
           connectToEventSource();
         } catch (error) {
-          consola.error("[SYNC] back launch failed", error);
+          consola.error("[SYNC] back connect failed", error);
         }
       })();
     });
   });
 
   viewerStore.$onAction(({ name, after }) => {
-    if (name !== "launch") {
+    if (name !== "connect") {
       return;
     }
     after(() => {
@@ -37,7 +37,7 @@ export default defineNuxtPlugin(() => {
           await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
           connectToWebSocket();
         } catch (error) {
-          consola.error("[SYNC] viewer launch failed", error);
+          consola.error("[SYNC] viewer connect failed", error);
         }
       })();
     });

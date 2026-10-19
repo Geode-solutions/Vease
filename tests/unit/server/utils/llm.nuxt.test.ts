@@ -17,29 +17,29 @@ vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
 }));
 
 vi.mock(import("@ai-sdk/openai-compatible"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `chatModel` member this codebase uses, not the full SDK provider shape
   createOpenAICompatible: vi.fn<typeof createOpenAICompatible>().mockReturnValue({
     chatModel: vi
       .fn<(modelId: string) => { modelId: string }>()
       .mockImplementation((modelId) => ({ modelId })),
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `chatModel` member this codebase uses, not the full SDK provider shape
   } as unknown as ReturnType<typeof createOpenAICompatible>),
 }));
 
 vi.mock(import("@ai-sdk/gateway"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `languageModel` member this codebase uses, not the full SDK provider shape
   createGateway: vi.fn<typeof createGateway>().mockReturnValue({
     languageModel: vi
       .fn<(modelId: string) => { modelId: string }>()
       .mockImplementation((modelId) => ({ modelId })),
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `languageModel` member this codebase uses, not the full SDK provider shape
   } as unknown as ReturnType<typeof createGateway>),
 }));
 
 vi.mock(import("@ai-sdk/mcp"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `tools` member this codebase uses, not the full SDK client shape
   createMCPClient: vi.fn<typeof createMCPClient>().mockResolvedValue({
     tools: vi
       .fn<() => Promise<{ search_tools: Record<string, unknown> }>>()
       .mockResolvedValue({ search_tools: {} }),
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the `tools` member this codebase uses, not the full SDK client shape
   } as unknown as Awaited<ReturnType<typeof createMCPClient>>),
 }));
 

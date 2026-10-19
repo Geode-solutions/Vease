@@ -89,7 +89,6 @@ test("isolate object", async ({ window }) => {
 
 test("expand pip", async ({ window }) => {
   await expandDataManagerPiP(window);
-  await waitForActionSettled(window);
 });
 
 test("delete object", async ({ window }) => {

@@ -39,6 +39,7 @@ describe("account component", () => {
 
   beforeEach(() => {
     setupActivePinia();
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useAuth).mockReturnValue({
       user: ref({ email: "user@example.com" }),
       isUserAuthenticated: computed(() => true),
@@ -48,7 +49,6 @@ describe("account component", () => {
       register: registerMock,
       login: loginMock,
       resetPassword: resetPasswordMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
   });
 

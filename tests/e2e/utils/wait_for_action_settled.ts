@@ -21,12 +21,19 @@ const REQUEST_DISPATCH_GRACE_MS = 50;
 // Some backend RPCs (attribute-name lookups on a component with many items, for example) occasionally take several seconds under CI load, so the indicator gets generous headroom to clear.
 const BUSY_INDICATOR_HARD_CEILING_MS = 10_000;
 
-async function waitForMicroservicesIdle(window: Page, budgetMs: number): Promise<void> {
-  await window.waitForTimeout(Math.min(REQUEST_DISPATCH_GRACE_MS, budgetMs));
+async function waitForMicroservicesIdle(window: Page, timeoutMs: number): Promise<void> {
   await window
     .getByTestId(BUSY_INDICATOR_TEST_ID)
-    .waitFor({ state: "hidden", timeout: Math.max(budgetMs, BUSY_INDICATOR_HARD_CEILING_MS) })
+    .waitFor({ state: "hidden", timeout: timeoutMs })
     .catch(noopCleanup);
+}
+
+async function isMicroservicesBusy(window: Page): Promise<boolean> {
+  const busy = await window
+    .getByTestId(BUSY_INDICATOR_TEST_ID)
+    .isVisible()
+    .catch(() => false);
+  return busy;
 }
 
 const MUTATION_QUIET_MS = 250;
@@ -73,11 +80,28 @@ async function waitForNextPaint(window: Page): Promise<void> {
     .catch(noopCleanup);
 }
 
-async function waitForActionSettled(window: Page, ceilingMs = afterActionWait): Promise<void> {
-  const startedAt = Date.now();
-  await waitForMicroservicesIdle(window, ceilingMs);
+// Multi-step actions (project import, for example) chain several requests with short gaps in between: the indicator briefly hides, then shows again.
+// The indeterminate bar animates through CSS only, so the DOM can look quiet while it is visible: re-check it after the DOM settles and start over if it came back.
+async function waitForIdleAndSettled(
+  window: Page,
+  startedAt: number,
+  ceilingMs: number,
+  deadline: number,
+): Promise<void> {
+  // A zero timeout means "no timeout" in Playwright
+  await waitForMicroservicesIdle(window, Math.max(1, deadline - Date.now()));
   const remainingMs = Math.max(MIN_DOM_SETTLE_BUDGET_MS, ceilingMs - (Date.now() - startedAt));
   await waitForDomSettled(window, remainingMs);
+  if (Date.now() < deadline && (await isMicroservicesBusy(window))) {
+    await waitForIdleAndSettled(window, startedAt, ceilingMs, deadline);
+  }
+}
+
+async function waitForActionSettled(window: Page, ceilingMs = afterActionWait): Promise<void> {
+  const startedAt = Date.now();
+  const deadline = startedAt + Math.max(ceilingMs, BUSY_INDICATOR_HARD_CEILING_MS);
+  await window.waitForTimeout(Math.min(REQUEST_DISPATCH_GRACE_MS, ceilingMs));
+  await waitForIdleAndSettled(window, startedAt, ceilingMs, deadline);
   await waitForNextPaint(window);
 }
 

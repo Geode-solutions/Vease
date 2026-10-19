@@ -24,6 +24,7 @@ vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
 }));
 
 function mockInfraStore(connected = true): void {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a Pinia store return type
   vi.mocked(getInfraStore).mockReturnValue({
     microservices_connected: connected,
     microservices_busy: false,
@@ -31,7 +32,6 @@ function mockInfraStore(connected = true): void {
     register_microservice: vi.fn<() => void>(),
     unregister_microservice: vi.fn<() => void>(),
     create_connection: vi.fn<() => Promise<void>>(),
-    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a Pinia store return type
   } as unknown as ReturnType<typeof getInfraStore>);
 }
 

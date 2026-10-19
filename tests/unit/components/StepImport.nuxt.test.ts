@@ -10,12 +10,12 @@ import { useUIStore } from "@vease/stores/ui";
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_front/components/Stepper.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of Stepper this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   default: {
     name: "Stepper",
     props: ["stepperTree"],
     template:
       "<div class='stepper-stub'><button class='close-btn' @click='$emit(\"close\")'>Close</button><button class='reset-btn' @click='$emit(\"reset_values\")'>Reset</button></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of Stepper this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   } as unknown as typeof Stepper,
 }));
 
@@ -32,9 +32,9 @@ describe("the StepImport component", () => {
     setupActivePinia();
     resetValuesMock.mockReset();
 
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     vi.mocked(useStepperTree).mockReturnValue({
       reset_values: resetValuesMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     } as unknown as ReturnType<typeof useStepperTree>);
   });
 

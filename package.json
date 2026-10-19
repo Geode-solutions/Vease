@@ -21,7 +21,10 @@
   },
   "files": [
     "tests/e2e/utils",
-    ".build/tests/e2e/utils"
+    ".build/tests/e2e/utils",
+    "vease_schemas.json",
+    "vease_typed_schemas.js",
+    "vease_typed_schemas.d.ts"
   ],
   "type": "module",
   "main": "dist-electron/main.js",
@@ -44,6 +47,7 @@
   },
   "scripts": {
     "clean_cache": "npx nuxi cleanup",
+    "cloud:load": "node node_scripts/cloud_load.js",
     "dev": "npm run dev:browser",
     "dev:browser": "cross-env MODE=BROWSER npm run dev:nuxt",
     "dev:cloud": "cross-env MODE=CLOUD npm run dev:nuxt",

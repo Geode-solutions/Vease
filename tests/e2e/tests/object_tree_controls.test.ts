@@ -128,7 +128,6 @@ test("filter model components", async ({ window }) => {
   await window.getByTestId("filterCheckbox-Blocks").getByRole("checkbox").uncheck();
   await waitForActionSettled(window);
   await window.getByTestId("filterCheckbox-Lines").getByRole("checkbox").uncheck();
-  await waitForActionSettled(window);
 });
 
 test("sort model components by id", async ({ window }) => {
@@ -142,7 +141,6 @@ test("sort model components by id", async ({ window }) => {
 test("sort model components by name", async ({ window }) => {
   const modelComponentsObjectTree = getModelComponentsObjectTree(window);
   await modelComponentsObjectTree.getByTestId("sortObjectsButton").click();
-  await waitForActionSettled(window);
 });
 
 test("search model components by text", async ({ window }) => {
@@ -151,7 +149,6 @@ test("search model components by text", async ({ window }) => {
   await waitForActionSettled(window);
   const searchInput = modelComponentsObjectTree.getByTestId("searchObjectsInput").locator("input");
   await searchInput.fill("ff");
-  await waitForActionSettled(window);
 });
 
 test("hide filtered corners", async ({ window }) => {

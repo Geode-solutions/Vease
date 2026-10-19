@@ -18,59 +18,59 @@ vi.mock(import("@ogw_front/stores/viewer"), () => ({
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "GlassCard",
     props: ["escapeFunction"],
     template: "<div class='glass-card-stub'><slot /></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof GlassCard,
 }));
 
 vi.mock(import("@vease/components/StepImport.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "StepImport",
     template: "<div data-testid='step-import-stub'>StepImport</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof StepImport,
 }));
 
 vi.mock(import("@vease/components/CreateTools.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "CreateTools",
     template: "<div data-testid='create-tools-stub'>CreateTools</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof CreateTools,
 }));
 
 vi.mock(import("@vease/components/Extension.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "Extension",
     template: "<div data-testid='extension-stub'>Extension</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof Extension,
 }));
 
 vi.mock(import("@ogw_front/components/DragAndDrop.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "DragAndDrop",
     template: "<div data-testid='drag-and-drop-stub'>DragAndDrop</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof DragAndDrop,
 }));
 
 vi.mock(import("@vease/components/datamanager/DataManagerPiP.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "DataManagerPiP",
     template: "<div data-testid='data-manager-pip-stub'>DataManagerPiP</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof DataManagerPiP,
 }));
 
 vi.mock(import("@vease/components/chat/ChatPiP.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "ChatPiP",
     template: "<div data-testid='chat-pip-stub'>ChatPiP</div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof ChatPiP,
 }));
 

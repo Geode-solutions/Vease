@@ -8,6 +8,7 @@ import { useVeaseChat } from "@vease/composables/chat";
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   default: {
     name: "ResizablePiP",
     props: [
@@ -19,7 +20,6 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
       "minHeight",
     ],
     template: "<div class='resizable-pip-stub'><slot name='handle' /><slot /></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
   } as unknown as typeof ResizablePiP,
 }));
 
@@ -65,6 +65,7 @@ describe("the ChatPiP component", () => {
     isCloudAiAllowed = false,
     llamaRunning = false,
   }: ChatMockOptions = {}): void {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     vi.mocked(useVeaseChat).mockReturnValue({
       messages: ref(messages),
       sendMessage: sendMessageMock,
@@ -76,7 +77,6 @@ describe("the ChatPiP component", () => {
       CHAT_PROVIDER,
       llamaStatus: ref<{ running: boolean }>({ running: llamaRunning }),
       killLlamaServer: killLlamaServerMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     } as unknown as ReturnType<typeof useVeaseChat>);
   }
 

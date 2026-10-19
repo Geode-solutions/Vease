@@ -32,6 +32,7 @@ function resetAuthPageState(): ReturnType<typeof useAuthPage> {
 
 describe("useAuthPage composable", () => {
   beforeEach(() => {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(useAuth).mockReturnValue({
       login: loginMock,
       register: registerMock,
@@ -41,7 +42,6 @@ describe("useAuthPage composable", () => {
       autoLogin: vi.fn<() => Promise<void>>(),
       deleteAccount: vi.fn<(password: string) => Promise<void>>(),
       logout: vi.fn<() => Promise<void>>(),
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial composable return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof useAuth>);
     resetAuthPageState();
   });
