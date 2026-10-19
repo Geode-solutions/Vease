@@ -32,7 +32,7 @@ describe("server/utils/data_file", () => {
   describe("getAllowedFileExtensions()", () => {
     test("returns the extensions list from the back microservice", async () => {
       vi.mocked(fetchSchema).mockResolvedValue({
-        extensions: ["msh", "vtk"],
+        data_extensions: ["msh", "vtk"],
       });
 
       const result = await getAllowedFileExtensions();

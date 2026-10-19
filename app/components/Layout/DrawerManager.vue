@@ -11,7 +11,7 @@ import { useViewerStore } from "@ogw_front/stores/viewer";
 
 const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
 
-const emit = defineEmits<{ "files-dropped": [files: File[]] }>();
+const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
 const viewerStore = useViewerStore();
 
 function closeAllDrawers(): void {
@@ -93,7 +93,12 @@ function handleEscape(): void {
     </v-card>
   </v-fade-transition>
 
-  <DragAndDrop :inline="false" :fullscreen="true" @files-selected="handleFilesDropped" />
+  <DragAndDrop
+    :inline="false"
+    :fullscreen="true"
+    @files-selected="handleFilesDropped"
+    @folders-ignored="emit('folders-dropped')"
+  />
 
   <DataManagerPiP v-if="uiStore.showDataManagerPiP" />
 
