@@ -31,7 +31,6 @@ import { expandMainObjectTree } from "@vease_tests/utils/object_trees/main_objec
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -48,7 +47,6 @@ test("load brep and open model components", async ({ window }) => {
   await hideAllComponentLeafRows(window, "Surfaces");
   await collapseModelComponentTypes(window);
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("corners visibility", async ({ window }) => {

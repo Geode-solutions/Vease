@@ -34,7 +34,6 @@ import { expandMainObjectTree } from "@vease_tests/utils/object_trees/main_objec
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -55,7 +54,6 @@ test("object tree model components", async ({ window }) => {
   await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await hideAllComponentLeafRows(window, "Surfaces");
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("object tree hover lines", async ({ window }) => {

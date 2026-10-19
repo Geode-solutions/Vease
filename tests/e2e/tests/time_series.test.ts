@@ -31,7 +31,6 @@ import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { setFeatureTimeStep } from "@vease_tests/utils/data/helpers/attribute";
 import { test } from "@vease_tests/utils/fixtures";
 import { viewerQuickColormap } from "@vease_tests/utils/viewer_interaction";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const inputFilename = "time_series.og_psf3d";
@@ -92,7 +91,6 @@ test("model load brep and open model components", async ({ window }) => {
   await openModelComponentsTree(window, brepGeodeObjectType, modelDataName);
   await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("model surfaces polygon time series", async ({ window }) => {
