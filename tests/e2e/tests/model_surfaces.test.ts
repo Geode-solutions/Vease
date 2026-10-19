@@ -59,7 +59,6 @@ test("load brep and open model components", async ({ window }) => {
   await openModelComponentsTree(window, brepGeodeObjectType, defaultDataName);
   await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("surfaces visibility", async ({ window }) => {
