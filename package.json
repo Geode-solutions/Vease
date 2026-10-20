@@ -22,6 +22,8 @@
   "files": [
     "tests/e2e/utils",
     ".build/tests/e2e/utils",
+    "utils/browser_console.ts",
+    ".build/utils/browser_console.js",
     "vease_schemas.json",
     "vease_typed_schemas.js",
     "vease_typed_schemas.d.ts"
