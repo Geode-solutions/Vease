@@ -26,7 +26,12 @@ watch(
 );
 
 const autoUpload = ref(true);
+// Time series target type
 const geode_object_type = ref("");
+// Each imported file has its own type (filename -> type)
+const geode_object_types = ref<Record<string, string>>({});
+// Files left out because their mandatory files are missing
+const skipped_files = ref<string[]>([]);
 const additional_files = ref<File[]>([]);
 const target_id = ref("");
 // Time series extensions, given by the file selector along with the selected files
@@ -39,6 +44,18 @@ const main_time_series_path = computed(() => {
   const [single_file] = time_series_files.value;
   return files.value.length === 1 && single_file ? uploadPath(single_file) : "";
 });
+
+// One chip per type, with its file count when several types are imported
+function type_chips(types: Record<string, string>): string[] {
+  const counts = new Map<string, number>();
+  for (const type of Object.values(types)) {
+    counts.set(type, (counts.get(type) ?? 0) + 1);
+  }
+  if (counts.size <= 1) {
+    return [...counts.keys()];
+  }
+  return [...counts].map(([type, count]) => `${type} ×${count}`);
+}
 
 const select_files_step = {
   step_title: "Select files to import",
@@ -63,9 +80,10 @@ const import_steps = [
       component_name: shallowRef(ObjectSelector),
       component_options: {
         filenames: computed(() => files.value.map((file) => uploadPath(file))),
+        perFile: true,
       },
     },
-    chips: computed(() => (geode_object_type.value === "" ? [] : [geode_object_type.value])),
+    chips: computed(() => type_chips(geode_object_types.value)),
   },
   {
     step_title: "Add additional files",
@@ -73,7 +91,7 @@ const import_steps = [
       component_name: shallowRef(MissingFilesSelector),
       component_options: {
         multiple: true,
-        geodeObjectType: geode_object_type,
+        geodeObjectTypes: geode_object_types,
         filenames: computed(() => files.value.map((file) => uploadPath(file))),
       },
     },
@@ -84,12 +102,13 @@ const import_steps = [
     component: {
       component_name: shallowRef(ImportFile),
       component_options: {
-        geodeObjectType: geode_object_type,
+        geodeObjectTypes: geode_object_types,
+        skippedFiles: skipped_files,
         filenames: computed(() => files.value.map((file) => uploadPath(file))),
       },
     },
     chips: computed(() => {
-      const output_params = [geode_object_type.value, additional_files.value];
+      const output_params = [...type_chips(geode_object_types.value), additional_files.value];
       return output_params.filter((val) => val !== "" && (!Array.isArray(val) || val.length > 0));
     }),
   },
@@ -135,6 +154,8 @@ const stepper_tree = useStepperTree(import_steps, {
   files,
   autoUpload,
   geode_object_type,
+  geode_object_types,
+  skipped_files,
   additional_files,
   target_id,
   time_series,
