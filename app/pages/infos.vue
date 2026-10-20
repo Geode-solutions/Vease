@@ -33,18 +33,12 @@ function copy_url(): void {
 }
 
 const microservices = computed(() =>
-  infraStore.microservices.map((store) => {
-    let pkg = "opengeodeweb-back";
-    if (store.$id === "viewer") {
-      pkg = "opengeodeweb-viewer";
-    }
-    return {
-      name: store.$id.charAt(0).toUpperCase() + store.$id.slice(1),
-      package: `vease-${store.$id}`,
-      version: store.version,
-      status: store.status,
-    };
-  }),
+  infraStore.microservices.map((store) => ({
+    name: store.$id.charAt(0).toUpperCase() + store.$id.slice(1),
+    package: `vease-${store.$id}`,
+    version: store.version,
+    status: store.status,
+  })),
 );
 
 function get_packages_versions(): void {
@@ -74,118 +68,106 @@ runFunctionWhenMicroservicesConnected(() => {
 </script>
 
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="6">
-        <v-row class="pa-3">
-          <v-col cols="12">
-            <p class="text-h4 text-white">App infos</p>
-            <v-divider />
-            <v-row class="pa-3 pb-0">
-              <v-col cols="12" class="d-flex align-center">
-                <p class="text-white text-no-wrap mb-0">
-                  Version:
-                  <a
-                    :href="
-                      'https://github.com/Geode-solutions/Vease/releases/' +
-                      (version !== 'latest' ? 'tag/v' : '') +
-                      version
-                    "
-                    target="_blank"
-                    class="text-left text-white"
-                    >{{ version }}</a
-                  >
-                </p>
-              </v-col>
-            </v-row>
-            <v-row class="pa-3 pt-0">
-              <v-col cols="12" class="d-flex align-center">
-                <p class="text-white text-no-wrap mb-0">URL: {{ appStore.base_url }}</p>
+  <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
+    <div class="px-6 pt-6 pb-2">
+      <div class="d-flex align-center mb-4">
+        <v-icon icon="mdi-information-outline" class="mr-3 text-white" size="32" />
+        <h2 class="text-h4 font-weight-bold text-white">Infos</h2>
+      </div>
+    </div>
+
+    <div class="flex-grow-1 overflow-y-auto px-6 pb-6 infos-content">
+      <v-row>
+        <v-col cols="12" md="6" class="d-flex flex-column ga-4">
+          <v-card color="white" variant="tonal" rounded="lg">
+            <v-card-title class="d-flex align-center text-white">
+              <v-icon icon="mdi-application-outline" size="20" class="mr-2" />App</v-card-title
+            >
+            <v-card-text class="text-white">
+              <p class="mb-2">
+                Version:
+                <a
+                  :href="
+                    'https://github.com/Geode-solutions/Vease/releases/' +
+                    (version !== 'latest' ? 'tag/v' : '') +
+                    version
+                  "
+                  target="_blank"
+                  rel="noopener"
+                  class="text-white text-no-wrap"
+                  >{{ version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                /></a>
+              </p>
+              <div class="d-flex align-center">
+                <span class="text-truncate">URL: {{ appStore.base_url }}</span>
                 <v-tooltip :text="copied ? 'Copied!' : 'Copy URL'" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-icon
+                    <v-btn
                       v-bind="props"
-                      icon="mdi-content-copy"
-                      size="20"
+                      :icon="copied ? 'mdi-check' : 'mdi-content-copy'"
+                      aria-label="Copy URL"
+                      size="small"
+                      variant="text"
+                      density="comfortable"
                       class="ml-1"
-                      color="white"
-                      style="cursor: pointer"
                       @click="copy_url"
                     />
                   </template>
                 </v-tooltip>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <UpdateSettings v-if="updaterAvailable" />
-        <v-row class="pa-3">
-          <p class="text-h4 text-white">Internal dependencies</p>
-          <v-divider />
-          <v-table class="pa-3" density="compact" style="background-color: transparent">
-            <thead>
-              <tr>
-                <th class="text-left text-white" width="400px">Package</th>
-                <th class="text-left text-white">Version</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="pkg in packages_versions" :key="pkg.package">
-                <td class="text-left text-white">{{ pkg.package }}</td>
-                <td>
-                  <a
-                    :href="'https://pypi.org/project/' + pkg.package + '/' + pkg.version + '/'"
-                    target="_blank"
-                    class="text-left text-white"
-                    >{{ pkg.version }}</a
-                  >
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-        </v-row>
-        <v-row class="pa-3">
-          <v-col cols="12">
-            <p class="text-white">
-              Vease is an open-source project.
-              <br />
-              Copyright © 2019 - {{ new Date().getFullYear() }} — Geode-solutions SAS. All rights
-              reserved.
-            </p>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-divider vertical />
-      <v-col cols="6">
-        <v-row class="pa-3">
-          <p class="text-h4 text-white">Microservices</p>
-          <v-divider />
-          <v-row class="pa-3">
-            <v-table
-              class="pa-2"
-              density="compact"
-              style="background-color: transparent"
-              width="50%"
+              </div>
+            </v-card-text>
+          </v-card>
+
+          <UpdateSettings v-if="updaterAvailable" />
+
+          <v-card color="white" variant="tonal" rounded="lg">
+            <v-card-title class="d-flex align-center text-white">
+              <v-icon icon="mdi-lifebuoy" size="20" class="mr-2" />Support</v-card-title
             >
+            <v-card-text class="text-white">
+              <p class="mb-4">
+                Vease is an open-source project.
+                <br />
+                Copyright © 2019 - {{ new Date().getFullYear() }} — Geode-solutions SAS. All rights
+                reserved.
+              </p>
+              <v-btn
+                href="https://github.com/Geode-solutions/Vease/issues/new"
+                target="_blank"
+                rel="noopener"
+                prepend-icon="mdi-github"
+                append-icon="mdi-open-in-new"
+                >Report an issue</v-btn
+              >
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="6" class="d-flex flex-column ga-4">
+          <v-card color="white" variant="tonal" rounded="lg">
+            <v-card-title class="d-flex align-center text-white">
+              <v-icon icon="mdi-server-network" size="20" class="mr-2" />Microservices</v-card-title
+            >
+            <v-table density="compact" class="bg-transparent text-white">
               <thead>
                 <tr>
-                  <th class="text-left text-white"></th>
-                  <th class="text-left text-white">Version</th>
-                  <th class="text-left text-white">Status</th>
+                  <th class="text-white">Name</th>
+                  <th class="text-white">Version</th>
+                  <th class="text-white">Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="microservice in microservices" :key="microservice.name">
-                  <td class="text-left text-white">
-                    {{ microservice.name }}
-                  </td>
+                  <td>{{ microservice.name }}</td>
                   <td>
                     <a
                       :href="`https://pypi.org/project/${microservice.package}/${microservice.version}/`"
                       target="_blank"
-                      class="text-left text-white"
-                      >{{ microservice.version }}
-                    </a>
+                      rel="noopener"
+                      class="text-white text-no-wrap"
+                      >{{ microservice.version
+                      }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                    /></a>
                   </td>
                   <td>
                     <v-tooltip :text="`Microservice is ${microservice.status}`" location="right">
@@ -200,10 +182,11 @@ runFunctionWhenMicroservicesConnected(() => {
                           v-else-if="microservice.status == Status.CONNECTING"
                           v-bind="props"
                           indeterminate
-                          color="primary"
+                          size="20"
+                          width="2"
                         />
                         <v-icon
-                          v-if="microservice.status == Status.CONNECTED"
+                          v-else-if="microservice.status == Status.CONNECTED"
                           v-bind="props"
                           icon="mdi-check-circle"
                           color="white"
@@ -214,22 +197,48 @@ runFunctionWhenMicroservicesConnected(() => {
                 </tr>
               </tbody>
             </v-table>
-          </v-row>
-        </v-row>
-        <v-row class="pa-3">
-          <v-col cols="12">
-            <v-btn href="https://github.com/Geode-solutions/Vease/issues/new" target="_blank"
-              >Report an issue</v-btn
+          </v-card>
+
+          <v-card color="white" variant="tonal" rounded="lg">
+            <v-card-title class="d-flex align-center text-white">
+              <v-icon icon="mdi-package-variant-closed" size="20" class="mr-2" />Internal
+              dependencies</v-card-title
             >
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+            <v-table density="compact" class="bg-transparent text-white">
+              <thead>
+                <tr>
+                  <th class="text-white">Package</th>
+                  <th class="text-white">Version</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="pkg in packages_versions" :key="pkg.package">
+                  <td>{{ pkg.package }}</td>
+                  <td>
+                    <a
+                      :href="'https://pypi.org/project/' + pkg.package + '/' + pkg.version + '/'"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-white text-no-wrap"
+                      >{{ pkg.version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                    /></a>
+                  </td>
+                </tr>
+              </tbody>
+            </v-table>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+  </v-card>
 </template>
 
 <style scoped>
-td {
+.infos-content {
+  min-height: 0;
+}
+td,
+th {
   text-align: left;
 }
 </style>
