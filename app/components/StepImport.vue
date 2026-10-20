@@ -80,7 +80,6 @@ const import_steps = [
       component_name: shallowRef(ObjectSelector),
       component_options: {
         filenames: computed(() => files.value.map((file) => uploadPath(file))),
-        perFile: true,
       },
     },
     chips: computed(() => type_chips(geode_object_types.value)),
@@ -130,7 +129,6 @@ const time_series_steps = [
       component_name: shallowRef(MissingFilesSelector),
       component_options: {
         multiple: true,
-        geodeObjectType: geode_object_type,
         filenames: computed(() => [main_time_series_path.value]),
         timeSeries: true,
       },
