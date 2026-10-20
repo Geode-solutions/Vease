@@ -251,6 +251,10 @@ async function navigateToApp(
     consola.info(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await waitForAppReady(appUrl, WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
+    // The server answers before the microservices are up: on a cold Windows runner, Import stays disabled for a while
+    await expect(page.getByTestId("layoutImportButton")).toBeEnabled({
+      timeout: WAIT_TIMES.browser,
+    });
 
     return {
       window: page,
