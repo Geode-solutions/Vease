@@ -21,7 +21,10 @@ const versions = ref<string[]>([]);
 
 const versionItems = computed(() => [
   { title: "Follow channel (no pin)", value: NO_PIN },
-  ...versions.value.map((version) => ({ title: `v${version}`, value: version })),
+  ...versions.value.map((version) => ({
+    title: `v${version}`,
+    value: version,
+  })),
 ]);
 
 const statusLabel = computed(() => {
@@ -36,7 +39,10 @@ const unsupported = computed(() => updaterStore.status.state === "unsupported");
 const settingsLocked = computed(() => busy.value || unsupported.value);
 
 function onChannelChange(channel: UpdateChannel): void {
-  void updaterStore.saveSettings({ channel, pinnedVersion: updaterStore.pinnedVersion });
+  void updaterStore.saveSettings({
+    channel,
+    pinnedVersion: updaterStore.pinnedVersion,
+  });
 }
 
 function onPinChange(version: string): void {
@@ -53,49 +59,46 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-row class="pa-3" data-testid="updateSettings">
-    <v-col cols="12">
-      <p class="text-h4 text-white">Updates</p>
-      <v-divider />
-      <v-row class="pa-3">
-        <v-col cols="12" class="d-flex align-center flex-wrap ga-4">
-          <v-btn-toggle
-            :model-value="updaterStore.channel"
-            mandatory
-            density="compact"
-            variant="outlined"
-            :disabled="settingsLocked || updaterStore.pinnedVersion !== undefined"
-            data-testid="updateChannelToggle"
-            @update:model-value="onChannelChange"
-          >
-            <v-btn value="master">Stable</v-btn>
-            <v-btn value="next">Preview</v-btn>
-          </v-btn-toggle>
-          <v-select
-            :model-value="updaterStore.pinnedVersion ?? NO_PIN"
-            :items="versionItems"
-            label="Pinned version"
-            density="compact"
-            hide-details
-            max-width="260"
-            :disabled="settingsLocked"
-            data-testid="updatePinSelect"
-            @update:model-value="onPinChange"
-          />
-          <v-btn
-            :loading="busy"
-            :disabled="unsupported"
-            prepend-icon="mdi-refresh"
-            data-testid="updateCheckButton"
-            @click="updaterStore.check()"
-          >
-            Check now
-          </v-btn>
-        </v-col>
-        <v-col cols="12" class="pt-0">
-          <p class="text-white mb-0" data-testid="updateStatus">{{ statusLabel }}</p>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+  <v-card color="white" variant="tonal" rounded="lg" data-testid="updateSettings">
+    <v-card-title class="d-flex align-center text-white">
+      <v-icon icon="mdi-update" size="20" class="mr-2" />Updates</v-card-title
+    >
+    <v-card-text class="text-white">
+      <div class="d-flex align-center flex-wrap ga-4 mb-3">
+        <v-btn-toggle
+          :model-value="updaterStore.channel"
+          mandatory
+          density="compact"
+          variant="outlined"
+          :disabled="settingsLocked || updaterStore.pinnedVersion !== undefined"
+          data-testid="updateChannelToggle"
+          @update:model-value="onChannelChange"
+        >
+          <v-btn value="master">Stable</v-btn>
+          <v-btn value="next">Preview</v-btn>
+        </v-btn-toggle>
+        <v-select
+          :model-value="updaterStore.pinnedVersion ?? NO_PIN"
+          :items="versionItems"
+          label="Pinned version"
+          density="compact"
+          hide-details
+          max-width="260"
+          :disabled="settingsLocked"
+          data-testid="updatePinSelect"
+          @update:model-value="onPinChange"
+        />
+        <v-btn
+          :loading="busy"
+          :disabled="unsupported"
+          prepend-icon="mdi-refresh"
+          data-testid="updateCheckButton"
+          @click="updaterStore.check()"
+        >
+          Check now
+        </v-btn>
+      </div>
+      <p class="mb-0" data-testid="updateStatus">{{ statusLabel }}</p>
+    </v-card-text>
+  </v-card>
 </template>
