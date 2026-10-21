@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { loadLaunchFiles, waitForAppReady } from "~~/utils/launch_files";
 
@@ -79,7 +81,10 @@ describe("launch files (electron main process) utils", () => {
       await loadLaunchFiles(BASE_URL, ["a.og_brep", "missing.vtu", "/data/b.vtu"]);
 
       expect(mocks.getIsAppReady).toHaveBeenCalledWith(BASE_URL);
-      expect(mocks.openAsBlob.mock.calls).toStrictEqual([["/launch/a.og_brep"], ["/data/b.vtu"]]);
+      expect(mocks.openAsBlob.mock.calls).toStrictEqual([
+        [path.resolve("/launch", "a.og_brep")],
+        [path.resolve("/data/b.vtu")],
+      ]);
       expect(fetchMock).toHaveBeenCalledTimes(2);
       expect(fetchMock).toHaveBeenCalledWith(
         `${BASE_URL}/api/controller/data/load`,
