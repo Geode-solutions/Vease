@@ -24,7 +24,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectType: GEODE_TYPE,
+        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
       },
     });
 
@@ -39,7 +39,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectType: GEODE_TYPE,
+        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
       },
     });
 
@@ -60,7 +60,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectType: GEODE_TYPE,
+        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
       },
     });
 
@@ -69,5 +69,26 @@ describe("the ImportFile component", () => {
 
     expect(wrapper.emitted("reset_values")).toStrictEqual([[]]);
     expect(setShowStepperSpy).toHaveBeenCalledWith(false);
+  });
+
+  test("imports each file with its own type and skips the others", async () => {
+    const wrapper = mountWithPlugins(ImportFile, {
+      props: {
+        filenames: [SAMPLE_FILENAME, "model.og_brep", "unsupported.toto", "skipped.vtu"],
+        geodeObjectTypes: {
+          [SAMPLE_FILENAME]: GEODE_TYPE,
+          "model.og_brep": "StructuralModel",
+          "skipped.vtu": "SolidMesh3D",
+        },
+        skippedFiles: ["skipped.vtu"],
+      },
+    });
+
+    await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
+
+    expect(importWorkflow).toHaveBeenCalledWith([
+      { filename: SAMPLE_FILENAME, geode_object_type: GEODE_TYPE },
+      { filename: "model.og_brep", geode_object_type: "StructuralModel" },
+    ]);
   });
 });
