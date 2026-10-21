@@ -21,6 +21,7 @@ import {
   setMeshEdgesWidth,
   setMeshPointsColor,
   setMeshPointsSize,
+  setMeshPointsVertexAttribute,
   setMeshPointsVisibility,
   setMeshPolygonsColor,
   setMeshPolygonsColorMap,
@@ -190,4 +191,8 @@ test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
   await closeFeedbackSnackbar(window);
+});
+
+test("points vertex attribute", async ({ window }) => {
+  await setMeshPointsVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
 });
