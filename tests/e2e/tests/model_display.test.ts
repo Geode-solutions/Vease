@@ -14,9 +14,9 @@ import {
 import {
   setModelColorWithSlider,
   setModelColoringStyle,
+  setModelComponentsPointsSize,
   setModelEdgesVisibility,
   setModelOpacity,
-  setModelPointsSize,
   setModelPointsVisibility,
 } from "@vease_tests/utils/data";
 import { toggleInfoCard, viewerContextMenu } from "@vease_tests/utils/viewer_interaction";
@@ -57,7 +57,7 @@ test("points visibility", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setModelPointsSize(window, pointsSize);
+  await setModelComponentsPointsSize(window, "modelPointsComponentTypeOptions", pointsSize);
 });
 
 test("model color", async ({ window }) => {

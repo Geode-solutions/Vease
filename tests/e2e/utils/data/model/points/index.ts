@@ -1,2 +1,2 @@
-export * from "./size";
+export * from "./components";
 export * from "./visibility";
