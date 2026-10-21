@@ -17,6 +17,7 @@ import { defaultDataName, polygonalSurfaceGeodeObjectType } from "@vease_tests/u
 import {
   openMeshPolygonsMenu,
   setMeshEdgesColor,
+  setMeshEdgesVertexAttribute,
   setMeshEdgesVisibility,
   setMeshEdgesWidth,
   setMeshPointsColor,
@@ -195,4 +196,8 @@ test("polygons textures", async ({ window }) => {
 
 test("points vertex attribute", async ({ window }) => {
   await setMeshPointsVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
+});
+
+test("edges vertex attribute", async ({ window }) => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
 });
