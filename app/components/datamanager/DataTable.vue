@@ -60,7 +60,7 @@ const headers = computed(
         key: "actions",
         sortable: false,
         align: "end",
-        width: compact ? "185px" : "225px",
+        width: compact ? "140px" : "225px",
       },
     ] as const,
 );
@@ -264,7 +264,9 @@ function formatSmartDate(dateStr: string | undefined): string {
             <v-tooltip activator="parent" location="top">Rename</v-tooltip>
           </v-btn>
 
+          <!-- Hidden in the narrow picture-in-picture view: a 5th button would clip the others -->
           <v-btn
+            v-if="!compact"
             icon
             size="small"
             variant="text"

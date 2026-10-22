@@ -136,6 +136,17 @@ describe("data table component", () => {
     expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
   });
 
+  test("hides the crs button in compact mode", () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [mockItem1],
+        compact: true,
+      },
+    });
+
+    expect(wrapper.find('[data-testid="crsDataButton"]').exists()).toBe(false);
+  });
+
   test("emits delete event on row delete button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
       props: {
