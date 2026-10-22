@@ -335,6 +335,12 @@ async function openStyleMenu(window: Page, menuTestId: string): Promise<void> {
 const SCALAR_BAR_X_RATIO = 0.25;
 const SCALAR_BAR_Y_RATIO = 0.9;
 
+function getQuickColormapPicker(window: Page): Locator {
+  return window
+    .locator(".v-overlay__content")
+    .filter({ has: window.getByTestId("colorMapListFilter") });
+}
+
 async function viewerQuickColormap(window: Page, x?: number, y?: number): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -363,6 +369,7 @@ export {
   findOverlappingObjectsPicker,
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
+  getQuickColormapPicker,
   hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,
