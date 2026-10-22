@@ -54,6 +54,11 @@ function setupBrowserWindow(): BrowserWindow {
     callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
   });
 
+  // Screenshots including the UI capture the requesting frame directly, without a source picker
+  window.webContents.session.setDisplayMediaRequestHandler((request, callback) => {
+    callback(request.frame ? { video: request.frame } : {});
+  });
+
   window.webContents.setWindowOpenHandler(({ url }) => {
     void shell.openExternal(url);
     return { action: "deny" };

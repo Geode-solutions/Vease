@@ -30,6 +30,9 @@ const LINUX_MAX_DIFF_PIXEL_RATIO = 0.02;
 const WINDOWS_MAX_DIFF_PIXEL_RATIO = 0.025;
 const maxDiffPixelRatio = isWindows ? WINDOWS_MAX_DIFF_PIXEL_RATIO : LINUX_MAX_DIFF_PIXEL_RATIO;
 const threshold = 0.3;
+// The screenshot tool captures the tab with getDisplayMedia: chromium-headless-shell does not support it, so Chrome projects run the full Chromium (new headless) and accept the capture without the picker dialog
+const CHROMIUM_CHANNEL = "chromium";
+const AUTO_ACCEPT_TAB_CAPTURE = "--auto-accept-this-tab-capture";
 
 const TIMEOUTS = {
   browser: (isWindows ? WINDOWS_TIMEOUT_BROWSER : LINUX_TIMEOUT_BROWSER) * MILLISECONDS,
@@ -80,6 +83,8 @@ export default defineConfig<{ mode: string }>({
       use: {
         ...devices["Desktop Chrome"],
         mode: "BROWSER",
+        channel: CHROMIUM_CHANNEL,
+        launchOptions: { args: [AUTO_ACCEPT_TAB_CAPTURE] },
       },
     },
     {
@@ -101,6 +106,8 @@ export default defineConfig<{ mode: string }>({
       use: {
         ...devices["Desktop Chrome"],
         mode: "CLOUD",
+        channel: CHROMIUM_CHANNEL,
+        launchOptions: { args: [AUTO_ACCEPT_TAB_CAPTURE] },
       },
     },
     {
