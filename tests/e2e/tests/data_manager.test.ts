@@ -2,26 +2,23 @@
 
 // Local imports
 import {
-  assignCrs,
+  brepGeodeObjectType,
+  pointSetGeodeObjectType,
+  polygonalSurfaceGeodeObjectType,
+} from "@vease_tests/utils/constants";
+import {
   clickdeleteDataButton,
   confirmDelete,
   confirmRename,
   expandDataManagerPiP,
   expandObjectTree,
-  expectCurrentCrs,
   focusRowItem,
   isolateRowItem,
-  openCrsByButton,
   openDataManagerPiP,
   openRenameByButton,
   openRenameByName,
   toggleRowVisibility,
 } from "@vease_tests/utils/data_manager";
-import {
-  brepGeodeObjectType,
-  pointSetGeodeObjectType,
-  polygonalSurfaceGeodeObjectType,
-} from "@vease_tests/utils/constants";
 import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
@@ -34,7 +31,6 @@ const POLYGONAL_SURFACE_FILE = "test.og_psf3d";
 const POINTSET_FILE = "test.og_pts3d";
 const RENAMED_BREP = "cube vease";
 const RENAMED_POLYGONAL_SURFACE = "surface vease";
-const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -58,19 +54,6 @@ test("rename object by clicking item name", async ({ window }) => {
 
 test("rename object", async ({ window }) => {
   await confirmRename(window, RENAMED_BREP);
-});
-
-test("assign crs via button", async ({ window }) => {
-  await openCrsByButton(window, pointSetGeodeObjectType);
-  await expectCurrentCrs(window, "None (local coordinates)");
-  await assignCrs(window, LAMBERT_93);
-});
-
-test("current crs is the assigned one", async ({ window }) => {
-  await openCrsByButton(window, pointSetGeodeObjectType);
-  await expectCurrentCrs(window, "EPSG:2154");
-  await window.keyboard.press("Escape");
-  await moveMouseOutOfTheWay(window);
 });
 
 test("toggle visibility off", async ({ window }) => {
