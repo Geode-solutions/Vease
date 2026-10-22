@@ -62,7 +62,7 @@ test("rename object", async ({ window }) => {
 
 test("assign crs via button", async ({ window }) => {
   await openCrsByButton(window, pointSetGeodeObjectType);
-  await expectCurrentCrs(window, "points");
+  await expectCurrentCrs(window, "None (local coordinates)");
   await assignCrs(window, LAMBERT_93);
 });
 

@@ -37,10 +37,11 @@ async function fetchCurrentCrs(): Promise<void> {
         params: { id: item.id },
       },
       {
-        response_function: ({ crs_name, crs_info }) => {
+        // Without geographic info, the active CRS is OpenGeode's default local one ("points")
+        response_function: ({ crs_info }) => {
           currentCrs.value = crs_info
             ? `${crs_info.authority}:${crs_info.code} — ${crs_info.name}`
-            : crs_name;
+            : "None (local coordinates)";
         },
       },
     );

@@ -80,7 +80,7 @@ describe("crs dialog component", () => {
     await flushPromises();
 
     expect(document.body.querySelector('[data-testid="crsCurrentValue"]')?.textContent).toContain(
-      "points",
+      "None (local coordinates)",
     );
 
     const assignButton = document.body.querySelector<HTMLButtonElement>(
