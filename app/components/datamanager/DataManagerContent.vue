@@ -256,6 +256,7 @@ useEventListener(document, "keydown", (event) => {
       v-model:show="crsDialog"
       :item="itemForCrs"
       @assigned="showFeedback('CRS assigned')"
+      @converted="showFeedback('CRS converted')"
     />
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="bottom right">{{

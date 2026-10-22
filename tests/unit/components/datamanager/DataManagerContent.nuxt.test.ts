@@ -1,6 +1,7 @@
 import { assertDefined, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import type { DataItem } from "@vease/types/data_item";
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import type DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
@@ -60,6 +61,16 @@ vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
     emits: ["update:show", "confirm"],
     template: "<div class='rename-dialog-stub'></div>",
   } as unknown as typeof RenameDialog,
+}));
+
+vi.mock(import("@vease/components/datamanager/CrsDialog.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  default: {
+    name: "CrsDialog",
+    props: ["show", "item"],
+    emits: ["update:show", "assigned", "converted"],
+    template: "<div class='crs-dialog-stub'></div>",
+  } as unknown as typeof CrsDialog,
 }));
 
 vi.mock(import("@ogw_front/stores/data"), () => ({

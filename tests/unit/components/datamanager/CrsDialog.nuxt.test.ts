@@ -6,6 +6,7 @@ import type { DataItem } from "@vease/types/data_item";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useBackStore } from "@ogw_front/stores/back";
+import type { useCrs } from "@vease/composables/crs";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -27,6 +28,22 @@ const { LAMBERT, CRS_SELECTOR_STUB } = vi.hoisted(() => {
     },
   };
 });
+// Hoisted with vi.mock, so the useCrs mock can be checked by the tests
+const { USE_CRS_MOCK, convertCrs } = vi.hoisted(() => {
+  const convertMock = vi.fn<(...args: unknown[]) => Promise<void>>();
+  return {
+    convertCrs: convertMock,
+    USE_CRS_MOCK: (): unknown => ({
+      convertCrs: convertMock,
+      alignCrs: vi.fn<() => Promise<void>>(),
+    }),
+  };
+});
+const UTM_RESPONSE = {
+  crs_name: "EPSG:32631",
+  crs_info: { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" },
+};
+
 const RESPONSES: Record<string, unknown> = {
   "opengeodeweb_back/crs/active": { crs_name: "points" },
   "opengeodeweb_back/crs/assign_geographic": {},
@@ -36,6 +53,11 @@ type RequestMock = (
   request: { schema: { $id: string } },
   callbacks: { response_function?: (response: unknown) => void },
 ) => Promise<unknown>;
+
+vi.mock(import("@vease/composables/crs"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+  useCrs: USE_CRS_MOCK as unknown as typeof useCrs,
+}));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
@@ -154,6 +176,71 @@ describe("crs dialog component", () => {
     await flushPromises();
 
     expect(document.body.querySelector('[data-testid="crsCurrentLoading"]')).not.toBeNull();
+    // The mode depends on the current crs: neither is offered before it is known
+    expect(document.body.querySelector('[data-testid="crsModeAlign"]')).toBeNull();
+    expect(document.body.querySelector('[data-testid="crsModeConvert"]')).toBeNull();
+    wrapper.unmount();
+  });
+
+  test("converts a geographic data to the selected crs", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
+      callbacks.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    convertCrs.mockReset().mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsModeAlign"]')).toBeNull();
+    document.body
+      .querySelector('[data-testid="crsModeConvert"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsConvertButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(convertCrs).toHaveBeenCalledWith(mockItem, LAMBERT);
+    expect(wrapper.emitted("converted")?.length).toBe(EXPECTED_EVENT_COUNT);
+    wrapper.unmount();
+  });
+
+  test("offers alignment for data without crs", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async ({ schema }, callbacks) => {
+      const response = RESPONSES[schema.$id];
+      callbacks.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsModeConvert"]')).toBeNull();
+    document.body
+      .querySelector('[data-testid="crsModeAlign"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsStartAlignButton"]')).not.toBeNull();
     wrapper.unmount();
   });
 });
