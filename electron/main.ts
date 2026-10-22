@@ -22,6 +22,8 @@ const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
+// Lets globalShortcut work on Wayland through the desktop portal
+app.commandLine.appendSwitch("enable-features", "GlobalShortcutsPortal");
 let serverCleanup: (() => unknown) | undefined = undefined;
 let projectFolderPath = "";
 

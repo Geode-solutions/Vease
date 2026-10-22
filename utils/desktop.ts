@@ -9,6 +9,7 @@ import {
   BrowserWindow,
   type UtilityProcess,
   app,
+  globalShortcut,
   safeStorage,
   shell,
   utilityProcess,
@@ -52,6 +53,22 @@ function setupBrowserWindow(): BrowserWindow {
 
   window.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
     callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+  });
+
+  // Screenshots including the UI capture the requesting frame directly, without a source picker
+  window.webContents.session.setDisplayMediaRequestHandler((request, callback) => {
+    callback(request.frame ? { video: request.frame } : {});
+  });
+
+  // The desktop environment usually grabs PrintScreen before the page gets it: register it while the window is focused and forward it to the page as a regular key event
+  window.on("focus", () => {
+    const registered = globalShortcut.register("PrintScreen", () => {
+      window.webContents.sendInputEvent({ type: "keyUp", keyCode: "PrintScreen" });
+    });
+    consola.info(`[Electron] PrintScreen shortcut registered: ${registered}`);
+  });
+  window.on("blur", () => {
+    globalShortcut.unregister("PrintScreen");
   });
 
   window.webContents.setWindowOpenHandler(({ url }) => {
