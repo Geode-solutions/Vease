@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
@@ -31,6 +32,8 @@ const itemToDelete = ref<DataItem | undefined>(undefined);
 const renameDialog = ref(false);
 const itemToRename = ref<DataItem | undefined>(undefined);
 const newItemName = ref("");
+const crsDialog = ref(false);
+const itemForCrs = ref<DataItem | undefined>(undefined);
 
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
@@ -102,6 +105,11 @@ async function confirmRename(newName: string): Promise<void> {
   } catch (error) {
     showFeedback(`Failed to rename: ${error instanceof Error ? error.message : error}`, "error");
   }
+}
+
+function openCrsDialog(item: DataItem): void {
+  itemForCrs.value = item;
+  crsDialog.value = true;
 }
 
 async function isolateItem(item: DataItem): Promise<void> {
@@ -211,6 +219,7 @@ useEventListener(document, "keydown", (event) => {
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
+              @crs="openCrsDialog"
               @delete="confirmDelete"
               @delete-selected="deleteSelectedDialog = true"
             />
@@ -241,6 +250,12 @@ useEventListener(document, "keydown", (event) => {
       :item="itemToRename"
       :initial-name="newItemName"
       @confirm="confirmRename"
+    />
+
+    <CrsDialog
+      v-model:show="crsDialog"
+      :item="itemForCrs"
+      @assigned="showFeedback('CRS assigned')"
     />
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="bottom right">{{

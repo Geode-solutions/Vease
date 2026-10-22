@@ -1,7 +1,7 @@
 // Node imports
 
 // Third party imports
-import type { Locator, Page } from "@playwright/test";
+import { type Locator, type Page, expect } from "@playwright/test";
 
 // Local imports
 import { getMainObjectTree } from "./object_trees/main_object_tree";
@@ -56,6 +56,22 @@ async function confirmRename(window: Page, newName: string): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function openCrsByButton(window: Page, itemName: string): Promise<void> {
+  await getDataTableRow(window, itemName).getByTestId("crsDataButton").click({ force: true });
+  await waitForActionSettled(window);
+}
+
+async function assignCrs(window: Page, crsName: string): Promise<void> {
+  await window.getByTestId("crsSearchInput").locator("input").fill(crsName);
+  await window.locator("tr").filter({ hasText: crsName }).locator("input").first().check();
+  await window.getByTestId("crsAssignButton").click();
+  await waitForActionSettled(window);
+}
+
+async function expectCurrentCrs(window: Page, expected: string): Promise<void> {
+  await expect(window.getByTestId("crsCurrentValue")).toContainText(expected);
+}
+
 async function clickdeleteDataButton(window: Page, itemName: string): Promise<void> {
   await getDataTableRow(window, itemName).getByTestId("deleteDataButton").click({ force: true });
   await waitForActionSettled(window);
@@ -73,14 +89,17 @@ async function expandObjectTree(window: Page): Promise<void> {
 }
 
 export {
+  assignCrs,
   clickdeleteDataButton,
   confirmDelete,
   confirmRename,
   expandDataManagerPiP,
   expandObjectTree,
+  expectCurrentCrs,
   focusRowItem,
   getDataTableRow,
   isolateRowItem,
+  openCrsByButton,
   openDataManagerPiP,
   openRenameByButton,
   openRenameByName,

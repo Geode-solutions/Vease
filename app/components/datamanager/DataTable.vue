@@ -24,6 +24,7 @@ const emit = defineEmits<{
   "focus-camera": [item: DataItem];
   isolate: [item: DataItem];
   rename: [item: DataItem];
+  crs: [item: DataItem];
   delete: [item: DataItem];
   "delete-selected": [];
   "toggle-visibility-selected": [];
@@ -59,7 +60,7 @@ const headers = computed(
         key: "actions",
         sortable: false,
         align: "end",
-        width: compact ? "140px" : "180px",
+        width: compact ? "185px" : "225px",
       },
     ] as const,
 );
@@ -261,6 +262,18 @@ function formatSmartDate(dateStr: string | undefined): string {
           >
             <v-icon size="18">mdi-pencil</v-icon>
             <v-tooltip activator="parent" location="top">Rename</v-tooltip>
+          </v-btn>
+
+          <v-btn
+            icon
+            size="small"
+            variant="text"
+            color="white"
+            data-testid="crsDataButton"
+            @click.stop="emit('crs', item)"
+          >
+            <v-icon size="18">mdi-earth</v-icon>
+            <v-tooltip activator="parent" location="top">Coordinate reference system</v-tooltip>
           </v-btn>
 
           <v-btn

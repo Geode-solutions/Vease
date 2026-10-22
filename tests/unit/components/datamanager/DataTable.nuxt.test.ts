@@ -120,6 +120,22 @@ describe("data table component", () => {
     expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
   });
 
+  test("emits crs event on crs button click", async () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [mockItem1],
+      },
+    });
+
+    const crsButton = wrapper.find('[data-testid="crsDataButton"]');
+    await crsButton.trigger("click");
+
+    const emitted = wrapper.emitted("crs");
+    expect(emitted).toBeDefined();
+    expect(emitted?.length).toBe(EXPECTED_EVENT_COUNT);
+    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
+  });
+
   test("emits delete event on row delete button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
       props: {
