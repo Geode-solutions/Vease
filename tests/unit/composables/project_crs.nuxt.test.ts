@@ -44,6 +44,12 @@ describe("useProjectCrs composable", () => {
     convertCrs.mockReset().mockResolvedValue(undefined);
   });
 
+  test("an empty batch does not read the data", async () => {
+    const allItems = vi.spyOn(useDataStore(), "allItems");
+    await useProjectCrs().harmonizeImportedCrs([]);
+    expect(allItems).not.toHaveBeenCalled();
+  });
+
   test("does nothing without georeferenced data", async () => {
     const { addSuccess, addWarning } = spyFeedback();
     setItems([dataItem("a", "1"), dataItem("b", "2")]);

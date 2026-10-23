@@ -62,6 +62,21 @@ describe("the ImportFile component", () => {
     expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"]);
   });
 
+  test("does not wait for the harmonization to close the stepper", async () => {
+    harmonizeImportedCrs.mockReturnValue(Promise.withResolvers<undefined>().promise);
+    setItemIds([], ["new"]);
+    const wrapper = mountWithPlugins(ImportFile, {
+      props: {
+        filenames: [SAMPLE_FILENAME],
+        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+      },
+    });
+    await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
+    await flushPromises();
+    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"]);
+    expect(wrapper.emitted("reset_values")).toStrictEqual([[]]);
+  });
+
   test("harmonizes the imported items even when another file failed", async () => {
     vi.mocked(importWorkflow).mockRejectedValue(
       new AggregateError([], "1 file(s) could not be imported"),
