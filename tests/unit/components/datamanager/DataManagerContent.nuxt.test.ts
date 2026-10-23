@@ -1,7 +1,6 @@
 import { assertDefined, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import type CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import type { DataItem } from "@vease/types/data_item";
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import type DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
@@ -9,6 +8,7 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { flushPromises } from "@vue/test-utils";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
@@ -61,16 +61,6 @@ vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
     emits: ["update:show", "confirm"],
     template: "<div class='rename-dialog-stub'></div>",
   } as unknown as typeof RenameDialog,
-}));
-
-vi.mock(import("@vease/components/datamanager/CrsDialog.vue"), () => ({
-  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
-  default: {
-    name: "CrsDialog",
-    props: ["show", "item"],
-    emits: ["update:show", "assigned", "converted"],
-    template: "<div class='crs-dialog-stub'></div>",
-  } as unknown as typeof CrsDialog,
 }));
 
 vi.mock(import("@ogw_front/stores/data"), () => ({
@@ -215,6 +205,16 @@ describe("data manager content component", () => {
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { name: "New Name" });
     expect(mockRenameItem).toHaveBeenCalledWith("item-1", "New Name");
+  });
+
+  test("asks for a crs edit from the table", async () => {
+    const wrapper = mountWithPlugins(DataManagerContent);
+
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("crs", mockItem1);
+    await flushPromises();
+
+    expect(useCrsStore().crsEditRequest).toBe(mockItem1.id);
   });
 
   test("opens delete dialog and executes delete", async () => {

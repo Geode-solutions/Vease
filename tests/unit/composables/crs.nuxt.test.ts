@@ -43,7 +43,7 @@ describe("useCrs composable", () => {
     request.mockReset().mockImplementation(async () => {
       calls.push("request");
       await Promise.resolve();
-      return { binary_light_viewable: "light" };
+      return { binary_light_viewable: "light", crs: LAMBERT };
     });
     vi.spyOn(useDataStore(), "updateItem").mockImplementation(async () => {
       calls.push("update");
@@ -71,6 +71,7 @@ describe("useCrs composable", () => {
     expect(calls).toStrictEqual(["request", "update", "reload", "focus"]);
     expect(useDataStore().updateItem).toHaveBeenCalledWith("item-1", {
       binary_light_viewable: "light",
+      crs: LAMBERT,
     });
     expect(focusCameraOnObject).toHaveBeenCalledWith("item-1");
   });

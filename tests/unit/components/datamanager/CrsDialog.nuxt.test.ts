@@ -7,6 +7,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useBackStore } from "@ogw_front/stores/back";
 import type { useCrs } from "@vease/composables/crs";
+import { useDataStore } from "@ogw_front/stores/data";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -46,7 +47,9 @@ const UTM_RESPONSE = {
 
 const RESPONSES: Record<string, unknown> = {
   "opengeodeweb_back/crs/active": { crs_name: "points" },
-  "opengeodeweb_back/crs/assign_geographic": {},
+  "opengeodeweb_back/crs/assign_geographic": {
+    crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" },
+  },
 };
 
 type RequestMock = (
@@ -85,6 +88,7 @@ describe("crs dialog component", () => {
   });
 
   test("shows current crs and assigns the selected one", async () => {
+    vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
     const backStore = useBackStore();
     const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
       const response = RESPONSES[schema.$id];
@@ -241,6 +245,57 @@ describe("crs dialog component", () => {
       ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     await flushPromises();
     expect(document.body.querySelector('[data-testid="crsStartAlignButton"]')).not.toBeNull();
+    wrapper.unmount();
+  });
+
+  test("refreshes the stored crs from the file", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
+      callbacks.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(updateItem).toHaveBeenCalledWith("item-1", { crs: UTM_RESPONSE.crs_info });
+    wrapper.unmount();
+  });
+
+  test("stores the assigned crs", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
+      const response = RESPONSES[schema.$id];
+      callbacks.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsAssignButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(updateItem).toHaveBeenLastCalledWith("item-1", { crs: LAMBERT });
     wrapper.unmount();
   });
 });

@@ -13,6 +13,7 @@ import { useAppStore } from "@ogw_front/stores/app";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
+import CrsDialogHost from "@vease/components/CrsDialogHost.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
@@ -147,6 +148,7 @@ watch(
     <UpdateSnackbar v-if="updaterAvailable" />
 
     <GlobalComponents />
+    <CrsDialogHost />
   </v-app>
 </template>
 <style scoped>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
@@ -8,6 +7,7 @@ import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 import { useUIStore } from "@vease/stores/ui";
@@ -16,6 +16,7 @@ const { compact = false } = defineProps<{ compact?: boolean }>();
 
 const UIStore = useUIStore();
 const dataStore = useDataStore();
+const crsStore = useCrsStore();
 const hybridViewerStore = getHybridViewerStore();
 const treeviewStore = useTreeviewStore();
 const dataStyleStore = getDataStyleStore();
@@ -32,8 +33,6 @@ const itemToDelete = ref<DataItem | undefined>(undefined);
 const renameDialog = ref(false);
 const itemToRename = ref<DataItem | undefined>(undefined);
 const newItemName = ref("");
-const crsDialog = ref(false);
-const itemForCrs = ref<DataItem | undefined>(undefined);
 
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
@@ -105,11 +104,6 @@ async function confirmRename(newName: string): Promise<void> {
   } catch (error) {
     showFeedback(`Failed to rename: ${error instanceof Error ? error.message : error}`, "error");
   }
-}
-
-function openCrsDialog(item: DataItem): void {
-  itemForCrs.value = item;
-  crsDialog.value = true;
 }
 
 async function isolateItem(item: DataItem): Promise<void> {
@@ -219,7 +213,7 @@ useEventListener(document, "keydown", (event) => {
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
-              @crs="openCrsDialog"
+              @crs="crsStore.requestCrsEdit($event.id)"
               @delete="confirmDelete"
               @delete-selected="deleteSelectedDialog = true"
             />
@@ -250,13 +244,6 @@ useEventListener(document, "keydown", (event) => {
       :item="itemToRename"
       :initial-name="newItemName"
       @confirm="confirmRename"
-    />
-
-    <CrsDialog
-      v-model:show="crsDialog"
-      :item="itemForCrs"
-      @assigned="showFeedback('CRS assigned')"
-      @converted="showFeedback('CRS converted')"
     />
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" location="bottom right">{{

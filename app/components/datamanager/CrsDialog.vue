@@ -7,6 +7,7 @@ import type { DataItem } from "@vease/types/data_item";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
+import { useDataStore } from "@ogw_front/stores/data";
 import { useUIStore } from "@vease/stores/ui";
 
 const { show = false, item = undefined } = defineProps<{
@@ -21,6 +22,7 @@ const emit = defineEmits<{
 }>();
 
 const backStore = useBackStore();
+const dataStore = useDataStore();
 const currentCrs = ref("");
 const selectedCrs = ref<CRSList | undefined>(undefined);
 const assigning = ref(false);
@@ -41,21 +43,24 @@ async function fetchCurrentCrs(): Promise<void> {
   if (!item) {
     return;
   }
+  const { id } = item;
   loadingCurrentCrs.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.active,
-        params: { id: item.id },
+        params: { id },
       },
       {
         // Without geographic info, the active CRS is OpenGeode's default local one ("points")
-        response_function: ({ crs_info }) => {
+        response_function: async ({ crs_info }) => {
           isGeographic.value = crs_info !== undefined;
           crsKnown.value = true;
           currentCrs.value = crs_info
             ? `${crs_info.authority}:${crs_info.code} — ${crs_info.name}`
             : "None (local coordinates)";
+          // The file is the reference: refresh the stored CRS shown in the table and tree
+          await dataStore.updateItem(id, { crs: crs_info });
         },
       },
     );
@@ -78,15 +83,17 @@ async function handleAssign(): Promise<void> {
   if (!item || !selectedCrs.value || assigning.value) {
     return;
   }
+  const { id } = item;
   assigning.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
-        params: { id: item.id, ...selectedCrs.value },
+        params: { id, ...selectedCrs.value },
       },
       {
-        response_function: () => {
+        response_function: async ({ crs }) => {
+          await dataStore.updateItem(id, { crs });
           emit("assigned");
           emit("update:show", false);
         },
