@@ -57,4 +57,18 @@ describe("crs dialog host", () => {
     expect(wrapper.get('[data-testid="crsDialogStub"]').attributes("data-show")).toBe("true");
     wrapper.unmount();
   });
+
+  test("an edit request for a deleted data does not open the dialog", async () => {
+    vi.spyOn(useDataStore(), "item").mockRejectedValue(new Error("Item not found: item-1"));
+    const crsStore = useCrsStore();
+    const wrapper = mountWithPlugins(CrsDialogHost);
+
+    crsStore.requestCrsEdit("item-1");
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="crsDialogStub"]').attributes("data-show")).toBe("false");
+    // Cleared, so a later request for the same id is not ignored
+    expect(crsStore.crsEditRequest).toBeUndefined();
+    wrapper.unmount();
+  });
 });

@@ -20,7 +20,13 @@ watch(
     if (id === undefined) {
       return;
     }
-    item.value = await dataStore.item(id);
+    try {
+      item.value = await dataStore.item(id);
+    } catch {
+      // The data was deleted since the edit was offered (e.g. by a snackbar)
+      crsStore.clearCrsEditRequest();
+      return;
+    }
     show.value = true;
   },
 );
