@@ -25,7 +25,7 @@ function useCrs() {
   ): Promise<void> {
     // The local actor is rebuilt from the stored light viewable: store the moved one first
     await dataStore.updateItem(item.id, { binary_light_viewable, crs });
-    await reloadObject(item.id);
+    await reloadObject(item.id, { rebuildActor: true });
     if (focus) {
       await hybridViewerStore.focusCameraOnObject(item.id);
     }

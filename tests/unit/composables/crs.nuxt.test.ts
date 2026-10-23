@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
-import type { reloadObject } from "@ogw_front/utils/import_workflow";
+import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrs } from "@vease/composables/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -74,6 +74,8 @@ describe("useCrs composable", () => {
       crs: LAMBERT,
     });
     expect(focusCameraOnObject).toHaveBeenCalledWith("item-1");
+    // The geometry moved: the local actor must be rebuilt
+    expect(reloadObject).toHaveBeenCalledWith("item-1", { rebuildActor: true });
   });
 
   test("convertCrs without focus does not move the camera", async () => {
