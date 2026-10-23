@@ -61,7 +61,6 @@ async function import_files(): Promise<void> {
     void harmonize(importedIds);
   }
 }
-
 </script>
 
 <template>
