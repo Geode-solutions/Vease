@@ -3,23 +3,30 @@
 // Local imports
 import {
   applyAlignment,
-  assignCrs,
-  convertCrs,
+  confirmAssign,
+  confirmConvert,
   expectCurrentCrs,
   expectDataRows,
+  expectRowCrs,
   fillAlignPoints,
   openCrsByButton,
+  openCrsFromInfoCard,
+  openCrsFromTree,
+  selectAlignmentCrs,
+  selectConvertMode,
+  selectCrs,
   startAlignment,
 } from "@vease_tests/utils/crs";
 import { brepGeodeObjectType, pointSetGeodeObjectType } from "@vease_tests/utils/constants";
-import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
+import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
 const BREP_FILE = "test.og_brep";
 const POINTSET_FILE = "test.og_pts3d";
+const POINTSET_NAME = "test";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const UTM_31N = "WGS 84 / UTM zone 31N";
 const ALIGN_SOURCE = [
@@ -47,45 +54,79 @@ test("navigate to data manager", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("assign crs via button", async ({ window }) => {
+test("open the crs dialog from the table", async ({ window }) => {
   await openCrsByButton(window, pointSetGeodeObjectType);
   await expectCurrentCrs(window, "None (local coordinates)");
-  await assignCrs(window, LAMBERT_93);
+});
+
+test("select a crs to assign", async ({ window }) => {
+  await selectCrs(window, LAMBERT_93);
+});
+
+test("assign the selected crs", async ({ window }) => {
+  await confirmAssign(window);
+  await moveMouseOutOfTheWay(window);
+  await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:2154");
 });
 
 test("current crs is the assigned one", async ({ window }) => {
   await openCrsByButton(window, pointSetGeodeObjectType);
   await expectCurrentCrs(window, "EPSG:2154");
-  await window.keyboard.press("Escape");
+});
+
+test("open the convert mode", async ({ window }) => {
+  await selectConvertMode(window);
+});
+
+test("select a crs to convert to", async ({ window }) => {
+  await selectCrs(window, UTM_31N);
+});
+
+test("convert to the selected crs", async ({ window }) => {
+  await confirmConvert(window);
   await moveMouseOutOfTheWay(window);
+  await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:32631");
 });
 
-test("convert crs via dialog", async ({ window }) => {
-  await openCrsByButton(window, pointSetGeodeObjectType);
-  await convertCrs(window, UTM_31N);
-});
-
-test("current crs is the converted one", async ({ window }) => {
-  await openCrsByButton(window, pointSetGeodeObjectType);
-  await expectCurrentCrs(window, "EPSG:32631");
-  await window.keyboard.press("Escape");
-  await moveMouseOutOfTheWay(window);
-});
-
-test("align crs from three points", async ({ window }) => {
+test("open the alignment drawer", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
+});
+
+test("fill the alignment points and target crs", async ({ window }) => {
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
-  await applyAlignment(window, LAMBERT_93);
+  await selectAlignmentCrs(window, LAMBERT_93);
+});
+
+test("apply the alignment", async ({ window }) => {
+  await applyAlignment(window);
   await moveMouseOutOfTheWay(window);
-  await closeFeedbackSnackbar(window);
 });
 
 test("current crs is the aligned one", async ({ window }) => {
   await navigateToDataManagerPage(window);
-  await openCrsByButton(window, brepGeodeObjectType);
-  await expectCurrentCrs(window, "EPSG:2154");
+  await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("open the crs dialog from the object tree", async ({ window }) => {
+  await navigateToViewerPage(window);
+  await openCrsFromTree(window, pointSetGeodeObjectType, POINTSET_NAME);
+  await expectCurrentCrs(window, "EPSG:32631");
+});
+
+test("close the crs dialog opened from the object tree", async ({ window }) => {
+  await window.keyboard.press("Escape");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("open the crs dialog from the info card", async ({ window }) => {
+  await openCrsFromInfoCard(window, pointSetGeodeObjectType, POINTSET_NAME);
+  await expectCurrentCrs(window, "EPSG:32631");
+});
+
+test("close the crs dialog opened from the info card", async ({ window }) => {
   await window.keyboard.press("Escape");
   await moveMouseOutOfTheWay(window);
 });
