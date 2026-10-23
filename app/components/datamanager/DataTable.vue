@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
 import type { DataItem } from "@vease/types/data_item";
+import { middleTruncate } from "@ogw_front/utils/string";
 
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
 const SECONDS_IN_DAY = 86_400;
 const MILLISECONDS_TO_SECONDS = 1000;
+const CRS_MAX_LENGTH = 28;
+const CRS_START_CHARS = 14;
+const CRS_END_CHARS = 10;
 
 const {
   items,
@@ -24,6 +29,7 @@ const emit = defineEmits<{
   "focus-camera": [item: DataItem];
   isolate: [item: DataItem];
   rename: [item: DataItem];
+  crs: [item: DataItem];
   delete: [item: DataItem];
   "delete-selected": [];
   "toggle-visibility-selected": [];
@@ -41,12 +47,24 @@ const headers = computed(
         width: compact ? "90px" : "110px",
       },
       {
-        title: "Date",
-        key: "created_at",
-        sortable: true,
+        title: "CRS",
+        key: "crs",
+        sortable: false,
         align: "center",
-        width: compact ? "120px" : "160px",
+        width: compact ? "100px" : "200px",
       },
+      // The picture-in-picture view is narrow: the CRS column takes the date's room
+      ...(compact
+        ? []
+        : [
+            {
+              title: "Date",
+              key: "created_at",
+              sortable: true,
+              align: "center",
+              width: "160px",
+            } as const,
+          ]),
       {
         title: "Visibility",
         key: "visible",
@@ -190,6 +208,24 @@ function formatSmartDate(dateStr: string | undefined): string {
             {{ item.name }}
           </span>
         </div>
+      </template>
+
+      <template #[`item.crs`]="{ item }">
+        <v-btn
+          variant="text"
+          size="small"
+          class="text-none text-caption font-weight-regular px-1"
+          data-testid="crsCell"
+          @click.stop="emit('crs', item)"
+        >
+          <!-- The picture-in-picture view is narrow: the code alone, the full name is in the tooltip -->
+          {{
+            compact
+              ? formatCrsCode(item.crs)
+              : middleTruncate(formatCrs(item.crs), CRS_MAX_LENGTH, CRS_START_CHARS, CRS_END_CHARS)
+          }}
+          <v-tooltip activator="parent" location="top">{{ formatCrs(item.crs) }}</v-tooltip>
+        </v-btn>
       </template>
 
       <template #[`item.geode_object_type`]="{ item }">

@@ -1,3 +1,4 @@
+import type { DataItem } from "@vease/types/data_item";
 import { consola } from "consola";
 import { useExtensionsStore } from "@vease/stores/extensions";
 
@@ -26,6 +27,8 @@ const useUIStore = defineStore("UI", () => {
   const showButton = ref(false);
   const showStepImportMenu = ref(false);
   const showCreateTools = ref(false);
+  const showCrsAlign = ref(false);
+  const crsAlignItem = ref<DataItem | undefined>(undefined);
   const toolsDefinitions = ref<ToolDefinition[]>([]);
   const showCreateVOI = ref(false);
   const showCreateAOI = ref(false);
@@ -35,7 +38,7 @@ const useUIStore = defineStore("UI", () => {
   const dataManagerTabs = ref<DataManagerTab[]>([]);
 
   const anyOverlayOpen = computed(
-    () => showStepper.value || showCreateTools.value || showExtensions.value,
+    () => showStepper.value || showCreateTools.value || showExtensions.value || showCrsAlign.value,
   );
 
   function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
@@ -121,6 +124,15 @@ const useUIStore = defineStore("UI", () => {
     showCreateTools.value = value;
   }
 
+  function setShowCrsAlign(value: boolean): void {
+    showCrsAlign.value = value;
+  }
+
+  function openCrsAlign(item: DataItem): void {
+    crsAlignItem.value = item;
+    showCrsAlign.value = true;
+  }
+
   function setShowExtensions(value: boolean): void {
     showExtensions.value = value;
   }
@@ -155,6 +167,8 @@ const useUIStore = defineStore("UI", () => {
     showButton,
     showStepImportMenu,
     showCreateTools,
+    showCrsAlign,
+    crsAlignItem,
     showExtensions,
     showDataManagerPiP,
     showChatPiP,
@@ -167,6 +181,8 @@ const useUIStore = defineStore("UI", () => {
     setShowButton,
     toggleDrawer,
     setShowCreateTools,
+    setShowCrsAlign,
+    openCrsAlign,
     setShowExtensions,
     setShowDataManagerPiP,
     setShowChatPiP,

@@ -13,6 +13,7 @@ import { useAppStore } from "@ogw_front/stores/app";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
+import CrsDialogHost from "@vease/components/CrsDialogHost.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
@@ -54,19 +55,32 @@ function handleFoldersDropped(): void {
 }
 
 watch(
-  () => [UIStore.showStepper, UIStore.showCreateTools, UIStore.showExtensions],
-  ([stepper, tools, extensions], [oldStepper, oldTools, oldExtensions]) => {
+  () => [
+    UIStore.showStepper,
+    UIStore.showCreateTools,
+    UIStore.showExtensions,
+    UIStore.showCrsAlign,
+  ],
+  ([stepper, tools, extensions, crsAlign], [oldStepper, oldTools, oldExtensions, oldCrsAlign]) => {
     if (stepper && !oldStepper) {
       UIStore.setShowCreateTools(false);
       UIStore.setShowExtensions(false);
+      UIStore.setShowCrsAlign(false);
     }
     if (tools && !oldTools) {
       UIStore.setShowStepper(false);
       UIStore.setShowExtensions(false);
+      UIStore.setShowCrsAlign(false);
     }
     if (extensions && !oldExtensions) {
       UIStore.setShowStepper(false);
       UIStore.setShowCreateTools(false);
+      UIStore.setShowCrsAlign(false);
+    }
+    if (crsAlign && !oldCrsAlign) {
+      UIStore.setShowStepper(false);
+      UIStore.setShowCreateTools(false);
+      UIStore.setShowExtensions(false);
     }
   },
 );
@@ -91,7 +105,11 @@ watch(
   <v-app
     :class="{
       'splash-screen-active': !infraStore.microservices_connected,
-      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions,
+      'drawer-active':
+        UIStore.showStepper ||
+        UIStore.showCreateTools ||
+        UIStore.showExtensions ||
+        UIStore.showCrsAlign,
     }"
   >
     <MainNavigation />
@@ -130,6 +148,7 @@ watch(
     <UpdateSnackbar v-if="updaterAvailable" />
 
     <GlobalComponents />
+    <CrsDialogHost />
   </v-app>
 </template>
 <style scoped>
