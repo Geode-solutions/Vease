@@ -92,7 +92,10 @@ async function apply(): Promise<void> {
           />
         </v-col>
       </v-row>
-      <PickButton class="mt-2" :active="pickingActive" @click="togglePickMode" />
+      <!-- PickButton's root is a tooltip: spacing classes must sit on a wrapper -->
+      <div class="mt-3">
+        <PickButton :active="pickingActive" @click="togglePickMode" />
+      </div>
 
       <div class="text-caption font-weight-bold text-uppercase opacity-60 mt-4 mb-1">
         Target points
@@ -126,6 +129,7 @@ async function apply(): Promise<void> {
         v-if="UIStore.crsAlignItem"
         :key="UIStore.crsAlignItem.id"
         v-model="targetCrs"
+        compact
         :geode-object-type="UIStore.crsAlignItem.geode_object_type"
       />
     </v-card-text>
