@@ -5,6 +5,7 @@ import back_schemas, {
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import type { DataItem } from "@vease/types/data_item";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import { formatCrs } from "@ogw_front/utils/crs";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -59,8 +60,11 @@ async function fetchCurrentCrs(): Promise<void> {
           currentCrs.value = crs_info
             ? `${crs_info.authority}:${crs_info.code} — ${crs_info.name}`
             : "None (local coordinates)";
-          // The file is the reference: refresh the stored CRS shown in the table and tree
-          await dataStore.updateItem(id, { crs: crs_info });
+          // The file is the reference: refresh the stored CRS shown in the table and tree,
+          // Only when it differs, as each write refreshes every live view of the data
+          if (formatCrs(item.crs) !== formatCrs(crs_info)) {
+            await dataStore.updateItem(id, { crs: crs_info });
+          }
         },
       },
     );

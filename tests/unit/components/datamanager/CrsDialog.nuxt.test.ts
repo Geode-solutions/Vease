@@ -269,6 +269,27 @@ describe("crs dialog component", () => {
     wrapper.unmount();
   });
 
+  test("does not rewrite a stored crs that did not change", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
+      callbacks.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: { ...mockItem, crs: UTM_RESPONSE.crs_info } },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(updateItem).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
   test("stores the assigned crs", async () => {
     const backStore = useBackStore();
     const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
