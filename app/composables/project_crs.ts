@@ -57,8 +57,7 @@ function useProjectCrs() {
     const items = byCreation(await dataStore.allItems());
     const imported = items.filter((item) => ids.includes(item.id));
     const existing = items.filter((item) => !ids.includes(item.id));
-    const reference = (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))
-      ?.crs;
+    const reference = (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs;
     if (reference === undefined) {
       return;
     }

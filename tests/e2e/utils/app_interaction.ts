@@ -14,7 +14,7 @@ async function closeAllMenus(window: Page): Promise<void> {
 async function closeFeedbackSnackbar(window: Page): Promise<void> {
   const snackbar = window.getByTestId("feedbackSnackbar");
   if (await snackbar.isVisible()) {
-    await snackbar.getByRole("button").click();
+    await snackbar.getByTestId("feedbackCloseBtn").click();
     await expect(snackbar).not.toBeVisible();
   }
 }

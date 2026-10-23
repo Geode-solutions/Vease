@@ -64,6 +64,13 @@ async function openCrsFromInfoCard(
   await waitForActionSettled(window);
 }
 
+async function openCrsFromFeedback(window: Page, text: string): Promise<void> {
+  const snackbar = window.getByTestId("feedbackSnackbar").filter({ hasText: text });
+  await expect(snackbar).toBeVisible();
+  await snackbar.getByTestId("feedbackActionBtn").click();
+  await waitForActionSettled(window);
+}
+
 // Selecting is its own step so the dialog state is captured before the action
 async function selectCrs(window: Page, crsName: string): Promise<void> {
   await window.getByTestId("crsSearchInput").locator("input").fill(crsName);
@@ -136,6 +143,7 @@ export {
   expectRowCrs,
   fillAlignPoints,
   openCrsByButton,
+  openCrsFromFeedback,
   openCrsFromInfoCard,
   openCrsFromTree,
   selectAlignmentCrs,
