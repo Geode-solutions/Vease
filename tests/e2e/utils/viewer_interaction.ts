@@ -154,32 +154,6 @@ async function dragContextMenu(
   await dragElement(window, centerButton, { targetX, targetY });
 }
 
-async function setFeatureTextures(
-  window: Page,
-  viewerObjectType: string,
-  feature: string,
-): Promise<void> {
-  const menuTestId = `${viewerObjectType}${feature}Menu`;
-  await ensureMenuOpen(window, menuTestId);
-  await ensureFeatureVisible(window, menuTestId);
-  const container = window.getByTestId(menuTestId);
-  const selector = container.getByTestId("coloringStyleSelector").first();
-  await selector.click();
-  await waitForActionSettled(window);
-
-  const listItem = window
-    .locator(".v-overlay-container")
-    .locator(".v-list-item")
-    .filter({ hasText: "Textures", visible: true })
-    .first();
-  await listItem.click();
-  await waitForActionSettled(window);
-}
-
-async function setPolygonsTextures(window: Page, viewerObjectType: string): Promise<void> {
-  await setFeatureTextures(window, viewerObjectType, "Polygons");
-}
-
 async function hoverViewer(window: Page, position?: { x: number; y: number }): Promise<void> {
   const hybridViewerCanvas = getHybridViewerCanvas(window);
   const box = await hybridViewerCanvas.boundingBox();
@@ -379,7 +353,6 @@ export {
   setEdgesWidth,
   setPointsSize,
   setPointsVisibility,
-  setPolygonsTextures,
   setPolygonsVisibility,
   setPolyhedraVisibility,
   setVisibilityGeneric,
