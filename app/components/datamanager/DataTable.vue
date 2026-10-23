@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
 import type { DataItem } from "@vease/types/data_item";
+import { middleTruncate } from "@ogw_front/utils/string";
 
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
 const SECONDS_IN_DAY = 86_400;
 const MILLISECONDS_TO_SECONDS = 1000;
+const CRS_MAX_LENGTH = 28;
+const CRS_START_CHARS = 14;
+const CRS_END_CHARS = 10;
 
 const {
   items,
@@ -42,12 +47,24 @@ const headers = computed(
         width: compact ? "90px" : "110px",
       },
       {
-        title: "Date",
-        key: "created_at",
-        sortable: true,
+        title: "CRS",
+        key: "crs",
+        sortable: false,
         align: "center",
-        width: compact ? "120px" : "160px",
+        width: compact ? "100px" : "200px",
       },
+      // The picture-in-picture view is narrow: the CRS column takes the date's room
+      ...(compact
+        ? []
+        : [
+            {
+              title: "Date",
+              key: "created_at",
+              sortable: true,
+              align: "center",
+              width: "160px",
+            } as const,
+          ]),
       {
         title: "Visibility",
         key: "visible",
@@ -60,7 +77,7 @@ const headers = computed(
         key: "actions",
         sortable: false,
         align: "end",
-        width: compact ? "140px" : "225px",
+        width: compact ? "140px" : "180px",
       },
     ] as const,
 );
@@ -193,6 +210,22 @@ function formatSmartDate(dateStr: string | undefined): string {
         </div>
       </template>
 
+      <template #[`item.crs`]="{ item }">
+        <span
+          class="cursor-pointer text-caption"
+          data-testid="crsCell"
+          @click.stop="emit('crs', item)"
+        >
+          <!-- The picture-in-picture view is narrow: the code alone, the full name is in the tooltip -->
+          {{
+            compact
+              ? formatCrsCode(item.crs)
+              : middleTruncate(formatCrs(item.crs), CRS_MAX_LENGTH, CRS_START_CHARS, CRS_END_CHARS)
+          }}
+          <v-tooltip activator="parent" location="top">{{ formatCrs(item.crs) }}</v-tooltip>
+        </span>
+      </template>
+
       <template #[`item.geode_object_type`]="{ item }">
         <v-chip
           size="x-small"
@@ -262,20 +295,6 @@ function formatSmartDate(dateStr: string | undefined): string {
           >
             <v-icon size="18">mdi-pencil</v-icon>
             <v-tooltip activator="parent" location="top">Rename</v-tooltip>
-          </v-btn>
-
-          <!-- Hidden in the narrow picture-in-picture view: a 5th button would clip the others -->
-          <v-btn
-            v-if="!compact"
-            icon
-            size="small"
-            variant="text"
-            color="white"
-            data-testid="crsDataButton"
-            @click.stop="emit('crs', item)"
-          >
-            <v-icon size="18">mdi-earth</v-icon>
-            <v-tooltip activator="parent" location="top">Coordinate reference system</v-tooltip>
           </v-btn>
 
           <v-btn
