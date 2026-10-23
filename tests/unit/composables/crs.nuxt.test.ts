@@ -76,6 +76,13 @@ describe("useCrs composable", () => {
     expect(focusCameraOnObject).toHaveBeenCalledWith("item-1");
   });
 
+  test("convertCrs without focus does not move the camera", async () => {
+    await useCrs().convertCrs(item, LAMBERT, { focus: false });
+
+    expect(calls).toStrictEqual(["request", "update", "reload"]);
+    expect(focusCameraOnObject).not.toHaveBeenCalled();
+  });
+
   test("alignCrs sends source and target points", async () => {
     const source = [
       { x: 0, y: 0 },

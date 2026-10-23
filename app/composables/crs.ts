@@ -19,21 +19,28 @@ function useCrs() {
   const dataStore = useDataStore();
 
   async function refresh(
-    item: DataItem,
+    item: Pick<DataItem, "id">,
     { binary_light_viewable, crs }: { binary_light_viewable?: string; crs?: CRSList },
+    focus = true,
   ): Promise<void> {
     // The local actor is rebuilt from the stored light viewable: store the moved one first
     await dataStore.updateItem(item.id, { binary_light_viewable, crs });
     await reloadObject(item.id);
-    await hybridViewerStore.focusCameraOnObject(item.id);
+    if (focus) {
+      await hybridViewerStore.focusCameraOnObject(item.id);
+    }
   }
 
-  async function convertCrs(item: DataItem, crs: CRSList): Promise<void> {
+  async function convertCrs(
+    item: Pick<DataItem, "id">,
+    crs: CRSList,
+    { focus = true }: { focus?: boolean } = {},
+  ): Promise<void> {
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.convert_geographic,
       params: { id: item.id, ...crs },
     });
-    await refresh(item, response);
+    await refresh(item, response, focus);
   }
 
   async function alignCrs(
