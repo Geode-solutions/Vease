@@ -129,6 +129,8 @@ describe("data table component", () => {
     });
 
     const crsCell = wrapper.find('[data-testid="crsCell"]');
+    // A real button: reachable with the keyboard
+    expect(crsCell.element.tagName).toBe("BUTTON");
     await crsCell.trigger("click");
 
     const emitted = wrapper.emitted("crs");

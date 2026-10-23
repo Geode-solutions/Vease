@@ -211,8 +211,10 @@ function formatSmartDate(dateStr: string | undefined): string {
       </template>
 
       <template #[`item.crs`]="{ item }">
-        <span
-          class="cursor-pointer text-caption"
+        <v-btn
+          variant="text"
+          size="small"
+          class="text-none text-caption font-weight-regular px-1"
           data-testid="crsCell"
           @click.stop="emit('crs', item)"
         >
@@ -223,7 +225,7 @@ function formatSmartDate(dateStr: string | undefined): string {
               : middleTruncate(formatCrs(item.crs), CRS_MAX_LENGTH, CRS_START_CHARS, CRS_END_CHARS)
           }}
           <v-tooltip activator="parent" location="top">{{ formatCrs(item.crs) }}</v-tooltip>
-        </span>
+        </v-btn>
       </template>
 
       <template #[`item.geode_object_type`]="{ item }">
