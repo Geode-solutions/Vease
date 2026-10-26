@@ -1,4 +1,8 @@
-import { applyAttribute, setFeatureNoDataColor } from "@vease_tests/utils/data/helpers/attribute";
+import {
+  applyAttribute,
+  setFeatureNoDataColor,
+  setFeatureTimeStep,
+} from "@vease_tests/utils/data/helpers/attribute";
 import {
   cellAttributeType,
   edgeAttributeType,
@@ -153,6 +157,11 @@ async function setModelCellsCellAttribute(
   });
 }
 
+async function setModelTimeStep(window: Page, timeStep: number): Promise<void> {
+  await showModelStyleOptions(window);
+  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), timeStep);
+}
+
 export {
   setModelCellsCellAttribute,
   setModelCellsVertexAttribute,
@@ -167,4 +176,5 @@ export {
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
+  setModelTimeStep,
 };

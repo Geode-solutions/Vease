@@ -27,6 +27,7 @@ import {
   setMeshPolygonsVertexAttribute,
   setModelEdgesEdgeAttribute,
   setModelPolygonsPolygonAttribute,
+  setModelTimeStep,
 } from "@vease_tests/utils/data";
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
@@ -98,7 +99,7 @@ test("model surfaces polygon time series", async ({ window }) => {
 });
 
 test("model surfaces last time step", async ({ window }) => {
-  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), surfacesLastTimeStep);
+  await setModelTimeStep(window, surfacesLastTimeStep);
 });
 
 test("model lines edge time series starts at first time step", async ({ window }) => {
@@ -108,7 +109,7 @@ test("model lines edge time series starts at first time step", async ({ window }
 });
 
 test("model lines time step", async ({ window }) => {
-  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), linesTimeStep);
+  await setModelTimeStep(window, linesTimeStep);
 });
 
 test("model surfaces keep their time step", async ({ window }) => {
@@ -126,7 +127,7 @@ test("model threshold surfaces time series", async ({ window }) => {
 
 test("model threshold follows the time step", async ({ window }) => {
   await openModelComponentTypeContextMenu(window, "Surfaces");
-  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), surfacesFirstTimeStep);
+  await setModelTimeStep(window, surfacesFirstTimeStep);
 });
 
 test("model threshold remove", async ({ window }) => {

@@ -25,9 +25,8 @@ import {
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { setModelPolyhedraPolyhedronAttribute, setModelTimeStep } from "@vease_tests/utils/data";
 import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
-import { setFeatureTimeStep } from "@vease_tests/utils/data/helpers/attribute";
-import { setModelPolyhedraPolyhedronAttribute } from "@vease_tests/utils/data";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
@@ -90,5 +89,5 @@ test("blocks pressure time series", async ({ window }) => {
 });
 
 test("blocks pressure last time step", async ({ window }) => {
-  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), lastTimeStep);
+  await setModelTimeStep(window, lastTimeStep);
 });
