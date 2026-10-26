@@ -31,6 +31,18 @@ describe("useCrsAlign composable", () => {
     expect(result.sourcePoints.value[1]).toStrictEqual({ x: "", y: "" });
   });
 
+  test("a picked source point is sent as picked until edited by hand", async () => {
+    const { result } = mountTool(() => useCrsAlign());
+    result.togglePickMode();
+
+    useViewerStore().picked_point = { x: 1, y: 2, z: 3 };
+    await flushPromises();
+    expect(result.toSourceCrsPoints()[0]).toStrictEqual({ x: 1, y: 2, picked: true });
+
+    result.editSourcePoint(0, "x", "5");
+    expect(result.toSourceCrsPoints()[0]).toStrictEqual({ x: 5, y: 2, picked: false });
+  });
+
   test("is complete only once 6 points are filled", () => {
     const { result } = mountTool(() => useCrsAlign());
     result.sourcePoints.value = [

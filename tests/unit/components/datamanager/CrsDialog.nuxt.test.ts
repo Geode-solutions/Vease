@@ -8,6 +8,7 @@ import { flushPromises } from "@vue/test-utils";
 import { useBackStore } from "@ogw_front/stores/back";
 import type { useCrs } from "@vease/composables/crs";
 import { useDataStore } from "@ogw_front/stores/data";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -81,6 +82,44 @@ const mockItem: DataItem = {
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
 };
+
+// Assigns LAMBERT, answered with the given plausibility, and returns the warnings shown
+async function assignAnswered(
+  implausible: boolean,
+): Promise<ReturnType<typeof useFeedbackStore>["feedbacks"]> {
+  vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+  const backStore = useBackStore();
+  const responses: Record<string, unknown> = {
+    ...RESPONSES,
+    "opengeodeweb_back/crs/assign_geographic": { crs: LAMBERT, implausible },
+  };
+  const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
+    const response = responses[schema.$id];
+    callbacks.response_function?.(response);
+    await Promise.resolve();
+    return response;
+  });
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+  backStore.request = request as unknown as typeof backStore.request;
+
+  const wrapper = mountWithPlugins(CrsDialog, {
+    props: { show: true, item: mockItem },
+    attachTo: document.body,
+  });
+  await flushPromises();
+  document.body
+    .querySelector('[data-testid="crsSelectorStub"]')
+    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushPromises();
+  document.body
+    .querySelector('[data-testid="crsAssignButton"]')
+    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushPromises();
+  // The CRS is assigned anyway: the success feedback still follows
+  expect(wrapper.emitted("assigned")?.length).toBe(EXPECTED_EVENT_COUNT);
+  wrapper.unmount();
+  return useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
+}
 
 describe("crs dialog component", () => {
   beforeEach(() => {
@@ -203,7 +242,6 @@ describe("crs dialog component", () => {
     });
     await flushPromises();
 
-    expect(document.body.querySelector('[data-testid="crsModeAlign"]')).toBeNull();
     document.body
       .querySelector('[data-testid="crsModeConvert"]')
       ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -246,6 +284,44 @@ describe("crs dialog component", () => {
     await flushPromises();
     expect(document.body.querySelector('[data-testid="crsStartAlignButton"]')).not.toBeNull();
     wrapper.unmount();
+  });
+
+  test("offers re-alignment for georeferenced data", async () => {
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
+      callbacks.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsModeAlign"]')?.textContent).toContain(
+      "Re-align",
+    );
+    wrapper.unmount();
+  });
+
+  test("offers to align when the assigned crs does not match the coordinates", async () => {
+    const warnings = await assignAnswered(true);
+
+    expect(warnings).toHaveLength(EXPECTED_EVENT_COUNT);
+    expect(warnings[FIRST_EVENT_INDEX]?.description).toBe(
+      "These coordinates do not match EPSG:2154. Align the data?",
+    );
+    expect(warnings[FIRST_EVENT_INDEX]?.action?.label).toBe("Align");
+  });
+
+  test("does not warn when the assigned crs matches the coordinates", async () => {
+    const warnings = await assignAnswered(false);
+
+    expect(warnings).toStrictEqual([]);
   });
 
   test("refreshes the stored crs from the file", async () => {

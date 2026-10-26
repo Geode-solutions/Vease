@@ -15,6 +15,10 @@ function emptyPoints(): EditablePoint[] {
   return Array.from({ length: NB_POINTS }, () => ({ x: "", y: "" }));
 }
 
+function notPicked(): boolean[] {
+  return Array.from({ length: NB_POINTS }, () => false);
+}
+
 function toNumber(value: number | string | undefined): number {
   return Number(String(value).replaceAll(",", "."));
 }
@@ -28,7 +32,7 @@ function isFilled(point: EditablePoint): boolean {
   return isCoordinate(point.x) && isCoordinate(point.y);
 }
 
-// Source points are picked on the data (only x and y are used), target points are typed
+// Source points are picked on the data (only x and y are used) or typed, target points are typed
 // oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function
 function useCrsAlign() {
   const viewerStore = useViewerStore();
@@ -37,6 +41,8 @@ function useCrsAlign() {
   const pickingActive = ref(false);
   // Picked z only places the preview markers on the data
   const pickedZ = ref<number[]>([]);
+  // Picked points lie on the displayed data, typed ones are original coordinates
+  const pickedSources = ref<boolean[]>(notPicked());
 
   const isComplete = computed(
     () => sourcePoints.value.every(isFilled) && targetPoints.value.every(isFilled),
@@ -44,6 +50,23 @@ function useCrsAlign() {
 
   function toCrsPoints(points: EditablePoint[]): CrsPoint[] {
     return points.map((point) => ({ x: toNumber(point.x), y: toNumber(point.y) }));
+  }
+
+  function toSourceCrsPoints(): CrsPoint[] {
+    return sourcePoints.value.map((point, index) => ({
+      x: toNumber(point.x),
+      y: toNumber(point.y),
+      picked: pickedSources.value[index] ?? false,
+    }));
+  }
+
+  function editSourcePoint(index: number, coord: keyof EditablePoint, value: number | string): void {
+    const point = sourcePoints.value[index];
+    if (!point) {
+      return;
+    }
+    point[coord] = value;
+    pickedSources.value[index] = false;
   }
 
   function togglePickMode(): void {
@@ -71,6 +94,7 @@ function useCrsAlign() {
     sourcePoints.value = emptyPoints();
     targetPoints.value = emptyPoints();
     pickedZ.value = [];
+    pickedSources.value = notPicked();
   }
 
   watch(
@@ -85,6 +109,7 @@ function useCrsAlign() {
       }
       sourcePoints.value[firstEmpty] = { x: toNumber(newVal.x), y: toNumber(newVal.y) };
       pickedZ.value[firstEmpty] = toNumber(newVal.z);
+      pickedSources.value[firstEmpty] = true;
     },
     { deep: true },
   );
@@ -118,6 +143,8 @@ function useCrsAlign() {
     reset,
     isComplete,
     toCrsPoints,
+    toSourceCrsPoints,
+    editSourcePoint,
   };
 }
 

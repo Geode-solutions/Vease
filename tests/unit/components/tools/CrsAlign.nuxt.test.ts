@@ -105,7 +105,9 @@ describe("crs align tool", () => {
     await apply.trigger("click");
     await flushPromises();
 
-    expect(alignCrs).toHaveBeenCalledWith(item, SOURCE, TARGET, LAMBERT);
+    // Typed source points are original coordinates, not picked on the displayed data
+    const typedSource = SOURCE.map(({ x, y }) => ({ x, y, picked: false }));
+    expect(alignCrs).toHaveBeenCalledWith(item, typedSource, TARGET, LAMBERT);
     expect(useUIStore().showCrsAlign).toBe(false);
     wrapper.unmount();
   });

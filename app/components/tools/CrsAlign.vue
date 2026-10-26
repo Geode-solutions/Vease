@@ -18,6 +18,8 @@ const {
   reset,
   isComplete,
   toCrsPoints,
+  toSourceCrsPoints,
+  editSourcePoint,
 } = useCrsAlign();
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
@@ -44,7 +46,7 @@ async function apply(): Promise<void> {
   try {
     await alignCrs(
       item,
-      toCrsPoints(sourcePoints.value),
+      toSourceCrsPoints(),
       toCrsPoints(targetPoints.value),
       targetCrs.value,
     );
@@ -77,9 +79,10 @@ async function apply(): Promise<void> {
         dense
         :data-testid="'crsAlignSource-' + index"
       >
-        <v-col v-for="coord in ['x', 'y']" :key="coord" cols="6">
+        <v-col v-for="coord in ['x', 'y'] as const" :key="coord" cols="6">
           <v-text-field
-            v-model="point[coord]"
+            :model-value="point[coord]"
+            @update:model-value="(value) => editSourcePoint(index, coord, value)"
             inputmode="decimal"
             variant="outlined"
             color="white"

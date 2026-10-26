@@ -87,9 +87,9 @@ describe("useCrs composable", () => {
 
   test("alignCrs sends source and target points", async () => {
     const source = [
-      { x: 0, y: 0 },
-      { x: 10, y: 0 },
-      { x: 0, y: 10 },
+      { x: 0, y: 0, picked: true },
+      { x: 10, y: 0, picked: false },
+      { x: 0, y: 10, picked: false },
     ];
     const target = [
       { x: 1000, y: 2000 },

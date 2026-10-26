@@ -9,6 +9,8 @@ import { useDataStore } from "@ogw_front/stores/data";
 interface CrsPoint {
   x: number;
   y: number;
+  // Source points only: picked on the displayed data rather than typed
+  picked?: boolean;
 }
 
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it

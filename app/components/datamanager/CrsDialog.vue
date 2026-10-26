@@ -2,13 +2,14 @@
 import back_schemas, {
   type CRSList,
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import type { DataItem } from "@vease/types/data_item";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
-import { formatCrs } from "@ogw_front/utils/crs";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useDataStore } from "@ogw_front/stores/data";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
 const { show = false, item = undefined } = defineProps<{
@@ -24,6 +25,7 @@ const emit = defineEmits<{
 
 const backStore = useBackStore();
 const dataStore = useDataStore();
+const feedbackStore = useFeedbackStore();
 const currentCrs = ref("");
 const selectedCrs = ref<CRSList | undefined>(undefined);
 const assigning = ref(false);
@@ -83,11 +85,19 @@ watch(
   { immediate: true },
 );
 
+// Picking only works in the viewer: the alignment continues in its drawer
+async function openAlignment(target: DataItem): Promise<void> {
+  await navigateTo("/");
+  UIStore.openCrsAlign(target);
+}
+
 async function handleAssign(): Promise<void> {
   if (!item || !selectedCrs.value || assigning.value) {
     return;
   }
-  const { id } = item;
+  // The warning action may run once the dialog shows another item
+  const assignedItem = item;
+  const { id } = assignedItem;
   assigning.value = true;
   try {
     await backStore.request(
@@ -96,10 +106,22 @@ async function handleAssign(): Promise<void> {
         params: { id, ...selectedCrs.value },
       },
       {
-        response_function: async ({ crs }) => {
+        response_function: async ({ crs, implausible }) => {
           await dataStore.updateItem(id, { crs });
           emit("assigned");
           emit("update:show", false);
+          // The label is kept: local coordinates usually need an alignment instead
+          if (implausible) {
+            feedbackStore.add_warning(
+              `These coordinates do not match ${formatCrsCode(crs)}. Align the data?`,
+              {
+                label: "Align",
+                onClick: () => {
+                  void openAlignment(assignedItem);
+                },
+              },
+            );
+          }
         },
       },
     );
@@ -122,14 +144,12 @@ async function handleConvert(): Promise<void> {
   }
 }
 
-// Picking only works in the viewer: the alignment continues in its drawer
 async function startAlignment(): Promise<void> {
   if (!item) {
     return;
   }
   emit("update:show", false);
-  await navigateTo("/");
-  UIStore.openCrsAlign(item);
+  await openAlignment(item);
 }
 </script>
 
@@ -170,8 +190,9 @@ async function startAlignment(): Promise<void> {
           >
             Convert
           </v-btn>
-          <v-btn v-else-if="crsKnown" value="align" data-testid="crsModeAlign" class="text-none">
-            Align (3 points)
+          <!-- Re-aligning restarts from the original coordinates -->
+          <v-btn v-if="crsKnown" value="align" data-testid="crsModeAlign" class="text-none">
+            {{ isGeographic ? "Re-align" : "Align (3 points)" }}
           </v-btn>
         </v-btn-toggle>
       </div>
