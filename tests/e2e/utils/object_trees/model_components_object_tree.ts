@@ -16,8 +16,8 @@ function getModelComponentsObjectTree(window: Page): Locator {
   return window.getByTestId("modelComponentsObjectTree");
 }
 
-function getModelComponentTypeOptions(window: Page): Locator {
-  return window.getByTestId("modelComponentTypeOptions");
+function getModelComponentTypeTab(window: Page): Locator {
+  return window.getByTestId("modelTab_type");
 }
 
 async function collapseModelComponentsObjectTree(window: Page): Promise<void> {
@@ -204,7 +204,7 @@ export {
   collapseModelComponentTypes,
   expandMeshComponentType,
   expandModelComponentsObjectTree,
-  getModelComponentTypeOptions,
+  getModelComponentTypeTab,
   getModelComponentsObjectTree,
   hideAllComponentLeafRows,
   hoverCorners,
