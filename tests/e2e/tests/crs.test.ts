@@ -16,9 +16,14 @@ import {
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,
+  selectLinkedData,
   startAlignment,
 } from "@vease_tests/utils/crs";
-import { brepGeodeObjectType, pointSetGeodeObjectType } from "@vease_tests/utils/constants";
+import {
+  brepGeodeObjectType,
+  edgedCurveGeodeObjectType,
+  pointSetGeodeObjectType,
+} from "@vease_tests/utils/constants";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
@@ -27,6 +32,9 @@ import { test } from "@vease_tests/utils/fixtures";
 // Constants
 const BREP_FILE = "test.og_brep";
 const POINTSET_FILE = "test.og_pts3d";
+// Wells-like data sharing the local frame of the model: aligned with it
+const CURVE_FILE = "test.og_edc3d";
+const CURVE_NAME = "test";
 const POINTSET_NAME = "test";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const UTM_31N = "WGS 84 / UTM zone 31N";
@@ -89,6 +97,12 @@ test("convert to the selected crs", async ({ window }) => {
   await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:32631");
 });
 
+test("load a curve sharing the model frame", async ({ window }) => {
+  await loadVeaseTestDatas(window, [CURVE_FILE]);
+  await navigateToDataManagerPage(window);
+  await moveMouseOutOfTheWay(window);
+});
+
 test("open the alignment drawer", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
@@ -96,6 +110,7 @@ test("open the alignment drawer", async ({ window }) => {
 
 test("fill the affine alignment points and target crs", async ({ window }) => {
   await selectAlignMode(window, "affine");
+  await selectLinkedData(window, CURVE_NAME);
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
   await selectAlignmentCrs(window, LAMBERT_93);
@@ -109,6 +124,8 @@ test("apply the alignment", async ({ window }) => {
 test("current crs is the aligned one", async ({ window }) => {
   await navigateToDataManagerPage(window);
   await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
+  // Aligned in the same request as the model
+  await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:2154");
   await moveMouseOutOfTheWay(window);
 });
 

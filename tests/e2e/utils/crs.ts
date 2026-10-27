@@ -133,6 +133,14 @@ async function selectAlignmentCrs(window: Page, crsName: string): Promise<void> 
   await waitForActionSettled(window);
 }
 
+async function selectLinkedData(window: Page, dataName: string): Promise<void> {
+  await window.getByTestId("crsAlignLinked").click();
+  await window.getByRole("option", { name: dataName }).click();
+  // The menu stays open for more choices: leaving the field closes it (Escape would close the drawer)
+  await window.keyboard.press("Tab");
+  await waitForActionSettled(window);
+}
+
 async function applyAlignment(window: Page): Promise<void> {
   await window.getByTestId("crsAlignApplyButton").click();
   await waitForActionSettled(window);
@@ -155,5 +163,6 @@ export {
   selectConvertMode,
   selectCrs,
   selectAlignMode,
+  selectLinkedData,
   startAlignment,
 };
