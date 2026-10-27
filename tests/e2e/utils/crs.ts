@@ -106,6 +106,11 @@ async function startAlignment(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function selectAlignMode(window: Page, mode: "similarity" | "affine"): Promise<void> {
+  await window.getByTestId(`crsAlignMode-${mode}`).click();
+  await waitForActionSettled(window);
+}
+
 async function fillAlignPoints(
   window: Page,
   prefix: "crsAlignSource" | "crsAlignTarget",
@@ -149,5 +154,6 @@ export {
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,
+  selectAlignMode,
   startAlignment,
 };

@@ -13,6 +13,20 @@ interface CrsPoint {
   picked?: boolean;
 }
 
+type AlignMode = "similarity" | "affine";
+
+interface Alignment {
+  sourcePoints: CrsPoint[];
+  targetPoints: CrsPoint[];
+  mode: AlignMode;
+}
+
+// Only set without distortion: the affine alignment has no single scale or rotation
+interface AlignResult {
+  scale?: number;
+  rotation?: number;
+}
+
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it
 // oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types
 function useCrs() {
@@ -47,19 +61,25 @@ function useCrs() {
 
   async function alignCrs(
     item: DataItem,
-    sourcePoints: CrsPoint[],
-    targetPoints: CrsPoint[],
     crs: CRSList,
-  ): Promise<void> {
+    { sourcePoints, targetPoints, mode }: Alignment,
+  ): Promise<AlignResult> {
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.align,
-      params: { id: item.id, source_points: sourcePoints, target_points: targetPoints, ...crs },
+      params: {
+        id: item.id,
+        source_points: sourcePoints,
+        target_points: targetPoints,
+        mode,
+        ...crs,
+      },
     });
     await refresh(item, response);
+    return { scale: response.scale, rotation: response.rotation };
   }
 
   return { convertCrs, alignCrs };
 }
 
-export type { CrsPoint };
+export type { AlignMode, AlignResult, Alignment, CrsPoint };
 export { useCrs };

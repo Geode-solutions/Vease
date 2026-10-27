@@ -12,6 +12,7 @@ import {
   openCrsByButton,
   openCrsFromInfoCard,
   openCrsFromTree,
+  selectAlignMode,
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,
@@ -93,7 +94,8 @@ test("open the alignment drawer", async ({ window }) => {
   await startAlignment(window);
 });
 
-test("fill the alignment points and target crs", async ({ window }) => {
+test("fill the affine alignment points and target crs", async ({ window }) => {
+  await selectAlignMode(window, "affine");
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
   await selectAlignmentCrs(window, LAMBERT_93);
@@ -105,6 +107,19 @@ test("apply the alignment", async ({ window }) => {
 });
 
 test("current crs is the aligned one", async ({ window }) => {
+  await navigateToDataManagerPage(window);
+  await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("re-align without distortion with two pairs", async ({ window }) => {
+  await openCrsByButton(window, brepGeodeObjectType);
+  await startAlignment(window);
+  await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE.slice(0, 2));
+  await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET.slice(0, 2));
+  await selectAlignmentCrs(window, LAMBERT_93);
+  await applyAlignment(window);
+  // The alignment drawer lives in the viewer: the data table is on the data manager page
   await navigateToDataManagerPage(window);
   await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
   await moveMouseOutOfTheWay(window);

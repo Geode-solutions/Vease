@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { type AlignResult, useCrs } from "@vease/composables/crs";
 import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
-import { useCrs } from "@vease/composables/crs";
 import { useCrsAlign } from "@vease/composables/crs_align";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
@@ -11,16 +11,23 @@ const UIStore = useUIStore();
 const feedbackStore = useFeedbackStore();
 const { alignCrs } = useCrs();
 const {
-  sourcePoints,
-  targetPoints,
+  mode,
+  setMode,
+  visibleSourcePoints,
+  visibleTargetPoints,
   pickingActive,
   togglePickMode,
   reset,
   isComplete,
-  toCrsPoints,
   toSourceCrsPoints,
+  toTargetCrsPoints,
   editSourcePoint,
 } = useCrsAlign();
+
+const MODES = [
+  { value: "similarity", label: "Without distortion" },
+  { value: "affine", label: "Affine (3 points)" },
+] as const;
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
 
@@ -31,6 +38,13 @@ watch(
     targetCrs.value = undefined;
   },
 );
+
+function successMessage({ scale, rotation }: AlignResult): string {
+  if (scale === undefined || rotation === undefined) {
+    return "Data aligned";
+  }
+  return `Data aligned: scale ×${scale.toFixed(2)}, rotation ${Math.round(rotation)}°`;
+}
 
 function close(): void {
   reset();
@@ -44,8 +58,12 @@ async function apply(): Promise<void> {
   }
   applying.value = true;
   try {
-    await alignCrs(item, toSourceCrsPoints(), toCrsPoints(targetPoints.value), targetCrs.value);
-    feedbackStore.add_success("Data aligned");
+    const result = await alignCrs(item, targetCrs.value, {
+      sourcePoints: toSourceCrsPoints(),
+      targetPoints: toTargetCrsPoints(),
+      mode: mode.value,
+    });
+    feedbackStore.add_success(successMessage(result));
     close();
   } finally {
     applying.value = false;
@@ -65,11 +83,32 @@ async function apply(): Promise<void> {
     </div>
 
     <v-card-text class="px-0 flex-grow-1 overflow-y-auto">
+      <v-btn-toggle
+        :model-value="mode"
+        mandatory
+        density="compact"
+        variant="outlined"
+        color="white"
+        divided
+        class="mb-3 w-100"
+        data-testid="crsAlignMode"
+        @update:model-value="setMode"
+      >
+        <v-btn
+          v-for="option in MODES"
+          :key="option.value"
+          :value="option.value"
+          :data-testid="'crsAlignMode-' + option.value"
+          class="text-none flex-grow-1"
+        >
+          {{ option.label }}
+        </v-btn>
+      </v-btn-toggle>
       <div class="text-caption font-weight-bold text-uppercase opacity-60 mb-1">
         Source points (on data)
       </div>
       <v-row
-        v-for="(point, index) in sourcePoints"
+        v-for="(point, index) in visibleSourcePoints"
         :key="'source-' + index"
         dense
         :data-testid="'crsAlignSource-' + index"
@@ -99,7 +138,7 @@ async function apply(): Promise<void> {
         Target points
       </div>
       <v-row
-        v-for="(point, index) in targetPoints"
+        v-for="(point, index) in visibleTargetPoints"
         :key="'target-' + index"
         dense
         :data-testid="'crsAlignTarget-' + index"

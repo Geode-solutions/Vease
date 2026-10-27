@@ -1,4 +1,4 @@
-import type { CrsPoint } from "@vease/composables/crs";
+import type { AlignMode, CrsPoint } from "@vease/composables/crs";
 import { onKeyStroke } from "@vueuse/core";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
@@ -8,7 +8,9 @@ interface EditablePoint {
   y: number | string;
 }
 
+// Rows kept for the affine mode: switching modes never loses typed points
 const NB_POINTS = 3;
+const POINT_COUNTS: Record<AlignMode, number> = { similarity: 2, affine: 3 };
 const preview_schema = viewer_schemas.opengeodeweb_viewer.viewer.preview_points;
 
 function emptyPoints(): EditablePoint[] {
@@ -32,8 +34,12 @@ function isFilled(point: EditablePoint): boolean {
   return isCoordinate(point.x) && isCoordinate(point.y);
 }
 
+function isEmpty(point: EditablePoint | undefined): boolean {
+  return point === undefined || (point.x === "" && point.y === "");
+}
+
 // Source points are picked on the data (only x and y are used) or typed, target points are typed
-// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function
+// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function, max-statements
 function useCrsAlign() {
   const viewerStore = useViewerStore();
   const sourcePoints = ref<EditablePoint[]>(emptyPoints());
@@ -43,21 +49,52 @@ function useCrsAlign() {
   const pickedZ = ref<number[]>([]);
   // Picked points lie on the displayed data, typed ones are original coordinates
   const pickedSources = ref<boolean[]>(notPicked());
+  const mode = ref<AlignMode>("similarity");
+  const pointCount = computed(() => POINT_COUNTS[mode.value]);
+  const visibleSourcePoints = computed(() => sourcePoints.value.slice(0, pointCount.value));
+  const visibleTargetPoints = computed(() => targetPoints.value.slice(0, pointCount.value));
 
-  const isComplete = computed(
-    () => sourcePoints.value.every(isFilled) && targetPoints.value.every(isFilled),
-  );
+  function pairFilled(index: number): boolean {
+    const source = sourcePoints.value[index];
+    const target = targetPoints.value[index];
+    return source !== undefined && target !== undefined && isFilled(source) && isFilled(target);
+  }
 
-  function toCrsPoints(points: EditablePoint[]): CrsPoint[] {
-    return points.map((point) => ({ x: toNumber(point.x), y: toNumber(point.y) }));
+  function pairEmpty(index: number): boolean {
+    return isEmpty(sourcePoints.value[index]) && isEmpty(targetPoints.value[index]);
+  }
+
+  // Without distortion the second pair is optional, but a half filled one is never dropped
+  const usedPairs = computed(() => {
+    if (mode.value === "affine" || pairFilled(1)) {
+      return pointCount.value;
+    }
+    return 1;
+  });
+
+  const isComplete = computed(() => {
+    if (mode.value === "affine") {
+      return [0, 1, 2].every((index) => pairFilled(index));
+    }
+    return pairFilled(0) && (pairFilled(1) || pairEmpty(1));
+  });
+
+  function setMode(newMode: AlignMode): void {
+    mode.value = newMode;
   }
 
   function toSourceCrsPoints(): CrsPoint[] {
-    return sourcePoints.value.map((point, index) => ({
+    return sourcePoints.value.slice(0, usedPairs.value).map((point, index) => ({
       x: toNumber(point.x),
       y: toNumber(point.y),
       picked: pickedSources.value[index] ?? false,
     }));
+  }
+
+  function toTargetCrsPoints(): CrsPoint[] {
+    return targetPoints.value
+      .slice(0, usedPairs.value)
+      .map((point) => ({ x: toNumber(point.x), y: toNumber(point.y) }));
   }
 
   function editSourcePoint(
@@ -79,7 +116,7 @@ function useCrsAlign() {
   }
 
   async function preview(): Promise<void> {
-    const points = sourcePoints.value
+    const points = visibleSourcePoints.value
       .map((point, index) => ({
         x: toNumber(point.x),
         y: toNumber(point.y),
@@ -99,6 +136,7 @@ function useCrsAlign() {
     targetPoints.value = emptyPoints();
     pickedZ.value = [];
     pickedSources.value = notPicked();
+    mode.value = "similarity";
   }
 
   watch(
@@ -107,7 +145,7 @@ function useCrsAlign() {
       if (!pickingActive.value || newVal.x === undefined || newVal.y === undefined) {
         return;
       }
-      const firstEmpty = sourcePoints.value.findIndex((point) => !isFilled(point));
+      const firstEmpty = visibleSourcePoints.value.findIndex((point) => !isFilled(point));
       if (firstEmpty === -1) {
         return;
       }
@@ -118,7 +156,7 @@ function useCrsAlign() {
     { deep: true },
   );
 
-  watch(sourcePoints, preview, { deep: true });
+  watch([sourcePoints, mode], preview, { deep: true });
 
   watch(
     () => viewerStore.picking_mode,
@@ -146,8 +184,12 @@ function useCrsAlign() {
     togglePickMode,
     reset,
     isComplete,
-    toCrsPoints,
+    mode,
+    setMode,
+    visibleSourcePoints,
+    visibleTargetPoints,
     toSourceCrsPoints,
+    toTargetCrsPoints,
     editSourcePoint,
   };
 }

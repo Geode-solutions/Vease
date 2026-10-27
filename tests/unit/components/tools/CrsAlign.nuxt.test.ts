@@ -1,3 +1,4 @@
+// oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
@@ -6,6 +7,7 @@ import type { DataItem } from "@vease/types/data_item";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
@@ -14,7 +16,7 @@ vi.setConfig({ testTimeout: 10_000 });
 // Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT
 const { LAMBERT, CRS_SELECTOR_STUB, USE_CRS_MOCK, alignCrs } = vi.hoisted(() => {
   const lambert = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
-  const alignMock = vi.fn<(...args: unknown[]) => Promise<void>>();
+  const alignMock = vi.fn<(...args: unknown[]) => Promise<unknown>>();
   return {
     LAMBERT: lambert,
     alignCrs: alignMock,
@@ -52,6 +54,8 @@ const SOURCE = [
   { x: 10, y: 0 },
   { x: 0, y: 10 },
 ];
+const SOURCE_ORIGIN = { x: 0, y: 0 };
+const TARGET_ORIGIN = { x: 1000, y: 2000 };
 const TARGET = [
   { x: 1000, y: 2000 },
   { x: 1000, y: 2020 },
@@ -81,12 +85,14 @@ describe("crs align tool", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-    alignCrs.mockReset().mockResolvedValue(undefined);
+    alignCrs.mockReset().mockResolvedValue({});
     useUIStore().openCrsAlign(item);
   });
 
-  test("applies the alignment once every point and the crs are set", async () => {
+  test("applies an affine alignment once every point and the crs are set", async () => {
     const wrapper = mountWithPlugins(CrsAlign);
+    await wrapper.find('[data-testid="crsAlignMode-affine"]').trigger("click");
+    await flushPromises();
     const apply = wrapper.find('[data-testid="crsAlignApplyButton"]');
     expect(apply.attributes("disabled")).toBeDefined();
 
@@ -107,8 +113,34 @@ describe("crs align tool", () => {
 
     // Typed source points are original coordinates, not picked on the displayed data
     const typedSource = SOURCE.map(({ x, y }) => ({ x, y, picked: false }));
-    expect(alignCrs).toHaveBeenCalledWith(item, typedSource, TARGET, LAMBERT);
+    expect(alignCrs).toHaveBeenCalledWith(item, LAMBERT, {
+      sourcePoints: typedSource,
+      targetPoints: TARGET,
+      mode: "affine",
+    });
     expect(useUIStore().showCrsAlign).toBe(false);
+    wrapper.unmount();
+  });
+
+  test("aligns without distortion by default and reports scale and rotation", async () => {
+    alignCrs.mockResolvedValue({ scale: 0.5, rotation: 12.4 });
+    const success = vi.spyOn(useFeedbackStore(), "add_success");
+    const wrapper = mountWithPlugins(CrsAlign);
+    expect(wrapper.findAll('[data-testid^="crsAlignSource-"]')).toHaveLength(2);
+
+    await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
+    await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
+    await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
+    await flushPromises();
+    await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
+    await flushPromises();
+
+    expect(alignCrs).toHaveBeenCalledWith(item, LAMBERT, {
+      sourcePoints: [{ ...SOURCE_ORIGIN, picked: false }],
+      targetPoints: [TARGET_ORIGIN],
+      mode: "similarity",
+    });
+    expect(success).toHaveBeenCalledWith("Data aligned: scale ×0.50, rotation 12°");
     wrapper.unmount();
   });
 
