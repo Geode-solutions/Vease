@@ -64,5 +64,13 @@ async function selectBasemapStyle(window: Page, style: BasemapStyle): Promise<vo
   await waitForActionSettled(window);
 }
 
+async function toggleBasemapAround(window: Page): Promise<void> {
+  await window.getByTestId("basemapButton").click();
+  await window.getByTestId("basemapAround").locator("input").click();
+  // The menu stays open: Escape closes it (no drawer is open here)
+  await window.keyboard.press("Escape");
+  await waitForActionSettled(window);
+}
+
 export type { TileServer };
-export { selectBasemapStyle, startTileServer };
+export { selectBasemapStyle, startTileServer, toggleBasemapAround };
