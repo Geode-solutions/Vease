@@ -205,15 +205,27 @@ async function toggleThresholdFilter(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function selectThresholdOption(
-  window: Page,
-  selectTestId: string,
-  name: string,
-): Promise<void> {
-  await window.getByTestId(selectTestId).click();
+async function selectThresholdOption(select: Locator, name: string): Promise<void> {
+  const window = select.page();
+  await select.click();
   await waitForActionSettled(window);
   await window.getByRole("option", { name, exact: true }).click();
   await waitForActionSettled(window);
+}
+
+function thresholdCard(window: Page, cardIndex: number): Locator {
+  return window.getByTestId("thresholdCard").nth(cardIndex);
+}
+
+async function selectThresholdCardAttribute(
+  window: Page,
+  attributeType: string,
+  attributeName: string,
+  cardIndex = 0,
+): Promise<void> {
+  const card = thresholdCard(window, cardIndex);
+  await selectThresholdOption(card.getByTestId("thresholdAttributeTypeSelect"), attributeType);
+  await selectThresholdOption(card.getByTestId("thresholdAttributeSelect"), attributeName);
 }
 
 async function selectThresholdAttribute(
@@ -222,9 +234,8 @@ async function selectThresholdAttribute(
   attributeType: string,
   attributeName: string,
 ): Promise<void> {
-  await selectThresholdOption(window, "thresholdDatasetSelect", datasetName);
-  await selectThresholdOption(window, "thresholdAttributeTypeSelect", attributeType);
-  await selectThresholdOption(window, "thresholdAttributeSelect", attributeName);
+  await selectThresholdOption(window.getByTestId("thresholdDatasetSelect"), datasetName);
+  await selectThresholdCardAttribute(window, attributeType, attributeName);
 }
 
 async function selectThresholdCellAttribute(
@@ -251,11 +262,13 @@ async function selectThresholdSurfacePolygon(
   await selectThresholdAttribute(window, datasetName, "Surface polygon attribute", attributeName);
 }
 
-async function setThresholdMinimum(window: Page, minimum: number): Promise<void> {
-  const input = window
-    .getByTestId("thresholdFilterPanel")
-    .getByTestId("attributeMinInput")
-    .locator("input");
+async function addThreshold(window: Page): Promise<void> {
+  await window.getByTestId("addThresholdButton").click();
+  await waitForActionSettled(window);
+}
+
+async function setThresholdMinimum(window: Page, minimum: number, cardIndex = 0): Promise<void> {
+  const input = thresholdCard(window, cardIndex).getByTestId("attributeMinInput").locator("input");
   await input.fill(minimum.toString());
   await input.press("Enter");
   await waitForActionSettled(window);
@@ -345,6 +358,8 @@ export {
   selectThresholdCellAttribute,
   selectThresholdBlockPolyhedron,
   selectThresholdSurfacePolygon,
+  selectThresholdCardAttribute,
+  addThreshold,
   setThresholdMinimum,
   resetThresholdFilter,
   removeThresholdFilter,
