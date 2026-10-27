@@ -4,7 +4,12 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { type TileServer, selectBasemapStyle, startTileServer } from "@vease_tests/utils/basemap";
+import {
+  type TileServer,
+  selectBasemapStyle,
+  startTileServer,
+  toggleBasemapAround,
+} from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
@@ -66,6 +71,16 @@ test("assign the selected crs", async ({ window }) => {
 test("show the satellite basemap", async ({ window }) => {
   await selectBasemapStyle(window, "satellite");
   await expect(window.getByTestId("basemapAttribution")).toContainText("Esri");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("map around off keeps the map on the model top", async ({ window }) => {
+  await toggleBasemapAround(window);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("map around back on", async ({ window }) => {
+  await toggleBasemapAround(window);
   await moveMouseOutOfTheWay(window);
 });
 
