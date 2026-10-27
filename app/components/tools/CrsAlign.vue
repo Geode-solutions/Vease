@@ -44,12 +44,7 @@ async function apply(): Promise<void> {
   }
   applying.value = true;
   try {
-    await alignCrs(
-      item,
-      toSourceCrsPoints(),
-      toCrsPoints(targetPoints.value),
-      targetCrs.value,
-    );
+    await alignCrs(item, toSourceCrsPoints(), toCrsPoints(targetPoints.value), targetCrs.value);
     feedbackStore.add_success("Data aligned");
     close();
   } finally {

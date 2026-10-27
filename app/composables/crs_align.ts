@@ -60,7 +60,11 @@ function useCrsAlign() {
     }));
   }
 
-  function editSourcePoint(index: number, coord: keyof EditablePoint, value: number | string): void {
+  function editSourcePoint(
+    index: number,
+    coord: keyof EditablePoint,
+    value: number | string,
+  ): void {
     const point = sourcePoints.value[index];
     if (!point) {
       return;
