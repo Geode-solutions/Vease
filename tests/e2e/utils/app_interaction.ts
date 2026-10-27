@@ -11,12 +11,17 @@ async function closeAllMenus(window: Page): Promise<void> {
 
 // Snackbars auto-dismiss after 10s (see feedback store), which is too slow to rely on between tests.
 // Not every action produces a snackbar (e.g. a successful visibility toggle doesn't), so only close it if present.
+// Some actions stack several (e.g. an assign with an implausible CRS warning): all of them are closed.
 async function closeFeedbackSnackbar(window: Page): Promise<void> {
-  const snackbar = window.getByTestId("feedbackSnackbar");
-  if (await snackbar.isVisible()) {
-    await snackbar.getByTestId("feedbackCloseBtn").click();
-    await expect(snackbar).not.toBeVisible();
+  const snackbars = window.getByTestId("feedbackSnackbar");
+  // Each close removes a snackbar: they must be closed one after another
+  // oxlint-disable no-await-in-loop
+  while ((await snackbars.count()) > 0) {
+    const count = await snackbars.count();
+    await snackbars.first().getByTestId("feedbackCloseBtn").click();
+    await expect(snackbars).toHaveCount(count - 1);
   }
+  // oxlint-enable no-await-in-loop
 }
 
 export { closeAllMenus, closeFeedbackSnackbar, moveMouseOutOfTheWay };
