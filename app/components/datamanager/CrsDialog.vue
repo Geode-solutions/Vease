@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// oxlint-disable max-dependencies
 import back_schemas, {
   type CRSList,
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
@@ -8,6 +9,7 @@ import type { DataItem } from "@vease/types/data_item";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
+import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
@@ -36,10 +38,17 @@ const isGeographic = ref(false);
 const crsKnown = ref(false);
 const mode = ref<"assign" | "convert" | "align">("assign");
 const converting = ref(false);
+const linkedIds = ref<string[]>([]);
+const linkCandidates = useCrsLinkCandidates(() => item);
+
+function linkedItems(): DataItem[] {
+  return linkCandidates.value.filter(({ id }) => linkedIds.value.includes(id));
+}
 
 async function fetchCurrentCrs(): Promise<void> {
   currentCrs.value = "";
   selectedCrs.value = undefined;
+  linkedIds.value = [];
   mode.value = "assign";
   isGeographic.value = false;
   crsKnown.value = false;
@@ -91,6 +100,26 @@ async function openAlignment(target: DataItem): Promise<void> {
   UIStore.openCrsAlign(target);
 }
 
+// The label is kept: local coordinates usually need an alignment instead
+function warnImplausible(implausibleItems: DataItem[], crs: CRSList | undefined): void {
+  const [first] = implausibleItems;
+  if (!first) {
+    return;
+  }
+  const mismatch = `do not match ${formatCrsCode(crs)}. Align the data?`;
+  // Named when linked data were assigned too: the user must know which one to align
+  const description =
+    implausibleItems.length === 1 && first.id === item?.id
+      ? `These coordinates ${mismatch}`
+      : `${implausibleItems.map(({ name }) => name).join(", ")}: these coordinates ${mismatch}`;
+  feedbackStore.add_warning(description, {
+    label: "Align",
+    onClick: () => {
+      void openAlignment(first);
+    },
+  });
+}
+
 async function handleAssign(): Promise<void> {
   if (!item || !selectedCrs.value || assigning.value) {
     return;
@@ -98,30 +127,35 @@ async function handleAssign(): Promise<void> {
   // The warning action may run once the dialog shows another item
   const assignedItem = item;
   const { id } = assignedItem;
+  const linked = linkedItems();
+  const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
   assigning.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
-        params: { id, ...selectedCrs.value },
+        params: {
+          id,
+          ...(linkedDataIds.length > 0 ? { linked_ids: linkedDataIds } : {}),
+          ...selectedCrs.value,
+        },
       },
       {
-        response_function: async ({ crs, implausible }) => {
+        response_function: async ({ crs, implausible, linked: linkedResponses }) => {
           await dataStore.updateItem(id, { crs });
+          for (const entry of linkedResponses ?? []) {
+            // oxlint-disable-next-line no-await-in-loop
+            await dataStore.updateItem(entry.id, { crs: entry.crs });
+          }
           emit("assigned");
           emit("update:show", false);
-          // The label is kept: local coordinates usually need an alignment instead
-          if (implausible) {
-            feedbackStore.add_warning(
-              `These coordinates do not match ${formatCrsCode(crs)}. Align the data?`,
-              {
-                label: "Align",
-                onClick: () => {
-                  void openAlignment(assignedItem);
-                },
-              },
-            );
-          }
+          const implausibleItems = [
+            ...(implausible ? [assignedItem] : []),
+            ...linked.filter((linkedItem) =>
+              linkedResponses?.some((entry) => entry.id === linkedItem.id && entry.implausible),
+            ),
+          ];
+          warnImplausible(implausibleItems, crs);
         },
       },
     );
@@ -136,7 +170,7 @@ async function handleConvert(): Promise<void> {
   }
   converting.value = true;
   try {
-    await convertCrs(item, selectedCrs.value);
+    await convertCrs(item, selectedCrs.value, { linkedItems: linkedItems() });
     emit("converted");
     emit("update:show", false);
   } finally {
@@ -196,6 +230,23 @@ async function startAlignment(): Promise<void> {
           </v-btn>
         </v-btn-toggle>
       </div>
+      <!-- Next to the mode: what gets assigned or converted stays visible without scrolling -->
+      <v-select
+        v-if="item && mode !== 'align' && linkCandidates.length > 0"
+        v-model="linkedIds"
+        :items="linkCandidates"
+        item-title="name"
+        item-value="id"
+        label="Apply also to"
+        multiple
+        chips
+        closable-chips
+        variant="outlined"
+        density="compact"
+        hide-details
+        class="mt-4 flex-shrink-0"
+        data-testid="crsLinked"
+      />
 
       <v-card-text class="pt-8 px-0">
         <CrsSelector

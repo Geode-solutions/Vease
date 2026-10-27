@@ -49,15 +49,30 @@ function useCrs() {
     }
   }
 
+  // Each reload rebuilds an actor: one after another, then the camera moves once on the item
+  async function refreshLinked(
+    linked: { id: string; binary_light_viewable?: string; crs?: CRSList }[] | undefined,
+  ): Promise<void> {
+    for (const entry of linked ?? []) {
+      // oxlint-disable-next-line no-await-in-loop
+      await refresh({ id: entry.id }, entry, false);
+    }
+  }
+
   async function convertCrs(
     item: Pick<DataItem, "id">,
     crs: CRSList,
-    { focus = true }: { focus?: boolean } = {},
+    {
+      focus = true,
+      linkedItems = [],
+    }: { focus?: boolean; linkedItems?: Pick<DataItem, "id">[] } = {},
   ): Promise<void> {
+    const linkedIds = linkedItems.map(({ id }) => id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.convert_geographic,
-      params: { id: item.id, ...crs },
+      params: { id: item.id, ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}), ...crs },
     });
+    await refreshLinked(response.linked);
     await refresh(item, response, focus);
   }
 
@@ -78,11 +93,7 @@ function useCrs() {
         ...crs,
       },
     });
-    // Each reload rebuilds an actor: one after another, then the camera moves once
-    for (const linked of response.linked ?? []) {
-      // oxlint-disable-next-line no-await-in-loop
-      await refresh({ id: linked.id }, linked, false);
-    }
+    await refreshLinked(response.linked);
     await refresh(item, response);
     return { scale: response.scale, rotation: response.rotation };
   }

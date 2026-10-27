@@ -154,4 +154,26 @@ describe("useCrs composable", () => {
     // The camera focuses on the aligned item only, once every item is reloaded
     expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
   });
+
+  test("convertCrs converts the linked items in the same request", async () => {
+    const wells = { ...item, id: "item-2", name: "Wells" };
+    request.mockImplementationOnce(async () => {
+      calls.push("request");
+      await Promise.resolve();
+      return {
+        crs: LAMBERT,
+        binary_light_viewable: "light",
+        linked: [{ id: "item-2", crs: LAMBERT, binary_light_viewable: "wells light" }],
+      };
+    });
+
+    await useCrs().convertCrs(item, LAMBERT, { linkedItems: [wells] });
+
+    expect(request.mock.calls[0]?.[0].params).toMatchObject({ linked_ids: ["item-2"] });
+    expect(useDataStore().updateItem).toHaveBeenCalledWith("item-2", {
+      binary_light_viewable: "wells light",
+      crs: LAMBERT,
+    });
+    expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
+  });
 });

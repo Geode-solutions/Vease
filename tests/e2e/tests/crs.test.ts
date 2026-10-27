@@ -162,3 +162,15 @@ test("close the crs dialog opened from the info card", async ({ window }) => {
   await window.keyboard.press("Escape");
   await moveMouseOutOfTheWay(window);
 });
+
+test("convert the model and the curve together", async ({ window }) => {
+  await navigateToDataManagerPage(window);
+  await openCrsByButton(window, brepGeodeObjectType);
+  await selectConvertMode(window);
+  await selectCrs(window, UTM_31N);
+  await selectLinkedData(window, CURVE_NAME, "crsLinked");
+  await confirmConvert(window);
+  await moveMouseOutOfTheWay(window);
+  await expectRowCrs(window, brepGeodeObjectType, "EPSG:32631");
+  await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:32631");
+});

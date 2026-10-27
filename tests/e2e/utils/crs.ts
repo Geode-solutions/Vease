@@ -133,8 +133,13 @@ async function selectAlignmentCrs(window: Page, crsName: string): Promise<void> 
   await waitForActionSettled(window);
 }
 
-async function selectLinkedData(window: Page, dataName: string): Promise<void> {
-  await window.getByTestId("crsAlignLinked").click();
+// "Apply also to" of the align drawer (crsAlignLinked) or of the crs dialog (crsLinked)
+async function selectLinkedData(
+  window: Page,
+  dataName: string,
+  testId: "crsAlignLinked" | "crsLinked" = "crsAlignLinked",
+): Promise<void> {
+  await window.getByTestId(testId).click();
   await window.getByRole("option", { name: dataName }).click();
   // The menu stays open for more choices: leaving the field closes it (Escape would close the drawer)
   await window.keyboard.press("Tab");

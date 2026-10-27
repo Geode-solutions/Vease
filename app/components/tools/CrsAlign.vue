@@ -4,7 +4,7 @@ import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_s
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import { useCrsAlign } from "@vease/composables/crs_align";
-import { useDataStore } from "@ogw_front/stores/data";
+import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -31,21 +31,8 @@ const MODES = [
 ] as const;
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
-const items = useDataStore().refAllItems();
 const linkedIds = ref<string[]>([]);
-
-function sameCrs(first: CRSList | undefined, second: CRSList | undefined): boolean {
-  return first?.authority === second?.authority && first?.code === second?.code;
-}
-
-// Only data in the same CRS state can share the local frame of the aligned item
-const linkCandidates = computed(() => {
-  const item = UIStore.crsAlignItem;
-  if (!item) {
-    return [];
-  }
-  return items.value.filter((other) => other.id !== item.id && sameCrs(other.crs, item.crs));
-});
+const linkCandidates = useCrsLinkCandidates(() => UIStore.crsAlignItem);
 
 watch(
   () => UIStore.crsAlignItem,

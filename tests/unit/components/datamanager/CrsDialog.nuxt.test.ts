@@ -1,4 +1,6 @@
+// oxlint-disable max-lines, max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
@@ -7,7 +9,6 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useBackStore } from "@ogw_front/stores/back";
 import type { useCrs } from "@vease/composables/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -15,6 +16,7 @@ vi.setConfig({ testTimeout: 10_000 });
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
 const EXPECTED_REQUEST_COUNT = 2;
+const CREATED_AT = "2026-01-01T00:00:00.000Z";
 
 // Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT
 const { LAMBERT, CRS_SELECTOR_STUB } = vi.hoisted(() => {
@@ -80,7 +82,7 @@ const mockItem: DataItem = {
   geode_object_type: "PointSet3D",
   viewer_type: "mesh",
   visible: true,
-  created_at: "2026-01-01T00:00:00.000Z",
+  created_at: CREATED_AT,
 };
 
 // Assigns LAMBERT, answered with the given plausibility, and returns the warnings shown
@@ -255,7 +257,7 @@ describe("crs dialog component", () => {
       ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     await flushPromises();
 
-    expect(convertCrs).toHaveBeenCalledWith(mockItem, LAMBERT);
+    expect(convertCrs).toHaveBeenCalledWith(mockItem, LAMBERT, { linkedItems: [] });
     expect(wrapper.emitted("converted")?.length).toBe(EXPECTED_EVENT_COUNT);
     wrapper.unmount();
   });
@@ -393,6 +395,97 @@ describe("crs dialog component", () => {
     await flushPromises();
 
     expect(updateItem).toHaveBeenLastCalledWith("item-1", { crs: LAMBERT });
+    wrapper.unmount();
+  });
+
+  test("assigns the checked data in the same crs state", async () => {
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
+    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
+    const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
+    vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells, georeferenced]));
+    const backStore = useBackStore();
+    const responses: Record<string, unknown> = {
+      ...RESPONSES,
+      "opengeodeweb_back/crs/assign_geographic": {
+        crs: LAMBERT,
+        implausible: false,
+        linked: [{ id: "item-2", crs: LAMBERT, implausible: true }],
+      },
+    };
+    const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
+      const response = responses[schema.$id];
+      callbacks.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    // Data already in another CRS is not offered
+    const linked = wrapper.findComponent({ name: "VSelect" });
+    expect(linked.props("items")).toStrictEqual([wells]);
+    await linked.setValue(["item-2"]);
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsAssignButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", linked_ids: ["item-2"], ...LAMBERT } }),
+      expect.anything(),
+    );
+    expect(updateItem).toHaveBeenCalledWith("item-2", { crs: LAMBERT });
+    // Only the linked data does not match the crs: the warning names it
+    const warnings = useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
+    expect(warnings.map((warning) => warning.description)).toStrictEqual([
+      "Wells: these coordinates do not match EPSG:2154. Align the data?",
+    ]);
+    wrapper.unmount();
+  });
+
+  test("converts the checked data with the item", async () => {
+    vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
+    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
+    vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells]));
+    const backStore = useBackStore();
+    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
+      callbacks.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+    backStore.request = request as unknown as typeof backStore.request;
+    convertCrs.mockReset().mockResolvedValue(undefined);
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsModeConvert"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    await wrapper.findComponent({ name: "VSelect" }).setValue(["item-2"]);
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsConvertButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(convertCrs).toHaveBeenCalledWith(mockItem, LAMBERT, { linkedItems: [wells] });
     wrapper.unmount();
   });
 });
