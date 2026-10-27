@@ -19,19 +19,6 @@ type ExportParams = { uploadUrl: string } & (
 const SCREENSHOT_FILENAME = "controller_screenshot";
 const PROJECT_FILENAME = "project.vease";
 
-async function screenshotBlob(format: ScreenshotFormat, includeBackground = true): Promise<Blob> {
-  const { blob } = await useViewerStore().request({
-    schema: viewer_schemas.opengeodeweb_viewer.viewer.take_screenshot,
-    params: {
-      filename: SCREENSHOT_FILENAME,
-      output_extension: format,
-      include_background: format === "jpg" ? true : includeBackground,
-    },
-  });
-  // `blob` is a wslink attachment received as a Blob, typed as the key string the viewer sends
-  return new Blob([blob]);
-}
-
 function isFileDownloadData(
   value: unknown,
 ): value is string | ArrayBuffer | ArrayBufferView<ArrayBuffer> | Blob {
@@ -41,6 +28,26 @@ function isFileDownloadData(
     ArrayBuffer.isView(value) ||
     value instanceof Blob
   );
+}
+
+async function screenshotBlob(format: ScreenshotFormat, includeBackground = true): Promise<Blob> {
+  const response: unknown = await useViewerStore().request({
+    schema: viewer_schemas.opengeodeweb_viewer.viewer.take_screenshot,
+    params: {
+      filename: SCREENSHOT_FILENAME,
+      output_extension: format,
+      include_background: format === "jpg" ? true : includeBackground,
+    },
+  });
+  // `blob` is a wslink attachment received as a Blob, typed as the key string the viewer sends
+  const blob =
+    typeof response === "object" && response !== null && "blob" in response
+      ? response.blob
+      : undefined;
+  if (!isFileDownloadData(blob)) {
+    throw new ControllerError("Unexpected take_screenshot response type");
+  }
+  return new Blob([blob]);
 }
 
 async function projectBlob(): Promise<Blob> {

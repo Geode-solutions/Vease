@@ -77,18 +77,18 @@ function requestedSchemaIds(): string[] {
 describe("the data-details controller handler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     vi.mocked(useDataStore).mockReturnValue({
       item,
       getAllMeshComponents,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     } as unknown as ReturnType<typeof useDataStore>);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     vi.mocked(getDataStyleStore).mockReturnValue({
       getStyle,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     } as unknown as ReturnType<typeof getDataStyleStore>);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     vi.mocked(getBackStore).mockReturnValue({
       request,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     } as unknown as ReturnType<typeof getBackStore>);
   });
 

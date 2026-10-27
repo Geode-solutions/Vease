@@ -29,9 +29,9 @@ describe("the viewer-state controller handler", () => {
   });
 
   test("reports z scaling and saved camera positions", async () => {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     vi.mocked(getHybridViewerStore).mockReturnValue({
       zScale: Z_SCALING,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
     } as unknown as ReturnType<typeof getHybridViewerStore>);
     const cameraManagerStore = useCameraManagerStore();
     await cameraManagerStore.saveCameraPosition("top", CAMERA_OPTIONS);
