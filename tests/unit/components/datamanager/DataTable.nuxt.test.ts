@@ -7,6 +7,7 @@ vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_EVENT_INDEX = 0;
 const EXPECTED_EVENT_COUNT = 1;
+const SECOND_INDEX = 1;
 
 const mockItem1: DataItem = {
   id: "item-1",
@@ -118,6 +119,64 @@ describe("data table component", () => {
     expect(emitted).toBeDefined();
     expect(emitted?.length).toBe(EXPECTED_EVENT_COUNT);
     expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
+  });
+
+  test("emits crs event on crs cell click", async () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [mockItem1],
+      },
+    });
+
+    const crsCell = wrapper.find('[data-testid="crsCell"]');
+    // A real button: reachable with the keyboard
+    expect(crsCell.element.tagName).toBe("BUTTON");
+    await crsCell.trigger("click");
+
+    const emitted = wrapper.emitted("crs");
+    expect(emitted).toBeDefined();
+    expect(emitted?.length).toBe(EXPECTED_EVENT_COUNT);
+    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
+  });
+
+  test("shows the crs of each item", () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [
+          { ...mockItem1, crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" } },
+          mockItem2,
+        ],
+      },
+    });
+    const cells = wrapper.findAll('[data-testid="crsCell"]');
+    expect(cells[FIRST_EVENT_INDEX]?.text()).toContain("EPSG:2154");
+    expect(cells[SECOND_INDEX]?.text()).toBe("None");
+    expect(wrapper.find('[data-testid="crsDataButton"]').exists()).toBe(false);
+  });
+
+  test("hides the date column in compact mode", () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [mockItem1],
+        compact: true,
+      },
+    });
+
+    // The picture-in-picture view is narrow: the CRS column takes the date's room
+    expect(wrapper.findAll("th").map((header) => header.text())).not.toContain("Date");
+  });
+
+  test("shows the crs code alone in compact mode", () => {
+    const wrapper = mountWithPlugins(DataTable, {
+      props: {
+        items: [
+          { ...mockItem1, crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" } },
+        ],
+        compact: true,
+      },
+    });
+
+    expect(wrapper.get('[data-testid="crsCell"]').text()).toBe("EPSG:2154");
   });
 
   test("emits delete event on row delete button click", async () => {

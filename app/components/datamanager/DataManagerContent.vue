@@ -7,6 +7,7 @@ import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 import { useUIStore } from "@vease/stores/ui";
@@ -15,6 +16,7 @@ const { compact = false } = defineProps<{ compact?: boolean }>();
 
 const UIStore = useUIStore();
 const dataStore = useDataStore();
+const crsStore = useCrsStore();
 const hybridViewerStore = getHybridViewerStore();
 const treeviewStore = useTreeviewStore();
 const dataStyleStore = getDataStyleStore();
@@ -211,6 +213,7 @@ useEventListener(document, "keydown", (event) => {
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
+              @crs="crsStore.requestCrsEdit($event.id)"
               @delete="confirmDelete"
               @delete-selected="deleteSelectedDialog = true"
             />

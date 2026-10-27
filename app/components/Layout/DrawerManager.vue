@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import CreateTools from "@vease/components/CreateTools.vue";
+import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import Extension from "@vease/components/Extension.vue";
@@ -18,12 +19,19 @@ function closeAllDrawers(): void {
   uiStore.setShowStepper(false);
   uiStore.setShowCreateTools(false);
   uiStore.setShowExtensions(false);
+  uiStore.setShowCrsAlign(false);
 }
 
 const anyDrawerOpen = computed(
-  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions,
+  () =>
+    uiStore.showStepper ||
+    uiStore.showCreateTools ||
+    uiStore.showExtensions ||
+    uiStore.showCrsAlign,
 );
-const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
+const showRightDrawer = computed(
+  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showCrsAlign,
+);
 
 function handleFilesDropped(files): void {
   emit("files-dropped", files);
@@ -69,6 +77,13 @@ function handleEscape(): void {
         class="d-flex flex-column h-100 w-100"
       >
         <CreateTools />
+      </div>
+      <div
+        v-if="uiStore.showCrsAlign"
+        data-testid="crsAlignPanel"
+        class="d-flex flex-column h-100 w-100"
+      >
+        <CrsAlign />
       </div>
     </GlassCard>
   </v-card>
