@@ -95,7 +95,13 @@ async function apply(): Promise<void> {
   <v-card flat color="transparent" class="d-flex flex-column h-100 w-100 pa-3 text-white">
     <div class="d-flex align-center mb-2">
       <v-icon start icon="mdi-vector-triangle" size="18" />
-      <h2 class="text-subtitle-1 font-weight-bold mb-0">Align {{ UIStore.crsAlignItem?.name }}</h2>
+      <!-- One line: a long data name is truncated, the full name is in the tooltip -->
+      <h2 class="text-subtitle-1 font-weight-bold mb-0 text-truncate" style="min-width: 0">
+        Align {{ UIStore.crsAlignItem?.name }}
+        <v-tooltip activator="parent" location="bottom">
+          Align {{ UIStore.crsAlignItem?.name }}
+        </v-tooltip>
+      </h2>
       <v-spacer />
       <v-btn icon size="x-small" variant="text" color="white" @click="close">
         <v-icon size="16">mdi-close</v-icon>
@@ -124,6 +130,27 @@ async function apply(): Promise<void> {
           {{ option.label }}
         </v-btn>
       </v-btn-toggle>
+      <!-- Next to the mode: what gets aligned must stay visible without scrolling -->
+      <v-select
+        v-if="linkCandidates.length > 0"
+        v-model="linkedIds"
+        :items="linkCandidates"
+        item-title="name"
+        item-value="id"
+        label="Apply also to"
+        multiple
+        chips
+        closable-chips
+        variant="outlined"
+        color="white"
+        density="compact"
+        theme="dark"
+        base-color="white"
+        bg-color="rgba(255, 255, 255, 0.15)"
+        hide-details
+        class="mb-3"
+        data-testid="crsAlignLinked"
+      />
       <div class="text-caption font-weight-bold text-uppercase opacity-60 mb-1">
         Source points (on data)
       </div>
@@ -189,24 +216,6 @@ async function apply(): Promise<void> {
         compact
         :geode-object-type="UIStore.crsAlignItem.geode_object_type"
       />
-
-      <template v-if="linkCandidates.length > 0">
-        <div class="text-caption font-weight-bold text-uppercase opacity-60 mt-4 mb-1">
-          Apply also to
-        </div>
-        <v-checkbox
-          v-for="candidate in linkCandidates"
-          :key="candidate.id"
-          v-model="linkedIds"
-          :value="candidate.id"
-          :label="candidate.name"
-          :data-testid="'crsAlignLinked-' + candidate.id"
-          density="compact"
-          color="white"
-          theme="dark"
-          hide-details
-        />
-      </template>
     </v-card-text>
 
     <v-card-actions class="px-0 pb-0">

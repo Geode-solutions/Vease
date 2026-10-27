@@ -156,12 +156,11 @@ describe("crs align tool", () => {
     vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells, georeferenced]));
     const wrapper = mountWithPlugins(CrsAlign);
     // Data already in another CRS does not share the local frame
-    const linked = wrapper.findAll('[data-testid^="crsAlignLinked-"]');
-    expect(linked.map((checkbox) => checkbox.attributes("data-testid"))).toStrictEqual([
-      "crsAlignLinked-item-2",
-    ]);
+    const linked = wrapper.findComponent({ name: "VSelect" });
+    expect(linked.attributes("data-testid")).toBe("crsAlignLinked");
+    expect(linked.props("items")).toStrictEqual([wells]);
 
-    await wrapper.find('[data-testid="crsAlignLinked-item-2"] input').setValue(true);
+    await linked.setValue(["item-2"]);
     await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
     await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
     await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
