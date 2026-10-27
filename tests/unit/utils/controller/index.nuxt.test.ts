@@ -10,17 +10,14 @@ import { registerEndpoint } from "@nuxt/test-utils/runtime";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-const DEADLINE_DELAY_MS = 60_000;
+const COMMAND_TIMEOUT_MS = 60_000;
+const BROWSER_NOW = 1_000_000;
 const FIRST_RETRY_MS = 1000;
 const SECOND_RETRY_MS = 2000;
 const MAX_RETRY_MS = 5000;
 
-function commandMessage(
-  requestId: string,
-  command: string,
-  deadline = Date.now() + DEADLINE_DELAY_MS,
-): string {
-  return JSON.stringify({ requestId, command, params: {}, deadline });
+function commandMessage(requestId: string, command: string, timeout = COMMAND_TIMEOUT_MS): string {
+  return JSON.stringify({ requestId, command, params: {}, timeout });
 }
 
 class FakeEventSource extends EventTarget {
@@ -89,6 +86,7 @@ describe("controller client", () => {
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     for (const name of Object.keys(controllerHandlers)) {
       Reflect.deleteProperty(controllerHandlers, name);
     }
@@ -143,7 +141,7 @@ describe("controller client", () => {
   test("skips a command whose deadline passed before it started", async () => {
     const handler = vi.fn<() => Promise<unknown>>().mockResolvedValue("a");
     controllerHandlers.fake = handler;
-    handleCommandMessage(commandMessage("r1", "fake", Date.now() - 1));
+    handleCommandMessage(commandMessage("r1", "fake", -1));
     await vi.waitFor(() => {
       expect(replyMock).toHaveBeenCalledWith(expect.anything());
     });
@@ -156,16 +154,17 @@ describe("controller client", () => {
     });
   });
 
-  test("passes the deadline to the handler", async () => {
-    const deadline = Date.now() + DEADLINE_DELAY_MS;
-    const handler = vi.fn<(params: unknown, context: unknown) => Promise<unknown>>();
+  test("passes the handler a deadline on the browser clock", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(BROWSER_NOW);
+    const handler = vi.fn<(params: unknown, context?: unknown) => Promise<unknown>>();
     handler.mockResolvedValue("a");
     controllerHandlers.fake = handler;
-    handleCommandMessage(commandMessage("r1", "fake", deadline));
+    handleCommandMessage(commandMessage("r1", "fake"));
     await vi.waitFor(() => {
       expect(replyMock).toHaveBeenCalledWith(expect.anything());
     });
-    expect(handler).toHaveBeenCalledWith({}, { deadline });
+    expect(handler).toHaveBeenCalledWith({}, { deadline: BROWSER_NOW + COMMAND_TIMEOUT_MS });
   });
 
   test("replies with an error for an unknown command", async () => {
@@ -204,6 +203,30 @@ describe("controller client", () => {
       // oxlint-disable-next-line eslint/id-length -- `ok` is the reply field shared with the server
       { requestId: "r2", ok: true, result: "b" },
     ]);
+  });
+
+  test("runs await-data beside the queue", async () => {
+    const handlerA = vi.fn<() => Promise<unknown>>().mockImplementation(holdUntilReleased);
+    const awaitData = vi.fn<() => Promise<unknown>>().mockResolvedValue({ id: "x" });
+    controllerHandlers.first = handlerA;
+    controllerHandlers["await-data"] = awaitData;
+
+    handleCommandMessage(commandMessage("r1", "first"));
+    handleCommandMessage(commandMessage("r2", "await-data"));
+    await vi.waitFor(() => {
+      expect(replyMock).toHaveBeenCalledWith(expect.anything());
+    });
+    expect(replyMock).toHaveBeenCalledWith({
+      requestId: "r2",
+      // oxlint-disable-next-line eslint/id-length -- `ok` is the reply field shared with the server
+      ok: true,
+      result: { id: "x" },
+    });
+
+    releaseHeldHandler();
+    await vi.waitFor(() => {
+      expect(replyMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   test("replies with an error for a command named like an Object.prototype member", async () => {

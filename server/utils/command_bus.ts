@@ -5,8 +5,8 @@ interface ControllerCommand {
   requestId: string;
   command: string;
   params: unknown;
-  // Epoch ms after which the server no longer waits for the reply
-  deadline: number;
+  // Ms the server waits for the reply: relative, as the browser clock may differ from the server's
+  timeout: number;
 }
 
 type ControllerReply =
@@ -20,6 +20,7 @@ interface CommandSink {
 }
 
 interface PendingRequest {
+  command: string;
   resolve: (result: unknown) => void;
   reject: (error: Error) => void;
   timer: ReturnType<typeof setTimeout>;
@@ -42,11 +43,18 @@ function notReadyError(): Error {
   });
 }
 
+// The browser may still run what it already received, so the caller must not take it as not done
+function connectionLostError(command: string): Error {
+  return new Error(
+    `Lost the connection to Vease while it ran the "${command}" command: it may have been applied, check the current state before trying again`,
+  );
+}
+
 function rejectPendingOf(sink: CommandSink): void {
   for (const [requestId, request] of pending) {
     if (request.sink === sink) {
       clearTimeout(request.timer);
-      request.reject(notReadyError());
+      request.reject(connectionLostError(request.command));
       pending.delete(requestId);
     }
   }
@@ -76,7 +84,7 @@ function dispatchCommand<Result = unknown>(
   }
   const { timeout = COMMAND_TIMEOUT_MS } = options;
   const requestId = crypto.randomUUID();
-  const message: ControllerCommand = { requestId, command, params, deadline: Date.now() + timeout };
+  const message: ControllerCommand = { requestId, command, params, timeout };
 
   // oxlint-disable-next-line promise/avoid-new -- the promise is settled later by resolveReply or the timeout
   return new Promise<Result>((resolve, reject) => {
@@ -85,6 +93,7 @@ function dispatchCommand<Result = unknown>(
       reject(new Error(`Vease did not answer the "${command}" command in time`));
     }, timeout);
     pending.set(requestId, {
+      command,
       resolve: (result) => {
         // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- the caller picks the result type the browser replies with
         resolve(result as Result);

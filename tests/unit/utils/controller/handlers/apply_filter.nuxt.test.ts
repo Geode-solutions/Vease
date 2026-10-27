@@ -41,6 +41,7 @@ const VERTEX_SCHEMA_ID = backSchemas.vertex_attribute_names.$id;
 const OTHER: DataItem = { ...MESH, id: "mesh-2", name: "other" };
 
 const DEPTH_MAX = 10;
+const OTHER_DEPTH_MAX = 20;
 const CUSTOM_MIN = 2;
 const CUSTOM_MAX = 4;
 const EXPLODE_FACTOR = 0.5;
@@ -63,6 +64,31 @@ const PRESSURE = {
 const PLANES = [{ origin: [0, 0, 0], normal: [0, 0, 1] }];
 
 const request = vi.fn<(args: RequestArgs) => Promise<unknown>>();
+
+// Back answers for thresholds over several data, keyed by data id then by attribute schema
+const DEPTH_UP_TO: Record<string, number> = { [MESH.id]: DEPTH_MAX, [OTHER.id]: OTHER_DEPTH_MAX };
+const DEPTH_ON: Record<string, string> = {
+  [MESH.id]: backSchemas.polygon_attribute_names.$id,
+  [OTHER.id]: VERTEX_SCHEMA_ID,
+};
+
+async function depthUpToPerData({ params }: RequestArgs): Promise<unknown> {
+  await Promise.resolve();
+  return { attributes: [{ ...DEPTH, max_value: DEPTH_UP_TO[String(params?.id)] }] };
+}
+
+async function depthOnMeshOnly({ params }: RequestArgs): Promise<unknown> {
+  await Promise.resolve();
+  return { attributes: [DEPTH].filter(() => params?.id === MESH.id) };
+}
+
+async function depthOnPolygonsOfMeshAndVerticesOfOther({
+  schema,
+  params,
+}: RequestArgs): Promise<unknown> {
+  await Promise.resolve();
+  return { attributes: [DEPTH].filter(() => DEPTH_ON[String(params?.id)] === schema.$id) };
+}
 const dataStore = { item: vi.fn<(id: string) => Promise<DataItem>>() };
 const hybridViewerStore = {
   setShrink: vi.fn<() => Promise<void>>(),
@@ -272,6 +298,36 @@ describe("the apply-filter controller handler", () => {
       [MESH.id],
       expect.objectContaining({ name: "pressure@0" }),
     );
+  });
+
+  test("thresholds several data over the range they span together", async () => {
+    request.mockImplementation(depthUpToPerData);
+
+    await expect(
+      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+    ).resolves.toMatchObject({ minimum: 0, maximum: OTHER_DEPTH_MAX });
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
+      [MESH.id, OTHER.id],
+      expect.objectContaining({ minimum: 0, maximum: OTHER_DEPTH_MAX }),
+    );
+  });
+
+  test("threshold rejects an id that lacks the attribute", async () => {
+    request.mockImplementation(depthOnMeshOnly);
+
+    await expect(
+      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+    ).rejects.toThrow(`Attribute "depth" not found on "${OTHER.name}"`);
+    expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
+  });
+
+  test("threshold rejects data holding the attribute on points and on cells", async () => {
+    request.mockImplementation(depthOnPolygonsOfMeshAndVerticesOfOther);
+
+    await expect(
+      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+    ).rejects.toThrow('"depth" is on points for some data and on cells for others');
+    expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
 
   test("threshold needs an attribute unless removing, and removing clears it", async () => {

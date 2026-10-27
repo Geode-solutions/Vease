@@ -85,8 +85,7 @@ async function restore(params: SetViewParams): Promise<Applied> {
   }
   const hybridViewerStore = getHybridViewerStore();
   // Same fallback as the camera manager list: restore through the viewer when the render window is missing
-  // oxlint-disable-next-line typescript/no-unnecessary-condition -- the holder is typed as always present
-  if (hybridViewerStore.genericRenderWindow === undefined) {
+  if (hybridViewerStore.genericRenderWindow.value === undefined) {
     await cameraManagerStore.restoreCameraPosition(positionId);
   } else {
     hybridViewerStore.setCamera(position.camera_options);

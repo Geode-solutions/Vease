@@ -5,6 +5,7 @@ import { controllerHandlers } from "@vease/utils/controller/index";
 vi.setConfig({ testTimeout: 10_000 });
 
 const TIMEOUT_MS = 1000;
+const SETTLED_IMPORT_RETENTION_MS = 120_000;
 
 interface Gate {
   promise: Promise<string>;
@@ -85,6 +86,27 @@ describe("the pending data imports", () => {
 
     await Promise.all([
       expect(waiting).rejects.toThrow('Data "e" was not imported in time'),
+      vi.advanceTimersByTimeAsync(TIMEOUT_MS),
+    ]);
+  });
+
+  test("releases every request waiting for the same import", async () => {
+    const importing = gate();
+
+    const first = waitForImport("h", TIMEOUT_MS);
+    const second = waitForImport("h", TIMEOUT_MS);
+    trackImport("h", importing.promise);
+    importing.open();
+
+    await expect(Promise.all([first, second])).resolves.toStrictEqual([undefined, undefined]);
+  });
+
+  test("forgets a settled import after the retention delay", async () => {
+    trackImport("i", Promise.resolve("imported"));
+    await vi.advanceTimersByTimeAsync(SETTLED_IMPORT_RETENTION_MS);
+
+    await Promise.all([
+      expect(waitForImport("i", TIMEOUT_MS)).rejects.toThrow("not imported in time"),
       vi.advanceTimersByTimeAsync(TIMEOUT_MS),
     ]);
   });

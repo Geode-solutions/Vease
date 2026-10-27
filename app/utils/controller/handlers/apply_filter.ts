@@ -4,9 +4,14 @@ import type { SliceAxis } from "@ogw_front/utils/slice";
 
 // Local imports
 import { type AttributeKind, getDataItem } from "@vease/utils/controller/targets";
-import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
+import { ControllerError, need } from "@vease/utils/controller/errors";
+import {
+  type FoundAttribute,
+  checkRange,
+  findAttribute,
+  resolveItem,
+} from "@vease/utils/controller/attributes";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
-import { need } from "@vease/utils/controller/errors";
 
 type FilterName = "shrink" | "explode" | "slice" | "clip" | "threshold";
 type ThresholdLocation = AttributeKind | "point";
@@ -72,6 +77,37 @@ async function clip(params: ApplyFilterParams, store: HybridViewerStore): Promis
   return {};
 }
 
+function viewerLocation({ kind }: FoundAttribute): "point" | "cell" {
+  return kind === "vertex" ? "point" : "cell";
+}
+
+function isTimeSeries({ attribute }: FoundAttribute): boolean {
+  return (attribute.time_steps?.length ?? 0) > 0;
+}
+
+// One threshold request carries a single array name and location for every id
+function checkSameArray(name: string, first: FoundAttribute, others: FoundAttribute[]): void {
+  if (others.some((found) => viewerLocation(found) !== viewerLocation(first))) {
+    throw new ControllerError(
+      `"${name}" is on points for some data and on cells for others; threshold them separately`,
+    );
+  }
+  if (others.some((found) => isTimeSeries(found) !== isTimeSeries(first))) {
+    throw new ControllerError(
+      `"${name}" is a time series for some data only; threshold them separately`,
+    );
+  }
+}
+
+// The default range spans every id, so that no data loses elements it holds
+function defaultRange(founds: FoundAttribute[], item: number): { min: number; max: number } {
+  const ranges = founds.map(({ attribute }) => getAttributeRange(attribute, item));
+  return {
+    min: Math.min(...ranges.map(({ min }) => min)),
+    max: Math.max(...ranges.map(({ max }) => max)),
+  };
+}
+
 async function threshold(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
   const { ids, minimum, maximum } = params;
   if (params.remove === true) {
@@ -80,21 +116,28 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
   }
   const name = need(params.filter, "attribute", params.attribute);
   checkRange(minimum, maximum);
-  const found = await findAttribute({
-    id: ids[0] ?? "",
-    name,
-    location: params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location],
-  });
-  const item = resolveItem(params.item, found.attribute);
-  const range = getAttributeRange(found.attribute, item);
-  const isSeries = (found.attribute.time_steps?.length ?? 0) > 0;
+  const location =
+    params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location];
+  const founds = await Promise.all(
+    ids.map(async (id) => {
+      const found = await findAttribute({ id, name, location });
+      return found;
+    }),
+  );
+  const [first, ...others] = founds;
+  if (first === undefined) {
+    throw new ControllerError("threshold needs at least one id");
+  }
+  checkSameArray(name, first, others);
+  const [item = 0] = founds.map((found) => resolveItem(params.item, found.attribute));
+  const range = defaultRange(founds, item);
   const bounds = { item, minimum: minimum ?? range.min, maximum: maximum ?? range.max };
   await store.setThreshold(ids, {
-    name: attributeArrayName(name, isSeries ? FIRST_TIME_STEP : undefined),
-    location: found.kind === "vertex" ? "point" : "cell",
+    name: attributeArrayName(name, isTimeSeries(first) ? FIRST_TIME_STEP : undefined),
+    location: viewerLocation(first),
     ...bounds,
   });
-  return { attribute: name, location: found.kind, ...bounds };
+  return { attribute: name, location: first.kind, ...bounds };
 }
 
 const FILTERS: Record<FilterName, FilterHandler> = { shrink, explode, slice, clip, threshold };

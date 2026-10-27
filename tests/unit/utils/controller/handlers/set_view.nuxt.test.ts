@@ -64,9 +64,10 @@ const hybridViewerStore = {
   setCameraOrientation: vi.fn<() => void>(),
   setCamera: vi.fn<() => void>(),
   setZScaling: vi.fn<() => Promise<void>>(),
+  setBackgroundColor: vi.fn<(color: typeof ORANGE) => Promise<void>>(),
   remoteRender: vi.fn<() => Promise<void>>(),
   camera_options: CAMERA_OPTIONS,
-  genericRenderWindow: {} as object | undefined,
+  genericRenderWindow: { value: {} as object | undefined },
 };
 
 async function setView(params: Record<string, unknown>): Promise<unknown> {
@@ -94,7 +95,7 @@ describe("the set-view controller handler", () => {
       await Promise.resolve();
       return { Block: ["block-a", "block-b"], Surface: ["surface-a"] }[type] ?? [];
     });
-    hybridViewerStore.genericRenderWindow = {};
+    hybridViewerStore.genericRenderWindow.value = {};
     await getTable("camera_positions").clear();
   });
 
@@ -200,7 +201,7 @@ describe("the set-view controller handler", () => {
   test("restore restores through the viewer when there is no render window", async () => {
     await useCameraManagerStore().saveCameraPosition("top", CAMERA_OPTIONS);
     const [saved] = await getTable<{ id: number }>("camera_positions").toArray();
-    hybridViewerStore.genericRenderWindow = undefined;
+    hybridViewerStore.genericRenderWindow.value = undefined;
     viewerStore.request.mockResolvedValue({});
 
     await setView({ action: "restore", positionId: saved?.id });
@@ -231,9 +232,19 @@ describe("the set-view controller handler", () => {
     expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
 
-  test("scene sets background from hex", async () => {
+  test("scene sets the background of both renderers from hex", async () => {
     await setView({ action: "scene", backgroundColor: "#ff8800" });
 
+    expect(hybridViewerStore.setBackgroundColor).toHaveBeenCalledWith(ORANGE);
+    expect(viewerStore.request).not.toHaveBeenCalled();
+  });
+
+  test("scene sets the background through the viewer when there is no render window", async () => {
+    hybridViewerStore.genericRenderWindow.value = undefined;
+
+    await setView({ action: "scene", backgroundColor: "#ff8800" });
+
+    expect(hybridViewerStore.setBackgroundColor).not.toHaveBeenCalled();
     expect(viewerStore.request).toHaveBeenCalledWith(
       expect.objectContaining({ params: { color: ORANGE } }),
     );

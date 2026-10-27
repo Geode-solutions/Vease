@@ -14,6 +14,9 @@ import { runLlamaServer } from "@vease_server/utils/llama_cpp";
 
 vi.setConfig({ testTimeout: 10_000 });
 
+const ONCE = 1;
+const TWICE = 2;
+
 vi.mock(import("@vease_server/utils/llama_cpp"), () => ({
   runLlamaServer: vi.fn<typeof runLlamaServer>().mockResolvedValue({
     port: 8080,
@@ -336,6 +339,28 @@ describe("the LLM server utilities", () => {
       expect(mcp.createMCPClient).toHaveBeenCalledExactlyOnceWith({
         transport: { type: "http", url: DATA_URL },
       });
+    });
+
+    test("lists the resources of a server once across calls", async () => {
+      const data = dataClient();
+      const llm = await loadLlm({ [DATA_URL]: data });
+
+      await llm.getChatTools();
+      await llm.getChatTools();
+
+      expect(data.listResources).toHaveBeenCalledTimes(ONCE);
+      expect(data.listResourceTemplates).toHaveBeenCalledTimes(ONCE);
+    });
+
+    test("lists the resources again once the server failed", async () => {
+      const data = dataClient();
+      data.tools.mockRejectedValueOnce(new Error("disconnected"));
+      const llm = await loadLlm({ [DATA_URL]: data });
+
+      await llm.getChatTools();
+      await llm.getChatTools();
+
+      expect(data.listResources).toHaveBeenCalledTimes(TWICE);
     });
 
     test("readDataContext returns the text of vease://data", async () => {

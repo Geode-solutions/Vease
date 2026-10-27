@@ -5,12 +5,10 @@ import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
 import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
-import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
+import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useTreeviewStore } from "@ogw_front/stores/treeview";
-// oxlint-disable-next-line import/max-dependencies -- the data manager wires the dialogs, the stores and the data actions
 import { useUIStore } from "@vease/stores/ui";
 
 const { compact = false } = defineProps<{ compact?: boolean }>();
@@ -18,8 +16,6 @@ const { compact = false } = defineProps<{ compact?: boolean }>();
 const UIStore = useUIStore();
 const dataStore = useDataStore();
 const hybridViewerStore = getHybridViewerStore();
-const treeviewStore = useTreeviewStore();
-const dataStyleStore = getDataStyleStore();
 
 const search = ref("");
 const viewMode = ref("list");
@@ -94,12 +90,8 @@ async function confirmRename(newName: string): Promise<void> {
 async function isolateItem(item: DataItem): Promise<void> {
   const promises = items.value.map(async (i) => {
     const visible = i.id === item.id;
-    await dataStore.updateItem(i.id, { visible });
-    await dataStyleStore.setVisibility(i.id, visible, i);
+    await setDataVisibility(i.id, visible);
     i.visible = visible;
-    if (!visible) {
-      treeviewStore.removeItem(i.id);
-    }
   });
   await Promise.all(promises);
   focusCamera(item);

@@ -7,8 +7,11 @@ import { commandHandlers } from "@vease/utils/controller/handlers/index";
 import { errorMessage } from "@vease/utils/controller/errors";
 
 interface CommandContext {
+  // Epoch ms on the browser clock after which the server no longer waits for the reply
   deadline: number;
 }
+
+type QueuedCommand = ControllerCommand & CommandContext;
 
 type ControllerHandler = (params: unknown, context?: CommandContext) => Promise<unknown>;
 
@@ -24,8 +27,10 @@ const RECONNECT_DELAYS_MS = [
 ];
 
 const controllerHandlers: Record<string, ControllerHandler> = { ...commandHandlers };
+// Commands that only wait for work done elsewhere: in the queue they would hold up every later command
+const UNQUEUED_COMMANDS = new Set(["await-data"]);
 
-const queue: ControllerCommand[] = [];
+const queue: QueuedCommand[] = [];
 let draining = false;
 
 async function runCommand({
@@ -33,7 +38,7 @@ async function runCommand({
   command,
   params,
   deadline,
-}: ControllerCommand): Promise<ControllerReply> {
+}: QueuedCommand): Promise<ControllerReply> {
   const handler = Object.hasOwn(controllerHandlers, command)
     ? controllerHandlers[command]
     : undefined;
@@ -59,7 +64,7 @@ async function runCommand({
   }
 }
 
-async function processCommand(message: ControllerCommand): Promise<void> {
+async function processCommand(message: QueuedCommand): Promise<void> {
   const reply = await runCommand(message);
   try {
     await $fetch(COMMAND_REPLY_URL, { method: "POST", body: reply });
@@ -94,8 +99,8 @@ function isControllerCommand(value: unknown): value is ControllerCommand {
     typeof value.requestId === "string" &&
     "command" in value &&
     typeof value.command === "string" &&
-    "deadline" in value &&
-    typeof value.deadline === "number"
+    "timeout" in value &&
+    typeof value.timeout === "number"
   );
 }
 
@@ -111,7 +116,12 @@ function handleCommandMessage(rawData: string): void {
     consola.error("[CONTROLLER] invalid command", rawData);
     return;
   }
-  queue.push(message);
+  const command: QueuedCommand = { ...message, deadline: Date.now() + message.timeout };
+  if (UNQUEUED_COMMANDS.has(command.command)) {
+    void processCommand(command);
+    return;
+  }
+  queue.push(command);
   void drainQueue();
 }
 

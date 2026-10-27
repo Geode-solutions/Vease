@@ -18,6 +18,18 @@ type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
 const mcpClientsByUrl = new Map<string, Promise<MCPClient>>();
 
+interface ResourceEntry {
+  client: MCPClient;
+  uri?: string;
+  uriTemplate?: string;
+  name: string;
+  description?: string;
+}
+
+const DATA_RESOURCE_URI = "vease://data";
+// What a server offers hardly changes, so its resources are listed once per client
+const resourceCatalogsByUrl = new Map<string, Promise<ResourceEntry[]>>();
+
 function getAppMcpUrl(): string {
   return `${getAppBaseUrl()}/mcp`;
 }
@@ -68,6 +80,11 @@ async function getChatModel({
   return chatModel;
 }
 
+function forgetMcpServer(url: string): void {
+  mcpClientsByUrl.delete(url);
+  resourceCatalogsByUrl.delete(url);
+}
+
 async function getMcpClient(url: string): Promise<MCPClient> {
   let clientPromise = mcpClientsByUrl.get(url);
   if (!clientPromise) {
@@ -86,29 +103,19 @@ async function getToolsFromUrl(
     return await client.tools();
   } catch (error) {
     consola.error(`Failed to load MCP tools from ${url}`, error);
-    mcpClientsByUrl.delete(url);
+    forgetMcpServer(url);
     return undefined;
   }
 }
-
-interface ResourceEntry {
-  client: MCPClient;
-  uri?: string;
-  uriTemplate?: string;
-  name: string;
-  description?: string;
-}
-
-const DATA_RESOURCE_URI = "vease://data";
 
 function textOf(contents: Awaited<ReturnType<MCPClient["readResource"]>>["contents"]): string {
   return contents.flatMap((content) => ("text" in content ? [content.text] : [])).join("\n");
 }
 
-async function getResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
+async function listResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
   const client = await getMcpClient(url).catch((error: unknown) => {
     consola.error(`Failed to connect to MCP server ${url}`, error);
-    mcpClientsByUrl.delete(url);
+    forgetMcpServer(url);
     return undefined;
   });
   if (client === undefined) {
@@ -143,6 +150,16 @@ async function getResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
   } else {
     consola.error(`Failed to list MCP resource templates from ${url}`, templatesResult.reason);
   }
+  return entries;
+}
+
+async function getResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
+  let catalog = resourceCatalogsByUrl.get(url);
+  if (!catalog) {
+    catalog = listResourcesFromUrl(url);
+    resourceCatalogsByUrl.set(url, catalog);
+  }
+  const entries = await catalog;
   return entries;
 }
 

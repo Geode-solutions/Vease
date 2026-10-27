@@ -52,7 +52,7 @@ describe("command bus", () => {
     expect(command).toStrictEqual({
       command: "set-style",
       params: { a: 1 },
-      deadline: Date.now() + COMMAND_TIMEOUT_MS,
+      timeout: COMMAND_TIMEOUT_MS,
     });
 
     resolveReply({ requestId, ok: true, result: { done: true } });
@@ -89,7 +89,7 @@ describe("command bus", () => {
     subscribeCommands({ push });
 
     const promise = dispatchCommand("export", {}, { timeout: LONG_COMMAND_TIMEOUT_MS });
-    expect(pushedCommand(push).deadline).toBe(Date.now() + LONG_COMMAND_TIMEOUT_MS);
+    expect(pushedCommand(push).timeout).toBe(LONG_COMMAND_TIMEOUT_MS);
     await Promise.all([
       expect(promise).rejects.toThrow("in time"),
       (async (): Promise<void> => {
@@ -100,12 +100,15 @@ describe("command bus", () => {
     ]);
   });
 
-  test("rejects pending requests when the subscriber disconnects", async () => {
+  test("rejects pending requests when the subscriber disconnects, as possibly applied", async () => {
     const unsubscribe = subscribeCommands({ push: createSink() });
 
     const promise = dispatchCommand("set-style", {});
     unsubscribe();
-    await expect(promise).rejects.toThrow("Vease is not ready");
+    await expect(promise).rejects.toThrow(
+      'Lost the connection to Vease while it ran the "set-style" command: it may have been applied',
+    );
+    await expect(promise).rejects.not.toMatchObject({ statusCode: SERVICE_UNAVAILABLE });
   });
 
   test("rejects when the subscriber fails to push the command", async () => {
@@ -163,7 +166,7 @@ describe("command bus", () => {
     const onB = dispatchCommand("set-view", {});
 
     unsubscribeB();
-    await expect(onB).rejects.toThrow("Vease is not ready");
+    await expect(onB).rejects.toThrow("Lost the connection to Vease");
 
     resolveReply({ requestId: pushedRequestId(pushA), ok: true, result: "a" });
     await expect(onA).resolves.toBe("a");
