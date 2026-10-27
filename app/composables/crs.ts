@@ -19,6 +19,8 @@ interface Alignment {
   sourcePoints: CrsPoint[];
   targetPoints: CrsPoint[];
   mode: AlignMode;
+  // Data sharing the local frame of the aligned item: aligned in the same request
+  linkedItems?: Pick<DataItem, "id">[];
 }
 
 // Only set without distortion: the affine alignment has no single scale or rotation
@@ -28,7 +30,7 @@ interface AlignResult {
 }
 
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it
-// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types
+// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function
 function useCrs() {
   const backStore = getBackStore();
   const hybridViewerStore = getHybridViewerStore();
@@ -62,8 +64,9 @@ function useCrs() {
   async function alignCrs(
     item: DataItem,
     crs: CRSList,
-    { sourcePoints, targetPoints, mode }: Alignment,
+    { sourcePoints, targetPoints, mode, linkedItems = [] }: Alignment,
   ): Promise<AlignResult> {
+    const linkedIds = linkedItems.map(({ id }) => id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.align,
       params: {
@@ -71,9 +74,15 @@ function useCrs() {
         source_points: sourcePoints,
         target_points: targetPoints,
         mode,
+        ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}),
         ...crs,
       },
     });
+    // Each reload rebuilds an actor: one after another, then the camera moves once
+    for (const linked of response.linked ?? []) {
+      // oxlint-disable-next-line no-await-in-loop
+      await refresh({ id: linked.id }, linked, false);
+    }
     await refresh(item, response);
     return { scale: response.scale, rotation: response.rotation };
   }

@@ -4,6 +4,7 @@ import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_s
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import { useCrsAlign } from "@vease/composables/crs_align";
+import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -30,20 +31,37 @@ const MODES = [
 ] as const;
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
+const items = useDataStore().refAllItems();
+const linkedIds = ref<string[]>([]);
+
+function sameCrs(first: CRSList | undefined, second: CRSList | undefined): boolean {
+  return first?.authority === second?.authority && first?.code === second?.code;
+}
+
+// Only data in the same CRS state can share the local frame of the aligned item
+const linkCandidates = computed(() => {
+  const item = UIStore.crsAlignItem;
+  if (!item) {
+    return [];
+  }
+  return items.value.filter((other) => other.id !== item.id && sameCrs(other.crs, item.crs));
+});
 
 watch(
   () => UIStore.crsAlignItem,
   () => {
     reset();
     targetCrs.value = undefined;
+    linkedIds.value = [];
   },
 );
 
-function successMessage({ scale, rotation }: AlignResult): string {
+function successMessage({ scale, rotation }: AlignResult, count: number): string {
+  const aligned = count > 1 ? `Data aligned (${count} items)` : "Data aligned";
   if (scale === undefined || rotation === undefined) {
-    return "Data aligned";
+    return aligned;
   }
-  return `Data aligned: scale ×${scale.toFixed(2)}, rotation ${Math.round(rotation)}°`;
+  return `${aligned}: scale ×${scale.toFixed(2)}, rotation ${Math.round(rotation)}°`;
 }
 
 function close(): void {
@@ -58,12 +76,14 @@ async function apply(): Promise<void> {
   }
   applying.value = true;
   try {
+    const linkedItems = linkCandidates.value.filter(({ id }) => linkedIds.value.includes(id));
     const result = await alignCrs(item, targetCrs.value, {
       sourcePoints: toSourceCrsPoints(),
       targetPoints: toTargetCrsPoints(),
       mode: mode.value,
+      linkedItems,
     });
-    feedbackStore.add_success(successMessage(result));
+    feedbackStore.add_success(successMessage(result, 1 + linkedItems.length));
     close();
   } finally {
     applying.value = false;
@@ -169,6 +189,24 @@ async function apply(): Promise<void> {
         compact
         :geode-object-type="UIStore.crsAlignItem.geode_object_type"
       />
+
+      <template v-if="linkCandidates.length > 0">
+        <div class="text-caption font-weight-bold text-uppercase opacity-60 mt-4 mb-1">
+          Apply also to
+        </div>
+        <v-checkbox
+          v-for="candidate in linkCandidates"
+          :key="candidate.id"
+          v-model="linkedIds"
+          :value="candidate.id"
+          :label="candidate.name"
+          :data-testid="'crsAlignLinked-' + candidate.id"
+          density="compact"
+          color="white"
+          theme="dark"
+          hide-details
+        />
+      </template>
     </v-card-text>
 
     <v-card-actions class="px-0 pb-0">

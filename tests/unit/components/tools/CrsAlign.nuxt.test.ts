@@ -1,5 +1,6 @@
 // oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
@@ -117,6 +118,7 @@ describe("crs align tool", () => {
       sourcePoints: typedSource,
       targetPoints: TARGET,
       mode: "affine",
+      linkedItems: [],
     });
     expect(useUIStore().showCrsAlign).toBe(false);
     wrapper.unmount();
@@ -139,8 +141,40 @@ describe("crs align tool", () => {
       sourcePoints: [{ ...SOURCE_ORIGIN, picked: false }],
       targetPoints: [TARGET_ORIGIN],
       mode: "similarity",
+      linkedItems: [],
     });
     expect(success).toHaveBeenCalledWith("Data aligned: scale ×0.50, rotation 12°");
+    wrapper.unmount();
+  });
+
+  test("aligns the checked items sharing the same local frame", async () => {
+    alignCrs.mockResolvedValue({ scale: 1, rotation: 25 });
+    const success = vi.spyOn(useFeedbackStore(), "add_success");
+    const stored: StoredItem = { ...item, created_at: "2026-10-27" };
+    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
+    const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
+    vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells, georeferenced]));
+    const wrapper = mountWithPlugins(CrsAlign);
+    // Data already in another CRS does not share the local frame
+    const linked = wrapper.findAll('[data-testid^="crsAlignLinked-"]');
+    expect(linked.map((checkbox) => checkbox.attributes("data-testid"))).toStrictEqual([
+      "crsAlignLinked-item-2",
+    ]);
+
+    await wrapper.find('[data-testid="crsAlignLinked-item-2"] input').setValue(true);
+    await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
+    await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
+    await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
+    await flushPromises();
+    await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
+    await flushPromises();
+
+    expect(alignCrs).toHaveBeenCalledWith(
+      item,
+      LAMBERT,
+      expect.objectContaining({ linkedItems: [wells] }),
+    );
+    expect(success).toHaveBeenCalledWith("Data aligned (2 items): scale ×1.00, rotation 25°");
     wrapper.unmount();
   });
 
