@@ -116,8 +116,7 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
   }
   const name = need(params.filter, "attribute", params.attribute);
   checkRange(minimum, maximum);
-  const location =
-    params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location];
+  const location = params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location];
   const founds = await Promise.all(
     ids.map(async (id) => {
       const found = await findAttribute({ id, name, location });
