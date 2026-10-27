@@ -6,14 +6,18 @@ import InfraConnected from "@ogw_front/components/InfraConnected.vue";
 import Launcher from "@ogw_front/components/Launcher.vue";
 import { Status } from "@ogw_front/utils/status";
 import { consola } from "consola";
+import { foldersIgnoredWarning } from "@ogw_front/utils/upload_path";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
+import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
+import { isUpdaterAvailable } from "@vease/stores/updater";
 import { useAuth } from "@vease/composables/auth";
 import { useExtensions } from "@vease/composables/extensions";
 import { useUIStore } from "@vease/stores/ui";
@@ -23,6 +27,7 @@ import { useUIStore } from "@vease/stores/ui";
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
+const updaterAvailable = isUpdaterAvailable();
 const infraStore = getInfraStore();
 const appStore = useAppStore();
 
@@ -39,6 +44,12 @@ function handleFilesDropped(files): void {
   if (!UIStore.showStepper && !UIStore.showExtensions) {
     UIStore.setDroppedFiles([...files]);
     UIStore.setShowStepper(true);
+  }
+}
+
+function handleFoldersDropped(): void {
+  if (!UIStore.showStepper && !UIStore.showExtensions) {
+    useFeedbackStore().add_warning(foldersIgnoredWarning);
   }
 }
 
@@ -100,7 +111,11 @@ watch(
         <NuxtPage v-else style="z-index: 1" class="fill-height" />
       </GlassCard>
       <InfraConnected>
-        <DrawerManager :ui-store="UIStore" @files-dropped="handleFilesDropped" />
+        <DrawerManager
+          :ui-store="UIStore"
+          @files-dropped="handleFilesDropped"
+          @folders-dropped="handleFoldersDropped"
+        />
       </InfraConnected>
     </v-main>
     <v-progress-linear
@@ -112,6 +127,7 @@ watch(
       style="z-index: 4"
     />
     <FeedBackSnackers />
+    <UpdateSnackbar v-if="updaterAvailable" />
 
     <GlobalComponents />
   </v-app>

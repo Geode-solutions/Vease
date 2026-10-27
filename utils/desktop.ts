@@ -13,9 +13,12 @@ import {
   shell,
   utilityProcess,
 } from "electron";
+import { setAppBaseUrl, setIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.js";
 import { consola } from "consola";
 import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts.js";
-import { setAppBaseUrl } from "@geode/opengeodeweb-front/shared/scripts.js";
+
+// Local imports
+import { logBrowserConsole } from "./browser_console";
 
 // Isolate userData folder for concurrent Playwright workers during E2E tests
 if (process.env.CI === "e2e") {
@@ -51,6 +54,11 @@ function setupBrowserWindow(): BrowserWindow {
     callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
   });
 
+  // Screenshots including the UI capture the requesting frame directly, without a source picker
+  window.webContents.session.setDisplayMediaRequestHandler((request, callback) => {
+    callback(request.frame ? { video: request.frame } : {});
+  });
+
   window.webContents.setWindowOpenHandler(({ url }) => {
     void shell.openExternal(url);
     return { action: "deny" };
@@ -79,13 +87,8 @@ function setupBrowserWindow(): BrowserWindow {
     }
   })();
 
-  window.webContents.on("console-message", (...args) => {
-    const [_event, level, message, line, sourceId] = args;
-    // Map log levels to readable names
-    const logLevels = ["VERBOSE", "INFO", "ERROR"];
-    const logLevel = logLevels[level] ?? "UNKNOWN";
-    // Print the console message to the terminal
-    consola.info(`[${logLevel}] ${message} (Source: ${sourceId}, Line: ${line})`);
+  window.webContents.on("console-message", (details) => {
+    logBrowserConsole(details.level, details.message);
   });
   return window;
 }
@@ -162,8 +165,25 @@ async function waitForServerReady(
   });
 }
 
+async function loadDevServer(window: BrowserWindow): Promise<string> {
+  const devServerUrl = process.env.VITE_DEV_SERVER_URL;
+  consola.info("VITE_DEV_SERVER_URL", devServerUrl);
+  if (devServerUrl === undefined || devServerUrl === "") {
+    throw new Error("VITE_DEV_SERVER_URL is not set in development mode");
+  }
+  // The dev server outlives Electron restarts: forget the readiness of a previous window
+  await setIsAppReady(devServerUrl, false);
+  void window.loadURL(devServerUrl);
+  window.on("ready-to-show", () => {
+    window.webContents.openDevTools();
+  });
+  await setAppBaseUrl(devServerUrl);
+  return devServerUrl;
+}
+
 async function createNewWindow(): Promise<{
   window: BrowserWindow;
+  baseUrl: string;
   cleanup: () => void | Promise<void>;
 }> {
   const window = setupBrowserWindow();
@@ -181,28 +201,20 @@ async function createNewWindow(): Promise<{
     const controller = new AbortController();
     const expectedResponse = `Listening on http://[::]:${PORT}`;
     await waitForServerReady(server, expectedResponse, controller.signal);
-    void window.loadURL(`http://localhost:${PORT}`);
-    await setAppBaseUrl(`http://localhost:${PORT}`);
+    const baseUrl = `http://localhost:${PORT}`;
+    void window.loadURL(baseUrl);
+    await setAppBaseUrl(baseUrl);
 
     // oxlint-disable-next-line eslint/func-names
     cleanup = async function (): Promise<void> {
       consola.info("Killing server process", { PORT });
       await fetch(`http://localhost:${PORT}/api/local/app/kill`, { method: "POST" });
     };
-  } else {
-    const devServerUrl = process.env.VITE_DEV_SERVER_URL;
-    consola.info("VITE_DEV_SERVER_URL", devServerUrl);
-    if (devServerUrl === undefined || devServerUrl === "") {
-      throw new Error("VITE_DEV_SERVER_URL is not set in development mode");
-    }
-    void window.loadURL(devServerUrl);
-    window.on("ready-to-show", () => {
-      window.webContents.openDevTools();
-    });
-    await setAppBaseUrl(devServerUrl);
+    return { window, baseUrl, cleanup };
   }
 
-  return { window, cleanup };
+  const baseUrl = await loadDevServer(window);
+  return { window, baseUrl, cleanup };
 }
 
 const credentialsFilePath = path.join(app.getPath("userData"), "credentials.dat");

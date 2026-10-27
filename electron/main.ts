@@ -2,7 +2,6 @@
 
 // Third party imports
 import { app, ipcMain } from "electron";
-import { autoUpdater } from "electron-updater";
 import { cleanupBackend } from "@geode/opengeodeweb-front/server/utils/cleanup.js";
 import { consola } from "consola";
 
@@ -15,12 +14,12 @@ import {
   saveCredentials,
   // oxlint-disable-next-line import/no-relative-parent-imports
 } from "../utils/desktop";
+import { initUpdater } from "./updater";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { loadLaunchFiles } from "../utils/launch_files";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
-if (!appArgs.flags.includes("--no-update")) {
-  void autoUpdater.checkForUpdatesAndNotify();
-}
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let serverCleanup: (() => unknown) | undefined = undefined;
@@ -53,8 +52,11 @@ ipcMain.handle("delete_credentials", () => {
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
 void app.whenReady().then(async () => {
-  const { cleanup } = await createNewWindow();
+  const { cleanup, baseUrl } = await createNewWindow();
   serverCleanup = cleanup;
+  if (appArgs.files.length > 0) {
+    void loadLaunchFiles(baseUrl, appArgs.files);
+  }
 });
 
 let cleaned = false;
@@ -68,6 +70,8 @@ async function clean_up(): Promise<void> {
   cleaned = true;
   consola.info("end clean");
 }
+
+initUpdater({ autoCheck: !appArgs.flags.includes("--no-update"), beforeInstall: clean_up });
 
 app.on("before-quit", (event) => {
   if (!cleaned) {

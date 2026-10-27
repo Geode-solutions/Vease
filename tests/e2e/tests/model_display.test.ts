@@ -14,15 +14,14 @@ import {
 import {
   setModelColorWithSlider,
   setModelColoringStyle,
+  setModelComponentsPointsSize,
   setModelEdgesVisibility,
   setModelOpacity,
-  setModelPointsSize,
   setModelPointsVisibility,
 } from "@vease_tests/utils/data";
 import { toggleInfoCard, viewerContextMenu } from "@vease_tests/utils/viewer_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const brepFilename = "test.og_brep";
@@ -58,7 +57,7 @@ test("points visibility", async ({ window }) => {
 });
 
 test("points size", async ({ window }) => {
-  await setModelPointsSize(window, pointsSize);
+  await setModelComponentsPointsSize(window, "modelPointsComponentTypeOptions", pointsSize);
 });
 
 test("model color", async ({ window }) => {
@@ -79,7 +78,6 @@ test("object tree context menu", async ({ window }) => {
   const mainObjectTree = getMainObjectTree(window);
   const testItem = mainObjectTree.getByText("test", { exact: true }).first();
   await testItem.click({ button: "right", force: true });
-  await waitForActionSettled(window);
 });
 
 test("edges visibility", async ({ window }) => {

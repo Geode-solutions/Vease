@@ -122,11 +122,11 @@ describe("the useAuth composable", () => {
   describe("the register action", () => {
     test("creates user, sends verification email, and signs out", async () => {
       const newUserMock = { email: "new@example.com" };
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       vi.mocked(createUserWithEmailAndPassword).mockResolvedValue({
         user: newUserMock,
         providerId: undefined,
         operationType: "signIn",
-        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       } as unknown as UserCredential);
 
       const apiStore = useAPIStore();
@@ -157,11 +157,11 @@ describe("the useAuth composable", () => {
 
   describe("the login action", () => {
     test("logs in user with verified email", async () => {
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
         user: mockUser,
         providerId: undefined,
         operationType: "signIn",
-        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       } as unknown as UserCredential);
 
       const auth = useAuth();
@@ -178,11 +178,11 @@ describe("the useAuth composable", () => {
         emailVerified: false,
         reload: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
       };
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
         user: unverifiedUser,
         providerId: undefined,
         operationType: "signIn",
-        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       } as unknown as UserCredential);
 
       const auth = useAuth();
@@ -202,11 +202,11 @@ describe("the useAuth composable", () => {
       // oxlint-disable-next-line no-unsafe-type-assertion -- no ambient type declares electronAPI on globalThis; this test-only augmentation mirrors app/composables/auth.ts's DesktopElectronAPI
       (globalThis as unknown as { electronAPI: typeof electronAPI }).electronAPI = electronAPI;
 
+      // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       vi.mocked(signInWithEmailAndPassword).mockResolvedValue({
         user: mockUser,
         providerId: undefined,
         operationType: "signIn",
-        // oxlint-disable-next-line no-unsafe-type-assertion -- partial mock of the firebase UserCredential type; only the fields this suite touches are needed, see tests/unit/server/utils/data_file.nuxt.test.ts for the established pattern
       } as unknown as UserCredential);
 
       const auth = useAuth();

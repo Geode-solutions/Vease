@@ -12,6 +12,7 @@ import { consola } from "consola";
 
 // Local imports
 import { navigateToApp } from "./navigate";
+import { waitForActionSettled } from "./wait_for_action_settled";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
@@ -133,6 +134,8 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       // Read at teardown: the test may have restarted the app
       const { window } = app;
       if (testInfo.status === testInfo.expectedStatus) {
+        // Never capture while the microservices are still busy (busy indicator bar, half-rendered viewer)
+        await waitForActionSettled(window);
         // The account icon depends on login state (only cloud is logged in)
         await expect(window).toHaveScreenshot({
           mask: [window.getByTestId("accountNavButton"), ...screenshotMask.locators],

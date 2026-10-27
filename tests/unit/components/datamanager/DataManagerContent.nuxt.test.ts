@@ -14,16 +14,17 @@ import { useTreeviewStore } from "@ogw_front/stores/treeview";
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@vease/components/datamanager/DataManagerHeader.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "DataManagerHeader",
     props: ["searchValue", "activeTab", "tabs", "compact"],
     emits: ["update:searchValue", "update:activeTab"],
     template: "<div class='data-manager-header-stub'></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof DataManagerHeader,
 }));
 
 vi.mock(import("@vease/components/datamanager/DataTable.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "DataTable",
     props: ["items", "search", "compact", "selectedIds"],
@@ -38,27 +39,26 @@ vi.mock(import("@vease/components/datamanager/DataTable.vue"), () => ({
       "delete-selected",
     ],
     template: "<div class='data-table-stub'></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof DataTable,
 }));
 
 vi.mock(import("@ogw_front/components/DeleteDialog.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "DeleteDialog",
     props: ["show", "item", "selectedCount"],
     emits: ["update:show", "confirm"],
     template: "<div class='delete-dialog-stub'></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof DeleteDialog,
 }));
 
 vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
     name: "RenameDialog",
     props: ["show", "item", "initialName"],
     emits: ["update:show", "confirm"],
     template: "<div class='rename-dialog-stub'></div>",
-    // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   } as unknown as typeof RenameDialog,
 }));
 

@@ -17,10 +17,12 @@ import { defaultDataName, polygonalSurfaceGeodeObjectType } from "@vease_tests/u
 import {
   openMeshPolygonsMenu,
   setMeshEdgesColor,
+  setMeshEdgesVertexAttribute,
   setMeshEdgesVisibility,
   setMeshEdgesWidth,
   setMeshPointsColor,
   setMeshPointsSize,
+  setMeshPointsVertexAttribute,
   setMeshPointsVisibility,
   setMeshPolygonsColor,
   setMeshPolygonsColorMap,
@@ -190,4 +192,12 @@ test("polygons textures", async ({ window }) => {
   await setMeshPolygonsVisibility(window, true);
   await setMeshPolygonsTextures(window);
   await closeFeedbackSnackbar(window);
+});
+
+test("points vertex attribute", async ({ window }) => {
+  await setMeshPointsVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
+});
+
+test("edges vertex attribute", async ({ window }) => {
+  await setMeshEdgesVertexAttribute(window, vertexAttributeName, { colorMap: colorMapName });
 });

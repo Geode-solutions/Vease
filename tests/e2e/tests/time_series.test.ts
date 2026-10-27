@@ -3,17 +3,19 @@
 import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
 import {
-  closeObjectsTree,
-  expandMainObjectTree,
-  getMainObjectTree,
-  openObjectsTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
-import {
+  closeModelComponentsTree,
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
+import {
+  closeObjectsTree,
+  expandMainObjectTree,
+  getMainObjectTree,
+  openObjectsTree,
+} from "@vease_tests/utils/object_trees/main_object_tree";
+import { getQuickColormapPicker, viewerQuickColormap } from "@vease_tests/utils/viewer_interaction";
 import {
   removeThresholdFilter,
   selectThresholdSurfacePolygon,
@@ -30,8 +32,6 @@ import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { setFeatureTimeStep } from "@vease_tests/utils/data/helpers/attribute";
 import { test } from "@vease_tests/utils/fixtures";
-import { viewerQuickColormap } from "@vease_tests/utils/viewer_interaction";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const inputFilename = "time_series.og_psf3d";
@@ -71,10 +71,7 @@ test("time series color bar time step", async ({ window }) => {
   await closeAllMenus(window);
   await closeObjectsTree(window);
   await viewerQuickColormap(window);
-  const quickColormapPicker = window
-    .locator(".v-overlay__content")
-    .filter({ has: window.getByTestId("colorMapListFilter") });
-  await setFeatureTimeStep(window, quickColormapPicker, lastTimeStep);
+  await setFeatureTimeStep(window, getQuickColormapPicker(window), lastTimeStep);
 });
 
 test("model load brep and open model components", async ({ window }) => {
@@ -92,7 +89,6 @@ test("model load brep and open model components", async ({ window }) => {
   await openModelComponentsTree(window, brepGeodeObjectType, modelDataName);
   await hideObjectInTree(window, "Blocks", undefined, getModelComponentsObjectTree(window));
   await moveMouseOutOfTheWay(window);
-  await waitForActionSettled(window);
 });
 
 test("model surfaces polygon time series", async ({ window }) => {
@@ -139,4 +135,13 @@ test("model threshold remove", async ({ window }) => {
   await removeThresholdFilter(window);
   await closeAllMenus(window);
   await moveMouseOutOfTheWay(window);
+});
+
+// The object trees cover the color bars: close them to click on the model one
+test("model color bar time step", async ({ window }) => {
+  await closeAllMenus(window);
+  await closeModelComponentsTree(window, brepGeodeObjectType, modelDataName);
+  await closeObjectsTree(window);
+  await viewerQuickColormap(window);
+  await setFeatureTimeStep(window, getQuickColormapPicker(window), middleTimeStep);
 });

@@ -20,6 +20,8 @@ import { runBrowser } from "@geode/opengeodeweb-front/server/utils/scripts.js";
 // Local imports
 // oxlint-disable-next-line no-relative-parent-imports
 import packageJson from "../../../package.json" with { type: "json" };
+// oxlint-disable-next-line no-relative-parent-imports
+import { logBrowserConsole } from "../../../utils/browser_console";
 
 // Constants
 const __dirname = import.meta.dirname;
@@ -239,7 +241,7 @@ async function navigateToApp(
   const browser = await launchBrowser();
   const page = await newBrowserPage(browser);
   page.on("console", (msg) => {
-    consola.info(`Browser console: ${msg.text()}`);
+    logBrowserConsole(msg.type(), msg.text(), "Browser console: ");
   });
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
@@ -249,6 +251,10 @@ async function navigateToApp(
     consola.info(`Waiting for ${WAIT_TIMES.browser / MILLISECONDS} seconds for the app to load...`);
     await waitForAppReady(appUrl, WAIT_TIMES.browser);
     await page.waitForFunction(() => document.readyState === "complete");
+    // The server answers before the microservices are up: on a cold Windows runner, Import stays disabled for a while
+    await expect(page.getByTestId("layoutImportButton")).toBeEnabled({
+      timeout: WAIT_TIMES.browser,
+    });
 
     return {
       window: page,

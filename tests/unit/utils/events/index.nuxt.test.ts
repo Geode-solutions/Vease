@@ -64,13 +64,13 @@ describe("events/index", () => {
     getEventSourceState().data.value = undefined;
     remoteRenderMock.mockClear();
 
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(getBackStore).mockReturnValue({
       base_url: "http://localhost:5000",
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getBackStore>);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     vi.mocked(getHybridViewerStore).mockReturnValue({
       remoteRender: remoteRenderMock,
-      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
     } as unknown as ReturnType<typeof getHybridViewerStore>);
   });
 

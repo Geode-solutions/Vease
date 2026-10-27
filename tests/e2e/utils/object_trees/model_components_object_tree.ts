@@ -167,6 +167,20 @@ async function openModelComponentsTree(
   await waitForActionSettled(window);
 }
 
+// The model components tree button toggles its view: only click it when the view is shown
+async function closeModelComponentsTree(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
+  const isVisible = await getModelComponentsObjectTree(window)
+    .isVisible()
+    .catch(() => false);
+  if (isVisible) {
+    await openModelComponentsTree(window, geodeObjectType, dataName);
+  }
+}
+
 async function hideAllComponentLeafRows(window: Page, categoryName: string): Promise<void> {
   const tree = getModelComponentsObjectTree(window);
   await expandGeodeObjectTypeInTree(window, categoryName, tree);
@@ -183,6 +197,7 @@ async function hideAllComponentLeafRows(window: Page, categoryName: string): Pro
 }
 
 export {
+  closeModelComponentsTree,
   collapseMeshComponentType,
   collapseModelComponentsObjectTree,
   collapseModelComponentsObjectTreeGroup,
