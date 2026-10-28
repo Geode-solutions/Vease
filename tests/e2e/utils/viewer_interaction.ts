@@ -36,6 +36,13 @@ async function viewerContextMenu(window: Page, x: number, y: number): Promise<vo
   await waitForActionSettled(window);
 }
 
+const SCENE_CLICK_MARGIN = 20;
+
+async function sceneContextMenu(window: Page): Promise<void> {
+  const box = await getHybridViewerCanvasBoundingBox(getHybridViewerCanvas(window));
+  await viewerContextMenu(window, box.width - SCENE_CLICK_MARGIN, SCENE_CLICK_MARGIN);
+}
+
 async function findOverlappingObjectsPicker(window: Page): Promise<void> {
   let found = false;
   const points = [
@@ -347,6 +354,7 @@ export {
   hoverViewer,
   moveMouseOutOfTheWay,
   openStyleMenu,
+  sceneContextMenu,
   resetMenuScroll,
   setCellsVisibility,
   setEdgesVisibility,

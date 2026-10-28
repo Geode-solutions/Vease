@@ -2,7 +2,7 @@
 // Node imports
 
 // Third party imports
-import { expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -68,6 +68,7 @@ import {
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
   hoverViewer,
+  sceneContextMenu,
   stabilizeHoverTooltip,
   viewerContextMenu,
 } from "@vease_tests/utils/viewer_interaction";
@@ -108,7 +109,10 @@ const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
 const RULER_SNAP_X_RATIO = 0.5;
-const SCREENSHOT_BACKGROUND_COLOR = "255, 0, 0";
+const SCENE_BACKGROUND_COLOR = "255, 0, 0";
+const SCENE_TEXT_COLOR = "255, 255, 255";
+const SCENE_DEFAULT_BACKGROUND_COLOR = "180, 180, 180";
+const SCENE_DEFAULT_TEXT_COLOR = "0, 0, 0";
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 const ROTATE_DRAG_EDGE_MARGIN = 2;
@@ -337,14 +341,47 @@ test("screenshot clipboard with background", async ({ window }) => {
   await closeFeedbackSnackbar(window);
 });
 
-test("screenshot background color preview", async ({ window }) => {
-  await window.getByTestId("screenshotButton").click();
-  await setColorInputText(window, SCREENSHOT_BACKGROUND_COLOR);
+async function openSceneMenuItem(window: Page, menuTestId: string): Promise<void> {
+  await sceneContextMenu(window);
+  await window.getByTestId(menuTestId).click();
+  await waitForActionSettled(window);
+}
+
+async function setSceneTextStyle(window: Page, color: string, font: string): Promise<void> {
+  await openSceneMenuItem(window, "sceneTextMenu");
+  await setColorInputText(window, color);
+  await window.getByTestId("sceneFontFamilySelect").click();
+  await window.getByRole("option", { name: font }).click();
+  await waitForActionSettled(window);
+  await closeAllMenus(window);
+}
+
+test("scene background color", async ({ window }) => {
+  await openSceneMenuItem(window, "sceneBackgroundMenu");
+  await setColorInputText(window, SCENE_BACKGROUND_COLOR);
+  await closeAllMenus(window);
 });
 
-test("screenshot background color restored on cancel", async ({ window }) => {
-  await window.getByTestId("screenshotCancelButton").click();
+test("scene text color and font", async ({ window }) => {
+  await setSceneTextStyle(window, SCENE_TEXT_COLOR, "Times");
+});
+
+test("scene compass", async ({ window }) => {
+  await openSceneMenuItem(window, "sceneOrientationWidgetMenu");
+  await window.getByTestId("sceneOrientationWidgetCompass").click();
   await waitForActionSettled(window);
+  await closeAllMenus(window);
+});
+
+test("scene defaults restored", async ({ window }) => {
+  await openSceneMenuItem(window, "sceneOrientationWidgetMenu");
+  await window.getByTestId("sceneOrientationWidgetAxes").click();
+  await waitForActionSettled(window);
+  await closeAllMenus(window);
+  await setSceneTextStyle(window, SCENE_DEFAULT_TEXT_COLOR, "Arial");
+  await openSceneMenuItem(window, "sceneBackgroundMenu");
+  await setColorInputText(window, SCENE_DEFAULT_BACKGROUND_COLOR);
+  await closeAllMenus(window);
 });
 
 test("screenshot file with UI", async ({ window }) => {
