@@ -1,6 +1,8 @@
 import type { Page } from "@playwright/test";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
+const OPACITY_SLIDER_STEP = 0.05;
+
 async function toggleClippingPlanes(window: Page): Promise<void> {
   await window.getByTestId("clippingPlanesButton").click();
   await waitForActionSettled(window);
@@ -29,6 +31,17 @@ async function setPlaneNormal(window: Page, planeIndex: number, normal: number[]
     await input.fill(normal[axis].toString());
     await input.press("Enter");
     // oxlint-enable no-await-in-loop
+  }
+  await waitForActionSettled(window);
+}
+
+async function setPlaneOpacity(window: Page, planeIndex: number, opacity: number): Promise<void> {
+  const card = window.getByTestId("planeCard").nth(planeIndex);
+  await card.getByTestId("planeOpacitySlider").getByRole("slider").focus();
+  await window.keyboard.press("Home");
+  for (let step = 0; step < Math.round(opacity / OPACITY_SLIDER_STEP); step += 1) {
+    // oxlint-disable-next-line no-await-in-loop
+    await window.keyboard.press("ArrowRight");
   }
   await waitForActionSettled(window);
 }
@@ -84,6 +97,7 @@ export {
   invertPlaneNormal,
   setPlaneOrigin,
   setPlaneNormal,
+  setPlaneOpacity,
   addClippingPlane,
   toggleTargetAllVisible,
   selectClippingDatasets,

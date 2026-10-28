@@ -46,6 +46,7 @@ import {
   invertPlaneNormal,
   selectClippingDatasets,
   setPlaneNormal,
+  setPlaneOpacity,
   setSliceAxis,
   setSliceIndex,
   toggleClippingPlanes,
@@ -102,6 +103,7 @@ const CUSTOM_NORMAL_VALUE_Y = -0.9;
 const CUSTOM_NORMAL_VALUE_Z = 0.41;
 const CUSTOM_SHRINK_FACTOR = 0.5;
 const CUSTOM_EXPLODE_FACTOR = 0.5;
+const CUSTOM_PLANE_OPACITY = 0.6;
 const CUSTOM_SLICE_INDEX = 5;
 const THRESHOLD_MINIMUM = 0;
 const RULER_POINT_2_X = 1.8;
@@ -431,6 +433,11 @@ test("clipping planes multiple planes and datas", async ({ window }) => {
     CUSTOM_NORMAL_VALUE_Z,
   ]);
   await resetCamera(window);
+});
+
+test("clipping planes opacity", async ({ window }) => {
+  await setPlaneOpacity(window, 0, CUSTOM_PLANE_OPACITY);
+  await setPlaneOpacity(window, 1, 1);
 });
 
 test("threshold filter mesh cell attribute", async ({ window }) => {
