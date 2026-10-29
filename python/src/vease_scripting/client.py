@@ -38,7 +38,8 @@ class VeaseClient:
             message = data.get("message") if isinstance(data, dict) else str(data)
             raise RuntimeError(response.status_code, message or "Vease API error", data)
 
-        # Controller routes wrap their result as {statusCode, response}
+        # Every controller schema declares this {statusCode, response} wrapper, and the readiness
+        # route that does not use it never returns both keys, so detecting them is enough
         if isinstance(data, dict) and "response" in data and "statusCode" in data:
             return data["response"]
         return data

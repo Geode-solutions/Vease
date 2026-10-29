@@ -27,3 +27,6 @@ class Resource:
 
     def route(self, suffix: str = "") -> str:
         return f"{self.base_path}/{suffix.lstrip('/')}" if suffix else self.base_path
+
+    def _post(self, suffix: str = "", **params: Any) -> Any:
+        return self.client.post(self.route(suffix), json=body(**params))

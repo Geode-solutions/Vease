@@ -140,6 +140,19 @@ def test_filter_apply_forwards_filter_params():
     }
 
 
+def test_filter_apply_rejects_an_unknown_parameter():
+    with pytest.raises(TypeError):
+        filter_resource = FilterResource(FakeClient())
+        filter_resource.apply("threshold", DATA_ID, minimun=0)  # type: ignore[call-arg]
+
+
+def test_style_colormaps_reads_the_categories():
+    client = FakeClient({"categories": {"Sequential": ["batlow"]}})
+
+    assert StyleResource(client).colormaps() == {"Sequential": ["batlow"]}
+    assert client.calls[0][:2] == ("GET", "/colormaps")
+
+
 def test_export_sends_an_absolute_path():
     client = FakeClient({"filePath": "/abs/shot.png"})
 

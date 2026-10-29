@@ -1,3 +1,4 @@
+import logging
 import shutil
 import subprocess
 import sys
@@ -12,6 +13,8 @@ from .ressources.filter import FilterResource
 from .ressources.style import StyleResource
 from .ressources.view import ViewResource
 from .ressources.viewer import ViewerResource
+
+logger = logging.getLogger(__name__)
 
 LISTENING_PATTERN = re.compile(r"Listening on http://\[?([^\]/:]+|\S+?)\]?:(\d+)")
 
@@ -57,7 +60,7 @@ def _run_vease(folder: str | None = None) -> tuple[str, int]:
     veaseExecutable = (
         _find_vease_in_folder(folder) if folder is not None else _find_vease()
     )
-    print(f"Running {veaseExecutable}")
+    logger.info("Running %s", veaseExecutable)
     args = [veaseExecutable]
     if veaseExecutable.endswith(".AppImage"):
         args.append("--no-sandbox")
@@ -122,7 +125,3 @@ class VeaseScripting:
         self.filter = FilterResource(self.client)
         self.viewer = ViewerResource(self.client)
         self.export = ExportResource(self.client)
-
-    def colormaps(self) -> dict[str, list[str]]:
-        """Colormap names style.color_by_attribute accepts, by category."""
-        return self.client.get("/colormaps")["categories"]

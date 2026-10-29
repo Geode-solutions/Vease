@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any, Literal
 
-from . import Resource, body, id_list
+from . import Resource, id_list
 from ..client import VeaseClient
 
 Target = Literal[
@@ -40,7 +40,8 @@ class StyleResource(Resource):
         Without target the whole data is styled. component_ids (geode ids) restricts a model
         corners, lines, surfaces or blocks target and needs a single id. Colors are hex strings.
         """
-        return self._set(
+        return self._post(
+            "set",
             ids=id_list(ids),
             target=target,
             component_ids=component_ids,
@@ -69,7 +70,8 @@ class StyleResource(Resource):
 
         Each data uses its own attribute range unless both minimum and maximum are given.
         """
-        return self._set(
+        return self._post(
+            "set",
             ids=id_list(ids),
             attribute=attribute,
             target=target,
@@ -83,5 +85,6 @@ class StyleResource(Resource):
             no_data_color=no_data_color,
         )
 
-    def _set(self, **params: Any) -> dict[str, Any]:
-        return self.client.post(self.route("set"), json=body(**params))
+    def colormaps(self) -> dict[str, list[str]]:
+        """Colormap names color_by_attribute accepts, by category."""
+        return self.client.get("/colormaps")["categories"]
