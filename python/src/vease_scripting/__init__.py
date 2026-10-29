@@ -7,6 +7,11 @@ import time
 
 from .client import VeaseClient
 from .ressources.data import DataResource
+from .ressources.export import ExportResource
+from .ressources.filter import FilterResource
+from .ressources.style import StyleResource
+from .ressources.view import ViewResource
+from .ressources.viewer import ViewerResource
 
 LISTENING_PATTERN = re.compile(r"Listening on http://\[?([^\]/:]+|\S+?)\]?:(\d+)")
 
@@ -112,3 +117,12 @@ class VeaseScripting:
             host, port = _run_vease(info)
             self.client = createClient(host, port)
         self.data = DataResource(self.client)
+        self.style = StyleResource(self.client)
+        self.view = ViewResource(self.client)
+        self.filter = FilterResource(self.client)
+        self.viewer = ViewerResource(self.client)
+        self.export = ExportResource(self.client)
+
+    def colormaps(self) -> dict[str, list[str]]:
+        """Colormap names style.color_by_attribute accepts, by category."""
+        return self.client.get("/colormaps")["categories"]
