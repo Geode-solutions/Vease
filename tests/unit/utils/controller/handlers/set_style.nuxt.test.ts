@@ -38,8 +38,11 @@ const MODEL: DataItem = {
   geode_object_type: "BRep",
 };
 
+const OTHER_MESH: DataItem = { ...MESH, id: "mesh-2", geode_id: "geode-3", name: "other" };
+
 const ORANGE = { red: 255, green: 136, blue: 0, alpha: 1 };
 const ONCE = 1;
+const TWICE = 2;
 const POINT_SIZE = 5;
 const EDGE_WIDTH = 3;
 
@@ -98,8 +101,8 @@ describe("the set-style controller handler", () => {
   });
 
   test("hides the whole mesh", async () => {
-    await expect(setStyle({ id: MESH.id, visibility: false })).resolves.toStrictEqual({
-      id: MESH.id,
+    await expect(setStyle({ ids: [MESH.id], visibility: false })).resolves.toStrictEqual({
+      ids: [MESH.id],
       applied: ["visibility"],
     });
     expect(setDataVisibility).toHaveBeenCalledWith(MESH.id, false);
@@ -107,39 +110,39 @@ describe("the set-style controller handler", () => {
   });
 
   test("shows and colors the whole mesh", async () => {
-    await setStyle({ id: MESH.id, visibility: true, color: "#ff8800" });
+    await setStyle({ ids: [MESH.id], visibility: true, color: "#ff8800" });
 
     expect(setDataVisibility).toHaveBeenCalledWith(MESH.id, true);
     expect(styleStore.setMeshColor).toHaveBeenCalledWith(MESH.id, ORANGE);
   });
 
   test("colors mesh polygons and switches them to constant coloring", async () => {
-    await setStyle({ id: MESH.id, target: "polygons", color: "#ff8800" });
+    await setStyle({ ids: [MESH.id], target: "polygons", color: "#ff8800" });
 
     expect(styleStore.setMeshPolygonsColor).toHaveBeenCalledWith(MESH.id, ORANGE);
     expect(styleStore.setMeshPolygonsActiveColoring).toHaveBeenCalledWith(MESH.id, "constant");
   });
 
   test("sets the point size only on points", async () => {
-    await setStyle({ id: MESH.id, target: "points", size: POINT_SIZE });
+    await setStyle({ ids: [MESH.id], target: "points", size: POINT_SIZE });
 
     expect(styleStore.setMeshPointsSize).toHaveBeenCalledWith(MESH.id, POINT_SIZE);
   });
 
   test("rejects a size on polygons", async () => {
-    await expect(setStyle({ id: MESH.id, target: "polygons", size: POINT_SIZE })).rejects.toThrow(
-      /size/u,
-    );
+    await expect(
+      setStyle({ ids: [MESH.id], target: "polygons", size: POINT_SIZE }),
+    ).rejects.toThrow(/size/u);
   });
 
   test("rejects a width on points", async () => {
-    await expect(setStyle({ id: MESH.id, target: "points", width: EDGE_WIDTH })).rejects.toThrow(
+    await expect(setStyle({ ids: [MESH.id], target: "points", width: EDGE_WIDTH })).rejects.toThrow(
       /width/u,
     );
   });
 
   test("rejects a target the mesh does not have", async () => {
-    await expect(setStyle({ id: MESH.id, target: "edges", visibility: true })).rejects.toThrow(
+    await expect(setStyle({ ids: [MESH.id], target: "edges", visibility: true })).rejects.toThrow(
       '"edges" is not available on "surface"; available: points, polygons',
     );
   });
@@ -148,7 +151,7 @@ describe("the set-style controller handler", () => {
     dataStore.item.mockResolvedValue(MODEL);
     styleStore.getStyle.mockReturnValue({ visibility: true });
 
-    await setStyle({ id: MODEL.id, target: "surfaces", color: "#ff8800" });
+    await setStyle({ ids: [MODEL.id], target: "surfaces", color: "#ff8800" });
 
     expect(dataStore.getMeshComponentGeodeIds).toHaveBeenCalledWith(MODEL.id, "Surface");
     expect(styleStore.setModelSurfacesColor).toHaveBeenCalledWith(
@@ -161,7 +164,7 @@ describe("the set-style controller handler", () => {
 
   test("colors only the given components", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    await setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s2"], color: "#ff8800" });
+    await setStyle({ ids: [MODEL.id], target: "surfaces", componentIds: ["s2"], color: "#ff8800" });
 
     expect(styleStore.setModelSurfacesColor).toHaveBeenCalledWith(
       MODEL.id,
@@ -175,7 +178,12 @@ describe("the set-style controller handler", () => {
     dataStore.item.mockResolvedValue(MODEL);
 
     await expect(
-      setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s2", "b1"], visibility: false }),
+      setStyle({
+        ids: [MODEL.id],
+        target: "surfaces",
+        componentIds: ["s2", "b1"],
+        visibility: false,
+      }),
     ).rejects.toThrow(
       `"brep" has no surfaces with geode id b1; read vease://data/${MODEL.id} for its components`,
     );
@@ -184,7 +192,12 @@ describe("the set-style controller handler", () => {
 
   test("applies random coloring to model components", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    await setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s1"], coloring: "random" });
+    await setStyle({
+      ids: [MODEL.id],
+      target: "surfaces",
+      componentIds: ["s1"],
+      coloring: "random",
+    });
 
     expect(styleStore.setModelSurfacesActiveColoring).toHaveBeenCalledWith(
       MODEL.id,
@@ -195,7 +208,7 @@ describe("the set-style controller handler", () => {
 
   test("styles the points of a model", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    await setStyle({ id: MODEL.id, target: "points", visibility: true, size: POINT_SIZE });
+    await setStyle({ ids: [MODEL.id], target: "points", visibility: true, size: POINT_SIZE });
 
     expect(styleStore.setModelPointsVisibility).toHaveBeenCalledWith(MODEL.id, true);
     expect(styleStore.setModelPointsSize).toHaveBeenCalledWith(MODEL.id, POINT_SIZE);
@@ -203,7 +216,7 @@ describe("the set-style controller handler", () => {
 
   test("hides a whole model", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    await setStyle({ id: MODEL.id, visibility: false });
+    await setStyle({ ids: [MODEL.id], visibility: false });
 
     expect(setDataVisibility).toHaveBeenCalledWith(MODEL.id, false);
     expect(styleStore.setModelVisibility).not.toHaveBeenCalled();
@@ -211,25 +224,25 @@ describe("the set-style controller handler", () => {
 
   test("rejects a color without target on a model", async () => {
     dataStore.item.mockResolvedValue(MODEL);
-    await expect(setStyle({ id: MODEL.id, color: "#ff8800" })).rejects.toThrow(
+    await expect(setStyle({ ids: [MODEL.id], color: "#ff8800" })).rejects.toThrow(
       "Give a target to style a model: points, edges, corners, lines, surfaces or blocks",
     );
   });
 
   test("rejects componentIds on a mesh", async () => {
     await expect(
-      setStyle({ id: MESH.id, target: "polygons", componentIds: ["s1"], visibility: true }),
+      setStyle({ ids: [MESH.id], target: "polygons", componentIds: ["s1"], visibility: true }),
     ).rejects.toThrow(/componentIds/u);
   });
 
   test("rejects an empty change", async () => {
-    await expect(setStyle({ id: MESH.id })).rejects.toThrow(
-      "Nothing to change: give visibility, color, size, width or coloring",
+    await expect(setStyle({ ids: [MESH.id] })).rejects.toThrow(
+      "Nothing to change: give visibility, color, size, width, coloring or attribute",
     );
   });
 
   test("renders once after applying", async () => {
-    await setStyle({ id: MESH.id, target: "points", visibility: true, size: POINT_SIZE });
+    await setStyle({ ids: [MESH.id], target: "points", visibility: true, size: POINT_SIZE });
 
     expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
@@ -237,7 +250,7 @@ describe("the set-style controller handler", () => {
   test("throws when the model has no component of the target type", async () => {
     dataStore.item.mockResolvedValue(MODEL);
 
-    await expect(setStyle({ id: MODEL.id, target: "blocks", visibility: true })).rejects.toThrow(
+    await expect(setStyle({ ids: [MODEL.id], target: "blocks", visibility: true })).rejects.toThrow(
       '"brep" has no blocks',
     );
   });
@@ -245,7 +258,7 @@ describe("the set-style controller handler", () => {
   test("styles the edges of a model with the model setter", async () => {
     dataStore.item.mockResolvedValue(MODEL);
 
-    await setStyle({ id: MODEL.id, target: "edges", visibility: true });
+    await setStyle({ ids: [MODEL.id], target: "edges", visibility: true });
 
     expect(styleStore.setModelEdgesVisibility).toHaveBeenCalledWith(MODEL.id, true);
     expect(styleStore.setMeshEdgesVisibility).not.toHaveBeenCalled();
@@ -254,38 +267,120 @@ describe("the set-style controller handler", () => {
   test("sets the edge width on mesh edges", async () => {
     styleStore.getStyle.mockReturnValue({ visibility: true, edges: {} });
 
-    await setStyle({ id: MESH.id, target: "edges", width: EDGE_WIDTH });
+    await setStyle({ ids: [MESH.id], target: "edges", width: EDGE_WIDTH });
 
     expect(styleStore.setMeshEdgesWidth).toHaveBeenCalledWith(MESH.id, EDGE_WIDTH);
   });
 
-  test("rejects random coloring on a mesh element", async () => {
-    await expect(setStyle({ id: MESH.id, target: "polygons", coloring: "random" })).rejects.toThrow(
-      /random/u,
+  test("gives each mesh its own constant color with random coloring", async () => {
+    dataStore.item.mockResolvedValueOnce(MESH).mockResolvedValueOnce(OTHER_MESH);
+
+    await expect(
+      setStyle({ ids: [MESH.id, OTHER_MESH.id], target: "polygons", coloring: "random" }),
+    ).resolves.toStrictEqual({ ids: [MESH.id, OTHER_MESH.id], applied: ["coloring"] });
+
+    const colors = styleStore.setMeshPolygonsColor.mock.calls.map((call: unknown[]) => call[1]);
+    expect(colors).toHaveLength(TWICE);
+    expect(colors[0]).not.toStrictEqual(colors[1]);
+    expect(styleStore.setMeshPolygonsActiveColoring).toHaveBeenCalledWith(MESH.id, "constant");
+    expect(styleStore.setMeshPolygonsActiveColoring).toHaveBeenCalledWith(
+      OTHER_MESH.id,
+      "constant",
     );
   });
 
+  test("colors a whole mesh with random coloring", async () => {
+    await setStyle({ ids: [MESH.id], coloring: "random" });
+
+    expect(styleStore.setMeshColor).toHaveBeenCalledWith(MESH.id, expect.any(Object));
+  });
+
+  test("applies the same style to several data and renders once", async () => {
+    dataStore.item.mockResolvedValueOnce(MESH).mockResolvedValueOnce(MODEL);
+
+    await setStyle({ ids: [MESH.id, MODEL.id], visibility: false });
+
+    expect(setDataVisibility).toHaveBeenCalledWith(MESH.id, false);
+    expect(setDataVisibility).toHaveBeenCalledWith(MODEL.id, false);
+    expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
+  });
+
+  test("reports the data it could not style and keeps the others", async () => {
+    dataStore.item
+      .mockResolvedValueOnce(MESH)
+      .mockRejectedValueOnce(new Error("Item not found: missing"));
+
+    await expect(setStyle({ ids: [MESH.id, "missing"], visibility: true })).resolves.toStrictEqual({
+      ids: [MESH.id],
+      applied: ["visibility"],
+      failed: [
+        {
+          id: "missing",
+          error: 'No data with id "missing"; read vease://data for the loaded data',
+        },
+      ],
+    });
+  });
+
+  test("throws one message when no data could be styled", async () => {
+    dataStore.item.mockResolvedValueOnce(MESH).mockResolvedValueOnce(OTHER_MESH);
+
+    await expect(
+      setStyle({ ids: [MESH.id, OTHER_MESH.id], target: "polygons", size: POINT_SIZE }),
+    ).rejects.toThrow(/^size cannot be set on mesh polygons$/u);
+    expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();
+  });
+
+  test("rejects componentIds with several ids", async () => {
+    await expect(
+      setStyle({
+        ids: [MODEL.id, MESH.id],
+        target: "surfaces",
+        componentIds: ["s1"],
+        visibility: true,
+      }),
+    ).rejects.toThrow(/single id/u);
+  });
+
+  test("rejects attribute options without an attribute", async () => {
+    await expect(
+      setStyle({ ids: [MESH.id], target: "polygons", colormap: "batlow", visibility: true }),
+    ).rejects.toThrow("colormap only apply when coloring by an attribute");
+  });
+
+  test("rejects an attribute mixed with other style changes", async () => {
+    await expect(
+      setStyle({ ids: [MESH.id], attribute: "depth", color: "#ff8800" }),
+    ).rejects.toThrow("attribute cannot be combined with color; style in a separate call");
+  });
+
+  test("rejects a color together with random coloring", async () => {
+    await expect(
+      setStyle({ ids: [MESH.id], target: "polygons", color: "#ff8800", coloring: "random" }),
+    ).rejects.toThrow(/either a color/u);
+  });
+
   test("rejects textures coloring on mesh points", async () => {
-    await expect(setStyle({ id: MESH.id, target: "points", coloring: "textures" })).rejects.toThrow(
-      /textures/u,
-    );
+    await expect(
+      setStyle({ ids: [MESH.id], target: "points", coloring: "textures" }),
+    ).rejects.toThrow(/textures/u);
   });
 
   test("rejects componentIds on model points and edges", async () => {
     dataStore.item.mockResolvedValue(MODEL);
 
     await expect(
-      setStyle({ id: MODEL.id, target: "points", componentIds: ["s1"], visibility: true }),
+      setStyle({ ids: [MODEL.id], target: "points", componentIds: ["s1"], visibility: true }),
     ).rejects.toThrow(/componentIds/u);
     await expect(
-      setStyle({ id: MODEL.id, target: "edges", componentIds: ["s1"], visibility: true }),
+      setStyle({ ids: [MODEL.id], target: "edges", componentIds: ["s1"], visibility: true }),
     ).rejects.toThrow(/componentIds/u);
   });
 
   test("rejects a mesh-only target on a model", async () => {
     dataStore.item.mockResolvedValue(MODEL);
 
-    await expect(setStyle({ id: MODEL.id, target: "cells", visibility: true })).rejects.toThrow(
+    await expect(setStyle({ ids: [MODEL.id], target: "cells", visibility: true })).rejects.toThrow(
       /not a model target/u,
     );
   });
@@ -294,7 +389,7 @@ describe("the set-style controller handler", () => {
     dataStore.item.mockResolvedValue(MODEL);
 
     await expect(
-      setStyle({ id: MODEL.id, target: "surfaces", componentIds: ["s1"], coloring: "textures" }),
+      setStyle({ ids: [MODEL.id], target: "surfaces", componentIds: ["s1"], coloring: "textures" }),
     ).rejects.toThrow(/textures/u);
   });
 });

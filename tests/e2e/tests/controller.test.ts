@@ -100,13 +100,13 @@ test("controller drives the app", async ({ window }) => {
 
   await expectOk(
     await window.request.post(controllerUrl(window, "style/set"), {
-      data: { id: dataId, target: "polygons", color: polygonsColor },
+      data: { ids: [dataId], target: "polygons", color: polygonsColor },
     }),
   );
   await expectOk(
-    await window.request.post(controllerUrl(window, "style/attribute"), {
+    await window.request.post(controllerUrl(window, "style/set"), {
       data: {
-        id: dataId,
+        ids: [dataId],
         target: attribute.target,
         attribute: attribute.name,
         location: attribute.location,

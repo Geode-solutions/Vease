@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { hexToRgba } from "@vease/utils/controller/color";
+import { distinctHexColors, hexToRgba } from "@vease/utils/controller/color";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -19,5 +19,22 @@ describe("the hex color conversion", () => {
       blue: 0,
       alpha: HALF_ALPHA,
     });
+  });
+});
+
+describe("the distinct colors", () => {
+  const HEX = /^#[0-9a-f]{6}$/u;
+  const COUNT = 8;
+
+  test("gives the requested number of opaque hex colors, all different", () => {
+    const colors = distinctHexColors(COUNT, 0);
+
+    expect(colors).toHaveLength(COUNT);
+    expect(colors.every((color) => HEX.test(color))).toBe(true);
+    expect(new Set(colors).size).toBe(COUNT);
+  });
+
+  test("starts at the given hue", () => {
+    expect(distinctHexColors(1, 0)).toStrictEqual(["#d74242"]);
   });
 });

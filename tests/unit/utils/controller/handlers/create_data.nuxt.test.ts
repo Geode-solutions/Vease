@@ -29,11 +29,11 @@ const backStore = { request: vi.fn<(options: unknown) => Promise<unknown>>() };
 const hybridViewerStore = { remoteRender: vi.fn<() => Promise<void>>() };
 
 async function createData(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["create-data"]?.(params);
+  const result = await controllerHandlers["manage-data"]?.({ action: "create", ...params });
   return result;
 }
 
-describe("the create-data controller handler", () => {
+describe("manage-data creating data", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -115,7 +115,7 @@ describe("the create-data controller handler", () => {
   test("imports the created item", async () => {
     await expect(
       createData({ kind: "curve", name: "loop", points: SQUARE }),
-    ).resolves.toStrictEqual({ id: ITEM.id, name: ITEM.name });
+    ).resolves.toStrictEqual({ action: "create", ids: [ITEM.id], name: ITEM.name });
     expect(importItem).toHaveBeenCalledWith(ITEM);
     expect(hybridViewerStore.remoteRender).toHaveBeenCalledWith();
   });

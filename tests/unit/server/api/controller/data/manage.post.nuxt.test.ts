@@ -22,8 +22,8 @@ describe("the POST /api/controller/data/manage endpoint", () => {
   });
 
   test("forwards validated params to the manage-data command", async () => {
-    const params = { action: "rename", id: DATA_ID, name: "renamed" };
-    const result = { id: DATA_ID, action: "rename" };
+    const params = { action: "rename", ids: [DATA_ID], name: "renamed" };
+    const result = { action: "rename", ids: [DATA_ID], name: "renamed" };
     vi.mocked(dispatchCommand).mockResolvedValue(result);
 
     await expect(handler(eventWithBody(params))).resolves.toStrictEqual({
@@ -34,7 +34,7 @@ describe("the POST /api/controller/data/manage endpoint", () => {
   });
 
   test("rejects an unknown action with 400", async () => {
-    const event = eventWithBody({ action: "copy", id: DATA_ID });
+    const event = eventWithBody({ action: "copy", ids: [DATA_ID] });
 
     await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
     expect(getResponseStatus(event)).toBe(BAD_REQUEST);
@@ -42,7 +42,7 @@ describe("the POST /api/controller/data/manage endpoint", () => {
   });
 
   test("rejects a short id with 400", async () => {
-    const event = eventWithBody({ action: "delete", id: "short" });
+    const event = eventWithBody({ action: "delete", ids: ["short"] });
 
     await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
     expect(dispatchCommand).not.toHaveBeenCalled();

@@ -29,6 +29,9 @@ const ITEM: DataItem = {
   created_at: "2026-10-08",
 };
 
+const OTHER_ID = "mesh-2";
+const ONCE = 1;
+
 const dataStore = { item: vi.fn<(id: string) => Promise<DataItem>>() };
 const hybridViewerStore = { remoteRender: vi.fn<() => Promise<void>>() };
 
@@ -53,31 +56,83 @@ describe("the manage-data controller handler", () => {
 
   test("renames", async () => {
     await expect(
-      manageData({ action: "rename", id: ITEM.id, name: "renamed" }),
-    ).resolves.toStrictEqual({ id: ITEM.id, action: "rename" });
+      manageData({ action: "rename", ids: [ITEM.id], name: "renamed" }),
+    ).resolves.toStrictEqual({ action: "rename", ids: [ITEM.id], name: "renamed" });
     expect(renameData).toHaveBeenCalledWith(ITEM.id, "renamed");
+    expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();
   });
 
   test("rename needs a name", async () => {
-    await expect(manageData({ action: "rename", id: ITEM.id })).rejects.toThrow(/name/u);
+    await expect(manageData({ action: "rename", ids: [ITEM.id] })).rejects.toThrow(/name/u);
     expect(renameData).not.toHaveBeenCalled();
   });
 
-  test("deletes and renders", async () => {
-    await expect(manageData({ action: "delete", id: ITEM.id })).resolves.toStrictEqual({
-      id: ITEM.id,
-      action: "delete",
-    });
+  test("rename needs exactly one id", async () => {
+    await expect(
+      manageData({ action: "rename", ids: [ITEM.id, OTHER_ID], name: "renamed" }),
+    ).rejects.toThrow("rename needs exactly one id");
+    expect(renameData).not.toHaveBeenCalled();
+  });
+
+  test("deletes every listed data and renders once", async () => {
+    await expect(manageData({ action: "delete", ids: [ITEM.id, OTHER_ID] })).resolves.toStrictEqual(
+      { action: "delete", ids: [ITEM.id, OTHER_ID] },
+    );
     expect(deleteData).toHaveBeenCalledWith(ITEM.id);
-    expect(hybridViewerStore.remoteRender).toHaveBeenCalledWith();
+    expect(deleteData).toHaveBeenCalledWith(OTHER_ID);
+    expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
+  });
+
+  test("reports the unknown ids and deletes the others", async () => {
+    dataStore.item
+      .mockResolvedValueOnce(ITEM)
+      .mockRejectedValueOnce(new Error("Item not found: nope"));
+
+    await expect(manageData({ action: "delete", ids: [ITEM.id, "nope"] })).resolves.toStrictEqual({
+      action: "delete",
+      ids: [ITEM.id],
+      failed: [
+        { id: "nope", error: 'No data with id "nope"; read vease://data for the loaded data' },
+      ],
+    });
+    expect(deleteData).toHaveBeenCalledTimes(ONCE);
   });
 
   test("rejects an unknown id", async () => {
     dataStore.item.mockRejectedValue(new Error("Item not found: nope"));
 
-    await expect(manageData({ action: "delete", id: "nope" })).rejects.toThrow(
+    await expect(manageData({ action: "delete", ids: ["nope"] })).rejects.toThrow(
       'No data with id "nope"',
     );
     expect(deleteData).not.toHaveBeenCalled();
+  });
+
+  test("delete needs ids", async () => {
+    await expect(manageData({ action: "delete" })).rejects.toThrow("delete needs ids");
+  });
+
+  test("rejects create options on another action", async () => {
+    await expect(manageData({ action: "delete", ids: [ITEM.id], kind: "point" })).rejects.toThrow(
+      "kind cannot be given to delete",
+    );
+    expect(deleteData).not.toHaveBeenCalled();
+  });
+
+  test("create needs kind, name and points", async () => {
+    await expect(manageData({ action: "create", name: "p" })).rejects.toThrow(
+      "create needs kind, name and points",
+    );
+  });
+
+  test("create takes no ids", async () => {
+    await expect(
+      manageData({
+        action: "create",
+        ids: [ITEM.id],
+        kind: "point",
+        name: "p",
+        points: [[0, 0, 0]],
+      }),
+    ).rejects.toThrow("ids cannot be given to create");
   });
 });

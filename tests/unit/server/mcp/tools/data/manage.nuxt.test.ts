@@ -23,9 +23,16 @@ const DATA_ID = "0123456789abcdef0123456789abcdef";
 
 describe("manage-data MCP tool", () => {
   test("posts to /api/controller/data/manage and reports success", async () => {
-    const input = { action: "delete" as const, id: DATA_ID, name: undefined };
+    const input = {
+      action: "delete" as const,
+      ids: [DATA_ID],
+      name: undefined,
+      kind: undefined,
+      points: undefined,
+      closed: undefined,
+    };
     vi.mocked(callControllerApi).mockResolvedValue(
-      okResult({ statusCode: 200, response: { id: DATA_ID, action: "delete" } }),
+      okResult({ statusCode: 200, response: { action: "delete", ids: [DATA_ID] } }),
     );
 
     const result = await tool.handler(input, fakeMcpRequestExtra());
@@ -35,14 +42,21 @@ describe("manage-data MCP tool", () => {
       body: JSON.stringify(input),
       errorPrefix: "Error managing data",
     });
-    expect(result).toBe(`Data managed: {"id":"${DATA_ID}","action":"delete"}`);
+    expect(result).toBe(`Data managed: {"action":"delete","ids":["${DATA_ID}"]}`);
   });
 
   test("forwards the controller error", async () => {
     vi.mocked(callControllerApi).mockResolvedValue(errResult("Error managing data: no name"));
 
     const result = await tool.handler(
-      { action: "rename", id: DATA_ID, name: undefined },
+      {
+        action: "rename",
+        ids: [DATA_ID],
+        name: undefined,
+        kind: undefined,
+        points: undefined,
+        closed: undefined,
+      },
       fakeMcpRequestExtra(),
     );
 

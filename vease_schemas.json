@@ -67,19 +67,42 @@
           "properties": {
             "action": {
               "type": "string",
-              "enum": ["rename", "delete"]
+              "enum": ["create", "rename", "delete"]
             },
-            "id": {
-              "type": "string",
-              "minLength": 32,
-              "maxLength": 32
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "minItems": 1
             },
             "name": {
               "type": "string",
               "minLength": 1
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["point", "curve", "surface"]
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "minItems": 1
+            },
+            "closed": {
+              "type": "boolean"
             }
           },
-          "required": ["action", "id"],
+          "required": ["action"],
           "additionalProperties": false,
           "response": {
             "type": "object",
@@ -146,50 +169,6 @@
             }
           },
           "required": ["id"],
-          "additionalProperties": false,
-          "response": {
-            "type": "object",
-            "properties": {
-              "statusCode": {
-                "type": "integer"
-              },
-              "response": {}
-            },
-            "required": ["statusCode", "response"],
-            "additionalProperties": false
-          }
-        },
-        "create": {
-          "$id": "api/controller/data/create",
-          "route": "/create",
-          "methods": ["POST"],
-          "type": "object",
-          "properties": {
-            "kind": {
-              "type": "string",
-              "enum": ["point", "curve", "surface"]
-            },
-            "name": {
-              "type": "string",
-              "minLength": 1
-            },
-            "points": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 3,
-                "maxItems": 3
-              },
-              "minItems": 1
-            },
-            "closed": {
-              "type": "boolean"
-            }
-          },
-          "required": ["kind", "name", "points"],
           "additionalProperties": false,
           "response": {
             "type": "object",
@@ -448,10 +427,14 @@
           "methods": ["POST"],
           "type": "object",
           "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 32,
-              "maxLength": 32
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 32,
+                "maxLength": 32
+              },
+              "minItems": 1
             },
             "target": {
               "type": "string",
@@ -492,53 +475,6 @@
             "coloring": {
               "type": "string",
               "enum": ["constant", "random", "textures"]
-            }
-          },
-          "required": ["id"],
-          "additionalProperties": false,
-          "response": {
-            "type": "object",
-            "properties": {
-              "statusCode": {
-                "type": "integer"
-              },
-              "response": {}
-            },
-            "required": ["statusCode", "response"],
-            "additionalProperties": false
-          }
-        },
-        "attribute": {
-          "$id": "api/controller/style/attribute",
-          "route": "/attribute",
-          "methods": ["POST"],
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "minLength": 32,
-              "maxLength": 32
-            },
-            "target": {
-              "type": "string",
-              "enum": [
-                "points",
-                "edges",
-                "cells",
-                "polygons",
-                "polyhedra",
-                "corners",
-                "lines",
-                "surfaces",
-                "blocks"
-              ]
-            },
-            "componentIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "minItems": 1
             },
             "attribute": {
               "type": "string",
@@ -570,7 +506,7 @@
               "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
             }
           },
-          "required": ["id", "attribute"],
+          "required": ["ids"],
           "additionalProperties": false,
           "response": {
             "type": "object",

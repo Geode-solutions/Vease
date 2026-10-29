@@ -5,19 +5,42 @@
   "properties": {
     "action": {
       "type": "string",
-      "enum": ["rename", "delete"]
+      "enum": ["create", "rename", "delete"]
     },
-    "id": {
-      "type": "string",
-      "minLength": 32,
-      "maxLength": 32
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
     },
     "name": {
       "type": "string",
       "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["point", "curve", "surface"]
+    },
+    "points": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 1
+    },
+    "closed": {
+      "type": "boolean"
     }
   },
-  "required": ["action", "id"],
+  "required": ["action"],
   "additionalProperties": false,
   "response": {
     "type": "object",

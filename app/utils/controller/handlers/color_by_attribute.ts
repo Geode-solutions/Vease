@@ -14,9 +14,10 @@ import type {
   MeshElement,
   ModelComponentTarget,
 } from "@vease/utils/controller/targets";
+import { type FailedData, forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
-import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
+import { getDataStyleStore } from "@vease/utils/external_stores";
 import { hexToRgba } from "@vease/utils/controller/color";
 
 const DEFAULT_COLORMAP = "batlow";
@@ -33,6 +34,18 @@ interface ColorByAttributeParams {
   maximum?: number;
   timeStep?: number;
   noDataColor?: string;
+}
+
+interface AttributeColoring {
+  id: string;
+  target: string;
+  location: string;
+  attribute: string;
+  item: number;
+  colormap: string;
+  minimum: number;
+  maximum: number;
+  timeStep?: number;
 }
 
 function resolveColorMap(colormap: string | undefined, binding: AttributeBinding): string {
@@ -97,9 +110,7 @@ function attributeInput(
   return input;
 }
 
-async function colorByAttribute(params: unknown): Promise<unknown> {
-  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const request = params as ColorByAttributeParams;
+async function colorItemByAttribute(request: ColorByAttributeParams): Promise<AttributeColoring> {
   const { id, target, componentIds, location } = request;
   checkRange(request.minimum, request.maximum);
   const found = await findAttribute({
@@ -120,7 +131,6 @@ async function colorByAttribute(params: unknown): Promise<unknown> {
     await binding.applyTimeStep(timeStepIndex);
   }
   await binding.activate();
-  await getHybridViewerStore().remoteRender();
   return {
     id,
     target: found.target,
@@ -134,4 +144,20 @@ async function colorByAttribute(params: unknown): Promise<unknown> {
   };
 }
 
-export { colorByAttribute };
+// Renders nothing: set-style renders once every data is colored
+async function colorDataByAttribute(
+  ids: string[],
+  request: Omit<ColorByAttributeParams, "id">,
+): Promise<{ ids: string[]; attributes: AttributeColoring[]; failed?: FailedData[] }> {
+  const {
+    ids: colored,
+    results,
+    failed,
+  } = await forEachData(ids, async (id) => {
+    const coloring = await colorItemByAttribute({ ...request, id });
+    return coloring;
+  });
+  return withFailed({ ids: colored, attributes: results }, failed);
+}
+
+export { type AttributeColoring, type ColorByAttributeParams, colorDataByAttribute };

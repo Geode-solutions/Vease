@@ -24,11 +24,16 @@ export interface ControllerCommandsReplyResponseResponse {}
 
 export interface ControllerDataManageParams {
   action: ControllerDataManageParamsAction;
-  id: string;
+  closed?: boolean;
+  ids?: string[];
+  kind?: ControllerDataManageParamsKind;
   name?: string;
+  points?: Array<number[]>;
 }
 
-export type ControllerDataManageParamsAction = "rename" | "delete";
+export type ControllerDataManageParamsAction = "create" | "rename" | "delete";
+
+export type ControllerDataManageParamsKind = "point" | "curve" | "surface";
 
 export interface ControllerDataManageResponse {
   response: any;
@@ -54,20 +59,6 @@ export interface ControllerDataDetailsParams {
 }
 
 export interface ControllerDataDetailsResponse {
-  response: any;
-  statusCode: number;
-}
-
-export interface ControllerDataCreateParams {
-  closed?: boolean;
-  kind: ControllerDataCreateParamsKind;
-  name: string;
-  points: Array<number[]>;
-}
-
-export type ControllerDataCreateParamsKind = "point" | "curve" | "surface";
-
-export interface ControllerDataCreateResponse {
   response: any;
   statusCode: number;
 }
@@ -160,17 +151,32 @@ export interface ControllerColormapsResponseResponse {
 }
 
 export interface ControllerStyleSetParams {
+  attribute?: string;
   color?: string;
   coloring?: Coloring;
+  colormap?: string;
   componentIds?: string[];
-  id: string;
+  ids: string[];
+  item?: number;
+  location?: ControllerStyleSetParamsLocation;
+  maximum?: number;
+  minimum?: number;
+  noDataColor?: string;
   size?: number;
   target?: Target;
+  timeStep?: number;
   visibility?: boolean;
   width?: number;
 }
 
 export type Coloring = "constant" | "random" | "textures";
+
+export type ControllerStyleSetParamsLocation =
+  | "vertex"
+  | "edge"
+  | "cell"
+  | "polygon"
+  | "polyhedron";
 
 export type Target =
   | "points"
@@ -184,32 +190,6 @@ export type Target =
   | "blocks";
 
 export interface ControllerStyleSetResponse {
-  response: any;
-  statusCode: number;
-}
-
-export interface ControllerStyleAttributeParams {
-  attribute: string;
-  colormap?: string;
-  componentIds?: string[];
-  id: string;
-  item?: number;
-  location?: ControllerStyleAttributeParamsLocation;
-  maximum?: number;
-  minimum?: number;
-  noDataColor?: string;
-  target?: Target;
-  timeStep?: number;
-}
-
-export type ControllerStyleAttributeParamsLocation =
-  | "vertex"
-  | "edge"
-  | "cell"
-  | "polygon"
-  | "polyhedron";
-
-export interface ControllerStyleAttributeResponse {
   response: any;
   statusCode: number;
 }
@@ -311,8 +291,6 @@ export interface Schemas {
           TypedSchema<ControllerDataListParams, ControllerDataListResponse>;
         readonly details: (typeof json)["api"]["controller"]["data"]["details"] &
           TypedSchema<ControllerDataDetailsParams, ControllerDataDetailsResponse>;
-        readonly create: (typeof json)["api"]["controller"]["data"]["create"] &
-          TypedSchema<ControllerDataCreateParams, ControllerDataCreateResponse>;
       };
       readonly files: {
         readonly upload: (typeof json)["api"]["controller"]["files"]["upload"] &
@@ -331,8 +309,6 @@ export interface Schemas {
       readonly style: {
         readonly set: (typeof json)["api"]["controller"]["style"]["set"] &
           TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
-        readonly attribute: (typeof json)["api"]["controller"]["style"]["attribute"] &
-          TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
       };
       readonly view: {
         readonly set: (typeof json)["api"]["controller"]["view"]["set"] &

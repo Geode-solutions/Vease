@@ -22,8 +22,8 @@ describe("the POST /api/controller/style/set endpoint", () => {
   });
 
   test("forwards validated params to the set-style command", async () => {
-    const params = { id: DATA_ID, target: "polygons", color: "#ff8800", visibility: true };
-    const result = { id: DATA_ID, applied: ["color", "visibility"] };
+    const params = { ids: [DATA_ID], target: "polygons", color: "#ff8800", visibility: true };
+    const result = { ids: [DATA_ID], applied: ["color", "visibility"] };
     vi.mocked(dispatchCommand).mockResolvedValue(result);
 
     await expect(handler(eventWithBody(params))).resolves.toStrictEqual({
@@ -34,15 +34,22 @@ describe("the POST /api/controller/style/set endpoint", () => {
   });
 
   test("rejects an unknown target with 400", async () => {
-    const event = eventWithBody({ id: DATA_ID, target: "vertices", visibility: true });
+    const event = eventWithBody({ ids: [DATA_ID], target: "vertices", visibility: true });
 
     await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
     expect(getResponseStatus(event)).toBe(BAD_REQUEST);
     expect(dispatchCommand).not.toHaveBeenCalled();
   });
 
+  test("rejects an empty ids list with 400", async () => {
+    const event = eventWithBody({ ids: [], visibility: true });
+
+    await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
+    expect(dispatchCommand).not.toHaveBeenCalled();
+  });
+
   test("rejects a malformed color with 400", async () => {
-    const event = eventWithBody({ id: DATA_ID, color: "orange" });
+    const event = eventWithBody({ ids: [DATA_ID], color: "orange" });
 
     await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
     expect(dispatchCommand).not.toHaveBeenCalled();

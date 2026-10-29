@@ -110,12 +110,15 @@ function answerComponents(geodeIdsByType: Record<string, string[]>): void {
   });
 }
 
-async function colorByAttribute(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["color-by-attribute"]?.(params);
-  return result;
+// Colors one data through set-style and returns what was applied to it
+async function colorByAttribute({ id, ...params }: Record<string, unknown>): Promise<unknown> {
+  const result = await controllerHandlers["set-style"]?.({ ids: [id], ...params });
+  return result instanceof Object && "attributes" in result && Array.isArray(result.attributes)
+    ? result.attributes[0]
+    : result;
 }
 
-describe("the color-by-attribute controller handler", () => {
+describe("set-style coloring by attribute", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -160,6 +163,26 @@ describe("the color-by-attribute controller handler", () => {
       colorMap: "batlow",
     });
     expect(styleStore.setMeshPolygonsActiveColoring).toHaveBeenCalledWith(MESH.id, "polygon");
+  });
+
+  test("colors several meshes by the same attribute in one call and renders once", async () => {
+    const otherId = "mesh-2";
+
+    const result = await controllerHandlers["set-style"]?.({
+      ids: [MESH.id, otherId],
+      attribute: "depth",
+    });
+
+    expect(result).toMatchObject({ ids: [MESH.id, otherId] });
+    expect(styleStore.setMeshPolygonsPolygonAttribute).toHaveBeenCalledWith(
+      MESH.id,
+      expect.objectContaining({ name: "depth" }),
+    );
+    expect(styleStore.setMeshPolygonsPolygonAttribute).toHaveBeenCalledWith(
+      otherId,
+      expect.objectContaining({ name: "depth" }),
+    );
+    expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
 
   test("sets the attribute, then the active coloring, then renders", async () => {
