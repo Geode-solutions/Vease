@@ -13,7 +13,7 @@ mockNuxtImport("$fetch", () => fetchMock);
 
 vi.mock(import("@ogw_front/composables/project_manager"), () => ({
   importProject: vi.fn<typeof importProject>(),
-  exportProject: vi.fn<() => Promise<{ result: unknown }>>(),
+  exportProject: vi.fn<() => Promise<{ result: Blob }>>(),
 }));
 
 const PROJECT_CONTENT = "PK\u0003\u0004project";
