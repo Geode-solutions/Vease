@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import { singlePolygon } from "@vease/utils/create_geometry";
 import { useCreateObjectTool } from "@vease/composables/create_object";
 
 const {
@@ -22,9 +23,7 @@ const {
   minPoints: 3,
   schema: back_schemas.opengeodeweb_back.create.polygonal_surface,
   previewStyle: "surface",
-  getAdditionalPayload: (validPts) => ({
-    polygons: [Array.from({ length: validPts.length }, (_, i) => i)],
-  }),
+  getAdditionalPayload: (validPts) => ({ polygons: singlePolygon(validPts.length) }),
 });
 </script>
 

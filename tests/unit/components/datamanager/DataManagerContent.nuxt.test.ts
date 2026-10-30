@@ -100,7 +100,8 @@ describe("data manager content component", () => {
   const mockDeregisterObject = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
   const mockDeleteItem = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
   const mockSetVisibility = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
-  const mockAddItem = vi.fn<(type: string, name: string, id: string, viewerType: string) => void>();
+  const mockAddItem =
+    vi.fn<(type: string, name: string, id: string, geodeId: string, viewerType: string) => void>();
   const mockRemoveItem = vi.fn<(id: string) => void>();
   const mockCloseView = vi.fn<(id: string) => void>();
   const mockRenameItem = vi.fn<(id: string, name: string) => void>();
@@ -110,9 +111,14 @@ describe("data manager content component", () => {
   beforeEach(() => {
     setupActivePinia();
 
-    const itemsRef = ref([mockItem1, mockItem2]);
+    // Copies: the component writes `visible` back onto the listed items
+    const itemsRef = ref([{ ...mockItem1 }, { ...mockItem2 }]);
     const mockDataStore = {
       refAllItems: (): typeof itemsRef => itemsRef,
+      item: async (id: string): Promise<DataItem | undefined> => {
+        await Promise.resolve();
+        return itemsRef.value.find((item) => item.id === id);
+      },
       updateItem: mockUpdateItem,
       deregisterObject: mockDeregisterObject,
       deleteItem: mockDeleteItem,
@@ -159,11 +165,11 @@ describe("data manager content component", () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent(DataTable);
-    dataTable.vm.$emit("toggle-visibility", mockItem1, false);
+    dataTable.vm.$emit("toggle-visibility", { ...mockItem1 }, false);
     await flushPromises();
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: false });
-    expect(mockSetVisibility).toHaveBeenCalledWith("item-1", false, mockItem1);
+    expect(mockSetVisibility).toHaveBeenCalledWith("item-1", false);
     expect(mockRemoveItem).toHaveBeenCalledWith("item-1");
   });
 
@@ -181,12 +187,20 @@ describe("data manager content component", () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent(DataTable);
-    dataTable.vm.$emit("isolate", mockItem1);
+    dataTable.vm.$emit("isolate", mockItem2);
     await flushPromises();
 
-    expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: true });
-    expect(mockUpdateItem).toHaveBeenCalledWith("item-2", { visible: false });
-    expect(mockFocusCameraOnObject).toHaveBeenCalledWith("item-1");
+    expect(mockUpdateItem).toHaveBeenCalledWith("item-2", { visible: true });
+    expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { visible: false });
+    expect(mockAddItem).toHaveBeenCalledWith(
+      mockItem2.geode_object_type,
+      mockItem2.name,
+      mockItem2.id,
+      mockItem2.geode_id,
+      mockItem2.viewer_type,
+    );
+    expect(mockRemoveItem).toHaveBeenCalledWith("item-1");
+    expect(mockFocusCameraOnObject).toHaveBeenCalledWith("item-2");
   });
 
   test("opens rename dialog and executes rename", async () => {

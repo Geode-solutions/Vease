@@ -2,15 +2,10 @@
 import { consola } from "consola";
 
 // Local imports
-import { Status } from "@ogw_front/utils/status";
+import { getBackStore } from "@vease/utils/external_stores";
 import { useEventSource } from "@vueuse/core";
-import { useViewerStore } from "@ogw_front/stores/viewer.js";
 
-import { getBackStore, getViewerClient } from "@vease/utils/external_stores";
 import { backEventHandlers } from "./back";
-import { viewerEventHandlers } from "./viewer";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import type { ViewerSession } from "@vease/utils/external_stores";
 
 type EventHandlerMap = Record<string, (payload: unknown) => unknown>;
 
@@ -75,30 +70,4 @@ function connectToEventSource(): void {
   );
 }
 
-function connectToWebSocket(): void {
-  const viewerStore = useViewerStore();
-  let subscribedSession: ViewerSession | undefined = undefined;
-
-  watch(
-    () => viewerStore.status,
-    (status) => {
-      if (status !== Status.CONNECTED) {
-        return;
-      }
-      const session = getViewerClient(viewerStore).getConnection().getSession();
-      if (session === subscribedSession) {
-        return;
-      }
-      subscribedSession = session;
-
-      for (const eventName of Object.keys(viewerEventHandlers)) {
-        session.subscribe(eventName, ([payload]) => {
-          dispatchEvent(eventName, payload, viewerEventHandlers, "VIEWER");
-        });
-      }
-    },
-    { immediate: true },
-  );
-}
-
-export { connectToEventSource, connectToWebSocket };
+export { connectToEventSource };

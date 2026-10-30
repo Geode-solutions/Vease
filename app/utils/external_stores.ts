@@ -3,7 +3,6 @@ import { useBackStore } from "@ogw_front/stores/back";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
 import { useInfraStore } from "@ogw_front/stores/infra";
-import type { useViewerStore } from "@ogw_front/stores/viewer";
 
 interface ApiSchema {
   $id: string;
@@ -73,30 +72,11 @@ function getDataStyleStore(): ReturnType<typeof useDataStyleStore> & DataStyleSt
   return useDataStyleStore();
 }
 
-interface ViewerSession {
-  subscribe: (eventName: string, callback: (args: unknown[]) => void) => void;
-}
-
-interface ViewerConnection {
-  getSession: () => ViewerSession;
-}
-
-interface ViewerClient {
-  getConnection: () => ViewerConnection;
-}
-
-function getViewerClient(viewerStore: ReturnType<typeof useViewerStore>): ViewerClient {
-  return viewerStore.client as unknown as ViewerClient;
-}
-
 export type {
   ApiSchema,
   HybridViewerStoreExtra,
   MicroserviceStore,
   InfraStoreExtra,
   DataStyleStoreExtra,
-  ViewerSession,
-  ViewerConnection,
-  ViewerClient,
 };
-export { getBackStore, getHybridViewerStore, getInfraStore, getDataStyleStore, getViewerClient };
+export { getBackStore, getHybridViewerStore, getInfraStore, getDataStyleStore };

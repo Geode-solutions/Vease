@@ -1,0 +1,98 @@
+{
+  "route": "/set",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "points",
+        "edges",
+        "cells",
+        "polygons",
+        "polyhedra",
+        "corners",
+        "lines",
+        "surfaces",
+        "blocks"
+      ]
+    },
+    "componentIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "visibility": {
+      "type": "boolean"
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    },
+    "size": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "width": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "coloring": {
+      "type": "string",
+      "enum": ["constant", "random", "textures"]
+    },
+    "attribute": {
+      "type": "string",
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "enum": ["vertex", "edge", "cell", "polygon", "polyhedron"]
+    },
+    "item": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "colormap": {
+      "type": "string",
+      "minLength": 1
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
+    },
+    "timeStep": {
+      "type": "number"
+    },
+    "noDataColor": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    }
+  },
+  "required": ["ids"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

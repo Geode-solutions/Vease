@@ -4,7 +4,6 @@ import {
   getDataStyleStore,
   getHybridViewerStore,
   getInfraStore,
-  getViewerClient,
 } from "@vease/utils/external_stores";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
@@ -64,13 +63,5 @@ describe("external_stores", () => {
     );
 
     expect(getInfraStore()).toBe(sentinel);
-  });
-
-  test("getViewerClient reads the client off the given viewer store", () => {
-    const client = { getConnection: vi.fn<() => unknown>() };
-    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
-    const viewerStore = { client } as unknown as Parameters<typeof getViewerClient>[0];
-
-    expect(getViewerClient(viewerStore)).toBe(client);
   });
 });

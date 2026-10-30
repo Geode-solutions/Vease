@@ -107,9 +107,6 @@ export default defineNuxtConfig({
   mcp: {
     name: "Vease",
     description: "Control the application with a set of commands",
-    security: {
-      allowedOrigins: "*",
-    },
   },
 
   ssr: false,

@@ -28,7 +28,7 @@ function messageText(message): string {
   return message.parts
     .filter((part) => part.type === "text")
     .map((part) => part.text)
-    .join("");
+    .join("\n\n");
 }
 
 function submit(): void {

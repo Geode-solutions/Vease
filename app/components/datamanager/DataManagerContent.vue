@@ -4,11 +4,11 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
-import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
+import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useTreeviewStore } from "@ogw_front/stores/treeview";
 import { useUIStore } from "@vease/stores/ui";
 
 const { compact = false } = defineProps<{ compact?: boolean }>();
@@ -16,8 +16,6 @@ const { compact = false } = defineProps<{ compact?: boolean }>();
 const UIStore = useUIStore();
 const dataStore = useDataStore();
 const hybridViewerStore = getHybridViewerStore();
-const treeviewStore = useTreeviewStore();
-const dataStyleStore = getDataStyleStore();
 
 const search = ref("");
 const viewMode = ref("list");
@@ -45,20 +43,8 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
   if (item.visible === targetVisible) {
     return;
   }
-  await dataStore.updateItem(item.id, { visible: targetVisible });
-  await dataStyleStore.setVisibility(item.id, targetVisible, item);
+  await setDataVisibility(item.id, targetVisible);
   item.visible = targetVisible;
-  if (targetVisible) {
-    await treeviewStore.addItem(
-      item.geode_object_type,
-      item.name,
-      item.id,
-      item.geode_id,
-      item.viewer_type,
-    );
-  } else {
-    treeviewStore.removeItem(item.id);
-  }
 }
 
 async function toggleSelectedVisibility(): Promise<void> {
@@ -93,10 +79,7 @@ async function confirmRename(newName: string): Promise<void> {
   }
   try {
     item.name = newName;
-    await dataStore.updateItem(item.id, {
-      name: newName,
-    });
-    treeviewStore.renameItem(item.id, newName);
+    await renameData(item.id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
@@ -107,12 +90,8 @@ async function confirmRename(newName: string): Promise<void> {
 async function isolateItem(item: DataItem): Promise<void> {
   const promises = items.value.map(async (i) => {
     const visible = i.id === item.id;
-    await dataStore.updateItem(i.id, { visible });
-    await dataStyleStore.setVisibility(i.id, visible, i);
+    await setDataVisibility(i.id, visible);
     i.visible = visible;
-    if (!visible) {
-      treeviewStore.removeItem(i.id);
-    }
   });
   await Promise.all(promises);
   focusCamera(item);
@@ -128,11 +107,7 @@ async function executeDelete(): Promise<void> {
   if (!item) {
     return;
   }
-  await dataStore.deregisterObject(item.id);
-  await dataStore.deleteItem(item.id);
-  await hybridViewerStore.removeItem(item.id);
-  treeviewStore.removeItem(item.id);
-  treeviewStore.closeView(item.id);
+  await deleteData(item.id);
   selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
@@ -140,14 +115,11 @@ async function executeDelete(): Promise<void> {
 
 async function deleteSelected(): Promise<void> {
   const idsToDelete = selectedIds.value.map((selected) => selected.id);
-  const promises = idsToDelete.map(async (id) => {
-    await dataStore.deregisterObject(id);
-    await dataStore.deleteItem(id);
-    await hybridViewerStore.removeItem(id);
-    treeviewStore.removeItem(id);
-    treeviewStore.closeView(id);
-  });
-  await Promise.all(promises);
+  await Promise.all(
+    idsToDelete.map(async (id) => {
+      await deleteData(id);
+    }),
+  );
   selectedIds.value = [];
   deleteSelectedDialog.value = false;
   showFeedback("Selected items deleted");
