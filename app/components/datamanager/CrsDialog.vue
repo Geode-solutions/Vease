@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // oxlint-disable max-dependencies
+import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
 import back_schemas, {
   type CRSList,
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
@@ -10,7 +11,6 @@ import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -41,14 +41,15 @@ const converting = ref(false);
 const linkedIds = ref<string[]>([]);
 const linkCandidates = useCrsLinkCandidates(() => item);
 
-function linkedItems(): DataItem[] {
+function linkedItems(): CrsItem[] {
   return linkCandidates.value.filter(({ id }) => linkedIds.value.includes(id));
 }
 
 async function fetchCurrentCrs(): Promise<void> {
   currentCrs.value = "";
   selectedCrs.value = undefined;
-  linkedIds.value = [];
+  // Every data follows by default: the user unchecks the ones to leave out
+  linkedIds.value = linkCandidates.value.map(({ id }) => id);
   mode.value = "assign";
   isGeographic.value = false;
   crsKnown.value = false;
@@ -95,13 +96,18 @@ watch(
 );
 
 // Picking only works in the viewer: the alignment continues in its drawer
-async function openAlignment(target: DataItem): Promise<void> {
+async function openAlignment(target: Pick<CrsItem, "id">): Promise<void> {
+  // The drawer needs the whole data: a linked data is only known by its CRS fields
+  const full = await dataStore.item(target.id);
   await navigateTo("/");
-  UIStore.openCrsAlign(target);
+  UIStore.openCrsAlign(full);
 }
 
 // The label is kept: local coordinates usually need an alignment instead
-function warnImplausible(implausibleItems: DataItem[], crs: CRSList | undefined): void {
+function warnImplausible(
+  implausibleItems: Pick<CrsItem, "id" | "name">[],
+  crs: CRSList | undefined,
+): void {
   const [first] = implausibleItems;
   if (!first) {
     return;

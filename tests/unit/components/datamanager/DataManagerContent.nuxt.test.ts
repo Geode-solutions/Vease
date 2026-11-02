@@ -114,6 +114,8 @@ describe("data manager content component", () => {
     const itemsRef = ref([mockItem1, mockItem2]);
     const mockDataStore = {
       refAllItems: (): typeof itemsRef => itemsRef,
+      // Read by the crs store (project crs, warnings)
+      refCrsItems: (): typeof itemsRef => itemsRef,
       updateItem: mockUpdateItem,
       deregisterObject: mockDeregisterObject,
       deleteItem: mockDeleteItem,

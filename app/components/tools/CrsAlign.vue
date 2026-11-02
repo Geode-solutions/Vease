@@ -39,8 +39,10 @@ watch(
   () => {
     reset();
     targetCrs.value = undefined;
-    linkedIds.value = [];
+    // Every data sharing the local frame follows by default: the user unchecks the ones to leave out
+    linkedIds.value = linkCandidates.value.map(({ id }) => id);
   },
+  { immediate: true },
 );
 
 function successMessage({ scale, rotation }: AlignResult, count: number): string {

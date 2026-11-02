@@ -403,7 +403,7 @@ describe("crs dialog component", () => {
     const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
     const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
     const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
-    vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells, georeferenced]));
+    vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells, georeferenced]));
     const backStore = useBackStore();
     const responses: Record<string, unknown> = {
       ...RESPONSES,
@@ -426,10 +426,10 @@ describe("crs dialog component", () => {
       attachTo: document.body,
     });
     await flushPromises();
-    // Data already in another CRS is not offered
+    // Data already in another CRS is not offered; the others follow by default
     const linked = wrapper.findComponent({ name: "VSelect" });
     expect(linked.props("items")).toStrictEqual([wells]);
-    await linked.setValue(["item-2"]);
+    expect(linked.props("modelValue")).toStrictEqual(["item-2"]);
     document.body
       .querySelector('[data-testid="crsSelectorStub"]')
       ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -456,7 +456,7 @@ describe("crs dialog component", () => {
     vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
     const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
     const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
-    vi.spyOn(useDataStore(), "refAllItems").mockReturnValue(ref([stored, wells]));
+    vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells]));
     const backStore = useBackStore();
     const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
       callbacks.response_function?.(UTM_RESPONSE);
