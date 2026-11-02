@@ -133,16 +133,13 @@ async function selectAlignmentCrs(window: Page, crsName: string): Promise<void> 
   await waitForActionSettled(window);
 }
 
-// "Apply also to" of the align drawer (crsAlignLinked) or of the crs dialog (crsLinked)
-async function selectLinkedData(
+// "All data" or "This data only", in the crs dialog (crsScope) or the georeference drawer (crsAlignScope)
+async function selectScope(
   window: Page,
-  dataName: string,
-  testId: "crsAlignLinked" | "crsLinked" = "crsAlignLinked",
+  scope: "all" | "one",
+  testId: "crsScope" | "crsAlignScope" = "crsScope",
 ): Promise<void> {
-  await window.getByTestId(testId).click();
-  await window.getByRole("option", { name: dataName }).click();
-  // The menu stays open for more choices: leaving the field closes it (Escape would close the drawer)
-  await window.keyboard.press("Tab");
+  await window.getByTestId(`${testId}-${scope}`).locator("input").check();
   await waitForActionSettled(window);
 }
 
@@ -166,15 +163,6 @@ async function confirmProjectCrs(window: Page): Promise<void> {
   await window.getByTestId("projectCrsApply").click();
   await waitForActionSettled(window);
   await closeFeedbackSnackbar(window);
-}
-
-// Every candidate is checked by default: clicking an option leaves it out
-async function unselectLinkedData(
-  window: Page,
-  dataName: string,
-  testId: "crsAlignLinked" | "crsLinked" = "crsLinked",
-): Promise<void> {
-  await selectLinkedData(window, dataName, testId);
 }
 
 async function applyAlignment(window: Page): Promise<void> {
@@ -201,8 +189,7 @@ export {
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,
+  selectScope,
   selectAlignMode,
-  selectLinkedData,
   startAlignment,
-  unselectLinkedData,
 };
