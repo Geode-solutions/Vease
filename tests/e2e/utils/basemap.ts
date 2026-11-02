@@ -124,10 +124,4 @@ async function toggleBasemapAround(window: Page): Promise<void> {
 }
 
 export type { TileServer };
-export {
-  setBasemapOpacity,
-  showBasemapMap,
-  startTileServer,
-  toggleBasemap,
-  toggleBasemapAround,
-};
+export { setBasemapOpacity, showBasemapMap, startTileServer, toggleBasemap, toggleBasemapAround };
