@@ -6,8 +6,10 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   type TileServer,
-  selectBasemapStyle,
+  setBasemapOpacity,
+  showBasemapMap,
   startTileServer,
+  toggleBasemap,
   toggleBasemapAround,
 } from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
@@ -30,6 +32,7 @@ import { toggleClippingPlanes } from "@vease_tests/utils/clipping_planes_interac
 const BREP_FILE = "test.og_brep";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const EXPLODE_FACTOR = 0.5;
+const BASEMAP_OPACITY = 50;
 
 let tileServer: TileServer | undefined = undefined;
 
@@ -49,8 +52,9 @@ test("load a model", async ({ window }) => {
   await loadVeaseTestDatas(window, [BREP_FILE]);
 });
 
-test("basemap is disabled without crs", async ({ window }) => {
-  await expect(window.getByTestId("basemapButton")).toBeDisabled();
+test("no basemap without crs", async ({ window }) => {
+  await expect(window.getByTestId("basemapButton")).toHaveCount(0);
+  await expect(window.getByTestId("basemapAttribution")).toBeHidden();
 });
 
 test("open the crs dialog", async ({ window }) => {
@@ -68,8 +72,8 @@ test("assign the selected crs", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("show the satellite basemap", async ({ window }) => {
-  await selectBasemapStyle(window, "satellite");
+// No action: the basemap shows as soon as the project has a CRS
+test("the satellite basemap shows on its own", async ({ window }) => {
   await expect(window.getByTestId("basemapAttribution")).toContainText("Esri");
   await moveMouseOutOfTheWay(window);
 });
@@ -119,8 +123,18 @@ test("clipping planes off", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
+test("show the streets map alone", async ({ window }) => {
+  await showBasemapMap(window, "Streets");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("lower the streets opacity", async ({ window }) => {
+  await setBasemapOpacity(window, "Streets", BASEMAP_OPACITY);
+  await moveMouseOutOfTheWay(window);
+});
+
 test("hide the basemap", async ({ window }) => {
-  await selectBasemapStyle(window, "none");
+  await toggleBasemap(window);
   await expect(window.getByTestId("basemapAttribution")).toBeHidden();
   await moveMouseOutOfTheWay(window);
 });
