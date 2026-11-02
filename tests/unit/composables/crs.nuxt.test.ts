@@ -52,7 +52,12 @@ function projectItems(): DataItem[] {
 function mockCrsItems(items: DataItem[]): void {
   vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(
     ref<CrsItem[]>(
-      items.map(({ id, name, crs, created_at }) => ({ id, name, crs, created_at: created_at ?? "" })),
+      items.map(({ id, name, crs, created_at }) => ({
+        id,
+        name,
+        crs,
+        created_at: created_at ?? "",
+      })),
     ),
   );
 }
