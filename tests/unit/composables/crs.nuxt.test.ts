@@ -280,4 +280,16 @@ describe("useCrs composable", () => {
       expect.objectContaining({ label: "Edit CRS" }),
     );
   });
+
+  // The project may have followed the assigned data already: the reference is taken before
+  test("followProject converts to the given project crs and restores it on refusal", async () => {
+    mockCrsItems([]);
+    useCrsStore().setProjectCrs(UTM);
+    request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:2154"));
+    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }], LAMBERT);
+    expect(request).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ params: { id: "a", ...LAMBERT } }),
+    );
+    expect(useCrsStore().projectCrs).toStrictEqual(LAMBERT);
+  });
 });

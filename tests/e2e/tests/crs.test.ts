@@ -138,8 +138,7 @@ test("current crs is the project one", async ({ window }) => {
 test("re-align without distortion with two pairs", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
-  // Every data is in UTM now: "All data" would move the whole project
-  await selectScope(window, "one", "crsAlignScope");
+  // The model has a crs: "This data only" by default, the other data stay
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE.slice(0, 2));
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET.slice(0, 2));
   await selectAlignmentCrs(window, LAMBERT_93);

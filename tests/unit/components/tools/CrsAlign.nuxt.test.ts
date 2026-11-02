@@ -8,6 +8,7 @@ import type { DataItem } from "@vease/types/data_item";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
@@ -172,7 +173,9 @@ describe("crs align tool", () => {
   test("georeferences every data in the same crs state by default, then follows the project", async () => {
     alignCrs.mockResolvedValue({ scale: 1, rotation: 25 });
     const success = vi.spyOn(useFeedbackStore(), "add_success");
+    const utm = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
     const { wrapper, wells } = mountWithWells();
+    useCrsStore().setProjectCrs(utm);
     expect(wrapper.find('[data-testid="crsAlignScope-all"] input').element).toHaveProperty(
       "checked",
       true,
@@ -184,11 +187,26 @@ describe("crs align tool", () => {
       LAMBERT,
       expect.objectContaining({ linkedItems: [wells] }),
     );
-    expect(followProject).toHaveBeenCalledWith([
-      { id: item.id, name: item.name, crs: LAMBERT },
-      { id: "item-2", name: "Wells", crs: LAMBERT },
-    ]);
+    expect(followProject).toHaveBeenCalledWith(
+      [
+        { id: item.id, name: item.name, crs: LAMBERT },
+        { id: "item-2", name: "Wells", crs: LAMBERT },
+      ],
+      utm,
+    );
     expect(success).toHaveBeenCalledWith("Data georeferenced (2 items): scale ×1.00, rotation 25°");
+    wrapper.unmount();
+  });
+
+  // Data in the same CRS are usually the whole project: a re-align moves this data only by default
+  test("re-aligning a georeferenced data defaults to this data only", async () => {
+    useUIStore().openCrsAlign({ ...item, crs: LAMBERT });
+    const wrapper = mountWithPlugins(CrsAlign);
+    await flushPromises();
+    expect(wrapper.find('[data-testid="crsAlignScope-one"] input').element).toHaveProperty(
+      "checked",
+      true,
+    );
     wrapper.unmount();
   });
 
@@ -202,7 +220,11 @@ describe("crs align tool", () => {
       LAMBERT,
       expect.objectContaining({ linkedItems: [] }),
     );
-    expect(followProject).toHaveBeenCalledWith([{ id: item.id, name: item.name, crs: LAMBERT }]);
+    expect(followProject).toHaveBeenCalledWith(
+      [{ id: item.id, name: item.name, crs: LAMBERT }],
+      // The map is the only georeferenced data: the project is in its crs
+      LAMBERT,
+    );
     wrapper.unmount();
   });
 

@@ -9,6 +9,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useBackStore } from "@ogw_front/stores/back";
 import type { useCrs } from "@vease/composables/crs";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -463,6 +464,7 @@ describe("crs dialog component", () => {
 
   test("assigns this data only, then makes it follow the project", async () => {
     mockStoredItems([]);
+    useCrsStore().setProjectCrs(LAMBERT);
     const request = stubRequests({ crs: UTM, implausible: false });
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, item: mockItem },
@@ -478,7 +480,11 @@ describe("crs dialog component", () => {
       expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
       expect.anything(),
     );
-    expect(followProject).toHaveBeenCalledWith([{ id: "item-1", name: "Points", crs: UTM }]);
+    // The project crs taken before the assign: the project may follow the data meanwhile
+    expect(followProject).toHaveBeenCalledWith(
+      [{ id: "item-1", name: "Points", crs: UTM }],
+      LAMBERT,
+    );
     wrapper.unmount();
   });
 
@@ -508,7 +514,11 @@ describe("crs dialog component", () => {
       expect.objectContaining({ params: { id: "item-1", linked_ids: ["item-2"], ...LAMBERT } }),
       expect.anything(),
     );
-    expect(followProject).toHaveBeenCalledWith([{ id: "item-1", name: "Points", crs: LAMBERT }]);
+    // The map is the only georeferenced data: the project is in its crs
+    expect(followProject).toHaveBeenCalledWith(
+      [{ id: "item-1", name: "Points", crs: LAMBERT }],
+      LAMBERT,
+    );
     const warnings = useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
     expect(warnings.map((warning) => warning.description)).toStrictEqual([
       "Wells: these coordinates do not match EPSG:2154. Georeference the data?",

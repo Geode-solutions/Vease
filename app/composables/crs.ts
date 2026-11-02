@@ -143,12 +143,13 @@ function useCrs() {
   }
 
   // Data placed in another CRS than the project are converted to it, in one request.
-  // A refused conversion keeps their CRS: the warning points to their dialog, not to a convert
+  // The project may already have followed them: callers pass the project CRS taken before.
+  // A refused conversion keeps their CRS and the project one: the warning points to their dialog
   async function followProject(
     entries: { id: string; name: string; crs: CRSList }[],
+    project: CRSList | undefined = useCrsStore().projectCrs,
   ): Promise<void> {
     const crsStore = useCrsStore();
-    const project = crsStore.projectCrs;
     if (project === undefined) {
       return;
     }
@@ -160,6 +161,7 @@ function useCrs() {
     try {
       await convertCrs(first, project, { focus: false, linkedItems });
     } catch {
+      crsStore.setProjectCrs(project);
       const names = moved.map(({ name }) => name).join(", ");
       useFeedbackStore().add_warning(
         `Cannot convert ${names} to ${formatCrsCode(project)}. Check its CRS (Assign) or georeference it.`,

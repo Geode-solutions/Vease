@@ -11,6 +11,7 @@ import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -26,6 +27,7 @@ const emit = defineEmits<{
 }>();
 
 const backStore = useBackStore();
+const crsStore = useCrsStore();
 const dataStore = useDataStore();
 const feedbackStore = useFeedbackStore();
 const currentCrs = ref("");
@@ -149,6 +151,8 @@ async function handleAssign(): Promise<void> {
   const { id } = assignedItem;
   const linked = scope.value === "all" ? linkCandidates.value : [];
   const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
+  // Taken before: the project follows the assigned data as soon as they are stored
+  const { projectCrs } = crsStore;
   assigning.value = true;
   try {
     await backStore.request(
@@ -177,7 +181,7 @@ async function handleAssign(): Promise<void> {
             }),
           ];
           // The plausible data join the project CRS; the others keep it and get the warning
-          await followProject(plausibleEntries(entries));
+          await followProject(plausibleEntries(entries), projectCrs);
           warnImplausible(
             entries.filter((entry) => entry.implausible === true),
             crs,

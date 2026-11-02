@@ -5,12 +5,14 @@ import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import { useCrsAlign } from "@vease/composables/crs_align";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const feedbackStore = useFeedbackStore();
 const { alignCrs, followProject } = useCrs();
+const crsStore = useCrsStore();
 const {
   mode,
   setMode,
@@ -37,10 +39,11 @@ const linkCandidates = useCrsLinkCandidates(() => UIStore.crsAlignItem);
 
 watch(
   () => UIStore.crsAlignItem,
-  () => {
+  (crsAlignItem) => {
     reset();
     targetCrs.value = undefined;
-    scope.value = "all";
+    // Data in local coordinates usually share a frame; data in a CRS are usually the whole project
+    scope.value = crsAlignItem?.crs === undefined ? "all" : "one";
   },
   { immediate: true },
 );
@@ -67,6 +70,8 @@ async function apply(): Promise<void> {
   try {
     const linkedItems = scope.value === "all" ? linkCandidates.value : [];
     const crs = targetCrs.value;
+    // Taken before: the project follows the aligned data as soon as they are stored
+    const { projectCrs } = crsStore;
     const result = await alignCrs(item, crs, {
       sourcePoints: toSourceCrsPoints(),
       targetPoints: toTargetCrsPoints(),
@@ -75,7 +80,10 @@ async function apply(): Promise<void> {
     });
     feedbackStore.add_success(successMessage(result, 1 + linkedItems.length));
     // Typed in the target CRS: the data then join the project CRS
-    await followProject([item, ...linkedItems].map(({ id, name }) => ({ id, name, crs })));
+    await followProject(
+      [item, ...linkedItems].map(({ id, name }) => ({ id, name, crs })),
+      projectCrs,
+    );
     close();
   } finally {
     applying.value = false;
