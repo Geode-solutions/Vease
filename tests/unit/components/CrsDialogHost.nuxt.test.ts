@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import type CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import CrsDialogHost from "@vease/components/CrsDialogHost.vue";
+import type ProjectCrsDialog from "@vease/components/ProjectCrsDialog.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -17,6 +18,22 @@ const { CRS_DIALOG_STUB } = vi.hoisted(() => ({
     template:
       "<div data-testid='crsDialogStub' :data-show='show' :data-item='item && item.id'><button data-testid='closeStub' @click=\"$emit('update:show', false)\" /></div>",
   },
+}));
+
+// Hoisted with vi.mock, so the stub exposes show to the test
+const { PROJECT_CRS_DIALOG_STUB } = vi.hoisted(() => ({
+  PROJECT_CRS_DIALOG_STUB: {
+    name: "ProjectCrsDialog",
+    props: ["show"],
+    emits: ["update:show", "changed"],
+    template:
+      "<div data-testid='projectCrsDialogStub' :data-show='show'><button data-testid='closeProjectStub' @click=\"$emit('update:show', false)\" /></div>",
+  },
+}));
+
+vi.mock(import("@vease/components/ProjectCrsDialog.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  default: PROJECT_CRS_DIALOG_STUB as unknown as typeof ProjectCrsDialog,
 }));
 
 vi.mock(import("@vease/components/datamanager/CrsDialog.vue"), () => ({
@@ -69,6 +86,21 @@ describe("crs dialog host", () => {
     expect(wrapper.get('[data-testid="crsDialogStub"]').attributes("data-show")).toBe("false");
     // Cleared, so a later request for the same id is not ignored
     expect(crsStore.crsEditRequest).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  test("opens the project crs dialog on request and clears the request on close", async () => {
+    const crsStore = useCrsStore();
+    const wrapper = mountWithPlugins(CrsDialogHost);
+
+    crsStore.requestProjectCrsEdit();
+    await flushPromises();
+    expect(wrapper.get('[data-testid="projectCrsDialogStub"]').attributes("data-show")).toBe(
+      "true",
+    );
+
+    await wrapper.get('[data-testid="closeProjectStub"]').trigger("click");
+    expect(crsStore.projectCrsEditRequest).toBe(false);
     wrapper.unmount();
   });
 });

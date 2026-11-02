@@ -4,6 +4,7 @@ import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrs } from "@vease/composables/crs";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -24,6 +25,7 @@ vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
 }));
 
 const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
+const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
 const item: DataItem = {
   id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
@@ -32,6 +34,16 @@ const item: DataItem = {
   viewer_type: "mesh",
   visible: true,
 };
+
+// Oldest first: a and c in Lambert-93, b already in UTM, local without CRS
+function projectItems(): DataItem[] {
+  return [
+    { ...item, id: "a", created_at: "1", crs: LAMBERT },
+    { ...item, id: "b", created_at: "2", crs: UTM },
+    { ...item, id: "c", created_at: "3", crs: LAMBERT },
+    { ...item, id: "local", created_at: "4" },
+  ];
+}
 
 describe("useCrs composable", () => {
   const request = vi.fn<(request: { params: unknown }) => Promise<unknown>>();
@@ -175,5 +187,33 @@ describe("useCrs composable", () => {
       crs: LAMBERT,
     });
     expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
+  });
+
+  test("changeProjectCrs converts every georeferenced data not yet in the new crs, in one request", async () => {
+    const items = projectItems();
+    await useCrs().changeProjectCrs(items, UTM);
+
+    expect(request).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ params: { id: "a", linked_ids: ["c"], ...UTM } }),
+    );
+    // The camera stays where it is: every data moves
+    expect(focusCameraOnObject).not.toHaveBeenCalled();
+    expect(useCrsStore().projectCrs).toStrictEqual(UTM);
+  });
+
+  test("changeProjectCrs only changes the project crs when no data has to move", async () => {
+    const items = projectItems().filter((projectItem) => ["b", "local"].includes(projectItem.id));
+    await useCrs().changeProjectCrs(items, UTM);
+
+    expect(request).not.toHaveBeenCalled();
+    expect(useCrsStore().projectCrs).toStrictEqual(UTM);
+  });
+
+  test("changeProjectCrs keeps the project crs when the back refuses the conversion", async () => {
+    request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:32631"));
+    useCrsStore().setProjectCrs(LAMBERT);
+
+    await expect(useCrs().changeProjectCrs(projectItems(), UTM)).rejects.toThrow("EPSG:32631");
+    expect(useCrsStore().projectCrs).toStrictEqual(LAMBERT);
   });
 });

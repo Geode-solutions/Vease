@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import type { DataItem } from "@vease/types/data_item";
+import ProjectCrsDialog from "@vease/components/ProjectCrsDialog.vue";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
@@ -37,14 +38,27 @@ function updateShow(value: boolean): void {
     crsStore.clearCrsEditRequest();
   }
 }
+
+function updateProjectShow(value: boolean): void {
+  if (!value) {
+    crsStore.clearProjectCrsEditRequest();
+  }
+}
 </script>
 
 <template>
-  <CrsDialog
-    :show="show"
-    :item="item"
-    @update:show="updateShow"
-    @assigned="feedbackStore.add_success('CRS assigned')"
-    @converted="feedbackStore.add_success('CRS converted')"
-  />
+  <div>
+    <CrsDialog
+      :show="show"
+      :item="item"
+      @update:show="updateShow"
+      @assigned="feedbackStore.add_success('CRS assigned')"
+      @converted="feedbackStore.add_success('CRS converted')"
+    />
+    <ProjectCrsDialog
+      :show="crsStore.projectCrsEditRequest"
+      @update:show="updateProjectShow"
+      @changed="feedbackStore.add_success('Project CRS changed')"
+    />
+  </div>
 </template>

@@ -4,6 +4,8 @@ import back_schemas, {
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
+import { sameCrs } from "@ogw_front/utils/crs";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 
 interface CrsPoint {
@@ -98,7 +100,18 @@ function useCrs() {
     return { scale: response.scale, rotation: response.rotation };
   }
 
-  return { convertCrs, alignCrs };
+  // One request moves every georeferenced data, from its own CRS: all or nothing.
+  // The project CRS only changes once the back accepted the conversion
+  async function changeProjectCrs(items: DataItem[], crs: CRSList): Promise<void> {
+    const moved = items.filter((item) => item.crs !== undefined && !sameCrs(item.crs, crs));
+    const [first, ...linkedItems] = moved;
+    if (first !== undefined) {
+      await convertCrs(first, crs, { focus: false, linkedItems });
+    }
+    useCrsStore().setProjectCrs(crs);
+  }
+
+  return { convertCrs, alignCrs, changeProjectCrs };
 }
 
 export type { AlignMode, AlignResult, Alignment, CrsPoint };
