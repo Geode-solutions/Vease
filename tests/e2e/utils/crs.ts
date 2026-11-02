@@ -146,6 +146,28 @@ async function selectLinkedData(
   await waitForActionSettled(window);
 }
 
+async function expectCrsMismatch(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+  expected: boolean,
+): Promise<void> {
+  const row = await getDataTreeRow(window, geodeObjectType, dataName);
+  const icon = row.getByTestId("crsMismatchIcon");
+  await (expected ? expect(icon).toBeVisible() : expect(icon).toBeHidden());
+}
+
+async function openProjectCrs(window: Page): Promise<void> {
+  await window.getByTestId("projectCrs").click();
+  await waitForActionSettled(window);
+}
+
+async function confirmProjectCrs(window: Page): Promise<void> {
+  await window.getByTestId("projectCrsApply").click();
+  await waitForActionSettled(window);
+  await closeFeedbackSnackbar(window);
+}
+
 async function applyAlignment(window: Page): Promise<void> {
   await window.getByTestId("crsAlignApplyButton").click();
   await waitForActionSettled(window);
@@ -156,6 +178,8 @@ export {
   applyAlignment,
   confirmAssign,
   confirmConvert,
+  confirmProjectCrs,
+  expectCrsMismatch,
   expectCurrentCrs,
   expectDataRows,
   expectRowCrs,
@@ -164,6 +188,7 @@ export {
   openCrsFromFeedback,
   openCrsFromInfoCard,
   openCrsFromTree,
+  openProjectCrs,
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,

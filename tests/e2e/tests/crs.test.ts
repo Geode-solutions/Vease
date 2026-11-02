@@ -5,6 +5,8 @@ import {
   applyAlignment,
   confirmAssign,
   confirmConvert,
+  confirmProjectCrs,
+  expectCrsMismatch,
   expectCurrentCrs,
   expectDataRows,
   expectRowCrs,
@@ -12,6 +14,7 @@ import {
   openCrsByButton,
   openCrsFromInfoCard,
   openCrsFromTree,
+  openProjectCrs,
   selectAlignMode,
   selectAlignmentCrs,
   selectConvertMode,
@@ -142,6 +145,13 @@ test("re-align without distortion with two pairs", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
+// The point set was converted to UTM 31N: the project stays in Lambert-93, its first CRS
+test("data in another crs than the project is flagged in the tree", async ({ window }) => {
+  await navigateToViewerPage(window);
+  await expectCrsMismatch(window, pointSetGeodeObjectType, POINTSET_NAME, true);
+  await moveMouseOutOfTheWay(window);
+});
+
 test("open the crs dialog from the object tree", async ({ window }) => {
   await navigateToViewerPage(window);
   await openCrsFromTree(window, pointSetGeodeObjectType, POINTSET_NAME);
@@ -173,4 +183,25 @@ test("convert the model and the curve together", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
   await expectRowCrs(window, brepGeodeObjectType, "EPSG:32631");
   await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:32631");
+});
+
+test("open the project crs from the scene", async ({ window }) => {
+  await navigateToViewerPage(window);
+  await openProjectCrs(window);
+});
+
+// Everything is in UTM 31N while the project is in Lambert-93: every data moves back
+test("change the project crs", async ({ window }) => {
+  await selectCrs(window, LAMBERT_93);
+  await confirmProjectCrs(window);
+  await moveMouseOutOfTheWay(window);
+  await expectCrsMismatch(window, pointSetGeodeObjectType, POINTSET_NAME, false);
+});
+
+test("every data is in the project crs", async ({ window }) => {
+  await navigateToDataManagerPage(window);
+  await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:2154");
+  await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
+  await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:2154");
+  await moveMouseOutOfTheWay(window);
 });
