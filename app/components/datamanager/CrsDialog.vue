@@ -32,24 +32,25 @@ const currentCrs = ref("");
 const selectedCrs = ref<CRSList | undefined>(undefined);
 const assigning = ref(false);
 const loadingCurrentCrs = ref(false);
-const { convertCrs } = useCrs();
+const { convertCrs, changeProjectCrs, followProject } = useCrs();
 const UIStore = useUIStore();
 const isGeographic = ref(false);
 const crsKnown = ref(false);
 const mode = ref<"assign" | "convert" | "align">("assign");
 const converting = ref(false);
-const linkedIds = ref<string[]>([]);
+// "All data": the data in the same CRS state for assign, the whole project for convert
+const scope = ref<"all" | "one">("one");
 const linkCandidates = useCrsLinkCandidates(() => item);
 
-function linkedItems(): CrsItem[] {
-  return linkCandidates.value.filter(({ id }) => linkedIds.value.includes(id));
-}
+// A wrong CRS is the error of one data; a CRS change usually moves the whole project
+watch(mode, (value) => {
+  scope.value = value === "assign" ? "one" : "all";
+});
 
 async function fetchCurrentCrs(): Promise<void> {
   currentCrs.value = "";
   selectedCrs.value = undefined;
-  // Every data follows by default: the user unchecks the ones to leave out
-  linkedIds.value = linkCandidates.value.map(({ id }) => id);
+  scope.value = "one";
   mode.value = "assign";
   isGeographic.value = false;
   crsKnown.value = false;
@@ -126,6 +127,19 @@ function warnImplausible(
   });
 }
 
+interface AssignedEntry {
+  id: string;
+  name: string;
+  crs?: CRSList;
+  implausible?: boolean;
+}
+
+function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string; crs: CRSList }[] {
+  return entries.flatMap(({ id, name, crs, implausible }) =>
+    crs === undefined || implausible === true ? [] : [{ id, name, crs }],
+  );
+}
+
 async function handleAssign(): Promise<void> {
   if (!item || !selectedCrs.value || assigning.value) {
     return;
@@ -133,7 +147,7 @@ async function handleAssign(): Promise<void> {
   // The warning action may run once the dialog shows another item
   const assignedItem = item;
   const { id } = assignedItem;
-  const linked = linkedItems();
+  const linked = scope.value === "all" ? linkCandidates.value : [];
   const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
   assigning.value = true;
   try {
@@ -155,13 +169,19 @@ async function handleAssign(): Promise<void> {
           }
           emit("assigned");
           emit("update:show", false);
-          const implausibleItems = [
-            ...(implausible ? [assignedItem] : []),
-            ...linked.filter((linkedItem) =>
-              linkedResponses?.some((entry) => entry.id === linkedItem.id && entry.implausible),
-            ),
+          const entries = [
+            { id, name: assignedItem.name, crs, implausible },
+            ...linked.map(({ id: linkedId, name }) => {
+              const response = linkedResponses?.find((entry) => entry.id === linkedId);
+              return { id: linkedId, name, crs: response?.crs, implausible: response?.implausible };
+            }),
           ];
-          warnImplausible(implausibleItems, crs);
+          // The plausible data join the project CRS; the others keep it and get the warning
+          await followProject(plausibleEntries(entries));
+          warnImplausible(
+            entries.filter((entry) => entry.implausible === true),
+            crs,
+          );
         },
       },
     );
@@ -176,7 +196,9 @@ async function handleConvert(): Promise<void> {
   }
   converting.value = true;
   try {
-    await convertCrs(item, selectedCrs.value, { linkedItems: linkedItems() });
+    await (scope.value === "all"
+      ? changeProjectCrs(selectedCrs.value)
+      : convertCrs(item, selectedCrs.value));
     emit("converted");
     emit("update:show", false);
   } finally {
@@ -237,22 +259,18 @@ async function startAlignment(): Promise<void> {
         </v-btn-toggle>
       </div>
       <!-- Next to the mode: what gets assigned or converted stays visible without scrolling -->
-      <v-select
-        v-if="item && mode !== 'align' && linkCandidates.length > 0"
-        v-model="linkedIds"
-        :items="linkCandidates"
-        item-title="name"
-        item-value="id"
-        label="Apply also to"
-        multiple
-        chips
-        closable-chips
-        variant="outlined"
-        density="compact"
+      <v-radio-group
+        v-if="item && mode !== 'align'"
+        v-model="scope"
+        inline
         hide-details
-        class="mt-4 flex-shrink-0"
-        data-testid="crsLinked"
-      />
+        density="compact"
+        class="mt-4 flex-shrink-0 text-white"
+        data-testid="crsScope"
+      >
+        <v-radio label="All data" value="all" data-testid="crsScope-all" />
+        <v-radio label="This data only" value="one" data-testid="crsScope-one" />
+      </v-radio-group>
 
       <v-card-text class="pt-8 px-0">
         <CrsSelector

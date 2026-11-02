@@ -1,12 +1,13 @@
 import back_schemas, {
   type CRSList,
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
-import { sameCrs } from "@ogw_front/utils/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 interface CrsPoint {
   x: number;
@@ -141,7 +142,40 @@ function useCrs() {
     crsStore.setProjectCrs(crs);
   }
 
-  return { convertCrs, alignCrs, changeProjectCrs, assignPlausible };
+  // Data placed in another CRS than the project are converted to it, in one request.
+  // A refused conversion keeps their CRS: the warning points to their dialog, not to a convert
+  async function followProject(
+    entries: { id: string; name: string; crs: CRSList }[],
+  ): Promise<void> {
+    const crsStore = useCrsStore();
+    const project = crsStore.projectCrs;
+    if (project === undefined) {
+      return;
+    }
+    const moved = entries.filter((entry) => !sameCrs(entry.crs, project));
+    const [first, ...linkedItems] = moved;
+    if (first === undefined) {
+      return;
+    }
+    try {
+      await convertCrs(first, project, { focus: false, linkedItems });
+    } catch {
+      const names = moved.map(({ name }) => name).join(", ");
+      useFeedbackStore().add_warning(
+        `Cannot convert ${names} to ${formatCrsCode(project)}. Check its CRS (Assign) or georeference it.`,
+        moved.length === 1
+          ? {
+              label: "Edit CRS",
+              onClick: (): void => {
+                crsStore.requestCrsEdit(first.id);
+              },
+            }
+          : undefined,
+      );
+    }
+  }
+
+  return { convertCrs, alignCrs, changeProjectCrs, assignPlausible, followProject };
 }
 
 export type { AlignMode, AlignResult, Alignment, CrsPoint };

@@ -10,7 +10,7 @@ import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
 const feedbackStore = useFeedbackStore();
-const { alignCrs } = useCrs();
+const { alignCrs, followProject } = useCrs();
 const {
   mode,
   setMode,
@@ -31,7 +31,8 @@ const MODES = [
 ] as const;
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
-const linkedIds = ref<string[]>([]);
+// "All data": the data in the same CRS state, usually sharing the local frame of the item
+const scope = ref<"all" | "one">("all");
 const linkCandidates = useCrsLinkCandidates(() => UIStore.crsAlignItem);
 
 watch(
@@ -39,8 +40,7 @@ watch(
   () => {
     reset();
     targetCrs.value = undefined;
-    // Every data sharing the local frame follows by default: the user unchecks the ones to leave out
-    linkedIds.value = linkCandidates.value.map(({ id }) => id);
+    scope.value = "all";
   },
   { immediate: true },
 );
@@ -65,14 +65,17 @@ async function apply(): Promise<void> {
   }
   applying.value = true;
   try {
-    const linkedItems = linkCandidates.value.filter(({ id }) => linkedIds.value.includes(id));
-    const result = await alignCrs(item, targetCrs.value, {
+    const linkedItems = scope.value === "all" ? linkCandidates.value : [];
+    const crs = targetCrs.value;
+    const result = await alignCrs(item, crs, {
       sourcePoints: toSourceCrsPoints(),
       targetPoints: toTargetCrsPoints(),
       mode: mode.value,
       linkedItems,
     });
     feedbackStore.add_success(successMessage(result, 1 + linkedItems.length));
+    // Typed in the target CRS: the data then join the project CRS
+    await followProject([item, ...linkedItems].map(({ id, name }) => ({ id, name, crs })));
     close();
   } finally {
     applying.value = false;
@@ -120,26 +123,18 @@ async function apply(): Promise<void> {
         </v-btn>
       </v-btn-toggle>
       <!-- Next to the mode: what gets aligned must stay visible without scrolling -->
-      <v-select
-        v-if="linkCandidates.length > 0"
-        v-model="linkedIds"
-        :items="linkCandidates"
-        item-title="name"
-        item-value="id"
-        label="Apply also to"
-        multiple
-        chips
-        closable-chips
-        variant="outlined"
-        color="white"
+      <v-radio-group
+        v-model="scope"
+        inline
+        hide-details
         density="compact"
         theme="dark"
-        base-color="white"
-        bg-color="rgba(255, 255, 255, 0.15)"
-        hide-details
         class="mb-3"
-        data-testid="crsAlignLinked"
-      />
+        data-testid="crsAlignScope"
+      >
+        <v-radio label="All data" value="all" data-testid="crsAlignScope-all" />
+        <v-radio label="This data only" value="one" data-testid="crsAlignScope-one" />
+      </v-radio-group>
       <div class="text-caption font-weight-bold text-uppercase opacity-60 mb-1">
         Source points (on data)
       </div>

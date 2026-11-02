@@ -15,14 +15,17 @@ import { useViewerStore } from "@ogw_front/stores/viewer";
 vi.setConfig({ testTimeout: 10_000 });
 
 // Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT
-const { LAMBERT, CRS_SELECTOR_STUB, USE_CRS_MOCK, alignCrs } = vi.hoisted(() => {
+const { LAMBERT, CRS_SELECTOR_STUB, USE_CRS_MOCK, alignCrs, followProject } = vi.hoisted(() => {
   const lambert = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
   const alignMock = vi.fn<(...args: unknown[]) => Promise<unknown>>();
+  const followMock = vi.fn<(...args: unknown[]) => Promise<void>>();
   return {
     LAMBERT: lambert,
     alignCrs: alignMock,
+    followProject: followMock,
     USE_CRS_MOCK: (): unknown => ({
       alignCrs: alignMock,
+      followProject: followMock,
       convertCrs: vi.fn<() => Promise<void>>(),
     }),
     CRS_SELECTOR_STUB: {
@@ -82,11 +85,30 @@ async function fill(
   await yInput?.setValue(String(point.y));
 }
 
+// Wells share the local frame of the model; the map is already in another CRS
+function mountWithWells(): { wrapper: ReturnType<typeof mountWithPlugins>; wells: StoredItem } {
+  const stored: StoredItem = { ...item, created_at: "2026-10-27" };
+  const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
+  const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
+  vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells, georeferenced]));
+  return { wrapper: mountWithPlugins(CrsAlign), wells };
+}
+
+async function applyOrigin(wrapper: ReturnType<typeof mountWithPlugins>): Promise<void> {
+  await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
+  await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
+  await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
+  await flushPromises();
+  await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
+  await flushPromises();
+}
+
 describe("crs align tool", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
     alignCrs.mockReset().mockResolvedValue({});
+    followProject.mockReset().mockResolvedValue(undefined);
     useUIStore().openCrsAlign(item);
   });
 
@@ -147,34 +169,40 @@ describe("crs align tool", () => {
     wrapper.unmount();
   });
 
-  test("aligns the checked items sharing the same local frame", async () => {
+  test("georeferences every data in the same crs state by default, then follows the project", async () => {
     alignCrs.mockResolvedValue({ scale: 1, rotation: 25 });
     const success = vi.spyOn(useFeedbackStore(), "add_success");
-    const stored: StoredItem = { ...item, created_at: "2026-10-27" };
-    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
-    const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
-    vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells, georeferenced]));
-    const wrapper = mountWithPlugins(CrsAlign);
-    // Data already in another CRS does not share the local frame
-    const linked = wrapper.findComponent({ name: "VSelect" });
-    expect(linked.attributes("data-testid")).toBe("crsAlignLinked");
-    expect(linked.props("items")).toStrictEqual([wells]);
-    // Every candidate follows by default
-    expect(linked.props("modelValue")).toStrictEqual(["item-2"]);
-
-    await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
-    await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
-    await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
-    await flushPromises();
-    await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
-    await flushPromises();
+    const { wrapper, wells } = mountWithWells();
+    expect(wrapper.find('[data-testid="crsAlignScope-all"] input').element).toHaveProperty(
+      "checked",
+      true,
+    );
+    await applyOrigin(wrapper);
 
     expect(alignCrs).toHaveBeenCalledWith(
       item,
       LAMBERT,
       expect.objectContaining({ linkedItems: [wells] }),
     );
+    expect(followProject).toHaveBeenCalledWith([
+      { id: item.id, name: item.name, crs: LAMBERT },
+      { id: "item-2", name: "Wells", crs: LAMBERT },
+    ]);
     expect(success).toHaveBeenCalledWith("Data georeferenced (2 items): scale ×1.00, rotation 25°");
+    wrapper.unmount();
+  });
+
+  test("georeferences this data only", async () => {
+    const { wrapper } = mountWithWells();
+    await wrapper.find('[data-testid="crsAlignScope-one"] input').setValue(true);
+    await applyOrigin(wrapper);
+
+    expect(alignCrs).toHaveBeenCalledWith(
+      item,
+      LAMBERT,
+      expect.objectContaining({ linkedItems: [] }),
+    );
+    expect(followProject).toHaveBeenCalledWith([{ id: item.id, name: item.name, crs: LAMBERT }]);
     wrapper.unmount();
   });
 

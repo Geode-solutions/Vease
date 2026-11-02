@@ -6,6 +6,7 @@ import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -247,5 +248,36 @@ describe("useCrs composable", () => {
     // Nothing is assigned either
     expect(request.mock.calls.map(([call]) => call.schema.$id)).not.toContain(ASSIGN_ROUTE);
     expect(useCrsStore().projectCrs).toStrictEqual(LAMBERT);
+  });
+
+  test("followProject converts the data out of the project crs, in one request", async () => {
+    mockCrsItems([]);
+    useCrsStore().setProjectCrs(LAMBERT);
+    await useCrs().followProject([
+      { id: "a", name: "A", crs: UTM },
+      { id: "b", name: "B", crs: LAMBERT },
+      { id: "c", name: "C", crs: UTM },
+    ]);
+    expect(request).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ params: { id: "a", linked_ids: ["c"], ...LAMBERT } }),
+    );
+  });
+
+  test("followProject does nothing without project crs", async () => {
+    mockCrsItems([]);
+    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }]);
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  test("followProject warns with an edit action when the conversion is refused", async () => {
+    mockCrsItems([]);
+    useCrsStore().setProjectCrs(LAMBERT);
+    request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:2154"));
+    const warning = vi.spyOn(useFeedbackStore(), "add_warning");
+    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }]);
+    expect(warning).toHaveBeenCalledExactlyOnceWith(
+      "Cannot convert A to EPSG:2154. Check its CRS (Assign) or georeference it.",
+      expect.objectContaining({ label: "Edit CRS" }),
+    );
   });
 });
