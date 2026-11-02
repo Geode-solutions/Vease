@@ -4,6 +4,7 @@ import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ImportFile from "@vease/components/ImportFile.vue";
 import { flushPromises } from "@vue/test-utils";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import type { useProjectCrs } from "@vease/composables/project_crs";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -14,7 +15,7 @@ vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
 }));
 
 const { harmonizeImportedCrs } = vi.hoisted(() => ({
-  harmonizeImportedCrs: vi.fn<(ids: string[]) => Promise<void>>(),
+  harmonizeImportedCrs: vi.fn<(ids: string[], reference?: unknown) => Promise<void>>(),
 }));
 
 vi.mock(import("@vease/composables/project_crs"), () => ({
@@ -59,7 +60,21 @@ describe("the ImportFile component", () => {
   test("harmonizes the crs of the newly imported items", async () => {
     setItemIds(["old"], ["old", "new"]);
     await clickImport();
-    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"]);
+    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"], undefined);
+  });
+
+  // The project follows the data as they land: the reference is the project crs before the import
+  test("harmonizes toward the project crs chosen before the import", async () => {
+    const lambert = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
+    useCrsStore().setProjectCrs(lambert);
+    vi.mocked(importWorkflow).mockImplementation(async () => {
+      useCrsStore().setProjectCrs({ authority: "EPSG", code: "32631", name: "UTM" });
+      await Promise.resolve();
+      return [];
+    });
+    setItemIds([], ["new"]);
+    await clickImport();
+    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"], lambert);
   });
 
   test("does not wait for the harmonization to close the stepper", async () => {
@@ -73,7 +88,7 @@ describe("the ImportFile component", () => {
     });
     await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
     await flushPromises();
-    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"]);
+    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"], undefined);
     expect(wrapper.emitted("reset_values")).toStrictEqual([[]]);
   });
 
@@ -83,7 +98,7 @@ describe("the ImportFile component", () => {
     );
     setItemIds([], ["new"]);
     await clickImport();
-    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"]);
+    expect(harmonizeImportedCrs).toHaveBeenCalledExactlyOnceWith(["new"], undefined);
   });
 
   test("renders import and cancel buttons", () => {

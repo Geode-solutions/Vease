@@ -61,12 +61,13 @@ function useProjectCrs() {
     }
   }
 
-  async function harmonize(ids: string[]): Promise<void> {
+  async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
     const items = byCreation(await dataStore.allItems());
     const imported = items.filter((item) => ids.includes(item.id));
     const existing = items.filter((item) => !ids.includes(item.id));
-    // The project CRS once set; before, the first one met
+    // The project CRS before the import, else the current one; before any, the first one met
     const reference =
+      projectCrs ??
       crsStore.projectCrs ??
       (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs;
     if (reference === undefined) {
@@ -108,16 +109,21 @@ function useProjectCrs() {
     }
   }
 
-  async function harmonizeAfter(previous: Promise<void>, ids: string[]): Promise<void> {
+  async function harmonizeAfter(
+    previous: Promise<void>,
+    ids: string[],
+    projectCrs: CRSList | undefined,
+  ): Promise<void> {
     await previous;
-    await harmonize(ids);
+    await harmonize(ids, projectCrs);
   }
 
-  async function harmonizeImportedCrs(ids: string[]): Promise<void> {
+  // ProjectCrs: the project CRS taken before the data landed, as the project follows them
+  async function harmonizeImportedCrs(ids: string[], projectCrs?: CRSList): Promise<void> {
     if (ids.length === 0) {
       return;
     }
-    const run = harmonizeAfter(queue, ids);
+    const run = harmonizeAfter(queue, ids, projectCrs);
     queue = settled(run);
     await run;
   }

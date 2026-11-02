@@ -75,6 +75,18 @@ describe("useProjectCrs composable", () => {
     );
   });
 
+  test("the reference given by the import wins over a project crs that followed the data", async () => {
+    // The imported UTM data landed: the project followed them before the harmonization
+    useCrsStore().setProjectCrs(UTM);
+    setItems([dataItem("new", "1", UTM)]);
+    await useProjectCrs().harmonizeImportedCrs(["new"], LAMBERT);
+    expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ id: "new" }),
+      LAMBERT,
+      { focus: false },
+    );
+  });
+
   test("the reference is the project crs once set", async () => {
     // The older data stayed in Lambert-93 (flagged in the tree): the project is the reference
     useCrsStore().setProjectCrs(UTM);
