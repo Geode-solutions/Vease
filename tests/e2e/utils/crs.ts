@@ -168,6 +168,15 @@ async function confirmProjectCrs(window: Page): Promise<void> {
   await closeFeedbackSnackbar(window);
 }
 
+// Every candidate is checked by default: clicking an option leaves it out
+async function unselectLinkedData(
+  window: Page,
+  dataName: string,
+  testId: "crsAlignLinked" | "crsLinked" = "crsLinked",
+): Promise<void> {
+  await selectLinkedData(window, dataName, testId);
+}
+
 async function applyAlignment(window: Page): Promise<void> {
   await window.getByTestId("crsAlignApplyButton").click();
   await waitForActionSettled(window);
@@ -195,4 +204,5 @@ export {
   selectAlignMode,
   selectLinkedData,
   startAlignment,
+  unselectLinkedData,
 };

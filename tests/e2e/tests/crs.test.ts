@@ -19,8 +19,8 @@ import {
   selectAlignmentCrs,
   selectConvertMode,
   selectCrs,
-  selectLinkedData,
   startAlignment,
+  unselectLinkedData,
 } from "@vease_tests/utils/crs";
 import {
   brepGeodeObjectType,
@@ -37,8 +37,8 @@ const BREP_FILE = "test.og_brep";
 const POINTSET_FILE = "test.og_pts3d";
 // Wells-like data sharing the local frame of the model: aligned with it
 const CURVE_FILE = "test.og_edc3d";
-const CURVE_NAME = "test";
 const POINTSET_NAME = "test";
+const BREP_NAME = "test";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const UTM_31N = "WGS 84 / UTM zone 31N";
 const ALIGN_SOURCE = [
@@ -76,6 +76,8 @@ test("select a crs to assign", async ({ window }) => {
 });
 
 test("assign the selected crs", async ({ window }) => {
+  // The model would follow by default: this step assigns the point set alone
+  await unselectLinkedData(window, BREP_NAME);
   await confirmAssign(window);
   await moveMouseOutOfTheWay(window);
   await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:2154");
@@ -113,7 +115,7 @@ test("open the alignment drawer", async ({ window }) => {
 
 test("fill the affine alignment points and target crs", async ({ window }) => {
   await selectAlignMode(window, "affine");
-  await selectLinkedData(window, CURVE_NAME);
+  // The curve shares the model frame: checked by default
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
   await selectAlignmentCrs(window, LAMBERT_93);
@@ -145,10 +147,11 @@ test("re-align without distortion with two pairs", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-// The point set was converted to UTM 31N: the project stays in Lambert-93, its first CRS
+// The project followed the point set to UTM 31N; the model was georeferenced in Lambert-93
 test("data in another crs than the project is flagged in the tree", async ({ window }) => {
   await navigateToViewerPage(window);
-  await expectCrsMismatch(window, pointSetGeodeObjectType, POINTSET_NAME, true);
+  await expectCrsMismatch(window, brepGeodeObjectType, BREP_NAME, true);
+  await expectCrsMismatch(window, pointSetGeodeObjectType, POINTSET_NAME, false);
   await moveMouseOutOfTheWay(window);
 });
 
@@ -178,7 +181,7 @@ test("convert the model and the curve together", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await selectConvertMode(window);
   await selectCrs(window, UTM_31N);
-  await selectLinkedData(window, CURVE_NAME, "crsLinked");
+  // The curve is in the model crs: checked by default
   await confirmConvert(window);
   await moveMouseOutOfTheWay(window);
   await expectRowCrs(window, brepGeodeObjectType, "EPSG:32631");
@@ -190,7 +193,7 @@ test("open the project crs from the scene", async ({ window }) => {
   await openProjectCrs(window);
 });
 
-// Everything is in UTM 31N while the project is in Lambert-93: every data moves back
+// Everything is in UTM 31N: a Lambert-93 project moves every data
 test("change the project crs", async ({ window }) => {
   await selectCrs(window, LAMBERT_93);
   await confirmProjectCrs(window);
