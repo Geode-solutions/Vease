@@ -100,18 +100,48 @@ function useCrs() {
     return { scale: response.scale, rotation: response.rotation };
   }
 
-  // One request moves every georeferenced data, from its own CRS: all or nothing.
-  // The project CRS only changes once the back accepted the conversion
-  async function changeProjectCrs(items: DataItem[], crs: CRSList): Promise<void> {
+  // Data without CRS get it when their coordinates fit; the others keep no CRS (warning in the tree)
+  async function assignPlausible(ids: string[], crs: CRSList): Promise<string[]> {
+    const [first, ...linkedIds] = ids;
+    if (first === undefined) {
+      return [];
+    }
+    const response = await backStore.request({
+      schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
+      params: {
+        id: first,
+        ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}),
+        only_plausible: true,
+        ...crs,
+      },
+    });
+    const entries = [{ id: first, crs: response.crs }, ...(response.linked ?? [])];
+    const assigned = entries.filter((entry) => entry.crs !== undefined);
+    for (const entry of assigned) {
+      // oxlint-disable-next-line no-await-in-loop
+      await dataStore.updateItem(entry.id, { crs: entry.crs });
+    }
+    return assigned.map(({ id }) => id);
+  }
+
+  // One request moves every georeferenced data, from its own CRS: all or nothing. Then the data
+  // Without CRS get it when plausible. The project CRS only changes once the back accepted the conversion
+  async function changeProjectCrs(crs: CRSList): Promise<void> {
+    const crsStore = useCrsStore();
+    const items = crsStore.crsItems;
     const moved = items.filter((item) => item.crs !== undefined && !sameCrs(item.crs, crs));
     const [first, ...linkedItems] = moved;
     if (first !== undefined) {
       await convertCrs(first, crs, { focus: false, linkedItems });
     }
-    useCrsStore().setProjectCrs(crs);
+    await assignPlausible(
+      items.filter((item) => item.crs === undefined).map(({ id }) => id),
+      crs,
+    );
+    crsStore.setProjectCrs(crs);
   }
 
-  return { convertCrs, alignCrs, changeProjectCrs };
+  return { convertCrs, alignCrs, changeProjectCrs, assignPlausible };
 }
 
 export type { AlignMode, AlignResult, Alignment, CrsPoint };

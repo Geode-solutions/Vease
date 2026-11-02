@@ -1,6 +1,7 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { type FeedbackAction, useFeedbackStore } from "@ogw_front/stores/feedback";
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
+import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 
@@ -32,7 +33,7 @@ function useProjectCrs() {
   const dataStore = useDataStore();
   const crsStore = useCrsStore();
   const feedbackStore = useFeedbackStore();
-  const { convertCrs } = useCrs();
+  const { convertCrs, assignPlausible } = useCrs();
 
   // One dialog can only edit one item: several items are fixed from the data manager
   function editAction(items: DataItem[]): FeedbackAction | undefined {
@@ -46,6 +47,18 @@ function useProjectCrs() {
         crsStore.requestCrsEdit(item.id);
       },
     };
+  }
+
+  async function assignWithoutCrs(items: DataItem[], crs: CRSList): Promise<string[]> {
+    try {
+      return await assignPlausible(
+        items.map(({ id }) => id),
+        crs,
+      );
+    } catch {
+      // The request feedback already shows the error: the data stay flagged in the tree
+      return [];
+    }
   }
 
   async function harmonize(ids: string[]): Promise<void> {
@@ -87,11 +100,11 @@ function useProjectCrs() {
         editAction(failed),
       );
     }
-    if (withoutCrs.length > 0) {
-      feedbackStore.add_warning(
-        `No CRS, project is in ${code}: ${names(withoutCrs)}`,
-        editAction(withoutCrs),
-      );
+    // The data whose coordinates do not fit stay without CRS: the tree flags them
+    const assignedIds = await assignWithoutCrs(withoutCrs, reference);
+    const assigned = withoutCrs.filter(({ id }) => assignedIds.includes(id));
+    if (assigned.length > 0) {
+      feedbackStore.add_success(`Assigned ${code}: ${names(assigned)}`);
     }
   }
 

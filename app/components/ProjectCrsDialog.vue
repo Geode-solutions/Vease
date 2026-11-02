@@ -5,7 +5,6 @@ import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { formatCrs } from "@ogw_front/utils/crs";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 
 // The geographic CRS list is the same for every data type
 const LIST_TYPE = "PointSet3D";
@@ -14,7 +13,6 @@ const { show = false } = defineProps<{ show?: boolean }>();
 const emit = defineEmits<{ "update:show": [value: boolean]; changed: [] }>();
 
 const crsStore = useCrsStore();
-const dataStore = useDataStore();
 const { changeProjectCrs } = useCrs();
 const selectedCrs = ref<CRSList | undefined>(undefined);
 const changing = ref(false);
@@ -34,7 +32,7 @@ async function apply(): Promise<void> {
   }
   changing.value = true;
   try {
-    await changeProjectCrs(await dataStore.allItems(), selectedCrs.value);
+    await changeProjectCrs(selectedCrs.value);
     emit("changed");
     emit("update:show", false);
   } catch {

@@ -1,4 +1,3 @@
-import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
@@ -26,7 +25,7 @@ const { UTM, CRS_SELECTOR_STUB } = vi.hoisted(() => {
 });
 // Hoisted with vi.mock, so the useCrs mock can be checked by the tests
 const { changeProjectCrs } = vi.hoisted(() => ({
-  changeProjectCrs: vi.fn<(items: unknown[], crs: unknown) => Promise<void>>(),
+  changeProjectCrs: vi.fn<(crs: unknown) => Promise<void>>(),
 }));
 
 vi.mock(import("@vease/composables/crs"), () => ({
@@ -45,8 +44,6 @@ vi.mock(import("@ogw_front/components/CrsSelector.vue"), () => ({
 }));
 
 const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
-// oxlint-disable-next-line no-unsafe-type-assertion -- minimal items, only passed through
-const ITEMS = [{ id: "a", crs: LAMBERT }, { id: "b" }] as unknown as DataItem[];
 
 function click(testId: string): void {
   document.body
@@ -58,7 +55,6 @@ describe("project crs dialog", () => {
   beforeEach(() => {
     setupActivePinia();
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
-    vi.spyOn(useDataStore(), "allItems").mockResolvedValue(ITEMS);
     useCrsStore().setProjectCrs(LAMBERT);
   });
 
@@ -86,7 +82,8 @@ describe("project crs dialog", () => {
     await flushPromises();
     click("projectCrsApply");
     await flushPromises();
-    expect(changeProjectCrs).toHaveBeenCalledWith(ITEMS, UTM);
+    // The composable reads the data itself
+    expect(changeProjectCrs).toHaveBeenCalledWith(UTM);
     expect(wrapper.emitted("changed")).toHaveLength(1);
     expect(wrapper.emitted("update:show")).toStrictEqual([[false]]);
     wrapper.unmount();

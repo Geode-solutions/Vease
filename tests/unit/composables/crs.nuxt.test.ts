@@ -1,3 +1,4 @@
+import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
@@ -5,7 +6,6 @@ import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -35,18 +35,31 @@ const item: DataItem = {
   visible: true,
 };
 
-// Oldest first: a and c in Lambert-93, b already in UTM, local without CRS
+const ASSIGN_ROUTE = "opengeodeweb_back/crs/assign_geographic";
+
+// Oldest first: a and c in Lambert-93, b already in UTM, local1 and local2 without CRS
 function projectItems(): DataItem[] {
   return [
     { ...item, id: "a", created_at: "1", crs: LAMBERT },
     { ...item, id: "b", created_at: "2", crs: UTM },
     { ...item, id: "c", created_at: "3", crs: LAMBERT },
-    { ...item, id: "local", created_at: "4" },
+    { ...item, id: "local1", created_at: "4" },
+    { ...item, id: "local2", created_at: "5" },
   ];
 }
 
+// The crs store reads the data when it is created: mocked first
+function mockCrsItems(items: DataItem[]): void {
+  vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(
+    ref<CrsItem[]>(
+      items.map(({ id, name, crs, created_at }) => ({ id, name, crs, created_at: created_at ?? "" })),
+    ),
+  );
+}
+
 describe("useCrs composable", () => {
-  const request = vi.fn<(request: { params: unknown }) => Promise<unknown>>();
+  const request =
+    vi.fn<(request: { schema: { $id: string }; params: unknown }) => Promise<unknown>>();
   const focusCameraOnObject = vi.fn<(id: string) => void>();
 
   beforeEach(() => {
@@ -189,31 +202,45 @@ describe("useCrs composable", () => {
     expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
   });
 
-  test("changeProjectCrs converts every georeferenced data not yet in the new crs, in one request", async () => {
-    const items = projectItems();
-    await useCrs().changeProjectCrs(items, UTM);
+  test("changeProjectCrs converts the georeferenced data, then assigns the plausible others", async () => {
+    mockCrsItems(projectItems());
+    request
+      .mockResolvedValueOnce({ binary_light_viewable: "light", crs: UTM })
+      // Local2 does not fit the crs: left without crs
+      .mockResolvedValueOnce({
+        crs: UTM,
+        implausible: false,
+        linked: [{ id: "local2", implausible: true }],
+      });
+    await useCrs().changeProjectCrs(UTM);
 
-    expect(request).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ params: { id: "a", linked_ids: ["c"], ...UTM } }),
-    );
+    expect(request.mock.calls.map(([call]) => call.params)).toStrictEqual([
+      { id: "a", linked_ids: ["c"], ...UTM },
+      { id: "local1", linked_ids: ["local2"], only_plausible: true, ...UTM },
+    ]);
+    expect(useDataStore().updateItem).toHaveBeenCalledWith("local1", { crs: UTM });
+    expect(useDataStore().updateItem).not.toHaveBeenCalledWith("local2", expect.anything());
     // The camera stays where it is: every data moves
     expect(focusCameraOnObject).not.toHaveBeenCalled();
     expect(useCrsStore().projectCrs).toStrictEqual(UTM);
   });
 
   test("changeProjectCrs only changes the project crs when no data has to move", async () => {
-    const items = projectItems().filter((projectItem) => ["b", "local"].includes(projectItem.id));
-    await useCrs().changeProjectCrs(items, UTM);
+    mockCrsItems(projectItems().filter((projectItem) => projectItem.id === "b"));
+    await useCrs().changeProjectCrs(UTM);
 
     expect(request).not.toHaveBeenCalled();
     expect(useCrsStore().projectCrs).toStrictEqual(UTM);
   });
 
   test("changeProjectCrs keeps the project crs when the back refuses the conversion", async () => {
+    mockCrsItems(projectItems());
     request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:32631"));
     useCrsStore().setProjectCrs(LAMBERT);
 
-    await expect(useCrs().changeProjectCrs(projectItems(), UTM)).rejects.toThrow("EPSG:32631");
+    await expect(useCrs().changeProjectCrs(UTM)).rejects.toThrow("EPSG:32631");
+    // Nothing is assigned either
+    expect(request.mock.calls.map(([call]) => call.schema.$id)).not.toContain(ASSIGN_ROUTE);
     expect(useCrsStore().projectCrs).toStrictEqual(LAMBERT);
   });
 });
