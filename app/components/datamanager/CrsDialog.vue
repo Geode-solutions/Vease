@@ -42,17 +42,21 @@ const mode = ref<"assign" | "convert" | "align">("assign");
 const converting = ref(false);
 // "All data": the data in the same CRS state for assign, the whole project for convert
 const scope = ref<"all" | "one">("one");
+// Relabeling a georeferenced data whose coordinates do not fit is usually a missed convert
+const assignMismatch = ref<string | undefined>(undefined);
 const linkCandidates = useCrsLinkCandidates(() => item);
 
 // A wrong CRS is the error of one data; a CRS change usually moves the whole project
 watch(mode, (value) => {
   scope.value = value === "assign" ? "one" : "all";
+  assignMismatch.value = undefined;
 });
 
 async function fetchCurrentCrs(): Promise<void> {
   currentCrs.value = "";
   selectedCrs.value = undefined;
   scope.value = "one";
+  assignMismatch.value = undefined;
   mode.value = "assign";
   isGeographic.value = false;
   crsKnown.value = false;
@@ -71,6 +75,10 @@ async function fetchCurrentCrs(): Promise<void> {
         // Without geographic info, the active CRS is OpenGeode's default local one ("points")
         response_function: async ({ crs_info }) => {
           isGeographic.value = crs_info !== undefined;
+          // Changing the CRS of a georeferenced data is reprojecting it
+          if (crs_info !== undefined) {
+            mode.value = "convert";
+          }
           crsKnown.value = true;
           currentCrs.value = crs_info
             ? `${crs_info.authority}:${crs_info.code} — ${crs_info.name}`
@@ -142,56 +150,91 @@ function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string;
   );
 }
 
-async function handleAssign(): Promise<void> {
+interface AssignResponse {
+  crs?: CRSList;
+  implausible?: boolean;
+  linked?: { id: string; crs?: CRSList; implausible?: boolean }[];
+}
+
+async function onAssigned(
+  assignedItem: Pick<CrsItem, "id" | "name">,
+  linked: CrsItem[],
+  { crs, implausible, linked: linkedResponses }: AssignResponse,
+  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRSList | undefined },
+): Promise<void> {
+  const entries = [
+    { id: assignedItem.id, name: assignedItem.name, crs, implausible },
+    ...linked.map(({ id: linkedId, name }) => {
+      const response = linkedResponses?.find((entry) => entry.id === linkedId);
+      return {
+        id: linkedId,
+        name,
+        crs: response?.crs,
+        implausible: response?.implausible,
+      };
+    }),
+  ];
+  // A data left out by the check keeps its CRS: nothing to store
+  for (const entry of entries.filter((assigned) => assigned.crs !== undefined)) {
+    // oxlint-disable-next-line no-await-in-loop
+    await dataStore.updateItem(entry.id, { crs: entry.crs });
+  }
+  // The plausible data join the project CRS; the others keep it and get the warning
+  await followProject(plausibleEntries(entries), projectCrs);
+  if (guarded && crs === undefined) {
+    // The user chooses between converting and relabeling anyway
+    assignMismatch.value = formatCrsCode(selectedCrs.value);
+    return;
+  }
+  emit("assigned");
+  emit("update:show", false);
+  warnImplausible(
+    entries.filter((entry) => entry.implausible === true && entry.crs !== undefined),
+    crs,
+  );
+}
+
+// Data already in a CRS are relabeled only when their coordinates fit it, unless confirmed
+async function handleAssign(anyway = false): Promise<void> {
   if (!item || !selectedCrs.value || assigning.value) {
     return;
   }
   // The warning action may run once the dialog shows another item
   const assignedItem = item;
-  const { id } = assignedItem;
   const linked = scope.value === "all" ? linkCandidates.value : [];
   const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
+  const guarded = isGeographic.value && !anyway;
   // Taken before: the project follows the assigned data as soon as they are stored
   const { projectCrs } = crsStore;
+  assignMismatch.value = undefined;
   assigning.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
         params: {
-          id,
+          id: assignedItem.id,
           ...(linkedDataIds.length > 0 ? { linked_ids: linkedDataIds } : {}),
+          ...(guarded ? { only_plausible: true } : {}),
           ...selectedCrs.value,
         },
       },
       {
-        response_function: async ({ crs, implausible, linked: linkedResponses }) => {
-          await dataStore.updateItem(id, { crs });
-          for (const entry of linkedResponses ?? []) {
-            // oxlint-disable-next-line no-await-in-loop
-            await dataStore.updateItem(entry.id, { crs: entry.crs });
-          }
-          emit("assigned");
-          emit("update:show", false);
-          const entries = [
-            { id, name: assignedItem.name, crs, implausible },
-            ...linked.map(({ id: linkedId, name }) => {
-              const response = linkedResponses?.find((entry) => entry.id === linkedId);
-              return { id: linkedId, name, crs: response?.crs, implausible: response?.implausible };
-            }),
-          ];
-          // The plausible data join the project CRS; the others keep it and get the warning
-          await followProject(plausibleEntries(entries), projectCrs);
-          warnImplausible(
-            entries.filter((entry) => entry.implausible === true),
-            crs,
-          );
+        response_function: async (response: AssignResponse) => {
+          await onAssigned(assignedItem, linked, response, {
+            guarded,
+            projectCrs,
+          });
         },
       },
     );
   } finally {
     assigning.value = false;
   }
+}
+
+function convertInstead(): void {
+  mode.value = "convert";
 }
 
 async function handleConvert(): Promise<void> {
@@ -275,6 +318,47 @@ async function startAlignment(): Promise<void> {
         <v-radio label="All data" value="all" data-testid="crsScope-all" />
         <v-radio label="This data only" value="one" data-testid="crsScope-one" />
       </v-radio-group>
+      <p
+        v-if="mode !== 'align'"
+        class="text-caption text-white opacity-80 mt-2 mb-0"
+        data-testid="crsModeHint"
+      >
+        {{
+          mode === "assign"
+            ? "The coordinates are already in this CRS: fix a wrong or missing CRS."
+            : "Reproject the coordinates to this CRS."
+        }}
+      </p>
+      <v-alert
+        v-if="assignMismatch"
+        type="warning"
+        variant="tonal"
+        density="compact"
+        class="mt-4 flex-shrink-0"
+        data-testid="crsAssignMismatch"
+      >
+        These coordinates do not fit {{ assignMismatch }}. Did you mean Convert?
+        <div class="d-flex justify-end ga-2 mt-2">
+          <v-btn
+            size="small"
+            variant="text"
+            class="text-none"
+            data-testid="crsConvertInstead"
+            @click="convertInstead"
+          >
+            Convert instead
+          </v-btn>
+          <v-btn
+            size="small"
+            variant="text"
+            class="text-none"
+            data-testid="crsAssignAnyway"
+            @click="handleAssign(true)"
+          >
+            Assign anyway
+          </v-btn>
+        </div>
+      </v-alert>
 
       <v-card-text class="pt-8 px-0">
         <CrsSelector
@@ -322,7 +406,7 @@ async function startAlignment(): Promise<void> {
           data-testid="crsAssignButton"
           :disabled="!selectedCrs || assigning"
           :loading="assigning"
-          @click="handleAssign"
+          @click="handleAssign()"
           class="text-none rounded-lg font-weight-bold"
           elevation="4"
         >

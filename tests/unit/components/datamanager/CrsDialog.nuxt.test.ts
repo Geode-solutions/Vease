@@ -444,7 +444,7 @@ describe("crs dialog component", () => {
     wrapper.unmount();
   });
 
-  test("the scope follows the mode: one data for assign, all data for convert", async () => {
+  test("a georeferenced data opens on convert; the scope follows the mode", async () => {
     mockStoredItems([]);
     stubRequests({});
     const wrapper = mountWithPlugins(CrsDialog, {
@@ -452,13 +452,66 @@ describe("crs dialog component", () => {
       attachTo: document.body,
     });
     await flushPromises();
-    expect(scopeValue()).toBe("one");
-    click('[data-testid="crsModeConvert"]');
-    await flushPromises();
+    // Changing the crs of a georeferenced data is reprojecting it
+    expect(document.body.querySelector('[data-testid="crsConvertButton"]')).not.toBeNull();
     expect(scopeValue()).toBe("all");
     click('[data-testid="crsModeAssign"]');
     await flushPromises();
     expect(scopeValue()).toBe("one");
+    click('[data-testid="crsModeConvert"]');
+    await flushPromises();
+    expect(scopeValue()).toBe("all");
+    wrapper.unmount();
+  });
+
+  test("assigning a crs that does not fit a georeferenced data asks first", async () => {
+    mockStoredItems([]);
+    const request = stubRequests({ implausible: true });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+    // Checked first: nothing is relabeled, the dialog stays open
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", only_plausible: true, ...LAMBERT } }),
+      expect.anything(),
+    );
+    expect(wrapper.emitted("update:show")).toBeUndefined();
+    expect(document.body.querySelector('[data-testid="crsAssignMismatch"]')?.textContent).toContain(
+      "These coordinates do not fit EPSG:2154. Did you mean Convert?",
+    );
+    click('[data-testid="crsAssignAnyway"]');
+    await flushPromises();
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
+      expect.anything(),
+    );
+    wrapper.unmount();
+  });
+
+  test("the mismatch offers to convert instead", async () => {
+    mockStoredItems([]);
+    stubRequests({ implausible: true });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, item: mockItem },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+    click('[data-testid="crsConvertInstead"]');
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsConvertButton"]')).not.toBeNull();
+    expect(document.body.querySelector('[data-testid="crsAssignMismatch"]')).toBeNull();
     wrapper.unmount();
   });
 
@@ -471,13 +524,14 @@ describe("crs dialog component", () => {
       attachTo: document.body,
     });
     await flushPromises();
+    click('[data-testid="crsModeAssign"]');
     click('[data-testid="crsSelectorStub"]');
     await flushPromises();
     click('[data-testid="crsAssignButton"]');
     await flushPromises();
 
     expect(request).toHaveBeenLastCalledWith(
-      expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
+      expect.objectContaining({ params: { id: "item-1", only_plausible: true, ...LAMBERT } }),
       expect.anything(),
     );
     // The project crs taken before the assign: the project may follow the data meanwhile
@@ -503,6 +557,8 @@ describe("crs dialog component", () => {
       attachTo: document.body,
     });
     await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    await flushPromises();
     click('[data-testid="crsScope-all"] input');
     click('[data-testid="crsSelectorStub"]');
     await flushPromises();
@@ -511,7 +567,9 @@ describe("crs dialog component", () => {
 
     // Data already in another CRS is not in the same state
     expect(request).toHaveBeenLastCalledWith(
-      expect.objectContaining({ params: { id: "item-1", linked_ids: ["item-2"], ...LAMBERT } }),
+      expect.objectContaining({
+        params: { id: "item-1", linked_ids: ["item-2"], only_plausible: true, ...LAMBERT },
+      }),
       expect.anything(),
     );
     // The map is the only georeferenced data: the project is in its crs
