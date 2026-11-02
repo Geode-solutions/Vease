@@ -143,7 +143,7 @@ describe("crs align tool", () => {
       mode: "similarity",
       linkedItems: [],
     });
-    expect(success).toHaveBeenCalledWith("Data aligned: scale ×0.50, rotation 12°");
+    expect(success).toHaveBeenCalledWith("Data georeferenced: scale ×0.50, rotation 12°");
     wrapper.unmount();
   });
 
@@ -173,7 +173,7 @@ describe("crs align tool", () => {
       LAMBERT,
       expect.objectContaining({ linkedItems: [wells] }),
     );
-    expect(success).toHaveBeenCalledWith("Data aligned (2 items): scale ×1.00, rotation 25°");
+    expect(success).toHaveBeenCalledWith("Data georeferenced (2 items): scale ×1.00, rotation 25°");
     wrapper.unmount();
   });
 

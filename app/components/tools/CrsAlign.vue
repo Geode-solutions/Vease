@@ -44,7 +44,7 @@ watch(
 );
 
 function successMessage({ scale, rotation }: AlignResult, count: number): string {
-  const aligned = count > 1 ? `Data aligned (${count} items)` : "Data aligned";
+  const aligned = count > 1 ? `Data georeferenced (${count} items)` : "Data georeferenced";
   if (scale === undefined || rotation === undefined) {
     return aligned;
   }
@@ -84,9 +84,9 @@ async function apply(): Promise<void> {
       <v-icon start icon="mdi-vector-triangle" size="18" />
       <!-- One line: a long data name is truncated, the full name is in the tooltip -->
       <h2 class="text-subtitle-1 font-weight-bold mb-0 text-truncate" style="min-width: 0">
-        Align {{ UIStore.crsAlignItem?.name }}
+        Georeference {{ UIStore.crsAlignItem?.name }}
         <v-tooltip activator="parent" location="bottom">
-          Align {{ UIStore.crsAlignItem?.name }}
+          Georeference {{ UIStore.crsAlignItem?.name }}
         </v-tooltip>
       </h2>
       <v-spacer />

@@ -106,14 +106,14 @@ function warnImplausible(implausibleItems: DataItem[], crs: CRSList | undefined)
   if (!first) {
     return;
   }
-  const mismatch = `do not match ${formatCrsCode(crs)}. Align the data?`;
+  const mismatch = `do not match ${formatCrsCode(crs)}. Georeference the data?`;
   // Named when linked data were assigned too: the user must know which one to align
   const description =
     implausibleItems.length === 1 && first.id === item?.id
       ? `These coordinates ${mismatch}`
       : `${implausibleItems.map(({ name }) => name).join(", ")}: these coordinates ${mismatch}`;
   feedbackStore.add_warning(description, {
-    label: "Align",
+    label: "Georeference",
     onClick: () => {
       void openAlignment(first);
     },
@@ -226,7 +226,7 @@ async function startAlignment(): Promise<void> {
           </v-btn>
           <!-- Re-aligning restarts from the original coordinates -->
           <v-btn v-if="crsKnown" value="align" data-testid="crsModeAlign" class="text-none">
-            {{ isGeographic ? "Re-align" : "Align (3 points)" }}
+            Georeference
           </v-btn>
         </v-btn-toggle>
       </div>
@@ -267,7 +267,7 @@ async function startAlignment(): Promise<void> {
             @click="startAlignment"
           >
             <v-icon start>mdi-vector-triangle</v-icon>
-            Start alignment
+            Start georeferencing
           </v-btn>
         </div>
       </v-card-text>

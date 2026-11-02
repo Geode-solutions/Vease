@@ -305,7 +305,7 @@ describe("crs dialog component", () => {
     await flushPromises();
 
     expect(document.body.querySelector('[data-testid="crsModeAlign"]')?.textContent).toContain(
-      "Re-align",
+      "Georeference",
     );
     wrapper.unmount();
   });
@@ -315,9 +315,9 @@ describe("crs dialog component", () => {
 
     expect(warnings).toHaveLength(EXPECTED_EVENT_COUNT);
     expect(warnings[FIRST_EVENT_INDEX]?.description).toBe(
-      "These coordinates do not match EPSG:2154. Align the data?",
+      "These coordinates do not match EPSG:2154. Georeference the data?",
     );
-    expect(warnings[FIRST_EVENT_INDEX]?.action?.label).toBe("Align");
+    expect(warnings[FIRST_EVENT_INDEX]?.action?.label).toBe("Georeference");
   });
 
   test("does not warn when the assigned crs matches the coordinates", async () => {
@@ -447,7 +447,7 @@ describe("crs dialog component", () => {
     // Only the linked data does not match the crs: the warning names it
     const warnings = useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
     expect(warnings.map((warning) => warning.description)).toStrictEqual([
-      "Wells: these coordinates do not match EPSG:2154. Align the data?",
+      "Wells: these coordinates do not match EPSG:2154. Georeference the data?",
     ]);
     wrapper.unmount();
   });
