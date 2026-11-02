@@ -73,6 +73,18 @@ describe("useProjectCrs composable", () => {
     );
   });
 
+  test("the reference is the project crs once set", async () => {
+    // The older data stayed in Lambert-93 (flagged in the tree): the project is the reference
+    useCrsStore().setProjectCrs(UTM);
+    setItems([dataItem("older", "0", LAMBERT), dataItem("new", "1", LAMBERT)]);
+    await useProjectCrs().harmonizeImportedCrs(["new"]);
+    expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ id: "new" }),
+      UTM,
+      { focus: false },
+    );
+  });
+
   test("an empty project takes its reference from the oldest imported data", async () => {
     setItems([dataItem("b", "2", UTM), dataItem("a", "1", LAMBERT)]);
     await useProjectCrs().harmonizeImportedCrs(["a", "b"]);

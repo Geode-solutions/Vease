@@ -1,16 +1,11 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { type FeedbackAction, useFeedbackStore } from "@ogw_front/stores/feedback";
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
-import { formatCrsCode } from "@ogw_front/utils/crs";
+import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 
 // Shared by every instance: a batch is harmonized once the previous one is done
 let queue: Promise<void> = Promise.resolve();
-
-function sameCrs(left: CRSList, right: CRSList): boolean {
-  return left.authority === right.authority && left.code === right.code;
-}
 
 function byCreation(items: DataItem[]): DataItem[] {
   return items.toSorted((left, right) =>
@@ -31,7 +26,7 @@ function names(items: DataItem[]): string {
   return items.map((item) => item.name).join(", ");
 }
 
-// The project CRS is the first one met: imported data in another CRS is converted to it
+// Imported data in another CRS than the project is converted to it
 // oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types
 function useProjectCrs() {
   const dataStore = useDataStore();
@@ -57,7 +52,10 @@ function useProjectCrs() {
     const items = byCreation(await dataStore.allItems());
     const imported = items.filter((item) => ids.includes(item.id));
     const existing = items.filter((item) => !ids.includes(item.id));
-    const reference = (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs;
+    // The project CRS once set; before, the first one met
+    const reference =
+      crsStore.projectCrs ??
+      (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs;
     if (reference === undefined) {
       return;
     }
