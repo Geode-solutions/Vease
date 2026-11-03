@@ -205,8 +205,7 @@ async function toggleThresholdFilter(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function selectThresholdOption(select: Locator, name: string): Promise<void> {
-  const window = select.page();
+async function selectThresholdOption(window: Page, select: Locator, name: string): Promise<void> {
   await select.click();
   await waitForActionSettled(window);
   await window.getByRole("option", { name, exact: true }).click();
@@ -224,8 +223,12 @@ async function selectThresholdCardAttribute(
   cardIndex = 0,
 ): Promise<void> {
   const card = thresholdCard(window, cardIndex);
-  await selectThresholdOption(card.getByTestId("thresholdAttributeTypeSelect"), attributeType);
-  await selectThresholdOption(card.getByTestId("thresholdAttributeSelect"), attributeName);
+  await selectThresholdOption(
+    window,
+    card.getByTestId("thresholdAttributeTypeSelect"),
+    attributeType,
+  );
+  await selectThresholdOption(window, card.getByTestId("thresholdAttributeSelect"), attributeName);
 }
 
 async function selectThresholdAttribute(
@@ -234,7 +237,7 @@ async function selectThresholdAttribute(
   attributeType: string,
   attributeName: string,
 ): Promise<void> {
-  await selectThresholdOption(window.getByTestId("thresholdDatasetSelect"), datasetName);
+  await selectThresholdOption(window, window.getByTestId("thresholdDatasetSelect"), datasetName);
   await selectThresholdCardAttribute(window, attributeType, attributeName);
 }
 
