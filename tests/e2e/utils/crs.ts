@@ -100,6 +100,23 @@ async function expectCurrentCrs(window: Page, expected: string): Promise<void> {
   await expect(window.getByTestId("crsCurrentValue")).toContainText(expected);
 }
 
+// A georeferenced data opens on convert
+async function selectAssignMode(window: Page): Promise<void> {
+  await window.getByTestId("crsModeAssign").click();
+  await waitForActionSettled(window);
+}
+
+// Without closing the feedback: the step checks the dialog or the warning it shows
+async function clickAssign(window: Page): Promise<void> {
+  await window.getByTestId("crsAssignButton").click();
+  await waitForActionSettled(window);
+}
+
+async function expectFeedback(window: Page, text: string): Promise<void> {
+  await expect(window.getByTestId("feedbackSnackbar").filter({ hasText: text })).toBeVisible();
+  await closeFeedbackSnackbar(window);
+}
+
 async function selectConvertMode(window: Page): Promise<void> {
   await window.getByTestId("crsModeConvert").click();
   await waitForActionSettled(window);
@@ -184,12 +201,14 @@ async function applyAlignment(window: Page): Promise<void> {
 
 export {
   applyAlignment,
+  clickAssign,
   confirmAssign,
   confirmConvert,
   confirmProjectCrs,
   expectCrsMismatch,
   expectCurrentCrs,
   expectDataRows,
+  expectFeedback,
   expectRowCrs,
   fillAlignPoints,
   openCrsByButton,
@@ -203,5 +222,6 @@ export {
   selectCrs,
   selectScope,
   selectAlignMode,
+  selectAssignMode,
   startAlignment,
 };

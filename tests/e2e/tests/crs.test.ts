@@ -1,8 +1,12 @@
 // Node imports
 
+// Third party imports
+import { expect } from "@playwright/test";
+
 // Local imports
 import {
   applyAlignment,
+  clickAssign,
   confirmAssign,
   confirmConvert,
   confirmProjectCrs,
@@ -18,6 +22,7 @@ import {
   openProjectCrs,
   selectAlignMode,
   selectAlignmentCrs,
+  selectAssignMode,
   selectConvertMode,
   selectCrs,
   selectScope,
@@ -29,9 +34,11 @@ import {
   pointSetGeodeObjectType,
 } from "@vease_tests/utils/constants";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
+import { closeFeedbackSnackbar } from "@vease_tests/utils/app_interaction";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import { test } from "@vease_tests/utils/fixtures";
+import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
 
 // Constants
 const BREP_FILE = "test.og_brep";
@@ -42,6 +49,7 @@ const POINTSET_NAME = "test";
 const BREP_NAME = "test";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const UTM_31N = "WGS 84 / UTM zone 31N";
+const CC42 = "RGF93 v1 / CC42";
 const ALIGN_SOURCE = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
@@ -223,3 +231,34 @@ test("every data is in the project crs", async ({ window }) => {
   await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:2154");
   await moveMouseOutOfTheWay(window);
 });
+
+// Every data is in Lambert-93. Their coordinates are local numbers: they do not fit CC42
+test("relabeling a georeferenced data with a misfit crs asks first", async ({ window }) => {
+  await openCrsByButton(window, brepGeodeObjectType);
+  await selectAssignMode(window);
+  await selectCrs(window, CC42);
+  await clickAssign(window);
+  await expect(window.getByTestId("crsAssignMismatch")).toContainText("Did you mean Convert?");
+});
+
+test("convert instead switches to convert", async ({ window }) => {
+  await window.getByTestId("crsConvertInstead").click();
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("crsConvertButton")).toBeVisible();
+});
+
+test("assign anyway to all data", async ({ window }) => {
+  await selectAssignMode(window);
+  await selectScope(window, "all");
+  await selectCrs(window, CC42);
+  await clickAssign(window);
+  await window.getByTestId("crsAssignAnyway").click();
+  await waitForActionSettled(window);
+  await closeFeedbackSnackbar(window);
+  await moveMouseOutOfTheWay(window);
+  // Every data was in Lambert-93: all relabeled together
+  await expectRowCrs(window, brepGeodeObjectType, "EPSG:3942");
+  await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:3942");
+  await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:3942");
+});
+
