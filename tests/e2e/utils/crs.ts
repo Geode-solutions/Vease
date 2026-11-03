@@ -64,6 +64,17 @@ async function openCrsFromInfoCard(
   await waitForActionSettled(window);
 }
 
+// The warning icon of the tree opens the crs dialog of the data
+async function openCrsFromWarning(
+  window: Page,
+  geodeObjectType: string,
+  dataName: string,
+): Promise<void> {
+  const row = await getDataTreeRow(window, geodeObjectType, dataName);
+  await row.getByTestId("crsMismatchIcon").click();
+  await waitForActionSettled(window);
+}
+
 async function openCrsFromFeedback(window: Page, text: string): Promise<void> {
   const snackbar = window.getByTestId("feedbackSnackbar").filter({ hasText: text });
   await expect(snackbar).toBeVisible();
@@ -185,6 +196,7 @@ export {
   openCrsFromFeedback,
   openCrsFromInfoCard,
   openCrsFromTree,
+  openCrsFromWarning,
   openProjectCrs,
   selectAlignmentCrs,
   selectConvertMode,

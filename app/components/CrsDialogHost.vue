@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
-import type { DataItem } from "@vease/types/data_item";
 import ProjectCrsDialog from "@vease/components/ProjectCrsDialog.vue";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -10,7 +9,7 @@ const crsStore = useCrsStore();
 const dataStore = useDataStore();
 const feedbackStore = useFeedbackStore();
 const show = ref(false);
-const item = ref<DataItem | undefined>(undefined);
+const itemId = ref<string | undefined>(undefined);
 
 // Vease hosts the CRS dialog: the shared tree and info card may offer CRS edits
 crsStore.enableCrsEdit();
@@ -22,12 +21,13 @@ watch(
       return;
     }
     try {
-      item.value = await dataStore.item(id);
+      await dataStore.item(id);
     } catch {
       // The data was deleted since the edit was offered (e.g. by a snackbar)
       crsStore.clearCrsEditRequest();
       return;
     }
+    itemId.value = id;
     show.value = true;
   },
 );
@@ -50,7 +50,7 @@ function updateProjectShow(value: boolean): void {
   <div>
     <CrsDialog
       :show="show"
-      :item="item"
+      :item-id="itemId"
       @update:show="updateShow"
       @assigned="feedbackStore.add_success('CRS assigned')"
       @converted="feedbackStore.add_success('CRS converted')"

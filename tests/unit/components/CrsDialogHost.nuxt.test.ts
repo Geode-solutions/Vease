@@ -13,10 +13,10 @@ vi.setConfig({ testTimeout: 10_000 });
 const { CRS_DIALOG_STUB } = vi.hoisted(() => ({
   CRS_DIALOG_STUB: {
     name: "CrsDialog",
-    props: ["show", "item"],
+    props: ["show", "itemId"],
     emits: ["update:show", "assigned", "converted"],
     template:
-      "<div data-testid='crsDialogStub' :data-show='show' :data-item='item && item.id'><button data-testid='closeStub' @click=\"$emit('update:show', false)\" /></div>",
+      "<div data-testid='crsDialogStub' :data-show='show' :data-item='itemId'><button data-testid='closeStub' @click=\"$emit('update:show', false)\" /></div>",
   },
 }));
 

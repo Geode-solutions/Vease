@@ -133,6 +133,14 @@ const useUIStore = defineStore("UI", () => {
     showCrsAlign.value = true;
   }
 
+  // The overlays counted by anyOverlayOpen
+  function closeAllDrawers(): void {
+    showStepper.value = false;
+    showCreateTools.value = false;
+    showExtensions.value = false;
+    showCrsAlign.value = false;
+  }
+
   function setShowExtensions(value: boolean): void {
     showExtensions.value = value;
   }
@@ -154,6 +162,7 @@ const useUIStore = defineStore("UI", () => {
   }
 
   return {
+    closeAllDrawers,
     toolsDefinitions,
     activeTools,
     dataManagerTabs,

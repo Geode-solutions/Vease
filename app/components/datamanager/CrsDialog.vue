@@ -6,19 +6,22 @@ import back_schemas, {
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
-import type { DataItem } from "@vease/types/data_item";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
+import { useLiveDataItem } from "@ogw_front/composables/live_data_item";
 import { useUIStore } from "@vease/stores/ui";
 
-const { show = false, item = undefined } = defineProps<{
+const { show = false, itemId = undefined } = defineProps<{
   show?: boolean;
-  item?: DataItem;
+  itemId?: string;
 }>();
+
+// Read live by its id: the stored CRS shown and the candidates follow the changes
+const item = useLiveDataItem(() => itemId);
 
 const emit = defineEmits<{
   "update:show": [value: boolean];
@@ -44,7 +47,7 @@ const converting = ref(false);
 const scope = ref<"all" | "one">("one");
 // Relabeling a georeferenced data whose coordinates do not fit is usually a missed convert
 const assignMismatch = ref<string | undefined>(undefined);
-const linkCandidates = useCrsLinkCandidates(() => item);
+const linkCandidates = useCrsLinkCandidates(() => item.value);
 
 // A wrong CRS is the error of one data; a CRS change usually moves the whole project
 watch(mode, (value) => {
@@ -60,10 +63,10 @@ async function fetchCurrentCrs(): Promise<void> {
   mode.value = "assign";
   isGeographic.value = false;
   crsKnown.value = false;
-  if (!item) {
+  if (itemId === undefined) {
     return;
   }
-  const { id } = item;
+  const id = itemId;
   loadingCurrentCrs.value = true;
   try {
     await backStore.request(
@@ -85,7 +88,7 @@ async function fetchCurrentCrs(): Promise<void> {
             : "None (local coordinates)";
           // The file is the reference: refresh the stored CRS shown in the table and tree,
           // Only when it differs, as each write refreshes every live view of the data
-          if (formatCrs(item.crs) !== formatCrs(crs_info)) {
+          if (item.value !== undefined && formatCrs(item.value.crs) !== formatCrs(crs_info)) {
             await dataStore.updateItem(id, { crs: crs_info });
           }
         },
@@ -97,7 +100,7 @@ async function fetchCurrentCrs(): Promise<void> {
 }
 
 watch(
-  () => show,
+  () => show && itemId,
   async (value) => {
     if (value) {
       await fetchCurrentCrs();
@@ -126,7 +129,7 @@ function warnImplausible(
   const mismatch = `do not match ${formatCrsCode(crs)}. Georeference the data?`;
   // Named when linked data were assigned too: the user must know which one to align
   const description =
-    implausibleItems.length === 1 && first.id === item?.id
+    implausibleItems.length === 1 && first.id === itemId
       ? `These coordinates ${mismatch}`
       : `${implausibleItems.map(({ name }) => name).join(", ")}: these coordinates ${mismatch}`;
   feedbackStore.add_warning(description, {
@@ -196,11 +199,10 @@ async function onAssigned(
 
 // Data already in a CRS are relabeled only when their coordinates fit it, unless confirmed
 async function handleAssign(anyway = false): Promise<void> {
-  if (!item || !selectedCrs.value || assigning.value) {
+  const assignedItem = item.value;
+  if (!assignedItem || !selectedCrs.value || assigning.value) {
     return;
   }
-  // The warning action may run once the dialog shows another item
-  const assignedItem = item;
   const linked = scope.value === "all" ? linkCandidates.value : [];
   const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
   const guarded = isGeographic.value && !anyway;
@@ -238,14 +240,14 @@ function convertInstead(): void {
 }
 
 async function handleConvert(): Promise<void> {
-  if (!item || !selectedCrs.value || converting.value) {
+  if (!item.value || !selectedCrs.value || converting.value) {
     return;
   }
   converting.value = true;
   try {
     await (scope.value === "all"
       ? changeProjectCrs(selectedCrs.value)
-      : convertCrs(item, selectedCrs.value));
+      : convertCrs(item.value, selectedCrs.value));
     emit("converted");
     emit("update:show", false);
   } finally {
@@ -254,11 +256,11 @@ async function handleConvert(): Promise<void> {
 }
 
 async function startAlignment(): Promise<void> {
-  if (!item) {
+  if (!item.value) {
     return;
   }
   emit("update:show", false);
-  await openAlignment(item);
+  await openAlignment(item.value);
 }
 </script>
 

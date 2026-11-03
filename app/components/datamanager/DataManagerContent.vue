@@ -213,7 +213,7 @@ useEventListener(document, "keydown", (event) => {
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
-              @crs="crsStore.requestCrsEdit($event.id)"
+              @crs="crsStore.requestCrsEdit"
               @delete="confirmDelete"
               @delete-selected="deleteSelectedDialog = true"
             />

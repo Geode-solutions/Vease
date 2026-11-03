@@ -29,7 +29,7 @@ const emit = defineEmits<{
   "focus-camera": [item: DataItem];
   isolate: [item: DataItem];
   rename: [item: DataItem];
-  crs: [item: DataItem];
+  crs: [id: string];
   delete: [item: DataItem];
   "delete-selected": [];
   "toggle-visibility-selected": [];
@@ -216,7 +216,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           size="small"
           class="text-none text-caption font-weight-regular px-1"
           data-testid="crsCell"
-          @click.stop="emit('crs', item)"
+          @click.stop="emit('crs', item.id)"
         >
           <!-- The picture-in-picture view is narrow: the code alone, the full name is in the tooltip -->
           {{

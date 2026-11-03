@@ -15,20 +15,6 @@ const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
 const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
 const viewerStore = useViewerStore();
 
-function closeAllDrawers(): void {
-  uiStore.setShowStepper(false);
-  uiStore.setShowCreateTools(false);
-  uiStore.setShowExtensions(false);
-  uiStore.setShowCrsAlign(false);
-}
-
-const anyDrawerOpen = computed(
-  () =>
-    uiStore.showStepper ||
-    uiStore.showCreateTools ||
-    uiStore.showExtensions ||
-    uiStore.showCrsAlign,
-);
 const showRightDrawer = computed(
   () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showCrsAlign,
 );
@@ -38,18 +24,18 @@ function handleFilesDropped(files): void {
 }
 
 function handleEscape(): void {
-  if (anyDrawerOpen.value && !viewerStore.picking_mode) {
-    closeAllDrawers();
+  if (uiStore.anyOverlayOpen && !viewerStore.picking_mode) {
+    uiStore.closeAllDrawers();
   }
 }
 </script>
 
 <template>
   <div
-    v-if="anyDrawerOpen"
+    v-if="uiStore.anyOverlayOpen"
     v-show="!viewerStore.picking_mode"
     class="drawer-overlay"
-    @click="closeAllDrawers"
+    @click="uiStore.closeAllDrawers()"
   />
 
   <v-card

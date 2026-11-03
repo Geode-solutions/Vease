@@ -213,7 +213,7 @@ describe("data manager content component", () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent(DataTable);
-    dataTable.vm.$emit("crs", mockItem1);
+    dataTable.vm.$emit("crs", mockItem1.id);
     await flushPromises();
 
     expect(useCrsStore().crsEditRequest).toBe(mockItem1.id);

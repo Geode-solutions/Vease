@@ -136,7 +136,8 @@ describe("data table component", () => {
     const emitted = wrapper.emitted("crs");
     expect(emitted).toBeDefined();
     expect(emitted?.length).toBe(EXPECTED_EVENT_COUNT);
-    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1]);
+    // The id is enough to open the crs dialog
+    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1.id]);
   });
 
   test("shows the crs of each item", () => {

@@ -14,6 +14,7 @@ import {
   openCrsByButton,
   openCrsFromInfoCard,
   openCrsFromTree,
+  openCrsFromWarning,
   openProjectCrs,
   selectAlignMode,
   selectAlignmentCrs,
@@ -192,6 +193,13 @@ test("convert the model alone", async ({ window }) => {
 test("the model out of the project crs is flagged in the tree", async ({ window }) => {
   await navigateToViewerPage(window);
   await expectCrsMismatch(window, brepGeodeObjectType, BREP_NAME, true);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("the warning opens the crs dialog of the model", async ({ window }) => {
+  await openCrsFromWarning(window, brepGeodeObjectType, BREP_NAME);
+  await expectCurrentCrs(window, "EPSG:2154");
+  await window.keyboard.press("Escape");
   await moveMouseOutOfTheWay(window);
 });
 

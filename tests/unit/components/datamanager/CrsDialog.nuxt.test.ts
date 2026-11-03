@@ -148,7 +148,7 @@ async function assignAnswered(
   backStore.request = request as unknown as typeof backStore.request;
 
   const wrapper = mountWithPlugins(CrsDialog, {
-    props: { show: true, item: mockItem },
+    props: { show: true, itemId: mockItem.id },
     attachTo: document.body,
   });
   await flushPromises();
@@ -166,9 +166,15 @@ async function assignAnswered(
   return useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
 }
 
+// The dialog reads the data it edits live, by its id
+let storedItem = ref<DataItem>(mockItem);
+
 describe("crs dialog component", () => {
   beforeEach(() => {
     setupActivePinia();
+    storedItem = ref<DataItem>(mockItem);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- the stored item of the dialog, shared by the suite
+    vi.spyOn(useDataStore(), "refItem").mockImplementation(() => storedItem as never);
   });
 
   test("shows current crs and assigns the selected one", async () => {
@@ -184,7 +190,7 @@ describe("crs dialog component", () => {
     backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -229,7 +235,7 @@ describe("crs dialog component", () => {
     backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -258,7 +264,7 @@ describe("crs dialog component", () => {
     backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -283,7 +289,7 @@ describe("crs dialog component", () => {
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -320,7 +326,7 @@ describe("crs dialog component", () => {
     backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -345,7 +351,7 @@ describe("crs dialog component", () => {
     backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -384,7 +390,7 @@ describe("crs dialog component", () => {
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -403,9 +409,10 @@ describe("crs dialog component", () => {
     // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
     backStore.request = request as unknown as typeof backStore.request;
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    storedItem.value = { ...mockItem, crs: UTM_RESPONSE.crs_info };
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: { ...mockItem, crs: UTM_RESPONSE.crs_info } },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -427,7 +434,7 @@ describe("crs dialog component", () => {
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -448,7 +455,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     stubRequests({});
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -468,7 +475,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     const request = stubRequests({ implausible: true });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -499,7 +506,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     stubRequests({ implausible: true });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -520,7 +527,7 @@ describe("crs dialog component", () => {
     useCrsStore().setProjectCrs(LAMBERT);
     const request = stubRequests({ crs: UTM, implausible: false });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -553,7 +560,7 @@ describe("crs dialog component", () => {
       linked: [{ id: "item-2", crs: LAMBERT, implausible: true }],
     });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -589,7 +596,7 @@ describe("crs dialog component", () => {
     stubRequests({});
     convertCrs.mockReset().mockResolvedValue(undefined);
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, item: mockItem },
+      props: { show: true, itemId: mockItem.id },
       attachTo: document.body,
     });
     await flushPromises();
