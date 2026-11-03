@@ -83,12 +83,12 @@ async function clickBasemapEye(window: Page, title?: MapTitle): Promise<void> {
   await waitForActionSettled(window);
 }
 
-// A map eye shows that map alone
-async function showBasemapMap(window: Page, title: MapTitle): Promise<void> {
+// A map eye shows or hides that map, over or under the other visible maps
+async function toggleBasemapMap(window: Page, title: MapTitle): Promise<void> {
   await clickBasemapEye(window, title);
 }
 
-// The category eye hides a visible basemap, or shows the last map again
+// The category eye hides the visible maps, or shows the last maps again
 async function toggleBasemap(window: Page): Promise<void> {
   await clickBasemapEye(window);
 }
@@ -116,12 +116,13 @@ async function setBasemapOpacity(window: Page, title: MapTitle, percent: number)
   await waitForActionSettled(window);
 }
 
-async function toggleBasemapAround(window: Page): Promise<void> {
-  await openBasemapMenu(window, "basemapAroundMenu");
-  await window.getByTestId("basemapAround").locator("input").click();
+// From a map menu, crops that map; from the category menu, crops every map
+async function toggleBasemapCrop(window: Page, title?: MapTitle): Promise<void> {
+  await openBasemapMenu(window, "basemapCropMenu", title);
+  await window.getByTestId("basemapCrop").locator("input").click();
   await window.keyboard.press("Escape");
   await waitForActionSettled(window);
 }
 
 export type { TileServer };
-export { setBasemapOpacity, showBasemapMap, startTileServer, toggleBasemap, toggleBasemapAround };
+export { setBasemapOpacity, startTileServer, toggleBasemap, toggleBasemapCrop, toggleBasemapMap };

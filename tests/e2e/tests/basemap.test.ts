@@ -7,10 +7,10 @@ import { expect } from "@playwright/test";
 import {
   type TileServer,
   setBasemapOpacity,
-  showBasemapMap,
   startTileServer,
   toggleBasemap,
-  toggleBasemapAround,
+  toggleBasemapCrop,
+  toggleBasemapMap,
 } from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
@@ -78,13 +78,13 @@ test("the satellite basemap shows on its own", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("map around off keeps the map on the model top", async ({ window }) => {
-  await toggleBasemapAround(window);
+test("crop to data keeps the map on the model top", async ({ window }) => {
+  await toggleBasemapCrop(window);
   await moveMouseOutOfTheWay(window);
 });
 
-test("map around back on", async ({ window }) => {
-  await toggleBasemapAround(window);
+test("crop to data back off", async ({ window }) => {
+  await toggleBasemapCrop(window);
   await moveMouseOutOfTheWay(window);
 });
 
@@ -123,13 +123,23 @@ test("clipping planes off", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("show the streets map alone", async ({ window }) => {
-  await showBasemapMap(window, "Streets");
+test("show the streets map over the satellite map", async ({ window }) => {
+  await toggleBasemapMap(window, "Streets");
   await moveMouseOutOfTheWay(window);
 });
 
 test("lower the streets opacity", async ({ window }) => {
   await setBasemapOpacity(window, "Streets", BASEMAP_OPACITY);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("crop the streets map only", async ({ window }) => {
+  await toggleBasemapCrop(window, "Streets");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("hide the satellite map, streets stays", async ({ window }) => {
+  await toggleBasemapMap(window, "Satellite");
   await moveMouseOutOfTheWay(window);
 });
 
