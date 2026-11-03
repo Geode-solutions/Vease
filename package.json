@@ -81,7 +81,7 @@
     "test:e2e:cloud": "npm run test:e2e -- --project=cloud",
     "test:e2e:desktop": "npm run test:e2e -- --project=desktop",
     "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots",
-    "prepare:types": "cross-env MODE=BROWSER nuxi prepare"
+    "prepare:types": "cross-env MODE=BROWSER npx nuxi prepare"
   },
   "dependencies": {
     "@ai-sdk/gateway": "4.0.75",

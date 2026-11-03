@@ -4,7 +4,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import { defaultDataName, structuralModelGeodeObjectType } from "@vease_tests/utils/constants";
 import {
-  getModelComponentTypeOptions,
+  getModelComponentTypeTab,
   getModelComponentsObjectTree,
   openModelComponentContextMenu,
   openModelComponentsTree,
@@ -53,7 +53,7 @@ test("hide blocks", async ({ window }) => {
 
 test("collection type color", async ({ window }) => {
   await openModelComponentContextMenu(window, collectionTypeRowName);
-  await expect(getModelComponentTypeOptions(window)).toContainText("Surfaces Options");
+  await expect(getModelComponentTypeTab(window)).toHaveText("Surfaces");
   await setModelColor(window);
   await moveMouseOutOfTheWay(window);
 });

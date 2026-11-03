@@ -7,7 +7,9 @@ import path from "node:path";
 // Third party imports
 import {
   BrowserWindow,
+  type Streams,
   type UtilityProcess,
+  type WebFrameMain,
   app,
   safeStorage,
   shell,
@@ -33,6 +35,13 @@ const __dirname = import.meta.dirname;
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
 
+function frameStreams(frame: WebFrameMain | null): Streams {
+  if (frame) {
+    return { video: frame };
+  }
+  return {};
+}
+
 function setupBrowserWindow(): BrowserWindow {
   const window = new BrowserWindow({
     title: "Vease - New project",
@@ -56,7 +65,7 @@ function setupBrowserWindow(): BrowserWindow {
 
   // Screenshots including the UI capture the requesting frame directly, without a source picker
   window.webContents.session.setDisplayMediaRequestHandler((request, callback) => {
-    callback(request.frame ? { video: request.frame } : {});
+    callback(frameStreams(request.frame));
   });
 
   window.webContents.setWindowOpenHandler(({ url }) => {
@@ -234,7 +243,10 @@ interface CredentialsResult extends OperationResult {
 }
 
 function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
 }
 
 function isCredentialsPayload(value: unknown): value is CredentialsPayload {
@@ -302,7 +314,7 @@ interface ParsedArgs {
 }
 
 function parseArgs(): ParsedArgs {
-  const args = app.isPackaged ? process.argv.slice(1) : process.argv.slice(2);
+  const args = process.argv.slice(app.isPackaged ? 1 : 2);
   return {
     flags: args.filter((argument) => argument.startsWith("--")),
     files: args.filter((argument) => !argument.startsWith("-")),
