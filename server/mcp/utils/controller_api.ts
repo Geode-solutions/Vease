@@ -36,7 +36,7 @@ function extractErrorMessage(value: unknown): string | undefined {
   return undefined;
 }
 
-export async function callControllerApi(
+async function callControllerApi(
   path: string,
   { method = "POST", headers, body, errorPrefix }: CallControllerApiOptions,
 ): Promise<CallControllerApiResult> {
@@ -61,3 +61,34 @@ export async function callControllerApi(
     return { ok: false, message: `${errorPrefix}: ${message}` };
   }
 }
+
+interface ControllerActionOptions {
+  // Params the action's route takes
+  accepted: readonly string[];
+  // Ends the error naming the params given but not accepted, e.g. "to rename"
+  context: string;
+  errorPrefix: string;
+}
+
+// The route schema rejects a stray param without naming it, so name it here for the model
+async function callControllerAction(
+  path: string,
+  params: Record<string, unknown>,
+  { accepted, context, errorPrefix }: ControllerActionOptions,
+): Promise<CallControllerApiResult> {
+  const stray = Object.keys(params).filter(
+    (key) => params[key] !== undefined && !accepted.includes(key),
+  );
+  if (stray.length > 0) {
+    // oxlint-disable-next-line eslint/id-length
+    return { ok: false, message: `${errorPrefix}: ${stray.join(", ")} cannot be given ${context}` };
+  }
+  const result = await callControllerApi(path, {
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+    errorPrefix,
+  });
+  return result;
+}
+
+export { callControllerAction, callControllerApi };

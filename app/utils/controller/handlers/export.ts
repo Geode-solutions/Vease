@@ -11,10 +11,15 @@ import { getBackStore } from "@vease/utils/external_stores";
 
 type ScreenshotFormat = "png" | "jpg";
 
-type ExportParams = { uploadUrl: string } & (
-  | { kind: "screenshot"; format: ScreenshotFormat; includeBackground?: boolean }
-  | { kind: "project"; format: "vease" }
-);
+interface ExportScreenshotParams {
+  format: ScreenshotFormat;
+  includeBackground?: boolean;
+  uploadUrl: string;
+}
+
+interface ExportProjectParams {
+  uploadUrl: string;
+}
 
 const SCREENSHOT_FILENAME = "controller_screenshot";
 const PROJECT_FILENAME = "project.vease";
@@ -65,15 +70,20 @@ async function projectBlob(): Promise<Blob> {
   return new Blob([result]);
 }
 
-async function exportFile(params: unknown): Promise<Record<string, never>> {
+async function exportScreenshot(params: unknown): Promise<Record<string, never>> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const exportParams = params as ExportParams;
-  const blob =
-    exportParams.kind === "screenshot"
-      ? await screenshotBlob(exportParams.format, exportParams.includeBackground)
-      : await projectBlob();
-  await $fetch(exportParams.uploadUrl, { method: "POST", body: blob });
+  const { format, includeBackground, uploadUrl } = params as ExportScreenshotParams;
+  const blob = await screenshotBlob(format, includeBackground);
+  await $fetch(uploadUrl, { method: "POST", body: blob });
   return {};
 }
 
-export { exportFile };
+async function exportProject(params: unknown): Promise<Record<string, never>> {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
+  const { uploadUrl } = params as ExportProjectParams;
+  const blob = await projectBlob();
+  await $fetch(uploadUrl, { method: "POST", body: blob });
+  return {};
+}
+
+export { exportProject, exportScreenshot };

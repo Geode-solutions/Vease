@@ -237,7 +237,7 @@ describe("the set-style controller handler", () => {
 
   test("rejects an empty change", async () => {
     await expect(setStyle({ ids: [MESH.id] })).rejects.toThrow(
-      "Nothing to change: give visibility, color, size, width, coloring or attribute",
+      "Nothing to change: give visibility, color, size, width or coloring",
     );
   });
 
@@ -340,18 +340,6 @@ describe("the set-style controller handler", () => {
         visibility: true,
       }),
     ).rejects.toThrow(/single id/u);
-  });
-
-  test("rejects attribute options without an attribute", async () => {
-    await expect(
-      setStyle({ ids: [MESH.id], target: "polygons", colormap: "batlow", visibility: true }),
-    ).rejects.toThrow("colormap only apply when coloring by an attribute");
-  });
-
-  test("rejects an attribute mixed with other style changes", async () => {
-    await expect(
-      setStyle({ ids: [MESH.id], attribute: "depth", color: "#ff8800" }),
-    ).rejects.toThrow("attribute cannot be combined with color; style in a separate call");
   });
 
   test("rejects a color together with random coloring", async () => {

@@ -22,20 +22,12 @@ export interface ControllerCommandsReplyResponse {
 
 export interface ControllerCommandsReplyResponseResponse {}
 
-export interface ControllerDataManageParams {
-  action: ControllerDataManageParamsAction;
-  closed?: boolean;
-  ids?: string[];
-  kind?: ControllerDataManageParamsKind;
-  name?: string;
-  points?: Array<number[]>;
+export interface ControllerDataRenameParams {
+  id: string;
+  name: string;
 }
 
-export type ControllerDataManageParamsAction = "create" | "rename" | "delete";
-
-export type ControllerDataManageParamsKind = "point" | "curve" | "surface";
-
-export interface ControllerDataManageResponse {
+export interface ControllerDataRenameResponse {
   response: any;
   statusCode: number;
 }
@@ -63,6 +55,56 @@ export interface ControllerDataDetailsResponse {
   statusCode: number;
 }
 
+export interface ControllerDataDeleteParams {
+  ids: string[];
+}
+
+export interface ControllerDataDeleteResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerDataCreateParams {
+  closed?: boolean;
+  kind: Kind;
+  name: string;
+  points: Array<number[]>;
+}
+
+export type Kind = "point" | "curve" | "surface";
+
+export interface ControllerDataCreateResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerExportScreenshotParams {
+  filePath: string;
+  includeBackground?: boolean;
+}
+
+export interface ControllerExportScreenshotResponse {
+  response: ControllerExportScreenshotResponseResponse;
+  statusCode: number;
+}
+
+export interface ControllerExportScreenshotResponseResponse {
+  filePath: string;
+}
+
+export interface ControllerExportProjectParams {
+  filePath: string;
+}
+
+export interface ControllerExportProjectResponse {
+  response: ControllerExportProjectResponseResponse;
+  statusCode: number;
+}
+
+export interface ControllerExportProjectResponseResponse {
+  filePath: string;
+}
+
 export interface ControllerFilesUploadParams {
   token: string;
 }
@@ -83,23 +125,17 @@ export interface ControllerFilesDownloadResponse {
   statusCode: number;
 }
 
-export interface ControllerFilterApplyParams {
+export interface ControllerFilterThresholdParams {
   attribute?: string;
-  factor?: number;
-  filter: Filter;
   ids: string[];
   item?: number;
-  location?: ControllerFilterApplyParamsLocation;
+  location?: ControllerFilterThresholdParamsLocation;
   maximum?: number;
   minimum?: number;
-  planes?: Plane[];
   remove?: boolean;
-  slices?: Slice[];
 }
 
-export type Filter = "shrink" | "explode" | "slice" | "clip" | "threshold";
-
-export type ControllerFilterApplyParamsLocation =
+export type ControllerFilterThresholdParamsLocation =
   | "vertex"
   | "edge"
   | "cell"
@@ -107,9 +143,15 @@ export type ControllerFilterApplyParamsLocation =
   | "polyhedron"
   | "point";
 
-export interface Plane {
-  normal: number[];
-  origin: number[];
+export interface ControllerFilterThresholdResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerFilterSliceParams {
+  ids: string[];
+  remove?: boolean;
+  slices?: Slice[];
 }
 
 export interface Slice {
@@ -117,26 +159,47 @@ export interface Slice {
   index: number;
 }
 
-export interface ControllerFilterApplyResponse {
+export interface ControllerFilterSliceResponse {
   response: any;
   statusCode: number;
 }
 
-export interface ControllerExportParams {
-  filePath: string;
-  includeBackground?: boolean;
-  kind: ControllerExportParamsKind;
+export interface ControllerFilterShrinkParams {
+  factor?: number;
+  ids: string[];
+  remove?: boolean;
 }
 
-export type ControllerExportParamsKind = "screenshot" | "project";
-
-export interface ControllerExportResponse {
-  response: ControllerExportResponseResponse;
+export interface ControllerFilterShrinkResponse {
+  response: any;
   statusCode: number;
 }
 
-export interface ControllerExportResponseResponse {
-  filePath: string;
+export interface ControllerFilterExplodeParams {
+  factor?: number;
+  ids: string[];
+  remove?: boolean;
+}
+
+export interface ControllerFilterExplodeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerFilterClipParams {
+  ids: string[];
+  planes?: Plane[];
+  remove?: boolean;
+}
+
+export interface Plane {
+  normal: number[];
+  origin: number[];
+}
+
+export interface ControllerFilterClipResponse {
+  response: any;
+  statusCode: number;
 }
 
 export interface ControllerColormapsParams {}
@@ -151,32 +214,17 @@ export interface ControllerColormapsResponseResponse {
 }
 
 export interface ControllerStyleSetParams {
-  attribute?: string;
   color?: string;
   coloring?: Coloring;
-  colormap?: string;
   componentIds?: string[];
   ids: string[];
-  item?: number;
-  location?: ControllerStyleSetParamsLocation;
-  maximum?: number;
-  minimum?: number;
-  noDataColor?: string;
   size?: number;
   target?: Target;
-  timeStep?: number;
   visibility?: boolean;
   width?: number;
 }
 
 export type Coloring = "constant" | "random" | "textures";
-
-export type ControllerStyleSetParamsLocation =
-  | "vertex"
-  | "edge"
-  | "cell"
-  | "polygon"
-  | "polyhedron";
 
 export type Target =
   | "points"
@@ -194,30 +242,86 @@ export interface ControllerStyleSetResponse {
   statusCode: number;
 }
 
-export interface ControllerViewSetParams {
-  action: ControllerViewSetParamsAction;
+export interface ControllerStyleAttributeParams {
+  attribute: string;
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  location?: ControllerStyleAttributeParamsLocation;
+  maximum?: number;
+  minimum?: number;
+  noDataColor?: string;
+  target?: Target;
+  timeStep?: number;
+}
+
+export type ControllerStyleAttributeParamsLocation =
+  | "vertex"
+  | "edge"
+  | "cell"
+  | "polygon"
+  | "polyhedron";
+
+export interface ControllerStyleAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewSceneParams {
   axes?: boolean;
   backgroundColor?: string;
-  componentIds?: string[];
   grid?: boolean;
-  id?: string;
-  name?: string;
-  orientation?: Orientation;
-  positionId?: number;
   zScaling?: number;
 }
 
-export type ControllerViewSetParamsAction =
-  | "reset"
-  | "focus"
-  | "orient"
-  | "save"
-  | "restore"
-  | "scene";
+export interface ControllerViewSceneResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewSaveParams {
+  name: string;
+}
+
+export interface ControllerViewSaveResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewRestoreParams {
+  positionId: number;
+}
+
+export interface ControllerViewRestoreResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewResetParams {}
+
+export interface ControllerViewResetResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewOrientParams {
+  orientation: Orientation;
+}
 
 export type Orientation = "xplus" | "xminus" | "yplus" | "yminus" | "zplus" | "zminus";
 
-export interface ControllerViewSetResponse {
+export interface ControllerViewOrientResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerViewFocusParams {
+  componentIds?: string[];
+  id: string;
+}
+
+export interface ControllerViewFocusResponse {
   response: any;
   statusCode: number;
 }
@@ -283,14 +387,24 @@ export interface Schemas {
           TypedSchema<ControllerCommandsReplyParams, ControllerCommandsReplyResponse>;
       };
       readonly data: {
-        readonly manage: (typeof json)["api"]["controller"]["data"]["manage"] &
-          TypedSchema<ControllerDataManageParams, ControllerDataManageResponse>;
+        readonly rename: (typeof json)["api"]["controller"]["data"]["rename"] &
+          TypedSchema<ControllerDataRenameParams, ControllerDataRenameResponse>;
         readonly load: (typeof json)["api"]["controller"]["data"]["load"] &
           TypedSchema<ControllerDataLoadParams, ControllerDataLoadResponse>;
         readonly list: (typeof json)["api"]["controller"]["data"]["list"] &
           TypedSchema<ControllerDataListParams, ControllerDataListResponse>;
         readonly details: (typeof json)["api"]["controller"]["data"]["details"] &
           TypedSchema<ControllerDataDetailsParams, ControllerDataDetailsResponse>;
+        readonly delete: (typeof json)["api"]["controller"]["data"]["delete"] &
+          TypedSchema<ControllerDataDeleteParams, ControllerDataDeleteResponse>;
+        readonly create: (typeof json)["api"]["controller"]["data"]["create"] &
+          TypedSchema<ControllerDataCreateParams, ControllerDataCreateResponse>;
+      };
+      readonly export: {
+        readonly screenshot: (typeof json)["api"]["controller"]["export"]["screenshot"] &
+          TypedSchema<ControllerExportScreenshotParams, ControllerExportScreenshotResponse>;
+        readonly project: (typeof json)["api"]["controller"]["export"]["project"] &
+          TypedSchema<ControllerExportProjectParams, ControllerExportProjectResponse>;
       };
       readonly files: {
         readonly upload: (typeof json)["api"]["controller"]["files"]["upload"] &
@@ -299,20 +413,38 @@ export interface Schemas {
           TypedSchema<ControllerFilesDownloadParams, ControllerFilesDownloadResponse>;
       };
       readonly filter: {
-        readonly apply: (typeof json)["api"]["controller"]["filter"]["apply"] &
-          TypedSchema<ControllerFilterApplyParams, ControllerFilterApplyResponse>;
+        readonly threshold: (typeof json)["api"]["controller"]["filter"]["threshold"] &
+          TypedSchema<ControllerFilterThresholdParams, ControllerFilterThresholdResponse>;
+        readonly slice: (typeof json)["api"]["controller"]["filter"]["slice"] &
+          TypedSchema<ControllerFilterSliceParams, ControllerFilterSliceResponse>;
+        readonly shrink: (typeof json)["api"]["controller"]["filter"]["shrink"] &
+          TypedSchema<ControllerFilterShrinkParams, ControllerFilterShrinkResponse>;
+        readonly explode: (typeof json)["api"]["controller"]["filter"]["explode"] &
+          TypedSchema<ControllerFilterExplodeParams, ControllerFilterExplodeResponse>;
+        readonly clip: (typeof json)["api"]["controller"]["filter"]["clip"] &
+          TypedSchema<ControllerFilterClipParams, ControllerFilterClipResponse>;
       };
-      readonly export: (typeof json)["api"]["controller"]["export"] &
-        TypedSchema<ControllerExportParams, ControllerExportResponse>;
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly style: {
         readonly set: (typeof json)["api"]["controller"]["style"]["set"] &
           TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
+        readonly attribute: (typeof json)["api"]["controller"]["style"]["attribute"] &
+          TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
       };
       readonly view: {
-        readonly set: (typeof json)["api"]["controller"]["view"]["set"] &
-          TypedSchema<ControllerViewSetParams, ControllerViewSetResponse>;
+        readonly scene: (typeof json)["api"]["controller"]["view"]["scene"] &
+          TypedSchema<ControllerViewSceneParams, ControllerViewSceneResponse>;
+        readonly save: (typeof json)["api"]["controller"]["view"]["save"] &
+          TypedSchema<ControllerViewSaveParams, ControllerViewSaveResponse>;
+        readonly restore: (typeof json)["api"]["controller"]["view"]["restore"] &
+          TypedSchema<ControllerViewRestoreParams, ControllerViewRestoreResponse>;
+        readonly reset: (typeof json)["api"]["controller"]["view"]["reset"] &
+          TypedSchema<ControllerViewResetParams, ControllerViewResetResponse>;
+        readonly orient: (typeof json)["api"]["controller"]["view"]["orient"] &
+          TypedSchema<ControllerViewOrientParams, ControllerViewOrientResponse>;
+        readonly focus: (typeof json)["api"]["controller"]["view"]["focus"] &
+          TypedSchema<ControllerViewFocusParams, ControllerViewFocusResponse>;
       };
       readonly viewer: {
         readonly state: (typeof json)["api"]["controller"]["viewer"]["state"] &

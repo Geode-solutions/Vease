@@ -33,6 +33,13 @@ describe("the POST /api/controller/style/set endpoint", () => {
     expect(dispatchCommand).toHaveBeenCalledWith("set-style", params);
   });
 
+  test("rejects an attribute, which only style/attribute takes, with 400", async () => {
+    const event = eventWithBody({ ids: [DATA_ID], attribute: "depth" });
+
+    await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
+    expect(dispatchCommand).not.toHaveBeenCalled();
+  });
+
   test("rejects an unknown target with 400", async () => {
     const event = eventWithBody({ ids: [DATA_ID], target: "vertices", visibility: true });
 
@@ -50,6 +57,13 @@ describe("the POST /api/controller/style/set endpoint", () => {
 
   test("rejects a malformed color with 400", async () => {
     const event = eventWithBody({ ids: [DATA_ID], color: "orange" });
+
+    await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
+    expect(dispatchCommand).not.toHaveBeenCalled();
+  });
+
+  test("rejects a zero point size with 400", async () => {
+    const event = eventWithBody({ ids: [DATA_ID], target: "points", size: 0 });
 
     await expect(handler(event)).resolves.toMatchObject({ code: BAD_REQUEST });
     expect(dispatchCommand).not.toHaveBeenCalled();

@@ -104,7 +104,7 @@ test("controller drives the app", async ({ window }) => {
     }),
   );
   await expectOk(
-    await window.request.post(controllerUrl(window, "style/set"), {
+    await window.request.post(controllerUrl(window, "style/attribute"), {
       data: {
         ids: [dataId],
         target: attribute.target,
@@ -114,8 +114,8 @@ test("controller drives the app", async ({ window }) => {
     }),
   );
   await expectOk(
-    await window.request.post(controllerUrl(window, "view/set"), {
-      data: { action: "orient", orientation: "zplus" },
+    await window.request.post(controllerUrl(window, "view/orient"), {
+      data: { orientation: "zplus" },
     }),
   );
 

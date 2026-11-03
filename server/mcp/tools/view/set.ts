@@ -4,8 +4,17 @@ import { z } from "zod";
 
 // Local imports
 import { componentIds, dataId, hexColor } from "@vease_server/mcp/utils/controller_schemas";
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
 import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
+
+const ACCEPTED = {
+  reset: [],
+  focus: ["id", "componentIds"],
+  orient: ["orientation"],
+  save: ["name"],
+  restore: ["positionId"],
+  scene: ["zScaling", "backgroundColor", "axes", "grid"],
+} as const;
 
 export default defineMcpTool({
   name: "set-view",
@@ -36,15 +45,15 @@ export default defineMcpTool({
     axes: z.boolean().optional().describe("Show (true) or hide (false) the axes; for scene"),
     grid: z.boolean().optional().describe("Show (true) or hide (false) the grid scale; for scene"),
   },
-  handler: async (input) => {
-    const result = await callControllerApi("/api/controller/view/set", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+  handler: async ({ action, ...params }) => {
+    const result = await callControllerAction(`/api/controller/view/${action}`, params, {
+      accepted: ACCEPTED[action],
+      context: `to ${action}`,
       errorPrefix: "Error setting view",
     });
     if (!result.ok) {
       return result.message;
     }
-    return `View updated: ${JSON.stringify(controllerResponse(result.payload))}`;
+    return `View updated (${action}): ${JSON.stringify(controllerResponse(result.payload))}`;
   },
 });

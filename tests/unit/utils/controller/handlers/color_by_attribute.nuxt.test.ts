@@ -110,15 +110,15 @@ function answerComponents(geodeIdsByType: Record<string, string[]>): void {
   });
 }
 
-// Colors one data through set-style and returns what was applied to it
+// Colors one data and returns what was applied to it
 async function colorByAttribute({ id, ...params }: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["set-style"]?.({ ids: [id], ...params });
+  const result = await controllerHandlers["color-by-attribute"]?.({ ids: [id], ...params });
   return result instanceof Object && "attributes" in result && Array.isArray(result.attributes)
     ? result.attributes[0]
     : result;
 }
 
-describe("set-style coloring by attribute", () => {
+describe("the color-by-attribute controller handler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -168,7 +168,7 @@ describe("set-style coloring by attribute", () => {
   test("colors several meshes by the same attribute in one call and renders once", async () => {
     const otherId = "mesh-2";
 
-    const result = await controllerHandlers["set-style"]?.({
+    const result = await controllerHandlers["color-by-attribute"]?.({
       ids: [MESH.id, otherId],
       attribute: "depth",
     });
@@ -330,6 +330,13 @@ describe("set-style coloring by attribute", () => {
     await expect(
       colorByAttribute({ id: MESH.id, attribute: "pressure", timeStep: MISSING_TIME_STEP }),
     ).rejects.toThrow("available: 0, 0.5, 1");
+  });
+
+  test("rejects componentIds with several ids", async () => {
+    await expect(
+      colorByAttribute({ ids: [MODEL.id, MESH.id], componentIds: ["b1"], attribute: "depth" }),
+    ).rejects.toThrow(/single id/u);
+    expect(styleStore.setModelBlocksPolyhedronAttribute).not.toHaveBeenCalled();
   });
 
   test("colors model blocks on all blocks by default", async () => {

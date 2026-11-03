@@ -13,11 +13,9 @@ import {
 } from "@vease/utils/controller/attributes";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
-type FilterName = "shrink" | "explode" | "slice" | "clip" | "threshold";
 type ThresholdLocation = AttributeKind | "point";
 
 interface ApplyFilterParams {
-  filter: FilterName;
   ids: string[];
   remove?: boolean;
   factor?: number;
@@ -66,13 +64,13 @@ async function explode(params: ApplyFilterParams, store: HybridViewerStore): Pro
 }
 
 async function slice(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  const slices = params.remove === true ? [] : need(params.filter, "slices", params.slices);
+  const slices = params.remove === true ? [] : need("slice", "slices", params.slices);
   const maxIndices = await store.setSlice(params.ids, slices);
   return { maxIndices };
 }
 
 async function clip(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  const planes = params.remove === true ? [] : need(params.filter, "planes", params.planes);
+  const planes = params.remove === true ? [] : need("clip", "planes", params.planes);
   await store.setClippingPlanes(params.ids, planes);
   return {};
 }
@@ -114,7 +112,7 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
     await store.setThreshold(ids);
     return {};
   }
-  const name = need(params.filter, "attribute", params.attribute);
+  const name = need("threshold", "attribute", params.attribute);
   checkRange(minimum, maximum);
   const location = params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location];
   const founds = await Promise.all(
@@ -139,18 +137,25 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
   return { attribute: name, location: first.kind, ...bounds };
 }
 
-const FILTERS: Record<FilterName, FilterHandler> = { shrink, explode, slice, clip, threshold };
-
-async function applyFilter(params: unknown): Promise<Applied> {
-  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const request = params as ApplyFilterParams;
-  await Promise.all(
-    request.ids.map(async (id) => {
-      await getDataItem(id);
-    }),
-  );
-  const applied = await FILTERS[request.filter](request, getHybridViewerStore());
-  return { filter: request.filter, ids: request.ids, ...applied };
+// Every filter command checks all its ids exist before touching the viewer
+function filterCommand(filter: FilterHandler): (params: unknown) => Promise<Applied> {
+  return async (params) => {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
+    const request = params as ApplyFilterParams;
+    await Promise.all(
+      request.ids.map(async (id) => {
+        await getDataItem(id);
+      }),
+    );
+    const applied = await filter(request, getHybridViewerStore());
+    return { ids: request.ids, ...applied };
+  };
 }
 
-export { applyFilter };
+const applyShrink = filterCommand(shrink);
+const applyExplode = filterCommand(explode);
+const applySlice = filterCommand(slice);
+const applyClip = filterCommand(clip);
+const applyThreshold = filterCommand(threshold);
+
+export { applyClip, applyExplode, applyShrink, applySlice, applyThreshold };

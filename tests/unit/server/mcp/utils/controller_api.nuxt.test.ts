@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { callControllerAction, callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { errResult, okResult } from "@vease_tests/utils/server_utils";
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { getAppBaseUrl } from "@ogw_server/utils/server_config";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -158,5 +158,117 @@ describe("callControllerApi()", () => {
     });
 
     expect(result).toStrictEqual(errResult("Error loading file: socket hang up"));
+  });
+});
+
+describe("callControllerAction()", () => {
+  const fetchMock = vi.fn<typeof fetch>();
+  const options = {
+    accepted: ["id", "name"],
+    context: "to rename",
+    errorPrefix: "Error managing data",
+  };
+
+  beforeEach(() => {
+    fetchMock.mockReset();
+    vi.mocked(getAppBaseUrl).mockReturnValue("http://localhost:3000");
+    vi.stubGlobal("fetch", fetchMock);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("posts the accepted params as a JSON body", async () => {
+    fetchMock.mockResolvedValue(
+      fakeFetchResponse({
+        ok: true,
+        json: async () => {
+          await Promise.resolve();
+          return { statusCode: 200, response: { id: "item-1" } };
+        },
+      }),
+    );
+
+    const result = await callControllerAction(
+      "/api/controller/data/rename",
+      { id: "item-1", name: "renamed" },
+      options,
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/controller/data/rename", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: "item-1", name: "renamed" }),
+    });
+    expect(result).toStrictEqual(okResult({ statusCode: 200, response: { id: "item-1" } }));
+  });
+
+  test("ignores the params left undefined", async () => {
+    fetchMock.mockResolvedValue(
+      fakeFetchResponse({
+        ok: true,
+        json: async () => {
+          await Promise.resolve();
+          return {};
+        },
+      }),
+    );
+
+    await callControllerAction(
+      "/api/controller/data/rename",
+      { id: "item-1", name: "renamed", points: undefined },
+      options,
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:3000/api/controller/data/rename",
+      expect.objectContaining({ body: JSON.stringify({ id: "item-1", name: "renamed" }) }),
+    );
+  });
+
+  test("names every stray param without calling the controller", async () => {
+    const result = await callControllerAction(
+      "/api/controller/data/rename",
+      { id: "item-1", name: "renamed", points: [], closed: false },
+      options,
+    );
+
+    expect(result).toStrictEqual(
+      errResult("Error managing data: points, closed cannot be given to rename"),
+    );
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  test("rejects any param when none is accepted", async () => {
+    const result = await callControllerAction(
+      "/api/controller/view/reset",
+      { name: "top" },
+      { accepted: [], context: "to reset", errorPrefix: "Error setting view" },
+    );
+
+    expect(result).toStrictEqual(errResult("Error setting view: name cannot be given to reset"));
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  test("reports the route error through the error prefix", async () => {
+    fetchMock.mockResolvedValue(
+      fakeFetchResponse({
+        ok: false,
+        statusText: "Bad Request",
+        json: async () => {
+          await Promise.resolve();
+          return { name: "Bad Request", description: "data must have id" };
+        },
+      }),
+    );
+
+    const result = await callControllerAction(
+      "/api/controller/data/rename",
+      { name: "renamed" },
+      options,
+    );
+
+    expect(result).toStrictEqual(errResult("Error managing data: data must have id"));
   });
 });

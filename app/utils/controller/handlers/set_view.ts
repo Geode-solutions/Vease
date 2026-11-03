@@ -9,20 +9,12 @@ import {
   type CameraPositionRecord,
   listCameraPositions,
 } from "@vease/utils/controller/handlers/viewer_state";
-import { ControllerError, need } from "@vease/utils/controller/errors";
 import { getDataItem, resolveComponentIds } from "@vease/utils/controller/targets";
+import { ControllerError } from "@vease/utils/controller/errors";
 import { applyScene } from "@vease/utils/controller/handlers/set_view_scene";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
-type ViewAction = "reset" | "focus" | "orient" | "save" | "restore" | "scene";
-
-interface SetViewParams {
-  action: ViewAction;
-  id?: string;
-  componentIds?: string[];
-  orientation?: string;
-  name?: string;
-  positionId?: number;
+interface SceneParams {
   zScaling?: number;
   backgroundColor?: string;
   axes?: boolean;
@@ -30,15 +22,14 @@ interface SetViewParams {
 }
 
 type Applied = Record<string, unknown>;
-type ViewActionHandler = (params: SetViewParams) => Applied | Promise<Applied>;
 
 function reset(): Applied {
   getHybridViewerStore().resetCamera();
   return {};
 }
 
-async function focus(params: SetViewParams): Promise<Applied> {
-  const id = need(params.action, "id", params.id);
+async function focus(params: { id: string; componentIds?: string[] }): Promise<Applied> {
+  const { id } = params;
   const item = await getDataItem(id);
   if (params.componentIds !== undefined && item.viewer_type !== "model") {
     throw new ControllerError("componentIds only applies to models");
@@ -54,14 +45,12 @@ async function focus(params: SetViewParams): Promise<Applied> {
   return { id };
 }
 
-function orient(params: SetViewParams): Applied {
-  const orientation = need(params.action, "orientation", params.orientation);
+function orient({ orientation }: { orientation: string }): Applied {
   getHybridViewerStore().setCameraOrientation(orientation);
   return { orientation };
 }
 
-async function save(params: SetViewParams): Promise<Applied> {
-  const name = need(params.action, "name", params.name);
+async function save({ name }: { name: string }): Promise<Applied> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- camera_options holds a full CameraOptions once the viewer is initialized
   const cameraOptions = toRaw(getHybridViewerStore().camera_options) as unknown as CameraOptions;
   await useCameraManagerStore().saveCameraPosition(name, cameraOptions);
@@ -74,8 +63,7 @@ function describePositions(positions: CameraPositionRecord[]): string {
     : "none saved";
 }
 
-async function restore(params: SetViewParams): Promise<Applied> {
-  const positionId = need(params.action, "positionId", params.positionId);
+async function restore({ positionId }: { positionId: number }): Promise<Applied> {
   const cameraManagerStore = useCameraManagerStore();
   const position = await cameraManagerStore.getCameraPosition(positionId);
   if (position === undefined) {
@@ -93,27 +81,29 @@ async function restore(params: SetViewParams): Promise<Applied> {
   return { positionId, name: position.name };
 }
 
-async function scene(params: SetViewParams): Promise<Applied> {
+async function scene(params: SceneParams): Promise<Applied> {
   const { zScaling, backgroundColor, axes, grid } = params;
   const applied = await applyScene({ zScaling, backgroundColor, axes, grid });
   return applied;
 }
 
-const VIEW_ACTIONS: Record<ViewAction, ViewActionHandler> = {
-  reset,
-  focus,
-  orient,
-  save,
-  restore,
-  scene,
-};
-
-async function setView(params: unknown): Promise<Applied> {
-  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const view = params as SetViewParams;
-  const applied = await VIEW_ACTIONS[view.action](view);
-  await getHybridViewerStore().remoteRender();
-  return { action: view.action, ...applied };
+// Every view command renders once its change is applied
+function viewCommand(
+  action: (params: never) => Applied | Promise<Applied>,
+): (params: unknown) => Promise<Applied> {
+  return async (params) => {
+    // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema of the action
+    const applied = await action(params as never);
+    await getHybridViewerStore().remoteRender();
+    return applied;
+  };
 }
 
-export { setView };
+const resetView = viewCommand(reset);
+const focusView = viewCommand(focus);
+const orientView = viewCommand(orient);
+const saveView = viewCommand(save);
+const restoreView = viewCommand(restore);
+const setScene = viewCommand(scene);
+
+export { focusView, orientView, resetView, restoreView, saveView, setScene };

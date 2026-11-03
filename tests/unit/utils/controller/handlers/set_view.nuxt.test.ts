@@ -70,12 +70,12 @@ const hybridViewerStore = {
   genericRenderWindow: { value: {} as object | undefined },
 };
 
-async function setView(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["set-view"]?.(params);
+async function view(command: string, params: Record<string, unknown> = {}): Promise<unknown> {
+  const result = await controllerHandlers[command]?.(params);
   return result;
 }
 
-describe("the set-view controller handler", () => {
+describe("the view controller handlers", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -100,18 +100,18 @@ describe("the set-view controller handler", () => {
   });
 
   test("reset resets the camera", async () => {
-    await expect(setView({ action: "reset" })).resolves.toStrictEqual({ action: "reset" });
+    await expect(view("reset-view")).resolves.toStrictEqual({});
     expect(hybridViewerStore.resetCamera).toHaveBeenCalledTimes(ONCE);
   });
 
   test("focus focuses the camera on the whole data", async () => {
-    await setView({ action: "focus", id: MODEL.id });
+    await view("focus-view", { id: MODEL.id });
 
     expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.id, []);
   });
 
   test("focus converts component geode ids to viewer ids", async () => {
-    await setView({ action: "focus", id: MODEL.id, componentIds: ["block-a", "block-b"] });
+    await view("focus-view", { id: MODEL.id, componentIds: ["block-a", "block-b"] });
 
     expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.id, [
       "block-a",
@@ -121,7 +121,7 @@ describe("the set-view controller handler", () => {
   });
 
   test("focus accepts components of different types", async () => {
-    await setView({ action: "focus", id: MODEL.id, componentIds: ["surface-a", "block-b"] });
+    await view("focus-view", { id: MODEL.id, componentIds: ["surface-a", "block-b"] });
 
     expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.id, [
       "surface-a",
@@ -131,67 +131,49 @@ describe("the set-view controller handler", () => {
 
   test("focus rejects component ids the model does not have", async () => {
     await expect(
-      setView({ action: "focus", id: MODEL.id, componentIds: ["block-a", "nope"] }),
+      view("focus-view", { id: MODEL.id, componentIds: ["block-a", "nope"] }),
     ).rejects.toThrow(
       `"${MODEL.name}" has no component with geode id nope; read vease://data/${MODEL.id} for its components`,
     );
     expect(hybridViewerStore.focusCameraOnObject).not.toHaveBeenCalled();
   });
 
-  test("focus needs an id", async () => {
-    await expect(setView({ action: "focus" })).rejects.toThrow("focus needs id");
-  });
-
   test("focus rejects an unknown id", async () => {
     dataStore.item.mockRejectedValue(new Error("Item not found: nope"));
 
-    await expect(setView({ action: "focus", id: "nope" })).rejects.toThrow(
-      'No data with id "nope"',
-    );
+    await expect(view("focus-view", { id: "nope" })).rejects.toThrow('No data with id "nope"');
   });
 
   test("focus rejects componentIds on a mesh", async () => {
     dataStore.item.mockResolvedValue(MESH);
 
-    await expect(setView({ action: "focus", id: MESH.id, componentIds: ["a"] })).rejects.toThrow(
+    await expect(view("focus-view", { id: MESH.id, componentIds: ["a"] })).rejects.toThrow(
       "componentIds only applies to models",
     );
   });
 
   test("orient sets the camera orientation", async () => {
-    await expect(setView({ action: "orient", orientation: "zplus" })).resolves.toStrictEqual({
-      action: "orient",
+    await expect(view("orient-view", { orientation: "zplus" })).resolves.toStrictEqual({
       orientation: "zplus",
     });
     expect(hybridViewerStore.setCameraOrientation).toHaveBeenCalledWith("zplus");
   });
 
-  test("orient needs an orientation", async () => {
-    await expect(setView({ action: "orient" })).rejects.toThrow("orient needs orientation");
-    expect(hybridViewerStore.setCameraOrientation).not.toHaveBeenCalled();
-  });
-
   test("save stores the current camera and returns the saved positions", async () => {
-    const result = await setView({ action: "save", name: "top" });
+    const result = await view("save-view", { name: "top" });
 
     const [saved] = await getTable<{ id: number; name: string }>("camera_positions").toArray();
     expect(saved?.name).toBe("top");
     expect(result).toStrictEqual({
-      action: "save",
       positions: [{ id: saved?.id, name: "top" }],
     });
-  });
-
-  test("save needs a name", async () => {
-    await expect(setView({ action: "save" })).rejects.toThrow("save needs name");
   });
 
   test("restore applies the saved camera", async () => {
     await useCameraManagerStore().saveCameraPosition("top", CAMERA_OPTIONS);
     const [saved] = await getTable<{ id: number }>("camera_positions").toArray();
 
-    await expect(setView({ action: "restore", positionId: saved?.id })).resolves.toStrictEqual({
-      action: "restore",
+    await expect(view("restore-view", { positionId: saved?.id })).resolves.toStrictEqual({
       positionId: saved?.id,
       name: "top",
     });
@@ -204,7 +186,7 @@ describe("the set-view controller handler", () => {
     hybridViewerStore.genericRenderWindow.value = undefined;
     viewerStore.request.mockResolvedValue({});
 
-    await setView({ action: "restore", positionId: saved?.id });
+    await view("restore-view", { positionId: saved?.id });
 
     expect(hybridViewerStore.setCamera).not.toHaveBeenCalled();
     expect(viewerStore.request).toHaveBeenCalledTimes(ONCE);
@@ -213,19 +195,14 @@ describe("the set-view controller handler", () => {
   test("restore lists saved positions when the id is unknown", async () => {
     await useCameraManagerStore().saveCameraPosition("top", CAMERA_OPTIONS);
 
-    await expect(setView({ action: "restore", positionId: 999 })).rejects.toThrow(
+    await expect(view("restore-view", { positionId: 999 })).rejects.toThrow(
       /No camera position 999.*top/u,
     );
     expect(hybridViewerStore.setCamera).not.toHaveBeenCalled();
   });
 
-  test("restore needs a positionId", async () => {
-    await expect(setView({ action: "restore" })).rejects.toThrow("restore needs positionId");
-  });
-
   test("scene sets the z scaling and renders", async () => {
-    await expect(setView({ action: "scene", zScaling: Z_SCALING })).resolves.toStrictEqual({
-      action: "scene",
+    await expect(view("set-scene", { zScaling: Z_SCALING })).resolves.toStrictEqual({
       zScaling: Z_SCALING,
     });
     expect(hybridViewerStore.setZScaling).toHaveBeenCalledWith(Z_SCALING);
@@ -233,7 +210,7 @@ describe("the set-view controller handler", () => {
   });
 
   test("scene sets the background of both renderers from hex", async () => {
-    await setView({ action: "scene", backgroundColor: "#ff8800" });
+    await view("set-scene", { backgroundColor: "#ff8800" });
 
     expect(hybridViewerStore.setBackgroundColor).toHaveBeenCalledWith(ORANGE);
     expect(viewerStore.request).not.toHaveBeenCalled();
@@ -242,7 +219,7 @@ describe("the set-view controller handler", () => {
   test("scene sets the background through the viewer when there is no render window", async () => {
     hybridViewerStore.genericRenderWindow.value = undefined;
 
-    await setView({ action: "scene", backgroundColor: "#ff8800" });
+    await view("set-scene", { backgroundColor: "#ff8800" });
 
     expect(hybridViewerStore.setBackgroundColor).not.toHaveBeenCalled();
     expect(viewerStore.request).toHaveBeenCalledWith(
@@ -251,7 +228,7 @@ describe("the set-view controller handler", () => {
   });
 
   test("scene toggles axes and grid", async () => {
-    await setView({ action: "scene", axes: true, grid: false });
+    await view("set-scene", { axes: true, grid: false });
 
     expect(viewerStore.request).toHaveBeenCalledWith(
       expect.objectContaining({ params: { visibility: true } }),
@@ -262,7 +239,7 @@ describe("the set-view controller handler", () => {
   });
 
   test("scene needs at least one setting", async () => {
-    await expect(setView({ action: "scene" })).rejects.toThrow(
+    await expect(view("set-scene")).rejects.toThrow(
       "scene needs zScaling, backgroundColor, axes or grid",
     );
     expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();

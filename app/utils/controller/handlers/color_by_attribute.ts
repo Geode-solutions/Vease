@@ -8,16 +8,17 @@ import {
   type AttributeInput,
   bindAttribute,
 } from "@vease/utils/controller/attribute_setters";
-import type {
-  AttributeKind,
-  BackAttribute,
-  MeshElement,
-  ModelComponentTarget,
+import {
+  type AttributeKind,
+  type BackAttribute,
+  type MeshElement,
+  type ModelComponentTarget,
+  checkComponentIdsOwner,
 } from "@vease/utils/controller/targets";
 import { type FailedData, forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
+import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
-import { getDataStyleStore } from "@vease/utils/external_stores";
 import { hexToRgba } from "@vease/utils/controller/color";
 
 const DEFAULT_COLORMAP = "batlow";
@@ -144,11 +145,17 @@ async function colorItemByAttribute(request: ColorByAttributeParams): Promise<At
   };
 }
 
-// Renders nothing: set-style renders once every data is colored
-async function colorDataByAttribute(
-  ids: string[],
-  request: Omit<ColorByAttributeParams, "id">,
-): Promise<{ ids: string[]; attributes: AttributeColoring[]; failed?: FailedData[] }> {
+interface ColorByAttributeResult {
+  ids: string[];
+  attributes: AttributeColoring[];
+  failed?: FailedData[];
+}
+
+// Each data gets its own attribute range unless minimum and maximum are given
+async function colorByAttribute(params: unknown): Promise<ColorByAttributeResult> {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
+  const { ids, ...request } = params as Omit<ColorByAttributeParams, "id"> & { ids: string[] };
+  checkComponentIdsOwner(ids, request.componentIds);
   const {
     ids: colored,
     results,
@@ -157,7 +164,8 @@ async function colorDataByAttribute(
     const coloring = await colorItemByAttribute({ ...request, id });
     return coloring;
   });
+  await getHybridViewerStore().remoteRender();
   return withFailed({ ids: colored, attributes: results }, failed);
 }
 
-export { type AttributeColoring, type ColorByAttributeParams, colorDataByAttribute };
+export { colorByAttribute };

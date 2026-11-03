@@ -1,28 +1,15 @@
 {
-  "route": "/manage",
+  "route": "/create",
   "methods": ["POST"],
   "type": "object",
   "properties": {
-    "action": {
+    "kind": {
       "type": "string",
-      "enum": ["create", "rename", "delete"]
-    },
-    "ids": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 32,
-        "maxLength": 32
-      },
-      "minItems": 1
+      "enum": ["point", "curve", "surface"]
     },
     "name": {
       "type": "string",
       "minLength": 1
-    },
-    "kind": {
-      "type": "string",
-      "enum": ["point", "curve", "surface"]
     },
     "points": {
       "type": "array",
@@ -40,7 +27,7 @@
       "type": "boolean"
     }
   },
-  "required": ["action"],
+  "required": ["kind", "name", "points"],
   "additionalProperties": false,
   "response": {
     "type": "object",

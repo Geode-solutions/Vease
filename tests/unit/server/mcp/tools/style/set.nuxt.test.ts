@@ -1,18 +1,14 @@
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
-  errResult,
-  fakeMcpRequestExtra,
-  identityMcpToolDefinition,
-  okResult,
-} from "@vease_tests/utils/server_utils";
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+  controllerUrl,
+  jsonResponse,
+  sentRequest,
+  stubControllerFetch,
+} from "@vease_tests/unit/server/mcp/tools/controller_fetch";
+import { fakeMcpRequestExtra, identityMcpToolDefinition } from "@vease_tests/utils/server_utils";
 import tool from "@vease_server/mcp/tools/style/set";
 
 vi.setConfig({ testTimeout: 10_000 });
-
-vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
-  callControllerApi: vi.fn<typeof callControllerApi>(),
-}));
 
 // The real @nuxtjs/mcp-toolkit/server pulls in Nitro internals vitest can't resolve.
 vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
@@ -20,6 +16,7 @@ vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
 }));
 
 const DATA_ID = "0123456789abcdef0123456789abcdef";
+const RANGE_MAXIMUM = 100;
 
 type ToolInput = Parameters<typeof tool.handler>[0];
 
@@ -45,25 +42,88 @@ function toolInput(input: Pick<ToolInput, "ids"> & Partial<ToolInput>): ToolInpu
 }
 
 describe("set-style MCP tool", () => {
-  test("posts to /api/controller/style/set and reports success", async () => {
-    const input = toolInput({ ids: [DATA_ID], target: "polygons", color: "#ff8800" });
-    vi.mocked(callControllerApi).mockResolvedValue(
-      okResult({ statusCode: 200, response: { ids: [DATA_ID], applied: ["color"] } }),
+  const fetchMock = vi.fn<typeof fetch>();
+
+  beforeEach(() => {
+    stubControllerFetch(fetchMock);
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("posts a style change to /api/controller/style/set and reports success", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse({ statusCode: 200, response: { ids: [DATA_ID], applied: ["color"] } }),
     );
 
-    const result = await tool.handler(input, fakeMcpRequestExtra());
+    const result = await tool.handler(
+      toolInput({ ids: [DATA_ID], target: "polygons", color: "#ff8800" }),
+      fakeMcpRequestExtra(),
+    );
 
-    expect(callControllerApi).toHaveBeenCalledWith("/api/controller/style/set", {
+    expect(sentRequest(fetchMock)).toStrictEqual({
+      url: controllerUrl("style/set"),
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-      errorPrefix: "Error setting style",
+      body: { ids: [DATA_ID], target: "polygons", color: "#ff8800" },
     });
     expect(result).toBe(`Style updated: {"ids":["${DATA_ID}"],"applied":["color"]}`);
   });
 
+  test("posts to /api/controller/style/attribute when an attribute is given", async () => {
+    const attributeParams = {
+      ids: [DATA_ID],
+      target: "polygons" as const,
+      componentIds: ["surface-1"],
+      attribute: "depth",
+      location: "polygon" as const,
+      colormap: "batlow",
+      minimum: 0,
+      maximum: RANGE_MAXIMUM,
+    };
+    fetchMock.mockResolvedValue(
+      jsonResponse({ statusCode: 200, response: { ids: [DATA_ID], attribute: "depth" } }),
+    );
+
+    const result = await tool.handler(toolInput(attributeParams), fakeMcpRequestExtra());
+
+    expect(sentRequest(fetchMock)).toMatchObject({
+      url: controllerUrl("style/attribute"),
+      body: attributeParams,
+    });
+    expect(result).toBe(`Style updated: {"ids":["${DATA_ID}"],"attribute":"depth"}`);
+  });
+
+  test("rejects style params given with an attribute without calling the controller", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [DATA_ID], attribute: "depth", color: "#ff8800", visibility: true }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe(
+      "Error coloring by attribute: visibility, color cannot be given with attribute; " +
+        "style in a separate call",
+    );
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  test("rejects attribute params given without an attribute without calling the controller", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [DATA_ID], colormap: "batlow" }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe(
+      "Error setting style: colormap cannot be given without attribute; they only apply when " +
+        "coloring by an attribute",
+    );
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   test("forwards the controller error", async () => {
-    vi.mocked(callControllerApi).mockResolvedValue(
-      errResult("Error setting style: Nothing to change"),
+    fetchMock.mockResolvedValue(
+      jsonResponse({ description: "Nothing to change" }, { failed: true }),
     );
 
     const result = await tool.handler(toolInput({ ids: [DATA_ID] }), fakeMcpRequestExtra());

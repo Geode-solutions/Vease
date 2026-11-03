@@ -32,10 +32,11 @@ const ITEMS: DataItem[] = [
 
 describe("the list-data controller handler", () => {
   test("returns the loaded data summary", async () => {
-    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
+    /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking a partial store */
     vi.mocked(useDataStore).mockReturnValue({
       allItems: vi.fn<() => Promise<DataItem[]>>().mockResolvedValue(ITEMS),
     } as unknown as ReturnType<typeof useDataStore>);
+    /* oxlint-enable no-unsafe-type-assertion */
 
     await expect(controllerHandlers["list-data"]?.({})).resolves.toStrictEqual({
       data: [

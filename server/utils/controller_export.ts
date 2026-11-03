@@ -8,26 +8,25 @@ import { createError } from "h3";
 // Local imports
 import { LONG_COMMAND_TIMEOUT_MS, dispatchCommand } from "@vease_server/utils/command_bus";
 import { cancelUpload, expectUpload } from "@vease_server/utils/file_transfer";
-import schemas, { type ControllerExportParamsKind } from "vease/vease_typed_schemas.js";
-import { defineTypedEventHandler } from "@ogw_server/utils/typed_handler";
 
 const BAD_REQUEST = 400;
 const UPLOAD_URL = "/api/controller/files/upload";
 
-const FORMATS: Record<ControllerExportParamsKind, { formats: string[]; expected: string }> = {
-  screenshot: { formats: ["png", "jpg"], expected: ".png or .jpg" },
-  project: { formats: ["vease"], expected: ".vease" },
-};
+interface ExportFormats {
+  // What is exported, as said in the errors
+  label: string;
+  formats: string[];
+  expected: string;
+}
 
 function badRequest(message: string): Error {
   return createError({ statusCode: BAD_REQUEST, statusMessage: "Bad Request", message });
 }
 
-function exportFormat(kind: ControllerExportParamsKind, filePath: string): string {
+function exportFormat({ label, formats, expected }: ExportFormats, filePath: string): string {
   const format = path.extname(filePath).slice(1).toLowerCase();
-  const { formats, expected } = FORMATS[kind];
   if (!formats.includes(format)) {
-    throw badRequest(`A ${kind} must be exported to a ${expected} file`);
+    throw badRequest(`A ${label} must be exported to a ${expected} file`);
   }
   return format;
 }
@@ -63,23 +62,27 @@ async function checkTarget(filePath: string): Promise<void> {
   }
 }
 
-export default defineTypedEventHandler(
-  schemas.api.controller.export,
-  async ({ kind, filePath, includeBackground }) => {
-    const format = exportFormat(kind, filePath);
-    await checkTarget(filePath);
-    const token = expectUpload(filePath);
-    try {
-      await dispatchCommand(
-        "export",
-        { kind, format, includeBackground, uploadUrl: `${UPLOAD_URL}?token=${token}` },
-        { timeout: LONG_COMMAND_TIMEOUT_MS },
-      );
-    } catch (error) {
-      // A late upload after a failed or timed out export must not create the file anyway
-      cancelUpload(token);
-      throw error;
-    }
-    return { statusCode: 200, response: { filePath } };
-  },
-);
+// The browser builds the file and uploads it back to the server, which writes it at filePath
+async function exportToFile(
+  filePath: string,
+  formats: ExportFormats,
+  command: string,
+  params: Record<string, unknown>,
+): Promise<void> {
+  const format = exportFormat(formats, filePath);
+  await checkTarget(filePath);
+  const token = expectUpload(filePath);
+  try {
+    await dispatchCommand(
+      command,
+      { ...params, format, uploadUrl: `${UPLOAD_URL}?token=${token}` },
+      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    );
+  } catch (error) {
+    // A late upload after a failed or timed out export must not create the file anyway
+    cancelUpload(token);
+    throw error;
+  }
+}
+
+export { exportToFile };

@@ -51,35 +51,6 @@
     "coloring": {
       "type": "string",
       "enum": ["constant", "random", "textures"]
-    },
-    "attribute": {
-      "type": "string",
-      "minLength": 1
-    },
-    "location": {
-      "type": "string",
-      "enum": ["vertex", "edge", "cell", "polygon", "polyhedron"]
-    },
-    "item": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "colormap": {
-      "type": "string",
-      "minLength": 1
-    },
-    "minimum": {
-      "type": "number"
-    },
-    "maximum": {
-      "type": "number"
-    },
-    "timeStep": {
-      "type": "number"
-    },
-    "noDataColor": {
-      "type": "string",
-      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
     }
   },
   "required": ["ids"],

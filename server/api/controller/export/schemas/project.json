@@ -1,21 +1,14 @@
 {
-  "route": "/export",
+  "route": "/project",
   "methods": ["POST"],
   "type": "object",
   "properties": {
-    "kind": {
-      "type": "string",
-      "enum": ["screenshot", "project"]
-    },
     "filePath": {
       "type": "string",
       "minLength": 1
-    },
-    "includeBackground": {
-      "type": "boolean"
     }
   },
-  "required": ["kind", "filePath"],
+  "required": ["filePath"],
   "additionalProperties": false,
   "response": {
     "type": "object",

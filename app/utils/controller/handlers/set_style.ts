@@ -3,16 +3,12 @@ import type { DataItem } from "@ogw_front/stores/data";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
-import {
-  type AttributeColoring,
-  type ColorByAttributeParams,
-  colorDataByAttribute,
-} from "@vease/utils/controller/handlers/color_by_attribute";
 import { type FailedData, forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import {
   MODEL_COMPONENT_TARGETS,
   type MeshElement,
   type ModelComponentTarget,
+  checkComponentIdsOwner,
   getDataItem,
   isModelComponentTarget,
   meshTargetsOf,
@@ -44,25 +40,13 @@ interface SetStyleParams {
   coloring?: Coloring;
 }
 
-type AttributeOptions = Omit<ColorByAttributeParams, "id" | "target" | "componentIds">;
-type SetStyleRequest = Omit<SetStyleParams, "id"> & Partial<AttributeOptions> & { ids: string[] };
+type SetStyleRequest = Omit<SetStyleParams, "id"> & { ids: string[] };
 
 interface SetStyleResult {
   ids: string[];
-  applied?: string[];
-  attributes?: AttributeColoring[];
+  applied: string[];
   failed?: FailedData[];
 }
-
-const ATTRIBUTE_ONLY_OPTIONS = [
-  "location",
-  "item",
-  "colormap",
-  "minimum",
-  "maximum",
-  "timeStep",
-  "noDataColor",
-] as const;
 
 interface MeshElementSetters {
   visibility: Setter<boolean>;
@@ -322,17 +306,13 @@ async function styleItem(
   }
 }
 
-async function applyStyle(request: SetStyleRequest): Promise<SetStyleResult> {
-  const stray = ATTRIBUTE_ONLY_OPTIONS.filter((option) => request[option] !== undefined);
-  if (stray.length > 0) {
-    throw new ControllerError(`${stray.join(", ")} only apply when coloring by an attribute`);
-  }
-  const { ids, ...change } = request;
+async function setStyle(params: unknown): Promise<SetStyleResult> {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
+  const { ids, ...change } = params as SetStyleRequest;
+  checkComponentIdsOwner(ids, change.componentIds);
   const applied = appliedProperties(change);
   if (applied.length === 0) {
-    throw new ControllerError(
-      "Nothing to change: give visibility, color, size, width, coloring or attribute",
-    );
+    throw new ControllerError("Nothing to change: give visibility, color, size, width or coloring");
   }
   if (change.coloring === "random" && change.color !== undefined) {
     throw new ControllerError('Give either a color or coloring "random", not both');
@@ -342,37 +322,8 @@ async function applyStyle(request: SetStyleRequest): Promise<SetStyleResult> {
   const { ids: styled, failed } = await forEachData(ids, async (id, index) => {
     await styleItem({ ...change, id }, store, randomColors[index]);
   });
-  return withFailed({ ids: styled, applied }, failed);
-}
-
-// Each data gets its own attribute range unless minimum and maximum are given
-async function applyAttribute(
-  request: SetStyleRequest & { attribute: string },
-): Promise<SetStyleResult> {
-  const { ids, visibility, color, size, width, coloring, ...attributeRequest } = request;
-  const mixed = appliedProperties({ visibility, color, size, width, coloring });
-  if (mixed.length > 0) {
-    throw new ControllerError(
-      `attribute cannot be combined with ${mixed.join(", ")}; style in a separate call`,
-    );
-  }
-  const result = await colorDataByAttribute(ids, attributeRequest);
-  return result;
-}
-
-async function setStyle(params: unknown): Promise<SetStyleResult> {
-  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const request = params as SetStyleRequest;
-  if (request.componentIds !== undefined && request.ids.length > 1) {
-    throw new ControllerError("componentIds belong to one model: give a single id with them");
-  }
-  const { attribute } = request;
-  const result =
-    attribute === undefined
-      ? await applyStyle(request)
-      : await applyAttribute({ ...request, attribute });
   await getHybridViewerStore().remoteRender();
-  return result;
+  return withFailed({ ids: styled, applied }, failed);
 }
 
 export { setStyle };

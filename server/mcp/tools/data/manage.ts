@@ -3,13 +3,19 @@ import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 import { z } from "zod";
 
 // Local imports
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
 import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
 import { dataId } from "@vease_server/mcp/utils/controller_schemas";
 
 const POINT_LENGTH = 3;
 
 const point = z.array(z.number()).length(POINT_LENGTH);
+
+const ACCEPTED = {
+  create: ["kind", "name", "points", "closed"],
+  rename: ["id", "name"],
+  delete: ["ids"],
+} as const;
 
 export default defineMcpTool({
   name: "manage-data",
@@ -34,15 +40,20 @@ export default defineMcpTool({
     points: z.array(point).min(1).optional().describe("[x, y, z] coordinates; for create"),
     closed: z.boolean().optional().describe("Close the curve; for create of a curve"),
   },
-  handler: async (input) => {
-    const result = await callControllerApi("/api/controller/data/manage", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+  handler: async ({ action, ids, ...params }) => {
+    if (action === "rename" && ids?.length !== 1) {
+      return "Error managing data: rename takes exactly one id";
+    }
+    // Rename speaks of the single data it renames, the other actions of a list
+    const actionParams = action === "rename" ? { ...params, id: ids?.[0] } : { ...params, ids };
+    const result = await callControllerAction(`/api/controller/data/${action}`, actionParams, {
+      accepted: ACCEPTED[action],
+      context: `to ${action}`,
       errorPrefix: "Error managing data",
     });
     if (!result.ok) {
       return result.message;
     }
-    return `Data managed: ${JSON.stringify(controllerResponse(result.payload))}`;
+    return `Data managed (${action}): ${JSON.stringify(controllerResponse(result.payload))}`;
   },
 });
