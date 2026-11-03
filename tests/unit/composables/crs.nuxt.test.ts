@@ -85,11 +85,11 @@ describe("useCrs composable", () => {
     });
     vi.mocked(getBackStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-      { request },
+      { request } as unknown as ReturnType<typeof getBackStore>,
     );
     vi.mocked(getHybridViewerStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-      { focusCameraOnObject },
+      { focusCameraOnObject } as unknown as ReturnType<typeof getHybridViewerStore>,
     );
   });
 
