@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
 import type {
   getLlamaStatus,
+  isLlamaServerStarting,
   runLlamaServer,
   stopLlamaServer,
 } from "@vease_server/utils/llama_cpp";
@@ -141,6 +142,7 @@ function mockExecutableAlreadyExtracted(): void {
 interface LlamaCppModule {
   llamaCpp: {
     getLlamaStatus: typeof getLlamaStatus;
+    isLlamaServerStarting: typeof isLlamaServerStarting;
     runLlamaServer: typeof runLlamaServer;
     stopLlamaServer: typeof stopLlamaServer;
   };
@@ -235,6 +237,17 @@ describe("server/utils/llama_cpp", () => {
     expect(second).toStrictEqual(first);
   });
 
+  test("reports the startup in progress until the server is ready", async () => {
+    const { llamaCpp } = current();
+
+    expect(llamaCpp.isLlamaServerStarting()).toBe(false);
+    const startup = llamaCpp.runLlamaServer({ model: "custom-model" });
+    expect(llamaCpp.isLlamaServerStarting()).toBe(true);
+    await startup;
+
+    expect(llamaCpp.isLlamaServerStarting()).toBe(false);
+  });
+
   test("kills the child and clears status when startup fails", async () => {
     const { llamaCpp, spawnedChildren } = current();
     vi.mocked(waitForReady).mockRejectedValueOnce(new Error("never became ready"));
@@ -269,6 +282,17 @@ describe("server/utils/llama_cpp", () => {
     expect(llamaCpp.getLlamaStatus()).toStrictEqual({ running: false });
     // Also proves the process handle itself was for this run, not a stray one.
     expect(handle.port).toBe(TEST_PORT);
+  });
+
+  test("starts a new server after the previous one was stopped", async () => {
+    const { llamaCpp, spawnedChildren } = current();
+
+    await llamaCpp.runLlamaServer({ model: "custom-model" });
+    llamaCpp.stopLlamaServer();
+    await llamaCpp.runLlamaServer({ model: "custom-model" });
+
+    expect(spawnedChildren).toHaveLength(2);
+    expect(llamaCpp.getLlamaStatus()).toMatchObject({ running: true });
   });
 
   test("stopLlamaServer is a no-op when nothing is running", () => {
