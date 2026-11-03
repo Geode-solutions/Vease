@@ -150,9 +150,12 @@ interface AssignedEntry {
 }
 
 function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string; crs: CRSList }[] {
-  return entries.flatMap(({ id, name, crs, implausible }) =>
-    crs === undefined || implausible === true ? [] : [{ id, name, crs }],
-  );
+  return entries.flatMap(({ id, name, crs, implausible }) => {
+    if (crs === undefined || implausible === true) {
+      return [];
+    }
+    return [{ id, name, crs }];
+  });
 }
 
 interface AssignResponse {
@@ -218,8 +221,8 @@ async function handleAssign(anyway = false): Promise<void> {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
         params: {
           id: assignedItem.id,
-          ...(linkedDataIds.length > 0 ? { linked_ids: linkedDataIds } : {}),
-          ...(guarded ? { only_plausible: true } : {}),
+          ...(linkedDataIds.length > 0 && { linked_ids: linkedDataIds }),
+          ...(guarded && { only_plausible: true }),
           ...selectedCrs.value,
         },
       },
@@ -247,9 +250,11 @@ async function handleConvert(): Promise<void> {
   }
   converting.value = true;
   try {
-    await (scope.value === "all"
-      ? changeProjectCrs(selectedCrs.value)
-      : convertCrs(item.value, selectedCrs.value));
+    if (scope.value === "all") {
+      await changeProjectCrs(selectedCrs.value);
+    } else {
+      await convertCrs(item.value, selectedCrs.value);
+    }
     emit("converted");
     emit("update:show", false);
   } finally {

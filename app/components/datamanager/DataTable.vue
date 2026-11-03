@@ -35,6 +35,16 @@ const emit = defineEmits<{
   "toggle-visibility-selected": [];
 }>();
 
+const DATE_COLUMN = [
+  {
+    title: "Date",
+    key: "created_at",
+    sortable: true,
+    align: "center",
+    width: "160px",
+  } as const,
+];
+
 const headers = computed(
   () =>
     [
@@ -54,17 +64,7 @@ const headers = computed(
         width: compact ? "100px" : "200px",
       },
       // The picture-in-picture view is narrow: the CRS column takes the date's room
-      ...(compact
-        ? []
-        : [
-            {
-              title: "Date",
-              key: "created_at",
-              sortable: true,
-              align: "center",
-              width: "160px",
-            } as const,
-          ]),
+      ...(compact ? [] : DATE_COLUMN),
       {
         title: "Visibility",
         key: "visible",
