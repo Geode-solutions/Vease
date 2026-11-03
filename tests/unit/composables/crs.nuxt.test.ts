@@ -36,8 +36,6 @@ const item: DataItem = {
   visible: true,
 };
 
-const ASSIGN_ROUTE = "opengeodeweb_back/crs/assign_geographic";
-
 // Oldest first: a and c in Lambert-93, b already in UTM, local1 and local2 without CRS
 function projectItems(): DataItem[] {
   return [
@@ -195,24 +193,15 @@ describe("useCrs composable", () => {
     expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
   });
 
-  test("changeProjectCrs converts the georeferenced data, then assigns the plausible others", async () => {
+  test("changeProjectCrs converts the georeferenced data, the data without crs keep none", async () => {
     mockCrsItems(projectItems());
-    request
-      .mockResolvedValueOnce({ binary_light_viewable: "light", crs: UTM })
-      // Local2 does not fit the crs: left without crs
-      .mockResolvedValueOnce({
-        crs: UTM,
-        implausible: false,
-        linked: [{ id: "local2", implausible: true }],
-      });
+    request.mockResolvedValueOnce({ binary_light_viewable: "light", crs: UTM });
     await useCrs().changeProjectCrs(UTM);
 
     expect(request.mock.calls.map(([call]) => call.params)).toStrictEqual([
       { id: "a", linked_ids: ["c"], ...UTM },
-      { id: "local1", linked_ids: ["local2"], only_plausible: true, ...UTM },
     ]);
-    expect(useDataStore().updateItem).toHaveBeenCalledWith("local1", { crs: UTM });
-    expect(useDataStore().updateItem).not.toHaveBeenCalledWith("local2", expect.anything());
+    expect(useDataStore().updateItem).not.toHaveBeenCalledWith("local1", expect.anything());
     // The camera stays where it is: every data moves
     expect(focusCameraOnObject).not.toHaveBeenCalled();
     expect(useCrsStore().projectCrs).toStrictEqual(UTM);
@@ -232,8 +221,6 @@ describe("useCrs composable", () => {
     useCrsStore().setProjectCrs(LAMBERT);
 
     await expect(useCrs().changeProjectCrs(UTM)).rejects.toThrow("EPSG:32631");
-    // Nothing is assigned either
-    expect(request.mock.calls.map(([call]) => call.schema.$id)).not.toContain(ASSIGN_ROUTE);
     expect(useCrsStore().projectCrs).toStrictEqual(LAMBERT);
   });
 

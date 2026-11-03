@@ -13,6 +13,7 @@ import {
   expectCrsMismatch,
   expectCurrentCrs,
   expectDataRows,
+  expectFeedback,
   expectRowCrs,
   fillAlignPoints,
   openCrsByButton,
@@ -112,6 +113,8 @@ test("convert to the selected crs", async ({ window }) => {
 
 test("load a curve sharing the model frame", async ({ window }) => {
   await loadVeaseTestDatas(window, [CURVE_FILE]);
+  // Still in the model frame: the curve keeps no crs until it is georeferenced
+  await expectFeedback(window, "No CRS, project in EPSG:32631");
   await navigateToDataManagerPage(window);
   await moveMouseOutOfTheWay(window);
 });
