@@ -261,4 +261,3 @@ test("assign anyway to all data", async ({ window }) => {
   await expectRowCrs(window, pointSetGeodeObjectType, "EPSG:3942");
   await expectRowCrs(window, edgedCurveGeodeObjectType, "EPSG:3942");
 });
-
