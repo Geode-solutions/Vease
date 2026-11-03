@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ChatMessage from "@vease/components/chat/ChatMessage.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
@@ -22,13 +23,6 @@ const messagesEnd = useTemplateRef("messagesEnd");
 
 function close(): void {
   UIStore.setShowChatPiP(false);
-}
-
-function messageText(message): string {
-  return message.parts
-    .filter((part) => part.type === "text")
-    .map((part) => part.text)
-    .join("");
 }
 
 function submit(): void {
@@ -113,16 +107,7 @@ watch(
 
     <div class="d-flex flex-column fill-height overflow-hidden">
       <div class="messages flex-grow-1 overflow-y-auto px-4 py-2">
-        <div
-          v-for="message in messages"
-          :key="message.id"
-          class="message-row d-flex mb-2"
-          :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
-        >
-          <div class="message-bubble pa-3 rounded-lg" :class="`message-${message.role}`">
-            {{ messageText(message) }}
-          </div>
-        </div>
+        <ChatMessage v-for="message in messages" :key="message.id" :message="message" />
         <div v-if="error" class="text-error text-caption px-1">{{ error.message }}</div>
         <div ref="messagesEnd" />
       </div>
@@ -167,19 +152,5 @@ watch(
 
 .messages {
   min-height: 0;
-}
-
-.message-bubble {
-  max-width: 80%;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-
-.message-user {
-  background-color: rgba(var(--v-theme-primary), 0.25);
-}
-
-.message-assistant {
-  background-color: rgba(255, 255, 255, 0.08);
 }
 </style>
