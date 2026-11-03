@@ -222,9 +222,9 @@ async function runLlamaServer({
   startingServer = startLlamaServer(model);
   try {
     return await startingServer;
-  } catch (error) {
+  } finally {
+    // A settled startup must not be handed out again once its server is stopped
     startingServer = undefined;
-    throw error;
   }
 }
 
@@ -242,4 +242,9 @@ function getLlamaStatus(): { running: false } | { running: true; port: number; a
   return { running: true, port: runningServer.port, apiKey: runningServer.apiKey };
 }
 
-export { getLlamaStatus, runLlamaServer, stopLlamaServer };
+// The first startup downloads the model, which can take minutes
+function isLlamaServerStarting(): boolean {
+  return startingServer !== undefined;
+}
+
+export { getLlamaStatus, isLlamaServerStarting, runLlamaServer, stopLlamaServer };
