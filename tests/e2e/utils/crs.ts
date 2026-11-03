@@ -174,7 +174,11 @@ async function expectCrsMismatch(
 ): Promise<void> {
   const row = await getDataTreeRow(window, geodeObjectType, dataName);
   const icon = row.getByTestId("crsMismatchIcon");
-  await (expected ? expect(icon).toBeVisible() : expect(icon).toBeHidden());
+  if (expected) {
+    await expect(icon).toBeVisible();
+  } else {
+    await expect(icon).toBeHidden();
+  }
 }
 
 async function openProjectCrs(window: Page): Promise<void> {

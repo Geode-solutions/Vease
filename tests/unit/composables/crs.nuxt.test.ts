@@ -1,5 +1,5 @@
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { type MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
@@ -12,11 +12,6 @@ vi.setConfig({ testTimeout: 10_000 });
 
 // Hoisted with vi.mock, so the reloadObject mock can record its call order
 const { calls } = vi.hoisted(() => ({ calls: [] as string[] }));
-
-vi.mock(import("@vease/utils/external_stores"), () => ({
-  getBackStore: vi.fn<typeof getBackStore>(),
-  getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
-}));
 
 vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
   reloadObject: vi.fn<typeof reloadObject>().mockImplementation(async () => {
@@ -61,15 +56,18 @@ function mockCrsItems(items: DataItem[]): void {
   );
 }
 
+type BackStore = ReturnType<typeof getBackStore>;
+type HybridViewerStore = ReturnType<typeof getHybridViewerStore>;
+
 describe("useCrs composable", () => {
-  const request =
-    vi.fn<(request: { schema: { $id: string }; params: unknown }) => Promise<unknown>>();
-  const focusCameraOnObject = vi.fn<(id: string) => void>();
+  let request: MockInstance<BackStore["request"]> = vi.fn<BackStore["request"]>();
+  let focusCameraOnObject: MockInstance<HybridViewerStore["focusCameraOnObject"]> =
+    vi.fn<HybridViewerStore["focusCameraOnObject"]>();
 
   beforeEach(() => {
     setupActivePinia();
     calls.length = 0;
-    request.mockReset().mockImplementation(async () => {
+    request = vi.spyOn(getBackStore(), "request").mockImplementation(async () => {
       calls.push("request");
       await Promise.resolve();
       return { binary_light_viewable: "light", crs: LAMBERT };
@@ -78,17 +76,11 @@ describe("useCrs composable", () => {
       calls.push("update");
       await Promise.resolve();
     });
-    focusCameraOnObject.mockReset().mockImplementation(() => {
-      calls.push("focus");
-    });
-    vi.mocked(getBackStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-      { request } as unknown as ReturnType<typeof getBackStore>,
-    );
-    vi.mocked(getHybridViewerStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-      { focusCameraOnObject } as unknown as ReturnType<typeof getHybridViewerStore>,
-    );
+    focusCameraOnObject = vi
+      .spyOn(getHybridViewerStore(), "focusCameraOnObject")
+      .mockImplementation(() => {
+        calls.push("focus");
+      });
   });
 
   test("convertCrs converts, reloads then focuses the object", async () => {

@@ -1,6 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { ensureFeatureVisible, ensureMenuOpen } from "@vease_tests/utils/viewer_interaction";
 import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
+import { selectModelTab } from "@vease_tests/utils/model_tabs";
 import { setColor } from "@vease_tests/utils/data/helpers/color";
 import { vertexAttributeType } from "@vease_tests/utils/constants";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
@@ -24,6 +25,12 @@ function getModelEdgesSection(window: Page, section: ModelEdgesSection): Locator
   return window.getByTestId(section).filter({ visible: true }).first();
 }
 
+const SECTION_TABS = {
+  modelEdgesComponentsOptions: "components",
+  modelEdgesComponentTypeOptions: "type",
+  modelEdgesComponentOptions: "component",
+} as const;
+
 async function setModelComponentsEdgesVisibility(
   window: Page,
   section: ModelEdgesSection,
@@ -31,6 +38,7 @@ async function setModelComponentsEdgesVisibility(
 ): Promise<void> {
   await ensureMenuOpen(window, modelEdgesMenuTestId);
   await ensureFeatureVisible(window, modelEdgesMenuTestId);
+  await selectModelTab(window, SECTION_TABS[section]);
   const visibilitySwitch = getModelEdgesSection(window, section)
     .getByTestId("modelComponentEdgesVisibilitySwitch")
     .getByRole("checkbox");

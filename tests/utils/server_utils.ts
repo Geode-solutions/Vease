@@ -10,6 +10,13 @@ interface MockEventOptions {
   rawBody?: Buffer | string;
 }
 
+function toBuffer(rawBody: Buffer | string): Buffer {
+  if (Buffer.isBuffer(rawBody)) {
+    return rawBody;
+  }
+  return Buffer.from(rawBody);
+}
+
 // Real Node http.IncomingMessage/ServerResponse instances (rather than a
 // Duck-typed object) so h3's H3Event can be constructed without any type
 // Assertion. readBody/readMultipartFormData/readRawBody all check
@@ -29,7 +36,7 @@ function createMockEvent({
 
   const event = createEvent(req, res);
   if (rawBody !== undefined) {
-    const buffer = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody);
+    const buffer = toBuffer(rawBody);
     // H3Event's own public field name; bracket access avoids no-underscore-dangle.
     // The project's tsconfig includes both "dom" and "webworker" libs, which
     // Conflict and leave BodyInit unusable for a genuine Buffer assignment here.

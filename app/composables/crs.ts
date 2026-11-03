@@ -64,7 +64,7 @@ function useCrs() {
     const linkedIds = linkedItems.map(({ id }) => id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.convert_geographic,
-      params: { id: item.id, ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}), ...crs },
+      params: { id: item.id, ...(linkedIds.length > 0 && { linked_ids: linkedIds }), ...crs },
     });
     await refreshLinked(response.linked);
     await refresh(item, response, focus);
@@ -82,7 +82,7 @@ function useCrs() {
         id: item.id,
         source_points: sourcePoints,
         target_points: targetPoints,
-        ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}),
+        ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
         ...crs,
       },
     });
@@ -124,17 +124,17 @@ function useCrs() {
     } catch {
       crsStore.setProjectCrs(project);
       const names = moved.map(({ name }) => name).join(", ");
-      useFeedbackStore().add_warning(
-        `Cannot convert ${names} to ${formatCrsCode(project)}. Check its CRS (Assign) or georeference it.`,
-        moved.length === 1
-          ? {
-              label: "Edit CRS",
-              onClick: (): void => {
-                crsStore.requestCrsEdit(first.id);
-              },
-            }
-          : undefined,
-      );
+      const warning = `Cannot convert ${names} to ${formatCrsCode(project)}. Check its CRS (Assign) or georeference it.`;
+      if (moved.length === 1) {
+        useFeedbackStore().add_warning(warning, {
+          label: "Edit CRS",
+          onClick: (): void => {
+            crsStore.requestCrsEdit(first.id);
+          },
+        });
+      } else {
+        useFeedbackStore().add_warning(warning);
+      }
     }
   }
 

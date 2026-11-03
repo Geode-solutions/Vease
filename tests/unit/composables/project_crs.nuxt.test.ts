@@ -22,7 +22,7 @@ const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
 
 function dataItem(id: string, created_at: string, crs?: typeof LAMBERT): DataItem {
   // oxlint-disable-next-line no-unsafe-type-assertion -- minimal item, only fields read by useProjectCrs.
-  return { id, name: id, created_at, ...(crs === undefined ? {} : { crs }) } as DataItem;
+  return { id, name: id, created_at, ...(crs !== undefined && { crs }) } as DataItem;
 }
 
 function setItems(items: DataItem[]): void {

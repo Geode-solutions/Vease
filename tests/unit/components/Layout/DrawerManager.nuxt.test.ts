@@ -13,10 +13,6 @@ import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-vi.mock(import("@ogw_front/stores/viewer"), () => ({
-  useViewerStore: vi.fn<typeof useViewerStore>(),
-}));
-
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
   default: {
@@ -75,10 +71,7 @@ vi.mock(import("@vease/components/chat/ChatPiP.vue"), () => ({
 }));
 
 function mockViewerStore(pickingMode = false): void {
-  vi.mocked(useViewerStore).mockReturnValue(
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-    { picking_mode: pickingMode } as unknown as ReturnType<typeof useViewerStore>,
-  );
+  useViewerStore().picking_mode = pickingMode;
 }
 
 interface MockUiStore {
