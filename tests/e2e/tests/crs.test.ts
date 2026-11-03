@@ -20,7 +20,6 @@ import {
   openCrsFromTree,
   openCrsFromWarning,
   openProjectCrs,
-  selectAlignMode,
   selectAlignmentCrs,
   selectAssignMode,
   selectConvertMode,
@@ -123,7 +122,6 @@ test("open the alignment drawer", async ({ window }) => {
 });
 
 test("fill the affine alignment points and target crs", async ({ window }) => {
-  await selectAlignMode(window, "affine");
   // "All data" by default: the curve shares the model frame
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
@@ -144,12 +142,12 @@ test("current crs is the project one", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("re-align without distortion with two pairs", async ({ window }) => {
+test("re-align this data only", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
   // The model has a crs: "This data only" by default, the other data stay
-  await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE.slice(0, 2));
-  await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET.slice(0, 2));
+  await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
+  await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
   await selectAlignmentCrs(window, LAMBERT_93);
   await applyAlignment(window);
   // The alignment drawer lives in the viewer: the data table is on the data manager page

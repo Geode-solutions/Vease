@@ -16,20 +16,11 @@ interface CrsPoint {
   picked?: boolean;
 }
 
-type AlignMode = "similarity" | "affine";
-
 interface Alignment {
   sourcePoints: CrsPoint[];
   targetPoints: CrsPoint[];
-  mode: AlignMode;
   // Data sharing the local frame of the aligned item: aligned in the same request
   linkedItems?: Pick<DataItem, "id">[];
-}
-
-// Only set without distortion: the affine alignment has no single scale or rotation
-interface AlignResult {
-  scale?: number;
-  rotation?: number;
 }
 
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it
@@ -82,8 +73,8 @@ function useCrs() {
   async function alignCrs(
     item: DataItem,
     crs: CRSList,
-    { sourcePoints, targetPoints, mode, linkedItems = [] }: Alignment,
-  ): Promise<AlignResult> {
+    { sourcePoints, targetPoints, linkedItems = [] }: Alignment,
+  ): Promise<void> {
     const linkedIds = linkedItems.map(({ id }) => id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.align,
@@ -91,14 +82,12 @@ function useCrs() {
         id: item.id,
         source_points: sourcePoints,
         target_points: targetPoints,
-        mode,
         ...(linkedIds.length > 0 ? { linked_ids: linkedIds } : {}),
         ...crs,
       },
     });
     await refreshLinked(response.linked);
     await refresh(item, response);
-    return { scale: response.scale, rotation: response.rotation };
   }
 
   // Data without CRS get it when their coordinates fit; the others keep no CRS (warning in the tree)
@@ -180,5 +169,5 @@ function useCrs() {
   return { convertCrs, alignCrs, changeProjectCrs, assignPlausible, followProject };
 }
 
-export type { AlignMode, AlignResult, Alignment, CrsPoint };
+export type { Alignment, CrsPoint };
 export { useCrs };
