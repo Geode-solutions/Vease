@@ -8,6 +8,7 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { flushPromises } from "@vue/test-utils";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
@@ -119,6 +120,8 @@ describe("data manager content component", () => {
         await Promise.resolve();
         return itemsRef.value.find((item) => item.id === id);
       },
+      // Read by the crs store (project crs, warnings)
+      refCrsItems: (): typeof itemsRef => itemsRef,
       updateItem: mockUpdateItem,
       deregisterObject: mockDeregisterObject,
       deleteItem: mockDeleteItem,
@@ -218,6 +221,16 @@ describe("data manager content component", () => {
 
     expect(mockUpdateItem).toHaveBeenCalledWith("item-1", { name: "New Name" });
     expect(mockRenameItem).toHaveBeenCalledWith("item-1", "New Name");
+  });
+
+  test("asks for a crs edit from the table", async () => {
+    const wrapper = mountWithPlugins(DataManagerContent);
+
+    const dataTable = wrapper.findComponent(DataTable);
+    dataTable.vm.$emit("crs", mockItem1.id);
+    await flushPromises();
+
+    expect(useCrsStore().crsEditRequest).toBe(mockItem1.id);
   });
 
   test("opens delete dialog and executes delete", async () => {

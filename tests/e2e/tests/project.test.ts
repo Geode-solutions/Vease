@@ -1,7 +1,7 @@
 // Node imports
 
 // Third party imports
-import type { Page } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -11,6 +11,7 @@ import {
   polygonalSurfaceGeodeObjectType,
 } from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import {
   expandMainObjectTree,
   openDataContextMenu,
@@ -21,6 +22,7 @@ import {
   openModelComponentsTree,
   toggleModelTreeRow,
 } from "@vease_tests/utils/object_trees/model_components_object_tree";
+import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
   setMeshEdgesColor,
   setMeshEdgesWidth,
@@ -35,6 +37,7 @@ const brepFilename = "test.og_brep";
 const vertexAttributeName = "test_vertex";
 const modifiedVertexAttributeName = "test_vertex2";
 const colorMapName = "vikO";
+const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const edgesWidth = 5;
 const modifiedEdgesWidth = 2;
 
@@ -84,6 +87,17 @@ test("model corners visibility off", async ({ window }) => {
   await toggleModelCorners(window);
 });
 
+// The project crs is saved with the project
+test("assign a crs to the model", async ({ window }) => {
+  await navigateToDataManagerPage(window);
+  await openCrsByButton(window, brepGeodeObjectType);
+  await selectCrs(window, LAMBERT_93);
+  await confirmAssign(window);
+  await navigateToViewerPage(window);
+  await moveMouseOutOfTheWay(window);
+  await expect(window.getByTestId("projectCrs")).toContainText("EPSG:2154");
+});
+
 test("export project", async ({ window, app }, testInfo) => {
   exportedProjectPath = testInfo.outputPath("project.vease");
   await exportProject(window, exportedProjectPath, app.electronApp);
@@ -95,6 +109,7 @@ test("import exported project", async ({ restartApp }) => {
   const window = await restartApp();
   await importProject(window, exportedProjectPath);
   await moveMouseOutOfTheWay(window);
+  await expect(window.getByTestId("projectCrs")).toContainText("EPSG:2154");
 });
 
 // The app was restarted by the previous test: the window fixture still points to the closed page

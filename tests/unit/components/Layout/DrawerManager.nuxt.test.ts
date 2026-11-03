@@ -91,10 +91,12 @@ interface MockUiStore {
   setShowStepper: Mock<(value: boolean) => void>;
   setShowCreateTools: Mock<(value: boolean) => void>;
   setShowExtensions: Mock<(value: boolean) => void>;
+  anyOverlayOpen: boolean;
+  closeAllDrawers: Mock<() => void>;
 }
 
 function createMockUiStore(overrides: Partial<MockUiStore> = {}): MockUiStore {
-  return {
+  const store = {
     showStepper: false,
     showCreateTools: false,
     showExtensions: false,
@@ -104,7 +106,13 @@ function createMockUiStore(overrides: Partial<MockUiStore> = {}): MockUiStore {
     setShowStepper: vi.fn<(val: boolean) => void>(),
     setShowCreateTools: vi.fn<(val: boolean) => void>(),
     setShowExtensions: vi.fn<(val: boolean) => void>(),
+    closeAllDrawers: vi.fn<() => void>(),
     ...overrides,
+  };
+  // Computed by the real store
+  return {
+    anyOverlayOpen: store.showStepper || store.showCreateTools || store.showExtensions,
+    ...store,
   };
 }
 
@@ -128,9 +136,7 @@ describe("drawermanager component", () => {
     expect(wrapper.find("[data-testid='DataImportStepper']").exists()).toBe(true);
 
     await wrapper.find(".drawer-overlay").trigger("click");
-    expect(mockUi.setShowStepper).toHaveBeenCalledWith(false);
-    expect(mockUi.setShowCreateTools).toHaveBeenCalledWith(false);
-    expect(mockUi.setShowExtensions).toHaveBeenCalledWith(false);
+    expect(mockUi.closeAllDrawers).toHaveBeenCalledWith();
   });
 
   test("renders createtools when showcreatetools is true", () => {
