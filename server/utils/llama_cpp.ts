@@ -221,9 +221,9 @@ async function runLlamaServer({
   startingServer = startLlamaServer(model);
   try {
     return await startingServer;
-  } catch (error) {
+  } finally {
+    // A settled startup must not be handed out again once its server is stopped
     startingServer = undefined;
-    throw error;
   }
 }
 
