@@ -1,6 +1,12 @@
-import { type CrsRequest, LAMBERT, item, stubCrsStores } from "@vease_tests/utils/crs_fixtures";
+import {
+  type BackRequest,
+  type CrsStubs,
+  type FocusCamera,
+  LAMBERT,
+  item,
+  stubCrsStores,
+} from "@vease_tests/utils/crs_fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import type { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrs } from "@vease/composables/crs";
@@ -11,11 +17,6 @@ vi.setConfig({ testTimeout: 10_000 });
 // Hoisted with vi.mock, so the reloadObject mock can record its call order
 const { calls } = vi.hoisted(() => ({ calls: [] as string[] }));
 
-vi.mock(import("@vease/utils/external_stores"), () => ({
-  getBackStore: vi.fn<typeof getBackStore>(),
-  getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
-}));
-
 vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
   reloadObject: vi.fn<typeof reloadObject>().mockImplementation(async () => {
     calls.push("reload");
@@ -24,12 +25,12 @@ vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
 }));
 
 describe("useCrs composable", () => {
-  const request = vi.fn<CrsRequest>();
-  const focusCameraOnObject = vi.fn<(id: string) => void>();
+  let request: CrsStubs["request"] = vi.fn<BackRequest>();
+  let focusCameraOnObject: CrsStubs["focusCameraOnObject"] = vi.fn<FocusCamera>();
 
   beforeEach(() => {
     setupActivePinia();
-    stubCrsStores(request, focusCameraOnObject, calls);
+    ({ request, focusCameraOnObject } = stubCrsStores(calls));
   });
 
   test("convertCrs converts, reloads then focuses the object", async () => {

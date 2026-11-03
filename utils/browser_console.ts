@@ -30,8 +30,16 @@ function logBrowserConsole(level: string, message: string, prefix = ""): void {
   const parts = (match.groups.badge ?? "").split(":");
   const last = parts.at(-1) ?? "";
   const type = isLogType(last) ? last : fallbackType;
-  const tag = (isLogType(last) ? parts.slice(0, -1) : parts).join(":");
-  (tag ? consola.withTag(tag) : consola)[type](`${prefix}${text}`);
+  let tagParts = parts;
+  if (isLogType(last)) {
+    tagParts = parts.slice(0, -1);
+  }
+  const tag = tagParts.join(":");
+  if (tag) {
+    consola.withTag(tag)[type](`${prefix}${text}`);
+    return;
+  }
+  consola[type](`${prefix}${text}`);
 }
 
 export { logBrowserConsole };

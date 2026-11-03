@@ -74,7 +74,10 @@ function resetChatMocks(transportOptions: TransportOptions[]): void {
   mockAuth(false);
   appRequest.mockImplementation(async ({ schema }) => {
     await Promise.resolve();
-    return schema.$id === STATUS_SCHEMA_ID ? { statusCode: 200, running: true } : {};
+    if (schema.$id === STATUS_SCHEMA_ID) {
+      return { statusCode: 200, running: true };
+    }
+    return {};
   });
   vi.mocked(useAppStore).mockReturnValue(
     // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.

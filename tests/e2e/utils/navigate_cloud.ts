@@ -12,6 +12,13 @@ import { MILLISECONDS, WAIT_TIMES } from "./navigate_config";
 // Constants
 const SECONDS_NAVIGATION_TIMEOUT = 5;
 
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+}
+
 async function navigateToCloudApp(page: Page, url: string, maxRetries: number): Promise<void> {
   consola.info(`Navigating to: ${url}`);
   const navigationTimeout = SECONDS_NAVIGATION_TIMEOUT * MILLISECONDS;
@@ -31,7 +38,7 @@ async function navigateToCloudApp(page: Page, url: string, maxRetries: number): 
       break;
     } catch (error) {
       lastError = error;
-      const message = error instanceof Error ? error.message : String(error);
+      const message = errorMessage(error);
       consola.info(`Attempt ${attempt} failed: ${message}`);
       if (attempt < maxRetries) {
         // oxlint-disable-next-line no-await-in-loop

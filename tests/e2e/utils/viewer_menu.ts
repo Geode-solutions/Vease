@@ -2,6 +2,13 @@
 import type { Page } from "@playwright/test";
 
 // Local imports
+import {
+  COMPONENT_TYPE_TAB_SWITCHES,
+  MODEL_TAB_SWITCHES,
+  getActiveModelTabTestId,
+  restoreModelTab,
+  selectModelTab,
+} from "./model_tabs";
 import { halfSecondWait } from "./constants";
 import { moveMouseOutOfTheWay } from "./app_interaction";
 import { viewerContextMenu } from "./viewer_canvas";
@@ -33,12 +40,21 @@ async function ensureMenuOpen(window: Page, menuTestId: string): Promise<void> {
 
 async function ensureFeatureVisible(window: Page, menuTestId: string): Promise<void> {
   const switchTestId = menuTestId.replace("Menu", "VisibilitySwitch");
-  const visibilitySwitch = window.getByTestId(switchTestId).getByRole("checkbox");
-  if (!(await visibilitySwitch.isChecked())) {
-    await visibilitySwitch.check({ force: true });
-    // Wait for conditionally rendered options to appear
-    await window.waitForTimeout(halfSecondWait);
+  // The model switch can sit in a hidden tab
+  const visibilitySwitch = window
+    .getByTestId(switchTestId)
+    .getByRole("checkbox", { includeHidden: true });
+  if (await visibilitySwitch.isChecked()) {
+    return;
   }
+  const activeTabTestId = await getActiveModelTabTestId(window);
+  if (MODEL_TAB_SWITCHES.has(switchTestId)) {
+    await selectModelTab(window, "model");
+  }
+  await visibilitySwitch.check({ force: true });
+  // Wait for conditionally rendered options to appear
+  await window.waitForTimeout(halfSecondWait);
+  await restoreModelTab(window, activeTabTestId);
 }
 
 async function setVisibilityGeneric(
@@ -48,6 +64,11 @@ async function setVisibilityGeneric(
   visibility: boolean,
 ): Promise<void> {
   await ensureMenuOpen(window, menuTestId);
+  if (MODEL_TAB_SWITCHES.has(switchTestId)) {
+    await selectModelTab(window, "model");
+  } else if (COMPONENT_TYPE_TAB_SWITCHES.has(switchTestId)) {
+    await selectModelTab(window, "type");
+  }
   const checkbox = window.getByTestId(switchTestId).getByRole("checkbox");
   if (visibility) {
     await checkbox.check();

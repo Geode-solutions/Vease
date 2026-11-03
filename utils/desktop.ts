@@ -4,7 +4,15 @@
 import path from "node:path";
 
 // Third party imports
-import { BrowserWindow, type UtilityProcess, app, shell, utilityProcess } from "electron";
+import {
+  BrowserWindow,
+  type Streams,
+  type UtilityProcess,
+  type WebFrameMain,
+  app,
+  shell,
+  utilityProcess,
+} from "electron";
 import { setAppBaseUrl, setIsAppReady } from "@geode/opengeodeweb-front/shared/scripts.js";
 import { consola } from "consola";
 import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts.js";
@@ -16,6 +24,13 @@ import { logBrowserConsole } from "./browser_console";
 const __dirname = import.meta.dirname;
 const MIN_WINDOW_WIDTH = 1000;
 const MIN_WINDOW_HEIGHT = 700;
+
+function frameStreams(frame: WebFrameMain | null): Streams {
+  if (frame) {
+    return { video: frame };
+  }
+  return {};
+}
 
 function setupBrowserWindow(): BrowserWindow {
   const window = new BrowserWindow({
@@ -40,7 +55,7 @@ function setupBrowserWindow(): BrowserWindow {
 
   // Screenshots including the UI capture the requesting frame directly, without a source picker
   window.webContents.session.setDisplayMediaRequestHandler((request, callback) => {
-    callback(request.frame ? { video: request.frame } : {});
+    callback(frameStreams(request.frame));
   });
 
   window.webContents.setWindowOpenHandler(({ url }) => {
@@ -208,7 +223,7 @@ interface ParsedArgs {
 }
 
 function parseArgs(): ParsedArgs {
-  const args = app.isPackaged ? process.argv.slice(1) : process.argv.slice(2);
+  const args = process.argv.slice(app.isPackaged ? 1 : 2);
   return {
     flags: args.filter((argument) => argument.startsWith("--")),
     files: args.filter((argument) => !argument.startsWith("-")),

@@ -1,6 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { ensureFeatureVisible, ensureMenuOpen } from "@vease_tests/utils/viewer_interaction";
 import { applyAttribute } from "@vease_tests/utils/data/helpers/attribute";
+import { selectModelTab } from "@vease_tests/utils/model_tabs";
 import { setColor } from "@vease_tests/utils/data/helpers/color";
 import { vertexAttributeType } from "@vease_tests/utils/constants";
 import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
@@ -24,6 +25,12 @@ function getModelPointsSection(window: Page, section: ModelPointsSection): Locat
   return window.getByTestId(section).filter({ visible: true }).first();
 }
 
+const SECTION_TABS = {
+  modelPointsComponentsOptions: "components",
+  modelPointsComponentTypeOptions: "type",
+  modelPointsComponentOptions: "component",
+} as const;
+
 async function setModelComponentsPointsVisibility(
   window: Page,
   section: ModelPointsSection,
@@ -31,6 +38,7 @@ async function setModelComponentsPointsVisibility(
 ): Promise<void> {
   await ensureMenuOpen(window, modelPointsMenuTestId);
   await ensureFeatureVisible(window, modelPointsMenuTestId);
+  await selectModelTab(window, SECTION_TABS[section]);
   const visibilitySwitch = getModelPointsSection(window, section)
     .getByTestId("modelComponentPointsVisibilitySwitch")
     .getByRole("checkbox");

@@ -66,9 +66,10 @@ function findExecutable(dir: string, executableFileName: string): string | undef
 async function ensureLlamaExtracted(nuxtRootPath: string): Promise<string> {
   const extractDir = path.join(EXTRACT_CACHE_DIR, platformDirName());
   const executableFileName = executableName("llama");
-  let executablePath = fs.existsSync(extractDir)
-    ? findExecutable(extractDir, executableFileName)
-    : undefined;
+  let executablePath: string | undefined = undefined;
+  if (fs.existsSync(extractDir)) {
+    executablePath = findExecutable(extractDir, executableFileName);
+  }
   if (executablePath !== undefined) {
     return executablePath;
   }

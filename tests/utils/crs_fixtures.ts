@@ -1,5 +1,5 @@
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
-import { type Mock, vi } from "vitest";
+import { type MockInstance, vi } from "vitest";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { DataItem } from "@vease/types/data_item";
 import { ref } from "vue";
@@ -42,17 +42,18 @@ function mockCrsItems(items: DataItem[]): void {
   );
 }
 
-type CrsRequest = (request: { schema: { $id: string }; params: unknown }) => Promise<unknown>;
+type BackRequest = ReturnType<typeof getBackStore>["request"];
+type FocusCamera = ReturnType<typeof getHybridViewerStore>["focusCameraOnObject"];
 
-// To call in beforeEach, after setupActivePinia(). Requires the test file to
-// Vi.mock("@vease/utils/external_stores") and to share its call log with the reloadObject mock.
-function stubCrsStores(
-  request: Mock<CrsRequest>,
-  focusCameraOnObject: Mock<(id: string) => void>,
-  calls: string[],
-): void {
+interface CrsStubs {
+  request: MockInstance<BackRequest>;
+  focusCameraOnObject: MockInstance<FocusCamera>;
+}
+
+// To call in beforeEach, after setupActivePinia(). Shares its call log with the reloadObject mock.
+function stubCrsStores(calls: string[]): CrsStubs {
   calls.length = 0;
-  request.mockReset().mockImplementation(async () => {
+  const request = vi.spyOn(getBackStore(), "request").mockImplementation(async () => {
     calls.push("request");
     await Promise.resolve();
     return { binary_light_viewable: "light", crs: LAMBERT };
@@ -61,22 +62,19 @@ function stubCrsStores(
     calls.push("update");
     await Promise.resolve();
   });
-  focusCameraOnObject.mockReset().mockImplementation(() => {
-    calls.push("focus");
-  });
-  vi.mocked(getBackStore).mockReturnValue(
-    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-    { request } as unknown as ReturnType<typeof getBackStore>,
-  );
-  vi.mocked(getHybridViewerStore).mockReturnValue(
-    // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-    { focusCameraOnObject } as unknown as ReturnType<typeof getHybridViewerStore>,
-  );
+  const focusCameraOnObject = vi
+    .spyOn(getHybridViewerStore(), "focusCameraOnObject")
+    .mockImplementation(() => {
+      calls.push("focus");
+    });
+  return { request, focusCameraOnObject };
 }
 
 export {
   ASSIGN_ROUTE,
-  type CrsRequest,
+  type BackRequest,
+  type CrsStubs,
+  type FocusCamera,
   LAMBERT,
   UTM,
   item,

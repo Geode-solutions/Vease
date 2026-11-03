@@ -26,7 +26,10 @@ interface CredentialsResult extends OperationResult {
 }
 
 function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
 }
 
 function isCredentialsPayload(value: unknown): value is CredentialsPayload {

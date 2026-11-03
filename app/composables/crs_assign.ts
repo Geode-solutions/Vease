@@ -17,9 +17,12 @@ interface AssignResponse {
 }
 
 function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string; crs: CRSList }[] {
-  return entries.flatMap(({ id, name, crs, implausible }) =>
-    crs === undefined || implausible === true ? [] : [{ id, name, crs }],
-  );
+  return entries.flatMap(({ id, name, crs, implausible }) => {
+    if (crs === undefined || implausible === true) {
+      return [];
+    }
+    return [{ id, name, crs }];
+  });
 }
 
 function buildAssignedEntries(
