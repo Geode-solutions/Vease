@@ -15,9 +15,10 @@ import { getMainObjectTree } from "./object_trees/main_object_tree";
 import { moveMouseOutOfTheWay } from "./viewer_interaction";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
-type MapTitle = "Satellite" | "Streets" | "Topo";
+type MapTitle = "Satellite" | "Plan" | "Routes";
 const BASEMAP = "Basemap";
-const MAP_STYLES = ["SATELLITE", "STREETS", "TOPO"];
+// Every open source is served locally: the tests never reach EOX, the IGN or OpenStreetMap
+const SOURCES = ["EOX_S2CLOUDLESS_2016", "IGN_ORTHOPHOTOS", "OSM", "IGN_PLAN", "IGN_ROADS"];
 const OPACITY_STEP = 5;
 const FULL_OPACITY = 100;
 
@@ -51,15 +52,14 @@ async function startTileServer(): Promise<TileServer> {
   }
   const { port }: AddressInfo = address;
   const cacheFolder = fs.mkdtempSync(path.join(os.tmpdir(), "vease-e2e-basemap-cache-"));
-  // Every map is served locally: the tests never reach Esri
-  for (const style of MAP_STYLES) {
-    process.env[`BASEMAP_TILE_URL_${style}`] = `http://127.0.0.1:${port}/{z}/{x}/{y}.png`;
+  for (const source of SOURCES) {
+    process.env[`BASEMAP_TILE_URL_${source}`] = `http://127.0.0.1:${port}/{z}/{x}/{y}.png`;
   }
   process.env.BASEMAP_CACHE_FOLDER = cacheFolder;
   return {
     stop: async (): Promise<void> => {
-      for (const style of MAP_STYLES) {
-        delete process.env[`BASEMAP_TILE_URL_${style}`];
+      for (const source of SOURCES) {
+        delete process.env[`BASEMAP_TILE_URL_${source}`];
       }
       delete process.env.BASEMAP_CACHE_FOLDER;
       server.closeAllConnections();
@@ -78,7 +78,8 @@ async function basemapRow(window: Page, title?: MapTitle): Promise<Locator> {
 
 async function clickBasemapEye(window: Page, title?: MapTitle): Promise<void> {
   const row = await basemapRow(window, title);
-  await row.getByTestId("visibleObjectEyeButton").first().click({ force: true });
+  // The eye test id follows its state: visible, hidden or indeterminate
+  await row.locator('[data-testid$="ObjectEyeButton"]').first().click({ force: true });
   await moveMouseOutOfTheWay(window);
   await waitForActionSettled(window);
 }

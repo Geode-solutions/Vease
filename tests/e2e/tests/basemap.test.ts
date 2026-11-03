@@ -74,7 +74,7 @@ test("assign the selected crs", async ({ window }) => {
 
 // No action: the basemap shows as soon as the project has a CRS
 test("the satellite basemap shows on its own", async ({ window }) => {
-  await expect(window.getByTestId("basemapAttribution")).toContainText("Esri");
+  await expect(window.getByTestId("basemapAttribution")).toContainText("EOX");
   await moveMouseOutOfTheWay(window);
 });
 
@@ -123,22 +123,22 @@ test("clipping planes off", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("show the streets map over the satellite map", async ({ window }) => {
-  await toggleBasemapMap(window, "Streets");
+test("show the routes over the satellite map", async ({ window }) => {
+  await toggleBasemapMap(window, "Routes");
   await moveMouseOutOfTheWay(window);
 });
 
-test("lower the streets opacity", async ({ window }) => {
-  await setBasemapOpacity(window, "Streets", BASEMAP_OPACITY);
+test("lower the routes opacity", async ({ window }) => {
+  await setBasemapOpacity(window, "Routes", BASEMAP_OPACITY);
   await moveMouseOutOfTheWay(window);
 });
 
-test("crop the streets map only", async ({ window }) => {
-  await toggleBasemapCrop(window, "Streets");
+test("crop the routes only", async ({ window }) => {
+  await toggleBasemapCrop(window, "Routes");
   await moveMouseOutOfTheWay(window);
 });
 
-test("hide the satellite map, streets stays", async ({ window }) => {
+test("hide the satellite map, the routes stay", async ({ window }) => {
   await toggleBasemapMap(window, "Satellite");
   await moveMouseOutOfTheWay(window);
 });
