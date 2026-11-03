@@ -41,9 +41,10 @@ async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promis
 async function import_files(): Promise<void> {
   const files_to_import = filenames.flatMap((filename) => {
     const geode_object_type = geodeObjectTypes[filename];
-    return geode_object_type === undefined || skippedFiles.includes(filename)
-      ? []
-      : [{ filename, geode_object_type }];
+    if (geode_object_type === undefined || skippedFiles.includes(filename)) {
+      return [];
+    }
+    return [{ filename, geode_object_type }];
   });
   const left_out = filenames.filter(
     (filename) => !files_to_import.some((file) => file.filename === filename),

@@ -181,6 +181,13 @@ async function resolveTargetTag(settings: UpdateSettings): Promise<string> {
   return tag;
 }
 
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+}
+
 async function runCheck(): Promise<void> {
   const reason = unsupportedReason();
   if (reason !== undefined) {
@@ -202,7 +209,7 @@ async function runCheck(): Promise<void> {
     await result?.downloadPromise;
   } catch (error) {
     consola.error("[Updater] Update check failed", error);
-    setStatus({ state: "error", message: error instanceof Error ? error.message : String(error) });
+    setStatus({ state: "error", message: errorMessage(error) });
   }
 }
 

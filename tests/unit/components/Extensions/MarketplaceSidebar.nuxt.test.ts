@@ -30,8 +30,12 @@ const secondExtension: MarketplaceExtension = {
 
 function mockInstalledExtensions(installedIds: string[]): void {
   const appStoreStub = {
-    getExtension: (id: string): { id: string } | undefined =>
-      installedIds.includes(id) ? { id } : undefined,
+    getExtension: (id: string): { id: string } | undefined => {
+      if (installedIds.includes(id)) {
+        return { id };
+      }
+      return undefined;
+    },
   };
   vi.mocked(useAppStore).mockReturnValue(
     // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
