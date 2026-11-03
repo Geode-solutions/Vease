@@ -1,13 +1,13 @@
 // oxlint-disable max-lines, max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import { type Mock, beforeEach, describe, expect, test, vi } from "vitest";
+import { type MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
 import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";
 import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import type { DataItem } from "@vease/types/data_item";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
-import { useBackStore } from "@ogw_front/stores/back";
+import { getBackStore } from "@vease/utils/external_stores";
 import type { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
@@ -72,10 +72,7 @@ const RESPONSES: Record<string, unknown> = {
   },
 };
 
-type RequestMock = (
-  request: { schema: { $id: string } },
-  callbacks: { response_function?: (response: unknown) => void },
-) => Promise<unknown>;
+type BackStore = ReturnType<typeof getBackStore>;
 
 vi.mock(import("@vease/composables/crs"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
@@ -108,21 +105,20 @@ function mockStoredItems(items: StoredItem[]): void {
 }
 
 // The active crs is UTM (so Convert is offered); assign answers with the given response
-function stubRequests(assignResponse: unknown): Mock<RequestMock> {
+function stubRequests(assignResponse: unknown): MockInstance<BackStore["request"]> {
   const responses: Record<string, unknown> = {
     ...RESPONSES,
     "opengeodeweb_back/crs/active": UTM_RESPONSE,
     "opengeodeweb_back/crs/assign_geographic": assignResponse,
   };
-  const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
-    const response = responses[schema.$id];
-    callbacks.response_function?.(response);
-    await Promise.resolve();
-    return response;
-  });
-  const backStore = useBackStore();
-  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-  backStore.request = request as unknown as typeof backStore.request;
+  const request = vi
+    .spyOn(getBackStore(), "request")
+    .mockImplementation(async ({ schema }, callbacks) => {
+      const response = responses[schema.$id];
+      callbacks?.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
   followProject.mockReset().mockResolvedValue(undefined);
   changeProjectCrs.mockReset().mockResolvedValue(undefined);
   return request;
@@ -133,19 +129,16 @@ async function assignAnswered(
   implausible: boolean,
 ): Promise<ReturnType<typeof useFeedbackStore>["feedbacks"]> {
   vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
-  const backStore = useBackStore();
   const responses: Record<string, unknown> = {
     ...RESPONSES,
     "opengeodeweb_back/crs/assign_geographic": { crs: LAMBERT, implausible },
   };
-  const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
+  vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
     const response = responses[schema.$id];
-    callbacks.response_function?.(response);
+    callbacks?.response_function?.(response);
     await Promise.resolve();
     return response;
   });
-  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-  backStore.request = request as unknown as typeof backStore.request;
 
   const wrapper = mountWithPlugins(CrsDialog, {
     props: { show: true, itemId: mockItem.id },
@@ -196,15 +189,14 @@ describe("crs dialog component", () => {
 
   test("shows current crs and assigns the selected one", async () => {
     vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
-      const response = RESPONSES[schema.$id];
-      callbacks.response_function?.(response);
-      await Promise.resolve();
-      return response;
-    });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
+    const request = vi
+      .spyOn(getBackStore(), "request")
+      .mockImplementation(async ({ schema }, callbacks) => {
+        const response = RESPONSES[schema.$id];
+        callbacks?.response_function?.(response);
+        await Promise.resolve();
+        return response;
+      });
 
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, itemId: mockItem.id },
@@ -238,18 +230,15 @@ describe("crs dialog component", () => {
   });
 
   test("ignores further clicks while assigning", async () => {
-    const backStore = useBackStore();
     const request = vi
-      .fn<RequestMock>()
+      .spyOn(getBackStore(), "request")
       .mockImplementationOnce(async (_request, callbacks) => {
-        callbacks.response_function?.({ crs_name: "points" });
+        callbacks?.response_function?.({ crs_name: "points" });
         await Promise.resolve();
         return { crs_name: "points" };
       })
       // The assign save is still running when the user clicks again
       .mockReturnValueOnce(Promise.withResolvers<never>().promise);
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, itemId: mockItem.id },
@@ -275,10 +264,7 @@ describe("crs dialog component", () => {
   });
 
   test("shows a loader while the current crs loads", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockReturnValue(Promise.withResolvers<never>().promise);
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
+    vi.spyOn(getBackStore(), "request").mockReturnValue(Promise.withResolvers<never>().promise);
 
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, itemId: mockItem.id },
@@ -294,14 +280,11 @@ describe("crs dialog component", () => {
   });
 
   test("converts a geographic data to the selected crs", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
-      callbacks.response_function?.(UTM_RESPONSE);
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
       await Promise.resolve();
       return UTM_RESPONSE;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
     convertCrs.mockReset().mockResolvedValue(undefined);
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
 
@@ -332,15 +315,12 @@ describe("crs dialog component", () => {
   });
 
   test("offers alignment for data without crs", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockImplementation(async ({ schema }, callbacks) => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
       const response = RESPONSES[schema.$id];
-      callbacks.response_function?.(response);
+      callbacks?.response_function?.(response);
       await Promise.resolve();
       return response;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, itemId: mockItem.id },
@@ -358,14 +338,11 @@ describe("crs dialog component", () => {
   });
 
   test("offers re-alignment for georeferenced data", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
-      callbacks.response_function?.(UTM_RESPONSE);
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
       await Promise.resolve();
       return UTM_RESPONSE;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
 
     const wrapper = mountWithPlugins(CrsDialog, {
       props: { show: true, itemId: mockItem.id },
@@ -396,14 +373,11 @@ describe("crs dialog component", () => {
   });
 
   test("refreshes the stored crs from the file", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
-      callbacks.response_function?.(UTM_RESPONSE);
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
       await Promise.resolve();
       return UTM_RESPONSE;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
@@ -417,14 +391,11 @@ describe("crs dialog component", () => {
   });
 
   test("does not rewrite a stored crs that did not change", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>().mockImplementation(async (_request, callbacks) => {
-      callbacks.response_function?.(UTM_RESPONSE);
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
       await Promise.resolve();
       return UTM_RESPONSE;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
     storedItem.value = { ...mockItem, crs: UTM_RESPONSE.crs_info };
 
@@ -439,15 +410,12 @@ describe("crs dialog component", () => {
   });
 
   test("stores the assigned crs", async () => {
-    const backStore = useBackStore();
-    const request = vi.fn<RequestMock>(async ({ schema }, callbacks) => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
       const response = RESPONSES[schema.$id];
-      callbacks.response_function?.(response);
+      callbacks?.response_function?.(response);
       await Promise.resolve();
       return response;
     });
-    // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
-    backStore.request = request as unknown as typeof backStore.request;
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {

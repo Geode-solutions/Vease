@@ -1,7 +1,7 @@
+import { type CrsItem, type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { assertDefined, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import type { DataItem } from "@vease/types/data_item";
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import type DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
@@ -9,7 +9,6 @@ import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -63,19 +62,6 @@ vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
   } as unknown as typeof RenameDialog,
 }));
 
-vi.mock(import("@ogw_front/stores/data"), () => ({
-  useDataStore: vi.fn<typeof useDataStore>(),
-}));
-
-vi.mock(import("@ogw_front/stores/treeview"), () => ({
-  useTreeviewStore: vi.fn<typeof useTreeviewStore>(),
-}));
-
-vi.mock(import("@vease/utils/external_stores"), () => ({
-  getDataStyleStore: vi.fn<typeof getDataStyleStore>(),
-  getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
-}));
-
 const mockItem1: DataItem = {
   id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
@@ -111,44 +97,25 @@ describe("data manager content component", () => {
   beforeEach(() => {
     setupActivePinia();
 
-    const itemsRef = ref([mockItem1, mockItem2]);
-    const mockDataStore = {
-      refAllItems: (): typeof itemsRef => itemsRef,
-      // Read by the crs store (project crs, warnings)
-      refCrsItems: (): typeof itemsRef => itemsRef,
-      updateItem: mockUpdateItem,
-      deregisterObject: mockDeregisterObject,
-      deleteItem: mockDeleteItem,
-    };
-    vi.mocked(useDataStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockDataStore as unknown as ReturnType<typeof useDataStore>,
-    );
+    const dataStore = useDataStore();
+    vi.spyOn(dataStore, "refAllItems").mockReturnValue(ref<DataItem[]>([mockItem1, mockItem2]));
+    // Read by the crs store (project crs, warnings)
+    vi.spyOn(dataStore, "refCrsItems").mockReturnValue(ref<CrsItem[]>([mockItem1, mockItem2]));
+    vi.spyOn(dataStore, "updateItem").mockImplementation(mockUpdateItem);
+    vi.spyOn(dataStore, "deregisterObject").mockImplementation(mockDeregisterObject);
+    vi.spyOn(dataStore, "deleteItem").mockImplementation(mockDeleteItem);
 
-    const mockTreeviewStore = {
-      addItem: mockAddItem,
-      removeItem: mockRemoveItem,
-      renameItem: mockRenameItem,
-      closeView: mockCloseView,
-    };
-    vi.mocked(useTreeviewStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockTreeviewStore as unknown as ReturnType<typeof useTreeviewStore>,
-    );
+    const treeviewStore = useTreeviewStore();
+    vi.spyOn(treeviewStore, "addItem").mockImplementation(mockAddItem);
+    vi.spyOn(treeviewStore, "removeItem").mockImplementation(mockRemoveItem);
+    vi.spyOn(treeviewStore, "renameItem").mockImplementation(mockRenameItem);
+    vi.spyOn(treeviewStore, "closeView").mockImplementation(mockCloseView);
 
-    vi.mocked(getDataStyleStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      { setVisibility: mockSetVisibility } as unknown as ReturnType<typeof getDataStyleStore>,
-    );
+    vi.spyOn(getDataStyleStore(), "setVisibility").mockImplementation(mockSetVisibility);
 
-    const mockHybridViewerStore = {
-      focusCameraOnObject: mockFocusCameraOnObject,
-      removeItem: mockRemoveViewerItem,
-    };
-    vi.mocked(getHybridViewerStore).mockReturnValue(
-      // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockHybridViewerStore as unknown as ReturnType<typeof getHybridViewerStore>,
-    );
+    const hybridViewerStore = getHybridViewerStore();
+    vi.spyOn(hybridViewerStore, "focusCameraOnObject").mockImplementation(mockFocusCameraOnObject);
+    vi.spyOn(hybridViewerStore, "removeItem").mockImplementation(mockRemoveViewerItem);
   });
 
   test("renders header and data table subcomponents", () => {
