@@ -85,6 +85,7 @@ import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
 import { setColor } from "@vease_tests/utils/data/helpers/color";
+import { setColorInputText } from "@vease_tests/utils/data/helpers/color_picker";
 import { setMeshEdgesVisibility } from "@vease_tests/utils/data";
 import { test } from "@vease_tests/utils/fixtures";
 
@@ -107,6 +108,7 @@ const RULER_POINT_2_X = 1.8;
 const RULER_POINT_2_Y = 16.8;
 const RULER_POINT_2_Z = 44.9;
 const RULER_SNAP_X_RATIO = 0.5;
+const SCREENSHOT_BACKGROUND_COLOR = "255, 0, 0";
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 const ROTATE_DRAG_EDGE_MARGIN = 2;
@@ -332,6 +334,27 @@ test("screenshot clipboard with background", async ({ window }) => {
   await window.getByTestId("screenshotIncludeBackgroundSwitch").getByRole("checkbox").check();
   await window.getByTestId("screenshotActionButton").click();
   await waitForActionSettled(window);
+  await closeFeedbackSnackbar(window);
+});
+
+test("screenshot background color preview", async ({ window }) => {
+  await window.getByTestId("screenshotButton").click();
+  await setColorInputText(window, SCREENSHOT_BACKGROUND_COLOR);
+});
+
+test("screenshot background color restored on cancel", async ({ window }) => {
+  await window.getByTestId("screenshotCancelButton").click();
+  await waitForActionSettled(window);
+});
+
+test("screenshot file with UI", async ({ window }) => {
+  await window.getByTestId("screenshotButton").click();
+  await window.getByTestId("screenshotFileButton").click();
+  await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot ui");
+  await window.getByTestId("screenshotIncludeUiSwitch").getByRole("checkbox").check();
+  await window.getByTestId("screenshotActionButton").click();
+  await waitForActionSettled(window);
+  await expect(window.getByTestId("feedbackSnackbar")).toContainText("Screenshot downloaded");
   await closeFeedbackSnackbar(window);
 });
 

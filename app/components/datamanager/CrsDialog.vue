@@ -21,7 +21,9 @@ const { show = false, itemId = undefined } = defineProps<{
 }>();
 
 // Read live by its id: the stored CRS shown and the candidates follow the changes
-const item = useLiveDataItem(() => itemId);
+const liveItem = useLiveDataItem(() => itemId);
+// The live query starts with an empty placeholder: the item is ready once it is the asked one
+const item = computed(() => (liveItem.value?.id === itemId ? liveItem.value : undefined));
 
 const emit = defineEmits<{
   "update:show": [value: boolean];

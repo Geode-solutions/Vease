@@ -177,6 +177,23 @@ describe("crs dialog component", () => {
     vi.spyOn(useDataStore(), "refItem").mockImplementation(() => storedItem as never);
   });
 
+  // The live query starts with an empty placeholder: no crs list is asked for an unknown type
+  test("waits for the stored item before showing the crs list", async () => {
+    stubRequests({});
+    // oxlint-disable-next-line no-unsafe-type-assertion -- the placeholder of the data store
+    storedItem.value = {} as DataItem;
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsSelectorStub"]')).toBeNull();
+    storedItem.value = mockItem;
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsSelectorStub"]')).not.toBeNull();
+    wrapper.unmount();
+  });
+
   test("shows current crs and assigns the selected one", async () => {
     vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
     const backStore = useBackStore();
