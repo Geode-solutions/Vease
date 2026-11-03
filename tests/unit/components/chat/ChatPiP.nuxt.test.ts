@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
+import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
 
@@ -25,6 +26,10 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
 
 vi.mock(import("@vease/composables/chat"), () => ({
   useVeaseChat: vi.fn<typeof useVeaseChat>(),
+}));
+
+vi.mock(import("@vease/composables/auth"), () => ({
+  useAuth: vi.fn<typeof useAuth>(),
 }));
 
 const USER_MESSAGE_ID = "msg-1";
@@ -57,6 +62,13 @@ interface ChatMockOptions {
 
 type Wrapper = ReturnType<typeof mountWithPlugins>;
 
+function mockAuth(isAuthenticated: boolean): void {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
+  vi.mocked(useAuth).mockReturnValue({
+    isUserAuthenticated: computed(() => isAuthenticated),
+  } as unknown as ReturnType<typeof useAuth>);
+}
+
 function findButton(wrapper: Wrapper, label: string): ReturnType<Wrapper["find"]> {
   const button = wrapper.findAll("button").find((btn) => btn.text().includes(label));
   if (button === undefined) {
@@ -86,7 +98,7 @@ describe("the ChatPiP component", () => {
     const cloudUnavailableReason =
       "cloudUnavailableReason" in options
         ? options.cloudUnavailableReason
-        : CLOUD_UNAVAILABLE_REASON.SIGNED_OUT;
+        : CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED;
     // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     vi.mocked(useVeaseChat).mockReturnValue({
       messages: ref(messages),
@@ -111,6 +123,7 @@ describe("the ChatPiP component", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.clearAllMocks();
+    mockAuth(true);
     mockChat();
   });
 
@@ -132,6 +145,16 @@ describe("the ChatPiP component", () => {
     await closeBtn?.trigger("click");
 
     expect(setShowChatPiPSpy).toHaveBeenCalledWith(false);
+  });
+
+  test("asks to sign in before using the chat", () => {
+    mockAuth(false);
+
+    const wrapper = mountWithPlugins(ChatPiP);
+
+    expect(wrapper.find('[data-testid="chatSignInRequired"]').text()).toContain("Sign in");
+    expect(wrapper.find('[data-testid="chatProviderSwitch"]').exists()).toBe(false);
+    expect(wrapper.find("form").exists()).toBe(false);
   });
 
   test("submits input text when status is ready", async () => {
@@ -209,21 +232,20 @@ describe("the ChatPiP component", () => {
   });
 
   describe("the provider switch", () => {
-    test("locks the cloud provider and explains why when signed out", async () => {
+    test("locks the cloud provider when the account is not entitled", async () => {
       const wrapper = mountWithPlugins(ChatPiP);
 
       const cloudBtn = wrapper.find('[data-testid="chatProvider-gateway"]');
       expect(cloudBtn.attributes("disabled")).toBeDefined();
-      expect(wrapper.find('[data-testid="cloudUnavailableMessage"]').text()).toContain("Sign in");
       await cloudBtn.trigger("click");
 
       expect(setProviderMock).not.toHaveBeenCalled();
     });
 
-    test("explains when the account is not entitled to cloud AI", () => {
-      mockChat({ cloudUnavailableReason: CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED });
-
+    test("explains why the cloud AI is locked behind the info button", async () => {
       const wrapper = mountWithPlugins(ChatPiP);
+
+      await wrapper.find('[data-testid="chatProviderInfoButton"]').trigger("click");
 
       expect(wrapper.find('[data-testid="cloudUnavailableMessage"]').text()).toContain(
         "authorized accounts",
@@ -240,12 +262,15 @@ describe("the ChatPiP component", () => {
       expect(setProviderMock).toHaveBeenCalledWith(CHAT_PROVIDER.GATEWAY);
     });
 
-    test("describes the selected provider", () => {
-      mockChat({ provider: CHAT_PROVIDER.GATEWAY, cloudUnavailableReason: undefined });
-
+    test("describes the providers only on demand", async () => {
       const wrapper = mountWithPlugins(ChatPiP);
 
-      expect(wrapper.text()).toContain("messages are sent online");
+      expect(wrapper.find('[data-testid="chatProviderInfo"]').exists()).toBe(false);
+      await wrapper.find('[data-testid="chatProviderInfoButton"]').trigger("click");
+
+      const info = wrapper.find('[data-testid="chatProviderInfo"]').text();
+      expect(info).toContain("Runs on this computer");
+      expect(info).toContain("messages are sent online");
     });
   });
 

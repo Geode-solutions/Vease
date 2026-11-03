@@ -2,10 +2,12 @@
 import ChatMessage from "@vease/components/chat/ChatMessage.vue";
 import ChatProviderSwitch from "@vease/components/chat/ChatProviderSwitch.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
+import { useAuth } from "@vease/composables/auth";
 import { useUIStore } from "@vease/stores/ui";
 import { useVeaseChat } from "@vease/composables/chat";
 
 const UIStore = useUIStore();
+const { isUserAuthenticated } = useAuth();
 const {
   messages,
   sendMessage,
@@ -106,7 +108,28 @@ watch(
       </div>
     </template>
 
-    <div class="d-flex flex-column fill-height overflow-hidden">
+    <div
+      v-if="!isUserAuthenticated"
+      data-testid="chatSignInRequired"
+      class="d-flex flex-column align-center justify-center text-center fill-height px-6"
+    >
+      <v-icon size="36" color="primary" class="mb-2">mdi-lock-outline</v-icon>
+      <div class="text-subtitle-2 text-white">Sign in to use the chat</div>
+      <div class="text-caption text-medium-emphasis mt-1 mb-4">
+        The assistant, local or cloud, is available to signed in users.
+      </div>
+      <v-btn
+        color="primary"
+        rounded="pill"
+        prepend-icon="mdi-login"
+        class="text-none font-weight-bold"
+        to="/account"
+      >
+        Sign In
+      </v-btn>
+    </div>
+
+    <div v-else class="d-flex flex-column fill-height overflow-hidden">
       <div class="px-4 pt-2 pb-2">
         <ChatProviderSwitch
           :provider="provider"
@@ -219,7 +242,7 @@ watch(
           flat
           hide-details
           :disabled="status !== 'ready'"
-          class="mr-2"
+          class="chat-input mr-2"
           @keydown.enter.exact.prevent="submit"
         />
         <v-btn
@@ -248,6 +271,11 @@ watch(
 
 .messages {
   min-height: 0;
+}
+
+/* Concentric with the PiP corners: its radius (rounded-xl, 24px) minus the form padding (8px) */
+.chat-input :deep(.v-field) {
+  border-radius: 16px;
 }
 
 .pending-bubble {
