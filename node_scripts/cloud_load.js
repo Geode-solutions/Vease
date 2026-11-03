@@ -41,7 +41,21 @@ const READY_POLL_INTERVAL_MS = MILLISECONDS_IN_SECOND;
  * @returns {string}
  */
 function errorMessage(error) {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return String(error);
+}
+
+/**
+ * @param {unknown} error
+ * @returns {string}
+ */
+function failureReason(error) {
+  if (error instanceof Error && error.cause instanceof Error) {
+    return error.cause.message;
+  }
+  return errorMessage(error);
 }
 
 /**
@@ -90,10 +104,7 @@ async function requestJson(step, url, init) {
   try {
     response = await fetch(url, init);
   } catch (error) {
-    const reason =
-      error instanceof Error && error.cause instanceof Error
-        ? error.cause.message
-        : errorMessage(error);
+    const reason = failureReason(error);
     throw new Error(`${step}: request to ${url} failed (${reason})`, { cause: error });
   }
   const body = await response.text();
@@ -111,8 +122,12 @@ async function requestJson(step, url, init) {
  * @returns {unknown}
  */
 function readField(step, json, key) {
-  /** @type {Map<string, unknown>} */
-  const fields = new Map(typeof json === "object" && json !== null ? Object.entries(json) : []);
+  /** @type {[string, unknown][]} */
+  let entries = [];
+  if (typeof json === "object" && json !== null) {
+    entries = Object.entries(json);
+  }
+  const fields = new Map(entries);
   const value = fields.get(key);
   if (value === undefined) {
     throw new Error(`${step}: no "${key}" in response ${JSON.stringify(json)}`);

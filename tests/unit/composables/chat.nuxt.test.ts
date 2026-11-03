@@ -68,7 +68,10 @@ const appRequest = vi.fn<(args: { schema: { $id: string } }) => Promise<unknown>
 function mockLlamaStatus(llamaStatus: { running: boolean; starting: boolean }): void {
   appRequest.mockImplementation(async ({ schema }) => {
     await Promise.resolve();
-    return schema.$id === STATUS_SCHEMA_ID ? { statusCode: 200, ...llamaStatus } : {};
+    if (schema.$id === STATUS_SCHEMA_ID) {
+      return { statusCode: 200, ...llamaStatus };
+    }
+    return {};
   });
 }
 
