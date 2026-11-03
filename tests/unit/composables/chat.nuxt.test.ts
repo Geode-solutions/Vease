@@ -53,6 +53,7 @@ const STATUS_SCHEMA_ID = "api/llm/status";
 const KILL_SCHEMA_ID = "api/llm/kill";
 const ENTITLEMENT_SCHEMA_ID = "cloud_api/ai/entitlement";
 const KEY_SCHEMA_ID = "cloud_api/ai/key";
+const LLAMA_STATUS_POLL_MILLISECONDS = 2000;
 
 const mockUser = { getIdToken: vi.fn<() => Promise<string>>().mockResolvedValue("token-123") };
 type ApiRequest = ReturnType<typeof useAPIStore>["request"];
@@ -61,7 +62,15 @@ type ApiRequest = ReturnType<typeof useAPIStore>["request"];
 // Their watchers, so sharing these refs would wake up previous tests' instances.
 let userRef = ref<typeof mockUser | undefined>(undefined);
 let chatStatus = ref<string>("ready");
+let chatMessages = ref<UIMessage[]>([]);
 const appRequest = vi.fn<(args: { schema: { $id: string } }) => Promise<unknown>>();
+
+function mockLlamaStatus(llamaStatus: { running: boolean; starting: boolean }): void {
+  appRequest.mockImplementation(async ({ schema }) => {
+    await Promise.resolve();
+    return schema.$id === STATUS_SCHEMA_ID ? { statusCode: 200, ...llamaStatus } : {};
+  });
+}
 
 function mockAuth(authenticated: boolean): void {
   userRef.value = authenticated ? mockUser : undefined;
@@ -105,16 +114,15 @@ describe("the useVeaseChat composable", () => {
     userRef = ref<typeof mockUser | undefined>(undefined);
     chatStatus = ref<string>("ready");
     mockAuth(false);
-    appRequest.mockImplementation(async ({ schema }) => {
-      await Promise.resolve();
-      return schema.$id === STATUS_SCHEMA_ID ? { statusCode: 200, running: true } : {};
-    });
+    mockLlamaStatus({ running: true, starting: false });
     vi.mocked(useAppStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
       { request: appRequest } as unknown as ReturnType<typeof useAppStore>,
     );
+    chatMessages = ref<UIMessage[]>([]);
     const useChatStub = {
-      messages: ref<UIMessage[]>([]),
+      messages: chatMessages,
+      regenerate: vi.fn<() => Promise<void>>(),
       sendMessage: vi.fn<() => void>(),
       status: chatStatus,
       error: ref<Error | undefined>(undefined),
@@ -144,7 +152,7 @@ describe("the useVeaseChat composable", () => {
     await flushPromises();
 
     expect(calledSchemaIds()).toStrictEqual([STATUS_SCHEMA_ID]);
-    expect(llamaStatus.value).toMatchObject({ running: true });
+    expect(llamaStatus.value).toStrictEqual({ running: true, starting: false });
   });
 
   test("refreshes the local model status once a llama answer is complete", async () => {
@@ -167,20 +175,52 @@ describe("the useVeaseChat composable", () => {
     await killLlamaServer();
 
     expect(calledSchemaIds()).toContain(KILL_SCHEMA_ID);
-    expect(llamaStatus.value).toStrictEqual({ running: false });
+    expect(llamaStatus.value).toStrictEqual({ running: false, starting: false });
+  });
+
+  test("polls the local model status while it starts, until the answer begins", async () => {
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+    mockLlamaStatus({ running: false, starting: true });
+    const { llamaStatus } = useVeaseChat();
+    await flushPromises();
+    appRequest.mockClear();
+
+    chatStatus.value = "submitted";
+    await flushPromises();
+    vi.advanceTimersByTime(LLAMA_STATUS_POLL_MILLISECONDS * 2);
+    await flushPromises();
+
+    expect(calledSchemaIds()).toStrictEqual([STATUS_SCHEMA_ID, STATUS_SCHEMA_ID]);
+    expect(llamaStatus.value).toStrictEqual({ running: false, starting: true });
+
+    chatStatus.value = "streaming";
+    await flushPromises();
+    appRequest.mockClear();
+    vi.advanceTimersByTime(LLAMA_STATUS_POLL_MILLISECONDS * 2);
+    await flushPromises();
+
+    expect(appRequest).not.toHaveBeenCalled();
+    vi.useRealTimers();
   });
 
   describe("when no user is logged in", () => {
-    test("disallows cloud AI and ignores provider toggles", async () => {
+    test("disallows cloud AI and ignores provider switches", async () => {
       const apiSpy = mockCloudApi(true);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(isCloudAiAllowed.value).toBe(false);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
       expect(apiSpy).not.toHaveBeenCalled();
+    });
+
+    test("explains that signing in is required for cloud AI", async () => {
+      const { cloudUnavailableReason, CLOUD_UNAVAILABLE_REASON } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBe(CLOUD_UNAVAILABLE_REASON.SIGNED_OUT);
     });
 
     test("sends chat requests without an authorization header", async () => {
@@ -215,13 +255,83 @@ describe("the useVeaseChat composable", () => {
 
     test("keeps the local provider when the account is not entitled to cloud AI", async () => {
       mockCloudApi(false);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(isCloudAiAllowed.value).toBe(false);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+    });
+
+    test("explains when the account is not entitled to cloud AI", async () => {
+      const { cloudUnavailableReason, CLOUD_UNAVAILABLE_REASON } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBe(CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED);
+    });
+
+    test("has no cloud unavailability reason for an entitled account", async () => {
+      mockCloudApi(true);
+      const { cloudUnavailableReason } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBeUndefined();
+    });
+
+    test("keeps the provider and reports an error when the gateway key cannot be fetched", async () => {
+      const apiSpy = mockCloudApi(true);
+      const { provider, providerError, isSwitchingProvider, setProvider, CHAT_PROVIDER } =
+        useVeaseChat();
+      await flushPromises();
+      apiSpy.mockRejectedValueOnce(new Error("network down"));
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+      expect(providerError.value).toBeTypeOf("string");
+      expect(isSwitchingProvider.value).toBe(false);
+    });
+
+    test("marks where the conversation continues with another provider", async () => {
+      mockCloudApi(true);
+      const { providerSwitches, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+      expect(providerSwitches.value).toStrictEqual([]);
+
+      chatMessages.value = [
+        { id: "user-1", role: "user", parts: [{ type: "text", text: "Hi" }] },
+        { id: "assistant-1", role: "assistant", parts: [{ type: "text", text: "Hello" }] },
+      ];
+      await setProvider(CHAT_PROVIDER.LLAMA);
+
+      expect(providerSwitches.value).toStrictEqual([
+        { afterMessageCount: 2, provider: CHAT_PROVIDER.LLAMA },
+      ]);
+    });
+
+    test("ignores provider switches while an answer is in progress", async () => {
+      mockCloudApi(true);
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+      chatStatus.value = "streaming";
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+    });
+
+    test("allows switching provider after a failed answer", async () => {
+      mockCloudApi(true);
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+      chatStatus.value = "error";
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
     });
 
     test("sends chat requests with a bearer token", async () => {
@@ -234,13 +344,13 @@ describe("the useVeaseChat composable", () => {
 
     test("sends the selected provider and its gateway key with each chat request", async () => {
       mockCloudApi(true);
-      const { toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
       const { body } = lastTransportOptions();
 
       expect(body()).toStrictEqual({ provider: CHAT_PROVIDER.LLAMA, gatewayApiKey: undefined });
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(body()).toStrictEqual({
         provider: CHAT_PROVIDER.GATEWAY,
@@ -248,16 +358,16 @@ describe("the useVeaseChat composable", () => {
       });
     });
 
-    test("toggles between providers, fetching the gateway key only once", async () => {
+    test("switches between providers, fetching the gateway key only once", async () => {
       const apiSpy = mockCloudApi(true);
-      const { provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.LLAMA);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
 
       const keyRequests = apiSpy.mock.calls.filter(([{ schema }]) => schema.$id === KEY_SCHEMA_ID);
@@ -266,9 +376,9 @@ describe("the useVeaseChat composable", () => {
 
     test("does not refresh the local model status after a gateway answer", async () => {
       mockCloudApi(true);
-      const { toggleProvider } = useVeaseChat();
+      const { setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       appRequest.mockClear();
 
       chatStatus.value = "streaming";
@@ -281,9 +391,9 @@ describe("the useVeaseChat composable", () => {
 
     test("falls back to the local provider and forgets the gateway key on logout", async () => {
       mockCloudApi(true);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       userRef.value = undefined;
       await flushPromises();

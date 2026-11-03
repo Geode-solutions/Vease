@@ -31,20 +31,33 @@ const USER_MESSAGE_ID = "msg-1";
 const ASSISTANT_MESSAGE_ID = "msg-2";
 const INPUT_TEXT = "Hello assistant";
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
+const CLOUD_UNAVAILABLE_REASON = {
+  SIGNED_OUT: "signed_out",
+  NOT_ENTITLED: "not_entitled",
+} as const;
+const CONVERSATION = [
+  { id: USER_MESSAGE_ID, role: "user", parts: [{ type: "text", text: "User prompt" }] },
+  {
+    id: ASSISTANT_MESSAGE_ID,
+    role: "assistant",
+    parts: [{ type: "text", text: "Assistant response" }],
+  },
+];
 
 interface ChatMockOptions {
   messages?: unknown[];
   status?: string;
   error?: { message: string };
   provider?: string;
-  isCloudAiAllowed?: boolean;
+  cloudUnavailableReason?: string;
   llamaRunning?: boolean;
+  llamaStarting?: boolean;
+  providerSwitches?: { afterMessageCount: number; provider: string }[];
 }
 
-function findButton(
-  wrapper: ReturnType<typeof mountWithPlugins>,
-  label: string,
-): ReturnType<ReturnType<typeof mountWithPlugins>["find"]> {
+type Wrapper = ReturnType<typeof mountWithPlugins>;
+
+function findButton(wrapper: Wrapper, label: string): ReturnType<Wrapper["find"]> {
   const button = wrapper.findAll("button").find((btn) => btn.text().includes(label));
   if (button === undefined) {
     throw new Error(`No button labelled "${label}"`);
@@ -54,48 +67,51 @@ function findButton(
 
 describe("the ChatPiP component", () => {
   const sendMessageMock = vi.fn<(payload: { text: string }) => void>();
-  const toggleProviderMock = vi.fn<() => Promise<void>>();
+  const regenerateMock = vi.fn<() => Promise<void>>();
+  const clearErrorMock = vi.fn<() => void>();
+  const setProviderMock = vi.fn<(provider: string) => Promise<void>>();
   const killLlamaServerMock = vi.fn<() => Promise<void>>();
 
-  function mockChat({
-    messages = [],
-    status = "ready",
-    error,
-    provider = CHAT_PROVIDER.LLAMA,
-    isCloudAiAllowed = false,
-    llamaRunning = false,
-  }: ChatMockOptions = {}): void {
+  function mockChat(options: ChatMockOptions = {}): void {
+    const {
+      messages = CONVERSATION,
+      status = "ready",
+      error,
+      provider = CHAT_PROVIDER.LLAMA,
+      llamaRunning = false,
+      llamaStarting = false,
+      providerSwitches = [],
+    } = options;
+    // An explicit undefined means that cloud AI is allowed
+    const cloudUnavailableReason =
+      "cloudUnavailableReason" in options
+        ? options.cloudUnavailableReason
+        : CLOUD_UNAVAILABLE_REASON.SIGNED_OUT;
     // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for casting a plain mock object to a composable's return type
     vi.mocked(useVeaseChat).mockReturnValue({
       messages: ref(messages),
       sendMessage: sendMessageMock,
+      regenerate: regenerateMock,
+      clearError: clearErrorMock,
       status: ref<string>(status),
       error: ref<{ message: string } | undefined>(error),
       provider: ref<string>(provider),
-      toggleProvider: toggleProviderMock,
-      isCloudAiAllowed: ref<boolean>(isCloudAiAllowed),
+      setProvider: setProviderMock,
+      isSwitchingProvider: ref(false),
+      providerError: ref<string | undefined>(undefined),
+      providerSwitches: ref(providerSwitches),
+      cloudUnavailableReason: computed(() => cloudUnavailableReason),
       CHAT_PROVIDER,
-      llamaStatus: ref<{ running: boolean }>({ running: llamaRunning }),
+      CLOUD_UNAVAILABLE_REASON,
+      llamaStatus: ref({ running: llamaRunning, starting: llamaStarting }),
       killLlamaServer: killLlamaServerMock,
     } as unknown as ReturnType<typeof useVeaseChat>);
   }
 
   beforeEach(() => {
     setupActivePinia();
-    mockChat({
-      messages: [
-        {
-          id: USER_MESSAGE_ID,
-          role: "user",
-          parts: [{ type: "text", text: "User prompt" }],
-        },
-        {
-          id: ASSISTANT_MESSAGE_ID,
-          role: "assistant",
-          parts: [{ type: "text", text: "Assistant response" }],
-        },
-      ],
-    });
+    vi.clearAllMocks();
+    mockChat();
   });
 
   test("renders the chat component header and messages", () => {
@@ -121,7 +137,7 @@ describe("the ChatPiP component", () => {
   test("submits input text when status is ready", async () => {
     const wrapper = mountWithPlugins(ChatPiP);
 
-    const input = wrapper.find("input");
+    const input = wrapper.find("form input");
     await input.setValue(INPUT_TEXT);
     const form = wrapper.find("form");
     await form.trigger("submit.prevent");
@@ -138,58 +154,158 @@ describe("the ChatPiP component", () => {
     expect(sendBtn.attributes("disabled")).toBeDefined();
   });
 
-  test("renders error message when chat composable emits error", () => {
-    const errorMessageText = "Failed to load chat response";
-    mockChat({ error: { message: errorMessageText } });
+  test("explains what the assistant can do before the first message", () => {
+    mockChat({ messages: [] });
 
     const wrapper = mountWithPlugins(ChatPiP);
 
-    expect(wrapper.text()).toContain(errorMessageText);
+    expect(wrapper.find('[data-testid="chatEmptyState"]').exists()).toBe(true);
+  });
+
+  test("shows the tools the assistant calls", () => {
+    mockChat({
+      messages: [
+        {
+          id: ASSISTANT_MESSAGE_ID,
+          role: "assistant",
+          parts: [
+            {
+              type: "dynamic-tool",
+              toolName: "get_info",
+              toolCallId: "call-1",
+              state: "output-available",
+              input: {},
+              output: {},
+            },
+          ],
+        },
+      ],
+    });
+
+    const wrapper = mountWithPlugins(ChatPiP);
+
+    expect(wrapper.find('[data-testid="chatToolCall"]').text()).toContain("get_info");
+  });
+
+  test("renders the error with a retry button", async () => {
+    const errorMessageText = "Failed to load chat response";
+    mockChat({ status: "error", error: { message: errorMessageText } });
+
+    const wrapper = mountWithPlugins(ChatPiP);
+
+    expect(wrapper.find('[data-testid="chatError"]').text()).toContain(errorMessageText);
+    await findButton(wrapper, "Retry").trigger("click");
+
+    expect(clearErrorMock).toHaveBeenCalledWith();
+    expect(regenerateMock).toHaveBeenCalledWith();
+  });
+
+  test("marks where the conversation continues with another provider", () => {
+    mockChat({ providerSwitches: [{ afterMessageCount: 2, provider: CHAT_PROVIDER.GATEWAY }] });
+
+    const wrapper = mountWithPlugins(ChatPiP);
+
+    expect(wrapper.find('[data-testid="chatProviderSwitchMarker"]').text()).toContain("Cloud");
+  });
+
+  describe("the provider switch", () => {
+    test("locks the cloud provider and explains why when signed out", async () => {
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      const cloudBtn = wrapper.find('[data-testid="chatProvider-gateway"]');
+      expect(cloudBtn.attributes("disabled")).toBeDefined();
+      expect(wrapper.find('[data-testid="cloudUnavailableMessage"]').text()).toContain("Sign in");
+      await cloudBtn.trigger("click");
+
+      expect(setProviderMock).not.toHaveBeenCalled();
+    });
+
+    test("explains when the account is not entitled to cloud AI", () => {
+      mockChat({ cloudUnavailableReason: CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED });
+
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      expect(wrapper.find('[data-testid="cloudUnavailableMessage"]').text()).toContain(
+        "authorized accounts",
+      );
+    });
+
+    test("selects the cloud provider when it is allowed", async () => {
+      mockChat({ cloudUnavailableReason: undefined });
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      expect(wrapper.find('[data-testid="cloudUnavailableMessage"]').exists()).toBe(false);
+      await wrapper.find('[data-testid="chatProvider-gateway"]').trigger("click");
+
+      expect(setProviderMock).toHaveBeenCalledWith(CHAT_PROVIDER.GATEWAY);
+    });
+
+    test("describes the selected provider", () => {
+      mockChat({ provider: CHAT_PROVIDER.GATEWAY, cloudUnavailableReason: undefined });
+
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      expect(wrapper.text()).toContain("messages are sent online");
+    });
   });
 
   describe("with the local provider", () => {
-    test("shows a stopped local model without a stop button", () => {
+    test("tells that the local model starts with the first message", () => {
       const wrapper = mountWithPlugins(ChatPiP);
 
-      expect(wrapper.text()).toContain("Local model stopped");
+      expect(wrapper.find('[data-testid="localModelStatus"]').text()).toContain(
+        "Starts with your first message",
+      );
       expect(wrapper.findAll("button").some((btn) => btn.text().includes("Stop"))).toBe(false);
+    });
+
+    test("explains the wait while the local model starts", () => {
+      mockChat({ status: "submitted", llamaStarting: true });
+
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      expect(wrapper.find('[data-testid="localModelStatus"]').text()).toContain(
+        "Starting local model",
+      );
+      expect(wrapper.find('[data-testid="chatPendingAnswer"]').text()).toContain(
+        "can take a few minutes",
+      );
     });
 
     test("stops a running local model when the stop button is clicked", async () => {
       mockChat({ llamaRunning: true });
       const wrapper = mountWithPlugins(ChatPiP);
 
-      expect(wrapper.text()).toContain("Local model running");
+      expect(wrapper.text()).toContain("Local model ready");
       await findButton(wrapper, "Stop").trigger("click");
 
       expect(killLlamaServerMock).toHaveBeenCalledWith(expect.any(MouseEvent));
     });
-
-    test("disables the provider toggle when cloud AI is not allowed", () => {
-      const wrapper = mountWithPlugins(ChatPiP);
-
-      expect(findButton(wrapper, "Local").attributes("disabled")).toBeDefined();
-    });
-
-    test("toggles the provider when cloud AI is allowed", async () => {
-      mockChat({ isCloudAiAllowed: true });
-      const wrapper = mountWithPlugins(ChatPiP);
-
-      const toggleBtn = findButton(wrapper, "Local");
-      expect(toggleBtn.attributes("disabled")).toBeUndefined();
-      await toggleBtn.trigger("click");
-
-      expect(toggleProviderMock).toHaveBeenCalledWith(expect.any(MouseEvent));
-    });
   });
 
   describe("with the cloud provider", () => {
-    test("shows the cloud label and hides the local model status", () => {
-      mockChat({ provider: CHAT_PROVIDER.GATEWAY, isCloudAiAllowed: true, llamaRunning: true });
+    test("hides the local model status", () => {
+      mockChat({
+        provider: CHAT_PROVIDER.GATEWAY,
+        cloudUnavailableReason: undefined,
+        llamaRunning: true,
+      });
+
       const wrapper = mountWithPlugins(ChatPiP);
 
-      expect(findButton(wrapper, "Cloud").exists()).toBe(true);
-      expect(wrapper.text()).not.toContain("Local model");
+      expect(wrapper.find('[data-testid="localModelStatus"]').exists()).toBe(false);
+    });
+
+    test("shows a plain pending answer", () => {
+      mockChat({
+        provider: CHAT_PROVIDER.GATEWAY,
+        cloudUnavailableReason: undefined,
+        status: "submitted",
+      });
+
+      const wrapper = mountWithPlugins(ChatPiP);
+
+      expect(wrapper.find('[data-testid="chatPendingAnswer"]').text()).toContain("Thinking");
     });
   });
 });
