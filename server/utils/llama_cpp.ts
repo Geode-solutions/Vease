@@ -241,4 +241,9 @@ function getLlamaStatus(): { running: false } | { running: true; port: number; a
   return { running: true, port: runningServer.port, apiKey: runningServer.apiKey };
 }
 
-export { getLlamaStatus, runLlamaServer, stopLlamaServer };
+// The first startup downloads the model, which can take minutes
+function isLlamaServerStarting(): boolean {
+  return startingServer !== undefined;
+}
+
+export { getLlamaStatus, isLlamaServerStarting, runLlamaServer, stopLlamaServer };
