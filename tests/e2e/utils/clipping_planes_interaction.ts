@@ -38,6 +38,16 @@ async function addClippingPlane(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
+async function removeClippingPlanes(window: Page): Promise<void> {
+  await window.getByTestId("removeClippingPlanesButton").click();
+  await waitForActionSettled(window);
+}
+
+async function resetClippingPlanes(window: Page): Promise<void> {
+  await window.getByTestId("resetClippingPlanesButton").click();
+  await waitForActionSettled(window);
+}
+
 async function toggleTargetAllVisible(window: Page): Promise<void> {
   await window.getByTestId("targetAllVisibleSwitch").getByRole("checkbox").click();
   await waitForActionSettled(window);
@@ -85,6 +95,8 @@ export {
   setPlaneOrigin,
   setPlaneNormal,
   addClippingPlane,
+  removeClippingPlanes,
+  resetClippingPlanes,
   toggleTargetAllVisible,
   selectClippingDatasets,
   toggleSlice,

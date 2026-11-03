@@ -37,6 +37,16 @@ describe("the UI store", () => {
       expect(uiStore.anyOverlayOpen).toBe(true);
     });
 
+    test("closeAllDrawers closes every overlay", () => {
+      const uiStore = useUIStore();
+      uiStore.setShowStepper(true);
+      uiStore.setShowCreateTools(true);
+      uiStore.setShowExtensions(true);
+      uiStore.setShowCrsAlign(true);
+      uiStore.closeAllDrawers();
+      expect(uiStore.anyOverlayOpen).toBe(false);
+    });
+
     test("toggleDrawer resets dropped files and toggles stepper", () => {
       const uiStore = useUIStore();
       const mockFile = new File(["dummy content"], "test.txt", { type: "text/plain" });
