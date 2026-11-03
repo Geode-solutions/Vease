@@ -122,7 +122,7 @@ describe("data manager content component", () => {
     };
     vi.mocked(useDataStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockDataStore as unknown as ReturnType<typeof useDataStore>,
+      mockDataStore,
     );
 
     const mockTreeviewStore = {
@@ -133,12 +133,12 @@ describe("data manager content component", () => {
     };
     vi.mocked(useTreeviewStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockTreeviewStore as unknown as ReturnType<typeof useTreeviewStore>,
+      mockTreeviewStore,
     );
 
     vi.mocked(getDataStyleStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      { setVisibility: mockSetVisibility } as unknown as ReturnType<typeof getDataStyleStore>,
+      { setVisibility: mockSetVisibility },
     );
 
     const mockHybridViewerStore = {
@@ -147,7 +147,7 @@ describe("data manager content component", () => {
     };
     vi.mocked(getHybridViewerStore).mockReturnValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-      mockHybridViewerStore as unknown as ReturnType<typeof getHybridViewerStore>,
+      mockHybridViewerStore,
     );
   });
 
