@@ -35,18 +35,16 @@ function eventWithFile(
   filename: string | undefined,
   fieldName = "file",
 ): ReturnType<typeof createMockEvent> {
-  const { contentType, body } = buildMultipartBody(
-    filename === undefined
-      ? []
-      : [
-          {
-            name: fieldName,
-            filename,
-            contentType: "application/octet-stream",
-            data: "binary-data",
-          },
-        ],
-  );
+  const parts: Parameters<typeof buildMultipartBody>[0] = [];
+  if (filename !== undefined) {
+    parts.push({
+      name: fieldName,
+      filename,
+      contentType: "application/octet-stream",
+      data: "binary-data",
+    });
+  }
+  const { contentType, body } = buildMultipartBody(parts);
   return createMockEvent({
     method: "POST",
     headers: { "content-type": contentType },

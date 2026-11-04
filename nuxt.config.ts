@@ -62,6 +62,8 @@ function nitroIgnoreConfig(): string[] {
   throw new Error(`Unknown mode provided: ${mode}`);
 }
 
+const DESKTOP_MODULES = ["nuxt-electron"];
+
 // oxlint-disable-next-line import/no-default-export
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -85,7 +87,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    ...(process.env.MODE === "DESKTOP" ? ["nuxt-electron"] : []),
+    ...(process.env.MODE === "DESKTOP" ? DESKTOP_MODULES : []),
     "vuetify-nuxt-module",
     [
       "@pinia/nuxt",

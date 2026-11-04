@@ -74,9 +74,10 @@ const testsAliasPlugin = {
     if (source.endsWith(".json") && source.startsWith(".") && importer !== undefined) {
       const projectRoot = process.cwd();
       const targetAbsPath = path.resolve(path.dirname(importer), source);
-      const importerAbsPath = path.isAbsolute(importer)
-        ? importer
-        : path.resolve(projectRoot, importer);
+      let importerAbsPath = importer;
+      if (!path.isAbsolute(importer)) {
+        importerAbsPath = path.resolve(projectRoot, importer);
+      }
       const outputFileAbsPath = path.resolve(
         projectRoot,
         ".build",

@@ -1,5 +1,11 @@
 <script setup lang="ts">
 // oxlint-disable max-dependencies
+import {
+  type AssignResponse,
+  buildAssignedEntries,
+  plausibleEntries,
+  useImplausibleWarning,
+} from "@vease/composables/crs_assign";
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
 import back_schemas, {
   type CRSList,
@@ -11,7 +17,6 @@ import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useLiveDataItem } from "@ogw_front/composables/live_data_item";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -34,7 +39,6 @@ const emit = defineEmits<{
 const backStore = useBackStore();
 const crsStore = useCrsStore();
 const dataStore = useDataStore();
-const feedbackStore = useFeedbackStore();
 const currentCrs = ref("");
 const selectedCrs = ref<CRSList | undefined>(undefined);
 const assigning = ref(false);
@@ -119,66 +123,15 @@ async function openAlignment(target: Pick<CrsItem, "id">): Promise<void> {
   UIStore.openCrsAlign(full);
 }
 
-// The label is kept: local coordinates usually need an alignment instead
-function warnImplausible(
-  implausibleItems: Pick<CrsItem, "id" | "name">[],
-  crs: CRSList | undefined,
-): void {
-  const [first] = implausibleItems;
-  if (!first) {
-    return;
-  }
-  const mismatch = `do not match ${formatCrsCode(crs)}. Georeference the data?`;
-  // Named when linked data were assigned too: the user must know which one to align
-  const description =
-    implausibleItems.length === 1 && first.id === itemId
-      ? `These coordinates ${mismatch}`
-      : `${implausibleItems.map(({ name }) => name).join(", ")}: these coordinates ${mismatch}`;
-  feedbackStore.add_warning(description, {
-    label: "Georeference",
-    onClick: () => {
-      void openAlignment(first);
-    },
-  });
-}
-
-interface AssignedEntry {
-  id: string;
-  name: string;
-  crs?: CRSList;
-  implausible?: boolean;
-}
-
-function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string; crs: CRSList }[] {
-  return entries.flatMap(({ id, name, crs, implausible }) =>
-    crs === undefined || implausible === true ? [] : [{ id, name, crs }],
-  );
-}
-
-interface AssignResponse {
-  crs?: CRSList;
-  implausible?: boolean;
-  linked?: { id: string; crs?: CRSList; implausible?: boolean }[];
-}
+const warnImplausible = useImplausibleWarning(openAlignment);
 
 async function onAssigned(
   assignedItem: Pick<CrsItem, "id" | "name">,
   linked: CrsItem[],
-  { crs, implausible, linked: linkedResponses }: AssignResponse,
+  response: AssignResponse,
   { guarded, projectCrs }: { guarded: boolean; projectCrs: CRSList | undefined },
 ): Promise<void> {
-  const entries = [
-    { id: assignedItem.id, name: assignedItem.name, crs, implausible },
-    ...linked.map(({ id: linkedId, name }) => {
-      const response = linkedResponses?.find((entry) => entry.id === linkedId);
-      return {
-        id: linkedId,
-        name,
-        crs: response?.crs,
-        implausible: response?.implausible,
-      };
-    }),
-  ];
+  const entries = buildAssignedEntries(assignedItem, linked, response);
   // A data left out by the check keeps its CRS: nothing to store
   for (const entry of entries.filter((assigned) => assigned.crs !== undefined)) {
     // oxlint-disable-next-line no-await-in-loop
@@ -186,7 +139,7 @@ async function onAssigned(
   }
   // The plausible data join the project CRS; the others keep it and get the warning
   await followProject(plausibleEntries(entries), projectCrs);
-  if (guarded && crs === undefined) {
+  if (guarded && response.crs === undefined) {
     // The user chooses between converting and relabeling anyway
     assignMismatch.value = formatCrsCode(selectedCrs.value);
     return;
@@ -195,7 +148,8 @@ async function onAssigned(
   emit("update:show", false);
   warnImplausible(
     entries.filter((entry) => entry.implausible === true && entry.crs !== undefined),
-    crs,
+    response.crs,
+    itemId,
   );
 }
 
@@ -218,8 +172,8 @@ async function handleAssign(anyway = false): Promise<void> {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
         params: {
           id: assignedItem.id,
-          ...(linkedDataIds.length > 0 ? { linked_ids: linkedDataIds } : {}),
-          ...(guarded ? { only_plausible: true } : {}),
+          ...(linkedDataIds.length > 0 && { linked_ids: linkedDataIds }),
+          ...(guarded && { only_plausible: true }),
           ...selectedCrs.value,
         },
       },
@@ -247,9 +201,11 @@ async function handleConvert(): Promise<void> {
   }
   converting.value = true;
   try {
-    await (scope.value === "all"
-      ? changeProjectCrs(selectedCrs.value)
-      : convertCrs(item.value, selectedCrs.value));
+    if (scope.value === "all") {
+      await changeProjectCrs(selectedCrs.value);
+    } else {
+      await convertCrs(item.value, selectedCrs.value);
+    }
     emit("converted");
     emit("update:show", false);
   } finally {
