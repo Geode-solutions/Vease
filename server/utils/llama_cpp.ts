@@ -1,4 +1,3 @@
-// oxlint-disable max-dependencies
 // Node imports
 import child_process from "node:child_process";
 // oxlint-disable-next-line eslint/no-duplicate-imports

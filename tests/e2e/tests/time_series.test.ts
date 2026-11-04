@@ -1,4 +1,3 @@
-// oxlint-disable max-dependencies
 // Third party imports
 import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
 import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
