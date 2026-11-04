@@ -1,80 +1,20 @@
+import type { CreateObjectToolOptions, UseCreateObjectToolReturn } from "./create_object_types";
+import {
+  type Point,
+  applyPastedCoordinates,
+  createEmptyPoint,
+  formatPoints,
+  sanitizePointInput,
+} from "./create_object_points";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { NewDataItem } from "@ogw_front/stores/data";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { onKeyStroke } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import type { ApiSchema } from "@vease/utils/external_stores";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import viewer_schemas, {
-  type ViewerPreviewPointsParams,
-} from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
-import type { NewDataItem } from "@ogw_front/stores/data";
-
-interface Point {
-  x: number | string;
-  y: number | string;
-  z: number | string;
-}
-
-interface CreateObjectToolOptions {
-  namePrefix: string;
-  minPoints: number;
-  schema: ApiSchema;
-  getAdditionalPayload?: (points: Point[]) => Record<string, unknown>;
-  previewStyle?: ViewerPreviewPointsParams["style"];
-  previewExtraSources?: unknown[];
-  getPreviewParams?: () => Record<string, unknown>;
-  onPickedPoint?: (point: Point, points: Point[]) => boolean | undefined;
-  onReset?: () => void;
-}
-
-interface FormattedPoint {
-  x: number;
-  y: number;
-  z: number;
-}
-
-function createEmptyPoint(): Point {
-  return { x: "", y: "", z: "" };
-}
-
-const COORDINATE_FIELDS: (keyof Point)[] = ["x", "y", "z"];
-
-function fillEmptyCoordinatesWithZero(point: Point, filledField: keyof Point): void {
-  for (const coordinate of COORDINATE_FIELDS) {
-    if (coordinate !== filledField && point[coordinate] === "") {
-      point[coordinate] = "0";
-    }
-  }
-}
-
-function formatPoints(pts: Point[]): FormattedPoint[] {
-  return pts.map((point) => ({
-    x: Number(String(point.x).replaceAll(",", ".")),
-    y: Number(String(point.y).replaceAll(",", ".")),
-    z: Number(String(point.z).replaceAll(",", ".")),
-  }));
-}
+import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 
 const preview_schema = viewer_schemas.opengeodeweb_viewer.viewer.preview_points;
-
-interface UseCreateObjectToolReturn {
-  name: Ref<string>;
-  points: Ref<Point[]>;
-  pickingActive: Ref<boolean>;
-  loading: Ref<boolean>;
-  validPoints: ComputedRef<Point[]>;
-  hasValidPoints: ComputedRef<boolean>;
-  validPointCount: ComputedRef<number>;
-  addPoint: () => void;
-  removePoint: (index: number) => void;
-  togglePickMode: () => void;
-  handleClose: () => void;
-  sanitizeInput: (value: unknown, index: number, field: keyof Point) => void;
-  handlePaste: (event: ClipboardEvent, index: number, field: keyof Point) => void;
-  createObject: () => Promise<void>;
-}
 
 // oxlint-disable-next-line max-lines-per-function, max-statements
 export function useCreateObjectTool({
@@ -210,14 +150,7 @@ export function useCreateObjectTool({
     if (!point) {
       return;
     }
-    const val = String(value)
-      .replaceAll(",", ".")
-      .replaceAll(/[^0-9eE+\-.]/gu, "");
-    const parts = val.split(/[eE]/u);
-    point[field] = parts.length > 2 ? `${parts[0]}e${parts[1]}` : val;
-    if (point[field] !== "") {
-      fillEmptyCoordinatesWithZero(point, field);
-    }
+    sanitizePointInput(point, value, field);
   }
 
   function handlePaste(event: ClipboardEvent, index: number, field: keyof Point): void {
@@ -230,16 +163,7 @@ export function useCreateObjectTool({
     if (!point) {
       return;
     }
-    if (coords.length >= 2) {
-      point.x = coords[0] ?? "";
-      point.y = coords[1] ?? "";
-      point.z = coords[2] ?? "0";
-    } else {
-      point[field] = coords[0] ?? "";
-      if (point[field] !== "") {
-        fillEmptyCoordinatesWithZero(point, field);
-      }
-    }
+    applyPastedCoordinates(point, field, coords);
     event.preventDefault();
   }
 
