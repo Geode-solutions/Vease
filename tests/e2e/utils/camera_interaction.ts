@@ -163,6 +163,8 @@ export {
   selectThresholdCellAttribute,
   selectThresholdBlockPolyhedron,
   selectThresholdSurfacePolygon,
+  selectThresholdCardAttribute,
+  addThreshold,
   setThresholdMinimum,
   resetThresholdFilter,
   removeThresholdFilter,
