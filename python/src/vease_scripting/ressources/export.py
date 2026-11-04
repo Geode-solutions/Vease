@@ -28,5 +28,5 @@ class ExportResource(Resource):
 
     # Vease runs on this machine and wants an absolute path to a file that does not exist yet
     def _export(self, kind: str, file_path: str, **params: Any) -> str:
-        response = self._post(kind=kind, file_path=os.path.abspath(file_path), **params)
+        response = self._post(kind, file_path=os.path.abspath(file_path), **params)
         return response["filePath"]

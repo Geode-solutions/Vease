@@ -49,8 +49,7 @@ class DataResource(Resource):
     ) -> dict[str, Any]:
         """Create a point set, a curve or a surface from [x, y, z] coordinates."""
         return self._post(
-            "manage",
-            action="create",
+            "create",
             name=name,
             kind=kind,
             points=[list(point) for point in points],
@@ -58,8 +57,8 @@ class DataResource(Resource):
         )
 
     def rename(self, id: str, name: str) -> dict[str, Any]:
-        return self._post("manage", action="rename", ids=[id], name=name)
+        return self._post("rename", id=id, name=name)
 
     def delete(self, ids: str | Sequence[str]) -> dict[str, Any]:
         """Delete one or several data; the ones that could not be deleted are listed in "failed"."""
-        return self._post("manage", action="delete", ids=id_list(ids))
+        return self._post("delete", ids=id_list(ids))

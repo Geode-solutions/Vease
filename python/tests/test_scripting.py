@@ -39,35 +39,62 @@ def test_body_camel_cases_keys_and_drops_unset_ones():
     }
 
 
-def test_style_set_accepts_one_id_or_several():
+def test_style_routes_mirror_the_data_style_store():
     client = FakeClient()
     style = StyleResource(client)
 
-    style.set(DATA_ID, target="polygons", color="#ff8800")
-    style.set([DATA_ID, OTHER_ID], target="polygons", coloring="random")
+    style.mesh.polygons.color(DATA_ID, "#ff8800")
+    style.mesh.points.size([DATA_ID, OTHER_ID], 4)
+    style.mesh.edges.width(DATA_ID, 2)
+    style.mesh.cells.coloring(DATA_ID, "textures")
+    style.model.visibility(DATA_ID, False)
+    style.model.surfaces.coloring(DATA_ID, "random", component_ids=["s1"])
 
-    assert {call[1] for call in client.calls} == {"/style/set"}
+    assert [call[1] for call in client.calls] == [
+        "/style/mesh/polygons/color",
+        "/style/mesh/points/size",
+        "/style/mesh/edges/width",
+        "/style/mesh/cells/coloring",
+        "/style/model/visibility",
+        "/style/model/surfaces/coloring",
+    ]
     assert [call[2]["json"] for call in client.calls] == [
-        {"ids": [DATA_ID], "target": "polygons", "color": "#ff8800"},
-        {"ids": [DATA_ID, OTHER_ID], "target": "polygons", "coloring": "random"},
+        {"ids": [DATA_ID], "color": "#ff8800"},
+        {"ids": [DATA_ID, OTHER_ID], "size": 4},
+        {"ids": [DATA_ID], "width": 2},
+        {"ids": [DATA_ID], "coloring": "textures"},
+        {"ids": [DATA_ID], "visibility": False},
+        {"ids": [DATA_ID], "componentIds": ["s1"], "coloring": "random"},
     ]
 
 
-def test_style_color_by_attribute_posts_to_set_style():
+def test_style_attribute_posts_to_its_location_route():
     client = FakeClient()
+    style = StyleResource(client)
 
-    StyleResource(client).color_by_attribute([DATA_ID], "depth", colormap="batlow", time_step=2)
+    style.mesh.polygons.vertex.attribute([DATA_ID], "depth", colormap="batlow", time_step=2)
+    style.model.blocks.polyhedron.attribute(DATA_ID, "rock", component_ids=["b1"])
 
-    assert client.calls[0][1] == "/style/set"
-    assert client.calls[0][2]["json"] == {
-        "ids": [DATA_ID],
-        "attribute": "depth",
-        "colormap": "batlow",
-        "timeStep": 2,
-    }
+    assert [call[1] for call in client.calls] == [
+        "/style/mesh/polygons/vertex/attribute",
+        "/style/model/blocks/polyhedron/attribute",
+    ]
+    assert [call[2]["json"] for call in client.calls] == [
+        {"ids": [DATA_ID], "name": "depth", "colormap": "batlow", "timeStep": 2},
+        {"ids": [DATA_ID], "componentIds": ["b1"], "name": "rock"},
+    ]
 
 
-def test_data_manage_actions():
+def test_style_rejects_component_ids_outside_model_components():
+    style = StyleResource(FakeClient())
+
+    with pytest.raises(TypeError, match="component_ids"):
+        style.mesh.polygons.color(DATA_ID, "#ff8800", component_ids=["s1"])
+    with pytest.raises(TypeError, match="component_ids"):
+        style.mesh.points.vertex.attribute(DATA_ID, "depth", component_ids=["s1"])
+
+
+def test_data_actions():
     client = FakeClient()
     data = DataResource(client)
 
@@ -75,18 +102,17 @@ def test_data_manage_actions():
     data.rename(DATA_ID, "renamed")
     data.delete([DATA_ID, OTHER_ID])
 
+    assert [call[1] for call in client.calls] == ["/data/create", "/data/rename", "/data/delete"]
     assert [call[2]["json"] for call in client.calls] == [
         {
-            "action": "create",
             "name": "loop",
             "kind": "curve",
             "points": [[0, 0, 0], [1, 0, 0], [1, 1, 0]],
             "closed": True,
         },
-        {"action": "rename", "ids": [DATA_ID], "name": "renamed"},
-        {"action": "delete", "ids": [DATA_ID, OTHER_ID]},
+        {"id": DATA_ID, "name": "renamed"},
+        {"ids": [DATA_ID, OTHER_ID]},
     ]
-    assert {call[1] for call in client.calls} == {"/data/manage"}
 
 
 def test_data_list_and_details():
@@ -119,31 +145,38 @@ def test_view_actions():
     view.focus(DATA_ID, component_ids=["s1"])
     view.scene(z_scaling=2, axes=True)
 
+    assert [call[1] for call in client.calls] == ["/view/orient", "/view/focus", "/view/scene"]
     assert [call[2]["json"] for call in client.calls] == [
-        {"action": "orient", "orientation": "zplus"},
-        {"action": "focus", "id": DATA_ID, "componentIds": ["s1"]},
-        {"action": "scene", "zScaling": 2, "axes": True},
+        {"orientation": "zplus"},
+        {"id": DATA_ID, "componentIds": ["s1"]},
+        {"zScaling": 2, "axes": True},
     ]
 
 
-def test_filter_apply_forwards_filter_params():
+def test_filters_post_to_their_own_route():
     client = FakeClient()
+    filters = FilterResource(client)
 
-    FilterResource(client).apply("threshold", DATA_ID, attribute="depth", minimum=0, maximum=10)
+    filters.threshold(DATA_ID, attribute="depth", minimum=0, maximum=10)
+    filters.shrink([DATA_ID, OTHER_ID], factor=0.5)
+    filters.clip(DATA_ID, remove=True)
 
-    assert client.calls[0][2]["json"] == {
-        "filter": "threshold",
-        "ids": [DATA_ID],
-        "attribute": "depth",
-        "minimum": 0,
-        "maximum": 10,
-    }
+    assert [call[1] for call in client.calls] == [
+        "/filter/threshold",
+        "/filter/shrink",
+        "/filter/clip",
+    ]
+    assert [call[2]["json"] for call in client.calls] == [
+        {"ids": [DATA_ID], "attribute": "depth", "minimum": 0, "maximum": 10},
+        {"ids": [DATA_ID, OTHER_ID], "factor": 0.5},
+        {"ids": [DATA_ID], "remove": True},
+    ]
 
 
-def test_filter_apply_rejects_an_unknown_parameter():
+def test_filter_rejects_an_unknown_parameter():
     with pytest.raises(TypeError):
         filter_resource = FilterResource(FakeClient())
-        filter_resource.apply("threshold", DATA_ID, minimun=0)  # type: ignore[call-arg]
+        filter_resource.threshold(DATA_ID, minimun=0)  # type: ignore[call-arg]
 
 
 def test_style_colormaps_reads_the_categories():
@@ -162,10 +195,9 @@ def test_export_sends_an_absolute_path():
 
     assert client.calls[0] == (
         "POST",
-        "/export",
+        "/export/screenshot",
         {
             "json": {
-                "kind": "screenshot",
                 "filePath": os.path.abspath("shot.png"),
                 "includeBackground": False,
             },
@@ -204,11 +236,11 @@ def test_client_unwraps_the_controller_response():
     payload = {"statusCode": 200, "response": {"ids": [DATA_ID]}}
     client = client_answering(FakeResponse(200, payload))
 
-    assert client.post("/style/set", json={}) == {"ids": [DATA_ID]}
+    assert client.post("/style/mesh/color", json={}) == {"ids": [DATA_ID]}
 
 
 def test_client_raises_the_controller_error():
     client = client_answering(FakeResponse(500, {"message": "No data with id"}))
 
     with pytest.raises(RuntimeError, match="No data with id"):
-        client.post("/style/set", json={})
+        client.post("/style/mesh/color", json={})
