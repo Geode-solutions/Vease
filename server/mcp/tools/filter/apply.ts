@@ -3,7 +3,7 @@ import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 import { z } from "zod";
 
 // Local imports
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
 import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
 import { dataId } from "@vease_server/mcp/utils/controller_schemas";
 
@@ -13,6 +13,14 @@ const vector = z.array(z.number()).length(VECTOR_LENGTH);
 const sliceAxis = z.union([z.literal(0), z.literal(1), z.literal(2)]);
 const slice = z.object({ axis: sliceAxis, index: z.number().int().min(0) });
 const plane = z.object({ origin: vector, normal: vector });
+
+const FILTER_PARAMS = {
+  shrink: ["factor"],
+  explode: ["factor"],
+  slice: ["slices"],
+  clip: ["planes"],
+  threshold: ["attribute", "location", "item", "minimum", "maximum"],
+} as const;
 
 export default defineMcpTool({
   name: "apply-filter",
@@ -44,15 +52,15 @@ export default defineMcpTool({
     minimum: z.number().optional().describe("Lower bound; for threshold"),
     maximum: z.number().optional().describe("Upper bound; for threshold"),
   },
-  handler: async (input) => {
-    const result = await callControllerApi("/api/controller/filter/apply", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+  handler: async ({ filter, ...params }) => {
+    const result = await callControllerAction(`/api/controller/filter/${filter}`, params, {
+      accepted: ["ids", "remove", ...FILTER_PARAMS[filter]],
+      context: `to ${filter}`,
       errorPrefix: "Error applying filter",
     });
     if (!result.ok) {
       return result.message;
     }
-    return `Filter applied: ${JSON.stringify(controllerResponse(result.payload))}`;
+    return `Filter applied (${filter}): ${JSON.stringify(controllerResponse(result.payload))}`;
   },
 });

@@ -1,25 +1,36 @@
-import { describe, expect, test, vi } from "vitest";
+// Third party imports
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+// Local imports
 import {
-  errResult,
-  fakeMcpRequestExtra,
-  identityMcpToolDefinition,
-  okResult,
-} from "@vease_tests/utils/server_utils";
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+  OTHER_SURFACE_ID,
+  SURFACE_ID,
+  THIRD_SURFACE_ID,
+  fakeController,
+  routeRequests,
+  surfaceDetails,
+} from "@vease_tests/unit/server/mcp/utils/style_fixtures";
+import { fakeMcpRequestExtra, identityMcpToolDefinition } from "@vease_tests/utils/server_utils";
+import {
+  jsonResponse,
+  stubControllerFetch,
+} from "@vease_tests/unit/server/mcp/tools/controller_fetch";
 import tool from "@vease_server/mcp/tools/style/set";
 
 vi.setConfig({ testTimeout: 10_000 });
-
-vi.mock(import("@vease_server/mcp/utils/controller_api"), () => ({
-  callControllerApi: vi.fn<typeof callControllerApi>(),
-}));
 
 // The real @nuxtjs/mcp-toolkit/server pulls in Nitro internals vitest can't resolve.
 vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
   defineMcpTool: identityMcpToolDefinition,
 }));
 
-const DATA_ID = "0123456789abcdef0123456789abcdef";
+const HEX = /^#[0-9a-f]{6}$/u;
+const SURFACE_IDS = [SURFACE_ID, OTHER_SURFACE_ID, THIRD_SURFACE_ID];
+const DETAILS = [
+  surfaceDetails(SURFACE_ID, "top"),
+  surfaceDetails(OTHER_SURFACE_ID, "middle"),
+  surfaceDetails(THIRD_SURFACE_ID, "bottom"),
+];
 
 type ToolInput = Parameters<typeof tool.handler>[0];
 
@@ -44,30 +55,105 @@ function toolInput(input: Pick<ToolInput, "ids"> & Partial<ToolInput>): ToolInpu
   };
 }
 
+function sentColor({ body }: { body: unknown }): string {
+  if (typeof body === "object" && body !== null && "color" in body) {
+    return String(body.color);
+  }
+  return "";
+}
+
 describe("set-style MCP tool", () => {
-  test("posts to /api/controller/style/set and reports success", async () => {
-    const input = toolInput({ ids: [DATA_ID], target: "polygons", color: "#ff8800" });
-    vi.mocked(callControllerApi).mockResolvedValue(
-      okResult({ statusCode: 200, response: { ids: [DATA_ID], applied: ["color"] } }),
-    );
+  const fetchMock = vi.fn<typeof fetch>();
 
-    const result = await tool.handler(input, fakeMcpRequestExtra());
-
-    expect(callControllerApi).toHaveBeenCalledWith("/api/controller/style/set", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-      errorPrefix: "Error setting style",
-    });
-    expect(result).toBe(`Style updated: {"ids":["${DATA_ID}"],"applied":["color"]}`);
+  beforeEach(() => {
+    stubControllerFetch(fetchMock);
+    fakeController(fetchMock, { details: DETAILS });
   });
 
-  test("forwards the controller error", async () => {
-    vi.mocked(callControllerApi).mockResolvedValue(
-      errResult("Error setting style: Nothing to change"),
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  test("gives each surface its own random color through the polygons color route", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: SURFACE_IDS, target: "polygons", coloring: "random" }),
+      fakeMcpRequestExtra(),
     );
 
-    const result = await tool.handler(toolInput({ ids: [DATA_ID] }), fakeMcpRequestExtra());
+    const requests = routeRequests(fetchMock);
+    const colors = requests.map((request) => sentColor(request));
 
-    expect(result).toBe("Error setting style: Nothing to change");
+    expect(requests).toStrictEqual(
+      SURFACE_IDS.map((id, index) => ({
+        route: "style/mesh/polygons/color",
+        body: { ids: [id], color: colors[index] },
+      })),
+    );
+    expect(colors.every((color) => HEX.test(color))).toBe(true);
+    expect(new Set(colors).size).toBe(SURFACE_IDS.length);
+    expect(result).toBe(
+      `Style updated: ${JSON.stringify({ ids: SURFACE_IDS, applied: ["coloring"] })}`,
+    );
+  });
+
+  test("colors by an attribute found without target", async () => {
+    const attributes = [{ id: SURFACE_ID, target: "polygons", location: "polygon", name: "depth" }];
+    fakeController(fetchMock, {
+      details: DETAILS,
+      routes: {
+        "style/mesh/polygons/polygon/attribute": ({ ids }) =>
+          jsonResponse({ statusCode: 200, response: { ids, attributes } }),
+      },
+    });
+
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], attribute: "depth", colormap: "batlow" }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(routeRequests(fetchMock)).toStrictEqual([
+      {
+        route: "style/mesh/polygons/polygon/attribute",
+        body: { ids: [SURFACE_ID], name: "depth", colormap: "batlow" },
+      },
+    ]);
+    expect(result).toBe(`Style updated: ${JSON.stringify({ ids: [SURFACE_ID], attributes })}`);
+  });
+
+  test("passes the controller error through", async () => {
+    fakeController(fetchMock, {
+      details: DETAILS,
+      routes: {
+        "style/mesh/edges/width": () =>
+          jsonResponse({ description: "Viewer not ready" }, { failed: true }),
+      },
+    });
+
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], target: "edges", width: 2 }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe("Error setting style: style/mesh/edges/width: Viewer not ready");
+  });
+
+  test("passes a plan error through", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], target: "polygons", size: 2 }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe("Error setting style: size cannot be set on mesh polygons");
+    expect(routeRequests(fetchMock)).toStrictEqual([]);
+  });
+
+  test("refuses a request error without calling the controller", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], colormap: "batlow" }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe("Error setting style: colormap: only for coloring by an attribute");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

@@ -131,6 +131,13 @@ async function resolveComponentIds(
   return componentIds;
 }
 
+// Geode component ids belong to one model: they cannot be spread over several data
+function checkComponentIdsOwner(ids: string[], componentIds: string[] | undefined): void {
+  if (componentIds !== undefined && ids.length > 1) {
+    throw new ControllerError("componentIds belong to one model: give a single id with them");
+  }
+}
+
 async function getDataItem(id: string): Promise<DataItem> {
   try {
     return await useDataStore().item(id);
@@ -174,6 +181,7 @@ export {
   MODEL_COMPONENT_TARGETS,
   MODEL_COMPONENT_TYPE,
   TARGET_PRIORITY,
+  checkComponentIdsOwner,
   fetchAttributes,
   getDataItem,
   isModelComponentTarget,

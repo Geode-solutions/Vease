@@ -1,4 +1,8 @@
-import { applyAttribute, setFeatureNoDataColor } from "@vease_tests/utils/data/helpers/attribute";
+import {
+  applyAttribute,
+  setFeatureNoDataColor,
+  setFeatureTimeStep,
+} from "@vease_tests/utils/data/helpers/attribute";
 import {
   cellAttributeType,
   edgeAttributeType,
@@ -7,6 +11,7 @@ import {
   vertexAttributeType,
 } from "@vease_tests/utils/constants";
 import type { Page } from "@playwright/test";
+import { showModelStyleOptions } from "@vease_tests/utils/data/model/style_menu";
 
 interface AttributeOptions {
   item?: number;
@@ -20,6 +25,7 @@ async function setModelPointsVertexAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -28,6 +34,7 @@ async function setModelPointsVertexAttribute(
 }
 
 async function setModelPointsVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await showModelStyleOptions(window);
   await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
@@ -36,6 +43,7 @@ async function setModelEdgesVertexAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -44,6 +52,7 @@ async function setModelEdgesVertexAttribute(
 }
 
 async function setModelEdgesVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await showModelStyleOptions(window);
   await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
@@ -52,6 +61,7 @@ async function setModelPolygonsVertexAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -60,6 +70,7 @@ async function setModelPolygonsVertexAttribute(
 }
 
 async function setModelPolygonsVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await showModelStyleOptions(window);
   await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
@@ -68,6 +79,7 @@ async function setModelPolyhedraVertexAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -76,6 +88,7 @@ async function setModelPolyhedraVertexAttribute(
 }
 
 async function setModelPolyhedraVertexAttributeNoDataColor(window: Page): Promise<void> {
+  await showModelStyleOptions(window);
   await setFeatureNoDataColor(window, "modelStyleMenu");
 }
 
@@ -84,6 +97,7 @@ async function setModelCellsVertexAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: vertexAttributeType,
     attributeName,
@@ -96,6 +110,7 @@ async function setModelEdgesEdgeAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: edgeAttributeType,
     attributeName,
@@ -108,6 +123,7 @@ async function setModelPolygonsPolygonAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: polygonAttributeType,
     attributeName,
@@ -120,6 +136,7 @@ async function setModelPolyhedraPolyhedronAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: polyhedronAttributeType,
     attributeName,
@@ -132,11 +149,17 @@ async function setModelCellsCellAttribute(
   attributeName: string,
   options: AttributeOptions = {},
 ): Promise<void> {
+  await showModelStyleOptions(window);
   await applyAttribute(window, "modelStyleMenu", {
     attributeType: cellAttributeType,
     attributeName,
     ...options,
   });
+}
+
+async function setModelTimeStep(window: Page, timeStep: number): Promise<void> {
+  await showModelStyleOptions(window);
+  await setFeatureTimeStep(window, window.getByTestId("modelStyleMenu"), timeStep);
 }
 
 export {
@@ -153,4 +176,5 @@ export {
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
+  setModelTimeStep,
 };

@@ -1,0 +1,24 @@
+{
+  "route": "/orient",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "orientation": {
+      "type": "string",
+      "enum": ["xplus", "xminus", "yplus", "yminus", "zplus", "zminus"]
+    }
+  },
+  "required": ["orientation"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

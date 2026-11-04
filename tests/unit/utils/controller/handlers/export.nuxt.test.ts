@@ -46,8 +46,13 @@ const BACK_URL = "http://back.test";
 const viewerStore = { request: vi.fn<(args: unknown) => Promise<unknown>>() };
 const appStore = { exportStores: vi.fn<() => Promise<unknown>>() };
 
-async function exportCommand(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers.export?.(params);
+async function exportScreenshot(params: Record<string, unknown>): Promise<unknown> {
+  const result = await controllerHandlers["export-screenshot"]?.(params);
+  return result;
+}
+
+async function exportProject(params: Record<string, unknown>): Promise<unknown> {
+  const result = await controllerHandlers["export-project"]?.(params);
   return result;
 }
 
@@ -65,7 +70,7 @@ function screenshotRequest(): unknown {
   return request;
 }
 
-describe("the export controller handler", () => {
+describe("the export controller handlers", () => {
   beforeEach(() => {
     fetchMock.mockResolvedValue({ statusCode: 200, response: {} });
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -84,12 +89,7 @@ describe("the export controller handler", () => {
 
   test("uploads the screenshot blob", async () => {
     await expect(
-      exportCommand({
-        kind: "screenshot",
-        format: "png",
-        includeBackground: false,
-        uploadUrl: UPLOAD_URL,
-      }),
+      exportScreenshot({ format: "png", includeBackground: false, uploadUrl: UPLOAD_URL }),
     ).resolves.toStrictEqual({});
 
     expect(viewerStore.request).toHaveBeenCalledWith({
@@ -108,18 +108,13 @@ describe("the export controller handler", () => {
   });
 
   test("keeps the background by default", async () => {
-    await exportCommand({ kind: "screenshot", format: "png", uploadUrl: UPLOAD_URL });
+    await exportScreenshot({ format: "png", uploadUrl: UPLOAD_URL });
 
     expect(screenshotRequest()).toMatchObject({ params: { include_background: true } });
   });
 
   test("forces the background for jpg", async () => {
-    await exportCommand({
-      kind: "screenshot",
-      format: "jpg",
-      includeBackground: false,
-      uploadUrl: UPLOAD_URL,
-    });
+    await exportScreenshot({ format: "jpg", includeBackground: false, uploadUrl: UPLOAD_URL });
 
     expect(screenshotRequest()).toMatchObject({
       params: { output_extension: "jpg", include_background: true },
@@ -129,9 +124,7 @@ describe("the export controller handler", () => {
   test("uploads the project archive without downloading it", async () => {
     const schema = back_schemas.opengeodeweb_back.export_project;
 
-    await expect(
-      exportCommand({ kind: "project", format: "vease", uploadUrl: UPLOAD_URL }),
-    ).resolves.toStrictEqual({});
+    await expect(exportProject({ uploadUrl: UPLOAD_URL })).resolves.toStrictEqual({});
 
     expect(fetchRaw).toHaveBeenCalledWith({
       route: schema.$id,
@@ -151,9 +144,9 @@ describe("the export controller handler", () => {
   test("rejects an unexpected project archive", async () => {
     vi.mocked(fetchRaw).mockResolvedValue({ unexpected: true });
 
-    await expect(
-      exportCommand({ kind: "project", format: "vease", uploadUrl: UPLOAD_URL }),
-    ).rejects.toThrow("Unexpected export_project response type");
+    await expect(exportProject({ uploadUrl: UPLOAD_URL })).rejects.toThrow(
+      "Unexpected export_project response type",
+    );
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });

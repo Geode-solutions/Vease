@@ -27,13 +27,14 @@ const XYZ_SQUARE = SQUARE.map(([x, y, z]) => ({ x, y, z }));
 
 const backStore = { request: vi.fn<(options: unknown) => Promise<unknown>>() };
 const hybridViewerStore = { remoteRender: vi.fn<() => Promise<void>>() };
+const ONCE = 1;
 
 async function createData(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["manage-data"]?.({ action: "create", ...params });
+  const result = await controllerHandlers["create-data"]?.(params);
   return result;
 }
 
-describe("manage-data creating data", () => {
+describe("the create-data controller handler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -110,13 +111,14 @@ describe("manage-data creating data", () => {
     await expect(
       createData({ kind: "curve", name: "bad", points: SQUARE.slice(0, 1) }),
     ).rejects.toThrow(/at least 2 points/u);
+    expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();
   });
 
-  test("imports the created item", async () => {
+  test("imports the created item and renders once", async () => {
     await expect(
       createData({ kind: "curve", name: "loop", points: SQUARE }),
-    ).resolves.toStrictEqual({ action: "create", ids: [ITEM.id], name: ITEM.name });
+    ).resolves.toStrictEqual({ id: ITEM.id, name: ITEM.name });
     expect(importItem).toHaveBeenCalledWith(ITEM);
-    expect(hybridViewerStore.remoteRender).toHaveBeenCalledWith();
+    expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
 });

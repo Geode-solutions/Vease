@@ -9,8 +9,7 @@ import {
   hexColor,
   styleTarget,
 } from "@vease_server/mcp/utils/controller_schemas";
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
-import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
+import { runStyle } from "@vease_server/mcp/utils/style_run";
 
 export default defineMcpTool({
   name: "set-style",
@@ -75,15 +74,8 @@ export default defineMcpTool({
       .optional()
       .describe("Hex color of the no-data values, #rrggbb or #rrggbbaa"),
   },
-  handler: async (input) => {
-    const result = await callControllerApi("/api/controller/style/set", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-      errorPrefix: "Error setting style",
-    });
-    if (!result.ok) {
-      return result.message;
-    }
-    return `Style updated: ${JSON.stringify(controllerResponse(result.payload))}`;
+  handler: async ({ ids, ...request }) => {
+    const result = await runStyle(ids, request);
+    return result;
   },
 });

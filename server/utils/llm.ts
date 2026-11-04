@@ -73,10 +73,10 @@ async function getChatModel({
   model?: string;
   gatewayApiKey?: string;
 } = {}): Promise<LanguageModelV4> {
-  const chatModel =
-    provider === CHAT_PROVIDER.GATEWAY
-      ? getGatewayChatModel(model, gatewayApiKey)
-      : await getLlamaChatModel(model);
+  if (provider === CHAT_PROVIDER.GATEWAY) {
+    return getGatewayChatModel(model, gatewayApiKey);
+  }
+  const chatModel = await getLlamaChatModel(model);
   return chatModel;
 }
 

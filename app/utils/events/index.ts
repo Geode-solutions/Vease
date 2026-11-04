@@ -30,9 +30,11 @@ function dispatchEvent(
 
   const handler = getEventHandler(eventName, handlerMap);
 
-  let payload: unknown = undefined;
+  let payload: unknown = rawPayload;
   try {
-    payload = typeof rawPayload === "string" ? (JSON.parse(rawPayload) as unknown) : rawPayload;
+    if (typeof rawPayload === "string") {
+      payload = JSON.parse(rawPayload) as unknown;
+    }
   } catch (error) {
     consola.error(`[${source}] Failed to parse payload for "${eventName}":`, rawPayload, error);
     return;

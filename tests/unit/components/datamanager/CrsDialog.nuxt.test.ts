@@ -1,0 +1,600 @@
+// oxlint-disable max-lines, max-dependencies
+import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
+import { type MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
+import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";
+import CrsDialog from "@vease/components/datamanager/CrsDialog.vue";
+import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
+import type { DataItem } from "@vease/types/data_item";
+import type GlassCard from "@ogw_front/components/GlassCard.vue";
+import { flushPromises } from "@vue/test-utils";
+import { getBackStore } from "@vease/utils/external_stores";
+import type { useCrs } from "@vease/composables/crs";
+import { useCrsStore } from "@ogw_front/stores/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
+
+vi.setConfig({ testTimeout: 10_000 });
+
+const FIRST_EVENT_INDEX = 0;
+const EXPECTED_EVENT_COUNT = 1;
+const EXPECTED_REQUEST_COUNT = 2;
+const CREATED_AT = "2026-01-01T00:00:00.000Z";
+
+// Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT
+const { LAMBERT, CRS_SELECTOR_STUB } = vi.hoisted(() => {
+  const lambert = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
+  return {
+    LAMBERT: lambert,
+    CRS_SELECTOR_STUB: {
+      name: "CrsSelector",
+      emits: ["update:modelValue"],
+      data: (): { crs: typeof lambert } => ({ crs: lambert }),
+      template:
+        "<button data-testid='crsSelectorStub' @click=\"$emit('update:modelValue', crs)\" />",
+    },
+  };
+});
+// Hoisted with vi.mock, so the useCrs mock can be checked by the tests
+const { USE_CRS_MOCK, convertCrs, changeProjectCrs, followProject } = vi.hoisted(() => {
+  const convertMock = vi.fn<(...args: unknown[]) => Promise<void>>();
+  const changeProjectMock = vi.fn<(...args: unknown[]) => Promise<void>>();
+  const followMock = vi.fn<(...args: unknown[]) => Promise<void>>();
+  return {
+    convertCrs: convertMock,
+    changeProjectCrs: changeProjectMock,
+    followProject: followMock,
+    USE_CRS_MOCK: (): unknown => ({
+      convertCrs: convertMock,
+      changeProjectCrs: changeProjectMock,
+      followProject: followMock,
+      alignCrs: vi.fn<() => Promise<void>>(),
+    }),
+  };
+});
+
+function click(selector: string): void {
+  document.body.querySelector(selector)?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+}
+
+function scopeValue(): string | undefined {
+  return document.body.querySelector<HTMLInputElement>('[data-testid="crsScope"] input:checked')
+    ?.value;
+}
+const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
+const UTM_RESPONSE = {
+  crs_name: "EPSG:32631",
+  crs_info: { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" },
+};
+
+const RESPONSES: Record<string, unknown> = {
+  "opengeodeweb_back/crs/active": { crs_name: "points" },
+  "opengeodeweb_back/crs/assign_geographic": {
+    crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" },
+  },
+};
+
+type BackStore = ReturnType<typeof getBackStore>;
+
+vi.mock(import("@vease/composables/crs"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+  useCrs: USE_CRS_MOCK as unknown as typeof useCrs,
+}));
+
+vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  default: GLASS_CARD_STUB as unknown as typeof GlassCard,
+}));
+
+vi.mock(import("@ogw_front/components/CrsSelector.vue"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of the component this suite touches
+  default: CRS_SELECTOR_STUB as unknown as typeof CrsSelector,
+}));
+
+const mockItem: DataItem = {
+  id: "item-1",
+  geode_id: "00000000-0000-0000-0000-000000000001",
+  name: "Points",
+  geode_object_type: "PointSet3D",
+  viewer_type: "mesh",
+  visible: true,
+  created_at: CREATED_AT,
+};
+
+function mockStoredItems(items: StoredItem[]): void {
+  vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref(items));
+  vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+}
+
+// The active crs is UTM (so Convert is offered); assign answers with the given response
+function stubRequests(assignResponse: unknown): MockInstance<BackStore["request"]> {
+  const responses: Record<string, unknown> = {
+    ...RESPONSES,
+    "opengeodeweb_back/crs/active": UTM_RESPONSE,
+    "opengeodeweb_back/crs/assign_geographic": assignResponse,
+  };
+  const request = vi
+    .spyOn(getBackStore(), "request")
+    .mockImplementation(async ({ schema }, callbacks) => {
+      const response = responses[schema.$id];
+      callbacks?.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+  followProject.mockReset().mockResolvedValue(undefined);
+  changeProjectCrs.mockReset().mockResolvedValue(undefined);
+  return request;
+}
+
+// Assigns LAMBERT, answered with the given plausibility, and returns the warnings shown
+async function assignAnswered(
+  implausible: boolean,
+): Promise<ReturnType<typeof useFeedbackStore>["feedbacks"]> {
+  vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+  const responses: Record<string, unknown> = {
+    ...RESPONSES,
+    "opengeodeweb_back/crs/assign_geographic": { crs: LAMBERT, implausible },
+  };
+  vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
+    const response = responses[schema.$id];
+    callbacks?.response_function?.(response);
+    await Promise.resolve();
+    return response;
+  });
+
+  const wrapper = mountWithPlugins(CrsDialog, {
+    props: { show: true, itemId: mockItem.id },
+    attachTo: document.body,
+  });
+  await flushPromises();
+  document.body
+    .querySelector('[data-testid="crsSelectorStub"]')
+    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushPromises();
+  document.body
+    .querySelector('[data-testid="crsAssignButton"]')
+    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  await flushPromises();
+  // The CRS is assigned anyway: the success feedback still follows
+  expect(wrapper.emitted("assigned")?.length).toBe(EXPECTED_EVENT_COUNT);
+  wrapper.unmount();
+  return useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
+}
+
+// The dialog reads the data it edits live, by its id
+let storedItem = ref<DataItem>(mockItem);
+
+describe("crs dialog component", () => {
+  beforeEach(() => {
+    setupActivePinia();
+    storedItem = ref<DataItem>(mockItem);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- the stored item of the dialog, shared by the suite
+    vi.spyOn(useDataStore(), "refItem").mockImplementation(() => storedItem as never);
+  });
+
+  // The live query starts with an empty placeholder: no crs list is asked for an unknown type
+  test("waits for the stored item before showing the crs list", async () => {
+    stubRequests({});
+    // oxlint-disable-next-line no-unsafe-type-assertion -- the placeholder of the data store
+    storedItem.value = {} as DataItem;
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsSelectorStub"]')).toBeNull();
+    storedItem.value = mockItem;
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsSelectorStub"]')).not.toBeNull();
+    wrapper.unmount();
+  });
+
+  test("shows current crs and assigns the selected one", async () => {
+    vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    const request = vi
+      .spyOn(getBackStore(), "request")
+      .mockImplementation(async ({ schema }, callbacks) => {
+        const response = RESPONSES[schema.$id];
+        callbacks?.response_function?.(response);
+        await Promise.resolve();
+        return response;
+      });
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsCurrentValue"]')?.textContent).toContain(
+      "None (local coordinates)",
+    );
+
+    const assignButton = document.body.querySelector<HTMLButtonElement>(
+      '[data-testid="crsAssignButton"]',
+    );
+    expect(assignButton?.disabled).toBe(true);
+
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    assignButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
+      expect.anything(),
+    );
+    expect(wrapper.emitted("assigned")?.length).toBe(EXPECTED_EVENT_COUNT);
+    expect(wrapper.emitted("update:show")?.[FIRST_EVENT_INDEX]).toStrictEqual([false]);
+    wrapper.unmount();
+  });
+
+  test("ignores further clicks while assigning", async () => {
+    const request = vi
+      .spyOn(getBackStore(), "request")
+      .mockImplementationOnce(async (_request, callbacks) => {
+        callbacks?.response_function?.({ crs_name: "points" });
+        await Promise.resolve();
+        return { crs_name: "points" };
+      })
+      // The assign save is still running when the user clicks again
+      .mockReturnValueOnce(Promise.withResolvers<never>().promise);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    const assignButton = document.body.querySelector<HTMLButtonElement>(
+      '[data-testid="crsAssignButton"]',
+    );
+    assignButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    assignButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(request).toHaveBeenCalledTimes(EXPECTED_REQUEST_COUNT);
+    expect(assignButton?.disabled).toBe(true);
+    wrapper.unmount();
+  });
+
+  test("shows a loader while the current crs loads", async () => {
+    vi.spyOn(getBackStore(), "request").mockReturnValue(Promise.withResolvers<never>().promise);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsCurrentLoading"]')).not.toBeNull();
+    // The mode depends on the current crs: neither is offered before it is known
+    expect(document.body.querySelector('[data-testid="crsModeAlign"]')).toBeNull();
+    expect(document.body.querySelector('[data-testid="crsModeConvert"]')).toBeNull();
+    wrapper.unmount();
+  });
+
+  test("converts a geographic data to the selected crs", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    convertCrs.mockReset().mockResolvedValue(undefined);
+    changeProjectCrs.mockReset().mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    document.body
+      .querySelector('[data-testid="crsModeConvert"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsConvertButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    // Converting is changing the project crs by default: every data follows
+    expect(changeProjectCrs).toHaveBeenCalledWith(LAMBERT);
+    expect(convertCrs).not.toHaveBeenCalled();
+    expect(wrapper.emitted("converted")?.length).toBe(EXPECTED_EVENT_COUNT);
+    wrapper.unmount();
+  });
+
+  test("offers alignment for data without crs", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
+      const response = RESPONSES[schema.$id];
+      callbacks?.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsModeConvert"]')).toBeNull();
+    document.body
+      .querySelector('[data-testid="crsModeAlign"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsStartAlignButton"]')).not.toBeNull();
+    wrapper.unmount();
+  });
+
+  test("offers re-alignment for georeferenced data", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(document.body.querySelector('[data-testid="crsModeAlign"]')?.textContent).toContain(
+      "Georeference",
+    );
+    wrapper.unmount();
+  });
+
+  test("offers to align when the assigned crs does not match the coordinates", async () => {
+    const warnings = await assignAnswered(true);
+
+    expect(warnings).toHaveLength(EXPECTED_EVENT_COUNT);
+    expect(warnings[FIRST_EVENT_INDEX]?.description).toBe(
+      "These coordinates do not match EPSG:2154. Georeference the data?",
+    );
+    expect(warnings[FIRST_EVENT_INDEX]?.action?.label).toBe("Georeference");
+  });
+
+  test("does not warn when the assigned crs matches the coordinates", async () => {
+    const warnings = await assignAnswered(false);
+
+    expect(warnings).toStrictEqual([]);
+  });
+
+  test("refreshes the stored crs from the file", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(updateItem).toHaveBeenCalledWith("item-1", { crs: UTM_RESPONSE.crs_info });
+    wrapper.unmount();
+  });
+
+  test("does not rewrite a stored crs that did not change", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
+      callbacks?.response_function?.(UTM_RESPONSE);
+      await Promise.resolve();
+      return UTM_RESPONSE;
+    });
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    storedItem.value = { ...mockItem, crs: UTM_RESPONSE.crs_info };
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    expect(updateItem).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  test("stores the assigned crs", async () => {
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
+      const response = RESPONSES[schema.$id];
+      callbacks?.response_function?.(response);
+      await Promise.resolve();
+      return response;
+    });
+    const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsAssignButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+
+    expect(updateItem).toHaveBeenLastCalledWith("item-1", { crs: LAMBERT });
+    wrapper.unmount();
+  });
+
+  test("a georeferenced data opens on convert; the scope follows the mode", async () => {
+    mockStoredItems([]);
+    stubRequests({});
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    // Changing the crs of a georeferenced data is reprojecting it
+    expect(document.body.querySelector('[data-testid="crsConvertButton"]')).not.toBeNull();
+    expect(scopeValue()).toBe("all");
+    click('[data-testid="crsModeAssign"]');
+    await flushPromises();
+    expect(scopeValue()).toBe("one");
+    click('[data-testid="crsModeConvert"]');
+    await flushPromises();
+    expect(scopeValue()).toBe("all");
+    wrapper.unmount();
+  });
+
+  test("assigning a crs that does not fit a georeferenced data asks first", async () => {
+    mockStoredItems([]);
+    const request = stubRequests({ implausible: true });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+    // Checked first: nothing is relabeled, the dialog stays open
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", only_plausible: true, ...LAMBERT } }),
+      expect.anything(),
+    );
+    expect(wrapper.emitted("update:show")).toBeUndefined();
+    expect(document.body.querySelector('[data-testid="crsAssignMismatch"]')?.textContent).toContain(
+      "These coordinates do not fit EPSG:2154. Did you mean Convert?",
+    );
+    click('[data-testid="crsAssignAnyway"]');
+    await flushPromises();
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
+      expect.anything(),
+    );
+    wrapper.unmount();
+  });
+
+  test("the mismatch offers to convert instead", async () => {
+    mockStoredItems([]);
+    stubRequests({ implausible: true });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+    click('[data-testid="crsConvertInstead"]');
+    await flushPromises();
+    expect(document.body.querySelector('[data-testid="crsConvertButton"]')).not.toBeNull();
+    expect(document.body.querySelector('[data-testid="crsAssignMismatch"]')).toBeNull();
+    wrapper.unmount();
+  });
+
+  test("assigns this data only, then makes it follow the project", async () => {
+    mockStoredItems([]);
+    useCrsStore().setProjectCrs(LAMBERT);
+    const request = stubRequests({ crs: UTM, implausible: false });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({ params: { id: "item-1", only_plausible: true, ...LAMBERT } }),
+      expect.anything(),
+    );
+    // The project crs taken before the assign: the project may follow the data meanwhile
+    expect(followProject).toHaveBeenCalledWith(
+      [{ id: "item-1", name: "Points", crs: UTM }],
+      LAMBERT,
+    );
+    wrapper.unmount();
+  });
+
+  test("assigns all data in the same crs state; only the plausible ones follow the project", async () => {
+    const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
+    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
+    const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
+    mockStoredItems([stored, wells, georeferenced]);
+    const request = stubRequests({
+      crs: LAMBERT,
+      implausible: false,
+      linked: [{ id: "item-2", crs: LAMBERT, implausible: true }],
+    });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeAssign"]');
+    await flushPromises();
+    click('[data-testid="crsScope-all"] input');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+
+    // Data already in another CRS is not in the same state
+    expect(request).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        params: { id: "item-1", linked_ids: ["item-2"], only_plausible: true, ...LAMBERT },
+      }),
+      expect.anything(),
+    );
+    // The map is the only georeferenced data: the project is in its crs
+    expect(followProject).toHaveBeenCalledWith(
+      [{ id: "item-1", name: "Points", crs: LAMBERT }],
+      LAMBERT,
+    );
+    const warnings = useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
+    expect(warnings.map((warning) => warning.description)).toStrictEqual([
+      "Wells: these coordinates do not match EPSG:2154. Georeference the data?",
+    ]);
+    wrapper.unmount();
+  });
+
+  test("converts this data only", async () => {
+    mockStoredItems([]);
+    stubRequests({});
+    convertCrs.mockReset().mockResolvedValue(undefined);
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    click('[data-testid="crsModeConvert"]');
+    await flushPromises();
+    click('[data-testid="crsScope-one"] input');
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsConvertButton"]');
+    await flushPromises();
+
+    expect(convertCrs).toHaveBeenCalledWith(mockItem, LAMBERT);
+    expect(changeProjectCrs).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+});

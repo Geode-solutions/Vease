@@ -5,8 +5,8 @@ import { importItem } from "@ogw_front/utils/import_workflow";
 
 // Local imports
 import { curveEdges, singlePolygon } from "@vease/utils/create_geometry";
+import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
-import { getBackStore } from "@vease/utils/external_stores";
 
 type DataKind = "point" | "curve" | "surface";
 type Coordinates = [number, number, number];
@@ -42,13 +42,9 @@ function additionalParams(
   return {};
 }
 
-// Renders nothing: manage-data renders once it is done
-async function createData({
-  kind,
-  name,
-  points,
-  closed = false,
-}: CreateDataParams): Promise<{ id: string; name: string }> {
+async function createData(params: unknown): Promise<{ id: string; name: string }> {
+  // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
+  const { kind, name, points, closed = false } = params as CreateDataParams;
   if (points.length < MIN_POINTS[kind]) {
     throw new ControllerError(`A ${kind} needs at least ${MIN_POINTS[kind]} points`);
   }
@@ -63,7 +59,8 @@ async function createData({
   // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem.
   const created = item as NewDataItem;
   await importItem(created);
+  await getHybridViewerStore().remoteRender();
   return { id: created.id, name: created.name ?? name };
 }
 
-export { type CreateDataParams, type DataKind, createData };
+export { createData };

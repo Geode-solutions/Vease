@@ -8,6 +8,7 @@ import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_act
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
 import type { DataItem } from "@vease/types/data_item";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -15,6 +16,7 @@ const { compact = false } = defineProps<{ compact?: boolean }>();
 
 const UIStore = useUIStore();
 const dataStore = useDataStore();
+const crsStore = useCrsStore();
 const hybridViewerStore = getHybridViewerStore();
 
 const search = ref("");
@@ -183,6 +185,7 @@ useEventListener(document, "keydown", (event) => {
               @focus-camera="focusCamera"
               @isolate="isolateItem"
               @rename="openRenameDialog"
+              @crs="crsStore.requestCrsEdit"
               @delete="confirmDelete"
               @delete-selected="deleteSelectedDialog = true"
             />

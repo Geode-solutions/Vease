@@ -13,10 +13,11 @@ describe("the controller targets", () => {
     const getMeshComponentGeodeIds = vi
       .fn<(modelId: string, type: string) => Promise<string[]>>()
       .mockResolvedValue(["s1", "s2"]);
-    // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store
+    /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking a partial store */
     vi.mocked(useDataStore).mockReturnValue({
       getMeshComponentGeodeIds,
     } as unknown as ReturnType<typeof useDataStore>);
+    /* oxlint-enable no-unsafe-type-assertion */
 
     await expect(modelComponentGeodeIds("model-1", "surfaces")).resolves.toStrictEqual([
       "s1",

@@ -100,12 +100,12 @@ const hybridViewerStore = {
 };
 const styleStore = { getStyle: vi.fn<(id: string) => Record<string, unknown>>() };
 
-async function applyFilter(params: Record<string, unknown>): Promise<unknown> {
-  const result = await controllerHandlers["apply-filter"]?.(params);
+async function applyFilter(command: string, params: Record<string, unknown>): Promise<unknown> {
+  const result = await controllerHandlers[command]?.(params);
   return result;
 }
 
-describe("the apply-filter controller handler", () => {
+describe("the filter controller handlers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     /* oxlint-disable no-unsafe-type-assertion -- established pattern for mocking partial stores */
@@ -143,8 +143,7 @@ describe("the apply-filter controller handler", () => {
   });
 
   test("shrinks with the default factor", async () => {
-    await expect(applyFilter({ filter: "shrink", ids: [MESH.id] })).resolves.toStrictEqual({
-      filter: "shrink",
+    await expect(applyFilter("apply-shrink", { ids: [MESH.id] })).resolves.toStrictEqual({
       ids: [MESH.id],
       factor: DEFAULT_SHRINK_FACTOR,
     });
@@ -153,21 +152,21 @@ describe("the apply-filter controller handler", () => {
   });
 
   test("shrinks several data with the given factor", async () => {
-    await applyFilter({ filter: "shrink", ids: [MESH.id, OTHER.id], factor: SHRINK_FACTOR });
+    await applyFilter("apply-shrink", { ids: [MESH.id, OTHER.id], factor: SHRINK_FACTOR });
 
     expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.id, OTHER.id], SHRINK_FACTOR);
   });
 
   test("removing a shrink restores factor 1", async () => {
-    await applyFilter({ filter: "shrink", ids: [MESH.id], remove: true });
+    await applyFilter("apply-shrink", { ids: [MESH.id], remove: true });
 
     expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.id], 1);
   });
 
   test("explodes with the default factor, or restores 0 when removing", async () => {
-    await applyFilter({ filter: "explode", ids: [MESH.id] });
-    await applyFilter({ filter: "explode", ids: [MESH.id], remove: true });
-    await applyFilter({ filter: "explode", ids: [MESH.id], factor: EXPLODE_FACTOR });
+    await applyFilter("apply-explode", { ids: [MESH.id] });
+    await applyFilter("apply-explode", { ids: [MESH.id], remove: true });
+    await applyFilter("apply-explode", { ids: [MESH.id], factor: EXPLODE_FACTOR });
 
     expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(
       1,
@@ -181,8 +180,7 @@ describe("the apply-filter controller handler", () => {
   test("slices and reports the maximum indices", async () => {
     const slices = [{ axis: 2, index: 1 }];
 
-    await expect(applyFilter({ filter: "slice", ids: [MESH.id], slices })).resolves.toStrictEqual({
-      filter: "slice",
+    await expect(applyFilter("apply-slice", { ids: [MESH.id], slices })).resolves.toStrictEqual({
       ids: [MESH.id],
       maxIndices: MAX_INDICES,
     });
@@ -190,32 +188,31 @@ describe("the apply-filter controller handler", () => {
   });
 
   test("slices need slices unless removing", async () => {
-    await expect(applyFilter({ filter: "slice", ids: [MESH.id] })).rejects.toThrow(
+    await expect(applyFilter("apply-slice", { ids: [MESH.id] })).rejects.toThrow(
       "slice needs slices",
     );
     expect(hybridViewerStore.setSlice).not.toHaveBeenCalled();
 
-    await applyFilter({ filter: "slice", ids: [MESH.id], remove: true });
+    await applyFilter("apply-slice", { ids: [MESH.id], remove: true });
 
     expect(hybridViewerStore.setSlice).toHaveBeenCalledWith([MESH.id], []);
   });
 
   test("clips with planes, or clears them when removing", async () => {
-    await applyFilter({ filter: "clip", ids: [MESH.id], planes: PLANES });
-    await applyFilter({ filter: "clip", ids: [MESH.id], remove: true });
+    await applyFilter("apply-clip", { ids: [MESH.id], planes: PLANES });
+    await applyFilter("apply-clip", { ids: [MESH.id], remove: true });
 
     expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(1, [MESH.id], PLANES);
     expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(2, [MESH.id], []);
-    await expect(applyFilter({ filter: "clip", ids: [MESH.id] })).rejects.toThrow(
+    await expect(applyFilter("apply-clip", { ids: [MESH.id] })).rejects.toThrow(
       "clip needs planes",
     );
   });
 
   test("thresholds with the attribute range by default", async () => {
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth" }),
     ).resolves.toStrictEqual({
-      filter: "threshold",
       ids: [MESH.id],
       attribute: "depth",
       location: "polygon",
@@ -235,8 +232,7 @@ describe("the apply-filter controller handler", () => {
   test("thresholds a vertex attribute with the given range", async () => {
     request.mockResolvedValue({ attributes: [DEPTH] });
 
-    await applyFilter({
-      filter: "threshold",
+    await applyFilter("apply-threshold", {
       ids: [MESH.id],
       attribute: "depth",
       location: "point",
@@ -259,7 +255,7 @@ describe("the apply-filter controller handler", () => {
       request.mockResolvedValue({ attributes: [DEPTH] });
 
       await expect(
-        applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", location }),
+        applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location }),
       ).resolves.toMatchObject({ location: "vertex" });
       expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
         [MESH.id],
@@ -272,7 +268,7 @@ describe("the apply-filter controller handler", () => {
     request.mockResolvedValue({ attributes: [DEPTH] });
 
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", location: "polygon" }),
+      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location: "polygon" }),
     ).resolves.toMatchObject({ location: "polygon" });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id],
@@ -287,12 +283,12 @@ describe("the apply-filter controller handler", () => {
     });
 
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", location: "cell" }),
+      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location: "cell" }),
     ).rejects.toThrow('Attribute "depth" not found');
   });
 
   test("thresholds a time series on its first step array", async () => {
-    await applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "pressure" });
+    await applyFilter("apply-threshold", { ids: [MESH.id], attribute: "pressure" });
 
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id],
@@ -304,7 +300,7 @@ describe("the apply-filter controller handler", () => {
     request.mockImplementation(depthUpToPerData);
 
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
     ).resolves.toMatchObject({ minimum: 0, maximum: OTHER_DEPTH_MAX });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id, OTHER.id],
@@ -316,7 +312,7 @@ describe("the apply-filter controller handler", () => {
     request.mockImplementation(depthOnMeshOnly);
 
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
     ).rejects.toThrow(`Attribute "depth" not found on "${OTHER.name}"`);
     expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
@@ -325,31 +321,30 @@ describe("the apply-filter controller handler", () => {
     request.mockImplementation(depthOnPolygonsOfMeshAndVerticesOfOther);
 
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
     ).rejects.toThrow('"depth" is on points for some data and on cells for others');
     expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
 
   test("threshold needs an attribute unless removing, and removing clears it", async () => {
-    await expect(applyFilter({ filter: "threshold", ids: [MESH.id] })).rejects.toThrow(
+    await expect(applyFilter("apply-threshold", { ids: [MESH.id] })).rejects.toThrow(
       "threshold needs attribute",
     );
 
-    await applyFilter({ filter: "threshold", ids: [MESH.id], remove: true });
+    await applyFilter("apply-threshold", { ids: [MESH.id], remove: true });
 
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id]);
   });
 
   test("threshold needs both minimum and maximum, or neither", async () => {
     await expect(
-      applyFilter({ filter: "threshold", ids: [MESH.id], attribute: "depth", minimum: 1 }),
+      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", minimum: 1 }),
     ).rejects.toThrow("Give both minimum and maximum");
   });
 
   test("threshold rejects a minimum greater than the maximum", async () => {
     await expect(
-      applyFilter({
-        filter: "threshold",
+      applyFilter("apply-threshold", {
         ids: [MESH.id],
         attribute: "depth",
         minimum: CUSTOM_MAX,
@@ -360,7 +355,7 @@ describe("the apply-filter controller handler", () => {
   });
 
   test("rejects an unknown id", async () => {
-    await expect(applyFilter({ filter: "shrink", ids: [MESH.id, "nope"] })).rejects.toThrow(
+    await expect(applyFilter("apply-shrink", { ids: [MESH.id, "nope"] })).rejects.toThrow(
       'No data with id "nope"',
     );
     expect(hybridViewerStore.setShrink).not.toHaveBeenCalled();

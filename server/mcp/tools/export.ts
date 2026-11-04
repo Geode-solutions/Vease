@@ -3,7 +3,12 @@ import { defineMcpTool } from "@nuxtjs/mcp-toolkit/server";
 import { z } from "zod";
 
 // Local imports
-import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
+import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
+
+const ACCEPTED = {
+  screenshot: ["filePath", "includeBackground"],
+  project: ["filePath"],
+} as const;
 
 export default defineMcpTool({
   name: "export",
@@ -26,15 +31,15 @@ export default defineMcpTool({
       .optional()
       .describe("Keep the viewer background in a .png screenshot; defaults to true"),
   },
-  handler: async (input) => {
-    const result = await callControllerApi("/api/controller/export", {
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
+  handler: async ({ kind, ...params }) => {
+    const result = await callControllerAction(`/api/controller/export/${kind}`, params, {
+      accepted: ACCEPTED[kind],
+      context: `to a ${kind} export`,
       errorPrefix: "Error exporting",
     });
     if (!result.ok) {
       return result.message;
     }
-    return `Exported the ${input.kind} to ${input.filePath}`;
+    return `Exported the ${kind} to ${params.filePath}`;
   },
 });
