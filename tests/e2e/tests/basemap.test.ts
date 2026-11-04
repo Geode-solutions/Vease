@@ -11,6 +11,7 @@ import {
   toggleBasemap,
   toggleBasemapCrop,
   toggleBasemapMap,
+  zoomAndRest,
 } from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
@@ -33,6 +34,7 @@ const BREP_FILE = "test.og_brep";
 const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const EXPLODE_FACTOR = 0.5;
 const BASEMAP_OPACITY = 50;
+const ZOOM_STEPS = 8;
 
 let tileServer: TileServer | undefined = undefined;
 
@@ -75,6 +77,16 @@ test("assign the selected crs", async ({ window }) => {
 // No action: the basemap shows as soon as the project has a CRS
 test("the satellite basemap shows on its own", async ({ window }) => {
   await expect(window.getByTestId("basemapAttribution")).toContainText("EOX");
+  await moveMouseOutOfTheWay(window);
+});
+
+test("zooming in sharpens the visible area of the map", async ({ window }) => {
+  await zoomAndRest(window, ZOOM_STEPS);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("back to the whole model", async ({ window }) => {
+  await resetCamera(window);
   await moveMouseOutOfTheWay(window);
 });
 

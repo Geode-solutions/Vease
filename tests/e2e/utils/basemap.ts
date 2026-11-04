@@ -11,8 +11,12 @@ import type { Locator, Page } from "@playwright/test";
 
 // Local imports
 import { expandGeodeObjectTypeInTree, getTreeRowByTextAndParent } from "./object_trees/common";
+import {
+  getHybridViewerCanvas,
+  getHybridViewerCanvasBoundingBox,
+  moveMouseOutOfTheWay,
+} from "./viewer_interaction";
 import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { moveMouseOutOfTheWay } from "./viewer_interaction";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
 type MapTitle = "Satellite" | "Plan" | "Routes";
@@ -27,6 +31,9 @@ const SOURCES = [
   "EOX_OVERLAY",
 ];
 const OPACITY_STEP = 5;
+const ZOOM_WHEEL_DELTA = -300;
+// Longer than the rest delay of the basemap detail store: its request has started
+const DETAIL_REST_MILLISECONDS = 500;
 const FULL_OPACITY = 100;
 
 const HTTP_OK = 200;
@@ -140,5 +147,26 @@ async function toggleBasemapCrop(window: Page, title?: MapTitle): Promise<void> 
   await waitForActionSettled(window);
 }
 
+// Zooms on the viewer centre, then waits for the sharper map of the visible area
+async function zoomAndRest(window: Page, steps: number): Promise<void> {
+  const box = await getHybridViewerCanvasBoundingBox(getHybridViewerCanvas(window));
+  await window.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  // oxlint-disable no-await-in-loop
+  for (let step = 0; step < steps; step += 1) {
+    await window.mouse.wheel(0, ZOOM_WHEEL_DELTA);
+  }
+  // oxlint-enable no-await-in-loop
+  await moveMouseOutOfTheWay(window);
+  await window.waitForTimeout(DETAIL_REST_MILLISECONDS);
+  await waitForActionSettled(window);
+}
+
 export type { TileServer };
-export { setBasemapOpacity, startTileServer, toggleBasemap, toggleBasemapCrop, toggleBasemapMap };
+export {
+  setBasemapOpacity,
+  startTileServer,
+  toggleBasemap,
+  toggleBasemapCrop,
+  toggleBasemapMap,
+  zoomAndRest,
+};
