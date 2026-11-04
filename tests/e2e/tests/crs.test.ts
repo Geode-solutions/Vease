@@ -149,6 +149,7 @@ test("re-align this data only", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
   // The model has a crs: "This data only" by default, the other data stay
+  await expect(window.getByTestId("crsAlignScope-one").locator("input")).toBeChecked();
   await fillAlignPoints(window, "crsAlignSource", ALIGN_SOURCE);
   await fillAlignPoints(window, "crsAlignTarget", ALIGN_TARGET);
   await selectAlignmentCrs(window, LAMBERT_93);

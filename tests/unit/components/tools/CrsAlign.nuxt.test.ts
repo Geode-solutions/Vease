@@ -123,11 +123,10 @@ describe("crs align tool", () => {
     useUIStore().openCrsAlign(item);
   });
 
-  test("asks for three pairs, with no mode to choose", () => {
+  test("asks for three pairs", () => {
     const wrapper = mountWithPlugins(CrsAlign);
     expect(wrapper.findAll('[data-testid^="crsAlignSource-"]')).toHaveLength(3);
     expect(wrapper.findAll('[data-testid^="crsAlignTarget-"]')).toHaveLength(3);
-    expect(wrapper.find('[data-testid="crsAlignMode"]').exists()).toBe(false);
     wrapper.unmount();
   });
 

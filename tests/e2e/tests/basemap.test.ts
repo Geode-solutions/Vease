@@ -10,7 +10,6 @@ import {
   startTileServer,
   toggleBasemap,
   toggleBasemapCrop,
-  toggleBasemapMap,
   zoomAndRest,
 } from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
@@ -82,7 +81,6 @@ test("the satellite basemap shows on its own", async ({ window }) => {
 
 test("zooming in sharpens the visible area of the map", async ({ window }) => {
   await zoomAndRest(window, ZOOM_STEPS);
-  await moveMouseOutOfTheWay(window);
 });
 
 test("back to the whole model", async ({ window }) => {
@@ -136,8 +134,7 @@ test("clipping planes off", async ({ window }) => {
 });
 
 test("show the routes over the satellite map", async ({ window }) => {
-  await toggleBasemapMap(window, "Routes");
-  await moveMouseOutOfTheWay(window);
+  await toggleBasemap(window, "Routes");
 });
 
 test("lower the routes opacity", async ({ window }) => {
@@ -151,12 +148,10 @@ test("crop the routes only", async ({ window }) => {
 });
 
 test("hide the satellite map, the routes stay", async ({ window }) => {
-  await toggleBasemapMap(window, "Satellite");
-  await moveMouseOutOfTheWay(window);
+  await toggleBasemap(window, "Satellite");
 });
 
 test("hide the basemap", async ({ window }) => {
   await toggleBasemap(window);
   await expect(window.getByTestId("basemapAttribution")).toBeHidden();
-  await moveMouseOutOfTheWay(window);
 });

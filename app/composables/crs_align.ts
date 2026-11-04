@@ -34,7 +34,7 @@ function isFilled(point: EditablePoint): boolean {
 }
 
 // Source points are picked on the data (only x and y are used) or typed, target points are typed
-// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function, max-statements
+// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function
 function useCrsAlign() {
   const viewerStore = useViewerStore();
   const sourcePoints = ref<EditablePoint[]>(emptyPoints());
