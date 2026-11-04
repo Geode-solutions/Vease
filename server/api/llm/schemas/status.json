@@ -13,12 +13,9 @@
       },
       "running": {
         "type": "boolean"
-      },
-      "starting": {
-        "type": "boolean"
       }
     },
-    "required": ["statusCode", "running", "starting"],
+    "required": ["statusCode", "running"],
     "additionalProperties": false
   }
 }

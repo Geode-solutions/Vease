@@ -36,7 +36,6 @@ export interface LlmStatusParams {}
 
 export interface LlmStatusResponse {
   running: boolean;
-  starting: boolean;
   statusCode: number;
 }
 
