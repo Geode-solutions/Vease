@@ -53,9 +53,9 @@
     "eslint/sort-keys": "off",
     "import/consistent-type-specifier-style": ["error", "prefer-top-level-if-only-type-imports"],
     "import/max-dependencies": [
-      "warn",
+      "error",
       {
-        "max": 10
+        "max": 15
       }
     ],
     "import/no-named-export": "off",

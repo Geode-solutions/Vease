@@ -15,6 +15,7 @@ import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import CrsDialogHost from "@vease/components/CrsDialogHost.vue";
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
+// oxlint-disable-next-line import/max-dependencies -- each layout component must be imported individually.
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
