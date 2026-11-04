@@ -17,14 +17,14 @@ import { waitForActionSettled } from "./wait_for_action_settled";
 
 type MapTitle = "Satellite" | "Plan" | "Routes";
 const BASEMAP = "Basemap";
-// Every open source is served locally: the tests never reach EOX, the IGN or OpenStreetMap
+// Every open source is served locally: the tests never reach EOX, the IGN, OpenStreetMap or OpenFreeMap
 const SOURCES = [
   "EOX_S2CLOUDLESS_2016",
   "IGN_ORTHOPHOTOS",
   "OSM",
   "IGN_PLAN",
   "IGN_ROADS",
-  "EOX_OVERLAY",
+  "OPENFREEMAP_ROADS",
 ];
 const OPACITY_STEP = 5;
 const FULL_OPACITY = 100;
@@ -39,7 +39,8 @@ const TILE_PATH = path.join(
   "tile.png",
 );
 const ROUTE_TILE_PATH = path.join(path.dirname(TILE_PATH), "route.png");
-const ROUTE_SOURCES = ["IGN_ROADS", "EOX_OVERLAY"];
+// The IGN roads are served first: the OpenFreeMap vector tiles are never drawn
+const ROUTE_SOURCES = ["IGN_ROADS"];
 
 interface TileServer {
   stop: () => Promise<void>;
