@@ -7,6 +7,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import {
   activateZoomToBox,
+  addThreshold,
   clearRuler,
   closeCameraManager,
   drawZoomBox,
@@ -23,6 +24,7 @@ import {
   selectCameraOrientation,
   selectShrinkDatasets,
   selectThresholdBlockPolyhedron,
+  selectThresholdCardAttribute,
   selectThresholdCellAttribute,
   setExplodeFactor,
   setRulerPointInput,
@@ -94,6 +96,7 @@ const brepFilename = "test.og_brep";
 const rgd3dFilename = "grid.og_rgd3d";
 const cellAttributeName = "test_cell";
 const polyhedronAttributeName = "test_polyhedron";
+const vertexAttributeName = "test_vertex";
 const ZSCALE_VALUE = 6.6;
 const TARGET_TOP = 100;
 const CUSTOM_NORMAL_VALUE = -0.2;
@@ -449,6 +452,13 @@ test("threshold filter reset", async ({ window }) => {
 test("threshold filter model block polyhedron attribute", async ({ window }) => {
   await selectThresholdBlockPolyhedron(window, defaultDataName, polyhedronAttributeName);
   await setThresholdMinimum(window, THRESHOLD_MINIMUM);
+  await moveMouseOutOfTheWay(window);
+});
+
+test("threshold filter model block multiple attributes", async ({ window }) => {
+  await addThreshold(window);
+  await selectThresholdCardAttribute(window, "Block vertex attribute", vertexAttributeName, 1);
+  await setThresholdMinimum(window, THRESHOLD_MINIMUM, 1);
   await moveMouseOutOfTheWay(window);
 });
 

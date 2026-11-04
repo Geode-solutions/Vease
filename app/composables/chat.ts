@@ -1,7 +1,6 @@
 // Third party imports
-import { type ChatStatus, DefaultChatTransport } from "ai";
+import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/vue";
-import { useIntervalFn } from "@vueuse/core";
 
 // Local imports
 import cloud_api_schemas from "@geode/cloud-api/cloud_api_typed_schemas.js";
@@ -13,106 +12,40 @@ import vease_schemas from "vease/vease_typed_schemas.js";
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
-const CLOUD_UNAVAILABLE_REASON = {
-  SIGNED_OUT: "signed_out",
-  NOT_ENTITLED: "not_entitled",
-} as const;
-type CloudUnavailableReason =
-  (typeof CLOUD_UNAVAILABLE_REASON)[keyof typeof CLOUD_UNAVAILABLE_REASON];
-
-interface LlamaStatus {
-  running: boolean;
-  starting: boolean;
-}
-
-// Marks where the conversation continues with another provider
-interface ProviderSwitch {
-  afterMessageCount: number;
-  provider: ChatProvider;
-}
-
-const LLAMA_STATUS_POLL_MILLISECONDS = 2000;
+type LlamaStatus = { running: false } | { running: true };
 
 interface VeaseChatReturn extends Pick<
   ReturnType<typeof useChat>,
-  "messages" | "sendMessage" | "regenerate" | "status" | "error" | "stop" | "clearError"
+  "messages" | "sendMessage" | "status" | "error" | "stop" | "clearError"
 > {
   provider: Ref<ChatProvider>;
-  setProvider: (nextProvider: ChatProvider) => Promise<void>;
-  isSwitchingProvider: Ref<boolean>;
-  providerError: Ref<string | undefined>;
-  providerSwitches: Ref<ProviderSwitch[]>;
+  toggleProvider: () => Promise<void>;
   isCloudAiAllowed: Ref<boolean>;
-  cloudUnavailableReason: ComputedRef<CloudUnavailableReason | undefined>;
   CHAT_PROVIDER: typeof CHAT_PROVIDER;
-  CLOUD_UNAVAILABLE_REASON: typeof CLOUD_UNAVAILABLE_REASON;
   llamaStatus: Ref<LlamaStatus>;
   killLlamaServer: () => Promise<void>;
-}
-
-// The local model starts with the first message: follow its startup until it answers
-function useLlamaStatus(
-  status: Ref<ChatStatus>,
-  provider: Ref<ChatProvider>,
-): Pick<VeaseChatReturn, "llamaStatus" | "killLlamaServer"> {
-  const appStore = useAppStore();
-  const llamaStatus = ref<LlamaStatus>({ running: false, starting: false });
-
-  async function refreshLlamaStatus(): Promise<void> {
-    const { running, starting } = await appStore.request({
-      schema: vease_schemas.api.llm.status,
-    });
-    llamaStatus.value = { running, starting };
-  }
-
-  async function killLlamaServer(): Promise<void> {
-    await appStore.request({ schema: vease_schemas.api.llm.kill });
-    llamaStatus.value = { running: false, starting: false };
-  }
-
-  const polling = useIntervalFn(
-    () => {
-      void refreshLlamaStatus();
-    },
-    LLAMA_STATUS_POLL_MILLISECONDS,
-    { immediate: false },
-  );
-
-  void refreshLlamaStatus();
-  watch(status, (chatStatus) => {
-    if (provider.value !== CHAT_PROVIDER.LLAMA) {
-      return;
-    }
-    if (chatStatus === "submitted" && !llamaStatus.value.running) {
-      polling.resume();
-      return;
-    }
-    polling.pause();
-    if (chatStatus === "ready" || chatStatus === "error") {
-      void refreshLlamaStatus();
-    }
-  });
-
-  return { llamaStatus, killLlamaServer };
 }
 
 // oxlint-disable eslint/max-lines-per-function
 export function useVeaseChat(): VeaseChatReturn {
   const { user } = useAuth();
   const APIStore = useAPIStore();
+  const appStore = useAppStore();
   const provider = ref<ChatProvider>(CHAT_PROVIDER.LLAMA);
-  const isSwitchingProvider = ref(false);
-  const providerError = ref<string | undefined>(undefined);
-  const providerSwitches = ref<ProviderSwitch[]>([]);
   const isCloudAiAllowed = ref(false);
   const gatewayApiKey = ref<string | undefined>(undefined);
+  const llamaStatus = ref<LlamaStatus>({ running: false });
 
-  const cloudUnavailableReason = computed<CloudUnavailableReason | undefined>(() => {
-    if (!user.value) {
-      return CLOUD_UNAVAILABLE_REASON.SIGNED_OUT;
-    }
-    return isCloudAiAllowed.value ? undefined : CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED;
-  });
+  async function refreshLlamaStatus(): Promise<void> {
+    llamaStatus.value = await appStore.request({
+      schema: vease_schemas.api.llm.status,
+    });
+  }
+
+  async function killLlamaServer(): Promise<void> {
+    await appStore.request({ schema: vease_schemas.api.llm.kill });
+    llamaStatus.value = { running: false };
+  }
 
   async function refreshCloudEntitlement(): Promise<void> {
     if (!user.value) {
@@ -145,7 +78,7 @@ export function useVeaseChat(): VeaseChatReturn {
     gatewayApiKey.value = apiKeyString;
   }
 
-  const { messages, sendMessage, regenerate, status, error, stop, clearError } = useChat({
+  const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/llm/chat",
       headers: async (): Promise<Record<string, string>> => {
@@ -162,34 +95,21 @@ export function useVeaseChat(): VeaseChatReturn {
     }),
   });
 
-  const { llamaStatus, killLlamaServer } = useLlamaStatus(status, provider);
+  void refreshLlamaStatus();
+  watch(status, (chatStatus) => {
+    if (chatStatus === "ready" && provider.value === CHAT_PROVIDER.LLAMA) {
+      void refreshLlamaStatus();
+    }
+  });
 
-  async function setProvider(nextProvider: ChatProvider): Promise<void> {
-    // After an error, switching provider is the way out: only an answer in progress blocks it
-    const isAnswering = status.value === "submitted" || status.value === "streaming";
-    if (nextProvider === provider.value || isAnswering) {
+  async function toggleProvider(): Promise<void> {
+    if (!isCloudAiAllowed.value) {
       return;
     }
-    if (nextProvider === CHAT_PROVIDER.GATEWAY && !isCloudAiAllowed.value) {
-      return;
-    }
-    providerError.value = undefined;
-    isSwitchingProvider.value = true;
-    try {
-      if (nextProvider === CHAT_PROVIDER.GATEWAY) {
-        await ensureGatewayKey();
-      }
-    } catch {
-      providerError.value = "Could not connect to the cloud AI, please try again.";
-      return;
-    } finally {
-      isSwitchingProvider.value = false;
-    }
-    if (messages.value.length > 0) {
-      providerSwitches.value.push({
-        afterMessageCount: messages.value.length,
-        provider: nextProvider,
-      });
+    const nextProvider =
+      provider.value === CHAT_PROVIDER.LLAMA ? CHAT_PROVIDER.GATEWAY : CHAT_PROVIDER.LLAMA;
+    if (nextProvider === CHAT_PROVIDER.GATEWAY) {
+      await ensureGatewayKey();
     }
     provider.value = nextProvider;
   }
@@ -197,20 +117,14 @@ export function useVeaseChat(): VeaseChatReturn {
   return {
     messages,
     sendMessage,
-    regenerate,
     status,
     error,
     stop,
     clearError,
     provider,
-    setProvider,
-    isSwitchingProvider,
-    providerError,
-    providerSwitches,
+    toggleProvider,
     isCloudAiAllowed,
-    cloudUnavailableReason,
     CHAT_PROVIDER,
-    CLOUD_UNAVAILABLE_REASON,
     llamaStatus,
     killLlamaServer,
   };

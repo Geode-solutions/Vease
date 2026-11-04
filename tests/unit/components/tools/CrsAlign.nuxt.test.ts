@@ -1,14 +1,19 @@
 // oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";
+import {
+  SOURCE,
+  SOURCE_ORIGIN,
+  TARGET,
+  TARGET_ORIGIN,
+  fill,
+  item,
+} from "@vease_tests/utils/crs_align_fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
-import type { DataItem } from "@vease/types/data_item";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
-import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
@@ -53,56 +58,6 @@ vi.mock(import("@vease/composables/crs"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
   useCrs: USE_CRS_MOCK as unknown as typeof useCrs,
 }));
-
-const SOURCE = [
-  { x: 0, y: 0 },
-  { x: 10, y: 0 },
-  { x: 0, y: 10 },
-];
-const SOURCE_ORIGIN = { x: 0, y: 0 };
-const TARGET_ORIGIN = { x: 1000, y: 2000 };
-const TARGET = [
-  { x: 1000, y: 2000 },
-  { x: 1000, y: 2020 },
-  { x: 980, y: 2000 },
-];
-
-const item: DataItem = {
-  id: "item-1",
-  geode_id: "00000000-0000-0000-0000-000000000001",
-  name: "Points",
-  geode_object_type: "PointSet3D",
-  viewer_type: "mesh",
-  visible: true,
-};
-
-async function fill(
-  wrapper: ReturnType<typeof mountWithPlugins>,
-  testId: string,
-  point: { x: number; y: number },
-): Promise<void> {
-  const [xInput, yInput] = wrapper.find(`[data-testid="${testId}"]`).findAll("input");
-  await xInput?.setValue(String(point.x));
-  await yInput?.setValue(String(point.y));
-}
-
-// Wells share the local frame of the model; the map is already in another CRS
-function mountWithWells(): { wrapper: ReturnType<typeof mountWithPlugins>; wells: StoredItem } {
-  const stored: StoredItem = { ...item, created_at: "2026-10-27" };
-  const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
-  const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
-  vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells, georeferenced]));
-  return { wrapper: mountWithPlugins(CrsAlign), wells };
-}
-
-async function applyOrigin(wrapper: ReturnType<typeof mountWithPlugins>): Promise<void> {
-  await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
-  await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
-  await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
-  await flushPromises();
-  await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
-  await flushPromises();
-}
 
 describe("crs align tool", () => {
   beforeEach(() => {
@@ -167,64 +122,6 @@ describe("crs align tool", () => {
       linkedItems: [],
     });
     expect(success).toHaveBeenCalledWith("Data georeferenced: scale ×0.50, rotation 12°");
-    wrapper.unmount();
-  });
-
-  test("georeferences every data in the same crs state by default, then follows the project", async () => {
-    alignCrs.mockResolvedValue({ scale: 1, rotation: 25 });
-    const success = vi.spyOn(useFeedbackStore(), "add_success");
-    const utm = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
-    const { wrapper, wells } = mountWithWells();
-    useCrsStore().setProjectCrs(utm);
-    expect(wrapper.find('[data-testid="crsAlignScope-all"] input').element).toHaveProperty(
-      "checked",
-      true,
-    );
-    await applyOrigin(wrapper);
-
-    expect(alignCrs).toHaveBeenCalledWith(
-      item,
-      LAMBERT,
-      expect.objectContaining({ linkedItems: [wells] }),
-    );
-    expect(followProject).toHaveBeenCalledWith(
-      [
-        { id: item.id, name: item.name, crs: LAMBERT },
-        { id: "item-2", name: "Wells", crs: LAMBERT },
-      ],
-      utm,
-    );
-    expect(success).toHaveBeenCalledWith("Data georeferenced (2 items): scale ×1.00, rotation 25°");
-    wrapper.unmount();
-  });
-
-  // Data in the same CRS are usually the whole project: a re-align moves this data only by default
-  test("re-aligning a georeferenced data defaults to this data only", async () => {
-    useUIStore().openCrsAlign({ ...item, crs: LAMBERT });
-    const wrapper = mountWithPlugins(CrsAlign);
-    await flushPromises();
-    expect(wrapper.find('[data-testid="crsAlignScope-one"] input').element).toHaveProperty(
-      "checked",
-      true,
-    );
-    wrapper.unmount();
-  });
-
-  test("georeferences this data only", async () => {
-    const { wrapper } = mountWithWells();
-    await wrapper.find('[data-testid="crsAlignScope-one"] input').setValue(true);
-    await applyOrigin(wrapper);
-
-    expect(alignCrs).toHaveBeenCalledWith(
-      item,
-      LAMBERT,
-      expect.objectContaining({ linkedItems: [] }),
-    );
-    expect(followProject).toHaveBeenCalledWith(
-      [{ id: item.id, name: item.name, crs: LAMBERT }],
-      // The map is the only georeferenced data: the project is in its crs
-      LAMBERT,
-    );
     wrapper.unmount();
   });
 
