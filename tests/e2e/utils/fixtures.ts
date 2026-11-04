@@ -12,6 +12,7 @@ import { consola } from "consola";
 
 // Local imports
 import { navigateToApp } from "./navigate";
+import { startTileServer } from "./basemap_tile_server";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
 const MILLISECONDS_PER_SECOND = 1000;
@@ -68,6 +69,8 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       );
       process.env.XDG_CONFIG_HOME = configPath;
       process.env.APPDATA = configPath;
+      // Before the app starts: any spec giving the project a CRS builds a basemap, from local tiles
+      const tileServer = await startTileServer();
       // Launched on demand instead of using the browser fixture, which would start (and require installing) a browser in DESKTOP mode too
       async function launchBrowser(): Promise<Browser> {
         const browser = await playwright[browserName].launch({
@@ -90,6 +93,7 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       };
       await use(app);
       await app.cleanup();
+      await tileServer.stop();
       fs.rmSync(configPath, { recursive: true, force: true });
     },
     { scope: "worker" },

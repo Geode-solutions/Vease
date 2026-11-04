@@ -79,6 +79,4 @@ async function zoomAndRest(window: Page, steps: number): Promise<void> {
   await waitForActionSettled(window);
 }
 
-// The tile server lives apart from the UI helpers: the tests import both from here
-export { type TileServer, startTileServer } from "./basemap_tile_server";
 export { setBasemapOpacity, toggleBasemap, toggleBasemapCrop, zoomAndRest };

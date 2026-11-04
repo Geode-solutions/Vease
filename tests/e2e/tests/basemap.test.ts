@@ -4,14 +4,6 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  type TileServer,
-  setBasemapOpacity,
-  startTileServer,
-  toggleBasemap,
-  toggleBasemapCrop,
-  zoomAndRest,
-} from "@vease_tests/utils/basemap";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
@@ -22,6 +14,12 @@ import {
   toggleExplodeFilter,
   toggleGridScale,
 } from "@vease_tests/utils/camera_interaction";
+import {
+  setBasemapOpacity,
+  toggleBasemap,
+  toggleBasemapCrop,
+  zoomAndRest,
+} from "@vease_tests/utils/basemap";
 import { brepGeodeObjectType } from "@vease_tests/utils/constants";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
@@ -35,19 +33,8 @@ const EXPLODE_FACTOR = 0.5;
 const BASEMAP_OPACITY = 50;
 const ZOOM_STEPS = 8;
 
-let tileServer: TileServer | undefined = undefined;
-
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
-
-// Runs before the app is launched (the app fixture is only created by the first test), so the back inherits the env
-test.beforeAll(async () => {
-  tileServer = await startTileServer();
-});
-
-test.afterAll(async () => {
-  await tileServer?.stop();
-});
 
 test("load a model", async ({ window }) => {
   await loadVeaseTestDatas(window, [BREP_FILE]);
