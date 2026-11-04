@@ -129,19 +129,13 @@ export interface ControllerFilterThresholdParams {
   attribute?: string;
   ids: string[];
   item?: number;
-  location?: ControllerFilterThresholdParamsLocation;
+  location?: Location;
   maximum?: number;
   minimum?: number;
   remove?: boolean;
 }
 
-export type ControllerFilterThresholdParamsLocation =
-  | "vertex"
-  | "edge"
-  | "cell"
-  | "polygon"
-  | "polyhedron"
-  | "point";
+export type Location = "vertex" | "edge" | "cell" | "polygon" | "polyhedron" | "point";
 
 export interface ControllerFilterThresholdResponse {
   response: any;
@@ -213,57 +207,601 @@ export interface ControllerColormapsResponseResponse {
   categories: { [key: string]: string[] };
 }
 
-export interface ControllerStyleSetParams {
-  color?: string;
-  coloring?: Coloring;
-  componentIds?: string[];
+export interface ControllerStyleMeshCellsCellAttributeParams {
+  colormap?: string;
   ids: string[];
-  size?: number;
-  target?: Target;
-  visibility?: boolean;
-  width?: number;
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
 }
 
-export type Coloring = "constant" | "random" | "textures";
-
-export type Target =
-  | "points"
-  | "edges"
-  | "cells"
-  | "polygons"
-  | "polyhedra"
-  | "corners"
-  | "lines"
-  | "surfaces"
-  | "blocks";
-
-export interface ControllerStyleSetResponse {
+export interface ControllerStyleMeshCellsCellAttributeResponse {
   response: any;
   statusCode: number;
 }
 
-export interface ControllerStyleAttributeParams {
-  attribute: string;
+export interface ControllerStyleMeshCellsVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshCellsVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshCellsColoringParams {
+  coloring: ControllerStyleMeshCellsColoringParamsColoring;
+  ids: string[];
+}
+
+export type ControllerStyleMeshCellsColoringParamsColoring = "constant" | "textures";
+
+export interface ControllerStyleMeshCellsColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshCellsColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshCellsColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshCellsVertexAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshCellsVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshEdgesEdgeAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshEdgesEdgeAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshEdgesWidthParams {
+  ids: string[];
+  width: number;
+}
+
+export interface ControllerStyleMeshEdgesWidthResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshEdgesVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshEdgesVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshEdgesColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshEdgesColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshEdgesVertexAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshEdgesVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPointsVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshPointsVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPointsSizeParams {
+  ids: string[];
+  size: number;
+}
+
+export interface ControllerStyleMeshPointsSizeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPointsColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshPointsColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPointsVertexAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshPointsVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolygonsPolygonAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshPolygonsPolygonAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolygonsVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshPolygonsVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolygonsColoringParams {
+  coloring: ControllerStyleMeshCellsColoringParamsColoring;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshPolygonsColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolygonsColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshPolygonsColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolygonsVertexAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshPolygonsVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolyhedraPolyhedronAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshPolyhedraPolyhedronAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolyhedraVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshPolyhedraVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolyhedraColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshPolyhedraColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshPolyhedraVertexAttributeParams {
+  colormap?: string;
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleMeshPolyhedraVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleMeshVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleMeshColorParams {
+  color: string;
+  ids: string[];
+}
+
+export interface ControllerStyleMeshColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelBlocksPolyhedronAttributeParams {
   colormap?: string;
   componentIds?: string[];
   ids: string[];
   item?: number;
-  location?: ControllerStyleAttributeParamsLocation;
   maximum?: number;
   minimum?: number;
+  name: string;
   noDataColor?: string;
-  target?: Target;
   timeStep?: number;
 }
 
-export type ControllerStyleAttributeParamsLocation =
-  | "vertex"
-  | "edge"
-  | "cell"
-  | "polygon"
-  | "polyhedron";
+export interface ControllerStyleModelBlocksPolyhedronAttributeResponse {
+  response: any;
+  statusCode: number;
+}
 
-export interface ControllerStyleAttributeResponse {
+export interface ControllerStyleModelBlocksVisibilityParams {
+  componentIds?: string[];
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelBlocksVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelBlocksColoringParams {
+  coloring: ControllerStyleModelBlocksColoringParamsColoring;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export type ControllerStyleModelBlocksColoringParamsColoring = "constant" | "random";
+
+export interface ControllerStyleModelBlocksColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelBlocksColorParams {
+  color: string;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelBlocksColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelBlocksVertexAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelBlocksVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelCornersVisibilityParams {
+  componentIds?: string[];
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelCornersVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelCornersColoringParams {
+  coloring: ControllerStyleModelBlocksColoringParamsColoring;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelCornersColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelCornersColorParams {
+  color: string;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelCornersColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelCornersVertexAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelCornersVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelEdgesVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelEdgesVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelLinesEdgeAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelLinesEdgeAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelLinesVisibilityParams {
+  componentIds?: string[];
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelLinesVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelLinesColoringParams {
+  coloring: ControllerStyleModelBlocksColoringParamsColoring;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelLinesColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelLinesColorParams {
+  color: string;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelLinesColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelLinesVertexAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelLinesVertexAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelPointsVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelPointsVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelPointsSizeParams {
+  ids: string[];
+  size: number;
+}
+
+export interface ControllerStyleModelPointsSizeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelSurfacesPolygonAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelSurfacesPolygonAttributeResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelSurfacesVisibilityParams {
+  componentIds?: string[];
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleModelSurfacesVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelSurfacesColoringParams {
+  coloring: ControllerStyleModelBlocksColoringParamsColoring;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelSurfacesColoringResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelSurfacesColorParams {
+  color: string;
+  componentIds?: string[];
+  ids: string[];
+}
+
+export interface ControllerStyleModelSurfacesColorResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleModelSurfacesVertexAttributeParams {
+  colormap?: string;
+  componentIds?: string[];
+  ids: string[];
+  item?: number;
+  maximum?: number;
+  minimum?: number;
+  name: string;
+  noDataColor?: string;
+  timeStep?: number;
+}
+
+export interface ControllerStyleModelSurfacesVertexAttributeResponse {
   response: any;
   statusCode: number;
 }
@@ -427,10 +965,298 @@ export interface Schemas {
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly style: {
-        readonly set: (typeof json)["api"]["controller"]["style"]["set"] &
-          TypedSchema<ControllerStyleSetParams, ControllerStyleSetResponse>;
-        readonly attribute: (typeof json)["api"]["controller"]["style"]["attribute"] &
-          TypedSchema<ControllerStyleAttributeParams, ControllerStyleAttributeResponse>;
+        readonly mesh: {
+          readonly cells: {
+            readonly cell: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["cells"]["cell"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshCellsCellAttributeParams,
+                  ControllerStyleMeshCellsCellAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["cells"]["visibility"] &
+              TypedSchema<
+                ControllerStyleMeshCellsVisibilityParams,
+                ControllerStyleMeshCellsVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["mesh"]["cells"]["coloring"] &
+              TypedSchema<
+                ControllerStyleMeshCellsColoringParams,
+                ControllerStyleMeshCellsColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["cells"]["color"] &
+              TypedSchema<
+                ControllerStyleMeshCellsColorParams,
+                ControllerStyleMeshCellsColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["cells"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshCellsVertexAttributeParams,
+                  ControllerStyleMeshCellsVertexAttributeResponse
+                >;
+            };
+          };
+          readonly edges: {
+            readonly edge: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["edges"]["edge"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshEdgesEdgeAttributeParams,
+                  ControllerStyleMeshEdgesEdgeAttributeResponse
+                >;
+            };
+            readonly width: (typeof json)["api"]["controller"]["style"]["mesh"]["edges"]["width"] &
+              TypedSchema<
+                ControllerStyleMeshEdgesWidthParams,
+                ControllerStyleMeshEdgesWidthResponse
+              >;
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["edges"]["visibility"] &
+              TypedSchema<
+                ControllerStyleMeshEdgesVisibilityParams,
+                ControllerStyleMeshEdgesVisibilityResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["edges"]["color"] &
+              TypedSchema<
+                ControllerStyleMeshEdgesColorParams,
+                ControllerStyleMeshEdgesColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["edges"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshEdgesVertexAttributeParams,
+                  ControllerStyleMeshEdgesVertexAttributeResponse
+                >;
+            };
+          };
+          readonly points: {
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["points"]["visibility"] &
+              TypedSchema<
+                ControllerStyleMeshPointsVisibilityParams,
+                ControllerStyleMeshPointsVisibilityResponse
+              >;
+            readonly size: (typeof json)["api"]["controller"]["style"]["mesh"]["points"]["size"] &
+              TypedSchema<
+                ControllerStyleMeshPointsSizeParams,
+                ControllerStyleMeshPointsSizeResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["points"]["color"] &
+              TypedSchema<
+                ControllerStyleMeshPointsColorParams,
+                ControllerStyleMeshPointsColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["points"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshPointsVertexAttributeParams,
+                  ControllerStyleMeshPointsVertexAttributeResponse
+                >;
+            };
+          };
+          readonly polygons: {
+            readonly polygon: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["polygons"]["polygon"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshPolygonsPolygonAttributeParams,
+                  ControllerStyleMeshPolygonsPolygonAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["polygons"]["visibility"] &
+              TypedSchema<
+                ControllerStyleMeshPolygonsVisibilityParams,
+                ControllerStyleMeshPolygonsVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["mesh"]["polygons"]["coloring"] &
+              TypedSchema<
+                ControllerStyleMeshPolygonsColoringParams,
+                ControllerStyleMeshPolygonsColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["polygons"]["color"] &
+              TypedSchema<
+                ControllerStyleMeshPolygonsColorParams,
+                ControllerStyleMeshPolygonsColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["polygons"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshPolygonsVertexAttributeParams,
+                  ControllerStyleMeshPolygonsVertexAttributeResponse
+                >;
+            };
+          };
+          readonly polyhedra: {
+            readonly polyhedron: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["polyhedra"]["polyhedron"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshPolyhedraPolyhedronAttributeParams,
+                  ControllerStyleMeshPolyhedraPolyhedronAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["polyhedra"]["visibility"] &
+              TypedSchema<
+                ControllerStyleMeshPolyhedraVisibilityParams,
+                ControllerStyleMeshPolyhedraVisibilityResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["polyhedra"]["color"] &
+              TypedSchema<
+                ControllerStyleMeshPolyhedraColorParams,
+                ControllerStyleMeshPolyhedraColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["mesh"]["polyhedra"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleMeshPolyhedraVertexAttributeParams,
+                  ControllerStyleMeshPolyhedraVertexAttributeResponse
+                >;
+            };
+          };
+          readonly visibility: (typeof json)["api"]["controller"]["style"]["mesh"]["visibility"] &
+            TypedSchema<ControllerStyleMeshVisibilityParams, ControllerStyleMeshVisibilityResponse>;
+          readonly color: (typeof json)["api"]["controller"]["style"]["mesh"]["color"] &
+            TypedSchema<ControllerStyleMeshColorParams, ControllerStyleMeshColorResponse>;
+        };
+        readonly model: {
+          readonly blocks: {
+            readonly polyhedron: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["blocks"]["polyhedron"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelBlocksPolyhedronAttributeParams,
+                  ControllerStyleModelBlocksPolyhedronAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["blocks"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelBlocksVisibilityParams,
+                ControllerStyleModelBlocksVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["model"]["blocks"]["coloring"] &
+              TypedSchema<
+                ControllerStyleModelBlocksColoringParams,
+                ControllerStyleModelBlocksColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["model"]["blocks"]["color"] &
+              TypedSchema<
+                ControllerStyleModelBlocksColorParams,
+                ControllerStyleModelBlocksColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["blocks"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelBlocksVertexAttributeParams,
+                  ControllerStyleModelBlocksVertexAttributeResponse
+                >;
+            };
+          };
+          readonly corners: {
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["corners"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelCornersVisibilityParams,
+                ControllerStyleModelCornersVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["model"]["corners"]["coloring"] &
+              TypedSchema<
+                ControllerStyleModelCornersColoringParams,
+                ControllerStyleModelCornersColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["model"]["corners"]["color"] &
+              TypedSchema<
+                ControllerStyleModelCornersColorParams,
+                ControllerStyleModelCornersColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["corners"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelCornersVertexAttributeParams,
+                  ControllerStyleModelCornersVertexAttributeResponse
+                >;
+            };
+          };
+          readonly edges: {
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["edges"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelEdgesVisibilityParams,
+                ControllerStyleModelEdgesVisibilityResponse
+              >;
+          };
+          readonly lines: {
+            readonly edge: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["lines"]["edge"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelLinesEdgeAttributeParams,
+                  ControllerStyleModelLinesEdgeAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["lines"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelLinesVisibilityParams,
+                ControllerStyleModelLinesVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["model"]["lines"]["coloring"] &
+              TypedSchema<
+                ControllerStyleModelLinesColoringParams,
+                ControllerStyleModelLinesColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["model"]["lines"]["color"] &
+              TypedSchema<
+                ControllerStyleModelLinesColorParams,
+                ControllerStyleModelLinesColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["lines"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelLinesVertexAttributeParams,
+                  ControllerStyleModelLinesVertexAttributeResponse
+                >;
+            };
+          };
+          readonly points: {
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["points"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelPointsVisibilityParams,
+                ControllerStyleModelPointsVisibilityResponse
+              >;
+            readonly size: (typeof json)["api"]["controller"]["style"]["model"]["points"]["size"] &
+              TypedSchema<
+                ControllerStyleModelPointsSizeParams,
+                ControllerStyleModelPointsSizeResponse
+              >;
+          };
+          readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["visibility"] &
+            TypedSchema<
+              ControllerStyleModelVisibilityParams,
+              ControllerStyleModelVisibilityResponse
+            >;
+          readonly surfaces: {
+            readonly polygon: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["surfaces"]["polygon"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelSurfacesPolygonAttributeParams,
+                  ControllerStyleModelSurfacesPolygonAttributeResponse
+                >;
+            };
+            readonly visibility: (typeof json)["api"]["controller"]["style"]["model"]["surfaces"]["visibility"] &
+              TypedSchema<
+                ControllerStyleModelSurfacesVisibilityParams,
+                ControllerStyleModelSurfacesVisibilityResponse
+              >;
+            readonly coloring: (typeof json)["api"]["controller"]["style"]["model"]["surfaces"]["coloring"] &
+              TypedSchema<
+                ControllerStyleModelSurfacesColoringParams,
+                ControllerStyleModelSurfacesColoringResponse
+              >;
+            readonly color: (typeof json)["api"]["controller"]["style"]["model"]["surfaces"]["color"] &
+              TypedSchema<
+                ControllerStyleModelSurfacesColorParams,
+                ControllerStyleModelSurfacesColorResponse
+              >;
+            readonly vertex: {
+              readonly attribute: (typeof json)["api"]["controller"]["style"]["model"]["surfaces"]["vertex"]["attribute"] &
+                TypedSchema<
+                  ControllerStyleModelSurfacesVertexAttributeParams,
+                  ControllerStyleModelSurfacesVertexAttributeResponse
+                >;
+            };
+          };
+        };
       };
       readonly view: {
         readonly scene: (typeof json)["api"]["controller"]["view"]["scene"] &

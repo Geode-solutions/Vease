@@ -1,0 +1,33 @@
+{
+  "route": "/color",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    }
+  },
+  "required": ["ids", "color"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

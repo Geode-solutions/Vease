@@ -11,13 +11,14 @@ import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
 
 const LOADED_DATA_KEYS = ["id", "name", "geode_object_type"];
+const PROJECT_KEYS = ["project"];
 
 function loadedSummary(payload: unknown): unknown {
   const response = controllerResponse(payload);
   if (typeof response !== "object" || response === null) {
     return response;
   }
-  const keys = "project" in response ? ["project"] : LOADED_DATA_KEYS;
+  const keys = "project" in response ? PROJECT_KEYS : LOADED_DATA_KEYS;
   return Object.fromEntries(
     keys
       .filter((key) => Object.hasOwn(response, key))

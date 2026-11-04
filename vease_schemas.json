@@ -632,154 +632,2150 @@
         }
       },
       "style": {
-        "set": {
-          "$id": "api/controller/style/set",
-          "route": "/set",
-          "methods": ["POST"],
-          "type": "object",
-          "properties": {
-            "ids": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 32,
-                "maxLength": 32
-              },
-              "minItems": 1
-            },
-            "target": {
-              "type": "string",
-              "enum": [
-                "points",
-                "edges",
-                "cells",
-                "polygons",
-                "polyhedra",
-                "corners",
-                "lines",
-                "surfaces",
-                "blocks"
-              ]
-            },
-            "componentIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "minItems": 1
+        "mesh": {
+          "cells": {
+            "cell": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/cells/cell/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
             },
             "visibility": {
-              "type": "boolean"
-            },
-            "color": {
-              "type": "string",
-              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
-            },
-            "size": {
-              "type": "number",
-              "exclusiveMinimum": 0
-            },
-            "width": {
-              "type": "number",
-              "exclusiveMinimum": 0
+              "$id": "api/controller/style/mesh/cells/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
             },
             "coloring": {
-              "type": "string",
-              "enum": ["constant", "random", "textures"]
+              "$id": "api/controller/style/mesh/cells/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "textures"]
+                }
+              },
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/mesh/cells/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/cells/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
             }
           },
-          "required": ["ids"],
-          "additionalProperties": false,
-          "response": {
+          "edges": {
+            "edge": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/edges/edge/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "width": {
+              "$id": "api/controller/style/mesh/edges/width",
+              "route": "/width",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "width": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["ids", "width"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/mesh/edges/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/mesh/edges/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/edges/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "points": {
+            "visibility": {
+              "$id": "api/controller/style/mesh/points/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "size": {
+              "$id": "api/controller/style/mesh/points/size",
+              "route": "/size",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["ids", "size"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/mesh/points/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/points/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "polygons": {
+            "polygon": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/polygons/polygon/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/mesh/polygons/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "coloring": {
+              "$id": "api/controller/style/mesh/polygons/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "textures"]
+                }
+              },
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/mesh/polygons/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/polygons/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "polyhedra": {
+            "polyhedron": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/polyhedra/polyhedron/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/mesh/polyhedra/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/mesh/polyhedra/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/mesh/polyhedra/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "visibility": {
+            "$id": "api/controller/style/mesh/visibility",
+            "route": "/visibility",
+            "methods": ["POST"],
             "type": "object",
             "properties": {
-              "statusCode": {
-                "type": "integer"
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "minItems": 1
               },
-              "response": {}
+              "visibility": {
+                "type": "boolean"
+              }
             },
-            "required": ["statusCode", "response"],
-            "additionalProperties": false
+            "required": ["ids", "visibility"],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer"
+                },
+                "response": {}
+              },
+              "required": ["statusCode", "response"],
+              "additionalProperties": false
+            }
+          },
+          "color": {
+            "$id": "api/controller/style/mesh/color",
+            "route": "/color",
+            "methods": ["POST"],
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "minItems": 1
+              },
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+              }
+            },
+            "required": ["ids", "color"],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer"
+                },
+                "response": {}
+              },
+              "required": ["statusCode", "response"],
+              "additionalProperties": false
+            }
           }
         },
-        "attribute": {
-          "$id": "api/controller/style/attribute",
-          "route": "/attribute",
-          "methods": ["POST"],
-          "type": "object",
-          "properties": {
-            "ids": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "minLength": 32,
-                "maxLength": 32
+        "model": {
+          "blocks": {
+            "polyhedron": {
+              "attribute": {
+                "$id": "api/controller/style/model/blocks/polyhedron/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/model/blocks/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
               },
-              "minItems": 1
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
             },
-            "target": {
-              "type": "string",
-              "enum": [
-                "points",
-                "edges",
-                "cells",
-                "polygons",
-                "polyhedra",
-                "corners",
-                "lines",
-                "surfaces",
-                "blocks"
-              ]
-            },
-            "componentIds": {
-              "type": "array",
-              "items": {
-                "type": "string"
+            "coloring": {
+              "$id": "api/controller/style/model/blocks/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "random"]
+                }
               },
-              "minItems": 1
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
             },
-            "attribute": {
-              "type": "string",
-              "minLength": 1
+            "color": {
+              "$id": "api/controller/style/model/blocks/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
             },
-            "location": {
-              "type": "string",
-              "enum": ["vertex", "edge", "cell", "polygon", "polyhedron"]
-            },
-            "item": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "colormap": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minimum": {
-              "type": "number"
-            },
-            "maximum": {
-              "type": "number"
-            },
-            "timeStep": {
-              "type": "number"
-            },
-            "noDataColor": {
-              "type": "string",
-              "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/model/blocks/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
             }
           },
-          "required": ["ids", "attribute"],
-          "additionalProperties": false,
-          "response": {
+          "corners": {
+            "visibility": {
+              "$id": "api/controller/style/model/corners/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "coloring": {
+              "$id": "api/controller/style/model/corners/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "random"]
+                }
+              },
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/model/corners/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/model/corners/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "edges": {
+            "visibility": {
+              "$id": "api/controller/style/model/edges/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "lines": {
+            "edge": {
+              "attribute": {
+                "$id": "api/controller/style/model/lines/edge/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/model/lines/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "coloring": {
+              "$id": "api/controller/style/model/lines/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "random"]
+                }
+              },
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/model/lines/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/model/lines/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "points": {
+            "visibility": {
+              "$id": "api/controller/style/model/points/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "size": {
+              "$id": "api/controller/style/model/points/size",
+              "route": "/size",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "size": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              },
+              "required": ["ids", "size"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "visibility": {
+            "$id": "api/controller/style/model/visibility",
+            "route": "/visibility",
+            "methods": ["POST"],
             "type": "object",
             "properties": {
-              "statusCode": {
-                "type": "integer"
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "minItems": 1
               },
-              "response": {}
+              "visibility": {
+                "type": "boolean"
+              }
             },
-            "required": ["statusCode", "response"],
-            "additionalProperties": false
+            "required": ["ids", "visibility"],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer"
+                },
+                "response": {}
+              },
+              "required": ["statusCode", "response"],
+              "additionalProperties": false
+            }
+          },
+          "surfaces": {
+            "polygon": {
+              "attribute": {
+                "$id": "api/controller/style/model/surfaces/polygon/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "visibility": {
+              "$id": "api/controller/style/model/surfaces/visibility",
+              "route": "/visibility",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "visibility": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["ids", "visibility"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "coloring": {
+              "$id": "api/controller/style/model/surfaces/coloring",
+              "route": "/coloring",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "coloring": {
+                  "type": "string",
+                  "enum": ["constant", "random"]
+                }
+              },
+              "required": ["ids", "coloring"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "color": {
+              "$id": "api/controller/style/model/surfaces/color",
+              "route": "/color",
+              "methods": ["POST"],
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 32,
+                    "maxLength": 32
+                  },
+                  "minItems": 1
+                },
+                "componentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "color": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                }
+              },
+              "required": ["ids", "color"],
+              "additionalProperties": false,
+              "response": {
+                "type": "object",
+                "properties": {
+                  "statusCode": {
+                    "type": "integer"
+                  },
+                  "response": {}
+                },
+                "required": ["statusCode", "response"],
+                "additionalProperties": false
+              }
+            },
+            "vertex": {
+              "attribute": {
+                "$id": "api/controller/style/model/surfaces/vertex/attribute",
+                "route": "/attribute",
+                "methods": ["POST"],
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 32,
+                      "maxLength": 32
+                    },
+                    "minItems": 1
+                  },
+                  "componentIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "item": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "colormap": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minimum": {
+                    "type": "number"
+                  },
+                  "maximum": {
+                    "type": "number"
+                  },
+                  "timeStep": {
+                    "type": "number"
+                  },
+                  "noDataColor": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+                  }
+                },
+                "required": ["ids", "name"],
+                "additionalProperties": false,
+                "response": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "integer"
+                    },
+                    "response": {}
+                  },
+                  "required": ["statusCode", "response"],
+                  "additionalProperties": false
+                }
+              }
+            }
           }
         }
       },

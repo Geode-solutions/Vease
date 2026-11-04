@@ -5,6 +5,11 @@ import { z } from "zod";
 // Local imports
 import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
 
+const ACCEPTED = {
+  screenshot: ["filePath", "includeBackground"],
+  project: ["filePath"],
+} as const;
+
 export default defineMcpTool({
   name: "export",
   description:
@@ -28,7 +33,7 @@ export default defineMcpTool({
   },
   handler: async ({ kind, ...params }) => {
     const result = await callControllerAction(`/api/controller/export/${kind}`, params, {
-      accepted: kind === "screenshot" ? ["filePath", "includeBackground"] : ["filePath"],
+      accepted: ACCEPTED[kind],
       context: `to a ${kind} export`,
       errorPrefix: "Error exporting",
     });

@@ -9,21 +9,7 @@ import {
   hexColor,
   styleTarget,
 } from "@vease_server/mcp/utils/controller_schemas";
-import { callControllerAction } from "@vease_server/mcp/utils/controller_api";
-import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
-
-const SHARED_PARAMS = ["ids", "target", "componentIds"];
-const STYLE_PARAMS = ["visibility", "color", "size", "width", "coloring"];
-const ATTRIBUTE_PARAMS = [
-  "attribute",
-  "location",
-  "item",
-  "colormap",
-  "minimum",
-  "maximum",
-  "timeStep",
-  "noDataColor",
-];
+import { runStyle } from "@vease_server/mcp/utils/style_run";
 
 export default defineMcpTool({
   name: "set-style",
@@ -88,26 +74,8 @@ export default defineMcpTool({
       .optional()
       .describe("Hex color of the no-data values, #rrggbb or #rrggbbaa"),
   },
-  handler: async (input) => {
-    const byAttribute = input.attribute !== undefined;
-    const result = await callControllerAction(
-      `/api/controller/style/${byAttribute ? "attribute" : "set"}`,
-      input,
-      byAttribute
-        ? {
-            accepted: [...SHARED_PARAMS, ...ATTRIBUTE_PARAMS],
-            context: "with attribute; style in a separate call",
-            errorPrefix: "Error coloring by attribute",
-          }
-        : {
-            accepted: [...SHARED_PARAMS, ...STYLE_PARAMS],
-            context: "without attribute; they only apply when coloring by an attribute",
-            errorPrefix: "Error setting style",
-          },
-    );
-    if (!result.ok) {
-      return result.message;
-    }
-    return `Style updated: ${JSON.stringify(controllerResponse(result.payload))}`;
+  handler: async ({ ids, ...request }) => {
+    const result = await runStyle(ids, request);
+    return result;
   },
 });

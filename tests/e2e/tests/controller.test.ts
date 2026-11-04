@@ -99,19 +99,15 @@ test("controller drives the app", async ({ window }) => {
   const attribute = findPolygonAttribute(details.response.attributes);
 
   await expectOk(
-    await window.request.post(controllerUrl(window, "style/set"), {
-      data: { ids: [dataId], target: "polygons", color: polygonsColor },
+    await window.request.post(controllerUrl(window, "style/mesh/polygons/color"), {
+      data: { ids: [dataId], color: polygonsColor },
     }),
   );
   await expectOk(
-    await window.request.post(controllerUrl(window, "style/attribute"), {
-      data: {
-        ids: [dataId],
-        target: attribute.target,
-        attribute: attribute.name,
-        location: attribute.location,
-      },
-    }),
+    await window.request.post(
+      controllerUrl(window, `style/mesh/polygons/${attribute.location}/attribute`),
+      { data: { ids: [dataId], name: attribute.name } },
+    ),
   );
   await expectOk(
     await window.request.post(controllerUrl(window, "view/orient"), {

@@ -17,15 +17,14 @@ import {
   setScene,
 } from "@vease/utils/controller/handlers/set_view";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import { STYLE_COMMANDS } from "@vease/utils/controller/handlers/style/index";
 import { awaitData } from "@vease/utils/controller/handlers/await_data";
-import { colorByAttribute } from "@vease/utils/controller/handlers/color_by_attribute";
 import { createData } from "@vease/utils/controller/handlers/create_data";
 import { dataDetails } from "@vease/utils/controller/handlers/data_details";
 import { deleteData } from "@vease/utils/controller/handlers/delete_data";
 import { importProjectFile } from "@vease/utils/controller/handlers/import_project";
 import { listData } from "@vease/utils/controller/handlers/list_data";
 import { renameData } from "@vease/utils/controller/handlers/rename_data";
-import { setStyle } from "@vease/utils/controller/handlers/set_style";
 import { viewerState } from "@vease/utils/controller/handlers/viewer_state";
 
 // One command per controller route
@@ -38,8 +37,7 @@ const commandHandlers: Record<string, ControllerHandler> = {
   "create-data": createData,
   "rename-data": renameData,
   "delete-data": deleteData,
-  "set-style": setStyle,
-  "color-by-attribute": colorByAttribute,
+  ...STYLE_COMMANDS,
   "reset-view": resetView,
   "focus-view": focusView,
   "orient-view": orientView,

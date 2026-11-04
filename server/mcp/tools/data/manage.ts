@@ -45,7 +45,8 @@ export default defineMcpTool({
       return "Error managing data: rename takes exactly one id";
     }
     // Rename speaks of the single data it renames, the other actions of a list
-    const actionParams = action === "rename" ? { ...params, id: ids?.[0] } : { ...params, ids };
+    const id = action === "rename" ? ids?.[0] : undefined;
+    const actionParams = { ...params, id, ids: id === undefined ? ids : undefined };
     const result = await callControllerAction(`/api/controller/data/${action}`, actionParams, {
       accepted: ACCEPTED[action],
       context: `to ${action}`,

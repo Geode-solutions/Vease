@@ -1,11 +1,20 @@
+// Third party imports
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+// Local imports
 import {
-  controllerUrl,
+  OTHER_SURFACE_ID,
+  SURFACE_ID,
+  THIRD_SURFACE_ID,
+  fakeController,
+  routeRequests,
+  surfaceDetails,
+} from "@vease_tests/unit/server/mcp/utils/style_fixtures";
+import { fakeMcpRequestExtra, identityMcpToolDefinition } from "@vease_tests/utils/server_utils";
+import {
   jsonResponse,
-  sentRequest,
   stubControllerFetch,
 } from "@vease_tests/unit/server/mcp/tools/controller_fetch";
-import { fakeMcpRequestExtra, identityMcpToolDefinition } from "@vease_tests/utils/server_utils";
 import tool from "@vease_server/mcp/tools/style/set";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -15,8 +24,13 @@ vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
   defineMcpTool: identityMcpToolDefinition,
 }));
 
-const DATA_ID = "0123456789abcdef0123456789abcdef";
-const RANGE_MAXIMUM = 100;
+const HEX = /^#[0-9a-f]{6}$/u;
+const SURFACE_IDS = [SURFACE_ID, OTHER_SURFACE_ID, THIRD_SURFACE_ID];
+const DETAILS = [
+  surfaceDetails(SURFACE_ID, "top"),
+  surfaceDetails(OTHER_SURFACE_ID, "middle"),
+  surfaceDetails(THIRD_SURFACE_ID, "bottom"),
+];
 
 type ToolInput = Parameters<typeof tool.handler>[0];
 
@@ -41,93 +55,105 @@ function toolInput(input: Pick<ToolInput, "ids"> & Partial<ToolInput>): ToolInpu
   };
 }
 
+function sentColor({ body }: { body: unknown }): string {
+  if (typeof body === "object" && body !== null && "color" in body) {
+    return String(body.color);
+  }
+  return "";
+}
+
 describe("set-style MCP tool", () => {
   const fetchMock = vi.fn<typeof fetch>();
 
   beforeEach(() => {
     stubControllerFetch(fetchMock);
+    fakeController(fetchMock, { details: DETAILS });
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  test("posts a style change to /api/controller/style/set and reports success", async () => {
-    fetchMock.mockResolvedValue(
-      jsonResponse({ statusCode: 200, response: { ids: [DATA_ID], applied: ["color"] } }),
-    );
-
+  test("gives each surface its own random color through the polygons color route", async () => {
     const result = await tool.handler(
-      toolInput({ ids: [DATA_ID], target: "polygons", color: "#ff8800" }),
+      toolInput({ ids: SURFACE_IDS, target: "polygons", coloring: "random" }),
       fakeMcpRequestExtra(),
     );
 
-    expect(sentRequest(fetchMock)).toStrictEqual({
-      url: controllerUrl("style/set"),
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: { ids: [DATA_ID], target: "polygons", color: "#ff8800" },
-    });
-    expect(result).toBe(`Style updated: {"ids":["${DATA_ID}"],"applied":["color"]}`);
-  });
+    const requests = routeRequests(fetchMock);
+    const colors = requests.map((request) => sentColor(request));
 
-  test("posts to /api/controller/style/attribute when an attribute is given", async () => {
-    const attributeParams = {
-      ids: [DATA_ID],
-      target: "polygons" as const,
-      componentIds: ["surface-1"],
-      attribute: "depth",
-      location: "polygon" as const,
-      colormap: "batlow",
-      minimum: 0,
-      maximum: RANGE_MAXIMUM,
-    };
-    fetchMock.mockResolvedValue(
-      jsonResponse({ statusCode: 200, response: { ids: [DATA_ID], attribute: "depth" } }),
+    expect(requests).toStrictEqual(
+      SURFACE_IDS.map((id, index) => ({
+        route: "style/mesh/polygons/color",
+        body: { ids: [id], color: colors[index] },
+      })),
     );
-
-    const result = await tool.handler(toolInput(attributeParams), fakeMcpRequestExtra());
-
-    expect(sentRequest(fetchMock)).toMatchObject({
-      url: controllerUrl("style/attribute"),
-      body: attributeParams,
-    });
-    expect(result).toBe(`Style updated: {"ids":["${DATA_ID}"],"attribute":"depth"}`);
-  });
-
-  test("rejects style params given with an attribute without calling the controller", async () => {
-    const result = await tool.handler(
-      toolInput({ ids: [DATA_ID], attribute: "depth", color: "#ff8800", visibility: true }),
-      fakeMcpRequestExtra(),
-    );
-
+    expect(colors.every((color) => HEX.test(color))).toBe(true);
+    expect(new Set(colors).size).toBe(SURFACE_IDS.length);
     expect(result).toBe(
-      "Error coloring by attribute: visibility, color cannot be given with attribute; " +
-        "style in a separate call",
+      `Style updated: ${JSON.stringify({ ids: SURFACE_IDS, applied: ["coloring"] })}`,
     );
-    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  test("rejects attribute params given without an attribute without calling the controller", async () => {
+  test("colors by an attribute found without target", async () => {
+    const attributes = [{ id: SURFACE_ID, target: "polygons", location: "polygon", name: "depth" }];
+    fakeController(fetchMock, {
+      details: DETAILS,
+      routes: {
+        "style/mesh/polygons/polygon/attribute": ({ ids }) =>
+          jsonResponse({ statusCode: 200, response: { ids, attributes } }),
+      },
+    });
+
     const result = await tool.handler(
-      toolInput({ ids: [DATA_ID], colormap: "batlow" }),
+      toolInput({ ids: [SURFACE_ID], attribute: "depth", colormap: "batlow" }),
       fakeMcpRequestExtra(),
     );
 
-    expect(result).toBe(
-      "Error setting style: colormap cannot be given without attribute; they only apply when " +
-        "coloring by an attribute",
-    );
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(routeRequests(fetchMock)).toStrictEqual([
+      {
+        route: "style/mesh/polygons/polygon/attribute",
+        body: { ids: [SURFACE_ID], name: "depth", colormap: "batlow" },
+      },
+    ]);
+    expect(result).toBe(`Style updated: ${JSON.stringify({ ids: [SURFACE_ID], attributes })}`);
   });
 
-  test("forwards the controller error", async () => {
-    fetchMock.mockResolvedValue(
-      jsonResponse({ description: "Nothing to change" }, { failed: true }),
+  test("passes the controller error through", async () => {
+    fakeController(fetchMock, {
+      details: DETAILS,
+      routes: {
+        "style/mesh/edges/width": () =>
+          jsonResponse({ description: "Viewer not ready" }, { failed: true }),
+      },
+    });
+
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], target: "edges", width: 2 }),
+      fakeMcpRequestExtra(),
     );
 
-    const result = await tool.handler(toolInput({ ids: [DATA_ID] }), fakeMcpRequestExtra());
+    expect(result).toBe("Error setting style: style/mesh/edges/width: Viewer not ready");
+  });
 
-    expect(result).toBe("Error setting style: Nothing to change");
+  test("passes a plan error through", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], target: "polygons", size: 2 }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe("Error setting style: size cannot be set on mesh polygons");
+    expect(routeRequests(fetchMock)).toStrictEqual([]);
+  });
+
+  test("refuses a request error without calling the controller", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [SURFACE_ID], colormap: "batlow" }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(result).toBe("Error setting style: colormap: only for coloring by an attribute");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
