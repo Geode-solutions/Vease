@@ -1,26 +1,17 @@
 <script setup lang="ts">
-import FeedBackSnackers from "@ogw_front/components/FeedBack/Snackers.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
-import GlobalComponents from "@vease/components/Extensions/GlobalComponents.vue";
-import InfraConnected from "@ogw_front/components/InfraConnected.vue";
-import Launcher from "@ogw_front/components/Launcher.vue";
-import { Status } from "@ogw_front/utils/status";
 import { consola } from "consola";
-import { foldersIgnoredWarning } from "@ogw_front/utils/upload_path";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
-import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
-import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
-import CrsDialogHost from "@vease/components/CrsDialogHost.vue";
-import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
+import AppDrawers from "@vease/components/Layout/AppDrawers.vue";
+import AppLauncher from "@vease/components/Layout/AppLauncher.vue";
+import AppOverlays from "@vease/components/Layout/AppOverlays.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
-import UpdateSnackbar from "@vease/components/Updater/UpdateSnackbar.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
-import { isUpdaterAvailable } from "@vease/stores/updater";
 import { useAuth } from "@vease/composables/auth";
-import { useExtensions } from "@vease/composables/extensions";
+import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
 import { useUIStore } from "@vease/stores/ui";
 
 // The e2e desktop harness parses this line from Electron stdout (tests/e2e/utils/navigate.ts); consola's styled browser output breaks that match, so it stays a plain console.log.
@@ -28,12 +19,10 @@ import { useUIStore } from "@vease/stores/ui";
 console.log("Nuxt server url", globalThis.location.host);
 
 const UIStore = useUIStore();
-const updaterAvailable = isUpdaterAvailable();
 const infraStore = getInfraStore();
 const appStore = useAppStore();
 
-const { updateExtensions } = useExtensions();
-const { isUserAuthenticated, autoLogin } = useAuth();
+const { autoLogin } = useAuth();
 autoLogin();
 
 runFunctionWhenMicroservicesConnected(() => {
@@ -41,65 +30,7 @@ runFunctionWhenMicroservicesConnected(() => {
   setIsAppReady(appStore.base_url, true);
 });
 
-function handleFilesDropped(files): void {
-  if (!UIStore.showStepper && !UIStore.showExtensions) {
-    UIStore.setDroppedFiles([...files]);
-    UIStore.setShowStepper(true);
-  }
-}
-
-function handleFoldersDropped(): void {
-  if (!UIStore.showStepper && !UIStore.showExtensions) {
-    useFeedbackStore().add_warning(foldersIgnoredWarning);
-  }
-}
-
-watch(
-  () => [
-    UIStore.showStepper,
-    UIStore.showCreateTools,
-    UIStore.showExtensions,
-    UIStore.showCrsAlign,
-  ],
-  ([stepper, tools, extensions, crsAlign], [oldStepper, oldTools, oldExtensions, oldCrsAlign]) => {
-    if (stepper && !oldStepper) {
-      UIStore.setShowCreateTools(false);
-      UIStore.setShowExtensions(false);
-      UIStore.setShowCrsAlign(false);
-    }
-    if (tools && !oldTools) {
-      UIStore.setShowStepper(false);
-      UIStore.setShowExtensions(false);
-      UIStore.setShowCrsAlign(false);
-    }
-    if (extensions && !oldExtensions) {
-      UIStore.setShowStepper(false);
-      UIStore.setShowCreateTools(false);
-      UIStore.setShowCrsAlign(false);
-    }
-    if (crsAlign && !oldCrsAlign) {
-      UIStore.setShowStepper(false);
-      UIStore.setShowCreateTools(false);
-      UIStore.setShowExtensions(false);
-    }
-  },
-);
-
-const { user } = useAuth();
-
-// Token sent to the Cloud API on launch; it expires after an hour, reloading the page gets a new one
-const authToken = ref<string>();
-
-watch(
-  user,
-  async (newUser) => {
-    authToken.value = await newUser?.getIdToken();
-    if (newUser) {
-      runFunctionWhenMicroservicesConnected(updateExtensions);
-    }
-  },
-  { immediate: true },
-);
+useExclusiveDrawers();
 </script>
 <template>
   <v-app
@@ -115,26 +46,9 @@ watch(
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
-        <Launcher
-          v-if="infraStore.status != Status.CREATED"
-          app-name="Vease"
-          logo="/logo.png"
-          :isUserAuthenticated="isUserAuthenticated"
-          :auth-token="authToken"
-        >
-          <template #auth>
-            <AuthWrapper />
-          </template>
-        </Launcher>
-        <NuxtPage v-else style="z-index: 1" class="fill-height" />
+        <AppLauncher />
       </GlassCard>
-      <InfraConnected>
-        <DrawerManager
-          :ui-store="UIStore"
-          @files-dropped="handleFilesDropped"
-          @folders-dropped="handleFoldersDropped"
-        />
-      </InfraConnected>
+      <AppDrawers />
     </v-main>
     <v-progress-linear
       v-if="infraStore.microservices_busy"
@@ -144,11 +58,7 @@ watch(
       class="position-fixed top-0"
       style="z-index: 4"
     />
-    <FeedBackSnackers />
-    <UpdateSnackbar v-if="updaterAvailable" />
-
-    <GlobalComponents />
-    <CrsDialogHost />
+    <AppOverlays />
   </v-app>
 </template>
 <style scoped>
