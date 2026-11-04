@@ -1,5 +1,5 @@
 // Third party imports
-import type { Page } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 // Local imports
 import {
@@ -19,6 +19,13 @@ const ZOOM_WHEEL_DELTA = -300;
 // Longer than the rest delay of the basemap detail store: its request has started
 const DETAIL_REST_MILLISECONDS = 500;
 const FULL_OPACITY = 100;
+
+// The Basemap category only joins the tree once the project has a CRS
+async function expectNoBasemapInTree(window: Page): Promise<void> {
+  const tree = getMainObjectTree(window);
+  await expect(tree).toBeVisible();
+  await expect(tree.getByTestId("treeRowWrapper").filter({ hasText: BASEMAP })).toHaveCount(0);
+}
 
 // A map eye shows or hides that map, over or under the other visible maps.
 // The category eye hides the visible maps, or shows the last maps again
@@ -79,4 +86,4 @@ async function zoomAndRest(window: Page, steps: number): Promise<void> {
   await waitForActionSettled(window);
 }
 
-export { setBasemapOpacity, toggleBasemap, toggleBasemapCrop, zoomAndRest };
+export { expectNoBasemapInTree, setBasemapOpacity, toggleBasemap, toggleBasemapCrop, zoomAndRest };

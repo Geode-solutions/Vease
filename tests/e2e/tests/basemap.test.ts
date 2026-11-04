@@ -5,6 +5,13 @@ import { expect } from "@playwright/test";
 
 // Local imports
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
+import {
+  expectNoBasemapInTree,
+  setBasemapOpacity,
+  toggleBasemap,
+  toggleBasemapCrop,
+  zoomAndRest,
+} from "@vease_tests/utils/basemap";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
   removeExplodeFilter,
@@ -14,12 +21,6 @@ import {
   toggleExplodeFilter,
   toggleGridScale,
 } from "@vease_tests/utils/camera_interaction";
-import {
-  setBasemapOpacity,
-  toggleBasemap,
-  toggleBasemapCrop,
-  zoomAndRest,
-} from "@vease_tests/utils/basemap";
 import { brepGeodeObjectType } from "@vease_tests/utils/constants";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
@@ -41,7 +42,7 @@ test("load a model", async ({ window }) => {
 });
 
 test("no basemap without crs", async ({ window }) => {
-  await expect(window.getByTestId("basemapButton")).toHaveCount(0);
+  await expectNoBasemapInTree(window);
   await expect(window.getByTestId("basemapAttribution")).toBeHidden();
 });
 
