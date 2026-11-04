@@ -7,8 +7,15 @@ const MONTHS = 30;
 const QUARTERS = 4;
 const YEARS = 12;
 
+function toDate(dateInput: string | Date): Date {
+  if (typeof dateInput === "string") {
+    return new Date(dateInput);
+  }
+  return dateInput;
+}
+
 export function formatRelativeTime(dateInput: string | Date): string {
-  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  const date = toDate(dateInput);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffSecs = Math.floor(diffMs / SECONDS);

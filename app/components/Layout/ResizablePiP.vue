@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { useDraggable, useStorage, useWindowSize } from "@vueuse/core";
+import { type RemovableRef, useDraggable, useStorage, useWindowSize } from "@vueuse/core";
+import type { Ref } from "vue";
 
 const RATIO = 0.9;
 
@@ -40,16 +41,27 @@ interface Position {
   y: number | undefined;
 }
 
-const savedPosition = storageKey
-  ? useStorage<Position>(`${storageKey}-position`, { x: undefined, y: undefined })
-  : ref<Position>({ x: undefined, y: undefined });
+function createSavedPosition(): Ref<Position> | RemovableRef<Position> {
+  if (storageKey) {
+    return useStorage<Position>(`${storageKey}-position`, { x: undefined, y: undefined });
+  }
+  return ref<Position>({ x: undefined, y: undefined });
+}
 
-const savedSize = storageKey
-  ? useStorage(`${storageKey}-size`, {
+function createSavedSize():
+  | Ref<{ width: number; height: number }>
+  | RemovableRef<{ width: number; height: number }> {
+  if (storageKey) {
+    return useStorage(`${storageKey}-size`, {
       width: defaultWidth,
       height: defaultHeight,
-    })
-  : ref({ width: defaultWidth, height: defaultHeight });
+    });
+  }
+  return ref({ width: defaultWidth, height: defaultHeight });
+}
+
+const savedPosition = createSavedPosition();
+const savedSize = createSavedSize();
 
 const pipWidth = ref(savedSize.value.width);
 const pipHeight = ref(savedSize.value.height);

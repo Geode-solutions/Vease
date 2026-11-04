@@ -1,5 +1,6 @@
 {
-  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*"],
+  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*", "oxlint/**"],
+  "jsPlugins": ["./oxlint/ternary_primitive_only.mjs"],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -40,7 +41,7 @@
         "ignoreArrayIndexes": true
       }
     ],
-    "eslint/no-ternary": "off", // A utiliser pour des opérations simples
+    "eslint/no-ternary": "off", // A utiliser pour des opérations simples (see local/ternary-primitive-only)
     "eslint/no-undefined": "off", // Conflict with unicorn/no-typeof-undefined which prefers direct undefined comparison
     "eslint/no-void": "off", // Conflicts with typescript/no-floating-promises, whose fix for fire-and-forget promises is the void operator
     "eslint/no-underscore-dangle": [
@@ -67,10 +68,11 @@
     "import/no-nodejs-modules": "off",
     "import/prefer-default-export": "off",
     "import/unambiguous": "off",
+    "local/ternary-primitive-only": "error",
     "max-lines": [
       "error",
       {
-        "max": 350,
+        "max": 200,
         "skipBlankLines": true,
         "skipComments": true
       }

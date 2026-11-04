@@ -83,7 +83,10 @@ export function useVeaseChat(): VeaseChatReturn {
       api: "/api/llm/chat",
       headers: async (): Promise<Record<string, string>> => {
         const token = await user.value?.getIdToken();
-        return token === undefined ? {} : { Authorization: `Bearer ${token}` };
+        if (token === undefined) {
+          return {};
+        }
+        return { Authorization: `Bearer ${token}` };
       },
       body: (): { provider: ChatProvider; gatewayApiKey: string | undefined } => ({
         provider: provider.value,
