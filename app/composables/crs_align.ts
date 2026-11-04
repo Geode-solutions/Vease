@@ -33,9 +33,21 @@ function isFilled(point: EditablePoint): boolean {
   return isCoordinate(point.x) && isCoordinate(point.y);
 }
 
+interface UseCrsAlignReturn {
+  sourcePoints: Ref<EditablePoint[]>;
+  targetPoints: Ref<EditablePoint[]>;
+  pickingActive: Ref<boolean>;
+  togglePickMode: () => void;
+  reset: () => void;
+  isComplete: ComputedRef<boolean>;
+  toSourceCrsPoints: () => CrsPoint[];
+  toTargetCrsPoints: () => CrsPoint[];
+  editSourcePoint: (index: number, coord: keyof EditablePoint, value: number | string) => void;
+}
+
 // Source points are picked on the data (only x and y are used) or typed, target points are typed
-// oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types, max-lines-per-function
-function useCrsAlign() {
+// oxlint-disable-next-line max-lines-per-function
+function useCrsAlign(): UseCrsAlignReturn {
   const viewerStore = useViewerStore();
   const sourcePoints = ref<EditablePoint[]>(emptyPoints());
   const targetPoints = ref<EditablePoint[]>(emptyPoints());
