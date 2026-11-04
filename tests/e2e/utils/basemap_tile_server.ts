@@ -6,16 +6,8 @@ import { once } from "node:events";
 import os from "node:os";
 import path from "node:path";
 
-// Every open source is served locally: the tests never reach EOX, the IGN or OpenStreetMap
-const SOURCES = [
-  "EOX_S2CLOUDLESS_2016",
-  "IGN_ORTHOPHOTOS",
-  "OSM",
-  "IGN_PLAN",
-  "IGN_ROADS",
-  "EOX_OVERLAY",
-];
-const ROUTE_SOURCES = ["IGN_ROADS", "EOX_OVERLAY"];
+// The first served routes source wins: the IGN roads, transparent, stand for every routes source
+const ROUTE_PATH = "/ign_roads/";
 const HTTP_OK = 200;
 const TILE_PATH = path.join(
   import.meta.dirname,
@@ -31,15 +23,15 @@ interface TileServer {
   stop: () => Promise<void>;
 }
 
-// Serves the checkerboard tile for any /{source}/{z}/{x}/{y}.png request, a red diagonal for the roads.
-// The env variables are inherited by the spawned Nitro server, then by vease-back, so they must be set before the app starts.
+// Serves the checkerboard tile for any /{source}/{z}/{x}/{y}.png request, a red diagonal for the roads:
+// The tests never reach EOX, the IGN or OpenStreetMap. The env variables are inherited by the app
+// (Nitro server or Electron process), then by vease-back, so they must be set before the app starts
 async function startTileServer(): Promise<TileServer> {
   const tile = fs.readFileSync(TILE_PATH);
   const routeTile = fs.readFileSync(ROUTE_TILE_PATH);
   const server = http.createServer((request, response) => {
-    const url = request.url ?? "";
     // Transparent roads: stacked on the satellite map, they must not hide it
-    const isRoute = ROUTE_SOURCES.some((source) => url.startsWith(`/${source}/`));
+    const isRoute = (request.url ?? "").toLowerCase().startsWith(ROUTE_PATH);
     const body = isRoute ? routeTile : tile;
     response.writeHead(HTTP_OK, { "Content-Type": "image/png", "Content-Length": body.length });
     response.end(body);
@@ -52,16 +44,12 @@ async function startTileServer(): Promise<TileServer> {
   }
   const { port }: AddressInfo = address;
   const cacheFolder = fs.mkdtempSync(path.join(os.tmpdir(), "vease-e2e-basemap-cache-"));
-  for (const source of SOURCES) {
-    process.env[`BASEMAP_TILE_URL_${source}`] =
-      `http://127.0.0.1:${port}/${source}/{z}/{x}/{y}.png`;
-  }
+  // One template for every source: the back fills {source} with the source key
+  process.env.BASEMAP_TILE_URL = `http://127.0.0.1:${port}/{source}/{z}/{x}/{y}.png`;
   process.env.BASEMAP_CACHE_FOLDER = cacheFolder;
   return {
     stop: async (): Promise<void> => {
-      for (const source of SOURCES) {
-        delete process.env[`BASEMAP_TILE_URL_${source}`];
-      }
+      delete process.env.BASEMAP_TILE_URL;
       delete process.env.BASEMAP_CACHE_FOLDER;
       server.closeAllConnections();
       server.close();
