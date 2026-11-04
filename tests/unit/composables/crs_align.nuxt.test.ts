@@ -5,6 +5,8 @@ import { useCrsAlign } from "@vease/composables/crs_align";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
+// Shorter than the preview debounce: each keystroke restarts it
+const PREVIEW_PAUSE_MILLISECONDS = 50;
 
 // The composable registers a window-level Escape listener: every instance is unmounted in afterEach
 const { mountTool, unmountAll } = createToolMounter();
@@ -17,6 +19,7 @@ describe("useCrsAlign composable", () => {
 
   afterEach(() => {
     unmountAll();
+    vi.useRealTimers();
   });
 
   test("fills the first empty source point with the picked x and y", async () => {
@@ -89,6 +92,22 @@ describe("useCrsAlign composable", () => {
       { x: 980, y: 2000 },
     ];
     expect(result.isComplete.value).toBe(false);
+  });
+
+  test("typing a coordinate sends one preview once the typing pauses", async () => {
+    vi.useFakeTimers();
+    const { result } = mountTool(() => useCrsAlign());
+    const request = vi.mocked(useViewerStore().request);
+    for (const x of ["1", "12", "123"]) {
+      result.editSourcePoint(0, "x", x);
+      // oxlint-disable-next-line no-await-in-loop
+      await vi.advanceTimersByTimeAsync(PREVIEW_PAUSE_MILLISECONDS);
+    }
+    result.editSourcePoint(0, "y", "4");
+    await vi.runAllTimersAsync();
+    expect(request).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ params: { points: [{ x: 123, y: 4, z: 0 }], style: "points" } }),
+    );
   });
 
   test("reset clears points and stops picking", () => {

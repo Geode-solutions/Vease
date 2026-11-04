@@ -1,5 +1,5 @@
+import { onKeyStroke, watchDebounced } from "@vueuse/core";
 import type { CrsPoint } from "@vease/composables/crs";
-import { onKeyStroke } from "@vueuse/core";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 
@@ -10,6 +10,8 @@ interface EditablePoint {
 
 // Three pairs: the affine alignment places, rotates, scales and shears the data
 const NB_POINTS = 3;
+// One preview request once the typing pauses, not one per keystroke
+const PREVIEW_DEBOUNCE_MILLISECONDS = 200;
 const preview_schema = viewer_schemas.opengeodeweb_viewer.viewer.preview_points;
 
 function emptyPoints(): EditablePoint[] {
@@ -135,7 +137,7 @@ function useCrsAlign(): UseCrsAlignReturn {
     { deep: true },
   );
 
-  watch(sourcePoints, preview, { deep: true });
+  watchDebounced(sourcePoints, preview, { deep: true, debounce: PREVIEW_DEBOUNCE_MILLISECONDS });
 
   watch(
     () => viewerStore.picking_mode,
