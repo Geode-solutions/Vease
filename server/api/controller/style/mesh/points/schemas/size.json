@@ -1,0 +1,33 @@
+{
+  "route": "/size",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "size": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "required": ["ids", "size"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "route": "/restore",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "positionId": {
+      "type": "integer"
+    }
+  },
+  "required": ["positionId"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}
