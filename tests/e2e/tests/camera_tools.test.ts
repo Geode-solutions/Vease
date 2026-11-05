@@ -359,9 +359,11 @@ async function setSceneTextStyle(window: Page, color: string, font: string): Pro
   await waitForActionSettled(window);
   await closeAllMenus(window);
 }
+test("open scene background menu", async ({ window }) => {
+  await openSceneMenuItem(window, "sceneBackgroundMenu");
+});
 
 test("scene background color", async ({ window }) => {
-  await openSceneMenuItem(window, "sceneBackgroundMenu");
   await setColorInputText(window, SCENE_BACKGROUND_COLOR);
   await closeAllMenus(window);
 });
