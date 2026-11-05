@@ -1,4 +1,3 @@
-// oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { applyPoints, item, mountWithWells } from "@vease_tests/utils/crs_align_fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
