@@ -6,18 +6,12 @@ import { once } from "node:events";
 import os from "node:os";
 import path from "node:path";
 
+// Local imports
+import { ROUTE_PNG, TILE_PNG } from "./basemap_tiles";
+
 // The first served routes source wins: the IGN roads, transparent, stand for every routes source
 const ROUTE_PATH = "/ign_roads/";
 const HTTP_OK = 200;
-const TILE_PATH = path.join(
-  import.meta.dirname,
-  "..",
-  "tests",
-  "data",
-  "basemap_tiles",
-  "tile.png",
-);
-const ROUTE_TILE_PATH = path.join(path.dirname(TILE_PATH), "route.png");
 
 interface TileServer {
   stop: () => Promise<void>;
@@ -27,12 +21,10 @@ interface TileServer {
 // The tests never reach EOX, the IGN or OpenStreetMap. The env variables are inherited by the app
 // (Nitro server or Electron process), then by vease-back, so they must be set before the app starts
 async function startTileServer(): Promise<TileServer> {
-  const tile = fs.readFileSync(TILE_PATH);
-  const routeTile = fs.readFileSync(ROUTE_TILE_PATH);
   const server = http.createServer((request, response) => {
     // Transparent roads: stacked on the satellite map, they must not hide it
     const isRoute = (request.url ?? "").toLowerCase().startsWith(ROUTE_PATH);
-    const body = isRoute ? routeTile : tile;
+    const body = isRoute ? ROUTE_PNG : TILE_PNG;
     response.writeHead(HTTP_OK, { "Content-Type": "image/png", "Content-Length": body.length });
     response.end(body);
   });
