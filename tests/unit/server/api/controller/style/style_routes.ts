@@ -29,7 +29,8 @@ function styleRoutesOnDisk(
 ): string[] {
   return fs
     .globSync(`${viewerType}/**/*.post.ts`, { cwd: STYLE_ROUTES_DIR })
-    .map((file) => file.replace(POST_SUFFIX, ""))
+    // Windows globs with backslashes, while routes are written with slashes
+    .map((file) => file.replaceAll(path.sep, path.posix.sep).replace(POST_SUFFIX, ""))
     .filter((route) => route.endsWith("/attribute") === attribute)
     .toSorted();
 }
