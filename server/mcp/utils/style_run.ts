@@ -4,14 +4,14 @@ import {
   type StyleDetails,
   StylePlanError,
   type StyleRequest,
-  attributeCall,
   givenProperties,
   mergeCalls,
-  styleCalls,
-} from "@vease_server/mcp/utils/style_plan";
+} from "@vease_server/mcp/utils/style_plan_common";
+import { attributeCall } from "@vease_server/mcp/utils/style_plan_attribute";
 import { callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { controllerResponse } from "@vease_server/mcp/utils/controller_response";
 import { distinctHexColors } from "@vease_server/mcp/utils/distinct_colors";
+import { styleCalls } from "@vease_server/mcp/utils/style_plan";
 
 interface FailedData {
   id: string;

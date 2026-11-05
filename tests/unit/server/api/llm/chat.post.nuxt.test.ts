@@ -1,10 +1,6 @@
-import {
-  CHAT_PROVIDER,
-  getChatModel,
-  getChatTools,
-  readDataContext,
-} from "@vease_server/utils/llm";
+import { CHAT_PROVIDER, getChatModel } from "@vease_server/utils/llm_model";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { getChatTools, readDataContext } from "@vease_server/utils/llm";
 import { consola } from "consola";
 import { eventWithBody } from "@vease_tests/utils/server_utils";
 import { getResponseStatus } from "h3";
@@ -16,9 +12,13 @@ const RESPONSE_OK = 200;
 const INTERNAL_SERVER_ERROR = 500;
 const MAX_TOOL_STEPS = 5;
 
-vi.mock(import("@vease_server/utils/llm"), async (importOriginal) => ({
+vi.mock(import("@vease_server/utils/llm_model"), async (importOriginal) => ({
   ...(await importOriginal()),
   getChatModel: vi.fn<typeof getChatModel>(),
+}));
+
+vi.mock(import("@vease_server/utils/llm"), async (importOriginal) => ({
+  ...(await importOriginal()),
   getChatTools: vi.fn<typeof getChatTools>(),
   readDataContext: vi.fn<typeof readDataContext>(),
 }));

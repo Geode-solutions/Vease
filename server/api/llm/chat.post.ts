@@ -10,12 +10,8 @@ import {
 import { readBody } from "h3";
 
 // Local imports
-import {
-  type ChatProvider,
-  getChatModel,
-  getChatTools,
-  readDataContext,
-} from "@vease_server/utils/llm";
+import { type ChatProvider, getChatModel } from "@vease_server/utils/llm_model";
+import { getChatTools, readDataContext } from "@vease_server/utils/llm";
 
 import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
 import schemas from "vease/vease_typed_schemas.js";

@@ -1,4 +1,4 @@
-// oxlint-disable max-lines, max-dependencies
+// oxlint-disable max-lines
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { type MockInstance, beforeEach, describe, expect, test, vi } from "vitest";
 import { type DataItem as StoredItem, useDataStore } from "@ogw_front/stores/data";

@@ -11,7 +11,10 @@ const NOT_FOUND = 404;
 // Binary response: the body is raw bytes, so the route cannot go through defineTypedEventHandler
 export default defineRawEventHandler(schemas.api.controller.files.download, (event): Buffer => {
   const { token } = getQuery(event);
-  const download = typeof token === "string" ? takeDownload(token) : undefined;
+  let download: ReturnType<typeof takeDownload> = undefined;
+  if (typeof token === "string") {
+    download = takeDownload(token);
+  }
   if (download === undefined) {
     throw createError({
       statusCode: NOT_FOUND,

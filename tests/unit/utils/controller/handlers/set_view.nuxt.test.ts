@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { CameraOptions } from "@ogw_internal/stores/hybrid_viewer/vtk_types";

@@ -5,12 +5,8 @@ import type { SliceAxis } from "@ogw_front/utils/slice";
 // Local imports
 import { type AttributeKind, getDataItem } from "@vease/utils/controller/targets";
 import { ControllerError, need } from "@vease/utils/controller/errors";
-import {
-  type FoundAttribute,
-  checkRange,
-  findAttribute,
-  resolveItem,
-} from "@vease/utils/controller/attributes";
+import { type FoundAttribute, findAttribute } from "@vease/utils/controller/attributes";
+import { checkRange, resolveItem } from "@vease/utils/controller/attribute_range";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
 type ThresholdLocation = AttributeKind | "point";
@@ -64,13 +60,19 @@ async function explode(params: ApplyFilterParams, store: HybridViewerStore): Pro
 }
 
 async function slice(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  const slices = params.remove === true ? [] : need("slice", "slices", params.slices);
+  let slices: { axis: SliceAxis; index: number }[] = [];
+  if (params.remove !== true) {
+    slices = need("slice", "slices", params.slices);
+  }
   const maxIndices = await store.setSlice(params.ids, slices);
   return { maxIndices };
 }
 
 async function clip(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  const planes = params.remove === true ? [] : need("clip", "planes", params.planes);
+  let planes: { origin: number[]; normal: number[] }[] = [];
+  if (params.remove !== true) {
+    planes = need("clip", "planes", params.planes);
+  }
   await store.setClippingPlanes(params.ids, planes);
   return {};
 }
@@ -109,7 +111,7 @@ function defaultRange(founds: FoundAttribute[], item: number): { min: number; ma
 async function threshold(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
   const { ids, minimum, maximum } = params;
   if (params.remove === true) {
-    await store.setThreshold(ids);
+    await store.setThreshold(ids, []);
     return {};
   }
   const name = need("threshold", "attribute", params.attribute);
@@ -129,11 +131,13 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
   const [item = 0] = founds.map((found) => resolveItem(params.item, found.attribute));
   const range = defaultRange(founds, item);
   const bounds = { item, minimum: minimum ?? range.min, maximum: maximum ?? range.max };
-  await store.setThreshold(ids, {
-    name: attributeArrayName(name, isTimeSeries(first) ? FIRST_TIME_STEP : undefined),
-    location: viewerLocation(first),
-    ...bounds,
-  });
+  await store.setThreshold(ids, [
+    {
+      name: attributeArrayName(name, isTimeSeries(first) ? FIRST_TIME_STEP : undefined),
+      location: viewerLocation(first),
+      ...bounds,
+    },
+  ]);
   return { attribute: name, location: first.kind, ...bounds };
 }
 

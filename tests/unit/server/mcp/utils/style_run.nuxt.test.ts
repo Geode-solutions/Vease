@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 // Third party imports
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -16,7 +17,7 @@ import {
   jsonResponse,
   stubControllerFetch,
 } from "@vease_tests/unit/server/mcp/tools/controller_fetch";
-import type { StyleRequest } from "@vease_server/mcp/utils/style_plan";
+import type { StyleRequest } from "@vease_server/mcp/utils/style_plan_common";
 import { distinctHexColors } from "@vease_server/mcp/utils/distinct_colors";
 import { runStyle } from "@vease_server/mcp/utils/style_run";
 

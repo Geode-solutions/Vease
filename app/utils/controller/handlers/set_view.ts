@@ -34,13 +34,11 @@ async function focus(params: { id: string; componentIds?: string[] }): Promise<A
   if (params.componentIds !== undefined && item.viewer_type !== "model") {
     throw new ControllerError("componentIds only applies to models");
   }
-  const blockIds =
-    params.componentIds === undefined
-      ? []
-      : await useDataStore().getMeshComponentsViewerIds(
-          id,
-          await resolveComponentIds(item, undefined, params.componentIds),
-        );
+  let blockIds: number[] = [];
+  if (params.componentIds !== undefined) {
+    const componentIds = await resolveComponentIds(item, undefined, params.componentIds);
+    blockIds = await useDataStore().getMeshComponentsViewerIds(id, componentIds);
+  }
   await getHybridViewerStore().focusCameraOnObject(id, blockIds);
   return { id };
 }
@@ -58,9 +56,10 @@ async function save({ name }: { name: string }): Promise<Applied> {
 }
 
 function describePositions(positions: CameraPositionRecord[]): string {
-  return positions.length > 0
-    ? positions.map(({ id, name }) => `${id} (${name})`).join(", ")
-    : "none saved";
+  if (positions.length === 0) {
+    return "none saved";
+  }
+  return positions.map(({ id, name }) => `${id} (${name})`).join(", ");
 }
 
 async function restore({ positionId }: { positionId: number }): Promise<Applied> {

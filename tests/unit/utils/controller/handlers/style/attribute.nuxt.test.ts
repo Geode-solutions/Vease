@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import {
   DEPTH,
   DEPTH_MAX,

@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { callControllerAction, callControllerApi } from "@vease_server/mcp/utils/controller_api";
 import { errResult, okResult } from "@vease_tests/utils/server_utils";

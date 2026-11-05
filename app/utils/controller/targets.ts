@@ -108,7 +108,10 @@ async function resolveComponentIds(
   target: ModelComponentTarget | undefined,
   componentIds: string[] | undefined,
 ): Promise<string[]> {
-  const targets = target === undefined ? MODEL_COMPONENT_TARGETS : [target];
+  let targets = MODEL_COMPONENT_TARGETS;
+  if (target !== undefined) {
+    targets = [target];
+  }
   const knownIds = await Promise.all(
     targets.map(async (component) => {
       const ids = await modelComponentGeodeIds(item.id, component);
@@ -170,7 +173,10 @@ async function fetchAttributes(
   if (schema === undefined) {
     throw new ControllerError(`Model components have no ${kind} attributes`);
   }
-  const params = componentIds === undefined ? { id } : { id, component_ids: componentIds };
+  const params: { id: string; component_ids?: string[] } = { id };
+  if (componentIds !== undefined) {
+    params.component_ids = componentIds;
+  }
   const response = await getBackStore().request({ schema, params });
   return hasAttributes(response) ? response.attributes : [];
 }

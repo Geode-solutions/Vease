@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   connectControllerClient,

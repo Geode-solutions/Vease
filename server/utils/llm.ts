@@ -2,19 +2,11 @@
 import { type MCPClient, createMCPClient } from "@ai-sdk/mcp";
 import { type Tool, type ToolSet, tool } from "ai";
 import { getAppBaseUrl, getExtensionServerPorts } from "@ogw_server/utils/server_config";
-import type { LanguageModelV4 } from "@ai-sdk/provider";
 import { consola } from "consola";
-import { createGateway } from "@ai-sdk/gateway";
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { z } from "zod";
 
 // Local imports
-import { runLlamaServer } from "@vease_server/utils/llama_cpp";
-
-const LOOPBACK_HOST = "127.0.0.1";
-const DEFAULT_GATEWAY_MODEL = "openai/gpt-4o-mini";
-const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
-type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
+import { LOOPBACK_HOST } from "@vease_server/utils/llm_model";
 
 const mcpClientsByUrl = new Map<string, Promise<MCPClient>>();
 
@@ -40,44 +32,6 @@ function getMcpBaseUrls(): string[] {
     urls.push(`http://${LOOPBACK_HOST}:${port}/mcp`);
   }
   return urls;
-}
-
-async function getLlamaChatModel(model: string | undefined): Promise<LanguageModelV4> {
-  const { port, apiKey, model: resolvedModel } = await runLlamaServer({ model });
-
-  const provider = createOpenAICompatible({
-    name: "llama-cpp",
-    baseURL: `http://${LOOPBACK_HOST}:${port}/v1`,
-    apiKey,
-  });
-  return provider.chatModel(resolvedModel);
-}
-
-function getGatewayChatModel(
-  model: string | undefined,
-  apiKey: string | undefined,
-): LanguageModelV4 {
-  if (apiKey === undefined || apiKey === "") {
-    throw new Error("Missing AI Gateway key for this request");
-  }
-  const provider = createGateway({ apiKey });
-  return provider.languageModel(model ?? DEFAULT_GATEWAY_MODEL);
-}
-
-async function getChatModel({
-  provider = CHAT_PROVIDER.LLAMA,
-  model,
-  gatewayApiKey,
-}: {
-  provider?: ChatProvider;
-  model?: string;
-  gatewayApiKey?: string;
-} = {}): Promise<LanguageModelV4> {
-  if (provider === CHAT_PROVIDER.GATEWAY) {
-    return getGatewayChatModel(model, gatewayApiKey);
-  }
-  const chatModel = await getLlamaChatModel(model);
-  return chatModel;
 }
 
 function forgetMcpServer(url: string): void {
@@ -109,7 +63,10 @@ async function getToolsFromUrl(
 }
 
 function textOf(contents: Awaited<ReturnType<MCPClient["readResource"]>>["contents"]): string {
-  return contents.flatMap((content) => ("text" in content ? [content.text] : [])).join("\n");
+  return contents
+    .filter((content) => "text" in content)
+    .map((content) => content.text)
+    .join("\n");
 }
 
 async function listResourcesFromUrl(url: string): Promise<ResourceEntry[]> {
@@ -204,7 +161,10 @@ function createReadResourceTool(catalog: ResourceEntry[]): Tool {
         const { contents } = await entry.client.readResource({ uri });
         return textOf(contents);
       } catch (error) {
-        return `Error reading ${uri}: ${error instanceof Error ? error.message : String(error)}`;
+        if (error instanceof Error) {
+          return `Error reading ${uri}: ${error.message}`;
+        }
+        return `Error reading ${uri}: ${String(error)}`;
       }
     },
   });
@@ -243,12 +203,9 @@ async function getChatTools(): Promise<ToolSet> {
 }
 
 export {
-  CHAT_PROVIDER,
   createReadResourceTool,
-  getChatModel,
   getChatTools,
   getResourceCatalog,
   readDataContext,
-  type ChatProvider,
   type ResourceEntry,
 };
