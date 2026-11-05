@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// oxlint-disable max-dependencies
 import {
   type AssignResponse,
   buildAssignedEntries,

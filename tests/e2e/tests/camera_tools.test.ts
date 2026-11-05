@@ -90,6 +90,7 @@ import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
 import { setColor } from "@vease_tests/utils/data/helpers/color";
 import { setColorInputText } from "@vease_tests/utils/data/helpers/color_picker";
 import { setMeshEdgesVisibility } from "@vease_tests/utils/data";
+// oxlint-disable-next-line import/max-dependencies -- all test helpers and fixtures are required.
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

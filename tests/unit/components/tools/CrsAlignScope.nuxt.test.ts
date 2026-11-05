@@ -1,6 +1,5 @@
-// oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import { applyOrigin, item, mountWithWells } from "@vease_tests/utils/crs_align_fixtures";
+import { applyPoints, item, mountWithWells } from "@vease_tests/utils/crs_align_fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
@@ -57,13 +56,12 @@ describe("crs align tool scope", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-    alignCrs.mockReset().mockResolvedValue({});
+    alignCrs.mockReset().mockResolvedValue(undefined);
     followProject.mockReset().mockResolvedValue(undefined);
     useUIStore().openCrsAlign(item);
   });
 
   test("georeferences every data in the same crs state by default, then follows the project", async () => {
-    alignCrs.mockResolvedValue({ scale: 1, rotation: 25 });
     const success = vi.spyOn(useFeedbackStore(), "add_success");
     const utm = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
     const { wrapper, wells } = mountWithWells(LAMBERT);
@@ -72,7 +70,7 @@ describe("crs align tool scope", () => {
       "checked",
       true,
     );
-    await applyOrigin(wrapper);
+    await applyPoints(wrapper);
 
     expect(alignCrs).toHaveBeenCalledWith(
       item,
@@ -86,7 +84,7 @@ describe("crs align tool scope", () => {
       ],
       utm,
     );
-    expect(success).toHaveBeenCalledWith("Data georeferenced (2 items): scale ×1.00, rotation 25°");
+    expect(success).toHaveBeenCalledWith("Data georeferenced (2 items)");
     wrapper.unmount();
   });
 
@@ -105,7 +103,7 @@ describe("crs align tool scope", () => {
   test("georeferences this data only", async () => {
     const { wrapper } = mountWithWells(LAMBERT);
     await wrapper.find('[data-testid="crsAlignScope-one"] input').setValue(true);
-    await applyOrigin(wrapper);
+    await applyPoints(wrapper);
 
     expect(alignCrs).toHaveBeenCalledWith(
       item,

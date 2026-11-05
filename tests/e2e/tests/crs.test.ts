@@ -24,13 +24,13 @@ import {
   expectCrsMismatch,
   expectCurrentCrs,
   expectDataRows,
+  expectFeedback,
   expectRowCrs,
   openCrsByButton,
   openCrsFromInfoCard,
   openCrsFromTree,
   openCrsFromWarning,
   openProjectCrs,
-  selectAlignMode,
   selectConvertMode,
   selectCrs,
   startAlignment,
@@ -106,6 +106,8 @@ test("convert to the selected crs", async ({ window }) => {
 
 test("load a curve sharing the model frame", async ({ window }) => {
   await loadVeaseTestDatas(window, [CURVE_FILE]);
+  // Still in the model frame: the curve keeps no crs until it is georeferenced
+  await expectFeedback(window, "No CRS, project in EPSG:32631");
   await navigateToDataManagerPage(window);
   await moveMouseOutOfTheWay(window);
 });
@@ -116,7 +118,6 @@ test("open the alignment drawer", async ({ window }) => {
 });
 
 test("fill the affine alignment points and target crs", async ({ window }) => {
-  await selectAlignMode(window, "affine");
   // "All data" by default: the curve shares the model frame
   await fillAlignment(window, ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93);
 });
@@ -135,11 +136,12 @@ test("current crs is the project one", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
-test("re-align without distortion with two pairs", async ({ window }) => {
+test("re-align this data only", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
   await startAlignment(window);
   // The model has a crs: "This data only" by default, the other data stay
-  await fillAlignment(window, ALIGN_SOURCE.slice(0, 2), ALIGN_TARGET.slice(0, 2), LAMBERT_93);
+  await expect(window.getByTestId("crsAlignScope-one").locator("input")).toBeChecked();
+  await fillAlignment(window, ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93);
   await applyAlignment(window);
   // The alignment drawer lives in the viewer: the data table is on the data manager page
   await navigateToDataManagerPage(window);

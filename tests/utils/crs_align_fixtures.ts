@@ -11,8 +11,6 @@ const SOURCE = [
   { x: 10, y: 0 },
   { x: 0, y: 10 },
 ];
-const SOURCE_ORIGIN = { x: 0, y: 0 };
-const TARGET_ORIGIN = { x: 1000, y: 2000 };
 const TARGET = [
   { x: 1000, y: 2000 },
   { x: 1000, y: 2020 },
@@ -50,13 +48,25 @@ function mountWithWells(lambert: StoredItem["crs"]): {
   return { wrapper: mountWithPlugins(CrsAlign), wells };
 }
 
-async function applyOrigin(wrapper: ReturnType<typeof mountWithPlugins>): Promise<void> {
-  await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
-  await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
+async function fillPoints(wrapper: ReturnType<typeof mountWithPlugins>): Promise<void> {
+  await Promise.all(
+    SOURCE.map(async (point, index) => {
+      await fill(wrapper, `crsAlignSource-${index}`, point);
+    }),
+  );
+  await Promise.all(
+    TARGET.map(async (point, index) => {
+      await fill(wrapper, `crsAlignTarget-${index}`, point);
+    }),
+  );
+}
+
+async function applyPoints(wrapper: ReturnType<typeof mountWithPlugins>): Promise<void> {
+  await fillPoints(wrapper);
   await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
   await flushPromises();
   await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
   await flushPromises();
 }
 
-export { SOURCE, SOURCE_ORIGIN, TARGET, TARGET_ORIGIN, applyOrigin, fill, item, mountWithWells };
+export { SOURCE, TARGET, applyPoints, fill, fillPoints, item, mountWithWells };
