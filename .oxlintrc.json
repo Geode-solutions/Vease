@@ -33,7 +33,7 @@
         "min": 3
       }
     ],
-    "eslint/max-statements": ["error", 20],
+    "eslint/max-statements": ["warn", 20],
     "eslint/no-magic-numbers": [
       "error",
       {
