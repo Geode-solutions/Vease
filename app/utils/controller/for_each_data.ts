@@ -43,7 +43,10 @@ function withFailed<Response extends object>(
   response: Response,
   failed: FailedData[],
 ): Response & { failed?: FailedData[] } {
-  return failed.length > 0 ? { ...response, failed } : response;
+  if (failed.length === 0) {
+    return response;
+  }
+  return { ...response, failed };
 }
 
 export { type FailedData, forEachData, withFailed };

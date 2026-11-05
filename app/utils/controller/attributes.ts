@@ -116,8 +116,8 @@ function meshSearchSources(
       `"${target}" is not available on "${item.name}"; available: ${available.join(", ")}`,
     );
   }
-  const targets = TARGET_PRIORITY.mesh.filter((element) =>
-    target === undefined ? available.includes(element) : element === target,
+  const targets = TARGET_PRIORITY.mesh.filter(
+    (element) => element === target || (target === undefined && available.includes(element)),
   );
   return meshAttributeSources(item.geode_object_type, targets);
 }
@@ -136,9 +136,9 @@ async function modelSearchSources(
         ids: await modelComponentGeodeIds(item.id, component),
       })),
     );
-    return targets.flatMap(({ component, ids }) =>
-      ids.length > 0 ? modelAttributeSources(component, ids) : [],
-    );
+    return targets
+      .filter(({ ids }) => ids.length > 0)
+      .flatMap(({ component, ids }) => modelAttributeSources(component, ids));
   }
   if (!isModelComponentTarget(target)) {
     throw new ControllerError(
@@ -164,7 +164,10 @@ function availableAttributes(sourceAttributes: SourceAttributes[]): string {
       ({ source, attributes }) =>
         `${source.target}/${source.kind}: ${[...new Set(attributes.map(({ attribute_name }) => attribute_name))].join(", ")}`,
     );
-  return groups.length > 0 ? groups.join("; ") : "none";
+  if (groups.length === 0) {
+    return "none";
+  }
+  return groups.join("; ");
 }
 
 function matchesLocation(
@@ -174,36 +177,20 @@ function matchesLocation(
   if (location === undefined) {
     return true;
   }
-  return Array.isArray(location) ? location.includes(kind) : location === kind;
-}
-
-function checkRange(minimum: number | undefined, maximum: number | undefined): void {
-  if ((minimum === undefined) !== (maximum === undefined)) {
-    throw new ControllerError("Give both minimum and maximum, or neither for the attribute range");
+  if (Array.isArray(location)) {
+    return location.includes(kind);
   }
-  if (minimum !== undefined && maximum !== undefined && minimum > maximum) {
-    throw new ControllerError(
-      `minimum (${minimum}) is greater than maximum (${maximum}); swap them or omit both for the attribute range`,
-    );
-  }
-}
-
-function resolveItem(item: number | undefined, attribute: BackAttribute): number {
-  const resolved = item ?? 0;
-  if (resolved >= attribute.nb_items) {
-    throw new ControllerError(
-      `item ${resolved} is out of range for "${attribute.attribute_name}" (nb_items ${attribute.nb_items})`,
-    );
-  }
-  return resolved;
+  return location === kind;
 }
 
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
-  const sources =
-    item.viewer_type === "model"
-      ? await modelSearchSources(item, args)
-      : meshSearchSources(item, args);
+  let sources: AttributeSource[] = [];
+  if (item.viewer_type === "model") {
+    sources = await modelSearchSources(item, args);
+  } else {
+    sources = meshSearchSources(item, args);
+  }
   const sourceAttributes = await fetchSourceAttributes(item.id, sources);
   for (const { source, attributes } of sourceAttributes) {
     const attribute = attributes.find(({ attribute_name }) => attribute_name === args.name);
@@ -216,12 +203,5 @@ async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   );
 }
 
-export {
-  checkRange,
-  fetchSourceAttributes,
-  findAttribute,
-  meshAttributeSources,
-  modelAttributeSources,
-  resolveItem,
-};
+export { fetchSourceAttributes, findAttribute, meshAttributeSources, modelAttributeSources };
 export type { AttributeSource, FindAttributeArgs, FoundAttribute, SourceAttributes };

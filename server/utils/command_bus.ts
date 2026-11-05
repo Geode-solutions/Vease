@@ -105,7 +105,11 @@ function dispatchCommand<Result = unknown>(
     function fail(error: unknown): void {
       clearTimeout(timer);
       pending.delete(requestId);
-      reject(error instanceof Error ? error : new Error(String(error)));
+      if (error instanceof Error) {
+        reject(error);
+      } else {
+        reject(new Error(String(error)));
+      }
     }
     try {
       // oxlint-disable-next-line promise/prefer-await-to-then promise/prefer-await-to-callbacks -- the executor cannot be async

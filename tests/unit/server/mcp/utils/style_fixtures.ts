@@ -3,7 +3,7 @@ import type { Mock } from "vitest";
 
 // Local imports
 import { controllerUrl, jsonResponse } from "@vease_tests/unit/server/mcp/tools/controller_fetch";
-import type { StyleDetails } from "@vease_server/mcp/utils/style_plan";
+import type { StyleDetails } from "@vease_server/mcp/utils/style_plan_common";
 
 interface IdsBody {
   ids: string[];

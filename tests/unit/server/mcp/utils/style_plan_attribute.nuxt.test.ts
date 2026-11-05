@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 // Third party imports
 import { describe, expect, test, vi } from "vitest";
 
@@ -16,9 +17,9 @@ import {
   type StyleDetails,
   StylePlanError,
   type StyleRequest,
-  attributeCall,
   mergeCalls,
-} from "@vease_server/mcp/utils/style_plan";
+} from "@vease_server/mcp/utils/style_plan_common";
+import { attributeCall } from "@vease_server/mcp/utils/style_plan_attribute";
 
 vi.setConfig({ testTimeout: 10_000 });
 

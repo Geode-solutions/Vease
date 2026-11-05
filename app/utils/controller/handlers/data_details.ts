@@ -110,7 +110,10 @@ async function dataDetails(params: unknown): Promise<unknown> {
   }
   const item = await getDataItem(params.id);
   const { id, name, geode_object_type, viewer_type } = item;
-  const description = viewer_type === "model" ? await describeModel(id) : await describeMesh(item);
+  let description = await describeMesh(item);
+  if (viewer_type === "model") {
+    description = await describeModel(id);
+  }
   return {
     id,
     name,

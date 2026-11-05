@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
@@ -137,7 +138,9 @@ describe("the filter controller handlers", () => {
     request.mockImplementation(async ({ schema }) => {
       await Promise.resolve();
       return {
-        attributes: schema.$id === backSchemas.polygon_attribute_names.$id ? [DEPTH, PRESSURE] : [],
+        attributes: [DEPTH, PRESSURE].filter(
+          () => schema.$id === backSchemas.polygon_attribute_names.$id,
+        ),
       };
     });
   });
@@ -220,13 +223,15 @@ describe("the filter controller handlers", () => {
       minimum: 0,
       maximum: DEPTH_MAX,
     });
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], {
-      name: "depth",
-      location: "cell",
-      item: 0,
-      minimum: 0,
-      maximum: DEPTH_MAX,
-    });
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], [
+      {
+        name: "depth",
+        location: "cell",
+        item: 0,
+        minimum: 0,
+        maximum: DEPTH_MAX,
+      },
+    ]);
   });
 
   test("thresholds a vertex attribute with the given range", async () => {
@@ -240,13 +245,15 @@ describe("the filter controller handlers", () => {
       maximum: CUSTOM_MAX,
     });
 
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], {
-      name: "depth",
-      location: "point",
-      item: 0,
-      minimum: CUSTOM_MIN,
-      maximum: CUSTOM_MAX,
-    });
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], [
+      {
+        name: "depth",
+        location: "point",
+        item: 0,
+        minimum: CUSTOM_MIN,
+        maximum: CUSTOM_MAX,
+      },
+    ]);
   });
 
   test.each(["vertex", "point"])(
@@ -259,7 +266,7 @@ describe("the filter controller handlers", () => {
       ).resolves.toMatchObject({ location: "vertex" });
       expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
         [MESH.id],
-        expect.objectContaining({ location: "point" }),
+        [expect.objectContaining({ location: "point" })],
       );
     },
   );
@@ -272,7 +279,7 @@ describe("the filter controller handlers", () => {
     ).resolves.toMatchObject({ location: "polygon" });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id],
-      expect.objectContaining({ location: "cell" }),
+      [expect.objectContaining({ location: "cell" })],
     );
   });
 
@@ -292,7 +299,7 @@ describe("the filter controller handlers", () => {
 
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id],
-      expect.objectContaining({ name: "pressure@0" }),
+      [expect.objectContaining({ name: "pressure@0" })],
     );
   });
 
@@ -304,7 +311,7 @@ describe("the filter controller handlers", () => {
     ).resolves.toMatchObject({ minimum: 0, maximum: OTHER_DEPTH_MAX });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
       [MESH.id, OTHER.id],
-      expect.objectContaining({ minimum: 0, maximum: OTHER_DEPTH_MAX }),
+      [expect.objectContaining({ minimum: 0, maximum: OTHER_DEPTH_MAX })],
     );
   });
 
@@ -333,7 +340,7 @@ describe("the filter controller handlers", () => {
 
     await applyFilter("apply-threshold", { ids: [MESH.id], remove: true });
 
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id]);
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], []);
   });
 
   test("threshold needs both minimum and maximum, or neither", async () => {

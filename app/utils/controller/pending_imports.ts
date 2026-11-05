@@ -51,7 +51,10 @@ async function waitForImport(id: string, timeout: number): Promise<void> {
     }, timeout);
   });
   const tracked = imports.get(id);
-  const next = tracked === undefined ? nextImport(id) : undefined;
+  let next: ReturnType<typeof nextImport> | undefined = undefined;
+  if (tracked === undefined) {
+    next = nextImport(id);
+  }
   try {
     await Promise.race([tracked ?? next?.imported, expired]);
   } finally {

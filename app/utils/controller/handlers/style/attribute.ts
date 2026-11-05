@@ -3,11 +3,7 @@ import { getAttributeRange } from "@ogw_front/utils/attributes";
 import { getPresetByName } from "@ogw_front/utils/colormap";
 
 // Local imports
-import {
-  type AttributeBinding,
-  type AttributeInput,
-  bindAttribute,
-} from "@vease/utils/controller/attribute_setters";
+import { type AttributeBinding, bindAttribute } from "@vease/utils/controller/attribute_setters";
 import {
   type AttributeKind,
   type BackAttribute,
@@ -21,10 +17,16 @@ import {
 } from "@vease/utils/controller/targets";
 import { type FailedData, forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { checkMesh, checkModel } from "@vease/utils/controller/handlers/style/common";
-import { checkRange, findAttribute, resolveItem } from "@vease/utils/controller/attributes";
+import { checkRange, resolveItem } from "@vease/utils/controller/attribute_range";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import {
+  requestedTimeStepIndex,
+  seriesTimeStepIndex,
+} from "@vease/utils/controller/handlers/style/time_step";
+import type { AttributeInput } from "@vease/utils/controller/attribute_setter_types";
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import { findAttribute } from "@vease/utils/controller/attributes";
 import { hexToRgba } from "@vease/utils/controller/color";
 
 const DEFAULT_COLORMAP = "batlow";
@@ -61,40 +63,6 @@ function resolveColorMap(colormap: string | undefined, binding: AttributeBinding
     throw new ControllerError(`Unknown colormap "${resolved}"; read vease://colormaps`);
   }
   return resolved;
-}
-
-// The store keeps a step as an index into time_steps, while the tool speaks in time values
-function requestedTimeStepIndex(
-  timeStep: number | undefined,
-  attribute: BackAttribute,
-): number | undefined {
-  if (timeStep === undefined) {
-    return undefined;
-  }
-  const timeSteps = attribute.time_steps ?? [];
-  const index = timeSteps.indexOf(timeStep);
-  if (index === -1) {
-    throw new ControllerError(
-      `Time step ${timeStep} does not exist for "${attribute.attribute_name}"; available: ${
-        timeSteps.join(", ") || "none"
-      }`,
-    );
-  }
-  return index;
-}
-
-// Like the attribute selector: a series keeps its stored step when valid, otherwise shows the first one
-function seriesTimeStepIndex(
-  requested: number | undefined,
-  attribute: BackAttribute,
-  binding: AttributeBinding,
-): number | undefined {
-  const stepCount = attribute.time_steps?.length ?? 0;
-  if (requested !== undefined || stepCount === 0) {
-    return requested;
-  }
-  const stored = binding.storedTimeStep();
-  return stored !== undefined && stored >= 0 && stored < stepCount ? stored : 0;
 }
 
 function attributeInput(
