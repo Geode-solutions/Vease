@@ -9,15 +9,8 @@ import path from "node:path";
 // The first served routes source wins: the IGN roads, transparent, stand for every routes source
 const ROUTE_PATH = "/ign_roads/";
 const HTTP_OK = 200;
-const TILE_PATH = path.join(
-  import.meta.dirname,
-  "..",
-  "tests",
-  "data",
-  "basemap_tiles",
-  "tile.png",
-);
-const ROUTE_TILE_PATH = path.join(path.dirname(TILE_PATH), "route.png");
+// Next to this file in the sources and in the build: the package ships the utils only
+const TILES_FOLDER = path.join(import.meta.dirname, "basemap_tiles");
 
 interface TileServer {
   stop: () => Promise<void>;
@@ -27,8 +20,8 @@ interface TileServer {
 // The tests never reach EOX, the IGN or OpenStreetMap. The env variables are inherited by the app
 // (Nitro server or Electron process), then by vease-back, so they must be set before the app starts
 async function startTileServer(): Promise<TileServer> {
-  const tile = fs.readFileSync(TILE_PATH);
-  const routeTile = fs.readFileSync(ROUTE_TILE_PATH);
+  const tile = fs.readFileSync(path.join(TILES_FOLDER, "tile.png"));
+  const routeTile = fs.readFileSync(path.join(TILES_FOLDER, "route.png"));
   const server = http.createServer((request, response) => {
     // Transparent roads: stacked on the satellite map, they must not hide it
     const isRoute = (request.url ?? "").toLowerCase().startsWith(ROUTE_PATH);
