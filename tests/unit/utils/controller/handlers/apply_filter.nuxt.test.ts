@@ -223,15 +223,18 @@ describe("the filter controller handlers", () => {
       minimum: 0,
       maximum: DEPTH_MAX,
     });
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], [
-      {
-        name: "depth",
-        location: "cell",
-        item: 0,
-        minimum: 0,
-        maximum: DEPTH_MAX,
-      },
-    ]);
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
+      [MESH.id],
+      [
+        {
+          name: "depth",
+          location: "cell",
+          item: 0,
+          minimum: 0,
+          maximum: DEPTH_MAX,
+        },
+      ],
+    );
   });
 
   test("thresholds a vertex attribute with the given range", async () => {
@@ -245,15 +248,18 @@ describe("the filter controller handlers", () => {
       maximum: CUSTOM_MAX,
     });
 
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], [
-      {
-        name: "depth",
-        location: "point",
-        item: 0,
-        minimum: CUSTOM_MIN,
-        maximum: CUSTOM_MAX,
-      },
-    ]);
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
+      [MESH.id],
+      [
+        {
+          name: "depth",
+          location: "point",
+          item: 0,
+          minimum: CUSTOM_MIN,
+          maximum: CUSTOM_MAX,
+        },
+      ],
+    );
   });
 
   test.each(["vertex", "point"])(
