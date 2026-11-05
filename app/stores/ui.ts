@@ -1,110 +1,18 @@
-import type { DataItem } from "@vease/types/data_item";
-import { consola } from "consola";
-import { useExtensionsStore } from "@vease/stores/extensions";
-
-interface ToolDefinition {
-  id: string;
-  component: unknown;
-  extensionPath?: string;
-  title?: string;
-  description?: string;
-  iconType?: string;
-  iconSource?: string;
-  [key: string]: unknown;
-}
-
-interface DataManagerTab {
-  id: string;
-  component: unknown;
-  props?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+import { useDataManagerTabs, useToolsRegistry } from "@vease/composables/ui_registry";
+import { useUiOverlays, useUiPanels } from "@vease/composables/ui_overlays";
 
 const useUIStore = defineStore("UI", () => {
   const showDropZone = ref(false);
-  const showStepper = ref(false);
   const droppedFiles = ref<File[]>([]);
   const showButton = ref(false);
   const showStepImportMenu = ref(false);
-  const showCreateTools = ref(false);
-  const showCrsAlign = ref(false);
-  const crsAlignItem = ref<DataItem | undefined>(undefined);
-  const toolsDefinitions = ref<ToolDefinition[]>([]);
-  const showCreateVOI = ref(false);
-  const showCreateAOI = ref(false);
-  const showExtensions = ref(false);
-  const showDataManagerPiP = ref(false);
-  const showChatPiP = ref(false);
-  const dataManagerTabs = ref<DataManagerTab[]>([]);
-
-  const anyOverlayOpen = computed(
-    () => showStepper.value || showCreateTools.value || showExtensions.value || showCrsAlign.value,
-  );
-
-  function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
-    const { id, component, ...rest } = toolDefinition;
-    const existingIndex = toolsDefinitions.value.findIndex((tool) => tool.id === id);
-    const newDefinition = { id, component, extensionPath, ...rest };
-    if (existingIndex === -1) {
-      toolsDefinitions.value.push(newDefinition);
-    } else {
-      toolsDefinitions.value[existingIndex] = {
-        ...toolsDefinitions.value[existingIndex],
-        ...newDefinition,
-      };
-    }
-  }
-
-  function unregisterTool(toolId: string): void {
-    const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId);
-    if (index === -1) {
-      return;
-    }
-    toolsDefinitions.value.splice(index, 1);
-    consola.info(`[UIStore] Tool unregistered: ${toolId}`);
-  }
-
-  function unregisterToolsByExtension(extensionPath: string): void {
-    const beforeCount = toolsDefinitions.value.length;
-    toolsDefinitions.value = toolsDefinitions.value.filter(
-      (tool) => tool.extensionPath !== extensionPath,
-    );
-    const removedCount = beforeCount - toolsDefinitions.value.length;
-    consola.info(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
-  }
-
-  function getActiveTools(): ToolDefinition[] {
-    const extensionsStore = useExtensionsStore();
-    return toolsDefinitions.value.filter((tool) => {
-      if (tool.extensionPath === undefined || tool.extensionPath === "") {
-        return true;
-      }
-      return extensionsStore.getExtensionEnabled(tool.extensionPath);
-    });
-  }
-
-  const activeTools = computed(getActiveTools);
-
-  function registerDataManagerTab(tabDefinition: DataManagerTab): void {
-    const { id, component, ...rest } = tabDefinition;
-    const existingIndex = dataManagerTabs.value.findIndex((tab) => tab.id === id);
-    const newDefinition = { id, component, ...rest };
-    if (existingIndex === -1) {
-      dataManagerTabs.value.push(newDefinition);
-    } else {
-      dataManagerTabs.value[existingIndex] = {
-        ...dataManagerTabs.value[existingIndex],
-        ...newDefinition,
-      };
-    }
-  }
+  const tools = useToolsRegistry();
+  const tabs = useDataManagerTabs();
+  const overlays = useUiOverlays();
+  const panels = useUiPanels();
 
   function setShowDropZone(value: boolean): void {
     showDropZone.value = value;
-  }
-
-  function setShowStepper(value: boolean): void {
-    showStepper.value = value;
   }
 
   function setDroppedFiles(files: File[]): void {
@@ -117,88 +25,24 @@ const useUIStore = defineStore("UI", () => {
 
   function toggleDrawer(): void {
     droppedFiles.value = [];
-    showStepper.value = !showStepper.value;
-  }
-
-  function setShowCreateTools(value: boolean): void {
-    showCreateTools.value = value;
-  }
-
-  function setShowCrsAlign(value: boolean): void {
-    showCrsAlign.value = value;
-  }
-
-  function openCrsAlign(item: DataItem): void {
-    crsAlignItem.value = item;
-    showCrsAlign.value = true;
-  }
-
-  // The overlays counted by anyOverlayOpen
-  function closeAllDrawers(): void {
-    showStepper.value = false;
-    showCreateTools.value = false;
-    showExtensions.value = false;
-    showCrsAlign.value = false;
-  }
-
-  function setShowExtensions(value: boolean): void {
-    showExtensions.value = value;
-  }
-
-  function setShowCreateVOI(value: boolean): void {
-    showCreateVOI.value = value;
-  }
-
-  function setShowCreateAOI(value: boolean): void {
-    showCreateAOI.value = value;
-  }
-
-  function setShowDataManagerPiP(value: boolean): void {
-    showDataManagerPiP.value = value;
-  }
-
-  function setShowChatPiP(value: boolean): void {
-    showChatPiP.value = value;
+    overlays.showStepper.value = !overlays.showStepper.value;
   }
 
   return {
-    closeAllDrawers,
-    toolsDefinitions,
-    activeTools,
-    dataManagerTabs,
-    registerToolComponent,
-    registerDataManagerTab,
-    unregisterTool,
-    unregisterToolsByExtension,
+    ...tools,
+    ...tabs,
+    ...overlays,
+    ...panels,
     showDropZone,
-    showStepper,
     droppedFiles,
     showButton,
     showStepImportMenu,
-    showCreateTools,
-    showCrsAlign,
-    crsAlignItem,
-    showExtensions,
-    showDataManagerPiP,
-    showChatPiP,
-    showCreateVOI,
-    showCreateAOI,
-    anyOverlayOpen,
     setShowDropZone,
-    setShowStepper,
     setDroppedFiles,
     setShowButton,
     toggleDrawer,
-    setShowCreateTools,
-    setShowCrsAlign,
-    openCrsAlign,
-    setShowExtensions,
-    setShowDataManagerPiP,
-    setShowChatPiP,
-    setShowCreateVOI,
-    setShowCreateAOI,
   };
 });
 
-export type { ToolDefinition, DataManagerTab };
+export type { ToolDefinition, DataManagerTab } from "@vease/composables/ui_registry";
 export { useUIStore };

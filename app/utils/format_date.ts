@@ -14,34 +14,51 @@ function toDate(dateInput: string | Date): Date {
   return dateInput;
 }
 
+interface TimeDifferences {
+  secs: number;
+  mins: number;
+  hours: number;
+  days: number;
+  weeks: number;
+  months: number;
+}
+
+function timeDifferences(date: Date): TimeDifferences {
+  const diffMs = Date.now() - date.getTime();
+  const secs = Math.floor(diffMs / SECONDS);
+  const mins = Math.floor(secs / MINUTES);
+  const hours = Math.floor(mins / HOURS);
+  const days = Math.floor(hours / DAYS);
+  const weeks = Math.floor(days / WEEKS);
+  const months = Math.floor(days / MONTHS);
+  return { secs, mins, hours, days, weeks, months };
+}
+
+function ago(count: number, unit: string): string {
+  return `${count} ${count === 1 ? unit : `${unit}s`} ago`;
+}
+
 export function formatRelativeTime(dateInput: string | Date): string {
   const date = toDate(dateInput);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSecs = Math.floor(diffMs / SECONDS);
-  const diffMins = Math.floor(diffSecs / MINUTES);
-  const diffHours = Math.floor(diffMins / HOURS);
-  const diffDays = Math.floor(diffHours / DAYS);
-  const diffWeeks = Math.floor(diffDays / WEEKS);
-  const diffMonths = Math.floor(diffDays / MONTHS);
+  const diff = timeDifferences(date);
 
-  if (diffSecs < SECONDS) {
+  if (diff.secs < SECONDS) {
     return "just now";
   }
-  if (diffMins < MINUTES) {
-    return `${diffMins} ${diffMins === 1 ? "minute" : "minutes"} ago`;
+  if (diff.mins < MINUTES) {
+    return ago(diff.mins, "minute");
   }
-  if (diffHours < HOURS) {
-    return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`;
+  if (diff.hours < HOURS) {
+    return ago(diff.hours, "hour");
   }
-  if (diffDays < DAYS) {
-    return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`;
+  if (diff.days < DAYS) {
+    return ago(diff.days, "day");
   }
-  if (diffWeeks < QUARTERS) {
-    return `${diffWeeks} ${diffWeeks === 1 ? "week" : "weeks"} ago`;
+  if (diff.weeks < QUARTERS) {
+    return ago(diff.weeks, "week");
   }
-  if (diffMonths < YEARS) {
-    return `${diffMonths} ${diffMonths === 1 ? "month" : "months"} ago`;
+  if (diff.months < YEARS) {
+    return ago(diff.months, "month");
   }
 
   return date.toLocaleDateString();

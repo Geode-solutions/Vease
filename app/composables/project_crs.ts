@@ -61,18 +61,23 @@ function useProjectCrs() {
     }
   }
 
-  async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
-    const items = byCreation(await dataStore.allItems());
-    const imported = items.filter((item) => ids.includes(item.id));
-    const existing = items.filter((item) => !ids.includes(item.id));
-    // The project CRS before the import, else the current one; before any, the first one met
-    const reference =
+  // The project CRS before the import, else the current one; before any, the first one met
+  function referenceCrs(
+    projectCrs: CRSList | undefined,
+    existing: DataItem[],
+    imported: DataItem[],
+  ): CRSList | undefined {
+    return (
       projectCrs ??
       crsStore.projectCrs ??
-      (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs;
-    if (reference === undefined) {
-      return;
-    }
+      (existing.find((item) => item.crs) ?? imported.find((item) => item.crs))?.crs
+    );
+  }
+
+  async function convertImported(
+    imported: DataItem[],
+    reference: CRSList,
+  ): Promise<{ converted: DataItem[]; failed: DataItem[]; withoutCrs: DataItem[] }> {
     const converted: DataItem[] = [];
     const failed: DataItem[] = [];
     const withoutCrs: DataItem[] = [];
@@ -91,7 +96,10 @@ function useProjectCrs() {
       }
     }
     // oxlint-enable no-await-in-loop
-    const code = formatCrsCode(reference);
+    return { converted, failed, withoutCrs };
+  }
+
+  function reportConversions(converted: DataItem[], failed: DataItem[], code: string): void {
     if (converted.length > 0) {
       feedbackStore.add_success(`Converted to ${code}: ${names(converted)}`);
     }
@@ -101,12 +109,33 @@ function useProjectCrs() {
         editAction(failed),
       );
     }
-    // The data whose coordinates do not fit stay without CRS: the tree flags them
+  }
+
+  // The data whose coordinates do not fit stay without CRS: the tree flags them
+  async function assignMissing(
+    withoutCrs: DataItem[],
+    reference: CRSList,
+    code: string,
+  ): Promise<void> {
     const assignedIds = await assignWithoutCrs(withoutCrs, reference);
     const assigned = withoutCrs.filter(({ id }) => assignedIds.includes(id));
     if (assigned.length > 0) {
       feedbackStore.add_success(`Assigned ${code}: ${names(assigned)}`);
     }
+  }
+
+  async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
+    const items = byCreation(await dataStore.allItems());
+    const imported = items.filter((item) => ids.includes(item.id));
+    const existing = items.filter((item) => !ids.includes(item.id));
+    const reference = referenceCrs(projectCrs, existing, imported);
+    if (reference === undefined) {
+      return;
+    }
+    const { converted, failed, withoutCrs } = await convertImported(imported, reference);
+    const code = formatCrsCode(reference);
+    reportConversions(converted, failed, code);
+    await assignMissing(withoutCrs, reference, code);
   }
 
   async function harmonizeAfter(
