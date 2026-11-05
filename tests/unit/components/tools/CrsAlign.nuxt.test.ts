@@ -1,4 +1,3 @@
-// oxlint-disable max-dependencies
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import {
   SOURCE,
