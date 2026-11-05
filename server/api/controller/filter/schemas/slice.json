@@ -1,0 +1,50 @@
+{
+  "route": "/slice",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "remove": {
+      "type": "boolean"
+    },
+    "slices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "axis": {
+            "type": "integer",
+            "enum": [0, 1, 2]
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["axis", "index"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["ids"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

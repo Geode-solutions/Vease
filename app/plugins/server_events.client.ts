@@ -1,15 +1,13 @@
 import { consola } from "consola";
 import { useAppStore } from "@ogw_front/stores/app";
-import { useViewerStore } from "@ogw_front/stores/viewer";
 
-import { connectToEventSource, connectToWebSocket } from "@vease/utils/events/index";
-import { setBackBaseUrl, setViewerBaseUrl } from "@ogw_shared/scripts";
+import { connectToEventSource } from "@vease/utils/events/index";
 import { getBackStore } from "@vease/utils/external_stores";
+import { setBackBaseUrl } from "@ogw_shared/scripts";
 
 export default defineNuxtPlugin(() => {
   const appStore = useAppStore();
   const backStore = getBackStore();
-  const viewerStore = useViewerStore();
 
   backStore.$onAction(({ name, after }) => {
     if (name !== "connect") {
@@ -22,22 +20,6 @@ export default defineNuxtPlugin(() => {
           connectToEventSource();
         } catch (error) {
           consola.error("[SYNC] back connect failed", error);
-        }
-      })();
-    });
-  });
-
-  viewerStore.$onAction(({ name, after }) => {
-    if (name !== "connect") {
-      return;
-    }
-    after(() => {
-      void (async (): Promise<void> => {
-        try {
-          await setViewerBaseUrl(appStore.base_url, viewerStore.base_url);
-          connectToWebSocket();
-        } catch (error) {
-          consola.error("[SYNC] viewer connect failed", error);
         }
       })();
     });

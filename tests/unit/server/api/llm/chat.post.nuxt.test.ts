@@ -1,5 +1,6 @@
-import { CHAT_PROVIDER, getChatModel, getChatTools } from "@vease_server/utils/llm";
+import { CHAT_PROVIDER, getChatModel } from "@vease_server/utils/llm_model";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { getChatTools, readDataContext } from "@vease_server/utils/llm";
 import { consola } from "consola";
 import { eventWithBody } from "@vease_tests/utils/server_utils";
 import { getResponseStatus } from "h3";
@@ -11,10 +12,15 @@ const RESPONSE_OK = 200;
 const INTERNAL_SERVER_ERROR = 500;
 const MAX_TOOL_STEPS = 5;
 
-vi.mock(import("@vease_server/utils/llm"), async (importOriginal) => ({
+vi.mock(import("@vease_server/utils/llm_model"), async (importOriginal) => ({
   ...(await importOriginal()),
   getChatModel: vi.fn<typeof getChatModel>(),
+}));
+
+vi.mock(import("@vease_server/utils/llm"), async (importOriginal) => ({
+  ...(await importOriginal()),
   getChatTools: vi.fn<typeof getChatTools>(),
+  readDataContext: vi.fn<typeof readDataContext>(),
 }));
 
 const { streamTextMock } = vi.hoisted(() => ({
@@ -47,6 +53,7 @@ describe("the POST /api/llm/chat endpoint", () => {
   const fakeTools = { search_tools: {} };
 
   beforeEach(() => {
+    vi.mocked(readDataContext).mockResolvedValue('{"data":[]}');
     vi.spyOn(consola, "error").mockReturnValue(undefined);
     vi.mocked(getChatModel).mockResolvedValue(
       // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
@@ -78,6 +85,29 @@ describe("the POST /api/llm/chat endpoint", () => {
       }),
     );
     expect(response).toBeInstanceOf(Response);
+  });
+
+  test("appends the loaded data to the system prompt, or leaves it unchanged without data", async () => {
+    const messages = [{ role: "user", parts: [{ type: "text", text: "hi" }] }];
+
+    await handler(eventWithBody({ messages }));
+    vi.mocked(readDataContext).mockResolvedValue(undefined);
+    await handler(eventWithBody({ messages }));
+
+    /* oxlint-disable no-unsafe-assignment -- expect asymmetric matchers are typed any */
+    expect(streamTextMock).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        instructions: expect.stringContaining('Loaded data (vease://data):\n{"data":[]}'),
+      }),
+    );
+    expect(streamTextMock).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        instructions: expect.not.stringContaining("Loaded data (vease://data)"),
+      }),
+    );
+    /* oxlint-enable no-unsafe-assignment */
   });
 
   test("forwards the requested provider, model and gateway key to the model factory", async () => {

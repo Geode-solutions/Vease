@@ -3,6 +3,7 @@ import { backEventHandlers } from "@vease/utils/events/back";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import { waitForImport } from "@vease/utils/controller/pending_imports";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -16,6 +17,7 @@ vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
 
 const saveViewableFileId = opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id;
 const NOT_A_REAL_PAYLOAD: unknown = JSON.parse("null");
+const TIMEOUT_MS = 1000;
 
 describe("the backEventHandlers map", () => {
   const remoteRenderMock = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
@@ -43,6 +45,16 @@ describe("the backEventHandlers map", () => {
 
     expect(importItem).toHaveBeenCalledWith(payload);
     expect(remoteRenderMock).toHaveBeenCalledWith();
+  });
+
+  test("lets the controller wait for the import and the render", async () => {
+    const payload = { id: "item-2", viewer_type: "mesh", geode_object_type: "PointSet3D" };
+
+    const handled = backEventHandlers[saveViewableFileId]?.(payload);
+    await waitForImport("item-2", TIMEOUT_MS);
+
+    expect(remoteRenderMock).toHaveBeenCalledWith();
+    await handled;
   });
 
   test("ignores a payload missing required fields", async () => {

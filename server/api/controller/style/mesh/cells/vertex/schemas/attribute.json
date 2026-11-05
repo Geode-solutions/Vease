@@ -1,0 +1,54 @@
+{
+  "route": "/attribute",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "item": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "colormap": {
+      "type": "string",
+      "minLength": 1
+    },
+    "minimum": {
+      "type": "number"
+    },
+    "maximum": {
+      "type": "number"
+    },
+    "timeStep": {
+      "type": "number"
+    },
+    "noDataColor": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+    }
+  },
+  "required": ["ids", "name"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}

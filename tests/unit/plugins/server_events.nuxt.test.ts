@@ -1,25 +1,21 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { connectToEventSource, connectToWebSocket } from "@vease/utils/events/index";
-import { setBackBaseUrl, setViewerBaseUrl } from "@ogw_shared/scripts";
-import { Status } from "@ogw_front/utils/status";
+import { connectToEventSource } from "@vease/utils/events/index";
 import { createTestingPinia } from "@pinia/testing";
 import serverEventsPlugin from "@vease/plugins/server_events.client";
 import { setActivePinia } from "pinia";
+import { setBackBaseUrl } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
-import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 vi.mock(import("@ogw_shared/scripts"), async (importOriginal) => ({
   ...(await importOriginal()),
   setBackBaseUrl: vi.fn<typeof setBackBaseUrl>().mockResolvedValue(undefined),
-  setViewerBaseUrl: vi.fn<typeof setViewerBaseUrl>().mockResolvedValue(undefined),
 }));
 
 vi.mock(import("@vease/utils/events/index"), () => ({
   connectToEventSource: vi.fn<typeof connectToEventSource>(),
-  connectToWebSocket: vi.fn<typeof connectToWebSocket>(),
 }));
 
 // `connect` is what every mode calls once the microservices exist; in cloud
@@ -42,18 +38,6 @@ describe("server_events plugin", () => {
     expect(setBackBaseUrl).toHaveBeenCalledWith(useAppStore().base_url, backStore.base_url);
     await vi.waitFor(() => {
       expect(connectToEventSource).toHaveBeenCalledWith();
-    });
-  });
-
-  test("connecting the viewer sends its URL to the server and listens to its events", async () => {
-    const viewerStore = useViewerStore();
-    // Already connected: `connect` returns without opening a websocket.
-    viewerStore.status = Status.CONNECTED;
-    await viewerStore.connect();
-
-    expect(setViewerBaseUrl).toHaveBeenCalledWith(useAppStore().base_url, viewerStore.base_url);
-    await vi.waitFor(() => {
-      expect(connectToWebSocket).toHaveBeenCalledWith();
     });
   });
 });

@@ -1,0 +1,58 @@
+{
+  "route": "/clip",
+  "methods": ["POST"],
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 32,
+        "maxLength": 32
+      },
+      "minItems": 1
+    },
+    "remove": {
+      "type": "boolean"
+    },
+    "planes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "normal": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3
+          }
+        },
+        "required": ["origin", "normal"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["ids"],
+  "additionalProperties": false,
+  "response": {
+    "type": "object",
+    "properties": {
+      "statusCode": {
+        "type": "integer"
+      },
+      "response": {}
+    },
+    "required": ["statusCode", "response"],
+    "additionalProperties": false
+  }
+}
