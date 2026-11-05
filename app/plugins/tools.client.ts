@@ -39,6 +39,17 @@ const TOOLS = [
       return component;
     }),
   },
+  {
+    id: "HorizonStack",
+    title: "Horizon Stack",
+    description: "Create a stratigraphic column from horizon and unit names.",
+    iconType: "mdi",
+    iconSource: "mdi-layers-triple",
+    component: asyncTool(async () => {
+      const component = await import("@vease/components/tools/CreateHorizonStack.vue");
+      return component;
+    }),
+  },
 ];
 
 export default defineNuxtPlugin(() => {
