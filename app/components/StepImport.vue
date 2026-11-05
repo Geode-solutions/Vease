@@ -42,7 +42,10 @@ const time_series_files = computed(() =>
 // A time series file is imported alone; its referenced files come in the additional files step.
 const main_time_series_path = computed(() => {
   const [single_file] = time_series_files.value;
-  return files.value.length === 1 && single_file ? uploadPath(single_file) : "";
+  if (files.value.length === 1 && single_file) {
+    return uploadPath(single_file);
+  }
+  return "";
 });
 
 // One chip per type, with its file count when several types are imported
@@ -121,7 +124,12 @@ const time_series_steps = [
       component_name: shallowRef(TimeSeriesTargetSelector),
       component_options: { filename: main_time_series_path },
     },
-    chips: computed(() => (target_id.value === "" ? [] : [geode_object_type.value])),
+    chips: computed(() => {
+      if (target_id.value === "") {
+        return [];
+      }
+      return [geode_object_type.value];
+    }),
   },
   {
     step_title: "Add additional files",

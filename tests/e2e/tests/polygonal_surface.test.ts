@@ -1,4 +1,3 @@
-// oxlint-disable max-dependencies
 // Node imports
 
 // Third party imports

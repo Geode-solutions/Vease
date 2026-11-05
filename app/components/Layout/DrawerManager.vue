@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import CreateTools from "@vease/components/CreateTools.vue";
+import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import Extension from "@vease/components/Extension.vue";
@@ -14,34 +15,27 @@ const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
 const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
 const viewerStore = useViewerStore();
 
-function closeAllDrawers(): void {
-  uiStore.setShowStepper(false);
-  uiStore.setShowCreateTools(false);
-  uiStore.setShowExtensions(false);
-}
-
-const anyDrawerOpen = computed(
-  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showExtensions,
+const showRightDrawer = computed(
+  () => uiStore.showStepper || uiStore.showCreateTools || uiStore.showCrsAlign,
 );
-const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
 
 function handleFilesDropped(files): void {
   emit("files-dropped", files);
 }
 
 function handleEscape(): void {
-  if (anyDrawerOpen.value && !viewerStore.picking_mode) {
-    closeAllDrawers();
+  if (uiStore.anyOverlayOpen && !viewerStore.picking_mode) {
+    uiStore.closeAllDrawers();
   }
 }
 </script>
 
 <template>
   <div
-    v-if="anyDrawerOpen"
+    v-if="uiStore.anyOverlayOpen"
     v-show="!viewerStore.picking_mode"
     class="drawer-overlay"
-    @click="closeAllDrawers"
+    @click="uiStore.closeAllDrawers()"
   />
 
   <v-card
@@ -69,6 +63,13 @@ function handleEscape(): void {
         class="d-flex flex-column h-100 w-100"
       >
         <CreateTools />
+      </div>
+      <div
+        v-if="uiStore.showCrsAlign"
+        data-testid="crsAlignPanel"
+        class="d-flex flex-column h-100 w-100"
+      >
+        <CrsAlign />
       </div>
     </GlassCard>
   </v-card>
