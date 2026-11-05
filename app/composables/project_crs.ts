@@ -27,13 +27,14 @@ function names(items: DataItem[]): string {
   return items.map((item) => item.name).join(", ");
 }
 
-// Imported data in another CRS than the project is converted to it
+// Imported data in another CRS than the project is converted to it. Data without CRS keep none:
+// Only the user knows their CRS, the warning and the tree icon lead to the CRS dialog
 // oxlint-disable-next-line typescript/explicit-function-return-type, typescript/explicit-module-boundary-types
 function useProjectCrs() {
   const dataStore = useDataStore();
   const crsStore = useCrsStore();
   const feedbackStore = useFeedbackStore();
-  const { convertCrs, assignPlausible } = useCrs();
+  const { convertCrs } = useCrs();
 
   // One dialog can only edit one item: several items are fixed from the data manager
   function editAction(items: DataItem[]): FeedbackAction | undefined {
@@ -47,18 +48,6 @@ function useProjectCrs() {
         crsStore.requestCrsEdit(item.id);
       },
     };
-  }
-
-  async function assignWithoutCrs(items: DataItem[], crs: CRSList): Promise<string[]> {
-    try {
-      return await assignPlausible(
-        items.map(({ id }) => id),
-        crs,
-      );
-    } catch {
-      // The request feedback already shows the error: the data stay flagged in the tree
-      return [];
-    }
   }
 
   async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
@@ -101,11 +90,11 @@ function useProjectCrs() {
         editAction(failed),
       );
     }
-    // The data whose coordinates do not fit stay without CRS: the tree flags them
-    const assignedIds = await assignWithoutCrs(withoutCrs, reference);
-    const assigned = withoutCrs.filter(({ id }) => assignedIds.includes(id));
-    if (assigned.length > 0) {
-      feedbackStore.add_success(`Assigned ${code}: ${names(assigned)}`);
+    if (withoutCrs.length > 0) {
+      feedbackStore.add_warning(
+        `No CRS, project in ${code}: ${names(withoutCrs)}`,
+        editAction(withoutCrs),
+      );
     }
   }
 

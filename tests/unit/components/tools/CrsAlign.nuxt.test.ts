@@ -1,12 +1,5 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import {
-  SOURCE,
-  SOURCE_ORIGIN,
-  TARGET,
-  TARGET_ORIGIN,
-  fill,
-  item,
-} from "@vease_tests/utils/crs_align_fixtures";
+import { SOURCE, TARGET, fill, fillPoints, item } from "@vease_tests/utils/crs_align_fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
@@ -62,28 +55,25 @@ describe("crs align tool", () => {
   beforeEach(() => {
     setupActivePinia();
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
-    alignCrs.mockReset().mockResolvedValue({});
+    alignCrs.mockReset().mockResolvedValue(undefined);
     followProject.mockReset().mockResolvedValue(undefined);
     useUIStore().openCrsAlign(item);
   });
 
-  test("applies an affine alignment once every point and the crs are set", async () => {
+  test("asks for three pairs", () => {
     const wrapper = mountWithPlugins(CrsAlign);
-    await wrapper.find('[data-testid="crsAlignMode-affine"]').trigger("click");
-    await flushPromises();
+    expect(wrapper.findAll('[data-testid^="crsAlignSource-"]')).toHaveLength(3);
+    expect(wrapper.findAll('[data-testid^="crsAlignTarget-"]')).toHaveLength(3);
+    wrapper.unmount();
+  });
+
+  test("applies an affine alignment once every point and the crs are set", async () => {
+    const success = vi.spyOn(useFeedbackStore(), "add_success");
+    const wrapper = mountWithPlugins(CrsAlign);
     const apply = wrapper.find('[data-testid="crsAlignApplyButton"]');
     expect(apply.attributes("disabled")).toBeDefined();
 
-    await Promise.all(
-      SOURCE.map(async (point, index) => {
-        await fill(wrapper, `crsAlignSource-${index}`, point);
-      }),
-    );
-    await Promise.all(
-      TARGET.map(async (point, index) => {
-        await fill(wrapper, `crsAlignTarget-${index}`, point);
-      }),
-    );
+    await fillPoints(wrapper);
     await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
     await flushPromises();
     await apply.trigger("click");
@@ -94,33 +84,10 @@ describe("crs align tool", () => {
     expect(alignCrs).toHaveBeenCalledWith(item, LAMBERT, {
       sourcePoints: typedSource,
       targetPoints: TARGET,
-      mode: "affine",
       linkedItems: [],
     });
+    expect(success).toHaveBeenCalledWith("Data georeferenced");
     expect(useUIStore().showCrsAlign).toBe(false);
-    wrapper.unmount();
-  });
-
-  test("aligns without distortion by default and reports scale and rotation", async () => {
-    alignCrs.mockResolvedValue({ scale: 0.5, rotation: 12.4 });
-    const success = vi.spyOn(useFeedbackStore(), "add_success");
-    const wrapper = mountWithPlugins(CrsAlign);
-    expect(wrapper.findAll('[data-testid^="crsAlignSource-"]')).toHaveLength(2);
-
-    await fill(wrapper, "crsAlignSource-0", SOURCE_ORIGIN);
-    await fill(wrapper, "crsAlignTarget-0", TARGET_ORIGIN);
-    await wrapper.find('[data-testid="crsSelectorStub"]').trigger("click");
-    await flushPromises();
-    await wrapper.find('[data-testid="crsAlignApplyButton"]').trigger("click");
-    await flushPromises();
-
-    expect(alignCrs).toHaveBeenCalledWith(item, LAMBERT, {
-      sourcePoints: [{ ...SOURCE_ORIGIN, picked: false }],
-      targetPoints: [TARGET_ORIGIN],
-      mode: "similarity",
-      linkedItems: [],
-    });
-    expect(success).toHaveBeenCalledWith("Data georeferenced: scale ×0.50, rotation 12°");
     wrapper.unmount();
   });
 

@@ -16,20 +16,11 @@ interface CrsPoint {
   picked?: boolean;
 }
 
-type AlignMode = "similarity" | "affine";
-
 interface Alignment {
   sourcePoints: CrsPoint[];
   targetPoints: CrsPoint[];
-  mode: AlignMode;
   // Data sharing the local frame of the aligned item: aligned in the same request
   linkedItems?: Pick<DataItem, "id">[];
-}
-
-// Only set without distortion: the affine alignment has no single scale or rotation
-interface AlignResult {
-  scale?: number;
-  rotation?: number;
 }
 
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it
@@ -82,8 +73,8 @@ function useCrs() {
   async function alignCrs(
     item: DataItem,
     crs: CRSList,
-    { sourcePoints, targetPoints, mode, linkedItems = [] }: Alignment,
-  ): Promise<AlignResult> {
+    { sourcePoints, targetPoints, linkedItems = [] }: Alignment,
+  ): Promise<void> {
     const linkedIds = linkedItems.map(({ id }) => id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.align,
@@ -91,42 +82,16 @@ function useCrs() {
         id: item.id,
         source_points: sourcePoints,
         target_points: targetPoints,
-        mode,
         ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
         ...crs,
       },
     });
     await refreshLinked(response.linked);
     await refresh(item, response);
-    return { scale: response.scale, rotation: response.rotation };
   }
 
-  // Data without CRS get it when their coordinates fit; the others keep no CRS (warning in the tree)
-  async function assignPlausible(ids: string[], crs: CRSList): Promise<string[]> {
-    const [first, ...linkedIds] = ids;
-    if (first === undefined) {
-      return [];
-    }
-    const response = await backStore.request({
-      schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
-      params: {
-        id: first,
-        ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
-        only_plausible: true,
-        ...crs,
-      },
-    });
-    const entries = [{ id: first, crs: response.crs }, ...(response.linked ?? [])];
-    const assigned = entries.filter((entry) => entry.crs !== undefined);
-    for (const entry of assigned) {
-      // oxlint-disable-next-line no-await-in-loop
-      await dataStore.updateItem(entry.id, { crs: entry.crs });
-    }
-    return assigned.map(({ id }) => id);
-  }
-
-  // One request moves every georeferenced data, from its own CRS: all or nothing. Then the data
-  // Without CRS get it when plausible. The project CRS only changes once the back accepted the conversion
+  // One request moves every georeferenced data, from its own CRS: all or nothing. The data without
+  // CRS keep none. The project CRS only changes once the back accepted the conversion
   async function changeProjectCrs(crs: CRSList): Promise<void> {
     const crsStore = useCrsStore();
     const items = crsStore.crsItems;
@@ -135,10 +100,6 @@ function useCrs() {
     if (first !== undefined) {
       await convertCrs(first, crs, { focus: false, linkedItems });
     }
-    await assignPlausible(
-      items.filter((item) => item.crs === undefined).map(({ id }) => id),
-      crs,
-    );
     crsStore.setProjectCrs(crs);
   }
 
@@ -177,8 +138,8 @@ function useCrs() {
     }
   }
 
-  return { convertCrs, alignCrs, changeProjectCrs, assignPlausible, followProject };
+  return { convertCrs, alignCrs, changeProjectCrs, followProject };
 }
 
-export type { AlignMode, AlignResult, Alignment, CrsPoint };
+export type { Alignment, CrsPoint };
 export { useCrs };

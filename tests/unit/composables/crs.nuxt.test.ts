@@ -71,7 +71,6 @@ describe("useCrs composable", () => {
     await useCrs().alignCrs(item, LAMBERT, {
       sourcePoints: source,
       targetPoints: target,
-      mode: "affine",
     });
 
     expect(request).toHaveBeenCalledWith(
@@ -80,22 +79,11 @@ describe("useCrs composable", () => {
           id: "item-1",
           source_points: source,
           target_points: target,
-          mode: "affine",
           ...LAMBERT,
         },
       }),
     );
     expect(calls).toStrictEqual(["request", "update", "reload", "focus"]);
-  });
-
-  test("alignCrs returns the applied scale and rotation", async () => {
-    request.mockResolvedValueOnce({ crs: LAMBERT, scale: 0.5, rotation: 12 });
-    const result = await useCrs().alignCrs(item, LAMBERT, {
-      sourcePoints: [{ x: 0, y: 0, picked: false }],
-      targetPoints: [{ x: 10, y: 10 }],
-      mode: "similarity",
-    });
-    expect(result).toStrictEqual({ scale: 0.5, rotation: 12 });
   });
 
   test("alignCrs aligns the linked items in the same request", async () => {
@@ -113,7 +101,6 @@ describe("useCrs composable", () => {
     await useCrs().alignCrs(item, LAMBERT, {
       sourcePoints: [{ x: 0, y: 0, picked: false }],
       targetPoints: [{ x: 10, y: 10 }],
-      mode: "similarity",
       linkedItems: [wells],
     });
 
