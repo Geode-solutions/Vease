@@ -1,22 +1,25 @@
 from __future__ import annotations
 
+import logging
+import time
 from typing import Any
 
 import requests
-import time
+
+logger = logging.getLogger(__name__)
 
 
 class VeaseClient:
     def __init__(self, base_url: str):
-        print(f"VeaseClient: {base_url}")
+        logger.info("VeaseClient: %s", base_url)
         self.session = requests.Session()
         self.base_url = base_url.rstrip("/") + "/api"
         while True:
             status = self.get("/microservice/app/get_is_app_ready")
             if status.get("isReady"):
-                print("App is ready!")
+                logger.info("App is ready")
                 break
-            print("Not ready yet, retrying...")
+            logger.info("Not ready yet, retrying...")
             time.sleep(1)
         self.base_url += "/controller"
 
@@ -25,7 +28,7 @@ class VeaseClient:
 
     def _request(self, method: str, path: str, **kwargs) -> Any:
         response = self.session.request(method, self._url(path), **kwargs)
-        print(f"Request: {method} {self._url(path)} => {response}")
+        logger.debug("Request: %s %s => %s", method, self._url(path), response)
         try:
             data = response.json()
         except ValueError:
@@ -35,10 +38,14 @@ class VeaseClient:
             message = data.get("message") if isinstance(data, dict) else str(data)
             raise RuntimeError(response.status_code, message or "Vease API error", data)
 
+        # Every controller schema declares this {statusCode, response} wrapper, and the readiness
+        # route that does not use it never returns both keys, so detecting them is enough
+        if isinstance(data, dict) and "response" in data and "statusCode" in data:
+            return data["response"]
         return data
 
-    def get(self, path: str) -> Any:
-        return self._request("GET", path)
+    def get(self, path: str, params: dict | None = None) -> Any:
+        return self._request("GET", path, params=params)
 
     def post(
         self, path: str, json: dict | None = None, files: dict | None = None
