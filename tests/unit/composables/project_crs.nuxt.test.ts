@@ -8,14 +8,13 @@ import { useProjectCrs } from "@vease/composables/project_crs";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-const { convertCrs, assignPlausible } = vi.hoisted(() => ({
+const { convertCrs } = vi.hoisted(() => ({
   convertCrs: vi.fn<(item: unknown, crs: unknown, options?: unknown) => Promise<void>>(),
-  assignPlausible: vi.fn<(ids: string[], crs: unknown) => Promise<string[]>>(),
 }));
 
 vi.mock(import("@vease/composables/crs"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- only these are used by useProjectCrs.
-  useCrs: (() => ({ convertCrs, assignPlausible })) as unknown as typeof useCrs,
+  useCrs: (() => ({ convertCrs })) as unknown as typeof useCrs,
 }));
 
 const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
@@ -43,7 +42,6 @@ describe("useProjectCrs composable", () => {
   beforeEach(() => {
     setupActivePinia();
     convertCrs.mockReset().mockResolvedValue(undefined);
-    assignPlausible.mockReset().mockResolvedValue([]);
   });
 
   test("an empty batch does not read the data", async () => {
@@ -147,15 +145,27 @@ describe("useProjectCrs composable", () => {
     expect(requestCrsEdit).toHaveBeenCalledExactlyOnceWith("b");
   });
 
-  test("data without crs get the project crs when plausible, in one request", async () => {
+  // Only the user knows the crs of the data: the warning leads to the crs dialog
+  test("data without crs stay without crs, with a warning to edit it", async () => {
     const { addSuccess, addWarning } = spyFeedback();
-    // C does not fit Lambert-93: it stays without crs, flagged in the tree
-    assignPlausible.mockResolvedValue(["b"]);
+    setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2")]);
+    await useProjectCrs().harmonizeImportedCrs(["b"]);
+    expect(convertCrs).not.toHaveBeenCalled();
+    expect(addSuccess).not.toHaveBeenCalled();
+    expect(addWarning).toHaveBeenCalledExactlyOnceWith(
+      "No CRS, project in EPSG:2154: b",
+      expect.objectContaining({ label: "Edit CRS" }),
+    );
+  });
+
+  test("several data without crs share one warning, edited from the data manager", async () => {
+    const { addWarning } = spyFeedback();
     setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2"), dataItem("c", "3")]);
     await useProjectCrs().harmonizeImportedCrs(["b", "c"]);
-    expect(assignPlausible).toHaveBeenCalledExactlyOnceWith(["b", "c"], LAMBERT);
-    expect(addSuccess).toHaveBeenCalledExactlyOnceWith("Assigned EPSG:2154: b");
-    expect(addWarning).not.toHaveBeenCalled();
+    expect(addWarning).toHaveBeenCalledExactlyOnceWith(
+      "No CRS, project in EPSG:2154: b, c",
+      undefined,
+    );
   });
 
   test("batches run one after another, even after a failure", async () => {

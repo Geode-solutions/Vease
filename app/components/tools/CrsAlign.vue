@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { type AlignResult, useCrs } from "@vease/composables/crs";
 import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
+import { useCrs } from "@vease/composables/crs";
 import { useCrsAlign } from "@vease/composables/crs_align";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
@@ -14,10 +14,8 @@ const feedbackStore = useFeedbackStore();
 const { alignCrs, followProject } = useCrs();
 const crsStore = useCrsStore();
 const {
-  mode,
-  setMode,
-  visibleSourcePoints,
-  visibleTargetPoints,
+  sourcePoints,
+  targetPoints,
   pickingActive,
   togglePickMode,
   reset,
@@ -27,10 +25,6 @@ const {
   editSourcePoint,
 } = useCrsAlign();
 
-const MODES = [
-  { value: "similarity", label: "Without distortion" },
-  { value: "affine", label: "Affine (3 points)" },
-] as const;
 const targetCrs = ref<CRSList | undefined>(undefined);
 const applying = ref(false);
 // "All data": the data in the same CRS state, usually sharing the local frame of the item
@@ -48,12 +42,8 @@ watch(
   { immediate: true },
 );
 
-function successMessage({ scale, rotation }: AlignResult, count: number): string {
-  const aligned = count > 1 ? `Data georeferenced (${count} items)` : "Data georeferenced";
-  if (scale === undefined || rotation === undefined) {
-    return aligned;
-  }
-  return `${aligned}: scale ×${scale.toFixed(2)}, rotation ${Math.round(rotation)}°`;
+function successMessage(count: number): string {
+  return count > 1 ? `Data georeferenced (${count} items)` : "Data georeferenced";
 }
 
 function close(): void {
@@ -72,13 +62,12 @@ async function apply(): Promise<void> {
     const crs = targetCrs.value;
     // Taken before: the project follows the aligned data as soon as they are stored
     const { projectCrs } = crsStore;
-    const result = await alignCrs(item, crs, {
+    await alignCrs(item, crs, {
       sourcePoints: toSourceCrsPoints(),
       targetPoints: toTargetCrsPoints(),
-      mode: mode.value,
       linkedItems,
     });
-    feedbackStore.add_success(successMessage(result, 1 + linkedItems.length));
+    feedbackStore.add_success(successMessage(1 + linkedItems.length));
     // Typed in the target CRS: the data then join the project CRS
     await followProject(
       [item, ...linkedItems].map(({ id, name }) => ({ id, name, crs })),
@@ -109,28 +98,7 @@ async function apply(): Promise<void> {
     </div>
 
     <v-card-text class="px-0 flex-grow-1 overflow-y-auto">
-      <v-btn-toggle
-        :model-value="mode"
-        mandatory
-        density="compact"
-        variant="outlined"
-        color="white"
-        divided
-        class="mb-3 w-100"
-        data-testid="crsAlignMode"
-        @update:model-value="setMode"
-      >
-        <v-btn
-          v-for="option in MODES"
-          :key="option.value"
-          :value="option.value"
-          :data-testid="'crsAlignMode-' + option.value"
-          class="text-none flex-grow-1"
-        >
-          {{ option.label }}
-        </v-btn>
-      </v-btn-toggle>
-      <!-- Next to the mode: what gets aligned must stay visible without scrolling -->
+      <!-- At the top: what gets aligned must stay visible without scrolling -->
       <v-radio-group
         v-model="scope"
         inline
@@ -147,7 +115,7 @@ async function apply(): Promise<void> {
         Source points (on data)
       </div>
       <v-row
-        v-for="(point, index) in visibleSourcePoints"
+        v-for="(point, index) in sourcePoints"
         :key="'source-' + index"
         dense
         :data-testid="'crsAlignSource-' + index"
@@ -177,7 +145,7 @@ async function apply(): Promise<void> {
         Target points
       </div>
       <v-row
-        v-for="(point, index) in visibleTargetPoints"
+        v-for="(point, index) in targetPoints"
         :key="'target-' + index"
         dense
         :data-testid="'crsAlignTarget-' + index"

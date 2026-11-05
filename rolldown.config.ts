@@ -94,12 +94,37 @@ const testsAliasPlugin = {
   },
 };
 
+const UTILS_FOLDER = "tests/e2e/utils";
+
+function collectAssets(dir: string): string[] {
+  return fs
+    .readdirSync(dir, { withFileTypes: true, recursive: true })
+    .filter((entry) => entry.isFile() && !entry.name.endsWith(".ts"))
+    .map((entry) => path.join(entry.parentPath, entry.name));
+}
+
+// The utils read their files (the basemap test tiles) next to them, in the build too
+const utilsAssetsPlugin = {
+  name: "utils-assets",
+  buildStart(this: {
+    emitFile: (file: { type: "asset"; fileName: string; source: Uint8Array }) => string;
+  }): void {
+    for (const asset of collectAssets(UTILS_FOLDER)) {
+      this.emitFile({
+        type: "asset",
+        fileName: path.relative(".", asset).split(path.sep).join("/"),
+        source: fs.readFileSync(asset),
+      });
+    }
+  },
+};
+
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig({
-  input: collectTsFiles("tests/e2e/utils"),
+  input: collectTsFiles(UTILS_FOLDER),
   platform: "node",
   external: isExternal,
-  plugins: [testsAliasPlugin],
+  plugins: [testsAliasPlugin, utilsAssetsPlugin],
   output: {
     dir: ".build",
     format: "esm",

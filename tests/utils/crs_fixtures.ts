@@ -15,8 +15,6 @@ const item: DataItem = {
   visible: true,
 };
 
-const ASSIGN_ROUTE = "opengeodeweb_back/crs/assign_geographic";
-
 // Oldest first: a and c in Lambert-93, b already in UTM, local1 and local2 without CRS
 function projectItems(): DataItem[] {
   return [
@@ -71,7 +69,6 @@ function stubCrsStores(calls: string[]): CrsStubs {
 }
 
 export {
-  ASSIGN_ROUTE,
   type BackRequest,
   type CrsStubs,
   type FocusCamera,
