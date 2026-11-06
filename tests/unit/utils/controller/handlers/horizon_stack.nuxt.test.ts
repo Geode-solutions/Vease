@@ -3,6 +3,7 @@ import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schem
 import { controllerHandlers } from "@vease/utils/controller/index";
 import { getBackStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow";
+import { stratigraphicColumn } from "@vease/utils/controller/handlers/horizon_stack";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -82,5 +83,27 @@ describe("the horizon stack controller handlers", () => {
       schema: schemas.horizon_stack_info,
       params: { id: STACK_ID },
     });
+  });
+});
+
+describe("the stratigraphic column", () => {
+  test("interleaves units and horizons top to bottom", () => {
+    expect(stratigraphicColumn(INFO).map(({ kind, name }) => `${kind}:${name}`)).toStrictEqual([
+      "unit:Above",
+      "horizon:Top",
+      "unit:Below",
+    ]);
+  });
+
+  test("keeps every horizon when the stack has fewer units", () => {
+    const column = stratigraphicColumn({
+      horizons: [...INFO.horizons, { id: "h2", name: "" }],
+      units: [],
+    });
+
+    expect(column.map(({ kind, name }) => `${kind}:${name}`)).toStrictEqual([
+      "horizon:Top",
+      "horizon:Horizon 2",
+    ]);
   });
 });

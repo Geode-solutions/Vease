@@ -23,6 +23,10 @@ interface HorizonStackInfo {
   units: NamedComponent[];
 }
 
+interface ColumnRow extends NamedComponent {
+  kind: "horizon" | "unit";
+}
+
 const schemas = back_schemas.opengeodeweb_back;
 
 async function createHorizonStack(params: unknown): Promise<{ id: string; name: string }> {
@@ -50,5 +54,21 @@ async function horizonStackInfo(params: unknown): Promise<HorizonStackInfo> {
   return info;
 }
 
-export { createHorizonStack, horizonStackInfo };
-export type { HorizonStackInfo, NamedComponent };
+// Units and horizons interleaved top to bottom; a stack read from a file may lack some units
+function stratigraphicColumn({ horizons, units }: HorizonStackInfo): ColumnRow[] {
+  const rows: ColumnRow[] = [];
+  for (let index = 0; index < Math.max(horizons.length, units.length); index += 1) {
+    const unit = units[index];
+    if (unit) {
+      rows.push({ ...unit, kind: "unit", name: unit.name || `Unit ${index + 1}` });
+    }
+    const horizon = horizons[index];
+    if (horizon) {
+      rows.push({ ...horizon, kind: "horizon", name: horizon.name || `Horizon ${index + 1}` });
+    }
+  }
+  return rows;
+}
+
+export { createHorizonStack, horizonStackInfo, stratigraphicColumn };
+export type { ColumnRow, HorizonStackInfo, NamedComponent };
