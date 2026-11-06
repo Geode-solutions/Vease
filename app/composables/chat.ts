@@ -3,12 +3,14 @@ import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/vue";
 
 // Local imports
+import { appServerUrl } from "@vease/utils/app_server_url";
 import cloud_api_schemas from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useAuth } from "@vease/composables/auth";
 import vease_schemas from "vease/vease_typed_schemas.js";
 
+const CHAT_ROUTE = "/api/llm/chat";
 const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
 type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
 
@@ -80,7 +82,16 @@ export function useVeaseChat(): VeaseChatReturn {
 
   const { messages, sendMessage, status, error, stop, clearError } = useChat({
     transport: new DefaultChatTransport({
-      api: "/api/llm/chat",
+      prepareSendMessagesRequest: (request): { api: string; body: object } => ({
+        api: appServerUrl(CHAT_ROUTE),
+        body: {
+          ...request.body,
+          id: request.id,
+          messages: request.messages,
+          trigger: request.trigger,
+          messageId: request.messageId,
+        },
+      }),
       headers: async (): Promise<Record<string, string>> => {
         const token = await user.value?.getIdToken();
         if (token === undefined) {

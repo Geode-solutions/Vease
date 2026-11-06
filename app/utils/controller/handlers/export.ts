@@ -7,6 +7,7 @@ import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed
 
 // Local imports
 import { ControllerError } from "@vease/utils/controller/errors";
+import { appServerUrl } from "@vease/utils/app_server_url";
 import { getBackStore } from "@vease/utils/external_stores";
 
 type ScreenshotFormat = "png" | "jpg";
@@ -74,7 +75,7 @@ async function exportScreenshot(params: unknown): Promise<Record<string, never>>
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const { format, includeBackground, uploadUrl } = params as ExportScreenshotParams;
   const blob = await screenshotBlob(format, includeBackground);
-  await $fetch(uploadUrl, { method: "POST", body: blob });
+  await $fetch(appServerUrl(uploadUrl), { method: "POST", body: blob });
   return {};
 }
 
@@ -82,7 +83,7 @@ async function exportProject(params: unknown): Promise<Record<string, never>> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const { uploadUrl } = params as ExportProjectParams;
   const blob = await projectBlob();
-  await $fetch(uploadUrl, { method: "POST", body: blob });
+  await $fetch(appServerUrl(uploadUrl), { method: "POST", body: blob });
   return {};
 }
 

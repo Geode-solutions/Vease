@@ -42,9 +42,10 @@ const SCREENSHOT_CONTENT = "\u0089PNG screenshot";
 const PROJECT_CONTENT = "PK\u0003\u0004project";
 const SNAPSHOT = { treeview: {} };
 const BACK_URL = "http://back.test";
+const APP_BASE_URL = "https://session.a.run.app:443/server";
 
 const viewerStore = { request: vi.fn<(args: unknown) => Promise<unknown>>() };
-const appStore = { exportStores: vi.fn<() => Promise<unknown>>() };
+const appStore = { base_url: APP_BASE_URL, exportStores: vi.fn<() => Promise<unknown>>() };
 
 async function exportScreenshot(params: Record<string, unknown>): Promise<unknown> {
   const result = await controllerHandlers["export-screenshot"]?.(params);
@@ -101,7 +102,7 @@ describe("the export controller handlers", () => {
       },
     });
     await expect(upload()).resolves.toStrictEqual({
-      url: UPLOAD_URL,
+      url: `${APP_BASE_URL}${UPLOAD_URL}`,
       method: "POST",
       content: SCREENSHOT_CONTENT,
     });
@@ -133,7 +134,7 @@ describe("the export controller handlers", () => {
       baseURL: BACK_URL,
     });
     await expect(upload()).resolves.toStrictEqual({
-      url: UPLOAD_URL,
+      url: `${APP_BASE_URL}${UPLOAD_URL}`,
       method: "POST",
       content: PROJECT_CONTENT,
     });

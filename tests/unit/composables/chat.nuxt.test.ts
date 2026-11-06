@@ -1,5 +1,5 @@
-import { DefaultChatTransport, type UIMessage } from "ai";
 import {
+  APP_BASE_URL,
   KILL_SCHEMA_ID,
   STATUS_SCHEMA_ID,
   type TransportOptions,
@@ -10,6 +10,7 @@ import {
   mockCloudApi,
   resetChatMocks,
 } from "@vease_tests/utils/chat_harness";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { setupActivePinia } from "@vease_tests/utils";
@@ -57,16 +58,38 @@ describe("the useVeaseChat composable", () => {
     resetChatMocks(transportOptions);
   });
 
-  test("initializes useChat with a transport targeting the /api/llm/chat endpoint", () => {
+  test("initializes useChat with a transport", () => {
     const chat = useVeaseChat();
 
     // oxlint-disable-next-line no-unsafe-type-assertion -- expect.any() is typed as `any`; this matcher genuinely satisfies DefaultChatTransport at runtime.
     const anyTransport = expect.any(DefaultChatTransport) as DefaultChatTransport<UIMessage>;
     expect(useChat).toHaveBeenCalledWith({ transport: anyTransport });
-    expect(lastTransportOptions(transportOptions).api).toBe("/api/llm/chat");
     expect(chat.messages.value).toStrictEqual([]);
     expect(chat.status.value).toBe("ready");
     expect(chat.provider.value).toBe(chat.CHAT_PROVIDER.LLAMA);
+  });
+
+  test("sends the messages to the chat endpoint of the app server", () => {
+    useVeaseChat();
+
+    const request = lastTransportOptions(transportOptions).prepareSendMessagesRequest({
+      id: "chat-id",
+      messages: [],
+      body: { provider: "llama" },
+      trigger: "submit-message",
+      messageId: undefined,
+    });
+
+    expect(request).toStrictEqual({
+      api: `${APP_BASE_URL}/api/llm/chat`,
+      body: {
+        provider: "llama",
+        id: "chat-id",
+        messages: [],
+        trigger: "submit-message",
+        messageId: undefined,
+      },
+    });
   });
 
   test("fetches the local model status on creation", async () => {

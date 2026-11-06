@@ -8,12 +8,22 @@ import { useChat } from "@ai-sdk/vue";
 
 // The subset of the transport options the composable sets, with the
 // Callback shapes it uses (the SDK types them as wider `Resolvable`s).
+interface ChatRequestOptions {
+  id: string;
+  messages: UIMessage[];
+  body: Record<string, unknown> | undefined;
+  trigger: "submit-message" | "regenerate-message";
+  messageId: string | undefined;
+}
+
 interface TransportOptions {
-  api: string;
+  prepareSendMessagesRequest: (options: ChatRequestOptions) => { api: string; body: object };
   headers: () => Promise<Record<string, string>>;
   body: () => object;
 }
 
+// What the app store points to on cloud: the session's Cloud Run instance, not the page origin
+const APP_BASE_URL = "https://session.a.run.app:443/server";
 const STATUS_SCHEMA_ID = "api/llm/status";
 const KILL_SCHEMA_ID = "api/llm/kill";
 const ENTITLEMENT_SCHEMA_ID = "cloud_api/ai/entitlement";
@@ -81,7 +91,7 @@ function resetChatMocks(transportOptions: TransportOptions[]): void {
   });
   vi.mocked(useAppStore).mockReturnValue(
     // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
-    { request: appRequest } as unknown as ReturnType<typeof useAppStore>,
+    { request: appRequest, base_url: APP_BASE_URL } as unknown as ReturnType<typeof useAppStore>,
   );
   const useChatStub = {
     messages: ref<UIMessage[]>([]),
@@ -98,6 +108,7 @@ function resetChatMocks(transportOptions: TransportOptions[]): void {
 }
 
 export {
+  APP_BASE_URL,
   type ApiRequest,
   ENTITLEMENT_SCHEMA_ID,
   KEY_SCHEMA_ID,
