@@ -4,7 +4,8 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
+import { ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93 } from "@vease_tests/utils/crs_test_data";
+import { applyAlignment, openCrsByButton, startAlignment } from "@vease_tests/utils/crs";
 import {
   expectNoBasemapInTree,
   setBasemapOpacity,
@@ -22,6 +23,7 @@ import {
   toggleGridScale,
 } from "@vease_tests/utils/camera_interaction";
 import { brepGeodeObjectType } from "@vease_tests/utils/constants";
+import { fillAlignment } from "@vease_tests/utils/crs_flows";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
 import { test } from "@vease_tests/utils/fixtures";
@@ -29,7 +31,6 @@ import { toggleClippingPlanes } from "@vease_tests/utils/clipping_planes_interac
 
 // Constants
 const BREP_FILE = "test.og_brep";
-const LAMBERT_93 = "RGF93 v1 / Lambert-93";
 const EXPLODE_FACTOR = 0.5;
 const BASEMAP_OPACITY = 50;
 const ZOOM_STEPS = 8;
@@ -51,12 +52,17 @@ test("open the crs dialog", async ({ window }) => {
   await openCrsByButton(window, brepGeodeObjectType);
 });
 
-test("select a crs to assign", async ({ window }) => {
-  await selectCrs(window, LAMBERT_93);
+// Aligned in the center of France (Lambert-93 700 000 / 6 600 000): the real tiles of EOX and the IGN exist there
+test("start aligning the model on a crs", async ({ window }) => {
+  await startAlignment(window);
 });
 
-test("assign the selected crs", async ({ window }) => {
-  await confirmAssign(window);
+test("fill the alignment points in the center of France", async ({ window }) => {
+  await fillAlignment(window, ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93);
+});
+
+test("apply the alignment", async ({ window }) => {
+  await applyAlignment(window);
   await navigateToViewerPage(window);
   await moveMouseOutOfTheWay(window);
 });

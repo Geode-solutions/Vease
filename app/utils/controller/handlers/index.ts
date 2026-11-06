@@ -7,6 +7,10 @@ import {
   applySlice,
   applyThreshold,
 } from "@vease/utils/controller/handlers/apply_filter";
+import {
+  createHorizonStack,
+  horizonStackInfo,
+} from "@vease/utils/controller/handlers/horizon_stack";
 import { exportProject, exportScreenshot } from "@vease/utils/controller/handlers/export";
 import {
   focusView,
@@ -37,6 +41,8 @@ const commandHandlers: Record<string, ControllerHandler> = {
   "create-data": createData,
   "rename-data": renameData,
   "delete-data": deleteData,
+  "create-horizon-stack": createHorizonStack,
+  "horizon-stack-info": horizonStackInfo,
   ...STYLE_COMMANDS,
   "reset-view": resetView,
   "focus-view": focusView,
