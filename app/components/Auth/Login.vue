@@ -8,7 +8,7 @@ const { email, isLogin, password } = useAuthPage();
 
 <template>
   <v-row class="align-center justify-center">
-    <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
+    <v-col cols="12" class="auth-column pa-6">
       <v-sheet color="transparent" width="100%" class="text-center mb-4">
         <v-responsive class="mx-auto mb-2" max-width="120">
           <v-img :src="logo" contain />
@@ -16,7 +16,7 @@ const { email, isLogin, password } = useAuthPage();
         <v-card-title class="text-h3 font-weight-black title-text mb-2 px-0 d-flex justify-center">
           Vease
         </v-card-title>
-        <v-card-subtitle class="text-body-1 text-white opacity-70 px-0 text-center">
+        <v-card-subtitle class="text-body-1 text-white opacity-70 px-0 text-center text-wrap">
           {{
             isLogin
               ? "Welcome back! Please login to your account"
@@ -33,6 +33,12 @@ const { email, isLogin, password } = useAuthPage();
 <style scoped>
 .auth-page {
   background: rgba(0, 0, 0, 0.1);
+}
+
+/* Fixed width instead of a grid fraction: the fields stay wide enough to show a full email address,
+   even with the icon password managers inject at the end of the input. */
+.auth-column {
+  max-width: 520px;
 }
 
 .title-text {
