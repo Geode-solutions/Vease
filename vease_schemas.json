@@ -596,6 +596,74 @@
           }
         }
       },
+      "horizon_stack": {
+        "info": {
+          "$id": "api/controller/horizon_stack/info",
+          "route": "/info",
+          "methods": ["GET"],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 32,
+              "maxLength": 32
+            }
+          },
+          "required": ["id"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        },
+        "create": {
+          "$id": "api/controller/horizon_stack/create",
+          "route": "/create",
+          "methods": ["POST"],
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "horizons": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "unit_names": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": ["name", "horizons"],
+          "additionalProperties": false,
+          "response": {
+            "type": "object",
+            "properties": {
+              "statusCode": {
+                "type": "integer"
+              },
+              "response": {}
+            },
+            "required": ["statusCode", "response"],
+            "additionalProperties": false
+          }
+        }
+      },
       "colormaps": {
         "$id": "api/controller/colormaps",
         "route": "/colormaps",

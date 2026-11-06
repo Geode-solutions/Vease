@@ -196,6 +196,26 @@ export interface ControllerFilterClipResponse {
   statusCode: number;
 }
 
+export interface ControllerHorizonStackInfoParams {
+  id: string;
+}
+
+export interface ControllerHorizonStackInfoResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerHorizonStackCreateParams {
+  horizons: string[];
+  name: string;
+  unit_names?: string[];
+}
+
+export interface ControllerHorizonStackCreateResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerColormapsParams {}
 
 export interface ControllerColormapsResponse {
@@ -961,6 +981,12 @@ export interface Schemas {
           TypedSchema<ControllerFilterExplodeParams, ControllerFilterExplodeResponse>;
         readonly clip: (typeof json)["api"]["controller"]["filter"]["clip"] &
           TypedSchema<ControllerFilterClipParams, ControllerFilterClipResponse>;
+      };
+      readonly horizon_stack: {
+        readonly info: (typeof json)["api"]["controller"]["horizon_stack"]["info"] &
+          TypedSchema<ControllerHorizonStackInfoParams, ControllerHorizonStackInfoResponse>;
+        readonly create: (typeof json)["api"]["controller"]["horizon_stack"]["create"] &
+          TypedSchema<ControllerHorizonStackCreateParams, ControllerHorizonStackCreateResponse>;
       };
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
