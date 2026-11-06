@@ -153,8 +153,8 @@ function attributeCommand(
       ids: colored,
       results,
       failed,
-    } = await forEachData(ids, async (id) => {
-      const item = await getDataItem(id);
+    } = await forEachData(ids, async (dataId) => {
+      const item = await getDataItem(dataId);
       if (isModelComponentTarget(target)) {
         checkModel(item);
       } else {
@@ -162,7 +162,7 @@ function attributeCommand(
       }
       const coloring = await colorItemByAttribute({
         ...request,
-        id,
+        id: dataId,
         attribute: name,
         target,
         location,

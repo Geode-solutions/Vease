@@ -71,13 +71,13 @@ async function fetchCurrentCrs(): Promise<void> {
   if (itemId === undefined) {
     return;
   }
-  const id = itemId;
+  const dataId = itemId;
   loadingCurrentCrs.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.active,
-        params: { id },
+        params: { id: dataId },
       },
       {
         // Without geographic info, the active CRS is OpenGeode's default local one ("points")
@@ -94,7 +94,7 @@ async function fetchCurrentCrs(): Promise<void> {
           // The file is the reference: refresh the stored CRS shown in the table and tree,
           // Only when it differs, as each write refreshes every live view of the data
           if (item.value !== undefined && formatCrs(item.value.crs) !== formatCrs(crs_info)) {
-            await dataStore.updateItem(id, { crs: crs_info });
+            await dataStore.updateItem(dataId, { crs: crs_info });
           }
         },
       },

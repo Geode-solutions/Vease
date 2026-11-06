@@ -142,12 +142,14 @@ function checkComponentIdsOwner(ids: string[], componentIds: string[] | undefine
   }
 }
 
-async function getDataItem(id: string): Promise<DataItem> {
+async function getDataItem(dataId: DataId): Promise<DataItem> {
   try {
-    return await useDataStore().item(id);
+    return await useDataStore().item(dataId);
   } catch (error) {
-    if (error instanceof Error && error.message === `Item not found: ${id}`) {
-      throw new ControllerError(`No data with id "${id}"; read vease://data for the loaded data`);
+    if (error instanceof Error && error.message === `Item not found: ${dataId}`) {
+      throw new ControllerError(
+        `No data with id "${dataId}"; read vease://data for the loaded data`,
+      );
     }
     throw error;
   }
@@ -163,7 +165,7 @@ function hasAttributes(response: unknown): response is { attributes: BackAttribu
 }
 
 async function fetchAttributes(
-  id: string,
+  dataId: DataId,
   kind: AttributeKind,
   componentIds?: string[],
 ): Promise<BackAttribute[]> {
@@ -174,7 +176,7 @@ async function fetchAttributes(
   if (schema === undefined) {
     throw new ControllerError(`Model components have no ${kind} attributes`);
   }
-  const params: { id: string; component_ids?: string[] } = { id };
+  const params: { id: string; component_ids?: string[] } = { id: dataId };
   if (componentIds !== undefined) {
     params.component_ids = componentIds;
   }

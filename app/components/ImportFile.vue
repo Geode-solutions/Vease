@@ -62,7 +62,9 @@ async function import_files(): Promise<void> {
     await importWorkflow(files_to_import);
   } finally {
     const items = await dataStore.allItems();
-    const importedIds = items.map((item) => item.data_id).filter((id) => !existingIds.has(id));
+    const importedIds = items
+      .map((item) => item.data_id)
+      .filter((dataId) => !existingIds.has(dataId));
     // Conversions can be long: the stepper closes now, the snackbars report the outcome
     void harmonize(importedIds, projectCrs);
   }

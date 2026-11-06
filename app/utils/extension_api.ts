@@ -43,8 +43,8 @@ export const VeaseExtensionAPI = {
 
   async importItem(item: unknown): Promise<string> {
     // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided items are expected to match NewDataItem, with the legacy id of the back-end.
-    const id = await importItem(item as LegacyDataId<NewDataItem>);
-    return id;
+    const dataId = await importItem(item as LegacyDataId<NewDataItem>);
+    return dataId;
   },
 
   registerStore(store: unknown): void {
