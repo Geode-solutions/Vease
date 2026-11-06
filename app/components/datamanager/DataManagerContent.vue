@@ -118,8 +118,8 @@ async function executeDelete(): Promise<void> {
 async function deleteSelected(): Promise<void> {
   const idsToDelete = selectedIds.value.map((selected) => selected.data_id);
   await Promise.all(
-    idsToDelete.map(async (id) => {
-      await deleteData(id);
+    idsToDelete.map(async (dataId) => {
+      await deleteData(dataId);
     }),
   );
   selectedIds.value = [];

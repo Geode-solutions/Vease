@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { DataItem } from "@ogw_front/stores/data";
 import { consola } from "consola";
 
@@ -61,14 +62,14 @@ function modelAttributeSources(
 
 function settledAttributes(
   result: PromiseSettledResult<BackAttribute[]> | undefined,
-  id: string,
+  dataId: DataId,
   kind: AttributeKind,
 ): BackAttribute[] {
   if (result?.status === "fulfilled") {
     return result.value;
   }
   consola.warn(
-    `[CONTROLLER] ${kind} attributes of ${id} are unavailable`,
+    `[CONTROLLER] ${kind} attributes of ${dataId} are unavailable`,
     errorMessage(result?.reason),
   );
   return [];
@@ -80,19 +81,19 @@ function requestKey({ kind, componentIds }: AttributeSource): string {
 
 // Mesh elements share their vertex attributes: each kind and component set is requested once
 async function fetchSourceAttributes(
-  id: string,
+  dataId: DataId,
   sources: AttributeSource[],
 ): Promise<SourceAttributes[]> {
   const requests = new Map(sources.map((source) => [requestKey(source), source] as const));
   const results = await Promise.allSettled(
     [...requests.values()].map(async ({ kind, componentIds }) => {
-      const attributes = await fetchAttributes(id, kind, componentIds);
+      const attributes = await fetchAttributes(dataId, kind, componentIds);
       return attributes;
     }),
   );
   const attributesByKey = new Map(
     [...requests.entries()].map(
-      ([key, { kind }], index) => [key, settledAttributes(results[index], id, kind)] as const,
+      ([key, { kind }], index) => [key, settledAttributes(results[index], dataId, kind)] as const,
     ),
   );
   return sources.map((source) => ({

@@ -121,7 +121,7 @@ const MESH_SETTERS: Record<MeshElement, MeshElementSetters> = {
 
 function bindAttribute(
   store: StyleStore,
-  id: string,
+  dataId: DataId,
   { target, kind, componentIds = [] }: FoundAttribute,
 ): AttributeBinding {
   if (isModelComponentTarget(target)) {
@@ -131,11 +131,11 @@ function bindAttribute(
       throw new ControllerError(`Model ${target} cannot be colored by ${kind} attributes`);
     }
     return {
-      currentColorMap: () => setters.colorMap(store, id, componentIds[0]),
-      storedTimeStep: () => setters.storedTimeStep(store, id, componentIds[0]),
-      apply: (input) => setters.attribute(store, id, componentIds, input),
-      applyTimeStep: (step) => setters.timeStep(store, id, componentIds, step),
-      activate: () => activate(store, id, componentIds, kind),
+      currentColorMap: () => setters.colorMap(store, dataId, componentIds[0]),
+      storedTimeStep: () => setters.storedTimeStep(store, dataId, componentIds[0]),
+      apply: (input) => setters.attribute(store, dataId, componentIds, input),
+      applyTimeStep: (step) => setters.timeStep(store, dataId, componentIds, step),
+      activate: () => activate(store, dataId, componentIds, kind),
     };
   }
   const { kinds, activate } = MESH_SETTERS[target];
@@ -144,11 +144,11 @@ function bindAttribute(
     throw new ControllerError(`Mesh ${target} cannot be colored by ${kind} attributes`);
   }
   return {
-    currentColorMap: () => setters.colorMap(store, id),
-    storedTimeStep: () => setters.storedTimeStep(store, id),
-    apply: (input) => setters.attribute(store, id, input),
-    applyTimeStep: (step) => setters.timeStep(store, id, step),
-    activate: () => activate(store, id, kind),
+    currentColorMap: () => setters.colorMap(store, dataId),
+    storedTimeStep: () => setters.storedTimeStep(store, dataId),
+    apply: (input) => setters.attribute(store, dataId, input),
+    applyTimeStep: (step) => setters.timeStep(store, dataId, step),
+    activate: () => activate(store, dataId, kind),
   };
 }
 /* oxlint-enable typescript/promise-function-async */
