@@ -74,6 +74,7 @@ export {
   getHybridViewerCanvasBoundingBox,
   getQuickColormapPicker,
   hoverViewer,
+  sceneContextMenu,
   stabilizeHoverTooltip,
   toggleInfoCard,
   viewerContextMenu,
