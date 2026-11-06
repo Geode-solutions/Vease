@@ -114,7 +114,7 @@ async function resolveComponentIds(
   }
   const knownIds = await Promise.all(
     targets.map(async (component) => {
-      const ids = await modelComponentGeodeIds(item.id, component);
+      const ids = await modelComponentGeodeIds(item.data_id, component);
       return ids;
     }),
   );
@@ -128,7 +128,7 @@ async function resolveComponentIds(
   const unknownIds = componentIds.filter((componentId) => !geodeIds.includes(componentId));
   if (unknownIds.length > 0) {
     throw new ControllerError(
-      `"${item.name}" has no ${target ?? "component"} with geode id ${unknownIds.join(", ")}; read vease://data/${item.id} for its components`,
+      `"${item.name}" has no ${target ?? "component"} with geode id ${unknownIds.join(", ")}; read vease://data/${item.data_id} for its components`,
     );
   }
   return componentIds;

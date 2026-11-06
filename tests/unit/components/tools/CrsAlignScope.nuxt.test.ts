@@ -79,8 +79,8 @@ describe("crs align tool scope", () => {
     );
     expect(followProject).toHaveBeenCalledWith(
       [
-        { id: item.id, name: item.name, crs: LAMBERT },
-        { id: "item-2", name: "Wells", crs: LAMBERT },
+        { data_id: item.data_id, name: item.name, crs: LAMBERT },
+        { data_id: "item-2", name: "Wells", crs: LAMBERT },
       ],
       utm,
     );
@@ -111,7 +111,7 @@ describe("crs align tool scope", () => {
       expect.objectContaining({ linkedItems: [] }),
     );
     expect(followProject).toHaveBeenCalledWith(
-      [{ id: item.id, name: item.name, crs: LAMBERT }],
+      [{ data_id: item.data_id, name: item.name, crs: LAMBERT }],
       // The map is the only georeferenced data: the project is in its crs
       LAMBERT,
     );

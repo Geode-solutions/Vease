@@ -73,8 +73,10 @@ describe("the style/mesh attribute controller commands", () => {
   });
 
   test("colors a mesh by attribute with default range and colormap", async () => {
-    await expect(colorOne(POLYGON_COMMAND, { id: MESH.id, name: "depth" })).resolves.toStrictEqual({
-      id: MESH.id,
+    await expect(
+      colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "depth" }),
+    ).resolves.toStrictEqual({
+      id: MESH.data_id,
       target: "polygons",
       location: "polygon",
       attribute: "depth",
@@ -83,34 +85,34 @@ describe("the style/mesh attribute controller commands", () => {
       minimum: 0,
       maximum: DEPTH_MAX,
     });
-    expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(MESH.id, {
+    expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(MESH.data_id, {
       name: "depth",
       item: 0,
       minimum: 0,
       maximum: DEPTH_MAX,
       colorMap: "batlow",
     });
-    expect(setter("setMeshPolygonsActiveColoring")).toHaveBeenCalledWith(MESH.id, "polygon");
+    expect(setter("setMeshPolygonsActiveColoring")).toHaveBeenCalledWith(MESH.data_id, "polygon");
   });
 
   test("colors several meshes by the same attribute in one call and renders once", async () => {
     await expect(
-      runCommand(POLYGON_COMMAND, { ids: [MESH.id, OTHER_MESH.id], name: "depth" }),
-    ).resolves.toMatchObject({ ids: [MESH.id, OTHER_MESH.id] });
+      runCommand(POLYGON_COMMAND, { ids: [MESH.data_id, OTHER_MESH.data_id], name: "depth" }),
+    ).resolves.toMatchObject({ ids: [MESH.data_id, OTHER_MESH.data_id] });
 
     expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       expect.objectContaining({ name: "depth" }),
     );
     expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(
-      OTHER_MESH.id,
+      OTHER_MESH.data_id,
       expect.objectContaining({ name: "depth" }),
     );
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
 
   test("sets the attribute, then the active coloring, then renders", async () => {
-    await colorOne(POLYGON_COMMAND, { id: MESH.id, name: "depth" });
+    await colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "depth" });
 
     expect(setter("setMeshPolygonsActiveColoring")).toHaveBeenCalledAfter(
       setter("setMeshPolygonsPolygonAttribute"),
@@ -124,17 +126,17 @@ describe("the style/mesh attribute controller commands", () => {
   test("keeps the current colormap of the attribute by default", async () => {
     setter("meshPolygonsPolygonAttributeColorMap").mockReturnValue("batlowK");
 
-    await colorOne(POLYGON_COMMAND, { id: MESH.id, name: "depth" });
+    await colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "depth" });
 
     expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       expect.objectContaining({ colorMap: "batlowK" }),
     );
   });
 
   test("uses the given range, item, colormap and no-data color", async () => {
     await colorOne(POLYGON_COMMAND, {
-      id: MESH.id,
+      id: MESH.data_id,
       name: "velocity",
       item: 1,
       minimum: CUSTOM_MIN,
@@ -143,7 +145,7 @@ describe("the style/mesh attribute controller commands", () => {
       noDataColor: ORANGE_HEX,
     });
 
-    expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(MESH.id, {
+    expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(MESH.data_id, {
       name: "velocity",
       item: 1,
       minimum: CUSTOM_MIN,
@@ -154,10 +156,10 @@ describe("the style/mesh attribute controller commands", () => {
   });
 
   test("defaults the range to the range of the item", async () => {
-    await colorOne(POLYGON_COMMAND, { id: MESH.id, name: "velocity", item: 1 });
+    await colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "velocity", item: 1 });
 
     expect(setter("setMeshPolygonsPolygonAttribute")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       expect.objectContaining({ minimum: VELOCITY_Y_MIN, maximum: VELOCITY_Y_MAX }),
     );
   });
@@ -179,7 +181,7 @@ describe("the style/mesh attribute controller commands", () => {
       error: 'Attribute "missing" not found on "surface". Available: polygons/polygon: depth',
     },
   ])("rejects $error", async ({ params, error }) => {
-    await expect(colorOne(POLYGON_COMMAND, { id: MESH.id, ...params })).rejects.toThrow(error);
+    await expect(colorOne(POLYGON_COMMAND, { id: MESH.data_id, ...params })).rejects.toThrow(error);
     expect(setter("setMeshPolygonsPolygonAttribute")).not.toHaveBeenCalled();
     expect(stores.hybridViewerStore.remoteRender).not.toHaveBeenCalled();
   });
@@ -188,10 +190,10 @@ describe("the style/mesh attribute controller commands", () => {
     setter("meshPolygonsPolygonAttributeTimeStep").mockReturnValue(LAST_TIME_STEP_INDEX);
 
     await expect(
-      colorOne(POLYGON_COMMAND, { id: MESH.id, name: "pressure" }),
+      colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "pressure" }),
     ).resolves.toMatchObject({ timeStep: 1 });
     expect(setter("setMeshPolygonsPolygonAttributeTimeStep")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       LAST_TIME_STEP_INDEX,
     );
   });
@@ -200,18 +202,18 @@ describe("the style/mesh attribute controller commands", () => {
     setter("meshPolygonsPolygonAttributeTimeStep").mockReturnValue(VELOCITY_ITEMS);
 
     await expect(
-      colorOne(POLYGON_COMMAND, { id: MESH.id, name: "pressure" }),
+      colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "pressure" }),
     ).resolves.toMatchObject({ timeStep: 0 });
-    expect(setter("setMeshPolygonsPolygonAttributeTimeStep")).toHaveBeenCalledWith(MESH.id, 0);
+    expect(setter("setMeshPolygonsPolygonAttributeTimeStep")).toHaveBeenCalledWith(MESH.data_id, 0);
   });
 
   test("applies a time step that exists", async () => {
     await expect(
-      colorOne(POLYGON_COMMAND, { id: MESH.id, name: "pressure", timeStep: TIME_STEP }),
+      colorOne(POLYGON_COMMAND, { id: MESH.data_id, name: "pressure", timeStep: TIME_STEP }),
     ).resolves.toMatchObject({ timeStep: TIME_STEP });
 
     expect(setter("setMeshPolygonsPolygonAttributeTimeStep")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       TIME_STEP_INDEX,
     );
     expect(setter("setMeshPolygonsPolygonAttributeTimeStep")).toHaveBeenCalledAfter(
@@ -225,9 +227,9 @@ describe("the style/mesh attribute controller commands", () => {
   test("colors mesh polygons by a vertex attribute through the vertex setters", async () => {
     answerAttributes(stores, { [backSchemas.vertex_attribute_names.$id]: [PRESSURE] });
 
-    await colorOne(VERTEX_COMMAND, { id: MESH.id, name: "pressure", timeStep: TIME_STEP });
+    await colorOne(VERTEX_COMMAND, { id: MESH.data_id, name: "pressure", timeStep: TIME_STEP });
 
-    expect(setter("setMeshPolygonsVertexAttribute")).toHaveBeenCalledWith(MESH.id, {
+    expect(setter("setMeshPolygonsVertexAttribute")).toHaveBeenCalledWith(MESH.data_id, {
       name: "pressure",
       item: 0,
       minimum: 0,
@@ -235,14 +237,14 @@ describe("the style/mesh attribute controller commands", () => {
       colorMap: "batlow",
     });
     expect(setter("setMeshPolygonsVertexAttributeTimeStep")).toHaveBeenCalledWith(
-      MESH.id,
+      MESH.data_id,
       TIME_STEP_INDEX,
     );
-    expect(setter("setMeshPolygonsActiveColoring")).toHaveBeenCalledWith(MESH.id, "vertex");
+    expect(setter("setMeshPolygonsActiveColoring")).toHaveBeenCalledWith(MESH.data_id, "vertex");
   });
 
   test("looks the attribute up at the location of the command only", async () => {
-    await expect(colorOne(VERTEX_COMMAND, { id: MESH.id, name: "depth" })).rejects.toThrow(
+    await expect(colorOne(VERTEX_COMMAND, { id: MESH.data_id, name: "depth" })).rejects.toThrow(
       'Attribute "depth" not found on "surface". Available: polygons/polygon: depth, velocity, pressure',
     );
     expect(setter("setMeshPolygonsPolygonAttribute")).not.toHaveBeenCalled();
@@ -250,23 +252,23 @@ describe("the style/mesh attribute controller commands", () => {
 
   test("rejects an element the mesh does not have", async () => {
     await expect(
-      colorOne("style/mesh/edges/edge/attribute", { id: MESH.id, name: "depth" }),
+      colorOne("style/mesh/edges/edge/attribute", { id: MESH.data_id, name: "depth" }),
     ).rejects.toThrow('"edges" is not available on "surface"; available: points, polygons');
   });
 
   test("rejects componentIds on a mesh", async () => {
     await expect(
-      colorOne(POLYGON_COMMAND, { id: MESH.id, componentIds: ["s1"], name: "depth" }),
+      colorOne(POLYGON_COMMAND, { id: MESH.data_id, componentIds: ["s1"], name: "depth" }),
     ).rejects.toThrow("componentIds only applies to model corners, lines, surfaces, blocks");
   });
 
   test("reports the data of the other viewer type as failed", async () => {
     await expect(
-      runCommand(POLYGON_COMMAND, { ids: [MESH.id, MODEL.id], name: "depth" }),
+      runCommand(POLYGON_COMMAND, { ids: [MESH.data_id, MODEL.data_id], name: "depth" }),
     ).resolves.toMatchObject({
-      ids: [MESH.id],
-      attributes: [{ id: MESH.id, attribute: "depth" }],
-      failed: [{ id: MODEL.id, error: '"brep" is a model; use the style/model routes' }],
+      ids: [MESH.data_id],
+      attributes: [{ id: MESH.data_id, attribute: "depth" }],
+      failed: [{ id: MODEL.data_id, error: '"brep" is a model; use the style/model routes' }],
     });
   });
 });

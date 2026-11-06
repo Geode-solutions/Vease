@@ -32,7 +32,7 @@ function checkMesh(item: DataItem, element?: MeshElement): void {
   if (item.viewer_type === "model") {
     throw new ControllerError(`"${item.name}" is a model; use the style/model routes`);
   }
-  const available = meshTargetsOf(item.id);
+  const available = meshTargetsOf(item.data_id);
   if (element !== undefined && !available.includes(element)) {
     throw new ControllerError(
       `"${element}" is not available on "${item.name}"; available: ${available.join(", ")}`,

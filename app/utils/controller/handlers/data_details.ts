@@ -71,10 +71,10 @@ function summarizeSources(sourceAttributes: SourceAttributes[]): AttributeSummar
   );
 }
 
-async function describeMesh({ id, geode_object_type }: DataItem): Promise<TargetsDescription> {
-  const targets = meshTargetsOf(id);
+async function describeMesh({ data_id, geode_object_type }: DataItem): Promise<TargetsDescription> {
+  const targets = meshTargetsOf(data_id);
   const sourceAttributes = await fetchSourceAttributes(
-    id,
+    data_id,
     meshAttributeSources(geode_object_type, targets),
   );
   return { targets, attributes: summarizeSources(sourceAttributes) };
@@ -109,18 +109,18 @@ async function dataDetails(params: unknown): Promise<unknown> {
     throw new ControllerError("data-details expects the id of a loaded data");
   }
   const item = await getDataItem(params.id);
-  const { id, name, geode_object_type, viewer_type } = item;
+  const { data_id, name, geode_object_type, viewer_type } = item;
   let description = await describeMesh(item);
   if (viewer_type === "model") {
-    description = await describeModel(id);
+    description = await describeModel(data_id);
   }
   return {
-    id,
+    id: data_id,
     name,
     geode_object_type,
     viewer_type,
     ...description,
-    style: getDataStyleStore().getStyle(id),
+    style: getDataStyleStore().getStyle(data_id),
   };
 }
 

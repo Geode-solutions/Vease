@@ -29,7 +29,7 @@ interface RequestArgs {
 const backSchemas = back_schemas.opengeodeweb_back;
 
 const MESH: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -39,7 +39,7 @@ const MESH: DataItem = {
 };
 
 const VERTEX_SCHEMA_ID = backSchemas.vertex_attribute_names.$id;
-const OTHER: DataItem = { ...MESH, id: "mesh-2", name: "other" };
+const OTHER: DataItem = { ...MESH, data_id: "mesh-2", name: "other" };
 
 const DEPTH_MAX = 10;
 const OTHER_DEPTH_MAX = 20;
@@ -67,10 +67,13 @@ const PLANES = [{ origin: [0, 0, 0], normal: [0, 0, 1] }];
 const request = vi.fn<(args: RequestArgs) => Promise<unknown>>();
 
 // Back answers for thresholds over several data, keyed by data id then by attribute schema
-const DEPTH_UP_TO: Record<string, number> = { [MESH.id]: DEPTH_MAX, [OTHER.id]: OTHER_DEPTH_MAX };
+const DEPTH_UP_TO: Record<string, number> = {
+  [MESH.data_id]: DEPTH_MAX,
+  [OTHER.data_id]: OTHER_DEPTH_MAX,
+};
 const DEPTH_ON: Record<string, string> = {
-  [MESH.id]: backSchemas.polygon_attribute_names.$id,
-  [OTHER.id]: VERTEX_SCHEMA_ID,
+  [MESH.data_id]: backSchemas.polygon_attribute_names.$id,
+  [OTHER.data_id]: VERTEX_SCHEMA_ID,
 };
 
 async function depthUpToPerData({ params }: RequestArgs): Promise<unknown> {
@@ -80,7 +83,7 @@ async function depthUpToPerData({ params }: RequestArgs): Promise<unknown> {
 
 async function depthOnMeshOnly({ params }: RequestArgs): Promise<unknown> {
   await Promise.resolve();
-  return { attributes: [DEPTH].filter(() => params?.id === MESH.id) };
+  return { attributes: [DEPTH].filter(() => params?.id === MESH.data_id) };
 }
 
 async function depthOnPolygonsOfMeshAndVerticesOfOther({
@@ -125,10 +128,10 @@ describe("the filter controller handlers", () => {
     /* oxlint-enable no-unsafe-type-assertion */
     dataStore.item.mockImplementation(async (id) => {
       await Promise.resolve();
-      if (id === MESH.id) {
+      if (id === MESH.data_id) {
         return MESH;
       }
-      if (id === OTHER.id) {
+      if (id === OTHER.data_id) {
         return OTHER;
       }
       throw new Error(`Item not found: ${id}`);
@@ -146,77 +149,85 @@ describe("the filter controller handlers", () => {
   });
 
   test("shrinks with the default factor", async () => {
-    await expect(applyFilter("apply-shrink", { ids: [MESH.id] })).resolves.toStrictEqual({
-      ids: [MESH.id],
+    await expect(applyFilter("apply-shrink", { ids: [MESH.data_id] })).resolves.toStrictEqual({
+      ids: [MESH.data_id],
       factor: DEFAULT_SHRINK_FACTOR,
     });
-    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.id], DEFAULT_SHRINK_FACTOR);
+    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.data_id], DEFAULT_SHRINK_FACTOR);
     expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();
   });
 
   test("shrinks several data with the given factor", async () => {
-    await applyFilter("apply-shrink", { ids: [MESH.id, OTHER.id], factor: SHRINK_FACTOR });
+    await applyFilter("apply-shrink", {
+      ids: [MESH.data_id, OTHER.data_id],
+      factor: SHRINK_FACTOR,
+    });
 
-    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.id, OTHER.id], SHRINK_FACTOR);
+    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith(
+      [MESH.data_id, OTHER.data_id],
+      SHRINK_FACTOR,
+    );
   });
 
   test("removing a shrink restores factor 1", async () => {
-    await applyFilter("apply-shrink", { ids: [MESH.id], remove: true });
+    await applyFilter("apply-shrink", { ids: [MESH.data_id], remove: true });
 
-    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.id], 1);
+    expect(hybridViewerStore.setShrink).toHaveBeenCalledWith([MESH.data_id], 1);
   });
 
   test("explodes with the default factor, or restores 0 when removing", async () => {
-    await applyFilter("apply-explode", { ids: [MESH.id] });
-    await applyFilter("apply-explode", { ids: [MESH.id], remove: true });
-    await applyFilter("apply-explode", { ids: [MESH.id], factor: EXPLODE_FACTOR });
+    await applyFilter("apply-explode", { ids: [MESH.data_id] });
+    await applyFilter("apply-explode", { ids: [MESH.data_id], remove: true });
+    await applyFilter("apply-explode", { ids: [MESH.data_id], factor: EXPLODE_FACTOR });
 
     expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(
       1,
-      [MESH.id],
+      [MESH.data_id],
       DEFAULT_EXPLODE_FACTOR,
     );
-    expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(2, [MESH.id], 0);
-    expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(3, [MESH.id], EXPLODE_FACTOR);
+    expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(2, [MESH.data_id], 0);
+    expect(hybridViewerStore.setExplode).toHaveBeenNthCalledWith(3, [MESH.data_id], EXPLODE_FACTOR);
   });
 
   test("slices and reports the maximum indices", async () => {
     const slices = [{ axis: 2, index: 1 }];
 
-    await expect(applyFilter("apply-slice", { ids: [MESH.id], slices })).resolves.toStrictEqual({
-      ids: [MESH.id],
+    await expect(
+      applyFilter("apply-slice", { ids: [MESH.data_id], slices }),
+    ).resolves.toStrictEqual({
+      ids: [MESH.data_id],
       maxIndices: MAX_INDICES,
     });
-    expect(hybridViewerStore.setSlice).toHaveBeenCalledWith([MESH.id], slices);
+    expect(hybridViewerStore.setSlice).toHaveBeenCalledWith([MESH.data_id], slices);
   });
 
   test("slices need slices unless removing", async () => {
-    await expect(applyFilter("apply-slice", { ids: [MESH.id] })).rejects.toThrow(
+    await expect(applyFilter("apply-slice", { ids: [MESH.data_id] })).rejects.toThrow(
       "slice needs slices",
     );
     expect(hybridViewerStore.setSlice).not.toHaveBeenCalled();
 
-    await applyFilter("apply-slice", { ids: [MESH.id], remove: true });
+    await applyFilter("apply-slice", { ids: [MESH.data_id], remove: true });
 
-    expect(hybridViewerStore.setSlice).toHaveBeenCalledWith([MESH.id], []);
+    expect(hybridViewerStore.setSlice).toHaveBeenCalledWith([MESH.data_id], []);
   });
 
   test("clips with planes, or clears them when removing", async () => {
-    await applyFilter("apply-clip", { ids: [MESH.id], planes: PLANES });
-    await applyFilter("apply-clip", { ids: [MESH.id], remove: true });
+    await applyFilter("apply-clip", { ids: [MESH.data_id], planes: PLANES });
+    await applyFilter("apply-clip", { ids: [MESH.data_id], remove: true });
 
-    expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(1, [MESH.id], PLANES);
-    expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(2, [MESH.id], []);
-    await expect(applyFilter("apply-clip", { ids: [MESH.id] })).rejects.toThrow(
+    expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(1, [MESH.data_id], PLANES);
+    expect(hybridViewerStore.setClippingPlanes).toHaveBeenNthCalledWith(2, [MESH.data_id], []);
+    await expect(applyFilter("apply-clip", { ids: [MESH.data_id] })).rejects.toThrow(
       "clip needs planes",
     );
   });
 
   test("thresholds with the attribute range by default", async () => {
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id], attribute: "depth" }),
     ).resolves.toStrictEqual({
-      ids: [MESH.id],
+      ids: [MESH.data_id],
       attribute: "depth",
       location: "polygon",
       item: 0,
@@ -224,7 +235,7 @@ describe("the filter controller handlers", () => {
       maximum: DEPTH_MAX,
     });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-      [MESH.id],
+      [MESH.data_id],
       [
         {
           name: "depth",
@@ -241,7 +252,7 @@ describe("the filter controller handlers", () => {
     request.mockResolvedValue({ attributes: [DEPTH] });
 
     await applyFilter("apply-threshold", {
-      ids: [MESH.id],
+      ids: [MESH.data_id],
       attribute: "depth",
       location: "point",
       minimum: CUSTOM_MIN,
@@ -249,7 +260,7 @@ describe("the filter controller handlers", () => {
     });
 
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-      [MESH.id],
+      [MESH.data_id],
       [
         {
           name: "depth",
@@ -268,10 +279,10 @@ describe("the filter controller handlers", () => {
       request.mockResolvedValue({ attributes: [DEPTH] });
 
       await expect(
-        applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location }),
+        applyFilter("apply-threshold", { ids: [MESH.data_id], attribute: "depth", location }),
       ).resolves.toMatchObject({ location: "vertex" });
       expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-        [MESH.id],
+        [MESH.data_id],
         [expect.objectContaining({ location: "point" })],
       );
     },
@@ -281,10 +292,14 @@ describe("the filter controller handlers", () => {
     request.mockResolvedValue({ attributes: [DEPTH] });
 
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location: "polygon" }),
+      applyFilter("apply-threshold", {
+        ids: [MESH.data_id],
+        attribute: "depth",
+        location: "polygon",
+      }),
     ).resolves.toMatchObject({ location: "polygon" });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-      [MESH.id],
+      [MESH.data_id],
       [expect.objectContaining({ location: "cell" })],
     );
   });
@@ -296,15 +311,15 @@ describe("the filter controller handlers", () => {
     });
 
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", location: "cell" }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id], attribute: "depth", location: "cell" }),
     ).rejects.toThrow('Attribute "depth" not found');
   });
 
   test("thresholds a time series on its first step array", async () => {
-    await applyFilter("apply-threshold", { ids: [MESH.id], attribute: "pressure" });
+    await applyFilter("apply-threshold", { ids: [MESH.data_id], attribute: "pressure" });
 
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-      [MESH.id],
+      [MESH.data_id],
       [expect.objectContaining({ name: "pressure@0" })],
     );
   });
@@ -313,10 +328,10 @@ describe("the filter controller handlers", () => {
     request.mockImplementation(depthUpToPerData);
 
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id, OTHER.data_id], attribute: "depth" }),
     ).resolves.toMatchObject({ minimum: 0, maximum: OTHER_DEPTH_MAX });
     expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith(
-      [MESH.id, OTHER.id],
+      [MESH.data_id, OTHER.data_id],
       [expect.objectContaining({ minimum: 0, maximum: OTHER_DEPTH_MAX })],
     );
   });
@@ -325,7 +340,7 @@ describe("the filter controller handlers", () => {
     request.mockImplementation(depthOnMeshOnly);
 
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id, OTHER.data_id], attribute: "depth" }),
     ).rejects.toThrow(`Attribute "depth" not found on "${OTHER.name}"`);
     expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
@@ -334,31 +349,31 @@ describe("the filter controller handlers", () => {
     request.mockImplementation(depthOnPolygonsOfMeshAndVerticesOfOther);
 
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id, OTHER.id], attribute: "depth" }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id, OTHER.data_id], attribute: "depth" }),
     ).rejects.toThrow('"depth" is on points for some data and on cells for others');
     expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
 
   test("threshold needs an attribute unless removing, and removing clears it", async () => {
-    await expect(applyFilter("apply-threshold", { ids: [MESH.id] })).rejects.toThrow(
+    await expect(applyFilter("apply-threshold", { ids: [MESH.data_id] })).rejects.toThrow(
       "threshold needs attribute",
     );
 
-    await applyFilter("apply-threshold", { ids: [MESH.id], remove: true });
+    await applyFilter("apply-threshold", { ids: [MESH.data_id], remove: true });
 
-    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.id], []);
+    expect(hybridViewerStore.setThreshold).toHaveBeenCalledWith([MESH.data_id], []);
   });
 
   test("threshold needs both minimum and maximum, or neither", async () => {
     await expect(
-      applyFilter("apply-threshold", { ids: [MESH.id], attribute: "depth", minimum: 1 }),
+      applyFilter("apply-threshold", { ids: [MESH.data_id], attribute: "depth", minimum: 1 }),
     ).rejects.toThrow("Give both minimum and maximum");
   });
 
   test("threshold rejects a minimum greater than the maximum", async () => {
     await expect(
       applyFilter("apply-threshold", {
-        ids: [MESH.id],
+        ids: [MESH.data_id],
         attribute: "depth",
         minimum: CUSTOM_MAX,
         maximum: CUSTOM_MIN,
@@ -368,7 +383,7 @@ describe("the filter controller handlers", () => {
   });
 
   test("rejects an unknown id", async () => {
-    await expect(applyFilter("apply-shrink", { ids: [MESH.id, "nope"] })).rejects.toThrow(
+    await expect(applyFilter("apply-shrink", { ids: [MESH.data_id, "nope"] })).rejects.toThrow(
       'No data with id "nope"',
     );
     expect(hybridViewerStore.setShrink).not.toHaveBeenCalled();

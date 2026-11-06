@@ -90,7 +90,7 @@ vi.mock(import("@ogw_front/components/CrsSelector.vue"), () => ({
 }));
 
 const mockItem: DataItem = {
-  id: "item-1",
+  data_id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Points",
   geode_object_type: "PointSet3D",
@@ -141,7 +141,7 @@ async function assignAnswered(
   });
 
   const wrapper = mountWithPlugins(CrsDialog, {
-    props: { show: true, itemId: mockItem.id },
+    props: { show: true, itemId: mockItem.data_id },
     attachTo: document.body,
   });
   await flushPromises();
@@ -176,7 +176,7 @@ describe("crs dialog component", () => {
     // oxlint-disable-next-line no-unsafe-type-assertion -- the placeholder of the data store
     storedItem.value = {} as DataItem;
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -199,7 +199,7 @@ describe("crs dialog component", () => {
       });
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -241,7 +241,7 @@ describe("crs dialog component", () => {
       .mockReturnValueOnce(Promise.withResolvers<never>().promise);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -267,7 +267,7 @@ describe("crs dialog component", () => {
     vi.spyOn(getBackStore(), "request").mockReturnValue(Promise.withResolvers<never>().promise);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -289,7 +289,7 @@ describe("crs dialog component", () => {
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -323,7 +323,7 @@ describe("crs dialog component", () => {
     });
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -345,7 +345,7 @@ describe("crs dialog component", () => {
     });
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -381,7 +381,7 @@ describe("crs dialog component", () => {
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -400,7 +400,7 @@ describe("crs dialog component", () => {
     storedItem.value = { ...mockItem, crs: UTM_RESPONSE.crs_info };
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -419,7 +419,7 @@ describe("crs dialog component", () => {
     const updateItem = vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
 
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -440,7 +440,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     stubRequests({});
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -460,7 +460,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     const request = stubRequests({ implausible: true });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -491,7 +491,7 @@ describe("crs dialog component", () => {
     mockStoredItems([]);
     stubRequests({ implausible: true });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -512,7 +512,7 @@ describe("crs dialog component", () => {
     useCrsStore().setProjectCrs(LAMBERT);
     const request = stubRequests({ crs: UTM, implausible: false });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -528,7 +528,7 @@ describe("crs dialog component", () => {
     );
     // The project crs taken before the assign: the project may follow the data meanwhile
     expect(followProject).toHaveBeenCalledWith(
-      [{ id: "item-1", name: "Points", crs: UTM }],
+      [{ data_id: "item-1", name: "Points", crs: UTM }],
       LAMBERT,
     );
     wrapper.unmount();
@@ -536,8 +536,8 @@ describe("crs dialog component", () => {
 
   test("assigns all data in the same crs state; only the plausible ones follow the project", async () => {
     const stored: StoredItem = { ...mockItem, created_at: CREATED_AT };
-    const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
-    const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: LAMBERT };
+    const wells: StoredItem = { ...stored, data_id: "item-2", name: "Wells" };
+    const georeferenced: StoredItem = { ...stored, data_id: "item-3", name: "Map", crs: LAMBERT };
     mockStoredItems([stored, wells, georeferenced]);
     const request = stubRequests({
       crs: LAMBERT,
@@ -545,7 +545,7 @@ describe("crs dialog component", () => {
       linked: [{ id: "item-2", crs: LAMBERT, implausible: true }],
     });
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();
@@ -566,7 +566,7 @@ describe("crs dialog component", () => {
     );
     // The map is the only georeferenced data: the project is in its crs
     expect(followProject).toHaveBeenCalledWith(
-      [{ id: "item-1", name: "Points", crs: LAMBERT }],
+      [{ data_id: "item-1", name: "Points", crs: LAMBERT }],
       LAMBERT,
     );
     const warnings = useFeedbackStore().feedbacks.filter((feedback) => feedback.type === "warning");
@@ -581,7 +581,7 @@ describe("crs dialog component", () => {
     stubRequests({});
     convertCrs.mockReset().mockResolvedValue(undefined);
     const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.id },
+      props: { show: true, itemId: mockItem.data_id },
       attachTo: document.body,
     });
     await flushPromises();

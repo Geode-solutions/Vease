@@ -123,8 +123,8 @@ describe("the style/model attribute controller commands", () => {
     async ({ command, schemaId, setter: attributeSetter, activate, target, kind, geodeIds }) => {
       answerAttributes(stores, { [schemaId]: [DEPTH] });
 
-      await expect(colorOne(command, { id: MODEL.id, name: "depth" })).resolves.toStrictEqual({
-        id: MODEL.id,
+      await expect(colorOne(command, { id: MODEL.data_id, name: "depth" })).resolves.toStrictEqual({
+        id: MODEL.data_id,
         target,
         location: kind,
         attribute: "depth",
@@ -133,21 +133,21 @@ describe("the style/model attribute controller commands", () => {
         minimum: 0,
         maximum: DEPTH_MAX,
       });
-      expect(setter(attributeSetter)).toHaveBeenCalledExactlyOnceWith(MODEL.id, geodeIds, {
+      expect(setter(attributeSetter)).toHaveBeenCalledExactlyOnceWith(MODEL.data_id, geodeIds, {
         name: "depth",
         item: 0,
         minimum: 0,
         maximum: DEPTH_MAX,
         colorMap: "batlow",
       });
-      expect(setter(activate)).toHaveBeenCalledExactlyOnceWith(MODEL.id, geodeIds, kind);
+      expect(setter(activate)).toHaveBeenCalledExactlyOnceWith(MODEL.data_id, geodeIds, kind);
       expect(setter(activate)).toHaveBeenCalledAfter(setter(attributeSetter));
       expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
     },
   );
 
   test("rejects a mesh", async () => {
-    await expect(colorOne(BLOCK_COMMAND, { id: MESH.id, name: "depth" })).rejects.toThrow(
+    await expect(colorOne(BLOCK_COMMAND, { id: MESH.data_id, name: "depth" })).rejects.toThrow(
       '"surface" is a mesh; use the style/mesh routes',
     );
     expect(stores.request).not.toHaveBeenCalled();
@@ -155,38 +155,38 @@ describe("the style/model attribute controller commands", () => {
 
   test("applies a time step on the given components", async () => {
     await colorOne(BLOCK_COMMAND, {
-      id: MODEL.id,
+      id: MODEL.data_id,
       componentIds: ["b2"],
       name: "pressure",
       timeStep: TIME_STEP,
     });
 
     expect(setter("setModelBlocksPolyhedronAttribute")).toHaveBeenCalledWith(
-      MODEL.id,
+      MODEL.data_id,
       ["b2"],
       expect.objectContaining({ name: "pressure" }),
     );
     expect(setter("setModelBlocksPolyhedronAttributeTimeStep")).toHaveBeenCalledWith(
-      MODEL.id,
+      MODEL.data_id,
       ["b2"],
       TIME_STEP_INDEX,
     );
     expect(setter("setModelBlocksActiveColoring")).toHaveBeenCalledWith(
-      MODEL.id,
+      MODEL.data_id,
       ["b2"],
       "polyhedron",
     );
   });
 
   test("lists the attributes of the components when not found", async () => {
-    await expect(colorOne(BLOCK_COMMAND, { id: MODEL.id, name: "missing" })).rejects.toThrow(
+    await expect(colorOne(BLOCK_COMMAND, { id: MODEL.data_id, name: "missing" })).rejects.toThrow(
       'Attribute "missing" not found on "brep". Available: blocks/polyhedron: depth, pressure',
     );
   });
 
   test("rejects component ids the target does not have", async () => {
     await expect(
-      colorOne(BLOCK_COMMAND, { id: MODEL.id, componentIds: ["s1"], name: "depth" }),
+      colorOne(BLOCK_COMMAND, { id: MODEL.data_id, componentIds: ["s1"], name: "depth" }),
     ).rejects.toThrow(`"brep" has no blocks with geode id s1`);
     expect(setter("setModelBlocksPolyhedronAttribute")).not.toHaveBeenCalled();
   });
@@ -194,7 +194,7 @@ describe("the style/model attribute controller commands", () => {
   test("rejects componentIds with several ids before styling any", async () => {
     await expect(
       runCommand(BLOCK_COMMAND, {
-        ids: [MODEL.id, MESH.id],
+        ids: [MODEL.data_id, MESH.data_id],
         componentIds: ["b1"],
         name: "depth",
       }),

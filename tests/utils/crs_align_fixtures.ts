@@ -18,7 +18,7 @@ const TARGET = [
 ];
 
 const item: DataItem = {
-  id: "item-1",
+  data_id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Points",
   geode_object_type: "PointSet3D",
@@ -42,8 +42,8 @@ function mountWithWells(lambert: StoredItem["crs"]): {
   wells: StoredItem;
 } {
   const stored: StoredItem = { ...item, created_at: "2026-10-27" };
-  const wells: StoredItem = { ...stored, id: "item-2", name: "Wells" };
-  const georeferenced: StoredItem = { ...stored, id: "item-3", name: "Map", crs: lambert };
+  const wells: StoredItem = { ...stored, data_id: "item-2", name: "Wells" };
+  const georeferenced: StoredItem = { ...stored, data_id: "item-3", name: "Map", crs: lambert };
   vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(ref([stored, wells, georeferenced]));
   return { wrapper: mountWithPlugins(CrsAlign), wells };
 }

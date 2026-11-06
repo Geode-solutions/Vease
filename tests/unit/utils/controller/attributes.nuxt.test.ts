@@ -24,7 +24,7 @@ interface RequestArgs {
 const backSchemas = back_schemas.opengeodeweb_back;
 
 const MESH: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -35,7 +35,7 @@ const MESH: DataItem = {
 
 const MODEL: DataItem = {
   ...MESH,
-  id: "model-1",
+  data_id: "model-1",
   geode_id: "geode-2",
   name: "brep",
   viewer_type: "model",
@@ -86,7 +86,7 @@ describe("the controller attribute lookup", () => {
   test("finds a polygon attribute on a surface mesh", async () => {
     answerAttributes({ [backSchemas.polygon_attribute_names.$id]: [DEPTH] });
 
-    await expect(findAttribute({ id: MESH.id, name: "depth" })).resolves.toStrictEqual({
+    await expect(findAttribute({ id: MESH.data_id, name: "depth" })).resolves.toStrictEqual({
       target: "polygons",
       kind: "polygon",
       attribute: DEPTH,
@@ -100,14 +100,14 @@ describe("the controller attribute lookup", () => {
     });
 
     await expect(
-      findAttribute({ id: MESH.id, name: "depth", target: "points" }),
+      findAttribute({ id: MESH.data_id, name: "depth", target: "points" }),
     ).resolves.toStrictEqual({ target: "points", kind: "vertex", attribute: DEPTH });
   });
 
   test("prefers the highest-dimension target when none is given", async () => {
     answerAttributes({ [backSchemas.vertex_attribute_names.$id]: [DEPTH] });
 
-    await expect(findAttribute({ id: MESH.id, name: "depth" })).resolves.toStrictEqual({
+    await expect(findAttribute({ id: MESH.data_id, name: "depth" })).resolves.toStrictEqual({
       target: "polygons",
       kind: "vertex",
       attribute: DEPTH,
@@ -121,7 +121,7 @@ describe("the controller attribute lookup", () => {
     });
 
     await expect(
-      findAttribute({ id: MESH.id, name: "depth", location: "vertex" }),
+      findAttribute({ id: MESH.data_id, name: "depth", location: "vertex" }),
     ).resolves.toStrictEqual({ target: "polygons", kind: "vertex", attribute: DEPTH });
   });
 
@@ -132,7 +132,7 @@ describe("the controller attribute lookup", () => {
       [backSchemas.polygon_attribute_names.$id]: [DEPTH],
     });
 
-    const found = findAttribute({ id: MESH.id, name: "pressure" });
+    const found = findAttribute({ id: MESH.data_id, name: "pressure" });
 
     await expect(found).rejects.toBeInstanceOf(ControllerError);
     await expect(found).rejects.toThrow(
@@ -142,9 +142,9 @@ describe("the controller attribute lookup", () => {
   });
 
   test("rejects a target the mesh does not have", async () => {
-    await expect(findAttribute({ id: MESH.id, name: "depth", target: "blocks" })).rejects.toThrow(
-      '"blocks" is not available on "surface"; available: points, edges, polygons',
-    );
+    await expect(
+      findAttribute({ id: MESH.data_id, name: "depth", target: "blocks" }),
+    ).rejects.toThrow('"blocks" is not available on "surface"; available: points, edges, polygons');
   });
 
   test("searches every component of the model target with components", async () => {
@@ -152,7 +152,7 @@ describe("the controller attribute lookup", () => {
     answerComponents({ Surface: ["s1", "s2"] });
     answerAttributes({ [backSchemas.model_component_polygon_attribute_names.$id]: [DEPTH] });
 
-    await expect(findAttribute({ id: MODEL.id, name: "depth" })).resolves.toStrictEqual({
+    await expect(findAttribute({ id: MODEL.data_id, name: "depth" })).resolves.toStrictEqual({
       target: "surfaces",
       kind: "polygon",
       attribute: DEPTH,
@@ -160,7 +160,7 @@ describe("the controller attribute lookup", () => {
     });
     expect(request).toHaveBeenCalledWith({
       schema: backSchemas.model_component_polygon_attribute_names,
-      params: { id: MODEL.id, component_ids: ["s1", "s2"] },
+      params: { id: MODEL.data_id, component_ids: ["s1", "s2"] },
     });
   });
 
@@ -170,7 +170,7 @@ describe("the controller attribute lookup", () => {
     answerAttributes({ [backSchemas.model_component_polyhedron_attribute_names.$id]: [DEPTH] });
 
     await expect(
-      findAttribute({ id: MODEL.id, name: "depth", target: "blocks", componentIds: ["b2"] }),
+      findAttribute({ id: MODEL.data_id, name: "depth", target: "blocks", componentIds: ["b2"] }),
     ).resolves.toStrictEqual({
       target: "blocks",
       kind: "polyhedron",
@@ -179,7 +179,7 @@ describe("the controller attribute lookup", () => {
     });
     expect(request).toHaveBeenCalledWith({
       schema: backSchemas.model_component_polyhedron_attribute_names,
-      params: { id: MODEL.id, component_ids: ["b2"] },
+      params: { id: MODEL.data_id, component_ids: ["b2"] },
     });
   });
 
@@ -188,7 +188,12 @@ describe("the controller attribute lookup", () => {
     answerComponents({ Block: ["b1", "b2"] });
 
     await expect(
-      findAttribute({ id: MODEL.id, name: "depth", target: "blocks", componentIds: ["b2", "s1"] }),
+      findAttribute({
+        id: MODEL.data_id,
+        name: "depth",
+        target: "blocks",
+        componentIds: ["b2", "s1"],
+      }),
     ).rejects.toThrow('"brep" has no blocks with geode id s1');
     expect(request).not.toHaveBeenCalled();
   });
@@ -197,22 +202,22 @@ describe("the controller attribute lookup", () => {
     item.mockResolvedValue(MODEL);
     getMeshComponentGeodeIds.mockResolvedValue([]);
 
-    await expect(findAttribute({ id: MODEL.id, name: "depth", target: "blocks" })).rejects.toThrow(
-      '"brep" has no blocks',
-    );
+    await expect(
+      findAttribute({ id: MODEL.data_id, name: "depth", target: "blocks" }),
+    ).rejects.toThrow('"brep" has no blocks');
   });
 
   test("rejects componentIds without a model target", async () => {
     item.mockResolvedValue(MODEL);
 
     await expect(
-      findAttribute({ id: MODEL.id, name: "depth", componentIds: ["s1"] }),
+      findAttribute({ id: MODEL.data_id, name: "depth", componentIds: ["s1"] }),
     ).rejects.toThrow("componentIds needs a target");
   });
 
   test("rejects componentIds on a mesh", async () => {
     await expect(
-      findAttribute({ id: MESH.id, name: "depth", target: "polygons", componentIds: ["s1"] }),
+      findAttribute({ id: MESH.data_id, name: "depth", target: "polygons", componentIds: ["s1"] }),
     ).rejects.toThrow("componentIds only applies to model");
   });
 });

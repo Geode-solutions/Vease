@@ -79,19 +79,19 @@ function componentCommands(target: ModelComponentTarget): Record<string, Control
     [`style/model/${target}/visibility`]: styleCommand(
       async (store, item, params: ComponentParams & { visibility: boolean }) => {
         const components = await targetComponents(item, target, params);
-        await setters.visibility(store, item.id, components, params.visibility);
+        await setters.visibility(store, item.data_id, components, params.visibility);
       },
     ),
     [`style/model/${target}/color`]: styleCommand(
       async (store, item, params: ComponentParams & { color: string }) => {
         const components = await targetComponents(item, target, params);
-        await setters.color(store, item.id, components, hexToRgba(params.color));
+        await setters.color(store, item.data_id, components, hexToRgba(params.color));
       },
     ),
     [`style/model/${target}/coloring`]: styleCommand(
       async (store, item, params: ComponentParams & { coloring: "constant" | "random" }) => {
         const components = await targetComponents(item, target, params);
-        await setters.coloring(store, item.id, components, params.coloring);
+        await setters.coloring(store, item.data_id, components, params.coloring);
       },
     ),
   };
@@ -102,23 +102,23 @@ const MODEL_STYLE_COMMANDS: Record<string, ControllerHandler> = {
   "style/model/visibility": styleCommand(
     async (_store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await setDataVisibility(item.id, visibility);
+      await setDataVisibility(item.data_id, visibility);
     },
   ),
   "style/model/points/visibility": styleCommand(
     async (store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await store.setModelPointsVisibility(item.id, visibility);
+      await store.setModelPointsVisibility(item.data_id, visibility);
     },
   ),
   "style/model/points/size": styleCommand(async (store, item, { size }: { size: number }) => {
     checkModel(item);
-    await store.setModelPointsSize(item.id, size);
+    await store.setModelPointsSize(item.data_id, size);
   }),
   "style/model/edges/visibility": styleCommand(
     async (store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await store.setModelEdgesVisibility(item.id, visibility);
+      await store.setModelEdgesVisibility(item.data_id, visibility);
     },
   ),
   ...Object.fromEntries(

@@ -10,6 +10,7 @@ import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
 
 import { type NewDataItem, useDataStore } from "@ogw_front/stores/data";
 import { type RegisterableStore, useAppStore } from "@ogw_front/stores/app";
+import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 
 export const VeaseExtensionAPI = {
   registerTool(extensionId: string, toolDefinition: ToolDefinition): void {
@@ -41,8 +42,8 @@ export const VeaseExtensionAPI = {
   },
 
   async importItem(item: unknown): Promise<string> {
-    // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided items are expected to match NewDataItem.
-    const id = await importItem(item as NewDataItem);
+    // oxlint-disable-next-line no-unsafe-type-assertion -- this is the trusted API boundary; extension-provided items are expected to match NewDataItem, with the legacy id of the back-end.
+    const id = await importItem(item as LegacyDataId<NewDataItem>);
     return id;
   },
 

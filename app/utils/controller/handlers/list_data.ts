@@ -12,8 +12,8 @@ interface DataSummary {
 async function listData(): Promise<{ data: DataSummary[] }> {
   const items = await useDataStore().allItems();
   return {
-    data: items.map(({ id, name, geode_object_type, viewer_type, visible }) => ({
-      id,
+    data: items.map(({ data_id, name, geode_object_type, viewer_type, visible }) => ({
+      id: data_id,
       name,
       geode_object_type,
       viewer_type,

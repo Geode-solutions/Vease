@@ -45,7 +45,7 @@ function useProjectCrs() {
     return {
       label: "Edit CRS",
       onClick: () => {
-        crsStore.requestCrsEdit(item.id);
+        crsStore.requestCrsEdit(item.data_id);
       },
     };
   }
@@ -111,8 +111,8 @@ function useProjectCrs() {
 
   async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
     const items = byCreation(await dataStore.allItems());
-    const imported = items.filter((item) => ids.includes(item.id));
-    const existing = items.filter((item) => !ids.includes(item.id));
+    const imported = items.filter((item) => ids.includes(item.data_id));
+    const existing = items.filter((item) => !ids.includes(item.data_id));
     const reference = referenceCrs(projectCrs, existing, imported);
     if (reference === undefined) {
       return;
