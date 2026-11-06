@@ -1,19 +1,20 @@
 // Local imports
 import type { AttributeInput, StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { AttributeKind, ModelComponentTarget } from "@vease/utils/controller/targets";
+import type { DataId } from "@ogw_front/types/identifiers";
 
 interface ModelAttributeSetters {
-  colorMap: (store: StyleStore, id: string, componentId?: string) => string | undefined;
-  storedTimeStep: (store: StyleStore, id: string, componentId?: string) => number | undefined;
+  colorMap: (store: StyleStore, modelId: DataId, componentId?: string) => string | undefined;
+  storedTimeStep: (store: StyleStore, modelId: DataId, componentId?: string) => number | undefined;
   attribute: (
     store: StyleStore,
-    id: string,
+    modelId: DataId,
     componentIds: string[],
     input: AttributeInput,
   ) => Promise<unknown>;
   timeStep: (
     store: StyleStore,
-    id: string,
+    modelId: DataId,
     componentIds: string[],
     timeStep: number,
   ) => Promise<unknown>;
@@ -23,7 +24,7 @@ interface ModelComponentSetters {
   kinds: Partial<Record<AttributeKind, ModelAttributeSetters>>;
   activate: (
     store: StyleStore,
-    id: string,
+    modelId: DataId,
     componentIds: string[],
     kind: AttributeKind,
   ) => Promise<unknown>;
@@ -34,86 +35,94 @@ const MODEL_SETTERS: Record<ModelComponentTarget, ModelComponentSetters> = {
   corners: {
     kinds: {
       vertex: {
-        colorMap: (store, id, componentId) =>
-          store.modelCornersVertexAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelCornersVertexAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) => store.setModelCornersVertexAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelCornersVertexAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelCornersVertexAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelCornersVertexAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelCornersVertexAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelCornersVertexAttributeTimeStep(modelId, ids, step),
       },
     },
-    activate: (store, id, ids, kind) => store.setModelCornersActiveColoring(id, ids, kind),
+    activate: (store, modelId, ids, kind) =>
+      store.setModelCornersActiveColoring(modelId, ids, kind),
   },
   lines: {
     kinds: {
       edge: {
-        colorMap: (store, id, componentId) =>
-          store.modelLinesEdgeAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelLinesEdgeAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) => store.setModelLinesEdgeAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) => store.setModelLinesEdgeAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelLinesEdgeAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelLinesEdgeAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelLinesEdgeAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelLinesEdgeAttributeTimeStep(modelId, ids, step),
       },
       vertex: {
-        colorMap: (store, id, componentId) =>
-          store.modelLinesVertexAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelLinesVertexAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) => store.setModelLinesVertexAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelLinesVertexAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelLinesVertexAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelLinesVertexAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelLinesVertexAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelLinesVertexAttributeTimeStep(modelId, ids, step),
       },
     },
-    activate: (store, id, ids, kind) => store.setModelLinesActiveColoring(id, ids, kind),
+    activate: (store, modelId, ids, kind) => store.setModelLinesActiveColoring(modelId, ids, kind),
   },
   surfaces: {
     kinds: {
       polygon: {
-        colorMap: (store, id, componentId) =>
-          store.modelSurfacesPolygonAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelSurfacesPolygonAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) =>
-          store.setModelSurfacesPolygonAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelSurfacesPolygonAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelSurfacesPolygonAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelSurfacesPolygonAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelSurfacesPolygonAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelSurfacesPolygonAttributeTimeStep(modelId, ids, step),
       },
       vertex: {
-        colorMap: (store, id, componentId) =>
-          store.modelSurfacesVertexAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelSurfacesVertexAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) => store.setModelSurfacesVertexAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelSurfacesVertexAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelSurfacesVertexAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelSurfacesVertexAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelSurfacesVertexAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelSurfacesVertexAttributeTimeStep(modelId, ids, step),
       },
     },
-    activate: (store, id, ids, kind) => store.setModelSurfacesActiveColoring(id, ids, kind),
+    activate: (store, modelId, ids, kind) =>
+      store.setModelSurfacesActiveColoring(modelId, ids, kind),
   },
   blocks: {
     kinds: {
       polyhedron: {
-        colorMap: (store, id, componentId) =>
-          store.modelBlocksPolyhedronAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelBlocksPolyhedronAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) =>
-          store.setModelBlocksPolyhedronAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelBlocksPolyhedronAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelBlocksPolyhedronAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelBlocksPolyhedronAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelBlocksPolyhedronAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelBlocksPolyhedronAttributeTimeStep(modelId, ids, step),
       },
       vertex: {
-        colorMap: (store, id, componentId) =>
-          store.modelBlocksVertexAttributeColorMap(id, componentId),
-        storedTimeStep: (store, id, componentId) =>
-          store.modelBlocksVertexAttributeTimeStep(id, componentId),
-        attribute: (store, id, ids, input) => store.setModelBlocksVertexAttribute(id, ids, input),
-        timeStep: (store, id, ids, step) =>
-          store.setModelBlocksVertexAttributeTimeStep(id, ids, step),
+        colorMap: (store, modelId, componentId) =>
+          store.modelBlocksVertexAttributeColorMap(modelId, componentId),
+        storedTimeStep: (store, modelId, componentId) =>
+          store.modelBlocksVertexAttributeTimeStep(modelId, componentId),
+        attribute: (store, modelId, ids, input) =>
+          store.setModelBlocksVertexAttribute(modelId, ids, input),
+        timeStep: (store, modelId, ids, step) =>
+          store.setModelBlocksVertexAttributeTimeStep(modelId, ids, step),
       },
     },
-    activate: (store, id, ids, kind) => store.setModelBlocksActiveColoring(id, ids, kind),
+    activate: (store, modelId, ids, kind) => store.setModelBlocksActiveColoring(modelId, ids, kind),
   },
 };
 /* oxlint-enable typescript/promise-function-async */

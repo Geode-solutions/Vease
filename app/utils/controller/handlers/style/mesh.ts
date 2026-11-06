@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
@@ -12,40 +13,40 @@ import type { MeshElement } from "@vease/utils/controller/targets";
 import { hexToRgba } from "@vease/utils/controller/color";
 import { setDataVisibility } from "@vease/utils/data_actions";
 
-type Setter<Value> = (store: StyleStore, id: string, value: Value) => Promise<unknown>;
+type Setter<Value> = (store: StyleStore, meshId: DataId, value: Value) => Promise<unknown>;
 
 interface MeshElementSetters {
   visibility: Setter<boolean>;
   color: Setter<RGBAColor>;
-  constantColoring: (store: StyleStore, id: string) => Promise<unknown>;
+  constantColoring: (store: StyleStore, meshId: DataId) => Promise<unknown>;
 }
 
 /* oxlint-disable typescript/promise-function-async -- thin forwards to the store setters, which are already async */
 const MESH_ELEMENT_SETTERS: Record<MeshElement, MeshElementSetters> = {
   points: {
-    visibility: (store, id, value) => store.setMeshPointsVisibility(id, value),
-    color: (store, id, value) => store.setMeshPointsColor(id, value),
-    constantColoring: (store, id) => store.setMeshPointsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPointsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPointsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPointsActiveColoring(meshId, "constant"),
   },
   edges: {
-    visibility: (store, id, value) => store.setMeshEdgesVisibility(id, value),
-    color: (store, id, value) => store.setMeshEdgesColor(id, value),
-    constantColoring: (store, id) => store.setMeshEdgesActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshEdgesVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshEdgesColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshEdgesActiveColoring(meshId, "constant"),
   },
   cells: {
-    visibility: (store, id, value) => store.setMeshCellsVisibility(id, value),
-    color: (store, id, value) => store.setMeshCellsColor(id, value),
-    constantColoring: (store, id) => store.setMeshCellsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshCellsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshCellsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshCellsActiveColoring(meshId, "constant"),
   },
   polygons: {
-    visibility: (store, id, value) => store.setMeshPolygonsVisibility(id, value),
-    color: (store, id, value) => store.setMeshPolygonsColor(id, value),
-    constantColoring: (store, id) => store.setMeshPolygonsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPolygonsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPolygonsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPolygonsActiveColoring(meshId, "constant"),
   },
   polyhedra: {
-    visibility: (store, id, value) => store.setMeshPolyhedraVisibility(id, value),
-    color: (store, id, value) => store.setMeshPolyhedraColor(id, value),
-    constantColoring: (store, id) => store.setMeshPolyhedraActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPolyhedraVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPolyhedraColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPolyhedraActiveColoring(meshId, "constant"),
   },
 };
 /* oxlint-enable typescript/promise-function-async */
