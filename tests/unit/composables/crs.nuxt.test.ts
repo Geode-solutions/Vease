@@ -87,7 +87,7 @@ describe("useCrs composable", () => {
   });
 
   test("alignCrs aligns the linked items in the same request", async () => {
-    const wells = { ...item, id: "item-2", name: "Wells" };
+    const wells = { ...item, data_id: "item-2", name: "Wells" };
     request.mockImplementationOnce(async () => {
       calls.push("request");
       await Promise.resolve();
@@ -114,7 +114,7 @@ describe("useCrs composable", () => {
   });
 
   test("convertCrs converts the linked items in the same request", async () => {
-    const wells = { ...item, id: "item-2", name: "Wells" };
+    const wells = { ...item, data_id: "item-2", name: "Wells" };
     request.mockImplementationOnce(async () => {
       calls.push("request");
       await Promise.resolve();

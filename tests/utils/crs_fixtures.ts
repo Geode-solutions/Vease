@@ -7,7 +7,7 @@ import { ref } from "vue";
 const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
 const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
 const item: DataItem = {
-  id: "item-1",
+  data_id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Points",
   geode_object_type: "PointSet3D",
@@ -18,11 +18,11 @@ const item: DataItem = {
 // Oldest first: a and c in Lambert-93, b already in UTM, local1 and local2 without CRS
 function projectItems(): DataItem[] {
   return [
-    { ...item, id: "a", created_at: "1", crs: LAMBERT },
-    { ...item, id: "b", created_at: "2", crs: UTM },
-    { ...item, id: "c", created_at: "3", crs: LAMBERT },
-    { ...item, id: "local1", created_at: "4" },
-    { ...item, id: "local2", created_at: "5" },
+    { ...item, data_id: "a", created_at: "1", crs: LAMBERT },
+    { ...item, data_id: "b", created_at: "2", crs: UTM },
+    { ...item, data_id: "c", created_at: "3", crs: LAMBERT },
+    { ...item, data_id: "local1", created_at: "4" },
+    { ...item, data_id: "local2", created_at: "5" },
   ];
 }
 
@@ -30,8 +30,8 @@ function projectItems(): DataItem[] {
 function mockCrsItems(items: DataItem[]): void {
   vi.spyOn(useDataStore(), "refCrsItems").mockReturnValue(
     ref<CrsItem[]>(
-      items.map(({ id, name, crs, created_at }) => ({
-        id,
+      items.map(({ data_id, name, crs, created_at }) => ({
+        data_id,
         name,
         crs,
         created_at: created_at ?? "",

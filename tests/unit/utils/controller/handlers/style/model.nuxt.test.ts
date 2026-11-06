@@ -79,17 +79,17 @@ const WHOLE_CASES: SetterCase[] = [
   {
     command: "style/model/points/visibility",
     params: { visibility: false },
-    calls: [["setModelPointsVisibility", MODEL.id, false]],
+    calls: [["setModelPointsVisibility", MODEL.data_id, false]],
   },
   {
     command: "style/model/points/size",
     params: { size: POINT_SIZE },
-    calls: [["setModelPointsSize", MODEL.id, POINT_SIZE]],
+    calls: [["setModelPointsSize", MODEL.data_id, POINT_SIZE]],
   },
   {
     command: "style/model/edges/visibility",
     params: { visibility: true },
-    calls: [["setModelEdgesVisibility", MODEL.id, true]],
+    calls: [["setModelEdgesVisibility", MODEL.data_id, true]],
   },
 ];
 
@@ -119,10 +119,10 @@ describe("the style/model controller commands", () => {
 
   test("hides the whole model through the data tree", async () => {
     await expect(
-      runCommand("style/model/visibility", { ids: [MODEL.id], visibility: false }),
-    ).resolves.toStrictEqual({ ids: [MODEL.id] });
+      runCommand("style/model/visibility", { ids: [MODEL.data_id], visibility: false }),
+    ).resolves.toStrictEqual({ ids: [MODEL.data_id] });
 
-    expect(setDataVisibility).toHaveBeenCalledExactlyOnceWith(MODEL.id, false);
+    expect(setDataVisibility).toHaveBeenCalledExactlyOnceWith(MODEL.data_id, false);
     expect(styleSetter(stores, "setModelVisibility")).not.toHaveBeenCalled();
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
@@ -130,9 +130,11 @@ describe("the style/model controller commands", () => {
   test.each(WHOLE_CASES)(
     "$command styles the whole model with the model setter",
     async ({ command, params, calls }) => {
-      await expect(runCommand(command, { ids: [MODEL.id], ...params })).resolves.toStrictEqual({
-        ids: [MODEL.id],
-      });
+      await expect(runCommand(command, { ids: [MODEL.data_id], ...params })).resolves.toStrictEqual(
+        {
+          ids: [MODEL.data_id],
+        },
+      );
 
       expect(calls.map(([setter]) => styleSetter(stores, setter).mock.calls)).toStrictEqual(
         calls.map(([, ...args]) => [args]),
@@ -145,13 +147,15 @@ describe("the style/model controller commands", () => {
   test.each(COMPONENT_CASES)(
     "$command styles every component of the target type by default",
     async ({ command, params, setter, args, type, geodeIds }) => {
-      await expect(runCommand(command, { ids: [MODEL.id], ...params })).resolves.toStrictEqual({
-        ids: [MODEL.id],
-      });
+      await expect(runCommand(command, { ids: [MODEL.data_id], ...params })).resolves.toStrictEqual(
+        {
+          ids: [MODEL.data_id],
+        },
+      );
 
-      expect(stores.dataStore.getMeshComponentGeodeIds).toHaveBeenCalledWith(MODEL.id, type);
+      expect(stores.dataStore.getMeshComponentGeodeIds).toHaveBeenCalledWith(MODEL.data_id, type);
       expect(styleSetter(stores, setter)).toHaveBeenCalledExactlyOnceWith(
-        MODEL.id,
+        MODEL.data_id,
         geodeIds,
         ...args,
       );
@@ -162,10 +166,10 @@ describe("the style/model controller commands", () => {
   test.each(COMPONENT_CASES.filter(({ target }) => target === "surfaces"))(
     "$command styles only the given components",
     async ({ command, params, setter, args }) => {
-      await runCommand(command, { ids: [MODEL.id], componentIds: ["s2"], ...params });
+      await runCommand(command, { ids: [MODEL.data_id], componentIds: ["s2"], ...params });
 
       expect(styleSetter(stores, setter)).toHaveBeenCalledExactlyOnceWith(
-        MODEL.id,
+        MODEL.data_id,
         ["s2"],
         ...args,
       );
@@ -175,12 +179,12 @@ describe("the style/model controller commands", () => {
   test("rejects component ids the target does not have", async () => {
     await expect(
       runCommand("style/model/surfaces/visibility", {
-        ids: [MODEL.id],
+        ids: [MODEL.data_id],
         componentIds: ["s2", "b1"],
         visibility: false,
       }),
     ).rejects.toThrow(
-      `"brep" has no surfaces with geode id b1; read vease://data/${MODEL.id} for its components`,
+      `"brep" has no surfaces with geode id b1; read vease://data/${MODEL.data_id} for its components`,
     );
     expect(styleSetter(stores, "setModelSurfacesVisibility")).not.toHaveBeenCalled();
     expect(stores.hybridViewerStore.remoteRender).not.toHaveBeenCalled();
@@ -190,14 +194,14 @@ describe("the style/model controller commands", () => {
     answerComponents(stores, { Surface: ["s1"] });
 
     await expect(
-      runCommand("style/model/blocks/visibility", { ids: [MODEL.id], visibility: true }),
+      runCommand("style/model/blocks/visibility", { ids: [MODEL.data_id], visibility: true }),
     ).rejects.toThrow('"brep" has no blocks');
   });
 
   test("rejects componentIds with several ids", async () => {
     await expect(
       runCommand("style/model/surfaces/color", {
-        ids: [MODEL.id, MESH.id],
+        ids: [MODEL.data_id, MESH.data_id],
         componentIds: ["s1"],
         color: ORANGE_HEX,
       }),
@@ -206,7 +210,7 @@ describe("the style/model controller commands", () => {
   });
 
   test.each(ALL_CASES)("$command rejects a mesh", async ({ command, params }) => {
-    await expect(runCommand(command, { ids: [MESH.id], ...params })).rejects.toThrow(
+    await expect(runCommand(command, { ids: [MESH.data_id], ...params })).rejects.toThrow(
       '"surface" is a mesh; use the style/mesh routes',
     );
     expect(setDataVisibility).not.toHaveBeenCalled();

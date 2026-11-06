@@ -48,7 +48,7 @@ describe("crs dialog host", () => {
 
   test("opens the dialog on an edit request and clears it on close", async () => {
     vi.spyOn(useDataStore(), "item").mockResolvedValue({
-      id: "item-1",
+      data_id: "item-1",
       geode_id: "00000000-0000-0000-0000-000000000001",
       name: "Points",
       viewer_type: "mesh",

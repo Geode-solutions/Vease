@@ -94,7 +94,7 @@ describe("crs align tool", () => {
   test("opening for another item resets points", async () => {
     const wrapper = mountWithPlugins(CrsAlign);
     await fill(wrapper, "crsAlignSource-0", { x: 1, y: 2 });
-    useUIStore().openCrsAlign({ ...item, id: "item-2" });
+    useUIStore().openCrsAlign({ ...item, data_id: "item-2" });
     await flushPromises();
 
     const inputs = wrapper.find('[data-testid="crsAlignSource-0"]').findAll("input");

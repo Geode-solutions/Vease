@@ -57,12 +57,15 @@ describe("the style commands", () => {
 
   test("styles every data, then renders once", async () => {
     await expect(
-      runCommand("style/mesh/color", { ids: [MESH.id, OTHER_MESH.id], color: ORANGE_HEX }),
-    ).resolves.toStrictEqual({ ids: [MESH.id, OTHER_MESH.id] });
+      runCommand("style/mesh/color", {
+        ids: [MESH.data_id, OTHER_MESH.data_id],
+        color: ORANGE_HEX,
+      }),
+    ).resolves.toStrictEqual({ ids: [MESH.data_id, OTHER_MESH.data_id] });
 
     const setMeshColor = styleSetter(stores, "setMeshColor");
-    expect(setMeshColor).toHaveBeenCalledWith(MESH.id, ORANGE);
-    expect(setMeshColor).toHaveBeenCalledWith(OTHER_MESH.id, ORANGE);
+    expect(setMeshColor).toHaveBeenCalledWith(MESH.data_id, ORANGE);
+    expect(setMeshColor).toHaveBeenCalledWith(OTHER_MESH.data_id, ORANGE);
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledAfter(setMeshColor);
   });
@@ -70,17 +73,20 @@ describe("the style commands", () => {
   test("reports the data it could not style and keeps the others", async () => {
     await expect(
       runCommand("style/mesh/color", {
-        ids: [MESH.id, MISSING_ID, MODEL.id],
+        ids: [MESH.data_id, MISSING_ID, MODEL.data_id],
         color: ORANGE_HEX,
       }),
     ).resolves.toStrictEqual({
-      ids: [MESH.id],
+      ids: [MESH.data_id],
       failed: [
         { id: MISSING_ID, error: MISSING_ERROR },
-        { id: MODEL.id, error: '"brep" is a model; use the style/model routes' },
+        { id: MODEL.data_id, error: '"brep" is a model; use the style/model routes' },
       ],
     });
-    expect(styleSetter(stores, "setMeshColor")).toHaveBeenCalledExactlyOnceWith(MESH.id, ORANGE);
+    expect(styleSetter(stores, "setMeshColor")).toHaveBeenCalledExactlyOnceWith(
+      MESH.data_id,
+      ORANGE,
+    );
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
 

@@ -91,7 +91,7 @@ const isAllVisible = computed(() => {
 });
 
 function getRowProps({ item }: { item: DataItem }): { class: string } {
-  const isSelected = selectedIds.value.some((selected) => selected.id === item.id);
+  const isSelected = selectedIds.value.some((selected) => selected.data_id === item.data_id);
   return {
     class: isSelected ? "selected-row" : "",
   };
@@ -134,7 +134,7 @@ function formatSmartDate(dateStr: string | undefined): string {
       :items="items"
       :search="search"
       show-select
-      item-value="id"
+      item-value="data_id"
       return-object
       class="transparent-table flex-grow-1 overflow-hidden"
       hide-default-footer
@@ -216,7 +216,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           size="small"
           class="text-none text-caption font-weight-regular px-1"
           data-testid="crsCell"
-          @click.stop="emit('crs', item.id)"
+          @click.stop="emit('crs', item.data_id)"
         >
           <!-- The picture-in-picture view is narrow: the code alone, the full name is in the tooltip -->
           {{

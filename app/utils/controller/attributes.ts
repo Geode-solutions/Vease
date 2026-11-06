@@ -110,7 +110,7 @@ function meshSearchSources(
       "componentIds only applies to model corners, lines, surfaces, blocks",
     );
   }
-  const available = meshTargetsOf(item.id);
+  const available = meshTargetsOf(item.data_id);
   if (target !== undefined && !available.some((element) => element === target)) {
     throw new ControllerError(
       `"${target}" is not available on "${item.name}"; available: ${available.join(", ")}`,
@@ -133,7 +133,7 @@ async function modelSearchSources(
     const targets = await Promise.all(
       TARGET_PRIORITY.model.map(async (component) => ({
         component,
-        ids: await modelComponentGeodeIds(item.id, component),
+        ids: await modelComponentGeodeIds(item.data_id, component),
       })),
     );
     return targets
@@ -191,7 +191,7 @@ async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   } else {
     sources = meshSearchSources(item, args);
   }
-  const sourceAttributes = await fetchSourceAttributes(item.id, sources);
+  const sourceAttributes = await fetchSourceAttributes(item.data_id, sources);
   for (const { source, attributes } of sourceAttributes) {
     const attribute = attributes.find(({ attribute_name }) => attribute_name === args.name);
     if (attribute !== undefined && matchesLocation(args.location, source.kind)) {
