@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { DataItem } from "@ogw_front/stores/data";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
@@ -20,7 +21,7 @@ import { setDataVisibility } from "@vease/utils/data_actions";
 
 type ComponentSetter<Value> = (
   store: StyleStore,
-  id: string,
+  modelId: DataId,
   componentIds: string[],
   value: Value,
 ) => Promise<unknown>;
@@ -34,24 +35,34 @@ interface ModelComponentSetters {
 /* oxlint-disable typescript/promise-function-async -- thin forwards to the store setters, which are already async */
 const MODEL_COMPONENT_SETTERS: Record<ModelComponentTarget, ModelComponentSetters> = {
   corners: {
-    visibility: (store, id, ids, value) => store.setModelCornersVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelCornersColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelCornersActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) =>
+      store.setModelCornersVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelCornersColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelCornersActiveColoring(modelId, ids, value),
   },
   lines: {
-    visibility: (store, id, ids, value) => store.setModelLinesVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelLinesColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelLinesActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) => store.setModelLinesVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelLinesColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelLinesActiveColoring(modelId, ids, value),
   },
   surfaces: {
-    visibility: (store, id, ids, value) => store.setModelSurfacesVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelSurfacesColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelSurfacesActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) =>
+      store.setModelSurfacesVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelSurfacesColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelSurfacesActiveColoring(modelId, ids, value),
   },
   blocks: {
-    visibility: (store, id, ids, value) => store.setModelBlocksVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelBlocksColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelBlocksActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) => store.setModelBlocksVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelBlocksColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelBlocksActiveColoring(modelId, ids, value),
   },
 };
 /* oxlint-enable typescript/promise-function-async */

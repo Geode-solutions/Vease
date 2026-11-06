@@ -5,21 +5,22 @@ import {
   isModelComponentTarget,
 } from "@vease/utils/controller/targets";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { FoundAttribute } from "@vease/utils/controller/attributes";
 import { MODEL_SETTERS } from "@vease/utils/controller/model_attribute_setters";
 import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 
 interface MeshAttributeSetters {
-  colorMap: (store: StyleStore, id: string) => string | undefined;
-  storedTimeStep: (store: StyleStore, id: string) => number | undefined;
-  attribute: (store: StyleStore, id: string, input: ValidAttributeInput) => Promise<unknown>;
-  timeStep: (store: StyleStore, id: string, timeStep: number) => Promise<unknown>;
+  colorMap: (store: StyleStore, meshId: DataId) => string | undefined;
+  storedTimeStep: (store: StyleStore, meshId: DataId) => number | undefined;
+  attribute: (store: StyleStore, meshId: DataId, input: ValidAttributeInput) => Promise<unknown>;
+  timeStep: (store: StyleStore, meshId: DataId, timeStep: number) => Promise<unknown>;
 }
 
 interface MeshElementSetters {
   kinds: Partial<Record<AttributeKind, MeshAttributeSetters>>;
-  activate: (store: StyleStore, id: string, kind: AttributeKind) => Promise<unknown>;
+  activate: (store: StyleStore, meshId: DataId, kind: AttributeKind) => Promise<unknown>;
 }
 
 interface AttributeBinding {
@@ -35,81 +36,86 @@ const MESH_SETTERS: Record<MeshElement, MeshElementSetters> = {
   points: {
     kinds: {
       vertex: {
-        colorMap: (store, id) => store.meshPointsVertexAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshPointsVertexAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshPointsVertexAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshPointsVertexAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshPointsVertexAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshPointsVertexAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshPointsVertexAttribute(meshId, input),
+        timeStep: (store, meshId, step) => store.setMeshPointsVertexAttributeTimeStep(meshId, step),
       },
     },
-    activate: (store, id, kind) => store.setMeshPointsActiveColoring(id, kind),
+    activate: (store, meshId, kind) => store.setMeshPointsActiveColoring(meshId, kind),
   },
   edges: {
     kinds: {
       edge: {
-        colorMap: (store, id) => store.meshEdgesEdgeAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshEdgesEdgeAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshEdgesEdgeAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshEdgesEdgeAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshEdgesEdgeAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshEdgesEdgeAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshEdgesEdgeAttribute(meshId, input),
+        timeStep: (store, meshId, step) => store.setMeshEdgesEdgeAttributeTimeStep(meshId, step),
       },
       vertex: {
-        colorMap: (store, id) => store.meshEdgesVertexAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshEdgesVertexAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshEdgesVertexAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshEdgesVertexAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshEdgesVertexAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshEdgesVertexAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshEdgesVertexAttribute(meshId, input),
+        timeStep: (store, meshId, step) => store.setMeshEdgesVertexAttributeTimeStep(meshId, step),
       },
     },
-    activate: (store, id, kind) => store.setMeshEdgesActiveColoring(id, kind),
+    activate: (store, meshId, kind) => store.setMeshEdgesActiveColoring(meshId, kind),
   },
   cells: {
     kinds: {
       cell: {
-        colorMap: (store, id) => store.meshCellsCellAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshCellsCellAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshCellsCellAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshCellsCellAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshCellsCellAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshCellsCellAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshCellsCellAttribute(meshId, input),
+        timeStep: (store, meshId, step) => store.setMeshCellsCellAttributeTimeStep(meshId, step),
       },
       vertex: {
-        colorMap: (store, id) => store.meshCellsVertexAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshCellsVertexAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshCellsVertexAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshCellsVertexAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshCellsVertexAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshCellsVertexAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshCellsVertexAttribute(meshId, input),
+        timeStep: (store, meshId, step) => store.setMeshCellsVertexAttributeTimeStep(meshId, step),
       },
     },
-    activate: (store, id, kind) => store.setMeshCellsActiveColoring(id, kind),
+    activate: (store, meshId, kind) => store.setMeshCellsActiveColoring(meshId, kind),
   },
   polygons: {
     kinds: {
       polygon: {
-        colorMap: (store, id) => store.meshPolygonsPolygonAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshPolygonsPolygonAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshPolygonsPolygonAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshPolygonsPolygonAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshPolygonsPolygonAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshPolygonsPolygonAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshPolygonsPolygonAttribute(meshId, input),
+        timeStep: (store, meshId, step) =>
+          store.setMeshPolygonsPolygonAttributeTimeStep(meshId, step),
       },
       vertex: {
-        colorMap: (store, id) => store.meshPolygonsVertexAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshPolygonsVertexAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshPolygonsVertexAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshPolygonsVertexAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshPolygonsVertexAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshPolygonsVertexAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshPolygonsVertexAttribute(meshId, input),
+        timeStep: (store, meshId, step) =>
+          store.setMeshPolygonsVertexAttributeTimeStep(meshId, step),
       },
     },
-    activate: (store, id, kind) => store.setMeshPolygonsActiveColoring(id, kind),
+    activate: (store, meshId, kind) => store.setMeshPolygonsActiveColoring(meshId, kind),
   },
   polyhedra: {
     kinds: {
       polyhedron: {
-        colorMap: (store, id) => store.meshPolyhedraPolyhedronAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshPolyhedraPolyhedronAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshPolyhedraPolyhedronAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshPolyhedraPolyhedronAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshPolyhedraPolyhedronAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshPolyhedraPolyhedronAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) =>
+          store.setMeshPolyhedraPolyhedronAttribute(meshId, input),
+        timeStep: (store, meshId, step) =>
+          store.setMeshPolyhedraPolyhedronAttributeTimeStep(meshId, step),
       },
       vertex: {
-        colorMap: (store, id) => store.meshPolyhedraVertexAttributeColorMap(id),
-        storedTimeStep: (store, id) => store.meshPolyhedraVertexAttributeTimeStep(id),
-        attribute: (store, id, input) => store.setMeshPolyhedraVertexAttribute(id, input),
-        timeStep: (store, id, step) => store.setMeshPolyhedraVertexAttributeTimeStep(id, step),
+        colorMap: (store, meshId) => store.meshPolyhedraVertexAttributeColorMap(meshId),
+        storedTimeStep: (store, meshId) => store.meshPolyhedraVertexAttributeTimeStep(meshId),
+        attribute: (store, meshId, input) => store.setMeshPolyhedraVertexAttribute(meshId, input),
+        timeStep: (store, meshId, step) =>
+          store.setMeshPolyhedraVertexAttributeTimeStep(meshId, step),
       },
     },
-    activate: (store, id, kind) => store.setMeshPolyhedraActiveColoring(id, kind),
+    activate: (store, meshId, kind) => store.setMeshPolyhedraActiveColoring(meshId, kind),
   },
 };
 

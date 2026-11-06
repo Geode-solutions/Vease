@@ -1,5 +1,6 @@
 // Third party imports
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { DataId } from "@ogw_front/types/identifiers";
 import { MESH_ELEMENT_KINDS as ELEMENT_KIND_BY_MESH_TYPE } from "@ogw_front/utils/attributes";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 
@@ -79,8 +80,8 @@ function isMeshElement(key: string): key is MeshElement {
   return Object.hasOwn(MESH_ELEMENT_ATTRIBUTE_KINDS, key);
 }
 
-function meshTargetsOf(id: string): MeshElement[] {
-  return Object.keys(getDataStyleStore().getStyle(id)).filter((key) => isMeshElement(key));
+function meshTargetsOf(meshId: DataId): MeshElement[] {
+  return Object.keys(getDataStyleStore().getStyle(meshId)).filter((key) => isMeshElement(key));
 }
 
 // The back rejects an element kind the mesh type does not have (e.g. edge attributes of a surface)
@@ -92,7 +93,7 @@ function meshAttributeKinds(geodeObjectType: string, target: MeshElement): Attri
 }
 
 async function modelComponentGeodeIds(
-  modelId: string,
+  modelId: DataId,
   target: ModelComponentTarget,
 ): Promise<string[]> {
   const geodeIds = await useDataStore().getMeshComponentGeodeIds(

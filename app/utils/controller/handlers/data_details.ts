@@ -1,6 +1,6 @@
 // Third party imports
+import type { DataId, GeodeIdentified } from "@ogw_front/types/identifiers";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
-import type { GeodeIdentified } from "@ogw_front/types/identifiers";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports
@@ -80,8 +80,8 @@ async function describeMesh({ data_id, geode_object_type }: DataItem): Promise<T
   return { targets, attributes: summarizeSources(sourceAttributes) };
 }
 
-async function describeModel(id: string): Promise<TargetsDescription> {
-  const meshComponents = await useDataStore().getAllMeshComponents(id);
+async function describeModel(modelId: DataId): Promise<TargetsDescription> {
+  const meshComponents = await useDataStore().getAllMeshComponents(modelId);
   const components = meshComponents.map(({ geode_id, title, category }) => ({
     geode_id,
     name: title,
@@ -94,7 +94,7 @@ async function describeModel(id: string): Promise<TargetsDescription> {
       .map(({ geode_id }) => geode_id),
   })).filter(({ geodeIds }) => geodeIds.length > 0);
   const sourceAttributes = await fetchSourceAttributes(
-    id,
+    modelId,
     componentTargets.flatMap(({ target, geodeIds }) => modelAttributeSources(target, geodeIds)),
   );
   return {
