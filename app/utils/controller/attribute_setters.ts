@@ -1,5 +1,4 @@
 // Local imports
-import type { AttributeInput, StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import {
   type AttributeKind,
   type MeshElement,
@@ -8,11 +7,13 @@ import {
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { FoundAttribute } from "@vease/utils/controller/attributes";
 import { MODEL_SETTERS } from "@vease/utils/controller/model_attribute_setters";
+import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
+import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 
 interface MeshAttributeSetters {
   colorMap: (store: StyleStore, id: string) => string | undefined;
   storedTimeStep: (store: StyleStore, id: string) => number | undefined;
-  attribute: (store: StyleStore, id: string, input: AttributeInput) => Promise<unknown>;
+  attribute: (store: StyleStore, id: string, input: ValidAttributeInput) => Promise<unknown>;
   timeStep: (store: StyleStore, id: string, timeStep: number) => Promise<unknown>;
 }
 
@@ -24,7 +25,7 @@ interface MeshElementSetters {
 interface AttributeBinding {
   currentColorMap: () => string | undefined;
   storedTimeStep: () => number | undefined;
-  apply: (input: AttributeInput) => Promise<unknown>;
+  apply: (input: ValidAttributeInput) => Promise<unknown>;
   applyTimeStep: (timeStep: number) => Promise<unknown>;
   activate: () => Promise<unknown>;
 }

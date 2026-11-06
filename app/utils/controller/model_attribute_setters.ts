@@ -1,6 +1,7 @@
 // Local imports
-import type { AttributeInput, StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { AttributeKind, ModelComponentTarget } from "@vease/utils/controller/targets";
+import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
+import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 
 interface ModelAttributeSetters {
   colorMap: (store: StyleStore, id: string, componentId?: string) => string | undefined;
@@ -9,7 +10,7 @@ interface ModelAttributeSetters {
     store: StyleStore,
     id: string,
     componentIds: string[],
-    input: AttributeInput,
+    input: ValidAttributeInput,
   ) => Promise<unknown>;
   timeStep: (
     store: StyleStore,
