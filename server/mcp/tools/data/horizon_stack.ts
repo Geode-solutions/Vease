@@ -17,7 +17,10 @@ export default defineMcpTool({
     "for its content. It is the horizon stack needed by create-implicit-structural-model.",
   inputSchema: {
     name: z.string().min(1).describe("Name of the horizon stack"),
-    horizons: z.array(z.string().min(1)).min(1).describe("Horizon names, ordered top to bottom"),
+    horizons: z
+      .array(z.string().min(1))
+      .min(1)
+      .describe("Unique horizon names, ordered top to bottom"),
     unitNames: z
       .array(z.string())
       .optional()

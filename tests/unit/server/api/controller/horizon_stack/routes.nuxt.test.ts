@@ -42,6 +42,13 @@ describe("the horizon stack controller routes", () => {
     expect(dispatchCommand).not.toHaveBeenCalled();
   });
 
+  test("create rejects duplicate horizon names", async () => {
+    const event = eventWithBody({ name: "stack", horizons: ["Top", "Top"] });
+
+    await expect(create(event)).resolves.toMatchObject({ code: BAD_REQUEST });
+    expect(dispatchCommand).not.toHaveBeenCalled();
+  });
+
   test("info dispatches horizon-stack-info with the requested id", async () => {
     const result = { horizons: [], units: [] };
     vi.mocked(dispatchCommand).mockResolvedValue(result);

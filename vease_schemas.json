@@ -639,7 +639,8 @@
                 "type": "string",
                 "minLength": 1
               },
-              "minItems": 1
+              "minItems": 1,
+              "uniqueItems": true
             },
             "unit_names": {
               "type": "array",
