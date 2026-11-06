@@ -1,11 +1,10 @@
 // Third party imports
+import type { GeodeObjectTyped, ViewerTyped } from "@ogw_front/types/identifiers";
 import { useDataStore } from "@ogw_front/stores/data";
 
-interface DataSummary {
+interface DataSummary extends GeodeObjectTyped, ViewerTyped {
   id: string;
   name: string;
-  geode_object_type: string;
-  viewer_type: string;
   visible: boolean;
 }
 
