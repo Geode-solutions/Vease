@@ -1,10 +1,10 @@
+import type { DataId, DataIdentified } from "@ogw_front/types/identifiers";
 import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import type { CrsItem } from "@ogw_front/stores/data";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
-interface AssignedEntry {
-  data_id: string;
+interface AssignedEntry extends DataIdentified {
   name: string;
   crs?: CRSList;
   implausible?: boolean;
@@ -18,7 +18,7 @@ interface AssignResponse {
 
 function plausibleEntries(
   entries: AssignedEntry[],
-): { data_id: string; name: string; crs: CRSList }[] {
+): { data_id: DataId; name: string; crs: CRSList }[] {
   return entries.flatMap(({ data_id, name, crs, implausible }) => {
     if (crs === undefined || implausible === true) {
       return [];

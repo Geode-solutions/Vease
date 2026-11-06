@@ -3,6 +3,7 @@ import back_schemas, {
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
@@ -107,7 +108,7 @@ function useCrs() {
   // The project may already have followed them: callers pass the project CRS taken before.
   // A refused conversion keeps their CRS and the project one: the warning points to their dialog
   async function followProject(
-    entries: { data_id: string; name: string; crs: CRSList }[],
+    entries: { data_id: DataId; name: string; crs: CRSList }[],
     project: CRSList | undefined = useCrsStore().projectCrs,
   ): Promise<void> {
     const crsStore = useCrsStore();
