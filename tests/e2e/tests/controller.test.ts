@@ -38,10 +38,34 @@ interface AttributeSummary {
   name: string;
 }
 
+// Same declaration as the app's, which exposes its stores to extensions
+declare global {
+  var __VEASE_STORES__: Record<string, unknown> | undefined;
+}
+
 test.use({ suiteId: import.meta.url });
 
-function controllerUrl(window: Page, route: string): string {
-  return `${new URL(window.url()).origin}/api/controller/${route}`;
+// The app server is the page origin on desktop and browser, but the session's Cloud Run instance on cloud
+async function appServerBaseUrl(window: Page): Promise<string> {
+  const baseUrl = await window.evaluate(() => {
+    const useAppStore = globalThis.__VEASE_STORES__?.useAppStore;
+    if (typeof useAppStore !== "function") {
+      return undefined;
+    }
+    const appStore: unknown = Reflect.apply(useAppStore, undefined, []);
+    if (typeof appStore !== "object" || appStore === null || !("base_url" in appStore)) {
+      return undefined;
+    }
+    return typeof appStore.base_url === "string" ? appStore.base_url : undefined;
+  });
+  if (baseUrl === undefined) {
+    throw new Error("The app store is not exposed on the page");
+  }
+  return baseUrl;
+}
+
+function controllerUrl(baseUrl: string, route: string): string {
+  return `${baseUrl}/api/controller/${route}`;
 }
 
 async function expectOk<Body>(
@@ -65,18 +89,19 @@ function findPolygonAttribute(attributes: AttributeSummary[]): AttributeSummary 
 }
 
 test("controller drives the app", async ({ window }) => {
+  const baseUrl = await appServerBaseUrl(window);
   // A 503 means the browser has not subscribed to the command stream yet
   await expect
     .poll(
       async () => {
-        const response = await window.request.get(controllerUrl(window, "data/list"));
+        const response = await window.request.get(controllerUrl(baseUrl, "data/list"));
         return response.status();
       },
       { timeout: SUBSCRIBE_TIMEOUT, intervals: SUBSCRIBE_POLL_INTERVALS },
     )
     .toBe(HTTP_OK);
 
-  const load = await window.request.post(controllerUrl(window, "data/load"), {
+  const load = await window.request.post(controllerUrl(baseUrl, "data/load"), {
     multipart: {
       file: {
         name: inputFilename,
@@ -88,29 +113,29 @@ test("controller drives the app", async ({ window }) => {
   await expectOk(load);
 
   const list = await expectOk<{ data: DataSummary[] }>(
-    await window.request.get(controllerUrl(window, "data/list")),
+    await window.request.get(controllerUrl(baseUrl, "data/list")),
   );
   expect(list.response.data).toHaveLength(1);
   const [{ id: dataId }] = list.response.data;
 
   const details = await expectOk<{ attributes: AttributeSummary[] }>(
-    await window.request.get(controllerUrl(window, "data/details"), { params: { id: dataId } }),
+    await window.request.get(controllerUrl(baseUrl, "data/details"), { params: { id: dataId } }),
   );
   const attribute = findPolygonAttribute(details.response.attributes);
 
   await expectOk(
-    await window.request.post(controllerUrl(window, "style/mesh/polygons/color"), {
+    await window.request.post(controllerUrl(baseUrl, "style/mesh/polygons/color"), {
       data: { ids: [dataId], color: polygonsColor },
     }),
   );
   await expectOk(
     await window.request.post(
-      controllerUrl(window, `style/mesh/polygons/${attribute.location}/attribute`),
+      controllerUrl(baseUrl, `style/mesh/polygons/${attribute.location}/attribute`),
       { data: { ids: [dataId], name: attribute.name } },
     ),
   );
   await expectOk(
-    await window.request.post(controllerUrl(window, "view/orient"), {
+    await window.request.post(controllerUrl(baseUrl, "view/orient"), {
       data: { orientation: "zplus" },
     }),
   );
