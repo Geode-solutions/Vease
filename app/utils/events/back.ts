@@ -3,12 +3,14 @@ import { consola } from "consola";
 import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 
 // Local imports
+import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 import type { NewDataItem } from "@ogw_front/stores/data";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { importItem } from "@ogw_front/utils/import_workflow.js";
 import { trackImport } from "@vease/utils/controller/pending_imports";
 
-function isNewDataItem(value: unknown): value is NewDataItem {
+// The back-end still names the data id `id`
+function isNewDataItem(value: unknown): value is LegacyDataId<NewDataItem> {
   return (
     typeof value === "object" &&
     value !== null &&
@@ -21,7 +23,7 @@ function isNewDataItem(value: unknown): value is NewDataItem {
   );
 }
 
-async function importAndRender(item: NewDataItem): Promise<void> {
+async function importAndRender(item: LegacyDataId<NewDataItem>): Promise<void> {
   await importItem(item);
   await getHybridViewerStore().remoteRender();
 }

@@ -52,7 +52,7 @@ describe("useCrs composable project", () => {
   });
 
   test("changeProjectCrs only changes the project crs when no data has to move", async () => {
-    mockCrsItems(projectItems().filter((projectItem) => projectItem.id === "b"));
+    mockCrsItems(projectItems().filter((projectItem) => projectItem.data_id === "b"));
     await useCrs().changeProjectCrs(UTM);
 
     expect(request).not.toHaveBeenCalled();
@@ -72,9 +72,9 @@ describe("useCrs composable project", () => {
     mockCrsItems([]);
     useCrsStore().setProjectCrs(LAMBERT);
     await useCrs().followProject([
-      { id: "a", name: "A", crs: UTM },
-      { id: "b", name: "B", crs: LAMBERT },
-      { id: "c", name: "C", crs: UTM },
+      { data_id: "a", name: "A", crs: UTM },
+      { data_id: "b", name: "B", crs: LAMBERT },
+      { data_id: "c", name: "C", crs: UTM },
     ]);
     expect(request).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ params: { id: "a", linked_ids: ["c"], ...LAMBERT } }),
@@ -83,7 +83,7 @@ describe("useCrs composable project", () => {
 
   test("followProject does nothing without project crs", async () => {
     mockCrsItems([]);
-    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }]);
+    await useCrs().followProject([{ data_id: "a", name: "A", crs: UTM }]);
     expect(request).not.toHaveBeenCalled();
   });
 
@@ -92,7 +92,7 @@ describe("useCrs composable project", () => {
     useCrsStore().setProjectCrs(LAMBERT);
     request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:2154"));
     const warning = vi.spyOn(useFeedbackStore(), "add_warning");
-    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }]);
+    await useCrs().followProject([{ data_id: "a", name: "A", crs: UTM }]);
     expect(warning).toHaveBeenCalledExactlyOnceWith(
       "Cannot convert A to EPSG:2154. Check its CRS (Assign) or georeference it.",
       expect.objectContaining({ label: "Edit CRS" }),
@@ -104,7 +104,7 @@ describe("useCrs composable project", () => {
     mockCrsItems([]);
     useCrsStore().setProjectCrs(UTM);
     request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:2154"));
-    await useCrs().followProject([{ id: "a", name: "A", crs: UTM }], LAMBERT);
+    await useCrs().followProject([{ data_id: "a", name: "A", crs: UTM }], LAMBERT);
     expect(request).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ params: { id: "a", ...LAMBERT } }),
     );

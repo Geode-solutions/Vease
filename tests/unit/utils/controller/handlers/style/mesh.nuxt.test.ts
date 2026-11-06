@@ -57,42 +57,42 @@ const SETTER_CASES: SetterCase[] = [
   {
     command: "style/mesh/color",
     params: { color: ORANGE_HEX },
-    calls: [["setMeshColor", MESH.id, ORANGE]],
+    calls: [["setMeshColor", MESH.data_id, ORANGE]],
   },
   ...ELEMENTS.flatMap(({ element, setter }) => [
     {
       command: `style/mesh/${element}/visibility`,
       params: { visibility: false },
-      calls: [[`setMesh${setter}Visibility`, MESH.id, false]] satisfies SetterCase["calls"],
+      calls: [[`setMesh${setter}Visibility`, MESH.data_id, false]] satisfies SetterCase["calls"],
     },
     {
       command: `style/mesh/${element}/color`,
       params: { color: ORANGE_HEX },
       calls: [
-        [`setMesh${setter}Color`, MESH.id, ORANGE],
-        [`setMesh${setter}ActiveColoring`, MESH.id, "constant"],
+        [`setMesh${setter}Color`, MESH.data_id, ORANGE],
+        [`setMesh${setter}ActiveColoring`, MESH.data_id, "constant"],
       ] satisfies SetterCase["calls"],
     },
   ]),
   {
     command: "style/mesh/points/size",
     params: { size: POINT_SIZE },
-    calls: [["setMeshPointsSize", MESH.id, POINT_SIZE]],
+    calls: [["setMeshPointsSize", MESH.data_id, POINT_SIZE]],
   },
   {
     command: "style/mesh/edges/width",
     params: { width: EDGE_WIDTH },
-    calls: [["setMeshEdgesWidth", MESH.id, EDGE_WIDTH]],
+    calls: [["setMeshEdgesWidth", MESH.data_id, EDGE_WIDTH]],
   },
   {
     command: "style/mesh/cells/coloring",
     params: { coloring: "textures" },
-    calls: [["setMeshCellsActiveColoring", MESH.id, "textures"]],
+    calls: [["setMeshCellsActiveColoring", MESH.data_id, "textures"]],
   },
   {
     command: "style/mesh/polygons/coloring",
     params: { coloring: "constant" },
-    calls: [["setMeshPolygonsActiveColoring", MESH.id, "constant"]],
+    calls: [["setMeshPolygonsActiveColoring", MESH.data_id, "constant"]],
   },
 ];
 
@@ -127,10 +127,10 @@ describe("the style/mesh controller commands", () => {
 
   test("hides the whole mesh through the data tree", async () => {
     await expect(
-      runCommand("style/mesh/visibility", { ids: [MESH.id], visibility: false }),
-    ).resolves.toStrictEqual({ ids: [MESH.id] });
+      runCommand("style/mesh/visibility", { ids: [MESH.data_id], visibility: false }),
+    ).resolves.toStrictEqual({ ids: [MESH.data_id] });
 
-    expect(setDataVisibility).toHaveBeenCalledExactlyOnceWith(MESH.id, false);
+    expect(setDataVisibility).toHaveBeenCalledExactlyOnceWith(MESH.data_id, false);
     expect(styleSetter(stores, "setMeshVisibility")).not.toHaveBeenCalled();
     expect(stores.hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
@@ -138,8 +138,8 @@ describe("the style/mesh controller commands", () => {
   test.each(SETTER_CASES)(
     "$command calls its store setters",
     async ({ command, params, calls }) => {
-      await expect(runCommand(command, { ids: [MESH.id], ...params })).resolves.toStrictEqual({
-        ids: [MESH.id],
+      await expect(runCommand(command, { ids: [MESH.data_id], ...params })).resolves.toStrictEqual({
+        ids: [MESH.data_id],
       });
 
       expect(calls.map(([setter]) => styleSetter(stores, setter).mock.calls)).toStrictEqual(
@@ -152,7 +152,7 @@ describe("the style/mesh controller commands", () => {
   test.each(ELEMENTS)(
     "switches $element to constant coloring after setting their color",
     async ({ element, setter }) => {
-      await runCommand(`style/mesh/${element}/color`, { ids: [MESH.id], color: ORANGE_HEX });
+      await runCommand(`style/mesh/${element}/color`, { ids: [MESH.data_id], color: ORANGE_HEX });
 
       expect(styleSetter(stores, `setMesh${setter}ActiveColoring`)).toHaveBeenCalledAfter(
         styleSetter(stores, `setMesh${setter}Color`),
@@ -172,7 +172,7 @@ describe("the style/mesh controller commands", () => {
         polygons: {},
       });
 
-      await expect(runCommand(command, { ids: [MESH.id], ...params })).rejects.toThrow(
+      await expect(runCommand(command, { ids: [MESH.data_id], ...params })).rejects.toThrow(
         `"${element}" is not available on "surface"; available: points, polygons`,
       );
       expect(stores.hybridViewerStore.remoteRender).not.toHaveBeenCalled();
@@ -180,7 +180,7 @@ describe("the style/mesh controller commands", () => {
   );
 
   test.each(ALL_CASES)("$command rejects a model", async ({ command, params }) => {
-    await expect(runCommand(command, { ids: [MODEL.id], ...params })).rejects.toThrow(
+    await expect(runCommand(command, { ids: [MODEL.data_id], ...params })).rejects.toThrow(
       '"brep" is a model; use the style/model routes',
     );
     expect(setDataVisibility).not.toHaveBeenCalled();

@@ -27,7 +27,7 @@ const { show = false, itemId = undefined } = defineProps<{
 // Read live by its id: the stored CRS shown and the candidates follow the changes
 const liveItem = useLiveDataItem(() => itemId);
 // The live query starts with an empty placeholder: the item is ready once it is the asked one
-const item = computed(() => (liveItem.value?.id === itemId ? liveItem.value : undefined));
+const item = computed(() => (liveItem.value?.data_id === itemId ? liveItem.value : undefined));
 
 const emit = defineEmits<{
   "update:show": [value: boolean];
@@ -71,13 +71,13 @@ async function fetchCurrentCrs(): Promise<void> {
   if (itemId === undefined) {
     return;
   }
-  const id = itemId;
+  const dataId = itemId;
   loadingCurrentCrs.value = true;
   try {
     await backStore.request(
       {
         schema: back_schemas.opengeodeweb_back.crs.active,
-        params: { id },
+        params: { id: dataId },
       },
       {
         // Without geographic info, the active CRS is OpenGeode's default local one ("points")
@@ -94,7 +94,7 @@ async function fetchCurrentCrs(): Promise<void> {
           // The file is the reference: refresh the stored CRS shown in the table and tree,
           // Only when it differs, as each write refreshes every live view of the data
           if (item.value !== undefined && formatCrs(item.value.crs) !== formatCrs(crs_info)) {
-            await dataStore.updateItem(id, { crs: crs_info });
+            await dataStore.updateItem(dataId, { crs: crs_info });
           }
         },
       },
@@ -115,9 +115,9 @@ watch(
 );
 
 // Picking only works in the viewer: the alignment continues in its drawer
-async function openAlignment(target: Pick<CrsItem, "id">): Promise<void> {
+async function openAlignment(target: Pick<CrsItem, "data_id">): Promise<void> {
   // The drawer needs the whole data: a linked data is only known by its CRS fields
-  const full = await dataStore.item(target.id);
+  const full = await dataStore.item(target.data_id);
   await navigateTo("/");
   UIStore.openCrsAlign(full);
 }
@@ -125,7 +125,7 @@ async function openAlignment(target: Pick<CrsItem, "id">): Promise<void> {
 const warnImplausible = useImplausibleWarning(openAlignment);
 
 async function onAssigned(
-  assignedItem: Pick<CrsItem, "id" | "name">,
+  assignedItem: Pick<CrsItem, "data_id" | "name">,
   linked: CrsItem[],
   response: AssignResponse,
   { guarded, projectCrs }: { guarded: boolean; projectCrs: CRSList | undefined },
@@ -134,7 +134,7 @@ async function onAssigned(
   // A data left out by the check keeps its CRS: nothing to store
   for (const entry of entries.filter((assigned) => assigned.crs !== undefined)) {
     // oxlint-disable-next-line no-await-in-loop
-    await dataStore.updateItem(entry.id, { crs: entry.crs });
+    await dataStore.updateItem(entry.data_id, { crs: entry.crs });
   }
   // The plausible data join the project CRS; the others keep it and get the warning
   await followProject(plausibleEntries(entries), projectCrs);
@@ -159,7 +159,7 @@ async function handleAssign(anyway = false): Promise<void> {
     return;
   }
   const linked = scope.value === "all" ? linkCandidates.value : [];
-  const linkedDataIds = linked.map((linkedItem) => linkedItem.id);
+  const linkedDataIds = linked.map((linkedItem) => linkedItem.data_id);
   const guarded = isGeographic.value && !anyway;
   // Taken before: the project follows the assigned data as soon as they are stored
   const { projectCrs } = crsStore;
@@ -170,7 +170,7 @@ async function handleAssign(anyway = false): Promise<void> {
       {
         schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
         params: {
-          id: assignedItem.id,
+          id: assignedItem.data_id,
           ...(linkedDataIds.length > 0 && { linked_ids: linkedDataIds }),
           ...(guarded && { only_plausible: true }),
           ...selectedCrs.value,
@@ -322,7 +322,7 @@ async function startAlignment(): Promise<void> {
       <v-card-text class="pt-8 px-0">
         <CrsSelector
           v-if="item && mode !== 'align'"
-          :key="item.id"
+          :key="item.data_id"
           v-model="selectedCrs"
           :geode-object-type="item.geode_object_type"
         />

@@ -28,7 +28,7 @@ const GEODE_TYPE = "BRep";
 
 function toItems(ids: string[]): DataItem[] {
   // oxlint-disable-next-line no-unsafe-type-assertion -- only ids are read.
-  return ids.map((id) => ({ id }) as DataItem);
+  return ids.map((id) => ({ data_id: id }) as DataItem);
 }
 
 function setItemIds(before: string[], after: string[]): void {

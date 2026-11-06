@@ -19,7 +19,7 @@ vi.mock(import("@vease/utils/data_actions"), () => ({
 }));
 
 const ITEM: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -51,11 +51,11 @@ describe("the rename-data controller handler", () => {
   });
 
   test("renames without rendering", async () => {
-    await expect(rename({ id: ITEM.id, name: "renamed" })).resolves.toStrictEqual({
-      id: ITEM.id,
+    await expect(rename({ id: ITEM.data_id, name: "renamed" })).resolves.toStrictEqual({
+      id: ITEM.data_id,
       name: "renamed",
     });
-    expect(renameData).toHaveBeenCalledWith(ITEM.id, "renamed");
+    expect(renameData).toHaveBeenCalledWith(ITEM.data_id, "renamed");
     expect(hybridViewerStore.remoteRender).not.toHaveBeenCalled();
   });
 

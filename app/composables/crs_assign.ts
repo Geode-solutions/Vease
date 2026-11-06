@@ -1,10 +1,10 @@
+import type { DataId, DataIdentified } from "@ogw_front/types/identifiers";
 import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import type { CrsItem } from "@ogw_front/stores/data";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
-interface AssignedEntry {
-  id: string;
+interface AssignedEntry extends DataIdentified {
   name: string;
   crs?: CRSList;
   implausible?: boolean;
@@ -16,26 +16,28 @@ interface AssignResponse {
   linked?: { id: string; crs?: CRSList; implausible?: boolean }[];
 }
 
-function plausibleEntries(entries: AssignedEntry[]): { id: string; name: string; crs: CRSList }[] {
-  return entries.flatMap(({ id, name, crs, implausible }) => {
+function plausibleEntries(
+  entries: AssignedEntry[],
+): { data_id: DataId; name: string; crs: CRSList }[] {
+  return entries.flatMap(({ data_id, name, crs, implausible }) => {
     if (crs === undefined || implausible === true) {
       return [];
     }
-    return [{ id, name, crs }];
+    return [{ data_id, name, crs }];
   });
 }
 
 function buildAssignedEntries(
-  assignedItem: Pick<CrsItem, "id" | "name">,
+  assignedItem: Pick<CrsItem, "data_id" | "name">,
   linked: CrsItem[],
   { crs, implausible, linked: linkedResponses }: AssignResponse,
 ): AssignedEntry[] {
   return [
-    { id: assignedItem.id, name: assignedItem.name, crs, implausible },
-    ...linked.map(({ id: linkedId, name }) => {
+    { data_id: assignedItem.data_id, name: assignedItem.name, crs, implausible },
+    ...linked.map(({ data_id: linkedId, name }) => {
       const response = linkedResponses?.find((entry) => entry.id === linkedId);
       return {
-        id: linkedId,
+        data_id: linkedId,
         name,
         crs: response?.crs,
         implausible: response?.implausible,
@@ -45,25 +47,25 @@ function buildAssignedEntries(
 }
 
 function implausibleDescription(
-  implausibleItems: Pick<CrsItem, "id" | "name">[],
+  implausibleItems: Pick<CrsItem, "data_id" | "name">[],
   crs: CRSList | undefined,
   itemId: string | undefined,
 ): string {
   const mismatch = `do not match ${formatCrsCode(crs)}. Georeference the data?`;
   // Named when linked data were assigned too: the user must know which one to align
-  return implausibleItems.length === 1 && implausibleItems[0]?.id === itemId
+  return implausibleItems.length === 1 && implausibleItems[0]?.data_id === itemId
     ? `These coordinates ${mismatch}`
     : `${implausibleItems.map(({ name }) => name).join(", ")}: these coordinates ${mismatch}`;
 }
 
 type ImplausibleWarning = (
-  implausibleItems: Pick<CrsItem, "id" | "name">[],
+  implausibleItems: Pick<CrsItem, "data_id" | "name">[],
   crs: CRSList | undefined,
   itemId: string | undefined,
 ) => void;
 
 function useImplausibleWarning(
-  openAlignment: (target: Pick<CrsItem, "id">) => Promise<void>,
+  openAlignment: (target: Pick<CrsItem, "data_id">) => Promise<void>,
 ): ImplausibleWarning {
   const feedbackStore = useFeedbackStore();
 

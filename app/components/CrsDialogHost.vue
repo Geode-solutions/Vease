@@ -16,18 +16,18 @@ crsStore.enableCrsEdit();
 
 watch(
   () => crsStore.crsEditRequest,
-  async (id) => {
-    if (id === undefined) {
+  async (dataId) => {
+    if (dataId === undefined) {
       return;
     }
     try {
-      await dataStore.item(id);
+      await dataStore.item(dataId);
     } catch {
       // The data was deleted since the edit was offered (e.g. by a snackbar)
       crsStore.clearCrsEditRequest();
       return;
     }
-    itemId.value = id;
+    itemId.value = dataId;
     show.value = true;
   },
 );

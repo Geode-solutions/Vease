@@ -1,4 +1,5 @@
 // Third party imports
+import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 import { getPresetByName } from "@ogw_front/utils/colormap";
 
@@ -23,7 +24,6 @@ import {
   requestedTimeStepIndex,
   seriesTimeStepIndex,
 } from "@vease/utils/controller/handlers/style/time_step";
-import type { AttributeInput } from "@vease/utils/controller/attribute_setter_types";
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { ControllerHandler } from "@vease/utils/controller/index";
 import { findAttribute } from "@vease/utils/controller/attributes";
@@ -69,10 +69,10 @@ function attributeInput(
   request: ColorByAttributeParams,
   attribute: BackAttribute,
   colorMap: string,
-): AttributeInput {
+): ValidAttributeInput {
   const item = resolveItem(request.item, attribute);
   const range = getAttributeRange(attribute, item);
-  const input: AttributeInput = {
+  const input: ValidAttributeInput = {
     name: attribute.attribute_name,
     item,
     minimum: request.minimum ?? range.min,
@@ -153,8 +153,8 @@ function attributeCommand(
       ids: colored,
       results,
       failed,
-    } = await forEachData(ids, async (id) => {
-      const item = await getDataItem(id);
+    } = await forEachData(ids, async (dataId) => {
+      const item = await getDataItem(dataId);
       if (isModelComponentTarget(target)) {
         checkModel(item);
       } else {
@@ -162,7 +162,7 @@ function attributeCommand(
       }
       const coloring = await colorItemByAttribute({
         ...request,
-        id,
+        id: dataId,
         attribute: name,
         target,
         location,

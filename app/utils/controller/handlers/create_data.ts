@@ -1,4 +1,5 @@
 // Third party imports
+import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 import type { NewDataItem } from "@ogw_front/stores/data";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { importItem } from "@ogw_front/utils/import_workflow";
@@ -56,8 +57,8 @@ async function createData(params: unknown): Promise<{ id: string; name: string }
       ...additionalParams(kind, points.length, closed),
     },
   });
-  // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem.
-  const created = item as NewDataItem;
+  // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem, except for its legacy id.
+  const created = item as LegacyDataId<NewDataItem>;
   await importItem(created);
   await getHybridViewerStore().remoteRender();
   return { id: created.id, name: created.name ?? name };

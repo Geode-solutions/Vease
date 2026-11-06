@@ -21,7 +21,7 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
 
 const ID = "data-1";
 const ITEM: DataItem = {
-  id: ID,
+  data_id: ID,
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",

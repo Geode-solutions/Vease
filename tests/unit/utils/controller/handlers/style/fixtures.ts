@@ -30,7 +30,7 @@ interface Stores {
 }
 
 const MESH: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -41,14 +41,14 @@ const MESH: DataItem = {
 
 const MODEL: DataItem = {
   ...MESH,
-  id: "model-1",
+  data_id: "model-1",
   geode_id: "geode-2",
   name: "brep",
   viewer_type: "model",
   geode_object_type: "BRep",
 };
 
-const OTHER_MESH: DataItem = { ...MESH, id: "mesh-2", geode_id: "geode-3", name: "other" };
+const OTHER_MESH: DataItem = { ...MESH, data_id: "mesh-2", geode_id: "geode-3", name: "other" };
 
 const ORANGE_HEX = "#ff8800";
 const ORANGE = { red: 255, green: 136, blue: 0, alpha: 1 };
@@ -123,7 +123,7 @@ function setupStores(stores: Stores): void {
     stores.dataStore as unknown as ReturnType<typeof useDataStore>,
   );
   /* oxlint-enable no-unsafe-type-assertion */
-  const items = new Map([MESH, OTHER_MESH, MODEL].map((item) => [item.id, item]));
+  const items = new Map([MESH, OTHER_MESH, MODEL].map((item) => [item.data_id, item]));
   stores.dataStore.item.mockReset().mockImplementation(async (id) => {
     await Promise.resolve();
     const item = items.get(id);

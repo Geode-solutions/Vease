@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId, GeodeIdentified } from "@ogw_front/types/identifiers";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
@@ -31,8 +32,7 @@ interface AttributeSummary {
   time_steps?: number[];
 }
 
-interface ComponentSummary {
-  geode_id: string;
+interface ComponentSummary extends GeodeIdentified {
   name: string;
   type: string;
 }
@@ -71,17 +71,17 @@ function summarizeSources(sourceAttributes: SourceAttributes[]): AttributeSummar
   );
 }
 
-async function describeMesh({ id, geode_object_type }: DataItem): Promise<TargetsDescription> {
-  const targets = meshTargetsOf(id);
+async function describeMesh({ data_id, geode_object_type }: DataItem): Promise<TargetsDescription> {
+  const targets = meshTargetsOf(data_id);
   const sourceAttributes = await fetchSourceAttributes(
-    id,
+    data_id,
     meshAttributeSources(geode_object_type, targets),
   );
   return { targets, attributes: summarizeSources(sourceAttributes) };
 }
 
-async function describeModel(id: string): Promise<TargetsDescription> {
-  const meshComponents = await useDataStore().getAllMeshComponents(id);
+async function describeModel(modelId: DataId): Promise<TargetsDescription> {
+  const meshComponents = await useDataStore().getAllMeshComponents(modelId);
   const components = meshComponents.map(({ geode_id, title, category }) => ({
     geode_id,
     name: title,
@@ -94,7 +94,7 @@ async function describeModel(id: string): Promise<TargetsDescription> {
       .map(({ geode_id }) => geode_id),
   })).filter(({ geodeIds }) => geodeIds.length > 0);
   const sourceAttributes = await fetchSourceAttributes(
-    id,
+    modelId,
     componentTargets.flatMap(({ target, geodeIds }) => modelAttributeSources(target, geodeIds)),
   );
   return {
@@ -109,18 +109,18 @@ async function dataDetails(params: unknown): Promise<unknown> {
     throw new ControllerError("data-details expects the id of a loaded data");
   }
   const item = await getDataItem(params.id);
-  const { id, name, geode_object_type, viewer_type } = item;
+  const { data_id, name, geode_object_type, viewer_type } = item;
   let description = await describeMesh(item);
   if (viewer_type === "model") {
-    description = await describeModel(id);
+    description = await describeModel(data_id);
   }
   return {
-    id,
+    id: data_id,
     name,
     geode_object_type,
     viewer_type,
     ...description,
-    style: getDataStyleStore().getStyle(id),
+    style: getDataStyleStore().getStyle(data_id),
   };
 }
 

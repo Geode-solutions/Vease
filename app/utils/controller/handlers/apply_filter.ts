@@ -118,8 +118,8 @@ async function threshold(params: ApplyFilterParams, store: HybridViewerStore): P
   checkRange(minimum, maximum);
   const location = params.location === undefined ? undefined : THRESHOLD_LOCATIONS[params.location];
   const founds = await Promise.all(
-    ids.map(async (id) => {
-      const found = await findAttribute({ id, name, location });
+    ids.map(async (dataId) => {
+      const found = await findAttribute({ id: dataId, name, location });
       return found;
     }),
   );
@@ -147,8 +147,8 @@ function filterCommand(filter: FilterHandler): (params: unknown) => Promise<Appl
     // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
     const request = params as ApplyFilterParams;
     await Promise.all(
-      request.ids.map(async (id) => {
-        await getDataItem(id);
+      request.ids.map(async (dataId) => {
+        await getDataItem(dataId);
       }),
     );
     const applied = await filter(request, getHybridViewerStore());

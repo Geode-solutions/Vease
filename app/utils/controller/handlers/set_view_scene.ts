@@ -53,4 +53,5 @@ async function applyScene(params: SceneSettings): Promise<Record<string, unknown
   return settings;
 }
 
+export type { SceneSettings };
 export { applyScene };

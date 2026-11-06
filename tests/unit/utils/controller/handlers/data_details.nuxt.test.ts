@@ -26,7 +26,7 @@ const backSchemas = back_schemas.opengeodeweb_back;
 const DEPTH_MAX = 10;
 
 const MESH: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -36,7 +36,7 @@ const MESH: DataItem = {
 };
 
 const MODEL: DataItem = {
-  id: "model-1",
+  data_id: "model-1",
   geode_id: "geode-2",
   name: "brep",
   viewer_type: "model",
@@ -92,7 +92,7 @@ describe("the data-details controller handler", () => {
   });
 
   test("describes a mesh with its targets and attributes", async () => {
-    const style = { id: MESH.id, visibility: true, points: { size: 2 }, polygons: {} };
+    const style = { id: MESH.data_id, visibility: true, points: { size: 2 }, polygons: {} };
     item.mockResolvedValue(MESH);
     getStyle.mockReturnValue(style);
     answerAttributes({
@@ -101,10 +101,10 @@ describe("the data-details controller handler", () => {
       ],
     });
 
-    const details = await controllerHandlers["data-details"]?.({ id: MESH.id });
+    const details = await controllerHandlers["data-details"]?.({ id: MESH.data_id });
 
     expect(details).toMatchObject({
-      id: MESH.id,
+      id: MESH.data_id,
       name: "surface",
       geode_object_type: "PolygonalSurface3D",
       viewer_type: "mesh",
@@ -128,10 +128,10 @@ describe("the data-details controller handler", () => {
 
   test("skips the attribute kinds the mesh type does not have", async () => {
     item.mockResolvedValue(MESH);
-    getStyle.mockReturnValue({ id: MESH.id, points: {}, edges: {}, polygons: {} });
+    getStyle.mockReturnValue({ id: MESH.data_id, points: {}, edges: {}, polygons: {} });
     answerAttributes({});
 
-    const details = await controllerHandlers["data-details"]?.({ id: MESH.id });
+    const details = await controllerHandlers["data-details"]?.({ id: MESH.data_id });
 
     expect(details).toHaveProperty("targets", ["points", "edges", "polygons"]);
     expect(requestedSchemaIds()).not.toContain(backSchemas.edge_attribute_names.$id);
@@ -140,7 +140,7 @@ describe("the data-details controller handler", () => {
   test("omits the attribute kinds whose request fails", async () => {
     const warn = vi.spyOn(consola, "warn").mockReturnValue(undefined);
     item.mockResolvedValue(MESH);
-    getStyle.mockReturnValue({ id: MESH.id, polygons: {} });
+    getStyle.mockReturnValue({ id: MESH.data_id, polygons: {} });
     // Polygons request their polygon attributes first, then their vertex ones
     request
       .mockRejectedValueOnce(
@@ -152,7 +152,7 @@ describe("the data-details controller handler", () => {
         attributes: [{ attribute_name: "height", nb_items: 1, min_value: 0, max_value: 1 }],
       });
 
-    const details = await controllerHandlers["data-details"]?.({ id: MESH.id });
+    const details = await controllerHandlers["data-details"]?.({ id: MESH.data_id });
 
     expect(details).toHaveProperty("attributes", [
       { target: "polygons", location: "vertex", name: "height", nb_items: 1, min: 0, max: 1 },
@@ -165,7 +165,7 @@ describe("the data-details controller handler", () => {
 
   test("lists model components grouped by type", async () => {
     item.mockResolvedValue(MODEL);
-    getStyle.mockReturnValue({ id: MODEL.id });
+    getStyle.mockReturnValue({ id: MODEL.data_id });
     getAllMeshComponents.mockResolvedValue(MODEL_COMPONENTS);
     answerAttributes({
       [backSchemas.model_component_polygon_attribute_names.$id]: [
@@ -179,7 +179,7 @@ describe("the data-details controller handler", () => {
       ],
     });
 
-    const details = await controllerHandlers["data-details"]?.({ id: MODEL.id });
+    const details = await controllerHandlers["data-details"]?.({ id: MODEL.data_id });
 
     expect(details).toMatchObject({
       targets: ["points", "edges", "corners", "surfaces"],
@@ -202,11 +202,11 @@ describe("the data-details controller handler", () => {
     });
     expect(request).toHaveBeenCalledWith({
       schema: backSchemas.model_component_polygon_attribute_names,
-      params: { id: MODEL.id, component_ids: ["s1", "s2"] },
+      params: { id: MODEL.data_id, component_ids: ["s1", "s2"] },
     });
     expect(request).toHaveBeenCalledWith({
       schema: backSchemas.model_component_vertex_attribute_names,
-      params: { id: MODEL.id, component_ids: ["c1"] },
+      params: { id: MODEL.data_id, component_ids: ["c1"] },
     });
   });
 
@@ -223,6 +223,6 @@ describe("the data-details controller handler", () => {
     const failure = new Error("database closed");
     item.mockRejectedValue(failure);
 
-    await expect(controllerHandlers["data-details"]?.({ id: MESH.id })).rejects.toBe(failure);
+    await expect(controllerHandlers["data-details"]?.({ id: MESH.data_id })).rejects.toBe(failure);
   });
 });

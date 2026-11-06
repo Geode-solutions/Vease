@@ -70,7 +70,7 @@ async function apply(): Promise<void> {
     feedbackStore.add_success(successMessage(1 + linkedItems.length));
     // Typed in the target CRS: the data then join the project CRS
     await followProject(
-      [item, ...linkedItems].map(({ id, name }) => ({ id, name, crs })),
+      [item, ...linkedItems].map(({ data_id, name }) => ({ data_id, name, crs })),
       projectCrs,
     );
     close();
@@ -171,7 +171,7 @@ async function apply(): Promise<void> {
       </div>
       <CrsSelector
         v-if="UIStore.crsAlignItem"
-        :key="UIStore.crsAlignItem.id"
+        :key="UIStore.crsAlignItem.data_id"
         v-model="targetCrs"
         compact
         :geode-object-type="UIStore.crsAlignItem.geode_object_type"
