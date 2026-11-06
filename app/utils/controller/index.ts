@@ -3,6 +3,7 @@ import { consola } from "consola";
 
 // Local imports
 import type { ControllerCommand, ControllerReply } from "@vease_server/utils/command_bus";
+import { appServerUrl } from "@vease/utils/app_server_url";
 import { commandHandlers } from "@vease/utils/controller/handlers/index";
 import { errorMessage } from "@vease/utils/controller/errors";
 
@@ -67,7 +68,7 @@ async function runCommand({
 async function processCommand(message: QueuedCommand): Promise<void> {
   const reply = await runCommand(message);
   try {
-    await $fetch(COMMAND_REPLY_URL, { method: "POST", body: reply });
+    await $fetch(appServerUrl(COMMAND_REPLY_URL), { method: "POST", body: reply });
   } catch (error) {
     consola.error("[CONTROLLER] failed to post reply", message.requestId, error);
   }
@@ -128,7 +129,7 @@ function handleCommandMessage(rawData: string): void {
 // The browser retries a dropped stream by itself, but gives up for good on an error response
 function connectControllerClient(failedAttempts = 0): void {
   let attempts = failedAttempts;
-  const eventSource = new EventSource(COMMAND_STREAM_URL);
+  const eventSource = new EventSource(appServerUrl(COMMAND_STREAM_URL));
   eventSource.addEventListener("open", () => {
     attempts = 0;
   });

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { controllerHandlers } from "@vease/utils/controller/index";
 import { importProject } from "@ogw_front/composables/project_manager";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { useAppStore } from "@ogw_front/stores/app";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -16,8 +17,13 @@ vi.mock(import("@ogw_front/composables/project_manager"), () => ({
   exportProject: vi.fn<() => Promise<{ result: Blob }>>(),
 }));
 
+vi.mock(import("@ogw_front/stores/app"), () => ({
+  useAppStore: vi.fn<typeof useAppStore>(),
+}));
+
 const PROJECT_CONTENT = "PK\u0003\u0004project";
 const DOWNLOAD_URL = "/api/controller/files/download?token=import-token";
+const APP_BASE_URL = "https://session.a.run.app:443/server";
 
 async function importProjectCommand(params: Record<string, unknown>): Promise<unknown> {
   const result = await controllerHandlers["import-project"]?.(params);
@@ -35,6 +41,10 @@ function importedFile(): File {
 describe("the import-project controller handler", () => {
   beforeEach(() => {
     fetchMock.mockResolvedValue(new Blob([PROJECT_CONTENT]));
+    vi.mocked(useAppStore).mockReturnValue(
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking partial stores
+      { base_url: APP_BASE_URL } as unknown as ReturnType<typeof useAppStore>,
+    );
   });
 
   test("imports the downloaded project", async () => {
@@ -42,7 +52,9 @@ describe("the import-project controller handler", () => {
       importProjectCommand({ downloadUrl: DOWNLOAD_URL, filename: "scene.vease" }),
     ).resolves.toStrictEqual({});
 
-    expect(fetchMock).toHaveBeenCalledWith(DOWNLOAD_URL, { responseType: "blob" });
+    expect(fetchMock).toHaveBeenCalledWith(`${APP_BASE_URL}${DOWNLOAD_URL}`, {
+      responseType: "blob",
+    });
     expect(importedFile().name).toBe("scene.vease");
     await expect(importedFile().text()).resolves.toBe(PROJECT_CONTENT);
   });

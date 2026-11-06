@@ -6,11 +6,18 @@ import {
   handleCommandMessage,
 } from "@vease/utils/controller/index";
 import { createError, readBody } from "h3";
+import { appServerUrl } from "@vease/utils/app_server_url";
 import { consola } from "consola";
 import { registerEndpoint } from "@nuxt/test-utils/runtime";
 
 vi.setConfig({ testTimeout: 10_000 });
 
+// RegisterEndpoint only serves relative URLs: the reply keeps its route, the stream gets the cloud app server
+vi.mock(import("@vease/utils/app_server_url"), () => ({
+  appServerUrl: vi.fn<(route: string) => string>(),
+}));
+
+const APP_BASE_URL = "https://session.a.run.app:443/server";
 const COMMAND_TIMEOUT_MS = 60_000;
 const BROWSER_NOW = 1_000_000;
 const FIRST_RETRY_MS = 1000;
@@ -84,6 +91,7 @@ describe("controller client", () => {
   beforeEach(() => {
     replyMock.mockReset();
     failNextReply = false;
+    vi.mocked(appServerUrl).mockImplementation((route) => route);
   });
 
   afterEach(() => {
@@ -105,6 +113,7 @@ describe("controller client", () => {
       ok: true,
       result: { id: "x" },
     });
+    expect(appServerUrl).toHaveBeenCalledWith("/api/controller/commands/reply");
   });
 
   test("replies with the error message when the handler throws", async () => {
@@ -278,6 +287,7 @@ describe("controller client", () => {
       vi.useFakeTimers();
       FakeEventSource.instances.length = 0;
       vi.stubGlobal("EventSource", FakeEventSource);
+      vi.mocked(appServerUrl).mockImplementation((route) => `${APP_BASE_URL}${route}`);
     });
 
     afterEach(() => {
@@ -318,7 +328,7 @@ describe("controller client", () => {
       await vi.advanceTimersByTimeAsync(FIRST_RETRY_MS);
 
       expect(FakeEventSource.instances).toHaveLength(4);
-      expect(latest().url).toBe("/api/controller/commands/stream");
+      expect(latest().url).toBe(`${APP_BASE_URL}/api/controller/commands/stream`);
     });
   });
 });
