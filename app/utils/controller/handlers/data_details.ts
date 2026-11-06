@@ -1,5 +1,6 @@
 // Third party imports
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { GeodeIdentified } from "@ogw_front/types/identifiers";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports
@@ -31,8 +32,7 @@ interface AttributeSummary {
   time_steps?: number[];
 }
 
-interface ComponentSummary {
-  geode_id: string;
+interface ComponentSummary extends GeodeIdentified {
   name: string;
   type: string;
 }
