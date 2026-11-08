@@ -3,6 +3,7 @@ import back_schemas, {
 } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { DataItem } from "@vease/types/data_item";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
@@ -20,7 +21,7 @@ interface Alignment {
   sourcePoints: CrsPoint[];
   targetPoints: CrsPoint[];
   // Data sharing the local frame of the aligned item: aligned in the same request
-  linkedItems?: Pick<DataItem, "id">[];
+  linkedItems?: Pick<DataItem, "data_id">[];
 }
 
 // Converting or aligning rewrites the data coordinates: the viewer object is reloaded and the camera moved to it
@@ -31,15 +32,15 @@ function useCrs() {
   const dataStore = useDataStore();
 
   async function refresh(
-    item: Pick<DataItem, "id">,
+    item: Pick<DataItem, "data_id">,
     { binary_light_viewable, crs }: { binary_light_viewable?: string; crs?: CRSList },
     focus = true,
   ): Promise<void> {
     // The local actor is rebuilt from the stored light viewable: store the moved one first
-    await dataStore.updateItem(item.id, { binary_light_viewable, crs });
-    await reloadObject(item.id, { rebuildActor: true });
+    await dataStore.updateItem(item.data_id, { binary_light_viewable, crs });
+    await reloadObject(item.data_id, { rebuildActor: true });
     if (focus) {
-      await hybridViewerStore.focusCameraOnObject(item.id);
+      await hybridViewerStore.focusCameraOnObject(item.data_id);
     }
   }
 
@@ -49,22 +50,22 @@ function useCrs() {
   ): Promise<void> {
     for (const entry of linked ?? []) {
       // oxlint-disable-next-line no-await-in-loop
-      await refresh({ id: entry.id }, entry, false);
+      await refresh({ data_id: entry.id }, entry, false);
     }
   }
 
   async function convertCrs(
-    item: Pick<DataItem, "id">,
+    item: Pick<DataItem, "data_id">,
     crs: CRSList,
     {
       focus = true,
       linkedItems = [],
-    }: { focus?: boolean; linkedItems?: Pick<DataItem, "id">[] } = {},
+    }: { focus?: boolean; linkedItems?: Pick<DataItem, "data_id">[] } = {},
   ): Promise<void> {
-    const linkedIds = linkedItems.map(({ id }) => id);
+    const linkedIds = linkedItems.map(({ data_id }) => data_id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.convert_geographic,
-      params: { id: item.id, ...(linkedIds.length > 0 && { linked_ids: linkedIds }), ...crs },
+      params: { id: item.data_id, ...(linkedIds.length > 0 && { linked_ids: linkedIds }), ...crs },
     });
     await refreshLinked(response.linked);
     await refresh(item, response, focus);
@@ -75,11 +76,11 @@ function useCrs() {
     crs: CRSList,
     { sourcePoints, targetPoints, linkedItems = [] }: Alignment,
   ): Promise<void> {
-    const linkedIds = linkedItems.map(({ id }) => id);
+    const linkedIds = linkedItems.map(({ data_id }) => data_id);
     const response = await backStore.request({
       schema: back_schemas.opengeodeweb_back.crs.align,
       params: {
-        id: item.id,
+        id: item.data_id,
         source_points: sourcePoints,
         target_points: targetPoints,
         ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
@@ -107,7 +108,7 @@ function useCrs() {
   // The project may already have followed them: callers pass the project CRS taken before.
   // A refused conversion keeps their CRS and the project one: the warning points to their dialog
   async function followProject(
-    entries: { id: string; name: string; crs: CRSList }[],
+    entries: { data_id: DataId; name: string; crs: CRSList }[],
     project: CRSList | undefined = useCrsStore().projectCrs,
   ): Promise<void> {
     const crsStore = useCrsStore();
@@ -129,7 +130,7 @@ function useCrs() {
         useFeedbackStore().add_warning(warning, {
           label: "Edit CRS",
           onClick: (): void => {
-            crsStore.requestCrsEdit(first.id);
+            crsStore.requestCrsEdit(first.data_id);
           },
         });
       } else {

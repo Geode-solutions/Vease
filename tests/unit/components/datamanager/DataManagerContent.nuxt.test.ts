@@ -63,7 +63,7 @@ vi.mock(import("@vease/components/datamanager/RenameDialog.vue"), () => ({
 }));
 
 const mockItem1: DataItem = {
-  id: "item-1",
+  data_id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Item 1",
   geode_object_type: "BRep",
@@ -73,7 +73,7 @@ const mockItem1: DataItem = {
 };
 
 const mockItem2: DataItem = {
-  id: "item-2",
+  data_id: "item-2",
   geode_id: "00000000-0000-0000-0000-000000000002",
   name: "Item 2",
   geode_object_type: "TriangulatedSurface3D",
@@ -104,7 +104,7 @@ describe("data manager content component", () => {
     vi.spyOn(dataStore, "refAllItems").mockReturnValue(items);
     vi.spyOn(dataStore, "item").mockImplementation(async (id: string) => {
       await Promise.resolve();
-      return assertDefined(items.value.find((item) => item.id === id));
+      return assertDefined(items.value.find((item) => item.data_id === id));
     });
     // Read by the crs store (project crs, warnings)
     vi.spyOn(dataStore, "refCrsItems").mockReturnValue(ref<CrsItem[]>([mockItem1, mockItem2]));
@@ -166,7 +166,7 @@ describe("data manager content component", () => {
     expect(mockAddItem).toHaveBeenCalledWith(
       mockItem2.geode_object_type,
       mockItem2.name,
-      mockItem2.id,
+      mockItem2.data_id,
       mockItem2.geode_id,
       mockItem2.viewer_type,
     );
@@ -195,10 +195,10 @@ describe("data manager content component", () => {
     const wrapper = mountWithPlugins(DataManagerContent);
 
     const dataTable = wrapper.findComponent(DataTable);
-    dataTable.vm.$emit("crs", mockItem1.id);
+    dataTable.vm.$emit("crs", mockItem1.data_id);
     await flushPromises();
 
-    expect(useCrsStore().crsEditRequest).toBe(mockItem1.id);
+    expect(useCrsStore().crsEditRequest).toBe(mockItem1.data_id);
   });
 
   test("opens delete dialog and executes delete", async () => {

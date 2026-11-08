@@ -23,7 +23,7 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
 }));
 
 const MODEL: DataItem = {
-  id: "model-1",
+  data_id: "model-1",
   geode_id: "geode-1",
   name: "brep",
   viewer_type: "model",
@@ -32,7 +32,7 @@ const MODEL: DataItem = {
   created_at: "2026-10-09",
 };
 
-const MESH: DataItem = { ...MODEL, id: "mesh-1", name: "surface", viewer_type: "mesh" };
+const MESH: DataItem = { ...MODEL, data_id: "mesh-1", name: "surface", viewer_type: "mesh" };
 
 const ONCE = 1;
 const Z_SCALING = 3;
@@ -106,25 +106,25 @@ describe("the view controller handlers", () => {
   });
 
   test("focus focuses the camera on the whole data", async () => {
-    await view("focus-view", { id: MODEL.id });
+    await view("focus-view", { id: MODEL.data_id });
 
-    expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.id, []);
+    expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.data_id, []);
   });
 
   test("focus converts component geode ids to viewer ids", async () => {
-    await view("focus-view", { id: MODEL.id, componentIds: ["block-a", "block-b"] });
+    await view("focus-view", { id: MODEL.data_id, componentIds: ["block-a", "block-b"] });
 
-    expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.id, [
+    expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.data_id, [
       "block-a",
       "block-b",
     ]);
-    expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.id, VIEWER_IDS);
+    expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(MODEL.data_id, VIEWER_IDS);
   });
 
   test("focus accepts components of different types", async () => {
-    await view("focus-view", { id: MODEL.id, componentIds: ["surface-a", "block-b"] });
+    await view("focus-view", { id: MODEL.data_id, componentIds: ["surface-a", "block-b"] });
 
-    expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.id, [
+    expect(dataStore.getMeshComponentsViewerIds).toHaveBeenCalledWith(MODEL.data_id, [
       "surface-a",
       "block-b",
     ]);
@@ -132,9 +132,9 @@ describe("the view controller handlers", () => {
 
   test("focus rejects component ids the model does not have", async () => {
     await expect(
-      view("focus-view", { id: MODEL.id, componentIds: ["block-a", "nope"] }),
+      view("focus-view", { id: MODEL.data_id, componentIds: ["block-a", "nope"] }),
     ).rejects.toThrow(
-      `"${MODEL.name}" has no component with geode id nope; read vease://data/${MODEL.id} for its components`,
+      `"${MODEL.name}" has no component with geode id nope; read vease://data/${MODEL.data_id} for its components`,
     );
     expect(hybridViewerStore.focusCameraOnObject).not.toHaveBeenCalled();
   });
@@ -148,7 +148,7 @@ describe("the view controller handlers", () => {
   test("focus rejects componentIds on a mesh", async () => {
     dataStore.item.mockResolvedValue(MESH);
 
-    await expect(view("focus-view", { id: MESH.id, componentIds: ["a"] })).rejects.toThrow(
+    await expect(view("focus-view", { id: MESH.data_id, componentIds: ["a"] })).rejects.toThrow(
       "componentIds only applies to models",
     );
   });

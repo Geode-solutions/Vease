@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { DataItem } from "@ogw_front/stores/data";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
@@ -20,7 +21,7 @@ import { setDataVisibility } from "@vease/utils/data_actions";
 
 type ComponentSetter<Value> = (
   store: StyleStore,
-  id: string,
+  modelId: DataId,
   componentIds: string[],
   value: Value,
 ) => Promise<unknown>;
@@ -34,24 +35,34 @@ interface ModelComponentSetters {
 /* oxlint-disable typescript/promise-function-async -- thin forwards to the store setters, which are already async */
 const MODEL_COMPONENT_SETTERS: Record<ModelComponentTarget, ModelComponentSetters> = {
   corners: {
-    visibility: (store, id, ids, value) => store.setModelCornersVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelCornersColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelCornersActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) =>
+      store.setModelCornersVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelCornersColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelCornersActiveColoring(modelId, ids, value),
   },
   lines: {
-    visibility: (store, id, ids, value) => store.setModelLinesVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelLinesColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelLinesActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) => store.setModelLinesVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelLinesColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelLinesActiveColoring(modelId, ids, value),
   },
   surfaces: {
-    visibility: (store, id, ids, value) => store.setModelSurfacesVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelSurfacesColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelSurfacesActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) =>
+      store.setModelSurfacesVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelSurfacesColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelSurfacesActiveColoring(modelId, ids, value),
   },
   blocks: {
-    visibility: (store, id, ids, value) => store.setModelBlocksVisibility(id, ids, value),
-    color: (store, id, ids, value) => store.setModelBlocksColor(id, ids, value, "constant"),
-    coloring: (store, id, ids, value) => store.setModelBlocksActiveColoring(id, ids, value),
+    visibility: (store, modelId, ids, value) => store.setModelBlocksVisibility(modelId, ids, value),
+    color: (store, modelId, ids, value) =>
+      store.setModelBlocksColor(modelId, ids, value, "constant"),
+    coloring: (store, modelId, ids, value) =>
+      store.setModelBlocksActiveColoring(modelId, ids, value),
   },
 };
 /* oxlint-enable typescript/promise-function-async */
@@ -79,19 +90,19 @@ function componentCommands(target: ModelComponentTarget): Record<string, Control
     [`style/model/${target}/visibility`]: styleCommand(
       async (store, item, params: ComponentParams & { visibility: boolean }) => {
         const components = await targetComponents(item, target, params);
-        await setters.visibility(store, item.id, components, params.visibility);
+        await setters.visibility(store, item.data_id, components, params.visibility);
       },
     ),
     [`style/model/${target}/color`]: styleCommand(
       async (store, item, params: ComponentParams & { color: string }) => {
         const components = await targetComponents(item, target, params);
-        await setters.color(store, item.id, components, hexToRgba(params.color));
+        await setters.color(store, item.data_id, components, hexToRgba(params.color));
       },
     ),
     [`style/model/${target}/coloring`]: styleCommand(
       async (store, item, params: ComponentParams & { coloring: "constant" | "random" }) => {
         const components = await targetComponents(item, target, params);
-        await setters.coloring(store, item.id, components, params.coloring);
+        await setters.coloring(store, item.data_id, components, params.coloring);
       },
     ),
   };
@@ -102,23 +113,23 @@ const MODEL_STYLE_COMMANDS: Record<string, ControllerHandler> = {
   "style/model/visibility": styleCommand(
     async (_store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await setDataVisibility(item.id, visibility);
+      await setDataVisibility(item.data_id, visibility);
     },
   ),
   "style/model/points/visibility": styleCommand(
     async (store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await store.setModelPointsVisibility(item.id, visibility);
+      await store.setModelPointsVisibility(item.data_id, visibility);
     },
   ),
   "style/model/points/size": styleCommand(async (store, item, { size }: { size: number }) => {
     checkModel(item);
-    await store.setModelPointsSize(item.id, size);
+    await store.setModelPointsSize(item.data_id, size);
   }),
   "style/model/edges/visibility": styleCommand(
     async (store, item, { visibility }: { visibility: boolean }) => {
       checkModel(item);
-      await store.setModelEdgesVisibility(item.id, visibility);
+      await store.setModelEdgesVisibility(item.data_id, visibility);
     },
   ),
   ...Object.fromEntries(

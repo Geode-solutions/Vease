@@ -11,9 +11,9 @@ interface DeleteDataParams {
 async function deleteData(params: unknown): Promise<{ ids: string[]; failed?: FailedData[] }> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const { ids } = params as DeleteDataParams;
-  const { ids: deleted, failed } = await forEachData(ids, async (id) => {
-    await getDataItem(id);
-    await deleteDataItem(id);
+  const { ids: deleted, failed } = await forEachData(ids, async (dataId) => {
+    await getDataItem(dataId);
+    await deleteDataItem(dataId);
   });
   await getHybridViewerStore().remoteRender();
   return withFailed({ ids: deleted }, failed);

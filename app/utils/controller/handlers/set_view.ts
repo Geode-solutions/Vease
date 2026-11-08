@@ -9,17 +9,10 @@ import {
   type CameraPositionRecord,
   listCameraPositions,
 } from "@vease/utils/controller/handlers/viewer_state";
+import { type SceneSettings, applyScene } from "@vease/utils/controller/handlers/set_view_scene";
 import { getDataItem, resolveComponentIds } from "@vease/utils/controller/targets";
 import { ControllerError } from "@vease/utils/controller/errors";
-import { applyScene } from "@vease/utils/controller/handlers/set_view_scene";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
-
-interface SceneParams {
-  zScaling?: number;
-  backgroundColor?: string;
-  axes?: boolean;
-  grid?: boolean;
-}
 
 type Applied = Record<string, unknown>;
 
@@ -80,7 +73,7 @@ async function restore({ positionId }: { positionId: number }): Promise<Applied>
   return { positionId, name: position.name };
 }
 
-async function scene(params: SceneParams): Promise<Applied> {
+async function scene(params: SceneSettings): Promise<Applied> {
   const { zScaling, backgroundColor, axes, grid } = params;
   const applied = await applyScene({ zScaling, backgroundColor, axes, grid });
   return applied;

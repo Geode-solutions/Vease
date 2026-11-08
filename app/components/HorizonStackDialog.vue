@@ -5,13 +5,12 @@ import {
   stratigraphicColumn,
 } from "@vease/utils/controller/handlers/horizon_stack";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import type { TreeNode } from "@ogw_front/types/tree";
 import { consola } from "consola";
 import { useEventListener } from "@vueuse/core";
 
-interface TreeItem {
-  id?: string;
+interface TreeItem extends Partial<TreeNode> {
   name?: string;
-  title?: string;
 }
 
 const isOpen = ref(false);

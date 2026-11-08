@@ -1,5 +1,6 @@
 // Third party imports
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { DataId } from "@ogw_front/types/identifiers";
 import { MESH_ELEMENT_KINDS as ELEMENT_KIND_BY_MESH_TYPE } from "@ogw_front/utils/attributes";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 
@@ -79,8 +80,8 @@ function isMeshElement(key: string): key is MeshElement {
   return Object.hasOwn(MESH_ELEMENT_ATTRIBUTE_KINDS, key);
 }
 
-function meshTargetsOf(id: string): MeshElement[] {
-  return Object.keys(getDataStyleStore().getStyle(id)).filter((key) => isMeshElement(key));
+function meshTargetsOf(meshId: DataId): MeshElement[] {
+  return Object.keys(getDataStyleStore().getStyle(meshId)).filter((key) => isMeshElement(key));
 }
 
 // The back rejects an element kind the mesh type does not have (e.g. edge attributes of a surface)
@@ -92,7 +93,7 @@ function meshAttributeKinds(geodeObjectType: string, target: MeshElement): Attri
 }
 
 async function modelComponentGeodeIds(
-  modelId: string,
+  modelId: DataId,
   target: ModelComponentTarget,
 ): Promise<string[]> {
   const geodeIds = await useDataStore().getMeshComponentGeodeIds(
@@ -114,7 +115,7 @@ async function resolveComponentIds(
   }
   const knownIds = await Promise.all(
     targets.map(async (component) => {
-      const ids = await modelComponentGeodeIds(item.id, component);
+      const ids = await modelComponentGeodeIds(item.data_id, component);
       return ids;
     }),
   );
@@ -128,7 +129,7 @@ async function resolveComponentIds(
   const unknownIds = componentIds.filter((componentId) => !geodeIds.includes(componentId));
   if (unknownIds.length > 0) {
     throw new ControllerError(
-      `"${item.name}" has no ${target ?? "component"} with geode id ${unknownIds.join(", ")}; read vease://data/${item.id} for its components`,
+      `"${item.name}" has no ${target ?? "component"} with geode id ${unknownIds.join(", ")}; read vease://data/${item.data_id} for its components`,
     );
   }
   return componentIds;
@@ -141,12 +142,14 @@ function checkComponentIdsOwner(ids: string[], componentIds: string[] | undefine
   }
 }
 
-async function getDataItem(id: string): Promise<DataItem> {
+async function getDataItem(dataId: DataId): Promise<DataItem> {
   try {
-    return await useDataStore().item(id);
+    return await useDataStore().item(dataId);
   } catch (error) {
-    if (error instanceof Error && error.message === `Item not found: ${id}`) {
-      throw new ControllerError(`No data with id "${id}"; read vease://data for the loaded data`);
+    if (error instanceof Error && error.message === `Item not found: ${dataId}`) {
+      throw new ControllerError(
+        `No data with id "${dataId}"; read vease://data for the loaded data`,
+      );
     }
     throw error;
   }
@@ -162,7 +165,7 @@ function hasAttributes(response: unknown): response is { attributes: BackAttribu
 }
 
 async function fetchAttributes(
-  id: string,
+  dataId: DataId,
   kind: AttributeKind,
   componentIds?: string[],
 ): Promise<BackAttribute[]> {
@@ -173,7 +176,7 @@ async function fetchAttributes(
   if (schema === undefined) {
     throw new ControllerError(`Model components have no ${kind} attributes`);
   }
-  const params: { id: string; component_ids?: string[] } = { id };
+  const params: { id: string; component_ids?: string[] } = { id: dataId };
   if (componentIds !== undefined) {
     params.component_ids = componentIds;
   }

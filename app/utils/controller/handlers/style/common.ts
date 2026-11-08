@@ -18,8 +18,8 @@ function styleCommand(apply: StyleApply): ControllerHandler {
     // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
     const request = params as { ids: string[] };
     const store = getDataStyleStore();
-    const { ids, failed } = await forEachData(request.ids, async (id) => {
-      const item = await getDataItem(id);
+    const { ids, failed } = await forEachData(request.ids, async (dataId) => {
+      const item = await getDataItem(dataId);
       // oxlint-disable-next-line no-unsafe-type-assertion -- the apply of a command takes its route params
       await apply(store, item, request as never);
     });
@@ -32,7 +32,7 @@ function checkMesh(item: DataItem, element?: MeshElement): void {
   if (item.viewer_type === "model") {
     throw new ControllerError(`"${item.name}" is a model; use the style/model routes`);
   }
-  const available = meshTargetsOf(item.id);
+  const available = meshTargetsOf(item.data_id);
   if (element !== undefined && !available.includes(element)) {
     throw new ControllerError(
       `"${element}" is not available on "${item.name}"; available: ${available.join(", ")}`,

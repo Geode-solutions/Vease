@@ -22,7 +22,7 @@ const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
 
 function dataItem(id: string, created_at: string, crs?: typeof LAMBERT): DataItem {
   // oxlint-disable-next-line no-unsafe-type-assertion -- minimal item, only fields read by useProjectCrs.
-  return { id, name: id, created_at, ...(crs !== undefined && { crs }) } as DataItem;
+  return { data_id: id, name: id, created_at, ...(crs !== undefined && { crs }) } as DataItem;
 }
 
 function setItems(items: DataItem[]): void {
@@ -67,7 +67,7 @@ describe("useProjectCrs composable", () => {
     ]);
     await useProjectCrs().harmonizeImportedCrs(["new"]);
     expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ id: "new" }),
+      expect.objectContaining({ data_id: "new" }),
       LAMBERT,
       { focus: false },
     );
@@ -79,7 +79,7 @@ describe("useProjectCrs composable", () => {
     setItems([dataItem("new", "1", UTM)]);
     await useProjectCrs().harmonizeImportedCrs(["new"], LAMBERT);
     expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ id: "new" }),
+      expect.objectContaining({ data_id: "new" }),
       LAMBERT,
       { focus: false },
     );
@@ -91,7 +91,7 @@ describe("useProjectCrs composable", () => {
     setItems([dataItem("older", "0", LAMBERT), dataItem("new", "1", LAMBERT)]);
     await useProjectCrs().harmonizeImportedCrs(["new"]);
     expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ id: "new" }),
+      expect.objectContaining({ data_id: "new" }),
       UTM,
       { focus: false },
     );
@@ -101,7 +101,7 @@ describe("useProjectCrs composable", () => {
     setItems([dataItem("b", "2", UTM), dataItem("a", "1", LAMBERT)]);
     await useProjectCrs().harmonizeImportedCrs(["a", "b"]);
     expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ id: "b" }),
+      expect.objectContaining({ data_id: "b" }),
       LAMBERT,
       { focus: false },
     );
@@ -181,7 +181,7 @@ describe("useProjectCrs composable", () => {
     const second = harmonizeImportedCrs(["b"]);
     await vi.waitFor(() => {
       expect(convertCrs).toHaveBeenCalledExactlyOnceWith(
-        expect.objectContaining({ id: "b" }),
+        expect.objectContaining({ data_id: "b" }),
         LAMBERT,
         { focus: false },
       );

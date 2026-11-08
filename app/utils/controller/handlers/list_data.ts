@@ -1,19 +1,18 @@
 // Third party imports
+import type { GeodeObjectTyped, ViewerTyped } from "@ogw_front/types/identifiers";
 import { useDataStore } from "@ogw_front/stores/data";
 
-interface DataSummary {
+interface DataSummary extends GeodeObjectTyped, ViewerTyped {
   id: string;
   name: string;
-  geode_object_type: string;
-  viewer_type: string;
   visible: boolean;
 }
 
 async function listData(): Promise<{ data: DataSummary[] }> {
   const items = await useDataStore().allItems();
   return {
-    data: items.map(({ id, name, geode_object_type, viewer_type, visible }) => ({
-      id,
+    data: items.map(({ data_id, name, geode_object_type, viewer_type, visible }) => ({
+      id: data_id,
       name,
       geode_object_type,
       viewer_type,

@@ -19,7 +19,7 @@ vi.mock(import("@vease/utils/data_actions"), () => ({
 }));
 
 const ITEM: DataItem = {
-  id: "mesh-1",
+  data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
   viewer_type: "mesh",
@@ -54,10 +54,10 @@ describe("the delete-data controller handler", () => {
   });
 
   test("deletes every listed data and renders once", async () => {
-    await expect(remove({ ids: [ITEM.id, OTHER_ID] })).resolves.toStrictEqual({
-      ids: [ITEM.id, OTHER_ID],
+    await expect(remove({ ids: [ITEM.data_id, OTHER_ID] })).resolves.toStrictEqual({
+      ids: [ITEM.data_id, OTHER_ID],
     });
-    expect(deleteData).toHaveBeenCalledWith(ITEM.id);
+    expect(deleteData).toHaveBeenCalledWith(ITEM.data_id);
     expect(deleteData).toHaveBeenCalledWith(OTHER_ID);
     expect(hybridViewerStore.remoteRender).toHaveBeenCalledTimes(ONCE);
   });
@@ -67,8 +67,8 @@ describe("the delete-data controller handler", () => {
       .mockResolvedValueOnce(ITEM)
       .mockRejectedValueOnce(new Error("Item not found: nope"));
 
-    await expect(remove({ ids: [ITEM.id, "nope"] })).resolves.toStrictEqual({
-      ids: [ITEM.id],
+    await expect(remove({ ids: [ITEM.data_id, "nope"] })).resolves.toStrictEqual({
+      ids: [ITEM.data_id],
       failed: [
         { id: "nope", error: 'No data with id "nope"; read vease://data for the loaded data' },
       ],
