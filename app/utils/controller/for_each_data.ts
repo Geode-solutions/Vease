@@ -1,5 +1,6 @@
 // Local imports
 import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
+import type { DataId } from "@ogw_front/types/identifiers";
 
 interface FailedData {
   id: string;
@@ -15,22 +16,22 @@ interface EachDataResult<Result> {
 // One failing data must not undo the others: report it and keep going; fail only when none succeeded
 async function forEachData<Result>(
   ids: string[],
-  apply: (id: string, index: number) => Promise<Result>,
+  apply: (dataId: DataId, index: number) => Promise<Result>,
 ): Promise<EachDataResult<Result>> {
   const settled = await Promise.allSettled(
-    ids.map(async (id, index) => {
-      const result = await apply(id, index);
+    ids.map(async (dataId, index) => {
+      const result = await apply(dataId, index);
       return result;
     }),
   );
   const done: { id: string; result: Result }[] = [];
   const failed: FailedData[] = [];
   for (const [index, outcome] of settled.entries()) {
-    const id = ids[index] ?? "";
+    const dataId = ids[index] ?? "";
     if (outcome.status === "fulfilled") {
-      done.push({ id, result: outcome.value });
+      done.push({ id: dataId, result: outcome.value });
     } else {
-      failed.push({ id, error: errorMessage(outcome.reason) });
+      failed.push({ id: dataId, error: errorMessage(outcome.reason) });
     }
   }
   if (done.length === 0) {

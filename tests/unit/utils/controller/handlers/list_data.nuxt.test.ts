@@ -10,7 +10,7 @@ vi.mock(import("@ogw_front/stores/data"), () => ({
 
 const ITEMS: DataItem[] = [
   {
-    id: "mesh-1",
+    data_id: "mesh-1",
     geode_id: "geode-1",
     name: "surface",
     viewer_type: "mesh",
@@ -19,7 +19,7 @@ const ITEMS: DataItem[] = [
     created_at: "2026-10-08",
   },
   {
-    id: "model-1",
+    data_id: "model-1",
     geode_id: "geode-2",
     name: "brep",
     viewer_type: "model",

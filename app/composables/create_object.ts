@@ -7,6 +7,7 @@ import {
   sanitizePointInput,
 } from "./create_object_points";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 import type { NewDataItem } from "@ogw_front/stores/data";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { onKeyStroke } from "@vueuse/core";
@@ -179,8 +180,8 @@ export function useCreateObjectTool({
         ...getAdditionalPayload(validPoints.value),
       };
       const resp = await backStore.request({ schema, params });
-      // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem.
-      await importItem(resp as NewDataItem);
+      // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary; response shape matches NewDataItem, except for its legacy id.
+      await importItem(resp as LegacyDataId<NewDataItem>);
       await hybridViewerStore.remoteRender();
       handleClose();
     } finally {

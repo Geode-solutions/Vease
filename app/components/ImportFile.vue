@@ -57,12 +57,14 @@ async function import_files(): Promise<void> {
   const existingItems = await dataStore.allItems();
   // The project follows the data as they land: the reference is taken before the import
   const { projectCrs } = crsStore;
-  const existingIds = new Set(existingItems.map((item) => item.id));
+  const existingIds = new Set(existingItems.map((item) => item.data_id));
   try {
     await importWorkflow(files_to_import);
   } finally {
     const items = await dataStore.allItems();
-    const importedIds = items.map((item) => item.id).filter((id) => !existingIds.has(id));
+    const importedIds = items
+      .map((item) => item.data_id)
+      .filter((dataId) => !existingIds.has(dataId));
     // Conversions can be long: the stepper closes now, the snackbars report the outcome
     void harmonize(importedIds, projectCrs);
   }

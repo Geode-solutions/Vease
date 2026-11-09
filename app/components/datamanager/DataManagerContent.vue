@@ -45,7 +45,7 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
   if (item.visible === targetVisible) {
     return;
   }
-  await setDataVisibility(item.id, targetVisible);
+  await setDataVisibility(item.data_id, targetVisible);
   item.visible = targetVisible;
 }
 
@@ -65,7 +65,7 @@ async function toggleSelectedVisibility(): Promise<void> {
 }
 
 function focusCamera(item: DataItem): void {
-  hybridViewerStore.focusCameraOnObject(item.id);
+  hybridViewerStore.focusCameraOnObject(item.data_id);
 }
 
 function openRenameDialog(item: DataItem): void {
@@ -81,7 +81,7 @@ async function confirmRename(newName: string): Promise<void> {
   }
   try {
     item.name = newName;
-    await renameData(item.id, newName);
+    await renameData(item.data_id, newName);
     renameDialog.value = false;
     showFeedback("Renamed successfully");
   } catch (error) {
@@ -91,8 +91,8 @@ async function confirmRename(newName: string): Promise<void> {
 
 async function isolateItem(item: DataItem): Promise<void> {
   const promises = items.value.map(async (i) => {
-    const visible = i.id === item.id;
-    await setDataVisibility(i.id, visible);
+    const visible = i.data_id === item.data_id;
+    await setDataVisibility(i.data_id, visible);
     i.visible = visible;
   });
   await Promise.all(promises);
@@ -109,17 +109,17 @@ async function executeDelete(): Promise<void> {
   if (!item) {
     return;
   }
-  await deleteData(item.id);
-  selectedIds.value = selectedIds.value.filter((selected) => selected.id !== item.id);
+  await deleteData(item.data_id);
+  selectedIds.value = selectedIds.value.filter((selected) => selected.data_id !== item.data_id);
   deleteSingleDialog.value = false;
   showFeedback("Item deleted");
 }
 
 async function deleteSelected(): Promise<void> {
-  const idsToDelete = selectedIds.value.map((selected) => selected.id);
+  const idsToDelete = selectedIds.value.map((selected) => selected.data_id);
   await Promise.all(
-    idsToDelete.map(async (id) => {
-      await deleteData(id);
+    idsToDelete.map(async (dataId) => {
+      await deleteData(dataId);
     }),
   );
   selectedIds.value = [];

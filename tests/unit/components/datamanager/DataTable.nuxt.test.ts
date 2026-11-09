@@ -10,7 +10,7 @@ const EXPECTED_EVENT_COUNT = 1;
 const SECOND_INDEX = 1;
 
 const mockItem1: DataItem = {
-  id: "item-1",
+  data_id: "item-1",
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Mesh Model",
   geode_object_type: "BRep",
@@ -20,7 +20,7 @@ const mockItem1: DataItem = {
 };
 
 const mockItem2: DataItem = {
-  id: "item-2",
+  data_id: "item-2",
   geode_id: "00000000-0000-0000-0000-000000000002",
   name: "Surface Data",
   geode_object_type: "TriangulatedSurface3D",
@@ -137,7 +137,7 @@ describe("data table component", () => {
     expect(emitted).toBeDefined();
     expect(emitted?.length).toBe(EXPECTED_EVENT_COUNT);
     // The id is enough to open the crs dialog
-    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1.id]);
+    expect(emitted?.[FIRST_EVENT_INDEX]).toStrictEqual([mockItem1.data_id]);
   });
 
   test("shows the crs of each item", () => {

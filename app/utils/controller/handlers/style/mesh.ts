@@ -1,4 +1,5 @@
 // Third party imports
+import type { DataId } from "@ogw_front/types/identifiers";
 import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
@@ -12,40 +13,40 @@ import type { MeshElement } from "@vease/utils/controller/targets";
 import { hexToRgba } from "@vease/utils/controller/color";
 import { setDataVisibility } from "@vease/utils/data_actions";
 
-type Setter<Value> = (store: StyleStore, id: string, value: Value) => Promise<unknown>;
+type Setter<Value> = (store: StyleStore, meshId: DataId, value: Value) => Promise<unknown>;
 
 interface MeshElementSetters {
   visibility: Setter<boolean>;
   color: Setter<RGBAColor>;
-  constantColoring: (store: StyleStore, id: string) => Promise<unknown>;
+  constantColoring: (store: StyleStore, meshId: DataId) => Promise<unknown>;
 }
 
 /* oxlint-disable typescript/promise-function-async -- thin forwards to the store setters, which are already async */
 const MESH_ELEMENT_SETTERS: Record<MeshElement, MeshElementSetters> = {
   points: {
-    visibility: (store, id, value) => store.setMeshPointsVisibility(id, value),
-    color: (store, id, value) => store.setMeshPointsColor(id, value),
-    constantColoring: (store, id) => store.setMeshPointsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPointsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPointsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPointsActiveColoring(meshId, "constant"),
   },
   edges: {
-    visibility: (store, id, value) => store.setMeshEdgesVisibility(id, value),
-    color: (store, id, value) => store.setMeshEdgesColor(id, value),
-    constantColoring: (store, id) => store.setMeshEdgesActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshEdgesVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshEdgesColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshEdgesActiveColoring(meshId, "constant"),
   },
   cells: {
-    visibility: (store, id, value) => store.setMeshCellsVisibility(id, value),
-    color: (store, id, value) => store.setMeshCellsColor(id, value),
-    constantColoring: (store, id) => store.setMeshCellsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshCellsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshCellsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshCellsActiveColoring(meshId, "constant"),
   },
   polygons: {
-    visibility: (store, id, value) => store.setMeshPolygonsVisibility(id, value),
-    color: (store, id, value) => store.setMeshPolygonsColor(id, value),
-    constantColoring: (store, id) => store.setMeshPolygonsActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPolygonsVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPolygonsColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPolygonsActiveColoring(meshId, "constant"),
   },
   polyhedra: {
-    visibility: (store, id, value) => store.setMeshPolyhedraVisibility(id, value),
-    color: (store, id, value) => store.setMeshPolyhedraColor(id, value),
-    constantColoring: (store, id) => store.setMeshPolyhedraActiveColoring(id, "constant"),
+    visibility: (store, meshId, value) => store.setMeshPolyhedraVisibility(meshId, value),
+    color: (store, meshId, value) => store.setMeshPolyhedraColor(meshId, value),
+    constantColoring: (store, meshId) => store.setMeshPolyhedraActiveColoring(meshId, "constant"),
   },
 };
 /* oxlint-enable typescript/promise-function-async */
@@ -58,15 +59,15 @@ function elementCommands(element: MeshElement): Record<string, ControllerHandler
     [`style/mesh/${element}/visibility`]: styleCommand(
       async (store, item, { visibility }: { visibility: boolean }) => {
         checkMesh(item, element);
-        await setters.visibility(store, item.id, visibility);
+        await setters.visibility(store, item.data_id, visibility);
       },
     ),
     // A color shows only under the constant coloring, so it switches the element to it
     [`style/mesh/${element}/color`]: styleCommand(
       async (store, item, { color }: { color: string }) => {
         checkMesh(item, element);
-        await setters.color(store, item.id, hexToRgba(color));
-        await setters.constantColoring(store, item.id);
+        await setters.color(store, item.data_id, hexToRgba(color));
+        await setters.constantColoring(store, item.data_id);
       },
     ),
   };
@@ -77,34 +78,34 @@ const MESH_STYLE_COMMANDS: Record<string, ControllerHandler> = {
   "style/mesh/visibility": styleCommand(
     async (_store, item, { visibility }: { visibility: boolean }) => {
       checkMesh(item);
-      await setDataVisibility(item.id, visibility);
+      await setDataVisibility(item.data_id, visibility);
     },
   ),
   "style/mesh/color": styleCommand(async (store, item, { color }: { color: string }) => {
     checkMesh(item);
-    await store.setMeshColor(item.id, hexToRgba(color));
+    await store.setMeshColor(item.data_id, hexToRgba(color));
   }),
   ...Object.fromEntries(
     MESH_ELEMENTS.flatMap((element) => Object.entries(elementCommands(element))),
   ),
   "style/mesh/points/size": styleCommand(async (store, item, { size }: { size: number }) => {
     checkMesh(item, "points");
-    await store.setMeshPointsSize(item.id, size);
+    await store.setMeshPointsSize(item.data_id, size);
   }),
   "style/mesh/edges/width": styleCommand(async (store, item, { width }: { width: number }) => {
     checkMesh(item, "edges");
-    await store.setMeshEdgesWidth(item.id, width);
+    await store.setMeshEdgesWidth(item.data_id, width);
   }),
   "style/mesh/cells/coloring": styleCommand(
     async (store, item, { coloring }: { coloring: "constant" | "textures" }) => {
       checkMesh(item, "cells");
-      await store.setMeshCellsActiveColoring(item.id, coloring);
+      await store.setMeshCellsActiveColoring(item.data_id, coloring);
     },
   ),
   "style/mesh/polygons/coloring": styleCommand(
     async (store, item, { coloring }: { coloring: "constant" | "textures" }) => {
       checkMesh(item, "polygons");
-      await store.setMeshPolygonsActiveColoring(item.id, coloring);
+      await store.setMeshPolygonsActiveColoring(item.data_id, coloring);
     },
   ),
 };
