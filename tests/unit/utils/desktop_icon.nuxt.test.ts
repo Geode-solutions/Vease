@@ -49,9 +49,10 @@ vi.mock(import("node:child_process"), async (importOriginal) => {
 
 const originalPlatform = process.platform;
 const originalResourcesPath = process.resourcesPath;
+const originalExecPath = process.execPath;
 const originalEnv = { ...process.env };
 
-function setProcessValue(key: "platform" | "resourcesPath", value: string): void {
+function setProcessValue(key: "execPath" | "platform" | "resourcesPath", value: string): void {
   Object.defineProperty(process, key, { value, configurable: true });
 }
 
@@ -89,6 +90,7 @@ describe("desktop icon (electron main process) utils", () => {
   afterEach(() => {
     setProcessValue("platform", originalPlatform);
     setProcessValue("resourcesPath", originalResourcesPath);
+    setProcessValue("execPath", originalExecPath);
     process.env = { ...originalEnv };
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
@@ -164,8 +166,10 @@ describe("desktop icon (electron main process) utils", () => {
     });
 
     test("launches the running executable outside an AppImage", async () => {
+      // Pinned so the test does not depend on the host's (e.g. Windows) executable path
+      setProcessValue("execPath", "/opt/Vease/vease");
       await registerLinuxDesktopEntry();
-      expect(fs.readFileSync(desktopFile(), "utf8")).toContain(`Exec="${process.execPath}" %U`);
+      expect(fs.readFileSync(desktopFile(), "utf8")).toContain('Exec="/opt/Vease/vease" %U');
     });
 
     test("updates an entry pointing at an older package location", async () => {
