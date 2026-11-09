@@ -94,7 +94,7 @@ describe("desktop icon (electron main process) utils", () => {
   });
 
   describe("windowIconPath()", () => {
-    test("uses the shipped logo in a packaged Linux build, independent of cwd (AC-1.1)", () => {
+    test("uses the shipped logo in a packaged Linux build, independent of cwd", () => {
       const cwd = process.cwd();
       process.chdir(os.tmpdir());
       try {
@@ -106,14 +106,14 @@ describe("desktop icon (electron main process) utils", () => {
       }
     });
 
-    test("uses the logo from the project sources in development mode (AC-1.2)", () => {
+    test("uses the logo from the project sources in development mode", () => {
       electronMocks.isPackaged = false;
       const icon = windowIconPath();
       expect(icon).toBe(path.join(PROJECT_ROOT, "public", "256x256.png"));
       expect(fs.existsSync(icon)).toBe(true);
     });
 
-    test("uses an existing .ico logo in a packaged Windows build (AC-2.1)", () => {
+    test("uses an existing .ico logo in a packaged Windows build", () => {
       setProcessValue("platform", "win32");
       const icon = windowIconPath();
       expect(icon).toBe(path.join(resourcesPath, "web", "public", "favicon.ico"));
@@ -146,7 +146,7 @@ describe("desktop icon (electron main process) utils", () => {
   });
 
   describe("registerLinuxDesktopEntry()", () => {
-    test("writes a launcher entry and icon pointing at the running AppImage (AC-3.1)", async () => {
+    test("writes a launcher entry and icon pointing at the running AppImage", async () => {
       process.env.APPIMAGE = APPIMAGE;
       await registerLinuxDesktopEntry();
 
@@ -163,12 +163,12 @@ describe("desktop icon (electron main process) utils", () => {
       );
     });
 
-    test("launches the running executable outside an AppImage (AC-3.1)", async () => {
+    test("launches the running executable outside an AppImage", async () => {
       await registerLinuxDesktopEntry();
       expect(fs.readFileSync(desktopFile(), "utf8")).toContain(`Exec="${process.execPath}" %U`);
     });
 
-    test("updates an entry pointing at an older package location (AC-3.2)", async () => {
+    test("updates an entry pointing at an older package location", async () => {
       process.env.APPIMAGE = "/old/Vease.AppImage";
       await registerLinuxDesktopEntry();
       process.env.APPIMAGE = "/new/Vease.AppImage";
@@ -179,7 +179,7 @@ describe("desktop icon (electron main process) utils", () => {
       expect(content).not.toContain("/old/");
     });
 
-    test("does not rewrite files already up to date (AC-3.3)", async () => {
+    test("does not rewrite files already up to date", async () => {
       await registerLinuxDesktopEntry();
       const past = new Date("2020-01-01T00:00:00Z");
       fs.utimesSync(desktopFile(), past, past);
@@ -193,7 +193,7 @@ describe("desktop icon (electron main process) utils", () => {
       expect(spawnMock).not.toHaveBeenCalled();
     });
 
-    test("does nothing in development mode or on other platforms (AC-3.4)", async () => {
+    test("does nothing in development mode or on other platforms", async () => {
       electronMocks.isPackaged = false;
       await registerLinuxDesktopEntry();
       electronMocks.isPackaged = true;
