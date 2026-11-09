@@ -351,6 +351,7 @@ test("screenshot custom pixel size", async ({ window }) => {
   const RATIO_TOLERANCE_PX = 2;
   const SIZE_FACTOR = 2;
   await window.getByTestId("screenshotButton").click();
+  await window.getByTestId("screenshotFileButton").click();
   const widthInput = window.getByTestId("screenshotWidthInput").locator("input");
   const heightInput = window.getByTestId("screenshotHeightInput").locator("input");
   await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot size");
