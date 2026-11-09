@@ -44,6 +44,12 @@
       }
     ]
   },
+  "nsis": {
+    "oneClick": true,
+    "createDesktopShortcut": "always",
+    "createStartMenuShortcut": true,
+    "include": "./electron/installer.nsh"
+  },
   "publish": [
     {
       "provider": "github",
