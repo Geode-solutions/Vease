@@ -4,8 +4,8 @@
 import type { Locator, Page } from "@playwright/test";
 
 // Local imports
-import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { getMainObjectTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
 
 async function openDataManagerPiP(window: Page): Promise<void> {
   await window.getByTestId("dataManagerPiPButton").click();

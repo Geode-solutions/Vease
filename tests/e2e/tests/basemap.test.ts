@@ -12,7 +12,7 @@ import {
   toggleBasemap,
   toggleBasemapCrop,
   zoomAndRest,
-} from "@vease_tests/utils/basemap";
+} from "@geode/opengeodeweb-front/tests/browser/helpers/basemap.js";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
   removeExplodeFilter,
@@ -21,13 +21,13 @@ import {
   setExplodeFactor,
   toggleExplodeFilter,
   toggleGridScale,
-} from "@vease_tests/utils/camera_interaction";
-import { brepGeodeObjectType } from "@vease_tests/utils/constants";
+} from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+import { brepGeodeObjectType } from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
 import { fillAlignment } from "@vease_tests/utils/crs_flows";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
-import { toggleClippingPlanes } from "@vease_tests/utils/clipping_planes_interaction";
+import { toggleClippingPlanes } from "@geode/opengeodeweb-front/tests/browser/helpers/clipping_planes_interaction.js";
 
 // Constants
 const BREP_FILE = "test.og_brep";

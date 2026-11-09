@@ -1,7 +1,7 @@
 import type { Locator, Page } from "@playwright/test";
 
-import { getHybridViewerCanvas } from "./viewer_interaction";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { getHybridViewerCanvas } from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
 
 interface PointCoords {
   x: number;

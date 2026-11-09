@@ -12,20 +12,29 @@ import {
   selectTimeSeriesFolder,
   selectTimeSeriesTarget,
 } from "@vease_tests/utils/load";
-import { brepGeodeObjectType, defaultDataName } from "@vease_tests/utils/constants";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import {
+  brepGeodeObjectType,
+  defaultDataName,
+} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+import {
+  closeAllMenus,
+  moveMouseOutOfTheWay,
+} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
 import {
   expandMainObjectTree,
   getMainObjectTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
+} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
 import {
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
-} from "@vease_tests/utils/object_trees/model_components_object_tree";
-import { setModelPolyhedraPolyhedronAttribute, setModelTimeStep } from "@vease_tests/utils/data";
-import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+import {
+  setModelPolyhedraPolyhedronAttribute,
+  setModelTimeStep,
+} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
+import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

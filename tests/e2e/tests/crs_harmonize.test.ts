@@ -1,7 +1,10 @@
 // Node imports
 
 // Local imports
-import { brepGeodeObjectType, pointSetGeodeObjectType } from "@vease_tests/utils/constants";
+import {
+  brepGeodeObjectType,
+  pointSetGeodeObjectType,
+} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
 import {
   clickAssign,
   confirmAssign,
@@ -15,7 +18,7 @@ import {
 } from "@vease_tests/utils/crs";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

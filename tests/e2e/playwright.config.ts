@@ -47,7 +47,8 @@ const defaultExpect = {
   toHaveScreenshot: {
     maxDiffPixelRatio,
     threshold,
-    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
+    // Same folders as the tests: {testFileDir} is relative to testDir
+    pathTemplate: `./tests/screenshots/{testFileDir}/{testFileName}/{testName}.png`,
   },
 };
 
@@ -62,7 +63,7 @@ const cloudExpect = {
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig<{ mode: string }>({
   expect: defaultExpect,
-  testDir: ".",
+  testDir: "./tests",
   fullyParallel: true,
   workers,
   forbidOnly: Boolean(process.env.CI),

@@ -7,7 +7,7 @@ import { type Page, expect } from "@playwright/test";
 
 // Local imports
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
+import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
 
 // Constants
 const __dirname = import.meta.dirname;
