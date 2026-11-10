@@ -347,6 +347,48 @@ test("screenshot clipboard with background", async ({ window }) => {
   await closeFeedbackSnackbar(window);
 });
 
+test("screenshot custom pixel size", async ({ window }) => {
+  const RATIO_TOLERANCE_PX = 2;
+  const SIZE_FACTOR = 2;
+  await window.getByTestId("screenshotButton").click();
+  await window.getByTestId("screenshotFileButton").click();
+  const widthInput = window.getByTestId("screenshotWidthInput").locator("input");
+  const heightInput = window.getByTestId("screenshotHeightInput").locator("input");
+  await window.getByTestId("screenshotFileNameInput").locator("input").fill("screenshot size");
+  await expect(widthInput).not.toHaveValue("");
+  const width = Number(await widthInput.inputValue());
+  const height = Number(await heightInput.inputValue());
+  expect(width).toBeGreaterThan(0);
+  expect(height).toBeGreaterThan(0);
+
+  const newWidth = width * SIZE_FACTOR;
+  await widthInput.fill(String(newWidth));
+  await widthInput.blur();
+  // Height follows the width to keep the viewer aspect ratio
+  const expectedHeight = Math.round((newWidth * height) / width);
+  await expect
+    .poll(async () => Math.abs(Number(await heightInput.inputValue()) - expectedHeight))
+    .toBeLessThanOrEqual(RATIO_TOLERANCE_PX);
+  await expect(widthInput).toHaveValue(String(newWidth));
+
+  // With Include UI, the size is the tab size and cannot be edited
+  const includeUi = window.getByTestId("screenshotIncludeUiSwitch").getByRole("checkbox");
+  await includeUi.check();
+  await expect(widthInput).toHaveAttribute("readonly");
+  await expect(heightInput).toHaveAttribute("readonly");
+  await includeUi.uncheck();
+  await expect(widthInput).not.toHaveAttribute("readonly");
+  await expect(widthInput).toHaveValue(String(newWidth));
+
+  await window.getByTestId("screenshotActionButton").click();
+  await waitForActionSettled(window);
+  // The download event is not reliable in the Electron window: check the success feedback instead
+  await expect(
+    window.getByTestId("feedbackSnackbar").getByText("Screenshot downloaded"),
+  ).toBeVisible();
+  await closeFeedbackSnackbar(window);
+});
+
 async function openSceneMenuItem(window: Page, menuTestId: string): Promise<void> {
   await sceneContextMenu(window);
   await window.getByTestId(menuTestId).click();

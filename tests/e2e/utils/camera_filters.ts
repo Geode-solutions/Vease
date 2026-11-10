@@ -29,18 +29,22 @@ async function resetShrinkFilter(window: Page): Promise<void> {
 async function toggleShrinkTargetAllVisible(window: Page): Promise<void> {
   const switchElement = window.getByTestId("shrinkTargetAllVisibleSwitch");
   const checkbox = switchElement.getByRole("checkbox");
-  await checkbox.click();
+  await checkbox.click({ force: true });
   await waitForActionSettled(window);
 }
 
 async function selectShrinkDatasets(window: Page, datasetName: string, index = 0): Promise<void> {
   const select = window.getByTestId("shrinkSelectedDatasetsSelect");
-  await select.click();
+  // Forced clicks skip Playwright's scroll into view, which shifts the layout of the screenshots
+  await select.click({ force: true });
   await waitForActionSettled(window);
-  const option = window.getByRole("option", { name: datasetName }).nth(index);
-  await option.click();
+  const option = window
+    .getByTestId("shrinkSelectedDatasetsOption")
+    .filter({ hasText: datasetName })
+    .nth(index);
+  await option.click({ force: true });
   await waitForActionSettled(window);
-  await select.click();
+  await select.click({ force: true });
   await waitForActionSettled(window);
 }
 
