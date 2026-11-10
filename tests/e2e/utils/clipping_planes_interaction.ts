@@ -62,16 +62,22 @@ async function resetClippingPlanes(window: Page): Promise<void> {
 }
 
 async function toggleTargetAllVisible(window: Page): Promise<void> {
-  await window.getByTestId("targetAllVisibleSwitch").getByRole("checkbox").click();
+  await window.getByTestId("targetAllVisibleSwitch").getByRole("checkbox").click({ force: true });
   await waitForActionSettled(window);
 }
 
 async function selectClippingDatasets(window: Page, datasetName: string, index = 0): Promise<void> {
-  await window.getByTestId("selectedDatasetsSelect").click();
+  const select = window.getByTestId("selectedDatasetsSelect");
+  // Forced clicks skip Playwright's scroll into view, which shifts the layout of the screenshots
+  await select.click({ force: true });
   await waitForActionSettled(window);
-  await window.getByRole("option", { name: datasetName }).nth(index).click();
+  await window
+    .getByTestId("selectedDatasetsOption")
+    .filter({ hasText: datasetName })
+    .nth(index)
+    .click({ force: true });
   await waitForActionSettled(window);
-  await window.getByTestId("selectedDatasetsSelect").click();
+  await select.click({ force: true });
   await waitForActionSettled(window);
 }
 
