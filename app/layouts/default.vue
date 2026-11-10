@@ -86,7 +86,8 @@ useExclusiveDrawers();
 }
 .custom-background {
   position: relative;
-  overflow: hidden;
+  /* clip, not hidden: the island overflows by a few pixels and a hidden overflow can still be scrolled programmatically (scrollIntoView), shifting the whole viewer */
+  overflow: clip;
 }
 .custom-background::before {
   content: "";
