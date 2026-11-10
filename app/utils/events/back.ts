@@ -36,8 +36,13 @@ function isSavedDataPayload(
   );
 }
 
-async function importAndRender(item: LegacyDataId<NewDataItem>): Promise<void> {
-  await importItem(item);
+// One file may hold several objects: all are imported, then the scene is rendered once
+async function importAllAndRender(items: readonly LegacyDataId<NewDataItem>[]): Promise<void> {
+  await Promise.all(
+    items.map(async (item) => {
+      await importItem(item);
+    }),
+  );
   await getHybridViewerStore().remoteRender();
 }
 
@@ -50,14 +55,12 @@ const backEventHandlers = {
       return;
     }
     consola.debug("[GEODE] save_viewable_file:", payload);
-    // One file may hold several objects: each one is imported and awaited on its own id
-    await Promise.all(
-      payload.data.map(async (item) => {
-        const imported = importAndRender(item);
-        trackImport(item.id, imported);
-        await imported;
-      }),
-    );
+    const rendered = importAllAndRender(payload.data);
+    // Each id is awaited by the controller until the final render is done
+    for (const item of payload.data) {
+      trackImport(item.id, rendered);
+    }
+    await rendered;
   },
 };
 

@@ -18,6 +18,7 @@ vi.mock(import("@ogw_front/utils/import_workflow"), () => ({
 const saveViewableFileId = opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id;
 const NOT_A_REAL_PAYLOAD: unknown = JSON.parse("null");
 const TIMEOUT_MS = 1000;
+const ONCE = 1;
 
 describe("the backEventHandlers map", () => {
   const remoteRenderMock = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
@@ -61,6 +62,26 @@ describe("the backEventHandlers map", () => {
 
     expect(importItem).toHaveBeenCalledWith(first);
     expect(importItem).toHaveBeenCalledWith(second);
+  });
+
+  test("renders once after every object of a multi-object payload is imported", async () => {
+    const first = { id: "item-c", viewer_type: "mesh", geode_object_type: "TriangulatedSurface3D" };
+    const second = {
+      id: "item-d",
+      viewer_type: "mesh",
+      geode_object_type: "TriangulatedSurface3D",
+    };
+
+    const handled = backEventHandlers[saveViewableFileId]?.({ data: [first, second] });
+    // Each tracked import is ready once the single final render is done
+    await waitForImport("item-c", TIMEOUT_MS);
+    expect(remoteRenderMock).toHaveBeenCalledTimes(ONCE);
+    await handled;
+
+    expect(remoteRenderMock).toHaveBeenCalledTimes(ONCE);
+    const lastImportOrder = Math.max(...vi.mocked(importItem).mock.invocationCallOrder);
+    const [renderOrder] = remoteRenderMock.mock.invocationCallOrder;
+    expect(renderOrder).toBeGreaterThan(lastImportOrder);
   });
 
   test("lets the controller wait for the import and the render", async () => {
