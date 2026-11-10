@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*", "oxlint/**"],
+  "ignorePatterns": ["nuxt.config.ts", "*_typed_schemas.*", "oxlint/**", "tests/e2e/tests/data/**"],
   "jsPlugins": ["./oxlint/ternary_primitive_only.mjs"],
   "categories": {
     "correctness": "error",

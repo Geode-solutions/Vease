@@ -51,7 +51,8 @@ interface LoadedData {
 }
 
 // Same route as the Vease controller clients: upload, pick the type and display the data
-async function loadFile(baseUrl: string, filePath: string): Promise<LoadedData> {
+// One file may hold several objects: one entry per loaded data
+async function loadFile(baseUrl: string, filePath: string): Promise<LoadedData[]> {
   const form = new FormData();
   form.append("file", await fs.openAsBlob(filePath), path.basename(filePath));
   const response = await fetch(`${baseUrl}/api/controller/data/load`, {
@@ -63,7 +64,7 @@ async function loadFile(baseUrl: string, filePath: string): Promise<LoadedData> 
     throw new Error(`HTTP ${String(response.status)} ${body}`);
   }
   // oxlint-disable-next-line no-unsafe-type-assertion -- trusted API boundary, shape given by the controller load schema
-  return (JSON.parse(body) as { response: LoadedData }).response;
+  return (JSON.parse(body) as { response: { data: LoadedData[] } }).response.data;
 }
 
 function isFile(filePath: string): boolean {
@@ -100,8 +101,10 @@ async function loadLaunchFiles(baseUrl: string, files: readonly string[]): Promi
   for (const filePath of filePaths) {
     try {
       // oxlint-disable-next-line no-await-in-loop -- files are loaded one after another
-      const data = await loadFile(baseUrl, filePath);
-      consola.success(`[Electron] Loaded ${filePath} as ${data.geode_object_type} (${data.id})`);
+      const loaded = await loadFile(baseUrl, filePath);
+      for (const data of loaded) {
+        consola.success(`[Electron] Loaded ${filePath} as ${data.geode_object_type} (${data.id})`);
+      }
     } catch (error) {
       consola.error(`[Electron] Failed to load ${filePath}`, error);
     }

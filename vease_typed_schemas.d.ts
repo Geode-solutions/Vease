@@ -35,8 +35,20 @@ export interface ControllerDataRenameResponse {
 export interface ControllerDataLoadParams {}
 
 export interface ControllerDataLoadResponse {
-  response: any;
+  response: ControllerDataLoaded;
   statusCode: number;
+}
+
+export interface ControllerDataLoaded {
+  data?: ControllerDataLoadedItem[];
+  project?: string;
+}
+
+export interface ControllerDataLoadedItem {
+  geode_object_type: string;
+  id: string;
+  name: string;
+  [property: string]: any;
 }
 
 export interface ControllerDataListParams {}

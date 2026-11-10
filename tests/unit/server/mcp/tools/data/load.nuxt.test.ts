@@ -45,11 +45,15 @@ describe("load-file MCP tool", () => {
       okResult({
         statusCode: 200,
         response: {
-          id: "item-1",
-          name: "model",
-          geode_object_type: "BRep",
-          viewer_type: "model",
-          native_file: "native.og_brep",
+          data: [
+            {
+              id: "item-1",
+              name: "model",
+              geode_object_type: "BRep",
+              viewer_type: "model",
+              native_file: "native.og_brep",
+            },
+          ],
         },
       }),
     );
@@ -66,8 +70,37 @@ describe("load-file MCP tool", () => {
       }),
     );
     expect(result).toBe(
-      'File loaded successfully: {"id":"item-1","name":"model","geode_object_type":"BRep"}',
+      'File loaded successfully: {"data":[{"id":"item-1","name":"model","geode_object_type":"BRep"}]}',
     );
+  });
+
+  test("reports every data loaded from a multi-object file", async () => {
+    vi.mocked(callControllerApi).mockResolvedValue(
+      okResult({
+        statusCode: 200,
+        response: {
+          data: [
+            { id: "item-1", name: "first_surf", geode_object_type: "TriangulatedSurface3D" },
+            {
+              id: "item-2",
+              name: "second_surf",
+              geode_object_type: "TriangulatedSurface3D",
+              viewer_type: "mesh",
+            },
+          ],
+        },
+      }),
+    );
+
+    const result = await tool.handler({ filePath: "/data/two.ts" }, fakeMcpRequestExtra());
+
+    const summary = JSON.stringify({
+      data: [
+        { id: "item-1", name: "first_surf", geode_object_type: "TriangulatedSurface3D" },
+        { id: "item-2", name: "second_surf", geode_object_type: "TriangulatedSurface3D" },
+      ],
+    });
+    expect(result).toBe(`File loaded successfully: ${summary}`);
   });
 
   test("reports the opened project for a .vease file", async () => {

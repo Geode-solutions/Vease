@@ -23,6 +23,19 @@ function isNewDataItem(value: unknown): value is LegacyDataId<NewDataItem> {
   );
 }
 
+function isSavedDataPayload(
+  value: unknown,
+): value is { data: [LegacyDataId<NewDataItem>, ...LegacyDataId<NewDataItem>[]] } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "data" in value &&
+    Array.isArray(value.data) &&
+    value.data.length > 0 &&
+    value.data.every((item) => isNewDataItem(item))
+  );
+}
+
 async function importAndRender(item: LegacyDataId<NewDataItem>): Promise<void> {
   await importItem(item);
   await getHybridViewerStore().remoteRender();
@@ -32,14 +45,19 @@ const backEventHandlers = {
   [opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id]: async (
     payload: unknown,
   ): Promise<void> => {
-    if (!isNewDataItem(payload)) {
+    if (!isSavedDataPayload(payload)) {
       consola.error("[GEODE] Invalid save_viewable_file payload:", payload);
       return;
     }
     consola.debug("[GEODE] save_viewable_file:", payload);
-    const imported = importAndRender(payload);
-    trackImport(payload.id, imported);
-    await imported;
+    // One file may hold several objects: each one is imported and awaited on its own id
+    await Promise.all(
+      payload.data.map(async (item) => {
+        const imported = importAndRender(item);
+        trackImport(item.id, imported);
+        await imported;
+      }),
+    );
   },
 };
 
