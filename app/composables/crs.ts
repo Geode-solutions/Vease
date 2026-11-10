@@ -37,8 +37,11 @@ function useCrs() {
     focus = true,
   ): Promise<void> {
     // The local actor is rebuilt from the stored light viewable: store the moved one first
-    await dataStore.updateItem(item.data_id, { binary_light_viewable, crs });
+    await dataStore.updateItem(item.data_id, { binary_light_viewable });
     await reloadObject(item.data_id, { rebuildActor: true });
+    // Only then the CRS: a basemap built for the new CRS reads the data bounds from the actors,
+    // Which must no longer hold the previous coordinates
+    await dataStore.updateItem(item.data_id, { crs });
     if (focus) {
       await hybridViewerStore.focusCameraOnObject(item.data_id);
     }

@@ -110,13 +110,16 @@ test("controller drives the app", async ({ window }) => {
       },
     },
   });
-  await expectOk(load);
+  // One entry per object of the file: this one holds a single surface
+  const loaded = await expectOk<{ data: DataSummary[] }>(load);
+  expect(loaded.response.data).toHaveLength(1);
+  const [{ id: dataId }] = loaded.response.data;
 
   const list = await expectOk<{ data: DataSummary[] }>(
     await window.request.get(controllerUrl(baseUrl, "data/list")),
   );
   expect(list.response.data).toHaveLength(1);
-  const [{ id: dataId }] = list.response.data;
+  expect(list.response.data[0]?.id).toBe(dataId);
 
   const details = await expectOk<{ attributes: AttributeSummary[] }>(
     await window.request.get(controllerUrl(baseUrl, "data/details"), { params: { id: dataId } }),
