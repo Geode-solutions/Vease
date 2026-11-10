@@ -83,7 +83,7 @@
     "test:e2e:browser": "npm run test:e2e:browser:chrome --",
     "test:e2e:cloud": "npm run test:e2e -- --project=cloud",
     "test:e2e:desktop": "npm run test:e2e -- --project=desktop",
-    "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots",
+    "test:e2e:update_snapshots": "npm run test:e2e:browser:chrome -- --update-snapshots=changed",
     "prepare:types": "cross-env MODE=BROWSER npx nuxi prepare"
   },
   "dependencies": {

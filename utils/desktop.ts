@@ -19,6 +19,7 @@ import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts
 
 // Local imports
 import { logBrowserConsole } from "./browser_console";
+import { windowIconPath } from "./desktop_icon";
 
 // Local constants
 const __dirname = import.meta.dirname;
@@ -35,7 +36,7 @@ function frameStreams(frame: WebFrameMain | null): Streams {
 function setupBrowserWindow(): BrowserWindow {
   const window = new BrowserWindow({
     title: "Vease - New project",
-    icon: process.platform === "win32" ? "public/logo.ico" : "public/logo.png",
+    icon: windowIconPath(),
     center: true,
     webPreferences: {
       nodeIntegrationInWorker: true,
