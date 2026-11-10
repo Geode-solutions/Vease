@@ -13,6 +13,5 @@
     "paths": {
       "@vease_tests/*": ["./*"]
     }
-  },
-  "exclude": ["tests/data"]
+  }
 }
