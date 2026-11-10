@@ -17,6 +17,8 @@ import {
 import { initUpdater } from "./updater";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { loadLaunchFiles } from "../utils/launch_files";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { registerLinuxDesktopEntry } from "../utils/desktop_icon";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
@@ -52,6 +54,7 @@ ipcMain.handle("delete_credentials", () => {
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
 void app.whenReady().then(async () => {
+  void registerLinuxDesktopEntry();
   const { cleanup, baseUrl } = await createNewWindow();
   serverCleanup = cleanup;
   if (appArgs.files.length > 0) {
