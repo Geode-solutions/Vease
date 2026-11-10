@@ -7,13 +7,10 @@ import {
   removeClippingPlanes,
   resetClippingPlanes,
   toggleClippingPlanes,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/clipping_planes_interaction.js";
-import {
-  resetCamera,
-  toggleGridScale,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+} from "#ogw_e2e/clipping_planes_interaction.js";
+import { resetCamera, toggleGridScale } from "#ogw_e2e/camera_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+import { moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

@@ -1,45 +1,36 @@
 // Third party imports
-import {
-  brepGeodeObjectType,
-  polygonalSurfaceGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import {
   closeModelComponentsTree,
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   getMainObjectTree,
   openObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
-import {
-  getQuickColormapPicker,
-  viewerQuickColormap,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
+import { getQuickColormapPicker, viewerQuickColormap } from "#ogw_e2e/viewer_interaction.js";
 import {
   removeThresholdFilter,
   selectThresholdSurfacePolygon,
   setThresholdMinimum,
   toggleThresholdFilter,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+} from "#ogw_e2e/camera_interaction.js";
 import {
   setMeshPolygonsTimeStep,
   setMeshPolygonsVertexAttribute,
   setModelEdgesEdgeAttribute,
   setModelPolygonsPolygonAttribute,
   setModelTimeStep,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/data/index.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { setFeatureTimeStep } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/attribute.js";
+import { setFeatureTimeStep } from "#ogw_e2e/data/helpers/attribute.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

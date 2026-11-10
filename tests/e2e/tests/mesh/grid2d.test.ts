@@ -3,14 +3,8 @@
 // Third party imports
 
 // Local imports
-import {
-  defaultDataName,
-  rgd2dGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  expandMainObjectTree,
-  highlightData,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+import { defaultDataName, rgd2dGeodeObjectType } from "#ogw_e2e/constants.js";
+import { expandMainObjectTree, highlightData } from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   openMeshCellsMenu,
   setMeshCellsCellAttribute,
@@ -27,11 +21,8 @@ import {
   setMeshPointsColorWithSlider,
   setMeshPointsSize,
   setMeshPointsVisibility,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import {
-  toggleInfoCard,
-  viewerContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+} from "#ogw_e2e/data/index.js";
+import { toggleInfoCard, viewerContextMenu } from "#ogw_e2e/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 

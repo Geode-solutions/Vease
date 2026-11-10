@@ -8,11 +8,8 @@ import {
   defaultDataName,
   edgeAttributeType,
   vertexAttributeType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import {
   collapseModelComponentTypes,
   expandMeshComponentType,
@@ -22,7 +19,7 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import {
   copyModelEdgesColor,
   pasteModelEdgesColorInput,
@@ -30,10 +27,10 @@ import {
   setModelEdgesEdgeAttribute,
   setModelEdgesVertexAttribute,
   setModelEdgesVertexAttributeNoDataColor,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { applyAttribute } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/attribute.js";
-import { expandMainObjectTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
-import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/data/index.js";
+import { applyAttribute } from "#ogw_e2e/data/helpers/attribute.js";
+import { expandMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 

@@ -8,11 +8,8 @@ import {
   defaultDataName,
   polygonAttributeType,
   vertexAttributeType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import {
   copyModelPolygonsColor,
   pasteModelPolygonsColorInput,
@@ -22,11 +19,8 @@ import {
   setModelPolygonsPolygonAttribute,
   setModelPolygonsVertexAttribute,
   setModelPolygonsVertexAttributeNoDataColor,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import {
-  expandMainObjectTree,
-  toggleObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/data/index.js";
+import { expandMainObjectTree, toggleObjectsTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   expandMeshComponentType,
   getModelComponentsObjectTree,
@@ -34,18 +28,18 @@ import {
   openModelComponentsTree,
   setModelTreeRowColorRandom,
   toggleModelTreeRow,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import {
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
   viewerContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
-import { applyAttribute } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/attribute.js";
-import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/viewer_interaction.js";
+import { applyAttribute } from "#ogw_e2e/data/helpers/attribute.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { rotateCamera } from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+import { rotateCamera } from "#ogw_e2e/camera_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 // Constants
 const brepFilename = "test.og_brep";

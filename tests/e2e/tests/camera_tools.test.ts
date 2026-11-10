@@ -41,7 +41,7 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
   toggleThresholdFilter,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+} from "#ogw_e2e/camera_interaction.js";
 import {
   addClippingPlane,
   addSlice,
@@ -54,17 +54,13 @@ import {
   toggleClippingPlanes,
   toggleSlice,
   toggleTargetAllVisible,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/clipping_planes_interaction.js";
-import {
-  brepGeodeObjectType,
-  defaultDataName,
-  rgd3dGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+} from "#ogw_e2e/clipping_planes_interaction.js";
+import { brepGeodeObjectType, defaultDataName, rgd3dGeodeObjectType } from "#ogw_e2e/constants.js";
 import {
   closeAllMenus,
   closeFeedbackSnackbar,
   moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/app_interaction.js";
 import {
   dragContextMenu,
   findOverlappingObjectsPicker,
@@ -74,23 +70,23 @@ import {
   sceneContextMenu,
   stabilizeHoverTooltip,
   viewerContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+} from "#ogw_e2e/viewer_interaction.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
   focusObjectInTree,
   getMainObjectTree,
   showObjectInTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 import { confirmDelete } from "@vease_tests/utils/data_manager";
-import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
-import { setColor } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/color.js";
-import { setColorInputText } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/color_picker.js";
-import { setMeshEdgesVisibility } from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
+import { setColor } from "#ogw_e2e/data/helpers/color.js";
+import { setColorInputText } from "#ogw_e2e/data/helpers/color_picker.js";
+import { setMeshEdgesVisibility } from "#ogw_e2e/data/index.js";
 // oxlint-disable-next-line import/max-dependencies -- all test helpers and fixtures are required.
 import { test } from "@vease_tests/utils/fixtures";
 

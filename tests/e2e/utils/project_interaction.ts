@@ -1,7 +1,7 @@
 import { type Page, expect } from "@playwright/test";
 import type { ElectronApplication } from "playwright";
-import { closeFeedbackSnackbar } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const importProjectTimeout = 20_000;
 const downloadTimeout = 30_000;

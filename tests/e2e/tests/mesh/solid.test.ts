@@ -3,25 +3,19 @@
 // Third party imports
 
 // Local imports
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
-import {
-  defaultDataName,
-  hybridSolidGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
+import { defaultDataName, hybridSolidGeodeObjectType } from "#ogw_e2e/constants.js";
 import {
   expandMainObjectTree,
   highlightData,
   toggleObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   getHybridViewerCanvas,
   getHybridViewerCanvasBoundingBox,
   toggleInfoCard,
   viewerContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+} from "#ogw_e2e/viewer_interaction.js";
 import {
   openMeshPolyhedraMenu,
   setMeshEdgesColor,
@@ -41,10 +35,10 @@ import {
   setMeshPolyhedraPolyhedronAttribute,
   setMeshPolyhedraVertexAttribute,
   setMeshPolyhedraVisibility,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
+} from "#ogw_e2e/data/index.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 // Constants
 const inputFilename = "test.og_hso3d";

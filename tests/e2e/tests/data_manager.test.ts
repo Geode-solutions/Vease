@@ -5,7 +5,7 @@ import {
   brepGeodeObjectType,
   pointSetGeodeObjectType,
   polygonalSurfaceGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+} from "#ogw_e2e/constants.js";
 import {
   clickdeleteDataButton,
   confirmDelete,
@@ -19,14 +19,11 @@ import {
   openRenameByName,
   toggleRowVisibility,
 } from "@vease_tests/utils/data_manager";
-import {
-  closeFeedbackSnackbar,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 // Constants
 const BREP_FILE = "test.og_brep";

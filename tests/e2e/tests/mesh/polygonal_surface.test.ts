@@ -5,17 +5,14 @@ import {
   closeAllMenus,
   closeFeedbackSnackbar,
   moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/app_interaction.js";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   highlightData,
   openObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
-import {
-  defaultDataName,
-  polygonalSurfaceGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
+import { defaultDataName, polygonalSurfaceGeodeObjectType } from "#ogw_e2e/constants.js";
 import {
   openMeshPolygonsMenu,
   setMeshEdgesColor,
@@ -35,16 +32,16 @@ import {
   setMeshPolygonsTextures,
   setMeshPolygonsVertexAttribute,
   setMeshPolygonsVisibility,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
+} from "#ogw_e2e/data/index.js";
 import {
   toggleInfoCard,
   viewerContextMenu,
   viewerQuickColormap,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
+} from "#ogw_e2e/viewer_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { setQuickColorMap } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/attribute.js";
+import { setQuickColorMap } from "#ogw_e2e/data/helpers/attribute.js";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 // Constants
 const inputFilename = "test.og_psf3d";

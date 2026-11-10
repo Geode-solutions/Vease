@@ -9,28 +9,25 @@ import {
   brepGeodeObjectType,
   defaultDataName,
   polygonalSurfaceGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import {
   expandMainObjectTree,
   openDataContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
   toggleModelTreeRow,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
   setMeshEdgesColor,
   setMeshEdgesWidth,
   setMeshPolygonsVertexAttribute,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
+} from "#ogw_e2e/data/index.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 

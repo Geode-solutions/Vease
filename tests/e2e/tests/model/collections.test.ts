@@ -2,27 +2,24 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  defaultDataName,
-  structuralModelGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+import { defaultDataName, structuralModelGeodeObjectType } from "#ogw_e2e/constants.js";
 import {
   getModelComponentTypeTab,
   getModelComponentsObjectTree,
   openModelComponentContextMenu,
   openModelComponentsTree,
   toggleModelTreeRow,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import {
   setModelColor,
   setModelColoringStyle,
   setModelPolygonsVertexAttribute,
   setModelSurfacesVisibility,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { expandGeodeObjectTypeInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/data/index.js";
+import { expandGeodeObjectTypeInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
-import { resetCamera } from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+import { moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
+import { resetCamera } from "#ogw_e2e/camera_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

@@ -7,7 +7,7 @@ import {
   expandMainObjectTree,
   openDataContextMenu,
   openGeodeObjectTypeContextMenu,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   openMeshEdgesMenu,
   openMeshPointsMenu,
@@ -17,11 +17,11 @@ import {
   setMeshPolygonsColor,
   setMeshPolygonsColorInput,
   setMeshPolygonsVertexAttribute,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { closeAllMenus } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/data/index.js";
+import { closeAllMenus } from "#ogw_e2e/app_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { polygonalSurfaceGeodeObjectType } from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import { resetCamera } from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+import { polygonalSurfaceGeodeObjectType } from "#ogw_e2e/constants.js";
+import { resetCamera } from "#ogw_e2e/camera_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

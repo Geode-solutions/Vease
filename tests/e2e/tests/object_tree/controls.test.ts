@@ -14,27 +14,27 @@ import {
   toggleSearchObjects,
   toggleSortObjects,
   uncheckFilterCategory,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/object_trees/common.js";
 import {
   collapseMainObjectTree,
   getMainObjectTree,
   toggleObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   collapseModelComponentsObjectTree,
   expandModelComponentsObjectTree,
   getModelComponentsObjectTree,
   openModelComponentsTree,
   setModelTreeRowColorRandom,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
-import { assertDefined } from "@geode/opengeodeweb-front/tests/browser/helpers/other.js";
-import { brepGeodeObjectType } from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import { closeAllMenus } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
+import { assertDefined } from "#ogw_e2e/other.js";
+import { brepGeodeObjectType } from "#ogw_e2e/constants.js";
+import { closeAllMenus } from "#ogw_e2e/app_interaction.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/viewer_interaction.js";
-import { resetCamera } from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+import { moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
+import { resetCamera } from "#ogw_e2e/camera_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 // Constants
 const brepFilename = "test.og_brep";

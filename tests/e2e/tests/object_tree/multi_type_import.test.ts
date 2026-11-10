@@ -4,11 +4,8 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import {
-  brepGeodeObjectType,
-  polygonalSurfaceGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import { expandMainObjectTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "#ogw_e2e/constants.js";
+import { expandMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 

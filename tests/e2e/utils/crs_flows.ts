@@ -6,7 +6,7 @@ import {
   brepGeodeObjectType,
   edgedCurveGeodeObjectType,
   pointSetGeodeObjectType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
+} from "#ogw_e2e/constants.js";
 import {
   clickAssign,
   confirmConvert,
@@ -19,12 +19,9 @@ import {
   selectCrs,
   selectScope,
 } from "./crs";
-import {
-  closeFeedbackSnackbar,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { navigateToDataManagerPage } from "./navigate";
-import { waitForActionSettled } from "@geode/opengeodeweb-front/tests/browser/helpers/wait_for_action_settled.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 async function closeCrsDialog(window: Page): Promise<void> {
   await window.keyboard.press("Escape");

@@ -12,29 +12,17 @@ import {
   selectTimeSeriesFolder,
   selectTimeSeriesTarget,
 } from "@vease_tests/utils/load";
-import {
-  brepGeodeObjectType,
-  defaultDataName,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  closeAllMenus,
-  moveMouseOutOfTheWay,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
-import {
-  expandMainObjectTree,
-  getMainObjectTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+import { brepGeodeObjectType, defaultDataName } from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
+import { expandMainObjectTree, getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
-import {
-  setModelPolyhedraPolyhedronAttribute,
-  setModelTimeStep,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { hideObjectInTree } from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
+import { setModelPolyhedraPolyhedronAttribute, setModelTimeStep } from "#ogw_e2e/data/index.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

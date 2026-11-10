@@ -9,35 +9,29 @@ import {
   polyhedronAttributeType,
   structuralModelGeodeObjectType,
   vertexAttributeType,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/constants.js";
-import {
-  expandGeodeObjectTypeInTree,
-  hideObjectInTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/common.js";
+} from "#ogw_e2e/constants.js";
+import { expandGeodeObjectTypeInTree, hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import {
   expandMainObjectTree,
   getMainObjectTree,
   toggleObjectsTree,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/main_object_tree.js";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   openModelComponentContextMenu,
   openModelComponentsTree,
   toggleModelTreeRow,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/object_trees/model_components_object_tree.js";
-import {
-  resetCamera,
-  rotateCamera,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/camera_interaction.js";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
+import { resetCamera, rotateCamera } from "#ogw_e2e/camera_interaction.js";
 import {
   setModelEdgesVisibility,
   setModelPointsVisibility,
   setModelPolyhedraPolyhedronAttribute,
   setModelPolyhedraVertexAttribute,
   setModelPolyhedraVertexAttributeNoDataColor,
-} from "@geode/opengeodeweb-front/tests/browser/helpers/data/index.js";
-import { applyAttribute } from "@geode/opengeodeweb-front/tests/browser/helpers/data/helpers/attribute.js";
+} from "#ogw_e2e/data/index.js";
+import { applyAttribute } from "#ogw_e2e/data/helpers/attribute.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@geode/opengeodeweb-front/tests/browser/helpers/app_interaction.js";
+import { moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants
