@@ -52,6 +52,9 @@ function eventWithFile(
   });
 }
 
+const ITEM = { id: "item-1", name: "model", geode_object_type: "BRep" };
+const OTHER_ITEM = { id: "item-2", name: "other", geode_object_type: "BRep" };
+
 const BAD_REQUEST = 400;
 const BAD_GATEWAY = 502;
 const INTERNAL_SERVER_ERROR = 500;
@@ -70,7 +73,7 @@ describe("the POST /api/controller/data/load endpoint", () => {
     vi.mocked(getAllowedFileExtensions).mockResolvedValue(["msh", "vtk"]);
     vi.mocked(uploadFile).mockResolvedValue(undefined);
     vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue("BRep");
-    vi.mocked(saveViewableFile).mockResolvedValue({ id: "item-1" });
+    vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM] });
     vi.mocked(dispatchCommand).mockReset();
     vi.mocked(dispatchCommand).mockResolvedValue({ id: "item-1" });
   });
@@ -80,7 +83,26 @@ describe("the POST /api/controller/data/load endpoint", () => {
 
     expect(uploadFile).toHaveBeenCalledWith(expect.objectContaining({ filename: "model.msh" }));
     expect(saveViewableFile).toHaveBeenCalledWith("model.msh", "BRep");
-    expect(result).toStrictEqual({ statusCode: 200, response: { id: "item-1" } });
+    expect(result).toStrictEqual({ statusCode: 200, response: { data: [ITEM] } });
+  });
+
+  test("returns every object saved from a multi-object file", async () => {
+    vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM, OTHER_ITEM] });
+
+    const result = await handler(eventWithFile("model.msh"));
+
+    expect(result).toStrictEqual({ statusCode: 200, response: { data: [ITEM, OTHER_ITEM] } });
+  });
+
+  test("answers once the browser imported every saved object", async () => {
+    vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM, OTHER_ITEM] });
+
+    await handler(eventWithFile("model.msh"));
+
+    expect(vi.mocked(dispatchCommand).mock.calls).toStrictEqual([
+      ["await-data", { id: "item-1" }, { timeout: LONG_COMMAND_TIMEOUT_MS }],
+      ["await-data", { id: "item-2" }, { timeout: LONG_COMMAND_TIMEOUT_MS }],
+    ]);
   });
 
   test("answers once the browser imported the saved data", async () => {
@@ -104,8 +126,12 @@ describe("the POST /api/controller/data/load endpoint", () => {
     });
   });
 
-  test("fails with a 502 when the back returns no data id", async () => {
-    vi.mocked(saveViewableFile).mockResolvedValue({});
+  test.each([
+    ["no data list", {}],
+    ["an empty data list", { data: [] }],
+    ["an item without string id", { data: [ITEM, { id: 3 }] }],
+  ])("fails with a 502 when the back returns %s", async (_label, saved) => {
+    vi.mocked(saveViewableFile).mockResolvedValue(saved);
 
     await expect(runHandler(eventWithFile("model.msh"))).resolves.toMatchObject({
       body: { code: BAD_GATEWAY, name: "The back returned no data id" },

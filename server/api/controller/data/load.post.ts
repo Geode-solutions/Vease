@@ -14,20 +14,47 @@ import { stageDownload, takeDownload } from "@vease_server/utils/file_transfer";
 
 import { getFileExtension } from "@ogw_shared/utils/response_handlers/load";
 
-import schemas, { type ControllerDataLoadResponse } from "vease/vease_typed_schemas.js";
+import schemas, {
+  type ControllerDataLoadResponse,
+  type ControllerDataLoadedItem,
+} from "vease/vease_typed_schemas.js";
 import { defineRawEventHandler } from "@ogw_server/utils/typed_handler";
 
 const DOWNLOAD_URL = "/api/controller/files/download";
 const BAD_GATEWAY = 502;
 
-function savedDataId(response: unknown): string {
-  if (
+interface SavedData {
+  data: [ControllerDataLoadedItem, ...ControllerDataLoadedItem[]];
+}
+
+function isControllerDataLoadedItem(item: unknown): item is ControllerDataLoadedItem {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    "id" in item &&
+    "name" in item &&
+    "geode_object_type" in item &&
+    typeof item.id === "string" &&
+    typeof item.name === "string" &&
+    typeof item.geode_object_type === "string"
+  );
+}
+
+// One file may hold several objects: the back returns one item per saved object
+function isSavedData(response: unknown): response is SavedData {
+  return (
     typeof response === "object" &&
     response !== null &&
-    "id" in response &&
-    typeof response.id === "string"
-  ) {
-    return response.id;
+    "data" in response &&
+    Array.isArray(response.data) &&
+    response.data.length > 0 &&
+    response.data.every((item) => isControllerDataLoadedItem(item))
+  );
+}
+
+function savedData(response: unknown): SavedData {
+  if (isSavedData(response)) {
+    return response;
   }
   throw createError({ statusCode: BAD_GATEWAY, statusMessage: "The back returned no data id" });
 }
@@ -84,14 +111,14 @@ export default defineRawEventHandler(
       });
     }
     consola.info(`Saving file as ${allowedGeodeObjectType}...`);
-    const response = await saveViewableFile(filename, allowedGeodeObjectType);
-    // The browser imports the saved data on the back event: answer once it is ready to style
-    await dispatchCommand(
-      "await-data",
-      { id: savedDataId(response) },
-      { timeout: LONG_COMMAND_TIMEOUT_MS },
+    const { data } = savedData(await saveViewableFile(filename, allowedGeodeObjectType));
+    // The browser imports the saved data on the back event: answer once every object is ready to style
+    await Promise.all(
+      data.map(async ({ id }) => {
+        await dispatchCommand("await-data", { id }, { timeout: LONG_COMMAND_TIMEOUT_MS });
+      }),
     );
 
-    return { statusCode: 200, response };
+    return { statusCode: 200, response: { data } };
   },
 );

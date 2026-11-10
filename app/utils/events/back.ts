@@ -23,8 +23,26 @@ function isNewDataItem(value: unknown): value is LegacyDataId<NewDataItem> {
   );
 }
 
-async function importAndRender(item: LegacyDataId<NewDataItem>): Promise<void> {
-  await importItem(item);
+function isSavedDataPayload(
+  value: unknown,
+): value is { data: [LegacyDataId<NewDataItem>, ...LegacyDataId<NewDataItem>[]] } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "data" in value &&
+    Array.isArray(value.data) &&
+    value.data.length > 0 &&
+    value.data.every((item) => isNewDataItem(item))
+  );
+}
+
+// One file may hold several objects: all are imported, then the scene is rendered once
+async function importAllAndRender(items: readonly LegacyDataId<NewDataItem>[]): Promise<void> {
+  await Promise.all(
+    items.map(async (item) => {
+      await importItem(item);
+    }),
+  );
   await getHybridViewerStore().remoteRender();
 }
 
@@ -32,14 +50,17 @@ const backEventHandlers = {
   [opengeodeweb_back_schemas.opengeodeweb_back.save_viewable_file.$id]: async (
     payload: unknown,
   ): Promise<void> => {
-    if (!isNewDataItem(payload)) {
+    if (!isSavedDataPayload(payload)) {
       consola.error("[GEODE] Invalid save_viewable_file payload:", payload);
       return;
     }
     consola.debug("[GEODE] save_viewable_file:", payload);
-    const imported = importAndRender(payload);
-    trackImport(payload.id, imported);
-    await imported;
+    const rendered = importAllAndRender(payload.data);
+    // Each id is awaited by the controller until the final render is done
+    for (const item of payload.data) {
+      trackImport(item.id, rendered);
+    }
+    await rendered;
   },
 };
 

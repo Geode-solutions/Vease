@@ -83,14 +83,14 @@ describe("events/index", () => {
     });
 
     test("dispatches a matching event to its handler", async () => {
-      const payload = { id: "item-1", viewer_type: "model", geode_object_type: "BRep" };
+      const item = { id: "item-1", viewer_type: "model", geode_object_type: "BRep" };
       getEventSourceState().event.value = saveViewableFileId;
-      getEventSourceState().data.value = JSON.stringify(payload);
+      getEventSourceState().data.value = JSON.stringify({ data: [item] });
 
       connectToEventSource();
       await flushPromises();
 
-      expect(importItem).toHaveBeenCalledWith(payload);
+      expect(importItem).toHaveBeenCalledWith(item);
       expect(remoteRenderMock).toHaveBeenCalledWith();
     });
 
@@ -98,12 +98,12 @@ describe("events/index", () => {
       connectToEventSource();
       await flushPromises();
 
-      const payload = { id: "item-2", viewer_type: "model", geode_object_type: "BRep" };
+      const item = { id: "item-2", viewer_type: "model", geode_object_type: "BRep" };
       getEventSourceState().event.value = saveViewableFileId;
-      getEventSourceState().data.value = JSON.stringify(payload);
+      getEventSourceState().data.value = JSON.stringify({ data: [item] });
       await flushPromises();
 
-      expect(importItem).toHaveBeenCalledWith(payload);
+      expect(importItem).toHaveBeenCalledWith(item);
     });
 
     test("logs and skips a malformed JSON payload instead of throwing", async () => {

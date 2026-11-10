@@ -39,11 +39,13 @@ describe("useCrs composable", () => {
     expect(request).toHaveBeenCalledWith(
       expect.objectContaining({ params: { id: "item-1", ...LAMBERT } }),
     );
-    expect(calls).toStrictEqual(["request", "update", "reload", "focus"]);
-    expect(useDataStore().updateItem).toHaveBeenCalledWith("item-1", {
-      binary_light_viewable: "light",
-      crs: LAMBERT,
-    });
+    // The actor is rebuilt from the moved geometry before the CRS is stored: a basemap built
+    // On the new CRS must never read the previous coordinates
+    expect(calls).toStrictEqual(["request", "update", "reload", "update", "focus"]);
+    expect(vi.mocked(useDataStore().updateItem).mock.calls).toStrictEqual([
+      ["item-1", { binary_light_viewable: "light" }],
+      ["item-1", { crs: LAMBERT }],
+    ]);
     expect(focusCameraOnObject).toHaveBeenCalledWith("item-1");
     // The geometry moved: the local actor must be rebuilt
     expect(reloadObject).toHaveBeenCalledWith("item-1", { rebuildActor: true });
@@ -52,7 +54,7 @@ describe("useCrs composable", () => {
   test("convertCrs without focus does not move the camera", async () => {
     await useCrs().convertCrs(item, LAMBERT, { focus: false });
 
-    expect(calls).toStrictEqual(["request", "update", "reload"]);
+    expect(calls).toStrictEqual(["request", "update", "reload", "update"]);
     expect(focusCameraOnObject).not.toHaveBeenCalled();
   });
 
@@ -83,7 +85,7 @@ describe("useCrs composable", () => {
         },
       }),
     );
-    expect(calls).toStrictEqual(["request", "update", "reload", "focus"]);
+    expect(calls).toStrictEqual(["request", "update", "reload", "update", "focus"]);
   });
 
   test("alignCrs aligns the linked items in the same request", async () => {
@@ -107,10 +109,19 @@ describe("useCrs composable", () => {
     expect(request.mock.calls[0]?.[0].params).toMatchObject({ linked_ids: ["item-2"] });
     expect(useDataStore().updateItem).toHaveBeenCalledWith("item-2", {
       binary_light_viewable: "wells light",
-      crs: LAMBERT,
     });
+    expect(useDataStore().updateItem).toHaveBeenCalledWith("item-2", { crs: LAMBERT });
     // The camera focuses on the aligned item only, once every item is reloaded
-    expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
+    expect(calls).toStrictEqual([
+      "request",
+      "update",
+      "reload",
+      "update",
+      "update",
+      "reload",
+      "update",
+      "focus",
+    ]);
   });
 
   test("convertCrs converts the linked items in the same request", async () => {
@@ -130,8 +141,17 @@ describe("useCrs composable", () => {
     expect(request.mock.calls[0]?.[0].params).toMatchObject({ linked_ids: ["item-2"] });
     expect(useDataStore().updateItem).toHaveBeenCalledWith("item-2", {
       binary_light_viewable: "wells light",
-      crs: LAMBERT,
     });
-    expect(calls).toStrictEqual(["request", "update", "reload", "update", "reload", "focus"]);
+    expect(useDataStore().updateItem).toHaveBeenCalledWith("item-2", { crs: LAMBERT });
+    expect(calls).toStrictEqual([
+      "request",
+      "update",
+      "reload",
+      "update",
+      "update",
+      "reload",
+      "update",
+      "focus",
+    ]);
   });
 });

@@ -1,7 +1,7 @@
 import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { loadLaunchFiles, waitForAppReady } from "~~/utils/launch_files";
+import { loadFile, loadLaunchFiles, waitForAppReady } from "~~/utils/launch_files";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -27,7 +27,9 @@ vi.mock(import("node:fs"), async (importOriginal) => {
 });
 
 function loadResponse(): Response {
-  return Response.json({ response: { id: "id", name: "name", geode_object_type: "BRep" } });
+  return Response.json({
+    response: { data: [{ id: "id", name: "name", geode_object_type: "BRep" }] },
+  });
 }
 
 describe("launch files (electron main process) utils", () => {
@@ -54,6 +56,29 @@ describe("launch files (electron main process) utils", () => {
       mocks.getIsAppReady.mockResolvedValue({ isReady: false });
 
       await expect(waitForAppReady(BASE_URL, -1)).rejects.toThrow("App not ready");
+    });
+  });
+
+  describe("loadFile()", () => {
+    const fetchMock = vi.fn<typeof fetch>();
+
+    beforeEach(() => {
+      vi.stubGlobal("fetch", fetchMock);
+      mocks.openAsBlob.mockResolvedValue(new Blob(["data"]));
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    test("returns every data loaded from the file", async () => {
+      const items = [
+        { id: "id-1", name: "first_surf", geode_object_type: "TriangulatedSurface3D" },
+        { id: "id-2", name: "second_surf", geode_object_type: "TriangulatedSurface3D" },
+      ];
+      fetchMock.mockResolvedValueOnce(Response.json({ response: { data: items } }));
+
+      await expect(loadFile(BASE_URL, "/data/two.ts")).resolves.toStrictEqual(items);
     });
   });
 

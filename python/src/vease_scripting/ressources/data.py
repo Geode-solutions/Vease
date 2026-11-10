@@ -24,8 +24,10 @@ class DataResource(Resource):
         return self.client.get(self.route("details"), params={"id": id})
 
     def load(self, filename: str) -> dict[str, Any]:
-        """Load a file and return the loaded data, with its id.
+        """Load a file and return the loaded data: one file may hold several objects.
 
+        Returns {"data": [{"id": ..., "name": ..., "geode_object_type": ..., ...}, ...]},
+        one entry per object of the file, each ready to style.
         A .vease file imports the whole project instead and returns {"project": filename},
         without id: read the imported data with list().
         """

@@ -227,7 +227,7 @@ async function waitForAppReady(appUrl, deadline) {
 /**
  * @param {string} appUrl
  * @param {string} filePath
- * @returns {Promise<LoadedData>}
+ * @returns {Promise<LoadedData[]>}
  */
 async function loadData(appUrl, filePath) {
   const step = "Load data";
@@ -237,12 +237,16 @@ async function loadData(appUrl, filePath) {
     method: "POST",
     body: form,
   });
-  const data = readField(step, json, "response");
-  return {
+  const loaded = readField(step, readField(step, json, "response"), "data");
+  if (!Array.isArray(loaded)) {
+    throw new TypeError(`${step}: "data" is not a list in response ${JSON.stringify(json)}`);
+  }
+  // One file may hold several objects: one entry per loaded data
+  return loaded.map((data) => ({
     id: readString(step, data, "id"),
     name: readString(step, data, "name"),
     geodeObjectType: readString(step, data, "geode_object_type"),
-  };
+  }));
 }
 
 async function main() {
@@ -264,8 +268,10 @@ async function main() {
   await waitForAppReady(appUrl, Date.now() + READY_TIMEOUT_MINUTES * MILLISECONDS_IN_MINUTE);
 
   consola.start(`Loading ${filePath}`);
-  const data = await loadData(appUrl, filePath);
-  consola.success(`Loaded ${data.name} (id: ${data.id}, type: ${data.geodeObjectType})`);
+  const loaded = await loadData(appUrl, filePath);
+  for (const data of loaded) {
+    consola.success(`Loaded ${data.name} (id: ${data.id}, type: ${data.geodeObjectType})`);
+  }
 
   consola.box(`Vease is running on ${host}\nClose the browser tab to let the instance shut down.`);
 }

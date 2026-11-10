@@ -103,7 +103,49 @@
               "statusCode": {
                 "type": "integer"
               },
-              "response": {}
+              "response": {
+                "oneOf": [
+                  {
+                    "title": "ControllerDataLoadedData",
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "title": "ControllerDataLoadedItem",
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "geode_object_type": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["id", "name", "geode_object_type"]
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": ["data"],
+                    "additionalProperties": false
+                  },
+                  {
+                    "title": "ControllerDataLoadedProject",
+                    "type": "object",
+                    "properties": {
+                      "project": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["project"],
+                    "additionalProperties": false
+                  }
+                ]
+              }
             },
             "required": ["statusCode", "response"],
             "additionalProperties": false

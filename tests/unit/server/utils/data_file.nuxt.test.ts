@@ -128,7 +128,7 @@ describe("server/utils/data_file", () => {
 
   describe("saveViewableFile()", () => {
     test("requests the back microservice to save the viewable file", async () => {
-      vi.mocked(fetchSchema).mockResolvedValue({ id: "item-1" });
+      vi.mocked(fetchSchema).mockResolvedValue({ data: [{ id: "item-1" }] });
 
       const result = await saveViewableFile("model.msh", "BRep");
 
@@ -140,7 +140,7 @@ describe("server/utils/data_file", () => {
         headers: undefined,
         timeout: undefined,
       });
-      expect(result).toStrictEqual({ id: "item-1" });
+      expect(result).toStrictEqual({ data: [{ id: "item-1" }] });
     });
   });
 });

@@ -128,9 +128,15 @@ def test_data_list_and_details():
 def test_data_load_uploads_the_file(tmp_path: Path):
     file = tmp_path / "surface.og_tsf3d"
     file.write_bytes(b"content")
-    client = FakeClient({"id": DATA_ID})
+    loaded = {
+        "data": [
+            {"id": DATA_ID, "name": "first", "geode_object_type": "TriangulatedSurface3D"},
+            {"id": OTHER_ID, "name": "second", "geode_object_type": "TriangulatedSurface3D"},
+        ]
+    }
+    client = FakeClient(loaded)
 
-    assert DataResource(client).load(str(file)) == {"id": DATA_ID}
+    assert DataResource(client).load(str(file)) == loaded
 
     method, path, kwargs = client.calls[0]
     assert (method, path) == ("POST", "/data/load")
