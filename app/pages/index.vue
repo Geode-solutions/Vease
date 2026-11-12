@@ -24,7 +24,6 @@ const { containerWidth, containerHeight, openTreeMenu, openViewerMenu } = useVie
         <template #ui>
           <ViewerUI
             ref="viewerUI"
-            class="viewer-ui-layer"
             :display-menu="display_menu"
             :container-width="containerWidth"
             :container-height="containerHeight"
@@ -35,10 +34,3 @@ const { containerWidth, containerHeight, openTreeMenu, openViewerMenu } = useVie
     </div>
   </InfraConnected>
 </template>
-
-<style scoped>
-:deep(.viewer-ui-layer),
-:deep(.viewer-ui-layer .v-navigation-drawer) {
-  z-index: 5 !important;
-}
-</style>
