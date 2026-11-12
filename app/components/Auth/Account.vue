@@ -66,9 +66,9 @@ const showDeleteAccount = ref(false);
         </v-row>
       </v-sheet>
     </v-col>
+    <!-- Inside the row: the dialog is teleported, and a single root lets the page attributes reach the row -->
+    <AuthDeleteAccountDialog v-model="showDeleteAccount" />
   </v-row>
-
-  <AuthDeleteAccountDialog v-model="showDeleteAccount" />
 </template>
 
 <style scoped>
