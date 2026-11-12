@@ -27,16 +27,19 @@ watch(
 );
 </script>
 <template>
-  <Launcher
-    v-if="infraStore.status != Status.CREATED"
-    app-name="Vease"
-    logo="/logo.png"
-    :isUserAuthenticated="isUserAuthenticated"
-    :auth-token="authToken"
-  >
-    <template #auth>
-      <AuthWrapper />
-    </template>
-  </Launcher>
-  <NuxtPage v-else style="z-index: 1" class="fill-height" />
+  <!-- NuxtPage is always rendered (Nuxt warns otherwise): the page itself only mounts once the infra is created -->
+  <NuxtPage v-slot="{ Component }">
+    <Launcher
+      v-if="infraStore.status != Status.CREATED"
+      app-name="Vease"
+      logo="/logo.png"
+      :isUserAuthenticated="isUserAuthenticated"
+      :auth-token="authToken"
+    >
+      <template #auth>
+        <AuthWrapper />
+      </template>
+    </Launcher>
+    <component :is="Component" v-else style="z-index: 1" class="fill-height" />
+  </NuxtPage>
 </template>
