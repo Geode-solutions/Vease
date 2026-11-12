@@ -12,6 +12,7 @@ import { consola } from "consola";
 
 // Local imports
 import { navigateToApp } from "./navigate";
+import { takeFrameworkWarnings } from "./framework_warnings";
 import { waitForActionSettled } from "./wait_for_action_settled";
 
 const MILLISECONDS_PER_SECOND = 1000;
@@ -40,6 +41,7 @@ interface TestFixtures {
   screenshotMask: ScreenshotMask;
   logTestProgress: undefined;
   autoScreenshot: undefined;
+  noFrameworkWarnings: undefined;
 }
 
 const test = base.extend<TestFixtures, WorkerFixtures>({
@@ -124,6 +126,19 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       consola.info(
         `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}TEST ${status}\u001B[0m (${duration}s)`,
       );
+    },
+    { auto: true },
+  ],
+
+  // Fails a passing test on any Vue (Vuetify included) or Nuxt warning emitted during it: the first test of a worker also gets the app startup ones.
+  // Vue's are only there when built with VUE_DEV_WARNINGS (build:browser)
+  noFrameworkWarnings: [
+    async ({ app: _app }, use, testInfo): Promise<void> => {
+      await use(undefined);
+      const warnings = takeFrameworkWarnings();
+      if (testInfo.status === testInfo.expectedStatus) {
+        expect(warnings, "Vue or Nuxt warnings were emitted").toEqual([]);
+      }
     },
     { auto: true },
   ],

@@ -61,7 +61,7 @@
     "prebuild": "bash -c 'if [ -f ../../OpenGeodeWeb/OpenGeodeWeb-Front/package.json ]; then npm run build -w @geode/opengeodeweb-front; fi'",
     "build": "npm run prepare:types && rolldown -c rolldown.config.ts",
     "build:front": "nuxi build",
-    "build:browser": "npm run build && cross-env MODE=BROWSER npm run build:front",
+    "build:browser": "npm run build && cross-env MODE=BROWSER VUE_DEV_WARNINGS=true npm run build:front",
     "build:cloud": "cross-env MODE=CLOUD npm run build:front",
     "build:cloud_server": "cross-env MODE=CLOUD_SERVER npm run build:front",
     "build:desktop": "npm run package",
