@@ -25,4 +25,23 @@ describe("the transformExtensionCode utility", () => {
 
     expect(outputCode).toBe("const store = globalThis.__VEASE_STORES__.useInfraStore();");
   });
+
+  test("transforms dexie imports to the dexie of the app", async () => {
+    globalThis.DexieModule = await import("dexie");
+    const inputCode = 'import { liveQuery } from "dexie";';
+    const outputCode = decodeURIComponent(transformExtensionCode(inputCode));
+
+    expect(outputCode).toContain("export default DexieModule.default;");
+    expect(outputCode).toContain("export const liveQuery = DexieModule.liveQuery;");
+    expect(outputCode).not.toContain("export const default");
+  });
+
+  test("transforms database imports to the database of the app", () => {
+    const inputCode =
+      'import { Database, database } from "@geode/opengeodeweb-front/internal/database/database.js";';
+    const outputCode = decodeURIComponent(transformExtensionCode(inputCode));
+
+    expect(outputCode).toContain("export const Database = globalThis.__VEASE_UTILS__.Database;");
+    expect(outputCode).toContain("export const database = globalThis.__VEASE_UTILS__.database;");
+  });
 });
