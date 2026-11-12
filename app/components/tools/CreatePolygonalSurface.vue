@@ -79,7 +79,7 @@ const {
             </v-btn>
           </div>
 
-          <v-row dense :data-testid="'point-' + index">
+          <v-row density="compact" :data-testid="'point-' + index">
             <v-col v-for="coord in ['x', 'y', 'z']" :key="coord" cols="4">
               <v-text-field
                 v-model="point[coord]"
@@ -109,7 +109,7 @@ const {
           </v-row>
           <v-divider v-if="index < points.length - 1" class="mt-1 opacity-20" />
         </div>
-        <v-row dense class="mt-2">
+        <v-row density="compact" class="mt-2">
           <v-col cols="6">
             <v-btn
               variant="outlined"

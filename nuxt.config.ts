@@ -244,6 +244,14 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    // VUE_DEV_WARNINGS keeps Vue's dev warnings (and Vuetify's, which go through them) in a production build,
+    // So the e2e tests can fail on them. Set by build:browser only, release builds stay untouched
+    "vite:extendConfig": (config, { isClient }) => {
+      if (process.env.VUE_DEV_WARNINGS !== "true" || !isClient) {
+        return;
+      }
+      config.define = { ...config.define, "process.env.NODE_ENV": JSON.stringify("development") };
+    },
     // The build dir isn't always .nuxt (some runs use node_modules/.cache/nuxt/.nuxt),
     // And tsConfig paths are relative to it
     ready: (nuxt) => {

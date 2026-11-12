@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateTools from "@vease/components/CreateTools.vue";
 import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
+import { markRaw } from "vue";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -35,11 +36,12 @@ describe("the CreateTools component", () => {
         description: TOOL_DESC_ONE,
         iconType: "mdi",
         iconSource: "mdi-pencil",
-        component: {
+        // Raw like the tools registered by the app (plugins/tools.client.ts): a reactive component makes Vue warn
+        component: markRaw({
           name: DUMMY_COMPONENT_NAME,
           template:
             "<div class='tool-component-stub'><button class='created-btn' @click='$emit(\"created\")'>Create</button><button class='close-btn' @click='$emit(\"close\")'>Close</button></div>",
-        },
+        }),
       },
     ];
     uiStore.showCreateTools = true;

@@ -163,7 +163,7 @@ function removeExtension(): void {
             </v-chip>
           </div>
 
-          <v-row dense>
+          <v-row density="compact">
             <v-col v-for="(extension, index) in loadedExtensions" :key="index" cols="12">
               <v-scale-transition :delay="index * 50">
                 <v-expansion-panels variant="accordion" class="bg-transparent">

@@ -18,6 +18,7 @@ import {
 import { openCloudApp } from "./navigate_cloud";
 import { runDesktopBuild } from "./navigate_desktop";
 import { waitForAppReady } from "./navigate_ready";
+import { watchFrameworkWarnings } from "./framework_warnings";
 // oxlint-disable-next-line no-relative-parent-imports
 import { logBrowserConsole } from "../../../utils/browser_console";
 
@@ -45,6 +46,7 @@ async function navigateToApp(
   // The desktop app is driven through Electron: no browser is launched
   if (mode === "DESKTOP") {
     const { electronApp, firstWindow } = await runDesktopBuild();
+    watchFrameworkWarnings(firstWindow);
     consola.info(`Waiting for ${WAIT_TIMES.desktop / MILLISECONDS} seconds for the app to load...`);
     await firstWindow.waitForFunction(() => document.readyState === "complete");
     return {
@@ -63,6 +65,7 @@ async function navigateToApp(
   page.on("console", (msg) => {
     logBrowserConsole(msg.type(), msg.text(), "Browser console: ");
   });
+  watchFrameworkWarnings(page);
   if (mode === "BROWSER") {
     const nuxtPort = await runBrowser("preview:browser");
     const appUrl = `http://localhost:${nuxtPort}`;
