@@ -15,7 +15,8 @@ import { test } from "@vease_tests/utils/fixtures";
 // Constants
 // This VTU file holds one triangle and one tetrahedron: each content becomes its own data
 const MIXED_CONTENT_FILE = "mixed_polygons_polyhedra.vtu";
-const MIXED_CONTENT_NAME = "mixed_polygons_polyhedra";
+// The tree truncates long names in the middle: match the visible start of the file name
+const MIXED_CONTENT_NAME_START = "mixed_polygo";
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -29,5 +30,5 @@ test("load every content of a multi-content file", async ({ window }) => {
   ).toBeVisible();
   await expect(treeRows.filter({ hasText: tetrahedralSolidGeodeObjectType }).first()).toBeVisible();
   // One data per content, both named after the file
-  await expect(treeRows.filter({ hasText: MIXED_CONTENT_NAME }).nth(1)).toBeVisible();
+  await expect(treeRows.filter({ hasText: MIXED_CONTENT_NAME_START })).toHaveCount(2);
 });
