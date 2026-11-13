@@ -72,7 +72,7 @@ describe("the POST /api/controller/data/load endpoint", () => {
     vi.spyOn(consola, "error").mockReturnValue(undefined);
     vi.mocked(getAllowedFileExtensions).mockResolvedValue(["msh", "vtk"]);
     vi.mocked(uploadFile).mockResolvedValue(undefined);
-    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue("BRep");
+    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue(["BRep"]);
     vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM] });
     vi.mocked(dispatchCommand).mockReset();
     vi.mocked(dispatchCommand).mockResolvedValue({ id: "item-1" });
@@ -86,19 +86,25 @@ describe("the POST /api/controller/data/load endpoint", () => {
     expect(result).toStrictEqual({ statusCode: 200, response: { data: [ITEM] } });
   });
 
-  test("returns every object saved from a multi-object file", async () => {
+  test("saves the file once per geode object type of a multi-content file", async () => {
+    const types = ["TriangulatedSurface3D", "TetrahedralSolid3D"];
+    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue(types);
+    // The first save returns OTHER_ITEM, the next ones the default ITEM
+    vi.mocked(saveViewableFile).mockResolvedValueOnce({ data: [OTHER_ITEM] });
+
+    const result = await handler(eventWithFile("mesh.vtk"));
+
+    expect(saveViewableFile).toHaveBeenNthCalledWith(1, "mesh.vtk", types[0]);
+    expect(saveViewableFile).toHaveBeenNthCalledWith(2, "mesh.vtk", types[1]);
+    expect(result).toStrictEqual({ statusCode: 200, response: { data: [OTHER_ITEM, ITEM] } });
+  });
+
+  test("returns and awaits every object saved from a multi-object file", async () => {
     vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM, OTHER_ITEM] });
 
     const result = await handler(eventWithFile("model.msh"));
 
     expect(result).toStrictEqual({ statusCode: 200, response: { data: [ITEM, OTHER_ITEM] } });
-  });
-
-  test("answers once the browser imported every saved object", async () => {
-    vi.mocked(saveViewableFile).mockResolvedValue({ data: [ITEM, OTHER_ITEM] });
-
-    await handler(eventWithFile("model.msh"));
-
     expect(vi.mocked(dispatchCommand).mock.calls).toStrictEqual([
       ["await-data", { id: "item-1" }, { timeout: LONG_COMMAND_TIMEOUT_MS }],
       ["await-data", { id: "item-2" }, { timeout: LONG_COMMAND_TIMEOUT_MS }],
@@ -199,7 +205,7 @@ describe("the POST /api/controller/data/load endpoint", () => {
   });
 
   test("returns a 400 error response when no allowed geode object type is found after upload", async () => {
-    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue(undefined);
+    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue([]);
 
     await expect(runHandler(eventWithFile("model.msh"))).resolves.toMatchObject({
       body: { code: BAD_REQUEST, name: "No allowed geode object type found for file" },
