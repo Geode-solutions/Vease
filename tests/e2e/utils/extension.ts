@@ -4,10 +4,10 @@ import path from "node:path";
 // Third party imports
 import type { Page } from "@playwright/test";
 import { consola } from "consola";
-import { waitForLoadingScreen } from "./other";
+import { waitForLoadingScreen } from "#ogw_e2e/other.js";
 
 // Local imports
-import { modalTransitionWait } from "./constants";
+import { modalTransitionWait } from "#ogw_e2e/constants.js";
 import { navigateToExtensionsPage } from "./navigate";
 
 async function loadExtension(window: Page, extensionFilePath: string): Promise<void> {

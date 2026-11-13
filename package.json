@@ -30,6 +30,9 @@
   ],
   "type": "module",
   "main": "dist-electron/main.js",
+  "imports": {
+    "#ogw_e2e/*": "@geode/opengeodeweb-front/tests/browser/helpers/*"
+  },
   "exports": {
     "./vease_schemas.json": {
       "import": "./vease_schemas.json",

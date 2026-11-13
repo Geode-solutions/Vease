@@ -1,7 +1,7 @@
 import { type Page, expect } from "@playwright/test";
 import type { ElectronApplication } from "playwright";
-import { closeFeedbackSnackbar } from "./app_interaction";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const importProjectTimeout = 20_000;
 const downloadTimeout = 30_000;

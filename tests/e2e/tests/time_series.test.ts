@@ -1,36 +1,36 @@
 // Third party imports
-import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "@vease_tests/utils/constants";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+import { brepGeodeObjectType, polygonalSurfaceGeodeObjectType } from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import {
   closeModelComponentsTree,
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
-} from "@vease_tests/utils/object_trees/model_components_object_tree";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import {
   closeObjectsTree,
   expandMainObjectTree,
   getMainObjectTree,
   openObjectsTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
-import { getQuickColormapPicker, viewerQuickColormap } from "@vease_tests/utils/viewer_interaction";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
+import { getQuickColormapPicker, viewerQuickColormap } from "#ogw_e2e/viewer_interaction.js";
 import {
   removeThresholdFilter,
   selectThresholdSurfacePolygon,
   setThresholdMinimum,
   toggleThresholdFilter,
-} from "@vease_tests/utils/camera_interaction";
+} from "#ogw_e2e/camera_interaction.js";
 import {
   setMeshPolygonsTimeStep,
   setMeshPolygonsVertexAttribute,
   setModelEdgesEdgeAttribute,
   setModelPolygonsPolygonAttribute,
   setModelTimeStep,
-} from "@vease_tests/utils/data";
-import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+} from "#ogw_e2e/data/index.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { setFeatureTimeStep } from "@vease_tests/utils/data/helpers/attribute";
+import { setFeatureTimeStep } from "#ogw_e2e/data/helpers/attribute.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

@@ -47,12 +47,12 @@ import {
   brepGeodeObjectType,
   edgedCurveGeodeObjectType,
   pointSetGeodeObjectType,
-} from "@vease_tests/utils/constants";
+} from "#ogw_e2e/constants.js";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
-import { moveMouseOutOfTheWay } from "@vease_tests/utils/viewer_interaction";
+import { moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });

@@ -12,7 +12,7 @@ import { consola } from "consola";
 
 // Local imports
 import { navigateToApp } from "./navigate";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const MILLISECONDS_PER_SECOND = 1000;
 

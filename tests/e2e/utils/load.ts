@@ -6,7 +6,7 @@ import { type Locator, type Page, expect } from "@playwright/test";
 import { consola } from "consola";
 
 // Local imports
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const __dirname = import.meta.dirname;
 const loadWorkflowTimeout = 8000;

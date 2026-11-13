@@ -4,11 +4,14 @@
 import { type Locator, type Page, expect } from "@playwright/test";
 
 // Local imports
-import { expandGeodeObjectTypeInTree, getTreeRowByTextAndParent } from "./object_trees/common";
-import { closeFeedbackSnackbar } from "./app_interaction";
+import {
+  expandGeodeObjectTypeInTree,
+  getTreeRowByTextAndParent,
+} from "#ogw_e2e/object_trees/common.js";
+import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
 import { getDataTableRow } from "./data_manager";
-import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 async function expectDataRows(window: Page, itemNames: string[]): Promise<void> {
   // oxlint-disable no-await-in-loop

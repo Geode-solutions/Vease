@@ -4,8 +4,8 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { defaultDataName, pointSetGeodeObjectType } from "@vease_tests/utils/constants";
-import { expandMainObjectTree } from "@vease_tests/utils/object_trees/main_object_tree";
+import { defaultDataName, pointSetGeodeObjectType } from "#ogw_e2e/constants.js";
+import { expandMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { loadVeaseCsvData } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 
