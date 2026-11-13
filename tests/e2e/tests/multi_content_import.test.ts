@@ -7,8 +7,8 @@ import { expect } from "@playwright/test";
 import {
   tetrahedralSolidGeodeObjectType,
   triangulatedSurfaceGeodeObjectType,
-} from "@vease_tests/utils/constants";
-import { expandMainObjectTree } from "@vease_tests/utils/object_trees/main_object_tree";
+} from "#ogw_e2e/constants.js";
+import { expandMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 
