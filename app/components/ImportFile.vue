@@ -21,8 +21,8 @@ const {
   skippedFiles = [],
 } = defineProps<{
   filenames: string[];
-  // Filename -> type; files without a type are not supported and are skipped
-  geodeObjectTypes: Record<string, string>;
+  // Filename -> types (a file can hold several contents); files without a type are skipped
+  geodeObjectTypes: Record<string, string[]>;
   skippedFiles?: string[];
 }>();
 
@@ -40,11 +40,11 @@ async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promis
 
 async function import_files(): Promise<void> {
   const files_to_import = filenames.flatMap((filename) => {
-    const geode_object_type = geodeObjectTypes[filename];
-    if (geode_object_type === undefined || skippedFiles.includes(filename)) {
+    const types = geodeObjectTypes[filename];
+    if (types === undefined || skippedFiles.includes(filename)) {
       return [];
     }
-    return [{ filename, geode_object_type }];
+    return types.map((geode_object_type) => ({ filename, geode_object_type }));
   });
   const left_out = filenames.filter(
     (filename) => !files_to_import.some((file) => file.filename === filename),
