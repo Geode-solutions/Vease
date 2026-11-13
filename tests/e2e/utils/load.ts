@@ -51,6 +51,54 @@ function getDataImportStepper(window: Page): Locator {
   return window.getByTestId("DataImportStepper");
 }
 
+interface CsvColumns {
+  x: string;
+  y: string;
+  z: string;
+}
+
+async function selectCsvColumn(
+  window: Page,
+  csvDialog: Locator,
+  label: string,
+  column: string,
+): Promise<void> {
+  await csvDialog.locator(".v-select").filter({ hasText: label }).click();
+  await window.getByRole("option", { name: column, exact: true }).click();
+  // The closing menu stays in the DOM during its transition and would duplicate the next options
+  await expect(window.getByRole("option")).toHaveCount(0);
+}
+
+// A CSV opens the previewer dialog: map the coordinate columns, then Confirm uploads the JSON sidecar
+async function loadVeaseCsvData(
+  window: Page,
+  inputDataFilename: string,
+  columns: CsvColumns,
+  { loadTimeout = loadWorkflowTimeout }: { loadTimeout?: number } = {},
+): Promise<void> {
+  const inputDataFilePath = path.join(__dirname, "..", "tests", "data", inputDataFilename);
+  consola.info(`Loading CSV ${inputDataFilePath}`);
+  const layoutImportButton = getLayoutImportButton(window);
+  await expect(layoutImportButton).toBeEnabled({ timeout: 20_000 });
+  await layoutImportButton.click();
+  const fileInput = window.locator('input[type="file"][accept*=".csv"]');
+  await fileInput.waitFor({ state: "attached" });
+  await fileInput.setInputFiles(inputDataFilePath);
+  const csvDialog = window
+    .locator(".v-dialog")
+    .filter({ hasText: "CSV Previewer & Configuration" });
+  await csvDialog.waitFor();
+  await selectCsvColumn(window, csvDialog, "X Column", columns.x);
+  await selectCsvColumn(window, csvDialog, "Y Column", columns.y);
+  await selectCsvColumn(window, csvDialog, "Z Column", columns.z);
+  await csvDialog.getByRole("button", { name: "Confirm" }).click();
+  await csvDialog.waitFor({ state: "detached" });
+  const dataImportStepper = getDataImportStepper(window);
+  await window.getByTestId("finalizeImportButton").click();
+  await dataImportStepper.waitFor({ state: "detached" });
+  await waitForActionSettled(window, loadTimeout);
+}
+
 async function selectTimeSeriesFile(window: Page, timeSeriesPath: string): Promise<void> {
   consola.info(`Importing time series ${timeSeriesPath}`);
   await getLayoutImportButton(window).click();
@@ -85,6 +133,7 @@ async function applyTimeSeries(window: Page, loadTimeout = loadWorkflowTimeout):
 
 export {
   applyTimeSeries,
+  loadVeaseCsvData,
   loadVeaseTestDatas,
   selectTimeSeriesFile,
   selectTimeSeriesFolder,

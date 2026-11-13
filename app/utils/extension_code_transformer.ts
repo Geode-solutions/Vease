@@ -1,6 +1,7 @@
 declare global {
   var Vue: Record<string, unknown> | undefined;
   var Pinia: Record<string, unknown> | undefined;
+  var DexieModule: Record<string, unknown> | undefined;
   var __VEASE_STORES__: Record<string, unknown> | undefined;
   var __VEASE_UTILS__: Record<string, unknown> | undefined;
   var __VEASE_SCHEMAS__: Record<string, unknown> | undefined;
@@ -25,6 +26,18 @@ function transformCoreImports(code: string): string {
       export default Pinia;
       ${Object.keys(globalThis.Pinia ?? {})
         .map((key) => `export const ${key} = Pinia.${key};`)
+        .join("")}
+    `)}"`,
+  );
+
+  transformedCode = transformedCode.replaceAll(
+    /from\s+["']dexie["']/gu,
+    `from "data:text/javascript,${encodeURIComponent(`
+      const DexieModule = globalThis.DexieModule;
+      export default DexieModule.default;
+      ${Object.keys(globalThis.DexieModule ?? {})
+        .filter((key) => key !== "default")
+        .map((key) => `export const ${key} = DexieModule.${key};`)
         .join("")}
     `)}"`,
   );
@@ -80,6 +93,7 @@ function transformUtilImports(code: string): string {
   transformedCode = transformedCode.replaceAll(
     /from\s+["']@geode\/opengeodeweb-front\/internal\/database\/database\.js["']/gu,
     `from "data:text/javascript,${encodeURIComponent(`
+      export const Database = globalThis.__VEASE_UTILS__.Database;
       export const database = globalThis.__VEASE_UTILS__.database;
     `)}"`,
   );

@@ -3,6 +3,8 @@
 
 ![App Screenshot](./docs/model_from_implicitation.png)
 
+[![Mentioned in Awesome Mineral Exploration](https://awesome.re/mentioned-badge.svg)](https://github.com/XploraHub/awesome-mineral-exploration)
+
 # What is Vease?
 
 - **Desktop**: Easily installable on your computer
