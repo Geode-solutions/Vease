@@ -9,7 +9,6 @@ import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.jso
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
 import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
 import { getBackBaseUrl } from "@ogw_server/utils/server_config";
-import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -17,9 +16,6 @@ vi.mock(import("@ogw_shared/utils/fetch_schema"), () => ({
   fetchSchema: vi.fn<typeof fetchSchema>(),
 }));
 vi.mock(import("@ogw_shared/utils/fetch_raw"), () => ({ fetchRaw: vi.fn<typeof fetchRaw>() }));
-vi.mock(import("@ogw_shared/utils/response_handlers/load"), () => ({
-  resolveAllowedObjects: vi.fn<typeof resolveAllowedObjects>(),
-}));
 vi.mock(import("@ogw_server/utils/server_config"), () => ({
   getBackBaseUrl: vi.fn<typeof getBackBaseUrl>(),
 }));
@@ -54,15 +50,17 @@ describe("server/utils/data_file", () => {
   });
 
   describe("getAllowedGeodeObjectTypes()", () => {
-    test("resolves the selected geode object type for a filename", async () => {
-      const allowedObjects = { BRep: { is_loadable: 1 } };
+    test("returns the geode object types the back selected to load the whole file", async () => {
       vi.mocked(fetchSchema).mockResolvedValue({
-        allowed_objects: allowedObjects,
-      });
-      vi.mocked(resolveAllowedObjects).mockReturnValue({
-        mergedAllowedObjects: allowedObjects,
-        multipleFilesNoCommon: false,
-        selectedGeodeObject: "BRep",
+        allowed_objects: {
+          TriangulatedSurface3D: {
+            is_loadable: 1,
+            object_priority: 1,
+            loadable_family: "SurfaceMesh",
+          },
+          TetrahedralSolid3D: { is_loadable: 1, object_priority: 1, loadable_family: "SolidMesh" },
+        },
+        objects_to_load: ["TriangulatedSurface3D", "TetrahedralSolid3D"],
       });
 
       const result = await getAllowedGeodeObjectTypes("model.msh");
@@ -74,25 +72,27 @@ describe("server/utils/data_file", () => {
         headers: undefined,
         timeout: undefined,
       });
-      expect(resolveAllowedObjects).toHaveBeenCalledWith(["model.msh"], [allowedObjects]);
-      expect(result).toBe("BRep");
+      expect(result).toStrictEqual(["TriangulatedSurface3D", "TetrahedralSolid3D"]);
     });
 
-    test("returns undefined when no geode object type is selected", async () => {
-      vi.mocked(fetchSchema).mockResolvedValue({ allowed_objects: {} });
-      vi.mocked(resolveAllowedObjects).mockReturnValue({
-        mergedAllowedObjects: {},
-        multipleFilesNoCommon: false,
-        selectedGeodeObject: "",
-      });
+    test("returns no type when the back could not select any", async () => {
+      vi.mocked(fetchSchema).mockResolvedValue({ allowed_objects: {}, objects_to_load: [] });
 
       const result = await getAllowedGeodeObjectTypes("model.unknown");
 
-      expect(result).toBeUndefined();
+      expect(result).toStrictEqual([]);
     });
 
     test("throws when the response has an unexpected shape", async () => {
       vi.mocked(fetchSchema).mockResolvedValue({ wrong: "shape" });
+
+      await expect(getAllowedGeodeObjectTypes("model.msh")).rejects.toThrow(
+        "unexpected response shape",
+      );
+    });
+
+    test("throws when the back does not give the types to load", async () => {
+      vi.mocked(fetchSchema).mockResolvedValue({ allowed_objects: {} });
 
       await expect(getAllowedGeodeObjectTypes("model.msh")).rejects.toThrow(
         "unexpected response shape",
