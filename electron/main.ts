@@ -19,9 +19,12 @@ import { initUpdater } from "./updater";
 import { loadLaunchFiles } from "../utils/launch_files";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { registerLinuxDesktopEntry } from "../utils/desktop_icon";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { isolateInstanceSessionData } from "../utils/desktop_session_data";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
+isolateInstanceSessionData();
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let serverCleanup: (() => unknown) | undefined = undefined;
