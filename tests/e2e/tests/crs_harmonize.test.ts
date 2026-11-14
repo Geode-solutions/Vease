@@ -49,24 +49,27 @@ test("assign a crs to the model", async ({ window }) => {
 
 // Even when their coordinates fit the project crs: only the user knows the crs of the data
 test("imported data without crs stay without crs, with a warning", async ({ window }) => {
-  await loadVeaseTestDatas(window, [LAMBERT_FILE]);
-  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LAMBERT_NAME}`);
+  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LAMBERT_NAME}`, async () => {
+    await loadVeaseTestDatas(window, [LAMBERT_FILE]);
+  });
   await navigateToDataManagerPage(window);
   await expectRowCrs(window, LAMBERT_NAME, "None");
   await moveMouseOutOfTheWay(window);
 });
 
 test("imported data in another crs are converted to the project crs", async ({ window }) => {
-  await loadVeaseTestDatas(window, [UTM_FILE]);
-  await expectFeedback(window, `Converted to EPSG:2154: ${UTM_NAME}`);
+  await expectFeedback(window, `Converted to EPSG:2154: ${UTM_NAME}`, async () => {
+    await loadVeaseTestDatas(window, [UTM_FILE]);
+  });
   await navigateToDataManagerPage(window);
   await expectRowCrs(window, UTM_NAME, "EPSG:2154");
   await moveMouseOutOfTheWay(window);
 });
 
 test("imported data that fit no crs are flagged in the tree", async ({ window }) => {
-  await loadVeaseTestDatas(window, [LOCAL_FILE]);
-  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LOCAL_NAME}`);
+  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LOCAL_NAME}`, async () => {
+    await loadVeaseTestDatas(window, [LOCAL_FILE]);
+  });
   await navigateToViewerPage(window);
   await expectCrsMismatch(window, pointSetGeodeObjectType, LOCAL_NAME, true);
   await moveMouseOutOfTheWay(window);
@@ -83,8 +86,9 @@ test("select the project crs", async ({ window }) => {
 
 // An explicit choice: assigned anyway, with the warning offering to georeference
 test("assign the project crs to the data", async ({ window }) => {
-  await clickAssign(window);
-  await expectFeedback(window, "Georeference the data?");
+  await expectFeedback(window, "Georeference the data?", async () => {
+    await clickAssign(window);
+  });
   await expectCrsMismatch(window, pointSetGeodeObjectType, LOCAL_NAME, false);
   await moveMouseOutOfTheWay(window);
 });

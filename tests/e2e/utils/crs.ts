@@ -115,8 +115,19 @@ async function clickAssign(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function expectFeedback(window: Page, text: string): Promise<void> {
-  await expect(window.getByTestId("feedbackSnackbar").filter({ hasText: text })).toBeVisible();
+// The snackbar leaves after 10s: a slow basemap build (external tile servers) can outlast it while the action settles, so it is watched from before the action
+const FEEDBACK_TIMEOUT_MS = 60_000;
+
+async function expectFeedback(
+  window: Page,
+  text: string,
+  action: () => Promise<void>,
+): Promise<void> {
+  const shown = window
+    .getByTestId("feedbackSnackbar")
+    .filter({ hasText: text })
+    .waitFor({ state: "visible", timeout: FEEDBACK_TIMEOUT_MS });
+  await Promise.all([shown, action()]);
   await closeFeedbackSnackbar(window);
 }
 
