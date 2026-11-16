@@ -47,8 +47,8 @@ const defaultExpect = {
   toHaveScreenshot: {
     maxDiffPixelRatio,
     threshold,
-    // Screenshots/<test file path>/<test name>.png, named by the autoScreenshot fixture (utils/fixtures.ts)
-    pathTemplate: "./tests/screenshots/{arg}{ext}",
+    // Same folders as the tests: {testFileDir} is relative to testDir
+    pathTemplate: `./tests/screenshots/{testFileDir}/{testFileName}/{testName}.png`,
   },
 };
 
