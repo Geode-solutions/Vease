@@ -9,6 +9,7 @@ import {
   openModelComponentsTree,
 } from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import { brepGeodeObjectType } from "#ogw_e2e/constants.js";
+import { expandGeodeObjectType } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
@@ -47,6 +48,11 @@ test.describe.configure({ mode: "serial" });
 test("hovering the model tree header highlights the model", async ({ window }) => {
   test.slow();
   await loadVeaseTestDatas(window, [brepFilename]);
+  await loadVeaseTestDatas(window, [brepFilename]);
+  await expandGeodeObjectType(window, brepGeodeObjectType);
+  await expect(
+    window.getByTestId("mainObjectTree").getByTestId("treeRowWrapper").filter({ hasText: brepName }),
+  ).toHaveCount(2);
   await openModelComponentsTree(window, brepGeodeObjectType, brepName);
   await hoverNextToCloseButton(window);
   await expect(getModelTreeBox(window)).toHaveClass(/is-highlighted/u);
