@@ -28,6 +28,7 @@ const STATUS_SCHEMA_ID = "api/llm/status";
 const KILL_SCHEMA_ID = "api/llm/kill";
 const ENTITLEMENT_SCHEMA_ID = "cloud_api/ai/entitlement";
 const KEY_SCHEMA_ID = "cloud_api/ai/key";
+const LLAMA_STATUS_POLL_MILLISECONDS = 2000;
 
 const mockUser = { getIdToken: vi.fn<() => Promise<string>>().mockResolvedValue("token-123") };
 type ApiRequest = ReturnType<typeof useAPIStore>["request"];
@@ -37,8 +38,19 @@ type ApiRequest = ReturnType<typeof useAPIStore>["request"];
 const chatState = {
   userRef: ref<typeof mockUser | undefined>(undefined),
   chatStatus: ref<string>("ready"),
+  chatMessages: ref<UIMessage[]>([]),
 };
 const appRequest = vi.fn<(args: { schema: { $id: string } }) => Promise<unknown>>();
+
+function mockLlamaStatus(llamaStatus: { running: boolean; starting: boolean }): void {
+  appRequest.mockImplementation(async ({ schema }) => {
+    await Promise.resolve();
+    if (schema.$id === STATUS_SCHEMA_ID) {
+      return { statusCode: 200, ...llamaStatus };
+    }
+    return {};
+  });
+}
 
 function mockAuth(authenticated: boolean): void {
   chatState.userRef.value = authenticated ? mockUser : undefined;
@@ -81,20 +93,16 @@ function resetChatMocks(transportOptions: TransportOptions[]): void {
   transportOptions.length = 0;
   chatState.userRef = ref<typeof mockUser | undefined>(undefined);
   chatState.chatStatus = ref<string>("ready");
+  chatState.chatMessages = ref<UIMessage[]>([]);
   mockAuth(false);
-  appRequest.mockImplementation(async ({ schema }) => {
-    await Promise.resolve();
-    if (schema.$id === STATUS_SCHEMA_ID) {
-      return { statusCode: 200, running: true };
-    }
-    return {};
-  });
+  mockLlamaStatus({ running: true, starting: false });
   vi.mocked(useAppStore).mockReturnValue(
     // oxlint-disable-next-line no-unsafe-type-assertion -- simplified mock cast to full store return type, established repo pattern.
     { request: appRequest, base_url: APP_BASE_URL } as unknown as ReturnType<typeof useAppStore>,
   );
   const useChatStub = {
-    messages: ref<UIMessage[]>([]),
+    messages: chatState.chatMessages,
+    regenerate: vi.fn<() => Promise<void>>(),
     sendMessage: vi.fn<() => void>(),
     status: chatState.chatStatus,
     error: ref<Error | undefined>(undefined),
@@ -113,6 +121,7 @@ export {
   ENTITLEMENT_SCHEMA_ID,
   KEY_SCHEMA_ID,
   KILL_SCHEMA_ID,
+  LLAMA_STATUS_POLL_MILLISECONDS,
   STATUS_SCHEMA_ID,
   type TransportOptions,
   appRequest,
@@ -121,5 +130,6 @@ export {
   lastTransportOptions,
   mockAuth,
   mockCloudApi,
+  mockLlamaStatus,
   resetChatMocks,
 };
