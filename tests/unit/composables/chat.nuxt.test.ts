@@ -1,6 +1,7 @@
 import {
   APP_BASE_URL,
   KILL_SCHEMA_ID,
+  LLAMA_STATUS_POLL_MILLISECONDS,
   STATUS_SCHEMA_ID,
   type TransportOptions,
   appRequest,
@@ -8,6 +9,7 @@ import {
   chatState,
   lastTransportOptions,
   mockCloudApi,
+  mockLlamaStatus,
   resetChatMocks,
 } from "@vease_tests/utils/chat_harness";
 import { DefaultChatTransport, type UIMessage } from "ai";
@@ -97,7 +99,7 @@ describe("the useVeaseChat composable", () => {
     await flushPromises();
 
     expect(calledSchemaIds()).toStrictEqual([STATUS_SCHEMA_ID]);
-    expect(llamaStatus.value).toMatchObject({ running: true });
+    expect(llamaStatus.value).toStrictEqual({ running: true, starting: false });
   });
 
   test("refreshes the local model status once a llama answer is complete", async () => {
@@ -120,20 +122,52 @@ describe("the useVeaseChat composable", () => {
     await killLlamaServer();
 
     expect(calledSchemaIds()).toContain(KILL_SCHEMA_ID);
-    expect(llamaStatus.value).toStrictEqual({ running: false });
+    expect(llamaStatus.value).toStrictEqual({ running: false, starting: false });
+  });
+
+  test("polls the local model status while it starts, until the answer begins", async () => {
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+    mockLlamaStatus({ running: false, starting: true });
+    const { llamaStatus } = useVeaseChat();
+    await flushPromises();
+    appRequest.mockClear();
+
+    chatState.chatStatus.value = "submitted";
+    await flushPromises();
+    vi.advanceTimersByTime(LLAMA_STATUS_POLL_MILLISECONDS * 2);
+    await flushPromises();
+
+    expect(calledSchemaIds()).toStrictEqual([STATUS_SCHEMA_ID, STATUS_SCHEMA_ID]);
+    expect(llamaStatus.value).toStrictEqual({ running: false, starting: true });
+
+    chatState.chatStatus.value = "streaming";
+    await flushPromises();
+    appRequest.mockClear();
+    vi.advanceTimersByTime(LLAMA_STATUS_POLL_MILLISECONDS * 2);
+    await flushPromises();
+
+    expect(appRequest).not.toHaveBeenCalled();
+    vi.useRealTimers();
   });
 
   describe("when no user is logged in", () => {
-    test("disallows cloud AI and ignores provider toggles", async () => {
+    test("disallows cloud AI and ignores provider switches", async () => {
       const apiSpy = mockCloudApi(true);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(isCloudAiAllowed.value).toBe(false);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
       expect(apiSpy).not.toHaveBeenCalled();
+    });
+
+    test("explains that signing in is required for cloud AI", async () => {
+      const { cloudUnavailableReason, CLOUD_UNAVAILABLE_REASON } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBe(CLOUD_UNAVAILABLE_REASON.SIGNED_OUT);
     });
 
     test("sends chat requests without an authorization header", async () => {
