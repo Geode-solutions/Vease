@@ -20,6 +20,7 @@ import { getAvailablePort } from "@geode/opengeodeweb-front/server/utils/scripts
 // Local imports
 import { logBrowserConsole } from "./browser_console";
 import { windowIconPath } from "./desktop_icon";
+import { withWildcardCors } from "./desktop_cors";
 
 // Local constants
 const __dirname = import.meta.dirname;
@@ -65,15 +66,7 @@ function setupBrowserWindow(): BrowserWindow {
   });
 
   window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    const responseHeaders = { ...details.responseHeaders };
-    if (!("Access-Control-Allow-Origin" in responseHeaders)) {
-      responseHeaders["Access-Control-Allow-Origin"] = ["*"];
-      responseHeaders["Access-Control-Allow-Methods"] = ["*"];
-      responseHeaders["Access-Control-Allow-Headers"] = ["*"];
-    }
-    callback({
-      responseHeaders,
-    });
+    callback({ responseHeaders: withWildcardCors(details.responseHeaders) });
   });
 
   void window.webContents.session.clearStorageData();
