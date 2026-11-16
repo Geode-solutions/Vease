@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 
 // Third party imports
-import type { Browser, Locator, Page } from "@playwright/test";
+import type { Browser, Locator, Page, TestInfo } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
 import type { ElectronApplication } from "playwright";
@@ -12,11 +12,34 @@ import { consola } from "consola";
 
 // Local imports
 import { navigateToApp } from "./navigate";
+import { suites as ogwSuites } from "#ogw_e2e_suites/index.js";
 import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const MILLISECONDS_PER_SECOND = 1000;
 // Whole download deadline of a basemap build in OpenGeodeWeb-Back (FETCH_DEADLINE_SECONDS)
 const BUSY_TIMEOUT_MS = 30_000;
+const OGW_SUITE_TEST_FILE_EXTENSION = ".test.ts";
+
+// Same as Playwright's {testName}: every ASCII character except letters, digits and "-" becomes "-"
+function sanitizeForFilePath(name: string): string {
+  return name.replaceAll(/[^\dA-Za-z\u0080-\uFFFF-]+/gu, "-");
+}
+
+// Screenshots/<test file path>/<test name>.png: the OpenGeodeWeb-Front suites (run from opengeodeweb_front.test.ts,
+// One describe each) keep the folders of their own test files, tests/browser/tests/<suite>.test.ts
+function screenshotPath(testInfo: TestInfo): string[] {
+  const [firstTitle = "", ...otherTitles] = testInfo.titlePath.slice(1);
+  if (Object.hasOwn(ogwSuites, firstTitle)) {
+    return [
+      ...`${firstTitle}${OGW_SUITE_TEST_FILE_EXTENSION}`.split("/"),
+      `${sanitizeForFilePath(otherTitles.join(" "))}.png`,
+    ];
+  }
+  return [
+    ...path.relative(testInfo.project.testDir, testInfo.file).split(path.sep),
+    `${sanitizeForFilePath([firstTitle, ...otherTitles].join(" "))}.png`,
+  ];
+}
 
 interface ScreenshotMask {
   locators: Locator[];
@@ -28,6 +51,8 @@ interface RunningApp {
   // Only set in DESKTOP mode
   electronApp?: ElectronApplication;
   restart: () => Promise<Page>;
+  // Tests run since the app was launched
+  testsRun: number;
 }
 
 interface WorkerFixtures {
@@ -35,10 +60,11 @@ interface WorkerFixtures {
   suiteId: string;
   app: RunningApp;
   restartApp: () => Promise<Page>;
-  window: Page;
+  ensureFreshApp: () => Promise<void>;
 }
 
 interface TestFixtures {
+  window: Page;
   screenshotMask: ScreenshotMask;
   logTestProgress: undefined;
   autoScreenshot: undefined;
@@ -81,12 +107,14 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       }
       const app: RunningApp = {
         ...(await navigateToApp(mode, launchBrowser)),
+        testsRun: 0,
         restart: async (): Promise<Page> => {
           await app.cleanup();
           const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
           app.window = window;
           app.cleanup = cleanup;
           app.electronApp = electronApp;
+          app.testsRun = 0;
           return window;
         },
       };
@@ -105,12 +133,26 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "worker" },
   ],
 
-  // Page of the app launched with the worker: after restartApp, use the returned page or app.window
-  window: [
+  // Restarts the app if a test already used it: several suites of one test file (see opengeodeweb_front.test.ts)
+  // Each start from a new app, like the test files that each get their own worker
+  ensureFreshApp: [
     async ({ app }, use): Promise<void> => {
-      await use(app.window);
+      await use(async (): Promise<void> => {
+        if (app.testsRun > 0) {
+          await app.restart();
+        }
+      });
     },
     { scope: "worker" },
+  ],
+
+  // Page of the running app, read for each test: it follows restartApp and ensureFreshApp
+  window: [
+    async ({ app }, use): Promise<void> => {
+      app.testsRun += 1;
+      await use(app.window);
+    },
+    { scope: "test" },
   ],
 
   logTestProgress: [
@@ -143,7 +185,7 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         await waitForActionSettled(window);
         // The account icon depends on login state (only cloud is logged in)
-        await expect(window).toHaveScreenshot({
+        await expect(window).toHaveScreenshot(screenshotPath(testInfo), {
           mask: [window.getByTestId("accountNavButton"), ...screenshotMask.locators],
         });
       }
