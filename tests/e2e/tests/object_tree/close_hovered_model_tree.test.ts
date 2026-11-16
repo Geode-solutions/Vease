@@ -43,26 +43,21 @@ async function hoverNextToCloseButton(window: Page): Promise<void> {
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
 
-test("load a model and open its model tree", async ({ window }) => {
+// Screenshot 1: the model and its row are highlighted while the header is hovered
+test("hovering the model tree header highlights the model", async ({ window }) => {
   test.slow();
   await loadVeaseTestDatas(window, [brepFilename]);
   await openModelComponentsTree(window, brepGeodeObjectType, brepName);
-  await expect(getModelTreeBox(window)).toBeVisible();
-});
-
-test("hovering the model tree header highlights the model", async ({ window }) => {
   await hoverNextToCloseButton(window);
   await expect(getModelTreeBox(window)).toHaveClass(/is-highlighted/u);
 });
 
+// Screenshot 2: nothing is highlighted anymore once the tree is closed, then reopened
 // The close button is inside the hovered header: the box is removed under the cursor and no mouseleave is sent
 test("closing the hovered model tree stops the highlight", async ({ window }) => {
   await getModelTreeBox(window).locator(".tree-box-header").getByRole("button").click();
   await expect(getModelTreeBox(window)).toBeHidden();
   await waitForActionSettled(window);
-});
-
-test("reopening the model tree shows it not highlighted", async ({ window }) => {
   await openModelComponentsTree(window, brepGeodeObjectType, brepName);
   await expect(getModelTreeBox(window)).toBeVisible();
   await expect(getModelTreeBox(window)).not.toHaveClass(/is-highlighted/u);
