@@ -17,6 +17,8 @@ const largeStructuralModelFilename = "3_meshed_300m.og_strm";
 const MILLISECONDS_PER_SECOND = 1000;
 const downloadTimeout = 300_000;
 const largeImportTimeout = 600_000;
+// Playwright default: the app pages are created outside the test fixtures, so they keep it
+const defaultPageTimeout = 30_000;
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });
@@ -31,11 +33,17 @@ test.beforeAll(async () => {
 // The [timing] logs of the back and viewer give the duration of each import step
 test("load large structural model", async ({ window }) => {
   test.setTimeout(largeImportTimeout);
+  // The import stepper stays open during the whole upload and conversion: more than 30 s on Windows
+  window.setDefaultTimeout(largeImportTimeout);
   const start = Date.now();
-  await loadVeaseTestDatas(window, [largeStructuralModelFilename], {
-    loadTimeout: largeImportTimeout,
-    inputDataPath: largeDataPath,
-  });
+  try {
+    await loadVeaseTestDatas(window, [largeStructuralModelFilename], {
+      loadTimeout: largeImportTimeout,
+      inputDataPath: largeDataPath,
+    });
+  } finally {
+    window.setDefaultTimeout(defaultPageTimeout);
+  }
   const seconds = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
   consola.info(`[timing] e2e import ${largeStructuralModelFilename}: ${seconds}s`);
   await expandMainObjectTree(window);
