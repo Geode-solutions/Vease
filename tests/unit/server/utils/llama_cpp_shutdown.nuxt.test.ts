@@ -92,6 +92,17 @@ describe("server/utils/llama_cpp shutdown and extraction", () => {
     expect(handle.port).toBe(TEST_PORT);
   });
 
+  test("starts a new server after the previous one was stopped", async () => {
+    const { llamaCpp, spawnedChildren } = current();
+
+    await llamaCpp.runLlamaServer({ model: "custom-model" });
+    llamaCpp.stopLlamaServer();
+    await llamaCpp.runLlamaServer({ model: "custom-model" });
+
+    expect(spawnedChildren).toHaveLength(2);
+    expect(llamaCpp.getLlamaStatus()).toMatchObject({ running: true });
+  });
+
   test("stopLlamaServer is a no-op when nothing is running", () => {
     expect(() => {
       current().llamaCpp.stopLlamaServer();

@@ -125,6 +125,17 @@ describe("server/utils/llama_cpp", () => {
     expect(second).toStrictEqual(first);
   });
 
+  test("reports the startup in progress until the server is ready", async () => {
+    const { llamaCpp } = current();
+
+    expect(llamaCpp.isLlamaServerStarting()).toBe(false);
+    const startup = llamaCpp.runLlamaServer({ model: "custom-model" });
+    expect(llamaCpp.isLlamaServerStarting()).toBe(true);
+    await startup;
+
+    expect(llamaCpp.isLlamaServerStarting()).toBe(false);
+  });
+
   test("kills the child and clears status when startup fails", async () => {
     const { llamaCpp, spawnedChildren } = current();
     vi.mocked(waitForReady).mockRejectedValueOnce(new Error("never became ready"));
