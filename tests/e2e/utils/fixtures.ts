@@ -15,6 +15,8 @@ import { navigateToApp } from "./navigate";
 import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const MILLISECONDS_PER_SECOND = 1000;
+// Whole download deadline of a basemap build in OpenGeodeWeb-Back (FETCH_DEADLINE_SECONDS)
+const BUSY_TIMEOUT_MS = 30_000;
 
 interface ScreenshotMask {
   locators: Locator[];
@@ -135,6 +137,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
       const { window } = app;
       if (testInfo.status === testInfo.expectedStatus) {
         // Never capture while the microservices are still busy (busy indicator bar, half-rendered viewer)
+        // A basemap build waits on external tile servers longer than waitForActionSettled does
+        await expect(window.getByTestId("microservicesBusyIndicator")).toBeHidden({
+          timeout: BUSY_TIMEOUT_MS,
+        });
         await waitForActionSettled(window);
         // The account icon depends on login state (only cloud is logged in)
         await expect(window).toHaveScreenshot({
