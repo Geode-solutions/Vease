@@ -51,7 +51,10 @@ test("hovering the model tree header highlights the model", async ({ window }) =
   await loadVeaseTestDatas(window, [brepFilename]);
   await expandGeodeObjectType(window, brepGeodeObjectType);
   await expect(
-    window.getByTestId("mainObjectTree").getByTestId("treeRowWrapper").filter({ hasText: brepName }),
+    window
+      .getByTestId("mainObjectTree")
+      .getByTestId("treeRowWrapper")
+      .filter({ hasText: brepName }),
   ).toHaveCount(2);
   await openModelComponentsTree(window, brepGeodeObjectType, brepName);
   await hoverNextToCloseButton(window);
