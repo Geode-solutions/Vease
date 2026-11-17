@@ -6,28 +6,23 @@ const currentTab = ref("marketplace");
 </script>
 
 <template>
-  <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
+  <v-card flat color="transparent" class="d-flex flex-column fill-height">
     <div class="px-6 pt-6 pb-2">
       <div class="d-flex align-center justify-space-between mb-4">
         <div class="d-flex align-center">
-          <v-icon icon="mdi-puzzle" class="mr-3 text-white" size="32"></v-icon>
-          <h2 class="text-h4 font-weight-bold text-white">Extensions</h2>
+          <v-icon icon="mdi-puzzle" class="mr-3 text-primary" size="32"></v-icon>
+          <h2 class="text-h4 font-weight-bold">Extensions</h2>
         </div>
       </div>
-      <p class="text-white opacity-80 mb-4">
+      <p class="text-medium-emphasis mb-4">
         Enhance your application with additional features and tools from the marketplace.
       </p>
 
-      <v-tabs
-        v-model="currentTab"
-        color="white"
-        slider-color="white"
-        class="border-b border-white border-opacity-10"
-      >
-        <v-tab value="marketplace" class="text-none font-weight-medium text-white">
+      <v-tabs v-model="currentTab" color="primary" slider-color="primary" class="border-b">
+        <v-tab value="marketplace" class="text-none font-weight-medium">
           <v-icon start>mdi-storefront</v-icon> Marketplace
         </v-tab>
-        <v-tab value="installed" class="text-none font-weight-medium text-white">
+        <v-tab value="installed" class="text-none font-weight-medium">
           <v-icon start>mdi-check-circle-outline</v-icon> Installed
         </v-tab>
       </v-tabs>

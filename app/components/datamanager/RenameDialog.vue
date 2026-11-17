@@ -37,14 +37,12 @@ function handleConfirm(): void {
 <template>
   <v-dialog :model-value="show" @update:model-value="emit('update:show', $event)" max-width="400">
     <GlassCard variant="panel" padding="pa-8" :width="400">
-      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-        <v-icon icon="mdi-pencil-outline" class="mr-3 text-h4" color="white"></v-icon>
+      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
+        <v-icon icon="mdi-pencil-outline" class="mr-3 text-h4" color="primary"></v-icon>
         Rename Item
       </v-card-title>
 
-      <v-card-subtitle class="ma-0 text-white opacity-80">
-        Enter a new name for this object.
-      </v-card-subtitle>
+      <v-card-subtitle class="ma-0"> Enter a new name for this object. </v-card-subtitle>
 
       <v-card-text class="pt-8 px-0">
         <v-text-field
@@ -52,9 +50,8 @@ function handleConfirm(): void {
           @update:model-value="currentName = $event"
           type="text"
           variant="outlined"
-          color="white"
-          base-color="white"
-          bg-color="rgba(255, 255, 255, 0.15)"
+          color="primary"
+          bg-color="surface-light"
           class="mb-4 rounded-lg"
           data-testid="renameDataInput"
           @keydown.enter="handleConfirm"
@@ -62,10 +59,10 @@ function handleConfirm(): void {
           clearable
         >
           <template v-slot:label>
-            <span class="text-white opacity-100">Object Name</span>
+            <span>Object Name</span>
           </template>
           <template v-slot:prepend-inner>
-            <v-icon color="white" class="opacity-100">mdi-format-title</v-icon>
+            <v-icon>mdi-format-title</v-icon>
           </template>
         </v-text-field>
       </v-card-text>
@@ -73,10 +70,10 @@ function handleConfirm(): void {
       <v-card-actions class="px-0 pb-0 mt-4">
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
           size="large"
           @click="emit('update:show', false)"
-          class="text-none rounded-lg"
+          class="text-none rounded-pill"
         >
           <v-icon start>mdi-close-circle-outline</v-icon>
           Cancel
@@ -85,13 +82,12 @@ function handleConfirm(): void {
         <v-spacer />
 
         <v-btn
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="renameDataConfirmButton"
           @click="handleConfirm"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
         >
           <v-icon start>mdi-check-circle-outline</v-icon>
           Rename

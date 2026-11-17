@@ -42,7 +42,7 @@ async function handleSubmit(event): Promise<void> {
       prepend-inner-icon="mdi-email-outline"
       required
       class="custom-field mb-6"
-      color="white"
+      color="primary"
       autocomplete="email"
       hide-details="auto"
     />
@@ -57,7 +57,7 @@ async function handleSubmit(event): Promise<void> {
       @click:append-inner="passwordVisible = !passwordVisible"
       required
       class="custom-field mb-6"
-      color="white"
+      color="primary"
       autocomplete="current-password"
       hide-details="auto"
     />
@@ -72,7 +72,7 @@ async function handleSubmit(event): Promise<void> {
           prepend-inner-icon="mdi-lock-check-outline"
           required
           class="custom-field mb-6"
-          color="white"
+          color="primary"
           autocomplete="new-password"
           hide-details="auto"
         />
@@ -82,7 +82,7 @@ async function handleSubmit(event): Promise<void> {
     <div v-if="isLogin" class="d-flex justify-end mb-8 mt-n4">
       <v-btn
         variant="text"
-        color="white"
+        color="primary"
         size="small"
         class="text-none font-weight-medium opacity-90"
         @click="showForgotPassword = true"
@@ -116,21 +116,22 @@ async function handleSubmit(event): Promise<void> {
     <v-btn
       data-testid="signInButton"
       type="submit"
-      color="primary"
+      color="accent"
+      variant="flat"
       size="x-large"
       block
       :loading="loading"
-      class="submit-btn text-none font-weight-black rounded-lg mb-4"
+      class="submit-btn text-none font-weight-black rounded-pill mb-4"
     >
       {{ isLogin ? "Sign In" : "Get Started" }}
     </v-btn>
 
     <v-sheet color="transparent" class="text-center">
-      <v-card-subtitle class="text-body-1 text-white opacity-90 px-0 text-center">
+      <v-card-subtitle class="text-body-1 px-0 text-center">
         {{ isLogin ? "New to Vease?" : "Already have an account?" }}
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
           class="text-none px-2 font-weight-black text-decoration-underline"
           @click="toggleMode"
         >
@@ -152,43 +153,26 @@ async function handleSubmit(event): Promise<void> {
 <style scoped>
 .custom-field :deep(.v-field) {
   border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(var(--v-theme-on-surface), 0.04) !important;
   transition: all 0.3s ease;
 }
 
 .custom-field :deep(.v-field:hover) {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(var(--v-theme-on-surface), 0.06) !important;
 }
 
 .custom-field :deep(.v-field--focused) {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-color: white !important;
-}
-
-.custom-field :deep(.v-label) {
-  color: white !important;
-  opacity: 0.9 !important;
-}
-
-.custom-field :deep(.v-icon) {
-  color: white !important;
-  opacity: 1 !important;
-}
-
-.custom-field :deep(input) {
-  color: white !important;
+  background: rgba(var(--v-theme-primary), 0.08) !important;
 }
 
 .submit-btn {
   height: 64px !important;
   font-size: 1.2rem !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .submit-btn:hover {
   transform: translateY(-3px);
-  filter: brightness(1.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  filter: brightness(1.05);
 }
 </style>

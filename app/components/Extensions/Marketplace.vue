@@ -48,32 +48,31 @@ const selectedExtension = ref<MarketplaceExtension | undefined>(undefined);
       <GlassCard
         variant="ui"
         padding="pa-8"
-        class="d-flex flex-column align-center text-center border-white border-opacity-10 w-100"
+        class="d-flex flex-column align-center text-center w-100"
       >
         <v-sheet
           class="mx-auto mb-6 d-flex align-center justify-center"
           rounded="circle"
-          color="rgba(255,255,255,0.05)"
+          color="rgba(var(--v-theme-primary), 0.08)"
           width="96"
           height="96"
         >
-          <v-icon icon="mdi-lock-outline" size="48" color="white" class="opacity-80"></v-icon>
+          <v-icon icon="mdi-lock-outline" size="48" color="primary"></v-icon>
         </v-sheet>
 
-        <h2 class="text-h5 font-weight-bold text-white mb-3">Authentication Required</h2>
+        <h2 class="text-h5 font-weight-bold mb-3">Authentication Required</h2>
 
-        <p class="text-body-1 text-white opacity-80 mb-8">
+        <p class="text-body-1 text-medium-emphasis mb-8">
           You must be logged in to access the marketplace, browse available extensions, and install
           them on your project.
         </p>
 
         <v-btn
-          color="white"
-          variant="elevated"
+          color="accent"
+          variant="flat"
           prepend-icon="mdi-login"
-          elevation="4"
           rounded="pill"
-          class="text-none px-8 font-weight-bold text-black"
+          class="text-none px-8 font-weight-bold"
           to="/account"
         >
           Sign In

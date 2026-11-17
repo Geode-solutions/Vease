@@ -46,13 +46,12 @@ defineExpose({
       color="primary"
       :class="[compact ? 'mb-2' : 'mb-6', 'border-b-thin']"
       height="48"
-      selected-class="bg-primary text-white"
+      selected-class="bg-primary"
     >
       <v-tab
         value="data"
-        class="text-none font-weight-medium text-white px-6 rounded-t-lg"
-        :variant="activeTab === 'data' ? 'elevated' : 'text'"
-        :elevation="activeTab === 'data' ? 4 : 0"
+        class="text-none font-weight-medium px-6 rounded-t-lg"
+        :variant="activeTab === 'data' ? 'flat' : 'text'"
         :border="activeTab === 'data' ? true : false"
         data-testid="dataManagerTab-data"
       >
@@ -64,9 +63,8 @@ defineExpose({
         v-for="tab in tabs"
         :key="tab.id"
         :value="tab.id"
-        class="text-none font-weight-medium text-white px-6 rounded-t-lg"
-        :variant="activeTab === tab.id ? 'elevated' : 'text'"
-        :elevation="activeTab === tab.id ? 4 : 0"
+        class="text-none font-weight-medium px-6 rounded-t-lg"
+        :variant="activeTab === tab.id ? 'flat' : 'text'"
         :data-testid="`dataManagerTab-${tab.id}`"
       >
         <v-icon v-if="tab.icon" start size="20">{{ tab.icon }}</v-icon>
@@ -80,7 +78,6 @@ defineExpose({
         icon
         size="small"
         variant="text"
-        color="white"
         class="align-self-center mr-2"
         data-testid="dataManagerPiPButton"
         @click="enterPiP"
@@ -95,18 +92,11 @@ defineExpose({
       @update:model-value="emit('update:searchValue', $event)"
       placeholder="Search your data..."
       clearable
-      class="border-thin rounded-lg text-white"
+      class="border-thin rounded-lg"
       ref="searchInput"
     >
       <template #append-inner>
-        <v-chip
-          size="small"
-          variant="tonal"
-          color="grey-lighten-1"
-          class="text-caption font-weight-bold"
-        >
-          Ctrl+K
-        </v-chip>
+        <v-chip size="small" variant="tonal" class="text-caption font-weight-bold"> Ctrl+K </v-chip>
       </template>
     </SearchBar>
   </div>

@@ -229,12 +229,12 @@ async function startAlignment(): Promise<void> {
     max-width="800"
   >
     <GlassCard variant="panel" padding="pa-8" :width="800">
-      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="white"></v-icon>
+      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
+        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="primary"></v-icon>
         Coordinate Reference System
       </v-card-title>
 
-      <v-card-subtitle class="ma-0 text-white opacity-80">
+      <v-card-subtitle class="ma-0">
         Current CRS:
         <v-progress-circular
           v-if="loadingCurrentCrs"
@@ -248,7 +248,7 @@ async function startAlignment(): Promise<void> {
 
       <!-- flex-shrink-0: the scrollable dialog card would otherwise squash the toggle to 0 height -->
       <div class="mt-4 flex-shrink-0">
-        <v-btn-toggle v-model="mode" mandatory density="compact" color="white">
+        <v-btn-toggle v-model="mode" mandatory density="compact" color="primary">
           <v-btn value="assign" data-testid="crsModeAssign" class="text-none">Assign</v-btn>
           <v-btn
             v-if="crsKnown && isGeographic"
@@ -271,7 +271,7 @@ async function startAlignment(): Promise<void> {
         inline
         hide-details
         density="compact"
-        class="mt-4 flex-shrink-0 text-white"
+        class="mt-4 flex-shrink-0"
         data-testid="crsScope"
       >
         <v-radio label="All data" value="all" data-testid="crsScope-all" />
@@ -279,7 +279,7 @@ async function startAlignment(): Promise<void> {
       </v-radio-group>
       <p
         v-if="mode !== 'align'"
-        class="text-caption text-white opacity-80 mt-2 mb-0"
+        class="text-caption text-medium-emphasis mt-2 mb-0"
         data-testid="crsModeHint"
       >
         {{
@@ -326,15 +326,15 @@ async function startAlignment(): Promise<void> {
           v-model="selectedCrs"
           :geode-object-type="item.geode_object_type"
         />
-        <div v-if="mode === 'align'" class="text-white">
+        <div v-if="mode === 'align'">
           <p class="mb-4">
             Pick 3 points on the data and type their real coordinates in the target CRS.
           </p>
           <v-btn
-            color="primary"
+            color="accent"
             variant="flat"
             data-testid="crsStartAlignButton"
-            class="text-none rounded-lg"
+            class="text-none rounded-pill"
             @click="startAlignment"
           >
             <v-icon start>mdi-vector-triangle</v-icon>
@@ -346,10 +346,10 @@ async function startAlignment(): Promise<void> {
       <v-card-actions class="px-0 pb-0 mt-4">
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
           size="large"
           @click="emit('update:show', false)"
-          class="text-none rounded-lg"
+          class="text-none rounded-pill"
         >
           <v-icon start>mdi-close-circle-outline</v-icon>
           Cancel
@@ -359,30 +359,28 @@ async function startAlignment(): Promise<void> {
 
         <v-btn
           v-if="mode === 'assign'"
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="crsAssignButton"
           :disabled="!selectedCrs || assigning"
           :loading="assigning"
           @click="handleAssign()"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
         >
           <v-icon start>mdi-check-circle-outline</v-icon>
           Assign
         </v-btn>
         <v-btn
           v-if="mode === 'convert'"
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="crsConvertButton"
           :disabled="!selectedCrs || converting"
           :loading="converting"
           @click="handleConvert"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
         >
           <v-icon start>mdi-swap-horizontal</v-icon>
           Convert

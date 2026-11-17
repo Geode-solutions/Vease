@@ -27,7 +27,7 @@ const emit = defineEmits<{
             prepend-icon="mdi-eye-outline"
             size="small"
             variant="tonal"
-            color="white"
+            color="primary"
             class="text-none"
             data-testid="batchVisibilityButton"
             @click="emit('toggle-visibility-selected')"
@@ -48,7 +48,7 @@ const emit = defineEmits<{
           </v-btn>
         </div>
 
-        <v-btn icon="mdi-close" size="x-small" variant="text" color="white" @click="emit('clear')">
+        <v-btn icon="mdi-close" size="x-small" variant="text" @click="emit('clear')">
           <v-tooltip activator="parent" location="top">Clear selection</v-tooltip>
         </v-btn>
       </div>
@@ -58,7 +58,6 @@ const emit = defineEmits<{
 
 <style scoped>
 .banner-container {
-  background: rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(8px);
+  background: rgba(var(--v-theme-primary), 0.06) !important;
 }
 </style>

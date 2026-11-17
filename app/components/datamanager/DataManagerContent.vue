@@ -156,7 +156,6 @@ useEventListener(document, "keydown", (event) => {
       compact ? 'pa-2' : 'pa-8',
     ]"
     style="min-height: 0"
-    theme="dark"
   >
     <v-row no-gutters class="fill-height w-100" style="min-height: 0">
       <v-col class="d-flex flex-column fill-height overflow-hidden" style="min-height: 0">

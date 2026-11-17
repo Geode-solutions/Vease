@@ -81,7 +81,7 @@ const toolCalls = computed<ToolCall[]>(() =>
 }
 
 .message-assistant {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(var(--v-theme-on-surface), 0.06);
 }
 
 .tool-running {

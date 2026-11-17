@@ -9,11 +9,11 @@ const emit = defineEmits<{ click: [] }>();
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
-        color="secondary"
-        :variant="active ? 'flat' : 'outlined'"
+        color="primary"
+        :variant="active ? 'flat' : 'tonal'"
         size="small"
         block
-        class="rounded-lg text-none font-weight-bold"
+        class="rounded-pill text-none font-weight-bold"
         :class="{ 'pick-pulse': active }"
         prepend-icon="mdi-crosshairs-gps"
         data-testid="pickButton"
@@ -28,13 +28,13 @@ const emit = defineEmits<{ click: [] }>();
 <style scoped>
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(var(--v-theme-secondary), 0.7);
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0.7);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(var(--v-theme-secondary), 0);
+    box-shadow: 0 0 0 8px rgba(var(--v-theme-primary), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--v-theme-secondary), 0);
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0);
   }
 }
 .pick-pulse {

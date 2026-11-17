@@ -48,7 +48,7 @@ useEventListener(globalThis, "open-horizon-stack-modal", onOpen);
 <template>
   <v-dialog v-model="isOpen" max-width="600">
     <GlassCard variant="panel" padding="pa-0" :escapeFunction="handleClose">
-      <v-card-title class="d-flex align-center bg-primary text-white py-3 px-4">
+      <v-card-title class="d-flex align-center bg-primary py-3 px-4">
         <v-icon icon="mdi-layers-triple" class="mr-2" />
         <span class="text-subtitle-1 font-weight-bold">Horizon Stack</span>
         <v-spacer />
@@ -56,14 +56,14 @@ useEventListener(globalThis, "open-horizon-stack-modal", onOpen);
       </v-card-title>
 
       <v-card-text class="pa-6">
-        <div class="text-h6 text-white mb-4" data-testid="horizonStackDialogName">
+        <div class="text-h6 mb-4" data-testid="horizonStackDialogName">
           {{ itemName }}
         </div>
         <div v-if="loading" class="d-flex justify-center pa-4">
           <v-progress-circular indeterminate color="primary" />
         </div>
         <template v-else-if="column">
-          <div class="text-caption font-weight-bold text-white opacity-70 mb-2">
+          <div class="text-caption font-weight-bold text-medium-emphasis mb-2">
             Stratigraphic column (top to bottom)
           </div>
           <v-list density="compact" class="bg-transparent pa-0" data-testid="horizonStackColumn">
@@ -76,7 +76,7 @@ useEventListener(globalThis, "open-horizon-stack-modal", onOpen);
                   {{ row.name }}
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item v-else class="px-2 min-h-0 text-caption text-white opacity-70">
+              <v-list-item v-else class="px-2 min-h-0 text-caption text-medium-emphasis">
                 {{ row.name }}
               </v-list-item>
             </template>
@@ -89,7 +89,7 @@ useEventListener(globalThis, "open-horizon-stack-modal", onOpen);
 
       <v-card-actions class="pa-4">
         <v-spacer />
-        <v-btn color="white" variant="text" @click="handleClose">Close</v-btn>
+        <v-btn color="primary" variant="text" rounded="pill" @click="handleClose">Close</v-btn>
       </v-card-actions>
     </GlassCard>
   </v-dialog>

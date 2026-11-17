@@ -28,10 +28,8 @@ async function handleDeleteAccount(): Promise<void> {
 <template>
   <v-dialog v-model="showDeleteAccount" max-width="450">
     <GlassCard variant="panel" padding="pa-8" rounded="xl" border="border-primary">
-      <v-card-title class="text-h4 font-weight-bold mb-4 text-white px-0">
-        Delete Account
-      </v-card-title>
-      <v-card-text class="text-body-1 text-white opacity-80 mb-8 px-0">
+      <v-card-title class="text-h4 font-weight-bold mb-4 px-0"> Delete Account </v-card-title>
+      <v-card-text class="text-body-1 text-medium-emphasis mb-8 px-0">
         Are you sure you want to delete your account? This action is irreversible. Please enter your
         password to confirm.
       </v-card-text>
@@ -45,7 +43,7 @@ async function handleDeleteAccount(): Promise<void> {
         :append-inner-icon="passwordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
         @click:append-inner="passwordVisible = !passwordVisible"
         class="mb-4"
-        color="white"
+        color="primary"
         autocomplete="current-password"
         hide-details="auto"
       />
@@ -53,7 +51,8 @@ async function handleDeleteAccount(): Promise<void> {
       <v-card-actions class="px-0 ga-4">
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
+          rounded="pill"
           class="flex-grow-1 text-none"
           @click="showDeleteAccount = false"
         >
@@ -61,10 +60,11 @@ async function handleDeleteAccount(): Promise<void> {
         </v-btn>
         <v-btn
           type="submit"
-          color="primary"
+          color="error"
           :loading="loading"
           :disabled="!password"
           variant="flat"
+          rounded="pill"
           class="flex-grow-1 text-none font-weight-black"
           @click="handleDeleteAccount"
         >

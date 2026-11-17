@@ -51,24 +51,26 @@ async function apply(): Promise<void> {
     @update:model-value="emit('update:show', $event)"
   >
     <GlassCard variant="panel" padding="pa-8" :width="800">
-      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="white" />
+      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
+        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="primary" />
         Project CRS
       </v-card-title>
-      <v-card-subtitle class="ma-0 text-white opacity-80">
+      <v-card-subtitle class="ma-0">
         Current CRS:
         <span data-testid="projectCrsCurrent">{{ formatCrs(crsStore.projectCrs) }}</span>
       </v-card-subtitle>
       <v-card-text class="pt-8 px-0">
-        <p class="text-white mb-4">Every georeferenced data is converted to the new CRS.</p>
+        <p class="text-medium-emphasis mb-4">
+          Every georeferenced data is converted to the new CRS.
+        </p>
         <CrsSelector v-model="selectedCrs" :geode-object-type="LIST_TYPE" />
       </v-card-text>
       <v-card-actions class="px-0 pb-0 mt-4">
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
           size="large"
-          class="text-none rounded-lg"
+          class="text-none rounded-pill"
           @click="emit('update:show', false)"
         >
           <v-icon start>mdi-close-circle-outline</v-icon>
@@ -76,14 +78,13 @@ async function apply(): Promise<void> {
         </v-btn>
         <v-spacer />
         <v-btn
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="projectCrsApply"
           :disabled="!selectedCrs || changing"
           :loading="changing"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
           @click="apply"
         >
           <v-icon start>mdi-swap-horizontal</v-icon>

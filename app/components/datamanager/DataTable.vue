@@ -149,7 +149,6 @@ function formatSmartDate(dateStr: string | undefined): string {
             icon
             size="x-small"
             variant="text"
-            color="white"
             class="opacity-70 hover-opacity-100 ml-1"
             data-testid="toggleVisibilityHeaderButton"
             @click.stop="emit('toggle-visibility-selected')"
@@ -174,7 +173,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             icon
             size="small"
             variant="text"
-            :color="selectedIds.length > 0 ? 'error' : 'grey-lighten-1'"
+            :color="selectedIds.length > 0 ? 'error' : undefined"
             :disabled="selectedIds.length === 0"
             data-testid="deleteAllSelectedButton"
             @click.stop="emit('delete-selected')"
@@ -231,16 +230,16 @@ function formatSmartDate(dateStr: string | undefined): string {
       <template #[`item.geode_object_type`]="{ item }">
         <v-chip
           size="x-small"
-          color="white"
+          color="primary"
           variant="outlined"
-          class="text-none border-opacity-20 font-weight-bold"
+          class="text-none font-weight-bold"
         >
           {{ item.geode_object_type }}
         </v-chip>
       </template>
 
       <template #[`item.created_at`]="{ item }">
-        <span class="text-caption text-grey-lighten-2 font-weight-light">{{
+        <span class="text-caption text-medium-emphasis font-weight-light">{{
           formatSmartDate(item.created_at)
         }}</span>
       </template>
@@ -250,7 +249,6 @@ function formatSmartDate(dateStr: string | undefined): string {
           icon
           size="small"
           variant="text"
-          color="white"
           data-testid="dataVisibilityButton"
           @click.stop="emit('toggle-visibility', item)"
         >
@@ -267,7 +265,6 @@ function formatSmartDate(dateStr: string | undefined): string {
             icon
             size="small"
             variant="text"
-            color="white"
             data-testid="focusDataButton"
             @click.stop="emit('focus-camera', item)"
           >
@@ -279,7 +276,6 @@ function formatSmartDate(dateStr: string | undefined): string {
             icon
             size="small"
             variant="text"
-            color="white"
             data-testid="isolateDataButton"
             @click.stop="emit('isolate', item)"
           >
@@ -291,7 +287,6 @@ function formatSmartDate(dateStr: string | undefined): string {
             icon
             size="small"
             variant="text"
-            color="white"
             data-testid="renameDataButton"
             @click.stop="emit('rename', item)"
           >
@@ -315,7 +310,7 @@ function formatSmartDate(dateStr: string | undefined): string {
 
       <!-- Empty state when no data exists -->
       <template #no-data>
-        <div class="d-flex flex-column align-center justify-center py-12 text-grey-lighten-1">
+        <div class="d-flex flex-column align-center justify-center py-12 text-medium-emphasis">
           <v-icon size="48" class="mb-3 opacity-40">mdi-database-off-outline</v-icon>
           <span class="text-body-1 font-weight-medium mb-1">No data available</span>
           <span class="text-caption opacity-60">Import data files or models to view them here</span>
@@ -328,7 +323,7 @@ function formatSmartDate(dateStr: string | undefined): string {
 <style scoped>
 .transparent-table {
   background: transparent !important;
-  color: white !important;
+  color: rgb(var(--v-theme-on-surface)) !important;
   border: none !important;
 }
 
@@ -366,8 +361,8 @@ function formatSmartDate(dateStr: string | undefined): string {
 
 .transparent-table :deep(.v-data-table__th) {
   background: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  color: rgba(255, 255, 255, 0.4) !important;
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)) !important;
   font-size: 0.7rem !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -375,7 +370,7 @@ function formatSmartDate(dateStr: string | undefined): string {
 }
 
 .transparent-table :deep(.v-data-table-header__content) {
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)) !important;
   font-size: 0.7rem !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -386,37 +381,37 @@ function formatSmartDate(dateStr: string | undefined): string {
 }
 
 .transparent-table :deep(.v-data-table__tr:hover) {
-  background: rgba(255, 255, 255, 0.02) !important;
+  background: rgba(var(--v-theme-primary), 0.08) !important;
 }
 
 .transparent-table :deep(.v-data-table__tr.selected-row) {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(var(--v-theme-primary), 0.12) !important;
 }
 
 .transparent-table :deep(.v-data-table__td) {
   background: transparent !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+  border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
 
 .transparent-table :deep(.v-data-table__th .v-icon) {
-  color: rgba(255, 255, 255, 0.3) !important;
+  color: rgba(var(--v-theme-on-surface), 0.4) !important;
 }
 
 .transparent-table :deep(.v-selection-control) {
-  color: white !important;
+  color: rgb(var(--v-theme-primary)) !important;
 }
 
 .transparent-table :deep(.v-data-table-rows-no-data) {
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity)) !important;
 }
 
 .transparent-table :deep(tbody) {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: rgba(var(--v-theme-on-surface), 0.2) transparent;
 }
 
 .transparent-table :deep(tbody::-webkit-scrollbar) {
@@ -424,7 +419,7 @@ function formatSmartDate(dateStr: string | undefined): string {
 }
 
 .transparent-table :deep(tbody::-webkit-scrollbar-thumb) {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--v-theme-on-surface), 0.2);
   border-radius: 10px;
 }
 </style>

@@ -52,10 +52,10 @@ function extensionIcon(ext: MarketplaceExtension): string {
   <GlassCard
     variant="ui"
     padding="pa-0"
-    class="d-flex flex-column fill-height border-white border-opacity-10"
+    class="d-flex flex-column fill-height"
     style="min-height: 0"
   >
-    <v-sheet color="transparent" class="pa-4 border-b border-white border-opacity-10">
+    <v-sheet color="transparent" class="pa-4 border-b">
       <v-text-field
         v-model="searchQuery"
         prepend-inner-icon="mdi-magnify"
@@ -64,23 +64,23 @@ function extensionIcon(ext: MarketplaceExtension): string {
         density="compact"
         hide-details
         rounded="lg"
-        bg-color="rgba(0,0,0,0.2)"
-        color="white"
-        class="text-white"
+        bg-color="surface-light"
+        color="primary"
+        flat
       ></v-text-field>
     </v-sheet>
 
     <v-sheet color="transparent" class="flex-grow-1 overflow-y-auto pa-2 custom-scrollbar">
       <v-sheet v-if="pending" color="transparent" class="d-flex justify-center pa-6">
-        <v-progress-circular indeterminate color="white" />
+        <v-progress-circular indeterminate color="primary" />
       </v-sheet>
-      <v-sheet v-else-if="fetchError" color="transparent" class="text-white pa-4 text-center">
+      <v-sheet v-else-if="fetchError" color="transparent" class="text-error pa-4 text-center">
         Failed to load extensions
       </v-sheet>
       <v-sheet
         v-else-if="filteredExtensions.length === 0"
         color="transparent"
-        class="text-white text-center pa-6 opacity-80"
+        class="text-medium-emphasis text-center pa-6"
       >
         <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80" />
         <div class="text-body-1">No extensions found</div>
@@ -91,21 +91,19 @@ function extensionIcon(ext: MarketplaceExtension): string {
           :key="ext.id"
           :value="ext.id"
           :active="modelValue?.id === ext.id"
-          color="white"
+          color="primary"
           class="mb-2 rounded-lg ext-item transition-all"
           @click="selectExtension(ext)"
         >
           <template v-slot:prepend>
-            <v-avatar color="rgba(255,255,255,0.08)" rounded="lg" class="mr-3">
-              <v-icon :icon="extensionIcon(ext)" color="white" size="24"></v-icon>
+            <v-avatar color="rgba(var(--v-theme-primary), 0.12)" rounded="lg" class="mr-3">
+              <v-icon :icon="extensionIcon(ext)" color="primary" size="24"></v-icon>
             </v-avatar>
           </template>
-          <v-list-item-title class="font-weight-semibold text-white mb-1">
+          <v-list-item-title class="font-weight-semibold mb-1">
             {{ ext.id }}
           </v-list-item-title>
-          <v-list-item-subtitle class="text-caption text-white opacity-70">
-            v{{ ext.version }}
-          </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-caption"> v{{ ext.version }} </v-list-item-subtitle>
         </v-list-item>
       </v-list>
     </v-sheet>
@@ -117,13 +115,13 @@ function extensionIcon(ext: MarketplaceExtension): string {
   border: 1px solid transparent;
 }
 .ext-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--v-theme-primary), 0.08);
+  border-color: rgba(var(--v-border-color), var(--v-border-opacity));
   cursor: pointer;
 }
 .ext-item.v-list-item--active {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(var(--v-theme-primary), 0.12) !important;
+  border-color: rgba(var(--v-theme-primary), 0.3);
 }
 
 .transition-all {
@@ -137,10 +135,10 @@ function extensionIcon(ext: MarketplaceExtension): string {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--v-theme-on-surface), 0.2);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--v-theme-on-surface), 0.4);
 }
 </style>
