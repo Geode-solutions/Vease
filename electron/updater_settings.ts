@@ -9,7 +9,6 @@ import { consola } from "consola";
 // Local imports
 import { type UpdateChannel, type UpdateSettings, defaultChannel } from "./updater_utils";
 
-// Resolved lazily so the e2e userData isolation in utils/desktop_user_data.ts is applied first
 function settingsFilePath(): string {
   return path.join(app.getPath("userData"), "update-settings.json");
 }
