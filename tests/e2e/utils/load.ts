@@ -1,4 +1,5 @@
 // Node imports
+import { createRequire } from "node:module";
 import path from "node:path";
 
 // Third party imports
@@ -10,6 +11,13 @@ import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 const __dirname = import.meta.dirname;
 const loadWorkflowTimeout = 8000;
+// The data of the viewer tests defined in OpenGeodeWeb-Front (see #ogw_e2e_suites), published with its package
+const ogwTestDataPath = path.join(
+  path.dirname(createRequire(import.meta.url).resolve("@geode/opengeodeweb-front/package.json")),
+  "tests",
+  "browser",
+  "data",
+);
 
 function getLayoutImportButton(window: Page): Locator {
   return window.getByTestId("layoutImportButton");
@@ -45,6 +53,17 @@ async function loadVeaseTestDatas(
   await finalizeImportButton.click();
   await dataImportStepper.waitFor({ state: "detached" });
   await waitForActionSettled(window, loadTimeout);
+}
+
+async function loadOgwTestDatas(
+  window: Page,
+  inputDataFilenames: string[],
+  { loadTimeout = loadWorkflowTimeout }: { loadTimeout?: number } = {},
+): Promise<void> {
+  await loadVeaseTestDatas(window, inputDataFilenames, {
+    loadTimeout,
+    inputDataPath: ogwTestDataPath,
+  });
 }
 
 function getDataImportStepper(window: Page): Locator {
@@ -133,6 +152,7 @@ async function applyTimeSeries(window: Page, loadTimeout = loadWorkflowTimeout):
 
 export {
   applyTimeSeries,
+  loadOgwTestDatas,
   loadVeaseCsvData,
   loadVeaseTestDatas,
   selectTimeSeriesFile,
