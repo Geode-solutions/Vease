@@ -11,6 +11,7 @@ import AppOverlays from "@vease/components/Layout/AppOverlays.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
+import { useColorTheme } from "@vease/composables/color_theme";
 import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -31,6 +32,9 @@ runFunctionWhenMicroservicesConnected(() => {
 });
 
 useExclusiveDrawers();
+
+const { applyStoredColorTheme } = useColorTheme();
+applyStoredColorTheme();
 </script>
 <template>
   <v-app
@@ -54,7 +58,7 @@ useExclusiveDrawers();
       v-if="infraStore.microservices_busy"
       data-testid="microservicesBusyIndicator"
       indeterminate
-      color="white"
+      color="accent"
       class="position-fixed top-0"
       style="z-index: 4"
     />
