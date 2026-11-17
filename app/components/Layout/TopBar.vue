@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
+import BrandMark from "@vease/components/Layout/BrandMark.vue";
+import ColorThemeToggle from "@vease/components/Layout/ColorThemeToggle.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { Status } from "@ogw_front/utils/status";
 import { getInfraStore } from "@vease/utils/external_stores";
-import logo from "@vease/assets/img/logo.png";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
@@ -38,17 +39,19 @@ function onImportFileSelected(event): void {
     class="d-flex align-center w-100 px-8"
     @mousedown.stop
   >
-    <v-img :src="logo" max-height="32" max-width="32" class="mr-2" contain draggable="false" />
-    <h2 class="title-text font-michroma mr-8 text-h5">Vease</h2>
+    <div class="brand-lockup d-flex align-center ga-3 mr-8">
+      <BrandMark :size="30" class="text-primary" />
+      <h2 class="title-text brand-wordmark">Vease</h2>
+    </div>
 
     <div class="d-flex ga-2">
       <v-menu transition="slide-y-transition">
         <template v-slot:activator="{ props }">
           <v-btn
             variant="text"
-            color="white"
             v-bind="props"
-            class="text-none font-weight-medium rounded-lg"
+            rounded="pill"
+            class="text-none font-weight-medium"
             prepend-icon="mdi-folder-star-outline"
             data-testid="projectMenuButton"
           >
@@ -56,8 +59,8 @@ function onImportFileSelected(event): void {
             <v-icon end size="18">mdi-chevron-down</v-icon>
           </v-btn>
         </template>
-        <GlassCard variant="panel" padding="pa-0" class="border-0 mt-2 rounded-lg">
-          <v-list density="compact" bg-color="transparent" theme="dark">
+        <GlassCard variant="panel" padding="pa-1" rounded="lg" class="mt-2">
+          <v-list density="compact" bg-color="transparent">
             <v-list-item
               prepend-icon="mdi-download"
               title="Import Project"
@@ -81,11 +84,12 @@ function onImportFileSelected(event): void {
 
     <!-- Action Buttons -->
     <div class="d-flex align-center ga-3">
+      <ColorThemeToggle />
       <v-btn
         data-testid="layoutImportButton"
-        color="white"
-        variant="tonal"
-        rounded="lg"
+        color="accent"
+        variant="flat"
+        rounded="pill"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showStepper }"
         prepend-icon="mdi-file-upload-outline"
@@ -95,9 +99,9 @@ function onImportFileSelected(event): void {
         Import
       </v-btn>
       <v-btn
-        color="white"
+        color="primary"
         variant="tonal"
-        rounded="lg"
+        rounded="pill"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showCreateTools }"
         data-testid="createButton"
@@ -123,5 +127,11 @@ function onImportFileSelected(event): void {
 <style scoped>
 :deep(.v-toolbar__content) {
   overflow: visible !important;
+}
+
+.brand-wordmark {
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 </style>

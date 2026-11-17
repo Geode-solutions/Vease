@@ -6,11 +6,17 @@ interface SidebarPage {
   title: string;
   icon: string;
   testId?: string;
+  isActive?: () => boolean;
   click: () => unknown;
 }
 
 const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
+const route = useRoute();
+
+function isRoute(path: string): () => boolean {
+  return (): boolean => route.path === path;
+}
 
 const drawer = ref(true);
 
@@ -19,18 +25,21 @@ const topPages = ref<SidebarPage[]>([
     title: "Viewer",
     icon: "mdi-rotate-orbit",
     testId: "viewerNavButton",
+    isActive: isRoute("/"),
     click: (): unknown => navigateTo("/"),
   },
   {
     title: "Data Manager",
     icon: "mdi-database",
     testId: "dataManagerNavButton",
+    isActive: isRoute("/data_manager"),
     click: (): unknown => navigateTo("/data_manager"),
   },
   {
     title: "Extensions",
     icon: "mdi-puzzle",
     testId: "extensionsNavButton",
+    isActive: isRoute("/extensions"),
     click: (): unknown => navigateTo("/extensions"),
   },
 ]);
@@ -41,6 +50,7 @@ const bottomPages = computed(() => {
       title: "Chat",
       icon: "mdi-chat-outline",
       testId: "chatNavButton",
+      isActive: (): boolean => UIStore.showChatPiP,
       click: (): unknown => UIStore.setShowChatPiP(!UIStore.showChatPiP),
     },
 
@@ -48,6 +58,7 @@ const bottomPages = computed(() => {
       title: isUserAuthenticated.value ? "Account" : "Login",
       icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
       testId: "accountNavButton",
+      isActive: isRoute("/account"),
       click: (): unknown => navigateTo("/account"),
     },
 
@@ -55,6 +66,7 @@ const bottomPages = computed(() => {
       title: "Infos",
       icon: "mdi-information-outline",
       testId: "infosNavButton",
+      isActive: isRoute("/infos"),
       click: (): unknown => navigateTo("/infos"),
     },
   ];
@@ -104,11 +116,12 @@ function onDrop(event: DragEvent, dropIndex: number): void {
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
-              flat
-              color="transparent"
+              icon
+              :color="item.isActive?.() ? 'primary' : undefined"
+              :variant="item.isActive?.() ? 'tonal' : 'text'"
               :data-testid="item.testId"
               @click="item.click"
-              class="icon-style pa-2 rounded-lg"
+              class="icon-style"
               width="48"
               height="48"
               draggable="false"
@@ -116,7 +129,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
               @drop="onDrop($event, index)"
               @dragover.prevent
             >
-              <v-icon :icon="item.icon" color="white" size="28" />
+              <v-icon :icon="item.icon" size="24" />
             </v-btn>
           </template>
         </v-tooltip>
@@ -129,16 +142,17 @@ function onDrop(event: DragEvent, dropIndex: number): void {
           <template v-slot:activator="{ props }">
             <v-btn
               v-bind="props"
-              flat
-              color="transparent"
+              icon
+              :color="item.isActive?.() ? 'primary' : undefined"
+              :variant="item.isActive?.() ? 'tonal' : 'text'"
               :data-testid="item.testId"
               @click="item.click"
-              class="icon-style pa-2 rounded-lg"
+              class="icon-style"
               width="48"
               height="48"
               draggable="false"
             >
-              <v-icon :icon="item.icon" color="white" size="28" />
+              <v-icon :icon="item.icon" size="24" />
             </v-btn>
           </template>
         </v-tooltip>
@@ -153,9 +167,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
 }
 
 .icon-style:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: rgba(var(--v-theme-primary), 0.12) !important;
 }
 
 :deep(.v-navigation-drawer__content) {
