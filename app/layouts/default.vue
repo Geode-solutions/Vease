@@ -13,6 +13,7 @@ import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
 import { useColorTheme } from "@vease/composables/color_theme";
 import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
+import { useThemedViewerScene } from "@vease/composables/themed_viewer_scene";
 import { useUIStore } from "@vease/stores/ui";
 
 // The e2e desktop harness parses this line from Electron stdout (tests/e2e/utils/navigate.ts); consola's styled browser output breaks that match, so it stays a plain console.log.
@@ -35,6 +36,7 @@ useExclusiveDrawers();
 
 const { applyStoredColorTheme } = useColorTheme();
 applyStoredColorTheme();
+useThemedViewerScene();
 </script>
 <template>
   <v-app
