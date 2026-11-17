@@ -6,11 +6,14 @@ import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/ru
 import AuthWrapper from "@vease/components/Auth/Wrapper.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
+import { useColorTheme } from "@vease/composables/color_theme";
 import { useExtensions } from "@vease/composables/extensions";
 
 const infraStore = getInfraStore();
 const { updateExtensions } = useExtensions();
 const { isUserAuthenticated, user } = useAuth();
+const { isDark } = useColorTheme();
+const logo = computed(() => (isDark.value ? "/logo_dark.svg" : "/logo_light.svg"));
 
 // Token sent to the Cloud API on launch; it expires after an hour, reloading the page gets a new one
 const authToken = ref<string>();
@@ -30,7 +33,7 @@ watch(
   <Launcher
     v-if="infraStore.status != Status.CREATED"
     app-name="Vease"
-    logo="/logo.png"
+    :logo="logo"
     :isUserAuthenticated="isUserAuthenticated"
     :auth-token="authToken"
   >
