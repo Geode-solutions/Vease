@@ -24,12 +24,12 @@ const POST_SUFFIX = /\.post\.ts$/u;
 
 // The style routes of a viewer type found on disk, so a route added without a test is noticed
 function styleRoutesOnDisk(
-  viewerType: "mesh" | "model",
+  viewerObjectType: "mesh" | "model",
   { attribute }: { attribute: boolean },
 ): string[] {
   return (
     fs
-      .globSync(`${viewerType}/**/*.post.ts`, { cwd: STYLE_ROUTES_DIR })
+      .globSync(`${viewerObjectType}/**/*.post.ts`, { cwd: STYLE_ROUTES_DIR })
       // Windows globs with backslashes, while routes are written with slashes
       .map((file) => file.replaceAll(path.sep, path.posix.sep).replace(POST_SUFFIX, ""))
       .filter((route) => route.endsWith("/attribute") === attribute)

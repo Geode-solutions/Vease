@@ -14,7 +14,7 @@ const mockItem1: DataItem = {
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Mesh Model",
   geode_object_type: "BRep",
-  viewer_type: "3D",
+  viewer_object_type: "3D",
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
 };
@@ -24,7 +24,7 @@ const mockItem2: DataItem = {
   geode_id: "00000000-0000-0000-0000-000000000002",
   name: "Surface Data",
   geode_object_type: "TriangulatedSurface3D",
-  viewer_type: "3D",
+  viewer_object_type: "3D",
   visible: false,
   created_at: "2026-01-02T00:00:00.000Z",
 };

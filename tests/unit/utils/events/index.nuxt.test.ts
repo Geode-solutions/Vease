@@ -83,7 +83,7 @@ describe("events/index", () => {
     });
 
     test("dispatches a matching event to its handler", async () => {
-      const item = { id: "item-1", viewer_type: "model", geode_object_type: "BRep" };
+      const item = { id: "item-1", viewer_object_type: "model", geode_object_type: "BRep" };
       getEventSourceState().event.value = saveViewableFileId;
       getEventSourceState().data.value = JSON.stringify({ data: [item] });
 
@@ -98,7 +98,7 @@ describe("events/index", () => {
       connectToEventSource();
       await flushPromises();
 
-      const item = { id: "item-2", viewer_type: "model", geode_object_type: "BRep" };
+      const item = { id: "item-2", viewer_object_type: "model", geode_object_type: "BRep" };
       getEventSourceState().event.value = saveViewableFileId;
       getEventSourceState().data.value = JSON.stringify({ data: [item] });
       await flushPromises();
