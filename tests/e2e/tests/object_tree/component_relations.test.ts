@@ -61,6 +61,12 @@ test("expand a surface shows its boundaries", async ({ window }) => {
   ).toHaveCount(1);
 });
 
+// The viewer highlights the lines of the group, not the surface
+test("hover the boundaries of a surface highlights its lines", async ({ window }) => {
+  await treeRows(window).filter({ hasText: "Boundaries (" }).first().hover();
+  await waitForActionSettled(window);
+});
+
 test("expand the boundaries of a surface lists its lines", async ({ window }) => {
   const rowsBefore = await treeRows(window).count();
   await expandRow(window, treeRows(window).filter({ hasText: "Boundaries (" }).first());
