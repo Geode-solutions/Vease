@@ -2,7 +2,7 @@
 interface StyleDetails {
   id: string;
   name: string;
-  viewer_type: string;
+  viewer_object_type: string;
   targets: string[];
   attributes: { target: string; location: string; name: string }[];
 }

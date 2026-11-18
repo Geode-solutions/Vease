@@ -11,7 +11,7 @@ const item: DataItem = {
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Points",
   geode_object_type: "PointSet3D",
-  viewer_type: "mesh",
+  viewer_object_type: "mesh",
   visible: true,
 };
 

@@ -27,7 +27,7 @@ function surfaceDetails(id: string = SURFACE_ID, name = "surface"): StyleDetails
   return {
     id,
     name,
-    viewer_type: "mesh",
+    viewer_object_type: "mesh",
     targets: ["points", "edges", "polygons"],
     attributes: [
       { target: "points", location: "vertex", name: "depth" },
@@ -42,7 +42,7 @@ function surfaceDetails(id: string = SURFACE_ID, name = "surface"): StyleDetails
 const SOLID: StyleDetails = {
   id: SOLID_ID,
   name: "solid",
-  viewer_type: "mesh",
+  viewer_object_type: "mesh",
   targets: ["points", "edges", "polygons", "polyhedra"],
   attributes: [
     { target: "points", location: "vertex", name: "depth" },
@@ -54,7 +54,7 @@ const SOLID: StyleDetails = {
 const MODEL: StyleDetails = {
   id: MODEL_ID,
   name: "model",
-  viewer_type: "model",
+  viewer_object_type: "model",
   targets: ["points", "edges", "corners", "lines", "surfaces", "blocks"],
   attributes: [
     { target: "lines", location: "edge", name: "length" },

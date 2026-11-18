@@ -33,7 +33,7 @@ const MESH: DataItem = {
   data_id: "mesh-1",
   geode_id: "geode-1",
   name: "surface",
-  viewer_type: "mesh",
+  viewer_object_type: "mesh",
   geode_object_type: "PolygonalSurface3D",
   visible: true,
   created_at: "2026-10-08",
@@ -44,7 +44,7 @@ const MODEL: DataItem = {
   data_id: "model-1",
   geode_id: "geode-2",
   name: "brep",
-  viewer_type: "model",
+  viewer_object_type: "model",
   geode_object_type: "BRep",
 };
 

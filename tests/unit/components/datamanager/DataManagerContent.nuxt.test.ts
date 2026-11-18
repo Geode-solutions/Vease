@@ -69,7 +69,7 @@ const mockItem1: DataItem = {
   geode_object_type: "BRep",
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
-  viewer_type: "3D",
+  viewer_object_type: "3D",
 };
 
 const mockItem2: DataItem = {
@@ -79,7 +79,7 @@ const mockItem2: DataItem = {
   geode_object_type: "TriangulatedSurface3D",
   visible: false,
   created_at: "2026-01-02T00:00:00.000Z",
-  viewer_type: "3D",
+  viewer_object_type: "3D",
 };
 
 describe("data manager content component", () => {
@@ -88,7 +88,9 @@ describe("data manager content component", () => {
   const mockDeleteItem = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
   const mockSetVisibility = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
   const mockAddItem =
-    vi.fn<(type: string, name: string, id: string, geodeId: string, viewerType: string) => void>();
+    vi.fn<
+      (type: string, name: string, id: string, geodeId: string, viewerObjectType: string) => void
+    >();
   const mockRemoveItem = vi.fn<(id: string) => void>();
   const mockCloseView = vi.fn<(id: string) => void>();
   const mockRenameItem = vi.fn<(id: string, name: string) => void>();
@@ -168,7 +170,7 @@ describe("data manager content component", () => {
       mockItem2.name,
       mockItem2.data_id,
       mockItem2.geode_id,
-      mockItem2.viewer_type,
+      mockItem2.viewer_object_type,
     );
     expect(mockRemoveItem).toHaveBeenCalledWith("item-1");
     expect(mockFocusCameraOnObject).toHaveBeenCalledWith("item-2");

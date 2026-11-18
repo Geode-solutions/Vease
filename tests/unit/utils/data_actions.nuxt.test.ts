@@ -24,7 +24,7 @@ const ITEM: DataItem = {
   data_id: ID,
   geode_id: "geode-1",
   name: "surface",
-  viewer_type: "mesh",
+  viewer_object_type: "mesh",
   geode_object_type: "PolygonalSurface3D",
   visible: true,
   created_at: "2026-10-09",
@@ -140,7 +140,7 @@ describe("data actions", () => {
       ITEM.name,
       ID,
       ITEM.geode_id,
-      ITEM.viewer_type,
+      ITEM.viewer_object_type,
     );
   });
 
