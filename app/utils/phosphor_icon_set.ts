@@ -4,11 +4,12 @@ import { type VNode, h } from "vue";
 import { mdi } from "vuetify/iconsets/mdi";
 
 // Local imports
-import { MDI_TO_PHOSPHOR } from "@vease/utils/phosphor_icons";
+import { MDI_TO_PHOSPHOR, MDI_TO_PHOSPHOR_FILL } from "@vease/utils/phosphor_icons";
 
 const PHOSPHOR_SET_NAME = "phosphor";
 
-// Classes rendering an icon name: "ph ph-<phosphor> <mdi name> <modifiers>" when mapped,
+// Classes rendering an icon name: "ph ph-<phosphor> <mdi name> <modifiers>" when mapped
+// ("ph-fill ph-<phosphor> ..." for the filled ones),
 // "mdi <name>" (exactly what Vuetify's mdi set renders) otherwise. The original mdi name
 // Stays on the element as a marker so `.mdi-xxx` selectors (e2e tests) keep matching: its
 // MDI ::before content loses against the more specific `.ph.ph-xxx:before` rule.
@@ -18,6 +19,10 @@ function phosphorIconClass(icon: string): string {
   const [name = "", ...modifiers] = trimmed.split(/\s+/u);
   if (name.startsWith("ph-")) {
     return ["ph", name, ...modifiers].join(" ");
+  }
+  const filled = MDI_TO_PHOSPHOR_FILL.get(name);
+  if (filled !== undefined) {
+    return ["ph-fill", `ph-${filled}`, name, ...modifiers].join(" ");
   }
   const phosphor = MDI_TO_PHOSPHOR.get(name);
   if (phosphor === undefined) {

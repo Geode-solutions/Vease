@@ -7,7 +7,6 @@
 // - mdi-axis-{x,y,z}-arrow: one icon per axis, Phosphor has none
 // - mdi-slope-downhill: fault, no Phosphor equivalent
 // - mdi-eye-minus-outline: partially visible, no Phosphor equivalent
-// - mdi-circle: filled status dot ($delimiter too), the regular Phosphor circle is a ring
 // - mdi-keyboard-space: no Phosphor equivalent
 const MDI_TO_PHOSPHOR = new Map<string, string>(
   Object.entries({
@@ -79,7 +78,6 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
     "mdi-earth": "globe-hemisphere-west",
     "mdi-email-outline": "envelope-simple",
     "mdi-expand-all-outline": "arrows-out-line-vertical",
-    "mdi-eye": "eye",
     "mdi-eye-off": "eye-slash",
     "mdi-eye-off-outline": "eye-slash",
     "mdi-eye-outline": "eye",
@@ -194,4 +192,13 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
   }),
 );
 
-export { MDI_TO_PHOSPHOR };
+// MDI names drawn filled, rendered with the Phosphor fill weight (`ph-fill ph-<name>`). The filled
+// Eye against the outlined and slashed ones keeps the visibility states apart at a glance, as in MDI.
+const MDI_TO_PHOSPHOR_FILL = new Map<string, string>(
+  Object.entries({
+    "mdi-circle": "circle",
+    "mdi-eye": "eye",
+  }),
+);
+
+export { MDI_TO_PHOSPHOR, MDI_TO_PHOSPHOR_FILL };

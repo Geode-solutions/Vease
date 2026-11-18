@@ -10,19 +10,20 @@ import { mdi } from "vuetify/iconsets/mdi";
 import { mount } from "@vue/test-utils";
 
 // Local imports
+import { MDI_TO_PHOSPHOR, MDI_TO_PHOSPHOR_FILL } from "@vease/utils/phosphor_icons";
 import {
   PHOSPHOR_SET_NAME,
   phosphor,
   phosphorIconClass,
   phosphorIconOptions,
 } from "@vease/utils/phosphor_icon_set";
-import { MDI_TO_PHOSPHOR } from "@vease/utils/phosphor_icons";
 import phosphorIconsPlugin from "@vease/plugins/phosphor_icons";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 const require = createRequire(import.meta.url);
 const phosphorCss = fs.readFileSync(require.resolve("@phosphor-icons/web/regular"), "utf8");
+const phosphorFillCss = fs.readFileSync(require.resolve("@phosphor-icons/web/fill"), "utf8");
 
 const vuetify = createVuetify({ components, icons: phosphorIconOptions() });
 
@@ -37,6 +38,18 @@ describe("the Phosphor icon set", () => {
       (name) => !phosphorCss.includes(`.ph.ph-${name}:before`),
     );
     expect(missing).toStrictEqual([]);
+  });
+
+  test("maps the filled icons only to icons of the Phosphor fill font", () => {
+    const missing = [...MDI_TO_PHOSPHOR_FILL.values()].filter(
+      (name) => !phosphorFillCss.includes(`.ph-fill.ph-${name}:before`),
+    );
+    expect(missing).toStrictEqual([]);
+  });
+
+  test("renders the filled MDI icons with the Phosphor fill weight", () => {
+    expect(phosphorIconClass("mdi-eye")).toBe("ph-fill ph-eye mdi-eye");
+    expect(phosphorIconClass("mdi-eye-off-outline")).toBe("ph ph-eye-slash mdi-eye-off-outline");
   });
 
   test("renders a mapped icon with Phosphor and keeps the mdi name as a marker", () => {
