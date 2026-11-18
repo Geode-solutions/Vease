@@ -55,3 +55,6 @@ package-lock.json
 
 extensions
 *.nuxtrc
+
+# Large e2e data downloaded from the e2e-data release (see tests/e2e/utils/remote_data.ts)
+/tests/e2e/tests/data/remote
