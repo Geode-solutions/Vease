@@ -69,14 +69,14 @@ runFunctionWhenMicroservicesConnected(() => {
 
 <template>
   <v-card flat color="transparent" class="d-flex flex-column fill-height">
-    <div class="px-6 pt-6 pb-2">
+    <div class="px-8 pt-8 pb-2">
       <div class="d-flex align-center mb-4">
         <v-icon icon="mdi-information-outline" class="mr-3 text-primary" size="32" />
         <h2 class="text-h4 font-weight-bold">Infos</h2>
       </div>
     </div>
 
-    <div class="flex-grow-1 overflow-y-auto px-6 pb-6 infos-content">
+    <div class="flex-grow-1 overflow-y-auto px-8 pb-8 infos-content">
       <v-row>
         <v-col cols="12" md="6" class="d-flex flex-column ga-4">
           <v-card flat border rounded="xl">

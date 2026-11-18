@@ -83,11 +83,11 @@ useThemedViewerScene();
 }
 .island-wrapper {
   flex-grow: 1;
-  height: 99%;
+  height: calc(100% - var(--vease-shell-gutter));
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin: 0 10px 10px 0;
+  margin: 0 var(--vease-shell-gutter) var(--vease-shell-gutter) 0;
   padding: 0;
 }
 .custom-background {
@@ -123,9 +123,9 @@ useThemedViewerScene();
 .drawer-container {
   position: fixed;
   top: 0;
-  height: calc(100vh - 100px) !important;
-  margin-top: 84px;
-  padding: 16px;
+  height: calc(100vh - 80px) !important;
+  margin-top: 64px;
+  padding: var(--vease-shell-gutter);
   z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;

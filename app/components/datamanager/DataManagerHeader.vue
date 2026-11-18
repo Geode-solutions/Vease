@@ -38,7 +38,7 @@ defineExpose({
 </script>
 
 <template>
-  <div :class="[compact ? 'px-0 py-1 pb-0' : 'px-0 py-8 pb-2']">
+  <div :class="[compact ? 'px-0 py-1 pb-0' : 'px-0 pt-0 pb-2']">
     <v-tabs
       :model-value="activeTab"
       @update:model-value="emit('update:activeTab', $event)"
@@ -46,13 +46,11 @@ defineExpose({
       color="primary"
       :class="[compact ? 'mb-2' : 'mb-6', 'border-b-thin']"
       height="48"
-      selected-class="bg-primary"
+      slider-color="primary"
     >
       <v-tab
         value="data"
-        class="text-none font-weight-medium px-6 rounded-t-lg"
-        :variant="activeTab === 'data' ? 'flat' : 'text'"
-        :border="activeTab === 'data' ? true : false"
+        class="text-none font-weight-medium px-4"
         data-testid="dataManagerTab-data"
       >
         <v-icon start size="20">mdi-database</v-icon>
@@ -63,8 +61,7 @@ defineExpose({
         v-for="tab in tabs"
         :key="tab.id"
         :value="tab.id"
-        class="text-none font-weight-medium px-6 rounded-t-lg"
-        :variant="activeTab === tab.id ? 'flat' : 'text'"
+        class="text-none font-weight-medium px-4"
         :data-testid="`dataManagerTab-${tab.id}`"
       >
         <v-icon v-if="tab.icon" start size="20">{{ tab.icon }}</v-icon>

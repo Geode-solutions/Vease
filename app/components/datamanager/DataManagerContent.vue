@@ -171,7 +171,7 @@ useEventListener(document, "keydown", (event) => {
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
           <v-window-item
             value="data"
-            :class="['fill-height overflow-hidden', compact ? 'px-0 py-2' : 'px-0 py-6']"
+            :class="['fill-height overflow-hidden', compact ? 'px-0 py-2' : 'px-0 py-4']"
           >
             <DataTable
               v-if="viewMode === 'list'"

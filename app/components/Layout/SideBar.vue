@@ -99,7 +99,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
 <template>
   <v-navigation-drawer
     v-model="drawer"
-    width="90"
+    width="80"
     color="transparent"
     class="border-0 pb-2 pt-0"
     elevation="0"
@@ -107,11 +107,11 @@ function onDrop(event: DragEvent, dropIndex: number): void {
     permanent
   >
     <div
-      class="d-flex flex-column align-center py-4 fill-height"
+      class="d-flex flex-column align-center pt-0 pb-4 fill-height"
       style="width: 100%"
       @mousedown.stop
     >
-      <div v-for="(item, index) in topPages" :key="index" class="mb-3">
+      <div v-for="(item, index) in topPages" :key="index" class="mb-2">
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -137,7 +137,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
 
       <v-spacer />
 
-      <div v-for="(item, index) in bottomPages" :key="index" class="mb-3">
+      <div v-for="(item, index) in bottomPages" :key="index" class="mb-2">
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn

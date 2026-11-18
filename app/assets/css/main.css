@@ -192,3 +192,44 @@ body,
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
 }
+
+/* Shape and spacing system (8 px grid). Two radii only, as the brand book frames are near-square:
+   controls (buttons, fields, list items, tooltips) 6 px, containers (island, panels, drawers, menus, dialogs)
+   12 px, nested containers fall back to the control radius; circles are reserved for icon buttons (side bar,
+   viewer toolbar, radial menu), where the round shape reads as the brand circle. */
+:root {
+  --vease-radius-control: 6px;
+  --vease-radius-container: 12px;
+  --vease-shell-gutter: 16px;
+}
+
+html .rounded-xl {
+  border-radius: var(--vease-radius-container) !important;
+}
+
+html .v-btn:not(.v-btn--icon) {
+  border-radius: var(--vease-radius-control);
+}
+
+html .v-btn.rounded-pill:not(.v-btn--icon),
+html .v-btn.rounded-lg:not(.v-btn--icon) {
+  border-radius: var(--vease-radius-control) !important;
+}
+
+html .v-field,
+html .v-list-item,
+html .v-tooltip > .v-overlay__content {
+  border-radius: var(--vease-radius-control);
+}
+
+/* Nested containers (a card inside a panel) take the control radius, so corners stay concentric */
+html .rounded-md,
+html .glass-panel :is(.glass-panel, .glass-ui):not(.rounded-circle) {
+  border-radius: var(--vease-radius-control) !important;
+}
+
+html .v-menu > .v-overlay__content,
+html .v-dialog > .v-overlay__content > .v-card {
+  border-radius: var(--vease-radius-container);
+}
+

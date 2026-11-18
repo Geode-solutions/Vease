@@ -34,13 +34,13 @@ function onImportFileSelected(event): void {
   <v-app-bar
     flat
     color="transparent"
-    height="70"
+    height="64"
     elevation="0"
-    class="d-flex align-center w-100 px-8"
+    class="d-flex align-center w-100 top-bar"
     @mousedown.stop
   >
     <div class="brand-lockup d-flex align-center ga-3 mr-8">
-      <BrandMark :size="30" class="text-primary" />
+      <BrandMark :size="32" />
       <h2 class="title-text brand-wordmark">Vease</h2>
     </div>
 
@@ -50,7 +50,6 @@ function onImportFileSelected(event): void {
           <v-btn
             variant="text"
             v-bind="props"
-            rounded="pill"
             class="text-none font-weight-medium"
             prepend-icon="mdi-folder-star-outline"
             data-testid="projectMenuButton"
@@ -127,6 +126,12 @@ function onImportFileSelected(event): void {
 <style scoped>
 :deep(.v-toolbar__content) {
   overflow: visible !important;
+}
+
+/* The mark is centered on the side bar column (80 px), the right edge aligns with the island */
+.top-bar {
+  padding-left: 24px;
+  padding-right: var(--vease-shell-gutter);
 }
 
 .brand-wordmark {

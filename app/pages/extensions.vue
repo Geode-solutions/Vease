@@ -7,7 +7,7 @@ const currentTab = ref("marketplace");
 
 <template>
   <v-card flat color="transparent" class="d-flex flex-column fill-height">
-    <div class="px-6 pt-6 pb-2">
+    <div class="px-8 pt-8 pb-2">
       <div class="d-flex align-center justify-space-between mb-4">
         <div class="d-flex align-center">
           <v-icon icon="mdi-puzzle" class="mr-3 text-primary" size="32"></v-icon>
@@ -35,7 +35,7 @@ const currentTab = ref("marketplace");
     >
       <v-window-item
         value="marketplace"
-        class="fill-height px-6 pb-6 overflow-y-auto custom-scrollbar"
+        class="fill-height px-8 pb-8 overflow-y-auto custom-scrollbar"
       >
         <Marketplace />
       </v-window-item>
