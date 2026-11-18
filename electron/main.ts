@@ -14,13 +14,16 @@ import {
   saveCredentials,
   // oxlint-disable-next-line import/no-relative-parent-imports
 } from "../utils/desktop";
+import {
+  isolateInstanceSessionData,
+  persistInstanceLocalState,
+  // oxlint-disable-next-line import/no-relative-parent-imports
+} from "../utils/desktop_session_data";
 import { initUpdater } from "./updater";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { loadLaunchFiles } from "../utils/launch_files";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { registerLinuxDesktopEntry } from "../utils/desktop_icon";
-// oxlint-disable-next-line import/no-relative-parent-imports
-import { isolateInstanceSessionData } from "../utils/desktop_session_data";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
@@ -41,7 +44,11 @@ ipcMain.handle("project_folder_path", (_event, args: { projectFolderPath: string
 
 ipcMain.handle("save_credentials", (_event, args: { email: string; password: string }) => {
   const { email, password } = args;
-  return saveCredentials(email, password);
+  const result = saveCredentials(email, password);
+  if (result.success) {
+    persistInstanceLocalState();
+  }
+  return result;
 });
 
 ipcMain.handle("get_credentials", () => {
