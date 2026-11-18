@@ -242,3 +242,13 @@ html .v-dialog > .v-overlay__content > .v-card {
   border-radius: var(--vease-radius-container);
 }
 
+/* The brand book marks the current page with a small orange dot */
+.brand-dot {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-accent));
+}
+

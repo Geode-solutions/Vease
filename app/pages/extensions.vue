@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Extension from "@vease/components/Extension.vue";
 import Marketplace from "@vease/components/Extensions/Marketplace.vue";
+import PageHeader from "@vease/components/Layout/PageHeader.vue";
 
 const currentTab = ref("marketplace");
 </script>
@@ -8,15 +9,11 @@ const currentTab = ref("marketplace");
 <template>
   <v-card flat color="transparent" class="d-flex flex-column fill-height">
     <div class="px-8 pt-8 pb-2">
-      <div class="d-flex align-center justify-space-between mb-4">
-        <div class="d-flex align-center">
-          <v-icon icon="mdi-puzzle" class="mr-3 text-primary" size="32"></v-icon>
-          <h2 class="text-h4 font-weight-bold">Extensions</h2>
-        </div>
-      </div>
-      <p class="text-medium-emphasis mb-4">
-        Enhance your application with additional features and tools from the marketplace.
-      </p>
+      <PageHeader
+        title="Extensions"
+        subtitle="Enhance your application with additional features and tools from the marketplace."
+        class="mb-4"
+      />
 
       <v-tabs v-model="currentTab" color="primary" slider-color="primary" class="border-b">
         <v-tab value="marketplace" class="text-none font-weight-medium">

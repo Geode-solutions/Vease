@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getBackStore, getInfraStore } from "@vease/utils/external_stores";
+import PageHeader from "@vease/components/Layout/PageHeader.vue";
 import { Status } from "@ogw_front/utils/status";
 import UpdateSettings from "@vease/components/Updater/UpdateSettings.vue";
 import { isUpdaterAvailable } from "@vease/stores/updater";
@@ -70,10 +71,7 @@ runFunctionWhenMicroservicesConnected(() => {
 <template>
   <v-card flat color="transparent" class="d-flex flex-column fill-height">
     <div class="px-8 pt-8 pb-2">
-      <div class="d-flex align-center mb-4">
-        <v-icon icon="mdi-information-outline" class="mr-3 text-primary" size="32" />
-        <h2 class="text-h4 font-weight-bold">Infos</h2>
-      </div>
+      <PageHeader title="Infos" class="mb-6" />
     </div>
 
     <div class="flex-grow-1 overflow-y-auto px-8 pb-8 infos-content">

@@ -111,7 +111,8 @@ function onDrop(event: DragEvent, dropIndex: number): void {
       style="width: 100%"
       @mousedown.stop
     >
-      <div v-for="(item, index) in topPages" :key="index" class="mb-2">
+      <div v-for="(item, index) in topPages" :key="index" class="mb-2 rail-item">
+        <span v-if="item.isActive?.()" class="brand-dot rail-item__dot" aria-hidden="true" />
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -137,7 +138,8 @@ function onDrop(event: DragEvent, dropIndex: number): void {
 
       <v-spacer />
 
-      <div v-for="(item, index) in bottomPages" :key="index" class="mb-2">
+      <div v-for="(item, index) in bottomPages" :key="index" class="mb-2 rail-item">
+        <span v-if="item.isActive?.()" class="brand-dot rail-item__dot" aria-hidden="true" />
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
             <v-btn
@@ -162,6 +164,17 @@ function onDrop(event: DragEvent, dropIndex: number): void {
 </template>
 
 <style scoped>
+.rail-item {
+  position: relative;
+}
+
+.rail-item__dot {
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+}
+
 .icon-style {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
