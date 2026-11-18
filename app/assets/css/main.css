@@ -250,6 +250,18 @@ html .glass-panel :is(.glass-panel, .glass-ui):not(.rounded-circle) {
   --ogw-viewer-controls-icon-size: 24px;
 }
 
+/* Visibility in the object tree reads by weight: filled eye shown, outlined eye partly shown, slashed eye
+   hidden and faded like the object it stands for (full again on hover, as it can be clicked) */
+[data-testid="hiddenObjectEyeButton"] .v-icon {
+  opacity: 0.45;
+  transition: opacity 0.15s ease;
+}
+
+[data-testid="hiddenObjectEyeButton"]:hover .v-icon,
+[data-testid="hiddenObjectEyeButton"]:focus-visible .v-icon {
+  opacity: 1;
+}
+
 html .v-menu > .v-overlay__content,
 html .v-dialog > .v-overlay__content > .v-card {
   border-radius: var(--vease-radius-container);
