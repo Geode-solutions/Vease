@@ -237,6 +237,19 @@ html .glass-panel :is(.glass-panel, .glass-ui):not(.rounded-circle) {
   border-radius: var(--vease-radius-control) !important;
 }
 
+/* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius, and
+   one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
+   capsule sits 1 px in, its own border bringing its first button to the same column. */
+:root {
+  --ogw-viewer-panel-inset: 8px;
+  --ogw-viewer-panel-radius: var(--vease-radius-control);
+  --ogw-viewer-panel-padding: 8px;
+  --ogw-viewer-row-radius: var(--vease-radius-control);
+  --ogw-viewer-controls-inset: 1px;
+  --ogw-viewer-controls-padding: 0px;
+  --ogw-viewer-controls-icon-size: 24px;
+}
+
 html .v-menu > .v-overlay__content,
 html .v-dialog > .v-overlay__content > .v-card {
   border-radius: var(--vease-radius-container);
