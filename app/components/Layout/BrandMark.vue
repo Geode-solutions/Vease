@@ -22,7 +22,8 @@ const style = computed(() => ({
 .brand-mark {
   display: inline-block;
   flex: none;
-  background-color: currentColor;
+  /* Official logo colors only (brand book): set per theme in main.css */
+  background-color: var(--vease-logo-color, currentColor);
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;

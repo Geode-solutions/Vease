@@ -193,6 +193,15 @@ body,
   --ogw-svg-icon-active-filter: none;
 }
 
+/* The brand book only allows the official logo colors: Vert (Platine), Anthracite, Noir, Blanc */
+.v-theme--light {
+  --vease-logo-color: #1e1e1e;
+}
+
+.v-theme--dark {
+  --vease-logo-color: #ffffff;
+}
+
 /* Shape and spacing system (8 px grid). Two radii only, as the brand book frames are near-square:
    controls (buttons, fields, list items, tooltips) 6 px, containers (island, panels, drawers, menus, dialogs)
    12 px, nested containers fall back to the control radius; circles are reserved for icon buttons (side bar,

@@ -17,35 +17,38 @@ const BRAND_COLORS = {
 const LIGHT_THEME_NAME = "light";
 const DARK_THEME_NAME = "dark";
 
-// Tone on tone: every surface stays in the hue of its background (beige in light, green black in dark),
-// Only the value changes. Tints come from the brand "palette de travail" (each color mixed with white/black).
+// Tone on tone, with the brand book pairs: light = Bleu Fumée + Bleu Horizon (business cards, "Typographie"),
+// Dark = Vert Noir + Vert Platine ("Vocabulaire graphique"). Surfaces only change in value, never in hue; Orange is
+// The single accent. Tints come from the brand "palette de travail" (each color mixed with white or black).
+const HORIZON_INK = "#1F2E33";
+
 const lightTheme = {
   dark: false,
   colors: {
-    background: "#DFDAD2",
-    "on-background": BRAND_COLORS.anthracite,
-    surface: BRAND_COLORS.beige,
-    "on-surface": BRAND_COLORS.anthracite,
-    "surface-bright": "#F4F2EF",
-    "surface-light": "#E6E2DB",
-    "surface-variant": BRAND_COLORS.vertNoir,
-    "on-surface-variant": BRAND_COLORS.beige,
-    primary: BRAND_COLORS.vertPlatine,
-    "on-primary": BRAND_COLORS.beige,
-    secondary: BRAND_COLORS.vertNoir,
-    "on-secondary": BRAND_COLORS.beige,
+    background: BRAND_COLORS.bleuFumee,
+    "on-background": HORIZON_INK,
+    surface: "#D9E3E6",
+    "on-surface": HORIZON_INK,
+    "surface-bright": "#E8EEF0",
+    "surface-light": "#CAD7DB",
+    "surface-variant": BRAND_COLORS.bleuHorizon,
+    "on-surface-variant": "#E8EEF0",
+    primary: BRAND_COLORS.bleuHorizon,
+    "on-primary": "#E8EEF0",
+    secondary: HORIZON_INK,
+    "on-secondary": "#E8EEF0",
     accent: BRAND_COLORS.orange,
     "on-accent": BRAND_COLORS.anthracite,
-    error: "#A8402F",
+    error: "#8F3326",
     info: BRAND_COLORS.bleuHorizon,
-    success: "#3E7556",
+    success: "#2E6448",
     warning: BRAND_COLORS.orange,
   },
   variables: {
-    "border-color": BRAND_COLORS.vertNoir,
-    "border-opacity": 0.16,
-    "high-emphasis-opacity": 0.94,
-    "medium-emphasis-opacity": 0.72,
+    "border-color": BRAND_COLORS.bleuHorizon,
+    "border-opacity": 0.2,
+    "high-emphasis-opacity": 0.96,
+    "medium-emphasis-opacity": 0.76,
     "hover-opacity": 0.06,
   },
 };
@@ -88,16 +91,11 @@ interface RGBA {
   alpha: number;
 }
 
-// 3D viewer scene colors per theme, a step darker (light) or lighter (dark) than the app background
-const VIEWER_SCENE_COLORS: Record<string, { background: RGBA; text: RGBA }> = {
-  [LIGHT_THEME_NAME]: {
-    background: { red: 206, green: 200, blue: 190, alpha: 1 },
-    text: { red: 30, green: 30, blue: 30, alpha: 1 },
-  },
-  [DARK_THEME_NAME]: {
-    background: { red: 24, green: 62, blue: 58, alpha: 1 },
-    text: { red: 238, green: 235, blue: 231, alpha: 1 },
-  },
+// 3D viewer scene colors: a single blue-grey from the Bleu Fumée family for both themes, so data looks the
+// Same whatever the app theme, with Horizon ink for the scene text (axes labels, scale).
+const VIEWER_SCENE_COLORS: { background: RGBA; text: RGBA } = {
+  background: { red: 160, green: 180, blue: 187, alpha: 1 },
+  text: { red: 31, green: 46, blue: 51, alpha: 1 },
 };
 
 export type { RGBA };
