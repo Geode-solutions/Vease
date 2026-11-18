@@ -3,11 +3,9 @@
 // Targets of the Vuetify aliases ($close, $checkboxOn, $expand...). OpenGeodeWeb-Front is
 // Shared with PEGGHy, which keeps MDI: components keep their "mdi-*" names and only Vease
 // Swaps them at render time (see phosphor_icon_set.ts).
-// Names missing here deliberately fall back to MDI:
-// - mdi-axis-{x,y,z}-arrow: one icon per axis, Phosphor has none
-// - mdi-slope-downhill: fault, no Phosphor equivalent
-// - mdi-eye-minus-outline: partially visible, no Phosphor equivalent
-// - mdi-keyboard-space: no Phosphor equivalent
+// Every icon of Vease is a Phosphor one: MDI names without an exact equivalent take the closest
+// Phosphor meaning (axes as arrows in the orientation globe convention: X right, Y into the depth,
+// Z up; a fault as steps, the layers it offsets). MDI only remains for icons missing here.
 const MDI_TO_PHOSPHOR = new Map<string, string>(
   Object.entries({
     "mdi-account": "user",
@@ -30,6 +28,9 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
     "mdi-arrow-left-right": "arrows-horizontal",
     "mdi-arrow-right": "arrow-right",
     "mdi-arrow-up": "arrow-up",
+    "mdi-axis-x-arrow": "arrow-right",
+    "mdi-axis-y-arrow": "arrow-up-right",
+    "mdi-axis-z-arrow": "arrow-up",
     "mdi-backspace": "backspace",
     "mdi-cached": "arrows-clockwise",
     "mdi-calendar": "calendar-blank",
@@ -78,6 +79,7 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
     "mdi-earth": "globe-hemisphere-west",
     "mdi-email-outline": "envelope-simple",
     "mdi-expand-all-outline": "arrows-out-line-vertical",
+    "mdi-eye-minus-outline": "eye",
     "mdi-eye-off": "eye-slash",
     "mdi-eye-off-outline": "eye-slash",
     "mdi-eye-outline": "eye",
@@ -104,6 +106,7 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
     "mdi-information": "info",
     "mdi-information-outline": "info",
     "mdi-keyboard-return": "key-return",
+    "mdi-keyboard-space": "keyboard",
     "mdi-laptop": "laptop",
     "mdi-layers-outline": "stack-simple",
     "mdi-layers-triple": "stack",
@@ -157,6 +160,7 @@ const MDI_TO_PHOSPHOR = new Map<string, string>(
     "mdi-server-network": "hard-drives",
     "mdi-shape-outline": "shapes",
     "mdi-shape-plus-outline": "shapes",
+    "mdi-slope-downhill": "steps",
     "mdi-sort": "arrows-down-up",
     "mdi-sort-alphabetical-ascending": "sort-ascending",
     "mdi-sort-numeric-ascending": "list-numbers",

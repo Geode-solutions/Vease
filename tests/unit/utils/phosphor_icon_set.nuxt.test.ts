@@ -63,7 +63,7 @@ describe("the Phosphor icon set", () => {
   });
 
   test("falls back to MDI for unmapped icons", () => {
-    expect(phosphorIconClass("mdi-axis-x-arrow")).toBe("mdi mdi-axis-x-arrow");
+    expect(phosphorIconClass("mdi-unknown-icon")).toBe("mdi mdi-unknown-icon");
   });
 
   test("accepts Phosphor names directly", () => {
