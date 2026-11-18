@@ -38,7 +38,7 @@ describe("the backEventHandlers map", () => {
   test("imports a valid payload and re-renders", async () => {
     const item = {
       id: "item-1",
-      viewer_type: "model",
+      viewer_object_type: "model",
       geode_object_type: "BRep",
     };
 
@@ -49,10 +49,14 @@ describe("the backEventHandlers map", () => {
   });
 
   test("imports every object of a multi-object payload", async () => {
-    const first = { id: "item-a", viewer_type: "mesh", geode_object_type: "TriangulatedSurface3D" };
+    const first = {
+      id: "item-a",
+      viewer_object_type: "mesh",
+      geode_object_type: "TriangulatedSurface3D",
+    };
     const second = {
       id: "item-b",
-      viewer_type: "mesh",
+      viewer_object_type: "mesh",
       geode_object_type: "TriangulatedSurface3D",
     };
 
@@ -65,10 +69,14 @@ describe("the backEventHandlers map", () => {
   });
 
   test("renders once after every object of a multi-object payload is imported", async () => {
-    const first = { id: "item-c", viewer_type: "mesh", geode_object_type: "TriangulatedSurface3D" };
+    const first = {
+      id: "item-c",
+      viewer_object_type: "mesh",
+      geode_object_type: "TriangulatedSurface3D",
+    };
     const second = {
       id: "item-d",
-      viewer_type: "mesh",
+      viewer_object_type: "mesh",
       geode_object_type: "TriangulatedSurface3D",
     };
 
@@ -85,7 +93,7 @@ describe("the backEventHandlers map", () => {
   });
 
   test("lets the controller wait for the import and the render", async () => {
-    const item = { id: "item-2", viewer_type: "mesh", geode_object_type: "PointSet3D" };
+    const item = { id: "item-2", viewer_object_type: "mesh", geode_object_type: "PointSet3D" };
 
     const handled = backEventHandlers[saveViewableFileId]?.({ data: [item] });
     await waitForImport("item-2", TIMEOUT_MS);
@@ -104,7 +112,7 @@ describe("the backEventHandlers map", () => {
   test("ignores a payload without data list", async () => {
     await backEventHandlers[saveViewableFileId]?.({
       id: "item-1",
-      viewer_type: "model",
+      viewer_object_type: "model",
       geode_object_type: "BRep",
     });
     await backEventHandlers[saveViewableFileId]?.({ data: [] });

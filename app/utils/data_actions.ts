@@ -40,7 +40,7 @@ async function setDataVisibility(dataId: DataId, visible: boolean): Promise<void
       item.name,
       dataId,
       item.geode_id,
-      item.viewer_type,
+      item.viewer_object_type,
     );
   } else {
     treeviewStore.removeItem(dataId);

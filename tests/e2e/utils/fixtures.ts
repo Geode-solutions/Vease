@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 
 // Third party imports
-import type { Browser, Locator, Page } from "@playwright/test";
+import type { Browser, Locator, Page, TestInfo } from "@playwright/test";
 // oxlint-disable-next-line eslint/no-duplicate-imports
 import { test as base, expect } from "@playwright/test";
 import type { ElectronApplication } from "playwright";
@@ -17,28 +17,61 @@ import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 const MILLISECONDS_PER_SECOND = 1000;
 // Whole download deadline of a basemap build in OpenGeodeWeb-Back (FETCH_DEADLINE_SECONDS)
 const BUSY_TIMEOUT_MS = 30_000;
+const OGW_SUITE_TEST_FILE_EXTENSION = ".test.ts";
+// Built suite files of OpenGeodeWeb-Front, where the tests of its suites are located
+const OGW_SUITE_FILE_REGEX = /tests[/\\]browser[/\\]suites[/\\](?<suite>.+)\.js$/u;
+// Launching the app: browser or Electron, back and viewer, then afterAppLaunch
+const APP_LAUNCH_TIMEOUT_MS = 180_000;
+
+// Same as Playwright's {testName}: every ASCII character except letters, digits and "-" becomes "-"
+function sanitizeForFilePath(name: string): string {
+  return name.replaceAll(/[^\dA-Za-z\u0080-\uFFFF-]+/gu, "-");
+}
+
+// Screenshots/<test file path>/<test name>.png. The OpenGeodeWeb-Front suites (run from opengeodeweb_front.test.ts,
+// One describe each) keep the folders of their own test files, tests/browser/tests/<suite>.test.ts
+function screenshotPath(testInfo: TestInfo): string[] {
+  const titles = testInfo.titlePath.slice(1);
+  const suite = OGW_SUITE_FILE_REGEX.exec(testInfo.file)?.groups?.suite;
+  if (suite !== undefined) {
+    return [
+      ...`${suite.replaceAll("\\", "/")}${OGW_SUITE_TEST_FILE_EXTENSION}`.split("/"),
+      `${sanitizeForFilePath(titles.slice(1).join(" "))}.png`,
+    ];
+  }
+  return [
+    ...path.relative(testInfo.project.testDir, testInfo.file).split(path.sep),
+    `${sanitizeForFilePath(titles.join(" "))}.png`,
+  ];
+}
 
 interface ScreenshotMask {
   locators: Locator[];
 }
 
 interface RunningApp {
-  window: Page;
-  cleanup: () => Promise<void>;
-  // Only set in DESKTOP mode
+  // Page of the open app (throws if the app is closed)
+  readonly window: Page;
+  // Only set in DESKTOP mode, while the app is open
   electronApp?: ElectronApplication;
-  restart: () => Promise<Page>;
+  // Launches the app if it is not open
+  open: () => Promise<Page>;
+  // Closes the app if it is open
+  close: () => Promise<void>;
 }
 
 interface WorkerFixtures {
   mode: string;
   suiteId: string;
+  // Run on each launched app before its first test (Vease-Modeling loads its extension), and before closing it
+  afterAppLaunch: (window: Page) => Promise<void>;
+  beforeAppClose: (window: Page) => Promise<void>;
   app: RunningApp;
   restartApp: () => Promise<Page>;
-  window: Page;
 }
 
 interface TestFixtures {
+  window: Page;
   screenshotMask: ScreenshotMask;
   logTestProgress: undefined;
   autoScreenshot: undefined;
@@ -49,6 +82,26 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
 
   suiteId: ["default", { option: true, scope: "worker" }],
 
+  afterAppLaunch: [
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use): Promise<void> => {
+      await use(async (): Promise<void> => {
+        // Nothing to do by default
+      });
+    },
+    { scope: "worker" },
+  ],
+
+  beforeAppClose: [
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use): Promise<void> => {
+      await use(async (): Promise<void> => {
+        // Nothing to do by default
+      });
+    },
+    { scope: "worker" },
+  ],
+
   screenshotMask: [
     // oxlint-disable-next-line no-empty-pattern
     async ({}, use): Promise<void> => {
@@ -57,10 +110,20 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { scope: "test" },
   ],
 
-  // Mutable so restartApp can swap in a freshly launched app
+  // The app of the worker: opened by the first test that uses it (or a beforeAll), closed by app.close or at the end of
+  // The worker. A test file opens it, runs its tests and closes it; so does each suite of opengeodeweb_front.test.ts
   app: [
     async (
-      { mode, playwright, browserName, headless, channel, launchOptions },
+      {
+        mode,
+        playwright,
+        browserName,
+        headless,
+        channel,
+        launchOptions,
+        afterAppLaunch,
+        beforeAppClose,
+      },
       use,
       workerInfo,
     ): Promise<void> => {
@@ -79,19 +142,35 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         return browser;
       }
+      let openApp: Awaited<ReturnType<typeof navigateToApp>> | undefined = undefined;
       const app: RunningApp = {
-        ...(await navigateToApp(mode, launchBrowser)),
-        restart: async (): Promise<Page> => {
-          await app.cleanup();
-          const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
-          app.window = window;
-          app.cleanup = cleanup;
-          app.electronApp = electronApp;
-          return window;
+        get window(): Page {
+          if (openApp === undefined) {
+            throw new Error("The app is not open");
+          }
+          return openApp.window;
+        },
+        get electronApp(): ElectronApplication | undefined {
+          return openApp?.electronApp;
+        },
+        open: async (): Promise<Page> => {
+          if (openApp === undefined) {
+            openApp = await navigateToApp(mode, launchBrowser);
+            await afterAppLaunch(openApp.window);
+          }
+          return openApp.window;
+        },
+        close: async (): Promise<void> => {
+          if (openApp !== undefined) {
+            const { window, cleanup } = openApp;
+            openApp = undefined;
+            await beforeAppClose(window);
+            await cleanup();
+          }
         },
       };
       await use(app);
-      await app.cleanup();
+      await app.close();
       fs.rmSync(configPath, { recursive: true, force: true });
     },
     { scope: "worker" },
@@ -100,17 +179,21 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
   // Kills the running app and launches a new one, like a user closing and reopening it
   restartApp: [
     async ({ app }, use): Promise<void> => {
-      await use(app.restart);
+      await use(async (): Promise<Page> => {
+        await app.close();
+        const window = await app.open();
+        return window;
+      });
     },
     { scope: "worker" },
   ],
 
-  // Page of the app launched with the worker: after restartApp, use the returned page or app.window
+  // Page of the app, opened if needed: it follows restartApp
   window: [
     async ({ app }, use): Promise<void> => {
-      await use(app.window);
+      await use(await app.open());
     },
-    { scope: "worker" },
+    { scope: "test", timeout: APP_LAUNCH_TIMEOUT_MS },
   ],
 
   logTestProgress: [
@@ -143,7 +226,7 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         await waitForActionSettled(window);
         // The account icon depends on login state (only cloud is logged in)
-        await expect(window).toHaveScreenshot({
+        await expect(window).toHaveScreenshot(screenshotPath(testInfo), {
           mask: [window.getByTestId("accountNavButton"), ...screenshotMask.locators],
         });
       }

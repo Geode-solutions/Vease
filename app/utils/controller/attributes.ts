@@ -187,7 +187,7 @@ function matchesLocation(
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
   let sources: AttributeSource[] = [];
-  if (item.viewer_type === "model") {
+  if (item.viewer_object_type === "model") {
     sources = await modelSearchSources(item, args);
   } else {
     sources = meshSearchSources(item, args);
