@@ -252,3 +252,40 @@ html .v-dialog > .v-overlay__content > .v-card {
   background: rgb(var(--v-theme-accent));
 }
 
+/* Loading screen as a brand book cover: a large tone-on-tone circle behind the mark, the title in Urbanist,
+   set tight, and the subtitle as a small uppercase label. */
+.ogw-loading::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: min(118vmin, 1200px);
+  height: min(118vmin, 1200px);
+  border-radius: 50%;
+  background: rgb(var(--v-theme-surface));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ogw-loading > * {
+  position: relative;
+  z-index: 1;
+}
+
+html .ogw-loading .responsive-title {
+  font-family: var(--v-font-heading);
+  font-weight: 700 !important;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+}
+
+.ogw-loading .responsive-title::first-letter {
+  text-transform: uppercase;
+}
+
+html .ogw-loading .ls-widest {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.14em !important;
+}
