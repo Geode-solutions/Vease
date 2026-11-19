@@ -195,6 +195,9 @@ body,
 }
 
 .v-theme--dark {
+  /* The adaptive glass of the object tree turns to the brand green; lighten would hide it on a bright viewer */
+  --ogw-viewer-glass-tint: var(--v-theme-surface);
+  --ogw-viewer-glass-blend: normal;
   --ogw-mono-icon-filter: brightness(0) invert(0.92);
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
