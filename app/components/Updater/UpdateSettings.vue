@@ -61,7 +61,7 @@ onMounted(async () => {
 <template>
   <v-card flat border rounded="xl" data-testid="updateSettings">
     <v-card-title class="d-flex align-center">
-      <v-icon icon="mdi-update" size="20" class="mr-2 text-primary" />Updates</v-card-title
+      <v-icon icon="ph-clock-clockwise" size="20" class="mr-2 text-primary" />Updates</v-card-title
     >
     <v-card-text>
       <div class="d-flex align-center flex-wrap ga-4 mb-3">
@@ -92,7 +92,7 @@ onMounted(async () => {
         <v-btn
           :loading="busy"
           :disabled="unsupported"
-          prepend-icon="mdi-refresh"
+          prepend-icon="ph-arrow-clockwise"
           color="primary"
           variant="tonal"
           rounded="pill"

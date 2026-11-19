@@ -57,7 +57,7 @@ const selectedExtension = ref<MarketplaceExtension | undefined>(undefined);
           width="96"
           height="96"
         >
-          <v-icon icon="mdi-lock-outline" size="48" color="primary"></v-icon>
+          <v-icon icon="ph-lock" size="48" color="primary"></v-icon>
         </v-sheet>
 
         <h2 class="text-h5 font-weight-bold mb-3">Authentication Required</h2>
@@ -70,7 +70,7 @@ const selectedExtension = ref<MarketplaceExtension | undefined>(undefined);
         <v-btn
           color="accent"
           variant="flat"
-          prepend-icon="mdi-login"
+          prepend-icon="ph-sign-in"
           rounded="pill"
           class="text-none px-8 font-weight-bold"
           to="/account"

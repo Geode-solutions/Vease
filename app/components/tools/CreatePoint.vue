@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AXIS_ICONS } from "@vease/utils/axis_icons";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { useCreateObjectTool } from "@vease/composables/create_object";
@@ -28,7 +29,7 @@ const {
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column">
     <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center">
-      <v-icon icon="mdi-circle-medium" class="mr-1 text-h5" color="secondary" />
+      <v-icon icon="ph-dot-outline" class="mr-1 text-h5" color="secondary" />
       Create Point{{ points.length > 1 ? "s" : "" }}
     </v-card-title>
 
@@ -45,7 +46,7 @@ const {
         density="compact"
         bg-color="surface-light"
         class="mb-2 rounded-lg"
-        prepend-inner-icon="mdi-format-title"
+        prepend-inner-icon="ph-text-t"
       />
       <v-form class="mt-1">
         <div
@@ -55,7 +56,7 @@ const {
           :class="{ 'mb-2': index < points.length - 1 }"
         >
           <div class="d-flex align-center mb-1">
-            <v-icon size="small" color="secondary" class="mr-1">mdi-circle-small</v-icon>
+            <v-icon size="small" color="secondary" class="mr-1">ph-dot-outline</v-icon>
             <span class="text-caption text-medium-emphasis font-weight-bold text-uppercase">
               Point {{ index + 1 }}
             </span>
@@ -67,7 +68,7 @@ const {
               :disabled="points.length === 1"
               @click="removePoint(index)"
             >
-              <v-icon size="14">mdi-close</v-icon>
+              <v-icon size="14">ph-x</v-icon>
             </v-btn>
           </div>
 
@@ -92,7 +93,7 @@ const {
                   <span class="text-caption">{{ coord.toUpperCase() }}</span>
                 </template>
                 <template #prepend-inner>
-                  <v-icon size="14">mdi-axis-{{ coord }}-arrow</v-icon>
+                  <v-icon size="14" :icon="AXIS_ICONS[coord]" />
                 </template>
               </v-text-field>
             </v-col>
@@ -107,7 +108,7 @@ const {
               size="small"
               block
               class="text-none rounded-pill text-caption"
-              prepend-icon="mdi-plus"
+              prepend-icon="ph-plus"
               data-testid="addPointButton"
               @click="addPoint"
             >
@@ -129,7 +130,7 @@ const {
         class="text-none rounded-pill"
         @click="handleClose"
       >
-        <v-icon start size="14">mdi-close-circle</v-icon>Close
+        <v-icon start size="14">ph-x-circle</v-icon>Close
       </v-btn>
       <v-spacer />
       <v-btn
@@ -142,7 +143,7 @@ const {
         data-testid="submitButton"
         @click="createAllPoints"
       >
-        <v-icon start size="14">mdi-send</v-icon>
+        <v-icon start size="14">ph-paper-plane-right</v-icon>
         Create {{ validPointCount > 1 ? `${validPointCount} Points` : "Point" }}
       </v-btn>
     </v-card-actions>

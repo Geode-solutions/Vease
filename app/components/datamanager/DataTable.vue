@@ -154,7 +154,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="toggleVisibilityHeaderButton"
             @click.stop="emit('toggle-visibility-selected')"
           >
-            <v-icon size="16">{{ isAllVisible ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
+            <v-icon size="16">{{ isAllVisible ? "ph-fill ph-eye" : "ph-eye-slash" }}</v-icon>
             <v-tooltip activator="parent" location="top">
               {{
                 selectedIds.length > 0
@@ -179,7 +179,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="deleteAllSelectedButton"
             @click.stop="emit('delete-selected')"
           >
-            <v-icon size="18">mdi-delete</v-icon>
+            <v-icon size="18">ph-trash</v-icon>
             <v-tooltip activator="parent" location="top">
               {{
                 selectedIds.length > 0
@@ -198,7 +198,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           style="min-width: 0"
           @dblclick="emit('rename', item)"
         >
-          <v-icon size="20" class="mr-3 flex-shrink-0 opacity-60">mdi-file-outline</v-icon>
+          <v-icon size="20" class="mr-3 flex-shrink-0 opacity-60">ph-file</v-icon>
           <span
             class="font-weight-medium cursor-pointer text-truncate pb-1"
             style="min-width: 0; flex: 1 1 auto"
@@ -253,7 +253,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           data-testid="dataVisibilityButton"
           @click.stop="emit('toggle-visibility', item)"
         >
-          <v-icon size="20">{{ item.visible ? "mdi-eye" : "mdi-eye-off" }}</v-icon>
+          <v-icon size="20">{{ item.visible ? "ph-fill ph-eye" : "ph-eye-slash" }}</v-icon>
           <v-tooltip activator="parent" location="top">{{
             item.visible ? "Hide item" : "Show item"
           }}</v-tooltip>
@@ -269,7 +269,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="focusDataButton"
             @click.stop="emit('focus-camera', item)"
           >
-            <v-icon size="18">mdi-target</v-icon>
+            <v-icon size="18">ph-target</v-icon>
             <v-tooltip activator="parent" location="top">Focus camera</v-tooltip>
           </v-btn>
 
@@ -280,7 +280,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="isolateDataButton"
             @click.stop="emit('isolate', item)"
           >
-            <v-icon size="18">mdi-filter-variant</v-icon>
+            <v-icon size="18">ph-funnel-simple</v-icon>
             <v-tooltip activator="parent" location="top">Isolate item</v-tooltip>
           </v-btn>
 
@@ -291,7 +291,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="renameDataButton"
             @click.stop="emit('rename', item)"
           >
-            <v-icon size="18">mdi-pencil</v-icon>
+            <v-icon size="18">ph-pencil-simple</v-icon>
             <v-tooltip activator="parent" location="top">Rename</v-tooltip>
           </v-btn>
 
@@ -303,7 +303,7 @@ function formatSmartDate(dateStr: string | undefined): string {
             data-testid="deleteDataButton"
             @click.stop="emit('delete', item)"
           >
-            <v-icon size="18">mdi-delete</v-icon>
+            <v-icon size="18">ph-trash</v-icon>
             <v-tooltip activator="parent" location="top">Delete item</v-tooltip>
           </v-btn>
         </div>
@@ -312,7 +312,7 @@ function formatSmartDate(dateStr: string | undefined): string {
       <!-- Empty state when no data exists -->
       <template #no-data>
         <div class="d-flex flex-column align-center justify-center py-12 text-medium-emphasis">
-          <v-icon size="48" class="mb-3 opacity-40">mdi-database-off-outline</v-icon>
+          <v-icon size="48" class="mb-3 opacity-40">ph-database</v-icon>
           <span class="text-body-1 font-weight-medium mb-1">No data available</span>
           <span class="text-caption opacity-60">Import data files or models to view them here</span>
         </div>

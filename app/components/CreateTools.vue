@@ -46,7 +46,7 @@ function handleEscape(): void {
   <v-card v-if="!selectedTool" flat color="transparent" class="d-flex flex-column h-100 w-100">
     <div class="pa-3 text-center">
       <div class="d-flex align-center justify-center">
-        <v-icon start icon="mdi-creation" class="me-2 mt-5 text-primary" size="18" />
+        <v-icon start icon="ph-sparkle" class="me-2 mt-5 text-primary" size="18" />
         <h2 class="text-subtitle-1 font-weight-bold mb-0" style="line-height: 1.2">
           Create New Object
         </h2>
@@ -75,7 +75,7 @@ function handleEscape(): void {
                 :style="{ transition: 'all 0.3s ease' }"
               >
                 <v-icon
-                  v-if="tool.iconType === 'mdi'"
+                  v-if="tool.iconType === 'icon'"
                   :icon="tool.iconSource"
                   size="18"
                   color="primary"
@@ -117,7 +117,7 @@ function handleEscape(): void {
       height="32"
     >
       <v-btn icon variant="text" size="small" @click="handleBack" class="w-100 h-100">
-        <v-icon size="16">mdi-arrow-left</v-icon>
+        <v-icon size="16">ph-arrow-left</v-icon>
       </v-btn>
     </GlassCard>
     <GlassCard

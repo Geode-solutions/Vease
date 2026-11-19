@@ -80,7 +80,7 @@ runFunctionWhenMicroservicesConnected(() => {
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
               <v-icon
-                icon="mdi-application-outline"
+                icon="ph-app-window"
                 size="20"
                 class="mr-2 text-primary"
               />App</v-card-title
@@ -97,7 +97,7 @@ runFunctionWhenMicroservicesConnected(() => {
                   target="_blank"
                   rel="noopener"
                   class="text-primary text-no-wrap"
-                  >{{ version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                  >{{ version }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                 /></a>
               </p>
               <div class="d-flex align-center">
@@ -106,7 +106,7 @@ runFunctionWhenMicroservicesConnected(() => {
                   <template v-slot:activator="{ props }">
                     <v-btn
                       v-bind="props"
-                      :icon="copied ? 'mdi-check' : 'mdi-content-copy'"
+                      :icon="copied ? 'ph-check' : 'ph-copy'"
                       aria-label="Copy URL"
                       size="small"
                       variant="text"
@@ -125,7 +125,7 @@ runFunctionWhenMicroservicesConnected(() => {
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
               <v-icon
-                icon="mdi-lifebuoy"
+                icon="ph-lifebuoy"
                 size="20"
                 class="mr-2 text-primary"
               />Support</v-card-title
@@ -141,8 +141,8 @@ runFunctionWhenMicroservicesConnected(() => {
                 href="https://github.com/Geode-solutions/Vease/issues/new"
                 target="_blank"
                 rel="noopener"
-                prepend-icon="mdi-github"
-                append-icon="mdi-open-in-new"
+                prepend-icon="ph-github-logo"
+                append-icon="ph-arrow-square-out"
                 color="primary"
                 variant="tonal"
                 rounded="pill"
@@ -156,7 +156,7 @@ runFunctionWhenMicroservicesConnected(() => {
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
               <v-icon
-                icon="mdi-server-network"
+                icon="ph-hard-drives"
                 size="20"
                 class="mr-2 text-primary"
               />Microservices</v-card-title
@@ -179,7 +179,7 @@ runFunctionWhenMicroservicesConnected(() => {
                       rel="noopener"
                       class="text-primary text-no-wrap"
                       >{{ microservice.version
-                      }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                      }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                     /></a>
                   </td>
                   <td>
@@ -188,7 +188,7 @@ runFunctionWhenMicroservicesConnected(() => {
                         <v-icon
                           v-if="microservice.status == Status.NOT_CONNECTED"
                           v-bind="props"
-                          icon="mdi-close-circle"
+                          icon="ph-x-circle"
                           color="error"
                         />
                         <v-progress-circular
@@ -201,7 +201,7 @@ runFunctionWhenMicroservicesConnected(() => {
                         <v-icon
                           v-else-if="microservice.status == Status.CONNECTED"
                           v-bind="props"
-                          icon="mdi-check-circle"
+                          icon="ph-check-circle"
                           color="success"
                         />
                       </template>
@@ -215,7 +215,7 @@ runFunctionWhenMicroservicesConnected(() => {
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
               <v-icon
-                icon="mdi-package-variant-closed"
+                icon="ph-package"
                 size="20"
                 class="mr-2 text-primary"
               />Internal dependencies</v-card-title
@@ -236,7 +236,7 @@ runFunctionWhenMicroservicesConnected(() => {
                       target="_blank"
                       rel="noopener"
                       class="text-primary text-no-wrap"
-                      >{{ pkg.version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                      >{{ pkg.version }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                     /></a>
                   </td>
                 </tr>

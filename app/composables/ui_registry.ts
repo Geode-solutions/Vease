@@ -7,6 +7,7 @@ interface ToolDefinition {
   extensionPath?: string;
   title?: string;
   description?: string;
+  // "icon": iconSource is an icon of the app icon set (ph-...), "svg": the url of an svg image
   iconType?: string;
   iconSource?: string;
   [key: string]: unknown;

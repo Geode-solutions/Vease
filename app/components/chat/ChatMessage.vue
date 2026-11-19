@@ -14,9 +14,9 @@ interface ToolCall {
 }
 
 const TOOL_STATE_ICONS = {
-  running: "mdi-cog-outline",
-  done: "mdi-check",
-  failed: "mdi-alert-circle-outline",
+  running: "ph-gear",
+  done: "ph-check",
+  failed: "ph-warning-circle",
 } as const;
 
 const text = computed(() =>

@@ -52,7 +52,7 @@ async function apply(): Promise<void> {
   >
     <GlassCard variant="panel" padding="pa-8" :width="800">
       <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
-        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="primary" />
+        <v-icon icon="ph-globe-hemisphere-west" class="mr-3 text-h4" color="primary" />
         Project CRS
       </v-card-title>
       <v-card-subtitle class="ma-0">
@@ -73,7 +73,7 @@ async function apply(): Promise<void> {
           class="text-none rounded-pill"
           @click="emit('update:show', false)"
         >
-          <v-icon start>mdi-close-circle-outline</v-icon>
+          <v-icon start>ph-x-circle</v-icon>
           Cancel
         </v-btn>
         <v-spacer />
@@ -87,7 +87,7 @@ async function apply(): Promise<void> {
           class="text-none rounded-pill font-weight-bold"
           @click="apply"
         >
-          <v-icon start>mdi-swap-horizontal</v-icon>
+          <v-icon start>ph-arrows-left-right</v-icon>
           Change project CRS
         </v-btn>
       </v-card-actions>

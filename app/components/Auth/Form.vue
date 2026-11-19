@@ -39,7 +39,7 @@ async function handleSubmit(event): Promise<void> {
       type="email"
       :rules="emailRules"
       variant="outlined"
-      prepend-inner-icon="mdi-email-outline"
+      prepend-inner-icon="ph-envelope-simple"
       required
       class="custom-field mb-6"
       color="primary"
@@ -52,8 +52,8 @@ async function handleSubmit(event): Promise<void> {
       label="Password"
       :type="passwordVisible ? 'text' : 'password'"
       variant="outlined"
-      prepend-inner-icon="mdi-lock-outline"
-      :append-inner-icon="passwordVisible ? 'mdi-eye-off' : 'mdi-eye'"
+      prepend-inner-icon="ph-lock"
+      :append-inner-icon="passwordVisible ? 'ph-eye-slash' : 'ph-fill ph-eye'"
       @click:append-inner="passwordVisible = !passwordVisible"
       required
       class="custom-field mb-6"
@@ -69,7 +69,7 @@ async function handleSubmit(event): Promise<void> {
           label="Confirm Password"
           :type="passwordVisible ? 'text' : 'password'"
           variant="outlined"
-          prepend-inner-icon="mdi-lock-check-outline"
+          prepend-inner-icon="ph-lock-key"
           required
           class="custom-field mb-6"
           color="primary"

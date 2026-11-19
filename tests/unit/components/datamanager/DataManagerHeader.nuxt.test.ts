@@ -29,7 +29,7 @@ vi.mock(import("@ogw_front/components/SearchBar.vue"), () => ({
 const mockCustomTab: DataManagerTab = {
   id: "custom-tab",
   title: "Custom Tab",
-  icon: "mdi-cog",
+  icon: "ph-gear",
   component: { name: "CustomComponent", template: "<div>Custom</div>" },
 };
 

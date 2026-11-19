@@ -49,10 +49,10 @@ useEventListener(globalThis, "open-horizon-stack-modal", onOpen);
   <v-dialog v-model="isOpen" max-width="600">
     <GlassCard variant="panel" padding="pa-0" :escapeFunction="handleClose">
       <v-card-title class="d-flex align-center bg-primary py-3 px-4">
-        <v-icon icon="mdi-layers-triple" class="mr-2" />
+        <v-icon icon="ph-stack" class="mr-2" />
         <span class="text-subtitle-1 font-weight-bold">Horizon Stack</span>
         <v-spacer />
-        <v-btn icon="mdi-close" variant="text" size="small" @click="handleClose" />
+        <v-btn icon="ph-x" variant="text" size="small" @click="handleClose" />
       </v-card-title>
 
       <v-card-text class="pa-6">

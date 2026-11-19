@@ -50,7 +50,7 @@ async function create(): Promise<void> {
 <template>
   <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column">
     <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center">
-      <v-icon icon="mdi-layers-triple" class="mr-1 text-h5" color="secondary" />
+      <v-icon icon="ph-stack" class="mr-1 text-h5" color="secondary" />
       Create Horizon Stack
     </v-card-title>
 
@@ -67,7 +67,7 @@ async function create(): Promise<void> {
         density="compact"
         bg-color="surface-light"
         class="mb-2 rounded-lg"
-        prepend-inner-icon="mdi-format-title"
+        prepend-inner-icon="ph-text-t"
         data-testid="horizonStackName"
       />
 
@@ -94,25 +94,25 @@ async function create(): Promise<void> {
             class="rounded-lg text-caption"
             :placeholder="`Horizon ${index + 1}`"
             :rules="horizonRules(horizons[index] ?? '')"
-            prepend-inner-icon="mdi-minus"
+            prepend-inner-icon="ph-minus"
             :data-testid="`horizonStackHorizon-${index}`"
           />
           <v-btn
-            icon="mdi-arrow-up"
+            icon="ph-arrow-up"
             size="x-small"
             variant="text"
             :disabled="index === 0"
             @click="moveHorizon(index, index - 1)"
           />
           <v-btn
-            icon="mdi-arrow-down"
+            icon="ph-arrow-down"
             size="x-small"
             variant="text"
             :disabled="index === horizons.length - 1"
             @click="moveHorizon(index, index + 1)"
           />
           <v-btn
-            icon="mdi-close"
+            icon="ph-x"
             size="x-small"
             variant="text"
             color="error"
@@ -138,7 +138,7 @@ async function create(): Promise<void> {
         size="small"
         block
         class="text-none rounded-pill text-caption mt-3"
-        prepend-icon="mdi-plus"
+        prepend-icon="ph-plus"
         data-testid="addHorizonButton"
         @click="addHorizon"
       >
@@ -154,7 +154,7 @@ async function create(): Promise<void> {
         class="text-none rounded-pill"
         @click="handleClose"
       >
-        <v-icon start size="14">mdi-close-circle</v-icon>Close
+        <v-icon start size="14">ph-x-circle</v-icon>Close
       </v-btn>
       <v-spacer />
       <v-btn
@@ -167,7 +167,7 @@ async function create(): Promise<void> {
         data-testid="submitButton"
         @click="create"
       >
-        <v-icon start size="14">mdi-send</v-icon>
+        <v-icon start size="14">ph-paper-plane-right</v-icon>
         Create Horizon Stack
       </v-btn>
     </v-card-actions>

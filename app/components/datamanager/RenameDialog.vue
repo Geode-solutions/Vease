@@ -38,7 +38,7 @@ function handleConfirm(): void {
   <v-dialog :model-value="show" @update:model-value="emit('update:show', $event)" max-width="400">
     <GlassCard variant="panel" padding="pa-8" :width="400">
       <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
-        <v-icon icon="mdi-pencil-outline" class="mr-3 text-h4" color="primary"></v-icon>
+        <v-icon icon="ph-pencil-simple" class="mr-3 text-h4" color="primary"></v-icon>
         Rename Item
       </v-card-title>
 
@@ -62,7 +62,7 @@ function handleConfirm(): void {
             <span>Object Name</span>
           </template>
           <template v-slot:prepend-inner>
-            <v-icon>mdi-format-title</v-icon>
+            <v-icon>ph-text-t</v-icon>
           </template>
         </v-text-field>
       </v-card-text>
@@ -75,7 +75,7 @@ function handleConfirm(): void {
           @click="emit('update:show', false)"
           class="text-none rounded-pill"
         >
-          <v-icon start>mdi-close-circle-outline</v-icon>
+          <v-icon start>ph-x-circle</v-icon>
           Cancel
         </v-btn>
 
@@ -89,7 +89,7 @@ function handleConfirm(): void {
           @click="handleConfirm"
           class="text-none rounded-pill font-weight-bold"
         >
-          <v-icon start>mdi-check-circle-outline</v-icon>
+          <v-icon start>ph-check-circle</v-icon>
           Rename
         </v-btn>
       </v-card-actions>

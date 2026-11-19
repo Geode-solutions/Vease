@@ -24,7 +24,7 @@ const emit = defineEmits<{
           </v-chip>
 
           <v-btn
-            prepend-icon="mdi-eye-outline"
+            prepend-icon="ph-eye"
             size="small"
             variant="tonal"
             color="primary"
@@ -36,7 +36,7 @@ const emit = defineEmits<{
           </v-btn>
 
           <v-btn
-            prepend-icon="mdi-delete"
+            prepend-icon="ph-trash"
             size="small"
             variant="flat"
             color="error"
@@ -48,7 +48,7 @@ const emit = defineEmits<{
           </v-btn>
         </div>
 
-        <v-btn icon="mdi-close" size="x-small" variant="text" @click="emit('clear')">
+        <v-btn icon="ph-x" size="x-small" variant="text" @click="emit('clear')">
           <v-tooltip activator="parent" location="top">Clear selection</v-tooltip>
         </v-btn>
       </div>

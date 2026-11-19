@@ -15,7 +15,7 @@ const emit = defineEmits<{ click: [] }>();
         block
         class="rounded-pill text-none font-weight-bold"
         :class="{ 'pick-pulse': active }"
-        prepend-icon="mdi-crosshairs-gps"
+        prepend-icon="ph-gps-fix"
         data-testid="pickButton"
         @click="emit('click')"
       >

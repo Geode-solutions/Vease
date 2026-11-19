@@ -16,7 +16,7 @@ const { isDark, toggleColorTheme } = useColorTheme();
         :aria-label="isDark ? 'Switch to light theme' : 'Switch to dark theme'"
         @click="toggleColorTheme()"
       >
-        <v-icon :icon="isDark ? 'mdi-white-balance-sunny' : 'mdi-moon-waning-crescent'" size="20" />
+        <v-icon :icon="isDark ? 'ph-sun' : 'ph-moon'" size="20" />
       </v-btn>
     </template>
   </v-tooltip>

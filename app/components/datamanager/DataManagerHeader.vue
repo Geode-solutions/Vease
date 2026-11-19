@@ -53,7 +53,7 @@ defineExpose({
         class="text-none font-weight-medium px-4"
         data-testid="dataManagerTab-data"
       >
-        <v-icon start size="20">mdi-database</v-icon>
+        <v-icon start size="20">ph-database</v-icon>
         Data
       </v-tab>
 
@@ -79,7 +79,7 @@ defineExpose({
         data-testid="dataManagerPiPButton"
         @click="enterPiP"
       >
-        <v-icon size="30">mdi-picture-in-picture-bottom-right</v-icon>
+        <v-icon size="30">ph-picture-in-picture</v-icon>
         <v-tooltip activator="parent" location="top">Picture in Picture</v-tooltip>
       </v-btn>
     </v-tabs>

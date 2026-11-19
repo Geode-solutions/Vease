@@ -230,7 +230,7 @@ async function startAlignment(): Promise<void> {
   >
     <GlassCard variant="panel" padding="pa-8" :width="800">
       <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
-        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="primary"></v-icon>
+        <v-icon icon="ph-globe-hemisphere-west" class="mr-3 text-h4" color="primary"></v-icon>
         Coordinate Reference System
       </v-card-title>
 
@@ -337,7 +337,7 @@ async function startAlignment(): Promise<void> {
             class="text-none rounded-pill"
             @click="startAlignment"
           >
-            <v-icon start>mdi-vector-triangle</v-icon>
+            <v-icon start>ph-triangle</v-icon>
             Start georeferencing
           </v-btn>
         </div>
@@ -351,7 +351,7 @@ async function startAlignment(): Promise<void> {
           @click="emit('update:show', false)"
           class="text-none rounded-pill"
         >
-          <v-icon start>mdi-close-circle-outline</v-icon>
+          <v-icon start>ph-x-circle</v-icon>
           Cancel
         </v-btn>
 
@@ -368,7 +368,7 @@ async function startAlignment(): Promise<void> {
           @click="handleAssign()"
           class="text-none rounded-pill font-weight-bold"
         >
-          <v-icon start>mdi-check-circle-outline</v-icon>
+          <v-icon start>ph-check-circle</v-icon>
           Assign
         </v-btn>
         <v-btn
@@ -382,7 +382,7 @@ async function startAlignment(): Promise<void> {
           @click="handleConvert"
           class="text-none rounded-pill font-weight-bold"
         >
-          <v-icon start>mdi-swap-horizontal</v-icon>
+          <v-icon start>ph-arrows-left-right</v-icon>
           Convert
         </v-btn>
       </v-card-actions>

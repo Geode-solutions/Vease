@@ -73,7 +73,7 @@ async function installSelectedExtension(): Promise<void> {
             rounded="xl"
             class="mb-4 mb-sm-0 mr-sm-6 border flex-shrink-0"
           >
-            <v-icon icon="mdi-puzzle" size="48" color="primary"></v-icon>
+            <v-icon icon="ph-puzzle-piece" size="48" color="primary"></v-icon>
           </v-avatar>
 
           <v-sheet color="transparent" class="flex-grow-1 w-100" style="min-width: 0">
@@ -103,7 +103,7 @@ async function installSelectedExtension(): Promise<void> {
               <v-btn
                 color="accent"
                 variant="flat"
-                prepend-icon="mdi-download"
+                prepend-icon="ph-download-simple"
                 rounded="pill"
                 class="text-none px-6 font-weight-bold"
                 :loading="installing"
@@ -147,7 +147,7 @@ async function installSelectedExtension(): Promise<void> {
         class="flex-grow-1 pa-6 pa-sm-8 overflow-y-auto custom-scrollbar"
       >
         <h3 class="text-h6 font-weight-semibold mb-4 d-flex align-center">
-          <v-icon icon="mdi-file-document-outline" class="mr-2 text-primary" size="24"></v-icon>
+          <v-icon icon="ph-file-text" class="mr-2 text-primary" size="24"></v-icon>
           Details
         </h3>
         <v-sheet color="transparent" class="readme-content text-body-1 text-medium-emphasis">
@@ -188,7 +188,7 @@ async function installSelectedExtension(): Promise<void> {
         width="120"
         height="120"
       >
-        <v-icon icon="mdi-storefront-outline" size="64" color="primary"></v-icon>
+        <v-icon icon="ph-storefront" size="64" color="primary"></v-icon>
       </v-sheet>
       <h2 class="text-h5 font-weight-medium mb-2">Marketplace</h2>
       <p class="text-body-1 text-medium-emphasis">

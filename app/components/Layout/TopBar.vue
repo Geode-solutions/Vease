@@ -51,24 +51,24 @@ function onImportFileSelected(event): void {
             variant="text"
             v-bind="props"
             class="text-none font-weight-medium"
-            prepend-icon="mdi-folder-star-outline"
+            prepend-icon="ph-folder-star"
             data-testid="projectMenuButton"
           >
             Project
-            <v-icon end size="18">mdi-chevron-down</v-icon>
+            <v-icon end size="18">ph-caret-down</v-icon>
           </v-btn>
         </template>
         <GlassCard variant="panel" padding="pa-1" rounded="lg" class="mt-2">
           <v-list density="compact" bg-color="transparent">
             <v-list-item
-              prepend-icon="mdi-download"
+              prepend-icon="ph-download-simple"
               title="Import Project"
               class="rounded-md"
               data-testid="importProjectButton"
               @click="triggerImport()"
             />
             <v-list-item
-              prepend-icon="mdi-upload"
+              prepend-icon="ph-upload-simple"
               title="Export Project"
               class="rounded-md"
               data-testid="exportProjectButton"
@@ -91,7 +91,7 @@ function onImportFileSelected(event): void {
         rounded="pill"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showStepper }"
-        prepend-icon="mdi-file-upload-outline"
+        prepend-icon="ph-file-arrow-up"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
       >
@@ -104,7 +104,7 @@ function onImportFileSelected(event): void {
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showCreateTools }"
         data-testid="createButton"
-        prepend-icon="mdi-shape-plus-outline"
+        prepend-icon="ph-shapes"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >

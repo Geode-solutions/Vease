@@ -38,7 +38,7 @@ async function loadExtension(window: Page, extensionFilePath: string): Promise<v
 
 async function removeExtension(window: Page, extensionName: string): Promise<void> {
   await waitForLoadingScreen(window);
-  const importExtensionButton = window.locator("button:has(.mdi-puzzle)").first();
+  const importExtensionButton = window.getByTestId("extensionsNavButton");
   await importExtensionButton.waitFor({ state: "visible", timeout: 60_000 });
   await importExtensionButton.click({ timeout: 60_000 });
   // Wait for modal transition

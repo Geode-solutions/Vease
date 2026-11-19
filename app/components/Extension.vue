@@ -94,7 +94,7 @@ function removeExtension(): void {
   <v-card flat color="transparent" class="d-flex flex-column fill-height">
     <div v-if="!hideHeader" class="pa-4 pb-2">
       <div class="d-flex align-center mb-1">
-        <v-icon icon="mdi-puzzle" class="mr-2 text-secondary" size="24"></v-icon>
+        <v-icon icon="ph-puzzle-piece" class="mr-2 text-secondary" size="24"></v-icon>
         <h2 class="text-h6 font-weight-bold mb-0">Extensions</h2>
       </div>
       <p class="text-caption text-medium-emphasis mb-0">
@@ -150,7 +150,7 @@ function removeExtension(): void {
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-4">
           <div class="d-flex align-center mb-2 text-subtitle-2 font-weight-semibold">
-            <v-icon icon="mdi-puzzle-check" class="mr-1" size="18" />
+            <v-icon icon="ph-seal-check" class="mr-1" size="18" />
             Active Extensions
             <v-chip size="x-small" color="primary" variant="tonal" class="ml-2" elevation="0">
               {{ loadedExtensions.length }}
@@ -186,7 +186,7 @@ function removeExtension(): void {
                               rounded="circle"
                             >
                               <v-icon
-                                icon="mdi-puzzle"
+                                icon="ph-puzzle-piece"
                                 size="20"
                                 :color="
                                   extension.enabled
@@ -228,7 +228,7 @@ function removeExtension(): void {
                                   :color="extension.enabled ? 'primary' : 'grey'"
                                   variant="outlined"
                                 >
-                                  <v-icon start size="10">mdi-tools</v-icon>
+                                  <v-icon start size="10">ph-wrench</v-icon>
                                   {{ getExtensionToolsCount(extension) }}
                                 </v-chip>
 
@@ -252,7 +252,7 @@ function removeExtension(): void {
                               />
 
                               <v-btn
-                                icon="mdi-delete"
+                                icon="ph-trash"
                                 size="x-small"
                                 variant="text"
                                 color="error"
@@ -270,7 +270,7 @@ function removeExtension(): void {
 
                       <div class="d-flex align-center justify-space-between mb-2">
                         <div class="d-flex align-center text-caption font-weight-semibold">
-                          <v-icon icon="mdi-tools" size="14" class="mr-1" />
+                          <v-icon icon="ph-wrench" size="14" class="mr-1" />
                           Tools
                         </div>
                         <v-chip
@@ -310,7 +310,7 @@ function removeExtension(): void {
                               rounded="lg"
                             >
                               <v-icon
-                                v-if="tool.iconType === 'mdi'"
+                                v-if="tool.iconType === 'icon'"
                                 :icon="tool.iconSource"
                                 size="14"
                                 :color="isHovering ? 'on-primary' : 'primary'"
@@ -372,7 +372,7 @@ function removeExtension(): void {
               class="mx-auto mb-4 d-flex align-center justify-center empty-icon-wrapper"
               rounded="circle"
             >
-              <v-icon icon="mdi-puzzle-outline" size="36" color="primary" class="opacity-60" />
+              <v-icon icon="ph-puzzle-piece" size="36" color="primary" class="opacity-60" />
             </v-sheet>
             <div class="text-subtitle-2 font-weight-bold mb-1">No extensions loaded yet</div>
             <div class="text-caption text-medium-emphasis">
@@ -388,7 +388,7 @@ function removeExtension(): void {
         <v-card-title
           class="d-flex align-center text-subtitle-1 font-weight-semibold text-warning pa-0 pb-2"
         >
-          <v-icon icon="mdi-alert-circle" size="20" class="mr-2" color="warning" />
+          <v-icon icon="ph-warning-circle" size="20" class="mr-2" color="warning" />
           Remove Extension?
         </v-card-title>
 
@@ -402,7 +402,7 @@ function removeExtension(): void {
           </div>
           <v-alert type="info" variant="tonal" density="compact" rounded="xl" class="text-caption">
             <template #prepend>
-              <v-icon size="14">mdi-information</v-icon>
+              <v-icon size="14">ph-info</v-icon>
             </template>
             This will remove all tools registered by this extension.
           </v-alert>
@@ -428,7 +428,7 @@ function removeExtension(): void {
             class="font-weight-bold"
             @click="removeExtension"
           >
-            <v-icon start size="14">mdi-delete</v-icon>
+            <v-icon start size="14">ph-trash</v-icon>
             Remove
           </v-btn>
         </v-card-actions>

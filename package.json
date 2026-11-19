@@ -99,7 +99,6 @@
     "@geode/vease-back": "0.0.0",
     "@geode/vease-viewer": "0.0.0",
     "@nuxtjs/mcp-toolkit": "0.18.1",
-    "@phosphor-icons/web": "2.1.2",
     "ai": "7.0.93",
     "bowser": "2.14.1",
     "broadcast-channel": "7.1.0",

@@ -11,7 +11,7 @@ const showDeleteAccount = ref(false);
     <v-col cols="12" sm="8" md="6" lg="4" xl="3" class="pa-6">
       <v-sheet color="transparent" class="d-flex flex-column align-center w-100 px-4">
         <v-avatar color="rgba(var(--v-theme-primary), 0.12)" size="120" class="mb-8 account-avatar">
-          <v-icon icon="mdi-account" size="80" color="primary" />
+          <v-icon icon="ph-user" size="80" color="primary" />
         </v-avatar>
 
         <v-row align="center" justify="center" class="flex-column text-center mb-6 w-100 pa-0">
@@ -34,7 +34,7 @@ const showDeleteAccount = ref(false);
               size="large"
               block
               class="action-btn text-none font-weight-black rounded-pill mb-6"
-              prepend-icon="mdi-logout"
+              prepend-icon="ph-sign-out"
               @click="logout()"
             >
               Logout
@@ -47,7 +47,7 @@ const showDeleteAccount = ref(false);
             variant="text"
             class="text-none opacity-70"
             @click="navigateTo('/')"
-            prepend-icon="mdi-arrow-left"
+            prepend-icon="ph-arrow-left"
           />
         </v-row>
 
@@ -57,7 +57,7 @@ const showDeleteAccount = ref(false);
             variant="text"
             class="text-none opacity-70"
             @click="showDeleteAccount = true"
-            prepend-icon="mdi-delete"
+            prepend-icon="ph-trash"
           />
         </v-row>
       </v-sheet>

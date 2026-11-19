@@ -17,10 +17,10 @@ const currentTab = ref("marketplace");
 
       <v-tabs v-model="currentTab" color="primary" slider-color="primary" class="border-b">
         <v-tab value="marketplace" class="text-none font-weight-medium">
-          <v-icon start>mdi-storefront</v-icon> Marketplace
+          <v-icon start>ph-storefront</v-icon> Marketplace
         </v-tab>
         <v-tab value="installed" class="text-none font-weight-medium">
-          <v-icon start>mdi-check-circle-outline</v-icon> Installed
+          <v-icon start>ph-check-circle</v-icon> Installed
         </v-tab>
       </v-tabs>
     </div>

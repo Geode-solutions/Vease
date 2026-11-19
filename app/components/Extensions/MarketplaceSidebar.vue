@@ -41,10 +41,10 @@ function selectExtension(ext: MarketplaceExtension): void {
 
 function extensionIcon(ext: MarketplaceExtension): string {
   if (appStore.getExtension(ext.id)) {
-    return "mdi-puzzle-check-outline";
+    return "ph-seal-check";
   }
 
-  return "mdi-puzzle-outline";
+  return "ph-puzzle-piece";
 }
 </script>
 
@@ -58,7 +58,7 @@ function extensionIcon(ext: MarketplaceExtension): string {
     <v-sheet color="transparent" class="pa-4 border-b">
       <v-text-field
         v-model="searchQuery"
-        prepend-inner-icon="mdi-magnify"
+        prepend-inner-icon="ph-magnifying-glass"
         placeholder="Search Marketplace..."
         variant="solo-filled"
         density="compact"
@@ -82,7 +82,7 @@ function extensionIcon(ext: MarketplaceExtension): string {
         color="transparent"
         class="text-medium-emphasis text-center pa-6"
       >
-        <v-icon icon="mdi-magnify-close" size="48" class="mb-3 opacity-80" />
+        <v-icon icon="ph-magnifying-glass" size="48" class="mb-3 opacity-80" />
         <div class="text-body-1">No extensions found</div>
       </v-sheet>
       <v-list v-else bg-color="transparent" class="pa-0">

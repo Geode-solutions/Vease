@@ -29,7 +29,7 @@ describe("the PasswordField component", () => {
     const textField = wrapper.findComponent(VTextField);
     expect(textField.exists()).toBe(true);
     expect(textField.props("type")).toBe("password");
-    expect(textField.props("appendIcon")).toBe("mdi-eye-off");
+    expect(textField.props("appendIcon")).toBe("ph-eye-slash");
   });
 
   test("emits input event when text field receives input", () => {

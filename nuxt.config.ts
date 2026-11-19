@@ -194,8 +194,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // Phosphor regular and fill weights, rendered through the icon set of app/plugins/phosphor_icons.ts
-  css: ["@phosphor-icons/web/regular", "@phosphor-icons/web/fill", "@vease/assets/css/main.css"],
+  css: ["@vease/assets/css/main.css"],
 
   vite: {
     server: {

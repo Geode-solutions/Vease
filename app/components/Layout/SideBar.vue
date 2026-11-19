@@ -23,21 +23,21 @@ const drawer = ref(true);
 const topPages = ref<SidebarPage[]>([
   {
     title: "Viewer",
-    icon: "mdi-rotate-orbit",
+    icon: "ph-planet",
     testId: "viewerNavButton",
     isActive: isRoute("/"),
     click: (): unknown => navigateTo("/"),
   },
   {
     title: "Data Manager",
-    icon: "mdi-database",
+    icon: "ph-database",
     testId: "dataManagerNavButton",
     isActive: isRoute("/data_manager"),
     click: (): unknown => navigateTo("/data_manager"),
   },
   {
     title: "Extensions",
-    icon: "mdi-puzzle",
+    icon: "ph-puzzle-piece",
     testId: "extensionsNavButton",
     isActive: isRoute("/extensions"),
     click: (): unknown => navigateTo("/extensions"),
@@ -48,7 +48,7 @@ const bottomPages = computed(() => {
   const pages = [
     {
       title: "Chat",
-      icon: "mdi-chat-outline",
+      icon: "ph-chat",
       testId: "chatNavButton",
       isActive: (): boolean => UIStore.showChatPiP,
       click: (): unknown => UIStore.setShowChatPiP(!UIStore.showChatPiP),
@@ -56,7 +56,7 @@ const bottomPages = computed(() => {
 
     {
       title: isUserAuthenticated.value ? "Account" : "Login",
-      icon: isUserAuthenticated.value ? "mdi-account-outline" : "mdi-account-key-outline",
+      icon: isUserAuthenticated.value ? "ph-user" : "ph-key",
       testId: "accountNavButton",
       isActive: isRoute("/account"),
       click: (): unknown => navigateTo("/account"),
@@ -64,7 +64,7 @@ const bottomPages = computed(() => {
 
     {
       title: "Infos",
-      icon: "mdi-information-outline",
+      icon: "ph-info",
       testId: "infosNavButton",
       isActive: isRoute("/infos"),
       click: (): unknown => navigateTo("/infos"),
