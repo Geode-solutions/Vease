@@ -1,6 +1,6 @@
 // Third party imports
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import { MESH_ELEMENT_KINDS as ELEMENT_KIND_BY_MESH_TYPE } from "@ogw_front/utils/attributes";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 

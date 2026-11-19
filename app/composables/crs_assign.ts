@@ -1,6 +1,7 @@
-import type { DataId, DataIdentified } from "@ogw_front/types/identifiers";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import type { CrsItem } from "@ogw_front/stores/data";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataIdentified } from "@ogw_front/types/identifiers";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 

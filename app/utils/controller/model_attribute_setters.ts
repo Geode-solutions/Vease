@@ -1,6 +1,6 @@
 // Local imports
 import type { AttributeKind, ModelComponentTarget } from "@vease/utils/controller/targets";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 

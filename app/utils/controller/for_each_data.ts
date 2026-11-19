@@ -1,6 +1,6 @@
 // Local imports
 import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 
 interface FailedData {
   id: string;

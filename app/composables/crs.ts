@@ -1,7 +1,7 @@
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@vease/types/data_item";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
