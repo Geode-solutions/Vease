@@ -156,9 +156,11 @@ body,
 .splash-screen-active .v-app-bar .brand-lockup,
 .splash-screen-active .v-app-bar .v-btn,
 .splash-screen-active .v-navigation-drawer .v-btn,
+.splash-screen-active .v-navigation-drawer .brand-dot,
 .drawer-active .v-app-bar .brand-lockup,
 .drawer-active .v-app-bar .v-btn:not(.v-btn--active),
-.drawer-active .v-navigation-drawer .v-btn {
+.drawer-active .v-navigation-drawer .v-btn,
+.drawer-active .v-navigation-drawer .brand-dot {
   opacity: 0.35 !important;
 }
 
