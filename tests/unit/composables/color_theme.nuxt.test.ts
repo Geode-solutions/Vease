@@ -112,7 +112,10 @@ describe("color theme on desktop", () => {
 
   test("falls back to light on invalid saved settings", () => {
     Object.assign(globalThis, {
-      electronAPI: { app_settings: { colorTheme: "solarized" }, app_settings_write: vi.fn<() => Promise<unknown>>() },
+      electronAPI: {
+        app_settings: { colorTheme: "solarized" },
+        app_settings_write: vi.fn<() => Promise<unknown>>(),
+      },
     });
     const { applyStoredColorTheme, isDark } = withVuetify();
 

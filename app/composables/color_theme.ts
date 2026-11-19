@@ -48,7 +48,9 @@ function storedColorTheme(): Ref<ColorTheme> {
   if (shared) {
     return shared;
   }
-  const theme = ref<ColorTheme>(sanitizeAppSettings(api.app_settings).colorTheme ?? LIGHT_THEME_NAME);
+  const theme = ref<ColorTheme>(
+    sanitizeAppSettings(api.app_settings).colorTheme ?? LIGHT_THEME_NAME,
+  );
   // Detached: the first caller's unmount must not stop the saving
   effectScope(true).run(() => {
     watch(theme, (colorTheme) => {

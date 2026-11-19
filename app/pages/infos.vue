@@ -79,11 +79,7 @@ runFunctionWhenMicroservicesConnected(() => {
         <v-col cols="12" md="6" class="d-flex flex-column ga-4">
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
-              <v-icon
-                icon="ph-app-window"
-                size="20"
-                class="mr-2 text-primary"
-              />App</v-card-title
+              <v-icon icon="ph-app-window" size="20" class="mr-2 text-primary" />App</v-card-title
             >
             <v-card-text>
               <p class="mb-2">
@@ -124,11 +120,7 @@ runFunctionWhenMicroservicesConnected(() => {
 
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
-              <v-icon
-                icon="ph-lifebuoy"
-                size="20"
-                class="mr-2 text-primary"
-              />Support</v-card-title
+              <v-icon icon="ph-lifebuoy" size="20" class="mr-2 text-primary" />Support</v-card-title
             >
             <v-card-text>
               <p class="mb-4">
@@ -214,11 +206,8 @@ runFunctionWhenMicroservicesConnected(() => {
 
           <v-card flat border rounded="xl">
             <v-card-title class="d-flex align-center">
-              <v-icon
-                icon="ph-package"
-                size="20"
-                class="mr-2 text-primary"
-              />Internal dependencies</v-card-title
+              <v-icon icon="ph-package" size="20" class="mr-2 text-primary" />Internal
+              dependencies</v-card-title
             >
             <v-table density="compact" class="bg-transparent">
               <thead>
@@ -236,7 +225,8 @@ runFunctionWhenMicroservicesConnected(() => {
                       target="_blank"
                       rel="noopener"
                       class="text-primary text-no-wrap"
-                      >{{ pkg.version }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
+                      >{{ pkg.version
+                      }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                     /></a>
                   </td>
                 </tr>
