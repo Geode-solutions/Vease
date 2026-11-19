@@ -51,7 +51,7 @@ useBrandViewerScene();
   >
     <MainNavigation />
     <v-main class="custom-background dropzone">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+      <GlassCard variant="ui" padding="pa-0" class="island-wrapper">
         <AppLauncher />
       </GlassCard>
       <AppDrawers />
@@ -89,6 +89,8 @@ useBrandViewerScene();
   flex-direction: column;
   margin: 0 var(--vease-shell-gutter) var(--vease-shell-gutter) 0;
   padding: 0;
+  /* clip, not hidden: same reason as .custom-background, an overflowing panel scrolled the island */
+  overflow: clip;
 }
 .custom-background {
   position: relative;
