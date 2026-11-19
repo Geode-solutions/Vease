@@ -41,7 +41,7 @@ const DATE_COLUMN = [
     key: "created_at",
     sortable: true,
     align: "center",
-    width: "160px",
+    width: "170px",
   } as const,
 ];
 
@@ -54,14 +54,15 @@ const headers = computed(
         key: "geode_object_type",
         sortable: true,
         align: "center",
-        width: compact ? "90px" : "110px",
+        // The common type chips (TriangulatedSurface3D) fit; the name keeps the rest of the row
+        width: compact ? "90px" : "180px",
       },
       {
         title: "CRS",
         key: "crs",
         sortable: false,
         align: "center",
-        width: compact ? "100px" : "200px",
+        width: compact ? "100px" : "180px",
       },
       // The picture-in-picture view is narrow: the CRS column takes the date's room
       ...(compact ? [] : DATE_COLUMN),
@@ -77,7 +78,7 @@ const headers = computed(
         key: "actions",
         sortable: false,
         align: "end",
-        width: compact ? "140px" : "180px",
+        width: compact ? "140px" : "170px",
       },
     ] as const,
 );
