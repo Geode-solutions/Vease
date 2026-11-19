@@ -46,7 +46,7 @@ describe("data manager header component", () => {
       },
     });
 
-    expect(wrapper.text()).toContain("Data Manager");
+    expect(wrapper.find('[data-testid="dataManagerTab-data"]').text()).toBe("Data");
     expect(wrapper.text()).toContain("Custom Tab");
   });
 

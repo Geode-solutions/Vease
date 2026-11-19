@@ -239,7 +239,7 @@ function formatSmartDate(dateStr: string | undefined): string {
       </template>
 
       <template #[`item.created_at`]="{ item }">
-        <span class="text-caption text-medium-emphasis font-weight-light">{{
+        <span class="text-caption text-medium-emphasis">{{
           formatSmartDate(item.created_at)
         }}</span>
       </template>

@@ -48,6 +48,11 @@ h6,
   letter-spacing: -0.01em;
 }
 
+/* One weight for every card and dialog title (page titles are bolder, see PageHeader) */
+html .v-card-title {
+  font-weight: 600;
+}
+
 * {
   user-select: none;
   box-sizing: border-box;

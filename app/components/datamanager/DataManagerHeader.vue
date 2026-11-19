@@ -54,7 +54,7 @@ defineExpose({
         data-testid="dataManagerTab-data"
       >
         <v-icon start size="20">mdi-database</v-icon>
-        Data Manager
+        Data
       </v-tab>
 
       <v-tab
