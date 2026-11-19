@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import StepActions from "@vease/components/StepActions.vue";
 import { consola } from "consola";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
@@ -30,7 +30,7 @@ const dataStore = useDataStore();
 const crsStore = useCrsStore();
 const { harmonizeImportedCrs } = useProjectCrs();
 
-async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
+async function harmonize(ids: string[], projectCrs: CRS | undefined): Promise<void> {
   try {
     await harmonizeImportedCrs(ids, projectCrs);
   } catch (error) {

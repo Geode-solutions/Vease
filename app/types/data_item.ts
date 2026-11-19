@@ -4,13 +4,13 @@ import type {
   GeodeObjectTyped,
   ViewerObjectTyped,
 } from "@ogw_front/types/identifiers";
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 
 export interface DataItem
   extends DataIdentified, GeodeIdentified, GeodeObjectTyped, ViewerObjectTyped {
   name: string;
   visible: boolean;
   created_at?: string;
-  crs?: CRSList;
+  crs?: CRS;
   [key: string]: unknown;
 }

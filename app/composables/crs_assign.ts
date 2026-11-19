@@ -1,24 +1,22 @@
 import type { DataId, DataIdentified } from "@ogw_front/types/identifiers";
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import type { CrsItem } from "@ogw_front/stores/data";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 interface AssignedEntry extends DataIdentified {
   name: string;
-  crs?: CRSList;
+  crs?: CRS;
   implausible?: boolean;
 }
 
 interface AssignResponse {
-  crs?: CRSList;
+  crs?: CRS;
   implausible?: boolean;
-  linked?: { id: string; crs?: CRSList; implausible?: boolean }[];
+  linked?: { id: string; crs?: CRS; implausible?: boolean }[];
 }
 
-function plausibleEntries(
-  entries: AssignedEntry[],
-): { data_id: DataId; name: string; crs: CRSList }[] {
+function plausibleEntries(entries: AssignedEntry[]): { data_id: DataId; name: string; crs: CRS }[] {
   return entries.flatMap(({ data_id, name, crs, implausible }) => {
     if (crs === undefined || implausible === true) {
       return [];
@@ -48,7 +46,7 @@ function buildAssignedEntries(
 
 function implausibleDescription(
   implausibleItems: Pick<CrsItem, "data_id" | "name">[],
-  crs: CRSList | undefined,
+  crs: CRS | undefined,
   itemId: string | undefined,
 ): string {
   const mismatch = `do not match ${formatCrsCode(crs)}. Georeference the data?`;
@@ -60,7 +58,7 @@ function implausibleDescription(
 
 type ImplausibleWarning = (
   implausibleItems: Pick<CrsItem, "data_id" | "name">[],
-  crs: CRSList | undefined,
+  crs: CRS | undefined,
   itemId: string | undefined,
 ) => void;
 

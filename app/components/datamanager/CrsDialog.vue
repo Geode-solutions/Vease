@@ -6,12 +6,11 @@ import {
   useImplausibleWarning,
 } from "@vease/composables/crs_assign";
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
-import back_schemas, {
-  type CRSList,
-} from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
@@ -39,7 +38,7 @@ const backStore = useBackStore();
 const crsStore = useCrsStore();
 const dataStore = useDataStore();
 const currentCrs = ref("");
-const selectedCrs = ref<CRSList | undefined>(undefined);
+const selectedCrs = ref<CRS | undefined>(undefined);
 const assigning = ref(false);
 const loadingCurrentCrs = ref(false);
 const { convertCrs, changeProjectCrs, followProject } = useCrs();
@@ -128,7 +127,7 @@ async function onAssigned(
   assignedItem: Pick<CrsItem, "data_id" | "name">,
   linked: CrsItem[],
   response: AssignResponse,
-  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRSList | undefined },
+  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRS | undefined },
 ): Promise<void> {
   const entries = buildAssignedEntries(assignedItem, linked, response);
   // A data left out by the check keeps its CRS: nothing to store
