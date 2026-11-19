@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import MicroservicesBusyIndicator from "@ogw_front/components/MicroservicesBusyIndicator.vue";
 import { consola } from "consola";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
@@ -50,14 +51,7 @@ useExclusiveDrawers();
       </GlassCard>
       <AppDrawers />
     </v-main>
-    <v-progress-linear
-      v-if="infraStore.microservices_busy"
-      data-testid="microservicesBusyIndicator"
-      indeterminate
-      color="white"
-      class="position-fixed top-0"
-      style="z-index: 4"
-    />
+    <MicroservicesBusyIndicator />
     <AppOverlays />
   </v-app>
 </template>
