@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import PickButton from "@vease/components/tools/PickButton.vue";
 import { useCrs } from "@vease/composables/crs";
@@ -25,7 +25,7 @@ const {
   editSourcePoint,
 } = useCrsAlign();
 
-const targetCrs = ref<CRSList | undefined>(undefined);
+const targetCrs = ref<CRS | undefined>(undefined);
 const applying = ref(false);
 // "All data": the data in the same CRS state, usually sharing the local frame of the item
 const scope = ref<"all" | "one">("all");

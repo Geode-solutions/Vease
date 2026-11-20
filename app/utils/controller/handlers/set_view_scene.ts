@@ -30,8 +30,7 @@ async function applyScene(params: SceneSettings): Promise<Record<string, unknown
   }
   if (params.backgroundColor !== undefined) {
     const { red, green, blue } = hexToRgba(params.backgroundColor);
-    // oxlint-disable-next-line eslint/id-length -- r, g, b are the viewer parameter names
-    const color = { r: red, g: green, b: blue };
+    const color = { red, green, blue };
     // The local renderer shows while the camera moves: it needs the same background as the remote image
     if (hybridViewerStore.genericRenderWindow.value === undefined) {
       await viewerStore.request({ schema: viewerSchemas.set_background_color, params: { color } });

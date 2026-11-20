@@ -1,6 +1,7 @@
 // Third party imports
-import type { DataId, GeodeIdentified } from "@ogw_front/types/identifiers";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { GeodeIdentified } from "@ogw_front/types/identifiers";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports

@@ -5,7 +5,7 @@ import {
   isModelComponentTarget,
 } from "@vease/utils/controller/targets";
 import { ControllerError } from "@vease/utils/controller/errors";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { FoundAttribute } from "@vease/utils/controller/attributes";
 import { MODEL_SETTERS } from "@vease/utils/controller/model_attribute_setters";
 import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";

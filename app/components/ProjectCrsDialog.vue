@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { formatCrs } from "@ogw_front/utils/crs";
@@ -14,7 +14,7 @@ const emit = defineEmits<{ "update:show": [value: boolean]; changed: [] }>();
 
 const crsStore = useCrsStore();
 const { changeProjectCrs } = useCrs();
-const selectedCrs = ref<CRSList | undefined>(undefined);
+const selectedCrs = ref<CRS | undefined>(undefined);
 const changing = ref(false);
 
 watch(
