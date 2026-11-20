@@ -30,16 +30,31 @@ watch(
 );
 </script>
 <template>
-  <Launcher
+  <!-- The island clips its content for the viewer: the launcher scrolls instead, so a short window still reaches
+  The load button under the account card -->
+  <div
     v-if="infraStore.status != Status.CREATED"
-    app-name="Vease"
-    :logo="logo"
-    :isUserAuthenticated="isUserAuthenticated"
-    :auth-token="authToken"
+    class="launcher-scroll"
+    data-testid="launcherScroll"
   >
-    <template #auth>
-      <AuthWrapper />
-    </template>
-  </Launcher>
+    <Launcher
+      app-name="Vease"
+      :logo="logo"
+      :isUserAuthenticated="isUserAuthenticated"
+      :auth-token="authToken"
+    >
+      <template #auth>
+        <AuthWrapper />
+      </template>
+    </Launcher>
+  </div>
   <NuxtPage v-else style="z-index: 1" class="fill-height" />
 </template>
+
+<style scoped>
+.launcher-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+</style>
