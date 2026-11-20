@@ -1,4 +1,5 @@
 // Third party imports
+import { setOrientationMarkerVisibility } from "@ogw_front/composables/orientation_overlay";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 
@@ -39,10 +40,8 @@ async function applyScene(params: SceneSettings): Promise<Record<string, unknown
     }
   }
   if (params.axes !== undefined) {
-    await viewerStore.request({
-      schema: viewerSchemas.axes,
-      params: { visibility: params.axes },
-    });
+    // The front overlay draws the orientation marker in Vease: it follows the viewer marker visibility
+    await setOrientationMarkerVisibility(params.axes, viewerStore.request);
   }
   if (params.grid !== undefined) {
     await viewerStore.request({
