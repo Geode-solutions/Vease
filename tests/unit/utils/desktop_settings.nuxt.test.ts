@@ -15,14 +15,12 @@ vi.setConfig({ testTimeout: 10_000 });
 describe("desktop settings (electron main process)", () => {
   let tmpDir = "";
   let userDataPath = "";
-
-  function settingsPath(): string {
-    return path.join(userDataPath, SETTINGS_FILE);
-  }
+  let settingsFile = "";
 
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vease-settings-"));
     userDataPath = path.join(tmpDir, "userData");
+    settingsFile = path.join(userDataPath, SETTINGS_FILE);
   });
 
   afterEach(() => {
@@ -40,7 +38,7 @@ describe("desktop settings (electron main process)", () => {
 
   test("merges a change into the saved settings", () => {
     fs.mkdirSync(userDataPath);
-    fs.writeFileSync(settingsPath(), JSON.stringify({ colorTheme: "dark" }));
+    fs.writeFileSync(settingsFile, JSON.stringify({ colorTheme: "dark" }));
     expect(writeAppSettings(userDataPath, {})).toStrictEqual({ colorTheme: "dark" });
     expect(writeAppSettings(userDataPath, { colorTheme: "light" })).toStrictEqual({
       colorTheme: "light",
@@ -49,7 +47,7 @@ describe("desktop settings (electron main process)", () => {
 
   test("ignores a corrupted settings file", () => {
     fs.mkdirSync(userDataPath);
-    fs.writeFileSync(settingsPath(), "{not json");
+    fs.writeFileSync(settingsFile, "{not json");
     expect(readAppSettings(userDataPath)).toStrictEqual({});
   });
 

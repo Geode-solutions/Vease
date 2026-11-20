@@ -5,7 +5,7 @@ import path from "node:path";
 import { describe, expect, test, vi } from "vitest";
 
 // Local imports
-import { missingPhosphorIcons } from "@ogw_tests/phosphor_glyphs";
+import { missingPhosphorIcons } from "@ogw_tests/unit/helpers/phosphor_glyphs";
 
 vi.setConfig({ testTimeout: 10_000 });
 

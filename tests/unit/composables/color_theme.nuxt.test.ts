@@ -1,43 +1,12 @@
-import {
-  DARK_THEME_NAME,
-  LIGHT_THEME_NAME,
-  darkTheme,
-  lightTheme,
-} from "@vease/utils/brand_themes";
+import { DARK_THEME_NAME, LIGHT_THEME_NAME } from "@vease/utils/brand_themes";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { defineComponent, nextTick } from "vue";
 import type { AppSettings } from "~~/electron/app_settings_utils";
-import { createVuetify } from "vuetify";
-import { mount } from "@vue/test-utils";
-import { useColorTheme } from "@vease/composables/color_theme";
+import { mountColorTheme } from "@vease_tests/utils/color_theme_harness";
+import { nextTick } from "vue";
 
 vi.setConfig({ testTimeout: 10_000 });
 
 const STORAGE_KEY = "vease-color-theme";
-
-function withVuetify(): ReturnType<typeof useColorTheme> {
-  const vuetify = createVuetify({
-    theme: {
-      defaultTheme: LIGHT_THEME_NAME,
-      themes: { [LIGHT_THEME_NAME]: lightTheme, [DARK_THEME_NAME]: darkTheme },
-    },
-  });
-  const holder: { api?: ReturnType<typeof useColorTheme> } = {};
-  mount(
-    defineComponent({
-      setup() {
-        holder.api = useColorTheme();
-        return {};
-      },
-      template: "<div />",
-    }),
-    { global: { plugins: [vuetify] } },
-  );
-  if (holder.api === undefined) {
-    throw new Error("useColorTheme was not called");
-  }
-  return holder.api;
-}
 
 describe("color theme", () => {
   beforeEach(() => {
@@ -45,14 +14,14 @@ describe("color theme", () => {
   });
 
   test("defaults to the light theme", () => {
-    const { colorTheme, isDark } = withVuetify();
+    const { colorTheme, isDark } = mountColorTheme();
 
     expect(colorTheme.value).toBe(LIGHT_THEME_NAME);
     expect(isDark.value).toBe(false);
   });
 
   test("toggles between light and dark and remembers the choice", async () => {
-    const { isDark, toggleColorTheme } = withVuetify();
+    const { isDark, toggleColorTheme } = mountColorTheme();
 
     toggleColorTheme();
     await nextTick();
@@ -67,7 +36,7 @@ describe("color theme", () => {
 
   test("applies the stored theme", () => {
     localStorage.setItem(STORAGE_KEY, DARK_THEME_NAME);
-    const { applyStoredColorTheme, isDark } = withVuetify();
+    const { applyStoredColorTheme, isDark } = mountColorTheme();
 
     applyStoredColorTheme();
     expect(isDark.value).toBe(true);
@@ -75,7 +44,7 @@ describe("color theme", () => {
 
   test("falls back to light on an unknown stored value", () => {
     localStorage.setItem(STORAGE_KEY, "solarized");
-    const { applyStoredColorTheme, isDark } = withVuetify();
+    const { applyStoredColorTheme, isDark } = mountColorTheme();
 
     applyStoredColorTheme();
     expect(isDark.value).toBe(false);
@@ -99,7 +68,7 @@ describe("color theme on desktop", () => {
         app_settings_write: writeSettings,
       },
     });
-    const { applyStoredColorTheme, isDark, toggleColorTheme } = withVuetify();
+    const { applyStoredColorTheme, isDark, toggleColorTheme } = mountColorTheme();
 
     applyStoredColorTheme();
     expect(isDark.value).toBe(true);
@@ -117,7 +86,7 @@ describe("color theme on desktop", () => {
         app_settings_write: vi.fn<() => Promise<unknown>>(),
       },
     });
-    const { applyStoredColorTheme, isDark } = withVuetify();
+    const { applyStoredColorTheme, isDark } = mountColorTheme();
 
     applyStoredColorTheme();
     expect(isDark.value).toBe(false);
