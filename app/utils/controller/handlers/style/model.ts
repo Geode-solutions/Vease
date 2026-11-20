@@ -1,7 +1,7 @@
 // Third party imports
+import type { ColorRGBA } from "@geode/opengeodeweb-viewer/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@ogw_front/stores/data";
-import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
 import {
@@ -28,7 +28,7 @@ type ComponentSetter<Value> = (
 
 interface ModelComponentSetters {
   visibility: ComponentSetter<boolean>;
-  color: ComponentSetter<RGBAColor>;
+  color: ComponentSetter<ColorRGBA>;
   coloring: ComponentSetter<"constant" | "random">;
 }
 

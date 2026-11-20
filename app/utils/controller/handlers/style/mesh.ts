@@ -1,6 +1,6 @@
 // Third party imports
+import type { ColorRGBA } from "@geode/opengeodeweb-viewer/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
-import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
 
 // Local imports
 import {
@@ -17,7 +17,7 @@ type Setter<Value> = (store: StyleStore, meshId: DataId, value: Value) => Promis
 
 interface MeshElementSetters {
   visibility: Setter<boolean>;
-  color: Setter<RGBAColor>;
+  color: Setter<ColorRGBA>;
   constantColoring: (store: StyleStore, meshId: DataId) => Promise<unknown>;
 }
 
