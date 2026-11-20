@@ -72,6 +72,16 @@ describe("the UI store", () => {
       expect(uiStore.toolsDefinitions).toHaveLength(0);
     });
 
+    test("reads the former mdi icon type of extension tools as a font icon", () => {
+      const uiStore = useUIStore();
+      uiStore.registerToolComponent(
+        { id: "legacyTool", component: {}, iconType: "mdi", iconSource: "ph-cube" },
+        "ext/legacy",
+      );
+      expect(uiStore.toolsDefinitions[0]?.iconType).toBe("icon");
+      expect(uiStore.toolsDefinitions[0]?.iconSource).toBe("ph-cube");
+    });
+
     test("unregisterToolsByExtension removes all matching extension tools", () => {
       const uiStore = useUIStore();
       uiStore.registerToolComponent({ id: "tool1", component: {} }, "ext/a");

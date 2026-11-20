@@ -20,6 +20,27 @@ interface DataManagerTab {
   [key: string]: unknown;
 }
 
+// Icon type and names of the extension API before the Phosphor icons (Vease 2): "mdi" is still read as "icon", but
+// MDI icon names have no glyph anymore, which is reported so the extension can move to Phosphor names (ph-...)
+const LEGACY_ICON_TYPE = "mdi";
+const FONT_ICON_TYPE = "icon";
+const LEGACY_ICON_PREFIX = "mdi-";
+
+function warnLegacyIcon(owner: string, icon: unknown): void {
+  if (typeof icon === "string" && icon.startsWith(LEGACY_ICON_PREFIX)) {
+    consola.warn(`[UIStore] ${owner}: "${icon}" is an MDI icon, use a Phosphor icon name (ph-...)`);
+  }
+}
+
+function withCurrentIconType(toolDefinition: ToolDefinition): ToolDefinition {
+  warnLegacyIcon(`Tool ${toolDefinition.id}`, toolDefinition.iconSource);
+  if (toolDefinition.iconType !== LEGACY_ICON_TYPE) {
+    return toolDefinition;
+  }
+  consola.warn(`[UIStore] Tool ${toolDefinition.id}: iconType "mdi" is deprecated, use "icon"`);
+  return { ...toolDefinition, iconType: FONT_ICON_TYPE };
+}
+
 function upsertById<Item extends { id: string }>(list: Ref<Item[]>, newDefinition: Item): void {
   const existingIndex = list.value.findIndex((entry) => entry.id === newDefinition.id);
   if (existingIndex === -1) {
@@ -41,7 +62,7 @@ function useToolsRegistry(): ToolsRegistry {
   const toolsDefinitions = ref<ToolDefinition[]>([]);
 
   function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
-    const { id, component, ...rest } = toolDefinition;
+    const { id, component, ...rest } = withCurrentIconType(toolDefinition);
     upsertById(toolsDefinitions, { id, component, extensionPath, ...rest });
   }
 
@@ -93,6 +114,7 @@ function useDataManagerTabs(): DataManagerTabs {
   const dataManagerTabs = ref<DataManagerTab[]>([]);
 
   function registerDataManagerTab(tabDefinition: DataManagerTab): void {
+    warnLegacyIcon(`Data manager tab ${tabDefinition.id}`, tabDefinition.icon);
     const { id, component, ...rest } = tabDefinition;
     upsertById(dataManagerTabs, { id, component, ...rest });
   }
