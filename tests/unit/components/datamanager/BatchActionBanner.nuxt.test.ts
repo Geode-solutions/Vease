@@ -13,7 +13,7 @@ const mockItem1: DataItem = {
   geode_id: "00000000-0000-0000-0000-000000000001",
   name: "Item 1",
   geode_object_type: "BRep",
-  viewer_object_type: "mesh",
+  viewer_object_type: "model",
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
 };

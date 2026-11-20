@@ -69,7 +69,7 @@ const mockItem1: DataItem = {
   geode_object_type: "BRep",
   visible: true,
   created_at: "2026-01-01T00:00:00.000Z",
-  viewer_object_type: "mesh",
+  viewer_object_type: "model",
 };
 
 const mockItem2: DataItem = {
