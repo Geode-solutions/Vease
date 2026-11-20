@@ -19,8 +19,23 @@
 :root {
   --v-font-body: "Onest", system-ui, sans-serif;
   --v-font-heading: "Urbanist", "Onest", system-ui, sans-serif;
-  --vease-radius: 20px;
-  --vease-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Shape and spacing system (8 px grid). Two radii only, as the brand book frames are near-square:
+     controls (buttons, fields, list items, tooltips) 6 px, containers (island, panels, drawers, menus,
+     dialogs) 12 px, nested containers fall back to the control radius; circles are reserved for icon
+     buttons (side bar, viewer toolbar, radial menu), where the round shape reads as the brand circle. */
+  --vease-radius-control: 6px;
+  --vease-radius-container: 12px;
+  --vease-shell-gutter: 16px;
+  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius,
+     and one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
+     capsule sits 1 px in, its own border bringing its first button to the same column. */
+  --ogw-viewer-panel-inset: 8px;
+  --ogw-viewer-panel-radius: var(--vease-radius-control);
+  --ogw-viewer-panel-padding: 8px;
+  --ogw-viewer-row-radius: var(--vease-radius-control);
+  --ogw-viewer-controls-inset: 1px;
+  --ogw-viewer-controls-padding: 0px;
+  --ogw-viewer-controls-icon-size: 24px;
 }
 
 html,
@@ -42,8 +57,7 @@ h4,
 h5,
 h6,
 .v-card-title,
-.v-toolbar-title,
-.brand-heading {
+.v-toolbar-title {
   font-family: var(--v-font-heading);
   letter-spacing: -0.01em;
 }
@@ -89,10 +103,6 @@ body,
   font-family: var(--v-font-heading);
   font-weight: 600;
   color: rgb(var(--v-theme-on-background));
-}
-
-.text-brand-muted {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
 }
 
 ::-webkit-scrollbar {
@@ -179,10 +189,6 @@ body,
   --ogw-loading-progress: rgb(var(--v-theme-primary));
   --ogw-loading-progress-glow: none;
   --ogw-launcher-button: rgb(var(--v-theme-accent));
-}
-
-.v-theme--light,
-.v-theme--dark {
   --ogw-dropzone-bg: rgba(var(--v-theme-background), 0.88);
   --ogw-dropzone-text-shadow: none;
   --ogw-viewer-glass-min-opacity: 0.88;
@@ -192,6 +198,8 @@ body,
   --ogw-mono-icon-filter: brightness(0);
   --ogw-svg-icon-filter: none;
   --ogw-svg-icon-active-filter: invert(100%);
+  /* The brand book only allows the official logo colors: Vert (Platine), Anthracite, Noir, Blanc */
+  --vease-logo-color: #1e1e1e;
 }
 
 .v-theme--dark {
@@ -201,25 +209,7 @@ body,
   --ogw-mono-icon-filter: brightness(0) invert(0.92);
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
-}
-
-/* The brand book only allows the official logo colors: Vert (Platine), Anthracite, Noir, Blanc */
-.v-theme--light {
-  --vease-logo-color: #1e1e1e;
-}
-
-.v-theme--dark {
   --vease-logo-color: #ffffff;
-}
-
-/* Shape and spacing system (8 px grid). Two radii only, as the brand book frames are near-square:
-   controls (buttons, fields, list items, tooltips) 6 px, containers (island, panels, drawers, menus, dialogs)
-   12 px, nested containers fall back to the control radius; circles are reserved for icon buttons (side bar,
-   viewer toolbar, radial menu), where the round shape reads as the brand circle. */
-:root {
-  --vease-radius-control: 6px;
-  --vease-radius-container: 12px;
-  --vease-shell-gutter: 16px;
 }
 
 html .rounded-xl {
@@ -245,19 +235,6 @@ html .v-tooltip > .v-overlay__content {
 html .rounded-md,
 html .glass-panel :is(.glass-panel, .glass-ui):not(.rounded-circle) {
   border-radius: var(--vease-radius-control) !important;
-}
-
-/* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius, and
-   one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
-   capsule sits 1 px in, its own border bringing its first button to the same column. */
-:root {
-  --ogw-viewer-panel-inset: 8px;
-  --ogw-viewer-panel-radius: var(--vease-radius-control);
-  --ogw-viewer-panel-padding: 8px;
-  --ogw-viewer-row-radius: var(--vease-radius-control);
-  --ogw-viewer-controls-inset: 1px;
-  --ogw-viewer-controls-padding: 0px;
-  --ogw-viewer-controls-icon-size: 24px;
 }
 
 /* Visibility in the object tree reads by weight: filled eye shown, outlined eye partly shown, slashed eye
