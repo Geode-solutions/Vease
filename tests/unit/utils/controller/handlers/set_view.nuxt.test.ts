@@ -36,7 +36,6 @@ const MESH: DataItem = { ...MODEL, data_id: "mesh-1", name: "surface", viewer_ob
 
 const ONCE = 1;
 const Z_SCALING = 3;
-// oxlint-disable-next-line eslint/id-length -- r, g, b are the viewer parameter names
 const ORANGE = { red: 255, green: 136, blue: 0 };
 const FIRST_VIEWER_ID = 7;
 const SECOND_VIEWER_ID = 8;
