@@ -68,7 +68,7 @@ async function confirmDelete(window: Page): Promise<void> {
 
 async function expandObjectTree(window: Page): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
-  await mainObjectTree.locator("button:has(.mdi-expand-all-outline)").click();
+  await mainObjectTree.locator("button:has(.ph-arrows-out-line-vertical)").click();
   await waitForActionSettled(window);
 }
 

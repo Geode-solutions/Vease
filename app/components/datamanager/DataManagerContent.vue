@@ -2,6 +2,7 @@
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
+import PageHeader from "@vease/components/Layout/PageHeader.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
 import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
@@ -156,10 +157,15 @@ useEventListener(document, "keydown", (event) => {
       compact ? 'pa-2' : 'pa-8',
     ]"
     style="min-height: 0"
-    theme="dark"
   >
     <v-row no-gutters class="fill-height w-100" style="min-height: 0">
       <v-col class="d-flex flex-column fill-height overflow-hidden" style="min-height: 0">
+        <PageHeader
+          v-if="!compact"
+          title="Data Manager"
+          subtitle="Browse, search and manage the data of your project."
+          class="mb-4"
+        />
         <DataManagerHeader
           v-model:search-value="search"
           v-model:active-tab="activeTab"
@@ -172,7 +178,7 @@ useEventListener(document, "keydown", (event) => {
         <v-window v-model="activeTab" class="flex-grow-1 overflow-hidden">
           <v-window-item
             value="data"
-            :class="['fill-height overflow-hidden', compact ? 'px-0 py-2' : 'px-0 py-6']"
+            :class="['fill-height overflow-hidden', compact ? 'px-0 py-2' : 'px-0 py-4']"
           >
             <DataTable
               v-if="viewMode === 'list'"

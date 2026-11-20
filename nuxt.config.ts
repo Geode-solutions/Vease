@@ -6,6 +6,7 @@ import path from "node:path";
 import { searchForWorkspaceRoot } from "vite";
 
 // Local imports
+import { DARK_THEME_NAME, LIGHT_THEME_NAME, darkTheme, lightTheme } from "./app/utils/brand_themes";
 import package_json from "./package.json" with { type: "json" };
 
 const __dirname = import.meta.dirname;
@@ -148,34 +149,10 @@ export default defineNuxtConfig({
       },
       labComponents: true,
       theme: {
-        defaultTheme: "lightTheme",
+        defaultTheme: LIGHT_THEME_NAME,
         themes: {
-          lightTheme: {
-            dark: false,
-            colors: {
-              primary: "#3c9983",
-              secondary: "#3c9983",
-              accent: "#82B1FF",
-              error: "#FF5252",
-              info: "#2196F3",
-              success: "#4CAF50",
-              warning: "#FB8C00",
-            },
-          },
-          dark: {
-            dark: true,
-            colors: {
-              primary: "#3c9983",
-              secondary: "#3c9983",
-              accent: "#82B1FF",
-              error: "#FF5252",
-              info: "#2196F3",
-              success: "#4CAF50",
-              warning: "#FB8C00",
-              background: "#0a0f0e",
-              surface: "#121817",
-            },
-          },
+          [LIGHT_THEME_NAME]: lightTheme,
+          [DARK_THEME_NAME]: darkTheme,
         },
       },
     },
@@ -204,7 +181,10 @@ export default defineNuxtConfig({
           content: "Platform for geological data visualization",
         },
       ],
-      link: [{ rel: "icon", type: "image/ico", href: "/favicon.ico" }],
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "icon", type: "image/ico", href: "/favicon.ico", sizes: "32x32" },
+      ],
     },
   },
 

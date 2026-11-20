@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { exportProject, importProject } from "@ogw_front/composables/project_manager";
+import BrandMark from "@vease/components/Layout/BrandMark.vue";
+import ColorThemeToggle from "@vease/components/Layout/ColorThemeToggle.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { Status } from "@ogw_front/utils/status";
 import { getInfraStore } from "@vease/utils/external_stores";
-import logo from "@vease/assets/img/logo.png";
 import { useUIStore } from "@vease/stores/ui";
 
 const UIStore = useUIStore();
@@ -33,40 +34,41 @@ function onImportFileSelected(event): void {
   <v-app-bar
     flat
     color="transparent"
-    height="70"
+    height="64"
     elevation="0"
-    class="d-flex align-center w-100 px-8"
+    class="d-flex align-center w-100 top-bar"
     @mousedown.stop
   >
-    <v-img :src="logo" max-height="32" max-width="32" class="mr-2" contain draggable="false" />
-    <h2 class="title-text font-michroma mr-8 text-h5">Vease</h2>
+    <div class="brand-lockup d-flex align-center ga-3 mr-8">
+      <BrandMark :size="32" />
+      <h2 class="title-text brand-wordmark">Vease</h2>
+    </div>
 
     <div class="d-flex ga-2">
       <v-menu transition="slide-y-transition">
         <template v-slot:activator="{ props }">
           <v-btn
             variant="text"
-            color="white"
             v-bind="props"
-            class="text-none font-weight-medium rounded-lg"
-            prepend-icon="mdi-folder-star-outline"
+            class="text-none font-weight-medium"
+            prepend-icon="ph-folder-star"
             data-testid="projectMenuButton"
           >
             Project
-            <v-icon end size="18">mdi-chevron-down</v-icon>
+            <v-icon end size="18">ph-caret-down</v-icon>
           </v-btn>
         </template>
-        <GlassCard variant="panel" padding="pa-0" class="border-0 mt-2 rounded-lg">
-          <v-list density="compact" bg-color="transparent" theme="dark">
+        <GlassCard variant="panel" padding="pa-1" rounded="lg" class="mt-2">
+          <v-list density="compact" bg-color="transparent">
             <v-list-item
-              prepend-icon="mdi-download"
+              prepend-icon="ph-download-simple"
               title="Import Project"
               class="rounded-md"
               data-testid="importProjectButton"
               @click="triggerImport()"
             />
             <v-list-item
-              prepend-icon="mdi-upload"
+              prepend-icon="ph-upload-simple"
               title="Export Project"
               class="rounded-md"
               data-testid="exportProjectButton"
@@ -81,27 +83,28 @@ function onImportFileSelected(event): void {
 
     <!-- Action Buttons -->
     <div class="d-flex align-center ga-3">
+      <ColorThemeToggle />
       <v-btn
         data-testid="layoutImportButton"
-        color="white"
-        variant="tonal"
-        rounded="lg"
+        color="accent"
+        variant="flat"
+        rounded="pill"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showStepper }"
-        prepend-icon="mdi-file-upload-outline"
+        prepend-icon="ph-file-arrow-up"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowStepper(!UIStore.showStepper)"
       >
         Import
       </v-btn>
       <v-btn
-        color="white"
+        color="primary"
         variant="tonal"
-        rounded="lg"
+        rounded="pill"
         class="text-none px-6 font-weight-bold"
         :class="{ 'v-btn--active': UIStore.showCreateTools }"
         data-testid="createButton"
-        prepend-icon="mdi-shape-plus-outline"
+        prepend-icon="ph-shapes"
         :disabled="!infraStore.microservices_connected"
         @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
       >
@@ -123,5 +126,17 @@ function onImportFileSelected(event): void {
 <style scoped>
 :deep(.v-toolbar__content) {
   overflow: visible !important;
+}
+
+/* The mark is centered on the side bar column (80 px), the right edge aligns with the island */
+.top-bar {
+  padding-left: 24px;
+  padding-right: var(--vease-shell-gutter);
+}
+
+.brand-wordmark {
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 </style>

@@ -81,9 +81,9 @@ async function apply(): Promise<void> {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="d-flex flex-column h-100 w-100 pa-3 text-white">
+  <v-card flat color="transparent" class="d-flex flex-column h-100 w-100 pa-3">
     <div class="d-flex align-center mb-2">
-      <v-icon start icon="mdi-vector-triangle" size="18" />
+      <v-icon start icon="ph-triangle" size="18" />
       <!-- One line: a long data name is truncated, the full name is in the tooltip -->
       <h2 class="text-subtitle-1 font-weight-bold mb-0 text-truncate" style="min-width: 0">
         Georeference {{ UIStore.crsAlignItem?.name }}
@@ -92,8 +92,8 @@ async function apply(): Promise<void> {
         </v-tooltip>
       </h2>
       <v-spacer />
-      <v-btn icon size="x-small" variant="text" color="white" @click="close">
-        <v-icon size="16">mdi-close</v-icon>
+      <v-btn icon size="x-small" variant="text" @click="close">
+        <v-icon size="16">ph-x</v-icon>
       </v-btn>
     </div>
 
@@ -104,7 +104,6 @@ async function apply(): Promise<void> {
         inline
         hide-details
         density="compact"
-        theme="dark"
         class="mb-3"
         data-testid="crsAlignScope"
       >
@@ -126,11 +125,9 @@ async function apply(): Promise<void> {
             @update:model-value="(value) => editSourcePoint(index, coord, value)"
             inputmode="decimal"
             variant="outlined"
-            color="white"
+            color="primary"
             density="compact"
-            theme="dark"
-            base-color="white"
-            bg-color="rgba(255, 255, 255, 0.15)"
+            bg-color="surface-light"
             hide-details
             :label="coord.toUpperCase()"
           />
@@ -155,11 +152,9 @@ async function apply(): Promise<void> {
             v-model="point[coord]"
             inputmode="decimal"
             variant="outlined"
-            color="white"
+            color="primary"
             density="compact"
-            theme="dark"
-            base-color="white"
-            bg-color="rgba(255, 255, 255, 0.15)"
+            bg-color="surface-light"
             hide-details
             :label="coord.toUpperCase()"
           />
@@ -181,15 +176,15 @@ async function apply(): Promise<void> {
     <v-card-actions class="px-0 pb-0">
       <v-spacer />
       <v-btn
-        color="primary"
+        color="accent"
         variant="flat"
         data-testid="crsAlignApplyButton"
         :disabled="!isComplete || !targetCrs || applying"
         :loading="applying"
-        class="text-none rounded-lg font-weight-bold"
+        class="text-none rounded-pill font-weight-bold"
         @click="apply"
       >
-        <v-icon start>mdi-check-circle-outline</v-icon>
+        <v-icon start>ph-check-circle</v-icon>
         Apply
       </v-btn>
     </v-card-actions>

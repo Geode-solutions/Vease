@@ -22,14 +22,14 @@ const PROVIDERS = [
   {
     value: CHAT_PROVIDER.LLAMA,
     label: "Local",
-    icon: "mdi-laptop",
+    icon: "ph-laptop",
     description:
       "Runs on this computer: private and available offline, but slower and less capable.",
   },
   {
     value: CHAT_PROVIDER.GATEWAY,
     label: "Cloud",
-    icon: "mdi-cloud-outline",
+    icon: "ph-cloud",
     description: "Runs on a cloud AI service: faster and more capable, messages are sent online.",
   },
 ] as const;
@@ -85,7 +85,7 @@ function select(nextProvider: ChatProvider | undefined): void {
           <v-icon size="16" class="mr-1">
             {{
               option.value === CHAT_PROVIDER.GATEWAY && cloudUnavailableMessage !== undefined
-                ? "mdi-lock-outline"
+                ? "ph-lock"
                 : option.icon
             }}
           </v-icon>
@@ -101,7 +101,7 @@ function select(nextProvider: ChatProvider | undefined): void {
         :color="showInfo ? 'primary' : undefined"
         @click="showInfo = !showInfo"
       >
-        <v-icon size="18">mdi-information-outline</v-icon>
+        <v-icon size="18">ph-info</v-icon>
         <v-tooltip activator="parent" location="top">About Local and Cloud</v-tooltip>
       </v-btn>
     </div>
@@ -119,7 +119,7 @@ function select(nextProvider: ChatProvider | undefined): void {
           data-testid="cloudUnavailableMessage"
           class="d-flex align-center"
         >
-          <v-icon size="12" class="mr-1">mdi-lock-outline</v-icon>
+          <v-icon size="12" class="mr-1">ph-lock</v-icon>
           {{ cloudUnavailableMessage }}
         </div>
       </div>

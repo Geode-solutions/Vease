@@ -21,6 +21,10 @@ import {
 } from "../utils/desktop_session_data";
 import { initUpdater } from "./updater";
 // oxlint-disable-next-line import/no-relative-parent-imports
+import { readAppSettings, writeAppSettings } from "../utils/desktop_settings";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { userDataPath } from "../utils/desktop_user_data";
+// oxlint-disable-next-line import/no-relative-parent-imports
 import { loadLaunchFiles } from "../utils/launch_files";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { registerLinuxDesktopEntry } from "../utils/desktop_icon";
@@ -61,6 +65,15 @@ ipcMain.handle("delete_credentials", () => {
   consola.info("Deleting credentials");
   return deleteCredentials();
 });
+
+// Synchronous: the preload reads the settings before the page renders (no theme flash)
+ipcMain.on("app_settings_read", (event) => {
+  event.returnValue = readAppSettings(userDataPath);
+});
+
+ipcMain.handle("app_settings_write", (_event, settings: unknown) =>
+  writeAppSettings(userDataPath, settings),
+);
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
 void app.whenReady().then(async () => {

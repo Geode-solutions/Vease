@@ -98,11 +98,11 @@ watch(
         class="pip-header d-flex align-center px-4"
         style="height: 40px; min-height: 40px; user-select: none"
       >
-        <v-icon size="18" color="primary" class="mr-2">mdi-chat-outline</v-icon>
-        <span class="text-subtitle-2 font-weight-bold text-white">Chat (beta)</span>
+        <v-icon size="18" color="primary" class="mr-2">ph-chat</v-icon>
+        <span class="text-subtitle-2 font-weight-bold">Chat (beta)</span>
         <v-spacer />
-        <v-btn icon size="x-small" variant="text" color="white" @click="close">
-          <v-icon size="16">mdi-close</v-icon>
+        <v-btn icon size="x-small" variant="text" @click="close">
+          <v-icon size="16">ph-x</v-icon>
           <v-tooltip activator="parent" location="top">Close</v-tooltip>
         </v-btn>
       </div>
@@ -113,15 +113,16 @@ watch(
       data-testid="chatSignInRequired"
       class="d-flex flex-column align-center justify-center text-center fill-height px-6"
     >
-      <v-icon size="36" color="primary" class="mb-2">mdi-lock-outline</v-icon>
-      <div class="text-subtitle-2 text-white">Sign in to use the chat</div>
+      <v-icon size="36" color="primary" class="mb-2">ph-lock</v-icon>
+      <div class="text-subtitle-2">Sign in to use the chat</div>
       <div class="text-caption text-medium-emphasis mt-1 mb-4">
         The assistant, local or cloud, is available to signed in users.
       </div>
       <v-btn
-        color="primary"
+        color="accent"
+        variant="flat"
         rounded="pill"
-        prepend-icon="mdi-login"
+        prepend-icon="ph-sign-in"
         class="text-none font-weight-bold"
         to="/account"
       >
@@ -144,7 +145,7 @@ watch(
           class="d-flex align-center mt-1"
           style="min-height: 24px"
         >
-          <v-icon size="10" :color="localModelStatus.color" class="mr-1">mdi-circle</v-icon>
+          <v-icon size="10" :color="localModelStatus.color" class="mr-1">ph-fill ph-circle</v-icon>
           <span class="text-caption">{{ localModelStatus.text }}</span>
           <v-spacer />
           <span v-if="llamaStatus.running">
@@ -155,7 +156,7 @@ watch(
               :disabled="isBusy"
               @click="killLlamaServer"
             >
-              <v-icon size="14" class="mr-1">mdi-stop-circle-outline</v-icon>
+              <v-icon size="14" class="mr-1">ph-stop-circle</v-icon>
               Stop
             </v-btn>
             <v-tooltip activator="parent" location="top">
@@ -184,8 +185,8 @@ watch(
           data-testid="chatEmptyState"
           class="d-flex flex-column align-center justify-center text-center fill-height px-4"
         >
-          <v-icon size="36" color="primary" class="mb-2">mdi-chat-question-outline</v-icon>
-          <div class="text-subtitle-2 text-white">How can I help?</div>
+          <v-icon size="36" color="primary" class="mb-2">ph-chat-dots</v-icon>
+          <div class="text-subtitle-2">How can I help?</div>
           <div class="text-caption text-medium-emphasis mt-1">
             Ask a question about Vease or your project, the assistant can use Vease tools to answer.
           </div>
@@ -253,7 +254,7 @@ watch(
           :disabled="!input.trim() || status !== 'ready'"
           @click="submit"
         >
-          <v-icon size="18">mdi-send</v-icon>
+          <v-icon size="18">ph-paper-plane-right</v-icon>
         </v-btn>
       </form>
     </div>
@@ -280,6 +281,6 @@ watch(
 
 .pending-bubble {
   max-width: 80%;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(var(--v-theme-on-surface), 0.06);
 }
 </style>

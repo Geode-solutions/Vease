@@ -278,7 +278,6 @@ function startResize(event, edge): void {
         padding="pa-0"
         class="resizable-pip-container fill-height overflow-hidden"
         rounded="xl"
-        :style="{ border: '1px solid rgba(255, 255, 255, 0.12)' }"
         :escapeFunction="escapeFunction"
       >
         <div ref="dragHandle" class="resizable-pip-handle">
@@ -294,7 +293,7 @@ function startResize(event, edge): void {
 
 <style scoped>
 .resizable-pip {
-  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 8px 24px rgba(var(--v-theme-on-surface), 0.18));
 }
 
 .resizable-pip-handle {

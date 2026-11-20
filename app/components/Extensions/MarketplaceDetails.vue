@@ -58,22 +58,22 @@ async function installSelectedExtension(): Promise<void> {
   <GlassCard
     variant="ui"
     padding="pa-0"
-    class="d-flex flex-column fill-height border-white border-opacity-10 relative overflow-hidden"
+    class="d-flex flex-column fill-height relative overflow-hidden"
     style="min-height: 0"
   >
     <template v-if="extension">
-      <v-sheet color="rgba(0,0,0,0.2)" class="pa-6 pa-sm-8 border-b border-white border-opacity-10">
+      <v-sheet color="transparent" class="pa-6 pa-sm-8 border-b details-header">
         <v-sheet
           color="transparent"
           class="d-flex flex-column flex-sm-row align-center align-sm-start text-center text-sm-left"
         >
           <v-avatar
-            color="rgba(255,255,255,0.05)"
+            color="rgba(var(--v-theme-primary), 0.12)"
             size="96"
             rounded="xl"
-            class="mb-4 mb-sm-0 mr-sm-6 border border-white border-opacity-10 shadow-sm glass-icon flex-shrink-0"
+            class="mb-4 mb-sm-0 mr-sm-6 border flex-shrink-0"
           >
-            <v-icon icon="mdi-puzzle" size="48" color="white"></v-icon>
+            <v-icon icon="ph-puzzle-piece" size="48" color="primary"></v-icon>
           </v-avatar>
 
           <v-sheet color="transparent" class="flex-grow-1 w-100" style="min-width: 0">
@@ -82,17 +82,17 @@ async function installSelectedExtension(): Promise<void> {
               class="d-flex flex-column flex-sm-row align-center mb-2 justify-center justify-sm-start"
             >
               <h1
-                class="text-h5 text-sm-h4 font-weight-bold text-white mb-2 mb-sm-0 mr-sm-4"
+                class="text-h5 text-sm-h4 font-weight-bold mb-2 mb-sm-0 mr-sm-4"
                 style="word-break: break-word"
               >
                 {{ extension.id }}
               </h1>
-              <v-chip size="small" variant="outlined" color="white" class="font-weight-medium">
+              <v-chip size="small" variant="outlined" color="primary" class="font-weight-medium">
                 v{{ extension.version }}
               </v-chip>
             </v-sheet>
 
-            <v-sheet color="transparent" class="text-subtitle-1 text-white opacity-80 mb-4">
+            <v-sheet color="transparent" class="text-subtitle-1 text-medium-emphasis mb-4">
               Marketplace Extension
             </v-sheet>
 
@@ -101,12 +101,11 @@ async function installSelectedExtension(): Promise<void> {
               class="d-flex align-center justify-center justify-sm-start ga-3 mt-4"
             >
               <v-btn
-                color="white"
-                variant="elevated"
-                prepend-icon="mdi-download"
-                elevation="4"
+                color="accent"
+                variant="flat"
+                prepend-icon="ph-download-simple"
                 rounded="pill"
-                class="text-none px-6 font-weight-bold text-black"
+                class="text-none px-6 font-weight-bold"
                 :loading="installing"
                 @click="installSelectedExtension"
                 :disabled="installed"
@@ -147,11 +146,11 @@ async function installSelectedExtension(): Promise<void> {
         color="transparent"
         class="flex-grow-1 pa-6 pa-sm-8 overflow-y-auto custom-scrollbar"
       >
-        <h3 class="text-h6 font-weight-semibold text-white mb-4 d-flex align-center">
-          <v-icon icon="mdi-file-document-outline" class="mr-2" size="24"></v-icon>
+        <h3 class="text-h6 font-weight-semibold mb-4 d-flex align-center">
+          <v-icon icon="ph-file-text" class="mr-2 text-primary" size="24"></v-icon>
           Details
         </h3>
-        <v-sheet color="transparent" class="readme-content text-body-1 text-white opacity-80">
+        <v-sheet color="transparent" class="readme-content text-body-1 text-medium-emphasis">
           <v-sheet
             v-if="extension.readme"
             color="transparent"
@@ -171,8 +170,8 @@ async function installSelectedExtension(): Promise<void> {
       color="transparent"
       class="fill-height d-flex flex-column align-center justify-center text-center pa-6"
     >
-      <v-progress-circular indeterminate color="white" size="64" class="mb-4" />
-      <h2 class="text-h6 font-weight-medium text-white opacity-80">
+      <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+      <h2 class="text-h6 font-weight-medium text-medium-emphasis">
         Loading marketplace content...
       </h2>
     </v-sheet>
@@ -185,14 +184,14 @@ async function installSelectedExtension(): Promise<void> {
       <v-sheet
         class="mx-auto mb-6 d-flex align-center justify-center"
         rounded="circle"
-        color="rgba(255,255,255,0.05)"
+        color="rgba(var(--v-theme-primary), 0.08)"
         width="120"
         height="120"
       >
-        <v-icon icon="mdi-storefront-outline" size="64" color="white" class="opacity-80"></v-icon>
+        <v-icon icon="ph-storefront" size="64" color="primary"></v-icon>
       </v-sheet>
-      <h2 class="text-h5 font-weight-medium text-white mb-2">Marketplace</h2>
-      <p class="text-body-1 text-white opacity-70">
+      <h2 class="text-h5 font-weight-medium mb-2">Marketplace</h2>
+      <p class="text-body-1 text-medium-emphasis">
         Select an extension from the list to view its details and install it.
       </p>
     </v-sheet>
@@ -200,8 +199,8 @@ async function installSelectedExtension(): Promise<void> {
 </template>
 
 <style scoped>
-.glass-icon {
-  backdrop-filter: blur(10px);
+.details-header {
+  background: rgba(var(--v-theme-on-surface), 0.04) !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -211,10 +210,10 @@ async function installSelectedExtension(): Promise<void> {
   background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--v-theme-on-surface), 0.2);
   border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--v-theme-on-surface), 0.4);
 }
 </style>

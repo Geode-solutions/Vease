@@ -74,7 +74,7 @@ async function import_files(): Promise<void> {
 <template>
   <StepActions
     label="Import"
-    icon="mdi-file-upload-outline"
+    icon="ph-file-arrow-up"
     test-id="finalizeImportButton"
     :action="import_files"
     @reset_values="emit('reset_values')"
