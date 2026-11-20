@@ -19,8 +19,9 @@ function handleFilesDropped(files: File[]): void {
   }
   // A .vease is a whole project: it is opened like from the Project menu, not imported as data
   if (files.some((file) => isProjectFile(file))) {
-    if (files.length === 1) {
-      importProject(files[0]);
+    const [projectFile] = files;
+    if (files.length === 1 && projectFile !== undefined) {
+      importProject(projectFile);
     } else {
       useFeedbackStore().add_warning("Drop a .vease project on its own to open it");
     }
