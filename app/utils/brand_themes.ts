@@ -1,6 +1,6 @@
 // Geode Solutions brand identity (brand book 2025): palette and the two Vuetify themes built on it.
 // Imported by nuxt.config.ts, so it must stay free of Nuxt/Vue runtime imports (type imports are erased).
-import type { RGBAColor } from "@ogw_front/utils/default_styles/constants";
+import type { ColorRGBA } from "@geode/opengeodeweb-viewer/schema_types";
 
 const BRAND_COLORS = {
   vertPlatine: "#3E6965",
@@ -87,7 +87,7 @@ const darkTheme = {
 
 // 3D viewer scene colors: a single blue-grey from the Bleu Fumée family for both themes, so data looks the
 // Same whatever the app theme, with Horizon ink for the scene text (axes labels, scale).
-const VIEWER_SCENE_COLORS: { background: RGBAColor; text: RGBAColor } = {
+const VIEWER_SCENE_COLORS: { background: ColorRGBA; text: ColorRGBA } = {
   background: { red: 160, green: 180, blue: 187, alpha: 1 },
   text: { red: 31, green: 46, blue: 51, alpha: 1 },
 };
