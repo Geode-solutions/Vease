@@ -11,7 +11,6 @@ import AppOverlays from "@vease/components/Layout/AppOverlays.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
-import { useBrandViewerScene } from "@vease/composables/brand_viewer_scene";
 import { useColorTheme } from "@vease/composables/color_theme";
 import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
 import { useUIStore } from "@vease/stores/ui";
@@ -36,7 +35,6 @@ useExclusiveDrawers();
 
 const { applyStoredColorTheme } = useColorTheme();
 applyStoredColorTheme();
-useBrandViewerScene();
 </script>
 <template>
   <v-app
