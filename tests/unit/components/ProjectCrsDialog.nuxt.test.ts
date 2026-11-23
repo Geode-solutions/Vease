@@ -6,6 +6,7 @@ import ProjectCrsDialog from "@vease/components/ProjectCrsDialog.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
+import type { useProjectCrs } from "@vease/composables/project_crs";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -23,14 +24,20 @@ const { UTM, CRS_SELECTOR_STUB } = vi.hoisted(() => {
     },
   };
 });
-// Hoisted with vi.mock, so the useCrs mock can be checked by the tests
-const { changeProjectCrs } = vi.hoisted(() => ({
+// Hoisted with vi.mock, so the useCrs and useProjectCrs mocks can be checked by the tests
+const { adoptProjectCrs, changeProjectCrs } = vi.hoisted(() => ({
+  adoptProjectCrs: vi.fn<(crs: unknown) => Promise<void>>(),
   changeProjectCrs: vi.fn<(crs: unknown) => Promise<void>>(),
 }));
 
 vi.mock(import("@vease/composables/crs"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
   useCrs: (() => ({ changeProjectCrs })) as unknown as typeof useCrs,
+}));
+
+vi.mock(import("@vease/composables/project_crs"), () => ({
+  // oxlint-disable-next-line no-unsafe-type-assertion -- mock covers only the calls this suite makes
+  useProjectCrs: (() => ({ adoptProjectCrs })) as unknown as typeof useProjectCrs,
 }));
 
 vi.mock(import("@ogw_front/components/GlassCard.vue"), () => ({
@@ -55,6 +62,7 @@ describe("project crs dialog", () => {
   beforeEach(() => {
     setupActivePinia();
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
+    adoptProjectCrs.mockReset().mockResolvedValue(undefined);
     useCrsStore().setProjectCrs(LAMBERT);
   });
 
@@ -84,6 +92,8 @@ describe("project crs dialog", () => {
     await flushPromises();
     // The composable reads the data itself
     expect(changeProjectCrs).toHaveBeenCalledWith(UTM);
+    // Then the data without CRS take it
+    expect(adoptProjectCrs).toHaveBeenCalledWith(UTM);
     expect(wrapper.emitted("changed")).toHaveLength(1);
     expect(wrapper.emitted("update:show")).toStrictEqual([[false]]);
     wrapper.unmount();
@@ -100,6 +110,7 @@ describe("project crs dialog", () => {
     await flushPromises();
     click("projectCrsApply");
     await flushPromises();
+    expect(adoptProjectCrs).not.toHaveBeenCalled();
     expect(wrapper.emitted("update:show")).toBeUndefined();
     expect(wrapper.emitted("changed")).toBeUndefined();
     wrapper.unmount();
