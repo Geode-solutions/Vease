@@ -55,7 +55,7 @@ function handleEscape(): void {
     </div>
 
     <v-card-text class="pt-2 pb-6 flex-grow-1 overflow-y-auto px-3">
-      <v-row dense>
+      <v-row density="compact">
         <v-col v-for="tool in UIStore.activeTools" :key="tool.id" cols="12" class="d-flex pa-1">
           <GlassCard
             variant="ui"

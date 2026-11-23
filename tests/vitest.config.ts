@@ -66,6 +66,7 @@ export default defineConfig(async () => ({
     setupFiles: [
       path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
       path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
+      path.resolve(__dirname, "./utils/fail_on_vue_warnings.ts"),
     ],
     projects: [
       await defineVitestProject({
@@ -85,6 +86,7 @@ export default defineConfig(async () => ({
           setupFiles: [
             path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
             path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
+            path.resolve(__dirname, "./utils/fail_on_vue_warnings.ts"),
           ],
           server: {
             deps: {
@@ -112,6 +114,7 @@ export default defineConfig(async () => ({
           setupFiles: [
             path.resolve(__dirname, "./utils/setup_indexeddb.ts"),
             path.resolve(__dirname, "./utils/setup_global_hooks.ts"),
+            path.resolve(__dirname, "./utils/fail_on_vue_warnings.ts"),
           ],
           server: {
             deps: {

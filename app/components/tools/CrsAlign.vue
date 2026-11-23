@@ -116,7 +116,7 @@ async function apply(): Promise<void> {
       <v-row
         v-for="(point, index) in sourcePoints"
         :key="'source-' + index"
-        dense
+        density="compact"
         :data-testid="'crsAlignSource-' + index"
       >
         <v-col v-for="coord in ['x', 'y'] as const" :key="coord" cols="6">
@@ -144,7 +144,7 @@ async function apply(): Promise<void> {
       <v-row
         v-for="(point, index) in targetPoints"
         :key="'target-' + index"
-        dense
+        density="compact"
         :data-testid="'crsAlignTarget-' + index"
       >
         <v-col v-for="coord in ['x', 'y']" :key="coord" cols="6">

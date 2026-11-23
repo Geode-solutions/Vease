@@ -30,25 +30,28 @@ watch(
 );
 </script>
 <template>
-  <!-- The island clips its content for the viewer: the launcher scrolls instead, so a short window still reaches
+  <!-- NuxtPage is always rendered (Nuxt warns otherwise): the page itself only mounts once the infra is created.
+  The island clips its content for the viewer: the launcher scrolls instead, so a short window still reaches
   The load button under the account card -->
-  <div
-    v-if="infraStore.status != Status.CREATED"
-    class="launcher-scroll"
-    data-testid="launcherScroll"
-  >
-    <Launcher
-      app-name="Vease"
-      :logo="logo"
-      :isUserAuthenticated="isUserAuthenticated"
-      :auth-token="authToken"
+  <NuxtPage v-slot="{ Component }">
+    <div
+      v-if="infraStore.status != Status.CREATED"
+      class="launcher-scroll"
+      data-testid="launcherScroll"
     >
-      <template #auth>
-        <AuthWrapper />
-      </template>
-    </Launcher>
-  </div>
-  <NuxtPage v-else style="z-index: 1" class="fill-height" />
+      <Launcher
+        app-name="Vease"
+        :logo="logo"
+        :isUserAuthenticated="isUserAuthenticated"
+        :auth-token="authToken"
+      >
+        <template #auth>
+          <AuthWrapper />
+        </template>
+      </Launcher>
+    </div>
+    <component :is="Component" v-else style="z-index: 1" class="fill-height" />
+  </NuxtPage>
 </template>
 
 <style scoped>

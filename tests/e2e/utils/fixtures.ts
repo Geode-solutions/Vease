@@ -15,6 +15,7 @@ import { expect } from "@playwright/test";
 // Local imports
 import { test as appTest } from "#ogw_e2e/app_test.js";
 import { navigateToApp } from "./navigate";
+import { takeFrameworkWarnings } from "./framework_warnings";
 
 // Whole download deadline of a basemap build in OpenGeodeWeb-Back (FETCH_DEADLINE_SECONDS)
 const BUSY_TIMEOUT_MS = 30_000;
@@ -32,6 +33,7 @@ interface WorkerFixtures {
 interface TestFixtures {
   // Only set in DESKTOP mode
   electronApp: ElectronApplication | undefined;
+  noFrameworkWarnings: undefined;
 }
 
 const test = appTest.extend<TestFixtures, WorkerFixtures>({
@@ -103,6 +105,19 @@ const test = appTest.extend<TestFixtures, WorkerFixtures>({
       await use((window) => [window.getByTestId("accountNavButton")]);
     },
     { scope: "worker" },
+  ],
+
+  // Fails a passing test on any Vue (Vuetify included) or Nuxt warning emitted during it: the first test of an app also
+  // Gets its startup ones. Vue's are only there when built with VUE_DEV_WARNINGS (build:browser)
+  noFrameworkWarnings: [
+    async ({ app: _app }, use, testInfo): Promise<void> => {
+      await use(undefined);
+      const warnings = takeFrameworkWarnings();
+      if (testInfo.status === testInfo.expectedStatus) {
+        expect(warnings, "Vue or Nuxt warnings were emitted").toEqual([]);
+      }
+    },
+    { auto: true },
   ],
 
   electronApp: async ({ app, desktopApp }, use): Promise<void> => {
