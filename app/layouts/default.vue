@@ -38,14 +38,16 @@ const { applyStoredColorTheme } = useColorTheme();
 applyStoredColorTheme();
 </script>
 <template>
-  <v-app :class="{
-    'splash-screen-active': !infraStore.microservices_connected,
-    'drawer-active':
-      UIStore.showStepper ||
-      UIStore.showCreateTools ||
-      UIStore.showExtensions ||
-      UIStore.showCrsAlign,
-  }">
+  <v-app
+    :class="{
+      'splash-screen-active': !infraStore.microservices_connected,
+      'drawer-active':
+        UIStore.showStepper ||
+        UIStore.showCreateTools ||
+        UIStore.showExtensions ||
+        UIStore.showCrsAlign,
+    }"
+  >
     <MainNavigation />
     <v-main class="custom-background dropzone">
       <GlassCard variant="ui" padding="pa-0" class="island-wrapper">
