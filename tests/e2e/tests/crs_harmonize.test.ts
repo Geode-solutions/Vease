@@ -47,13 +47,13 @@ test("assign a crs to the model", async ({ window }) => {
   await expectRowCrs(window, brepGeodeObjectType, "EPSG:2154");
 });
 
-// Even when their coordinates fit the project crs: only the user knows the crs of the data
-test("imported data without crs stay without crs, with a warning", async ({ window }) => {
-  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LAMBERT_NAME}`, async () => {
+// Their coordinates fit the project crs: they were made in it
+test("imported data without crs take the project crs", async ({ window }) => {
+  await expectFeedback(window, `EPSG:2154 assigned: ${LAMBERT_NAME}`, async () => {
     await loadVeaseTestDatas(window, [LAMBERT_FILE]);
   });
   await navigateToDataManagerPage(window);
-  await expectRowCrs(window, LAMBERT_NAME, "None");
+  await expectRowCrs(window, LAMBERT_NAME, "EPSG:2154");
   await moveMouseOutOfTheWay(window);
 });
 
@@ -66,10 +66,15 @@ test("imported data in another crs are converted to the project crs", async ({ w
   await moveMouseOutOfTheWay(window);
 });
 
+// Local coordinates keep no crs: the warning offers to georeference them
 test("imported data that fit no crs are flagged in the tree", async ({ window }) => {
-  await expectFeedback(window, `No CRS, project in EPSG:2154: ${LOCAL_NAME}`, async () => {
-    await loadVeaseTestDatas(window, [LOCAL_FILE]);
-  });
+  await expectFeedback(
+    window,
+    `${LOCAL_NAME}: these coordinates do not match EPSG:2154`,
+    async () => {
+      await loadVeaseTestDatas(window, [LOCAL_FILE]);
+    },
+  );
   await navigateToViewerPage(window);
   await expectCrsMismatch(window, pointSetGeodeObjectType, LOCAL_NAME, true);
   await moveMouseOutOfTheWay(window);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import MicroservicesBusyIndicator from "@ogw_front/components/MicroservicesBusyIndicator.vue";
 import { consola } from "consola";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
@@ -11,6 +12,7 @@ import AppOverlays from "@vease/components/Layout/AppOverlays.vue";
 import MainNavigation from "@vease/components/Layout/MainNavigation.vue";
 import { getInfraStore } from "@vease/utils/external_stores";
 import { useAuth } from "@vease/composables/auth";
+import { useColorTheme } from "@vease/composables/color_theme";
 import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -31,6 +33,9 @@ runFunctionWhenMicroservicesConnected(() => {
 });
 
 useExclusiveDrawers();
+
+const { applyStoredColorTheme } = useColorTheme();
+applyStoredColorTheme();
 </script>
 <template>
   <v-app
@@ -45,19 +50,12 @@ useExclusiveDrawers();
   >
     <MainNavigation />
     <v-main class="custom-background dropzone">
-      <GlassCard variant="ui" padding="pa-0" class="island-wrapper overflow-hidden">
+      <GlassCard variant="ui" padding="pa-0" class="island-wrapper">
         <AppLauncher />
       </GlassCard>
       <AppDrawers />
     </v-main>
-    <v-progress-linear
-      v-if="infraStore.microservices_busy"
-      data-testid="microservicesBusyIndicator"
-      indeterminate
-      color="white"
-      class="position-fixed top-0"
-      style="z-index: 4"
-    />
+    <MicroservicesBusyIndicator />
     <AppOverlays />
   </v-app>
 </template>
@@ -67,28 +65,35 @@ useExclusiveDrawers();
   max-height: 100vh;
   overflow: hidden;
 }
+
 .v-main {
   height: 100vh;
 }
+
 :deep(.v-main__wrap) {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .island-wrapper {
   flex-grow: 1;
-  height: 99%;
+  height: calc(100% - var(--vease-shell-gutter));
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin: 0 10px 10px 0;
+  margin: 0 var(--vease-shell-gutter) var(--vease-shell-gutter) 0;
   padding: 0;
+  /* clip, not hidden: same reason as .custom-background, an overflowing panel scrolled the island */
+  overflow: clip;
 }
+
 .custom-background {
   position: relative;
   /* clip, not hidden: the island overflows by a few pixels and a hidden overflow can still be scrolled programmatically (scrollIntoView), shifting the whole viewer */
   overflow: clip;
 }
+
 .custom-background::before {
   content: "";
   position: absolute;
@@ -96,6 +101,7 @@ useExclusiveDrawers();
   opacity: 0.15;
   pointer-events: none;
 }
+
 .drawer-overlay {
   position: fixed;
   inset: 0;
@@ -117,9 +123,9 @@ useExclusiveDrawers();
 .drawer-container {
   position: fixed;
   top: 0;
-  height: calc(100vh - 100px) !important;
-  margin-top: 84px;
-  padding: 16px;
+  height: calc(100vh - 80px) !important;
+  margin-top: 64px;
+  padding: var(--vease-shell-gutter);
   z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;

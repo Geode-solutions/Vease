@@ -7,7 +7,7 @@ vi.setConfig({ testTimeout: 10_000 });
 
 const FILE_NAME = "sample_file.txt";
 const FILE_LABEL = "Select target file";
-const PREPEND_ICON = "mdi-paperclip";
+const PREPEND_ICON = "ph-paperclip";
 const ACCEPT_PATTERN = ".txt,.csv";
 
 describe("the FileInput component", () => {

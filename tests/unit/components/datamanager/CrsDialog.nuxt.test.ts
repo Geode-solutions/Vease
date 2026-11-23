@@ -372,6 +372,38 @@ describe("crs dialog component", () => {
     expect(warnings).toStrictEqual([]);
   });
 
+  test("warns when the data cannot hold a crs", async () => {
+    const responses: Record<string, unknown> = {
+      ...RESPONSES,
+      "opengeodeweb_back/crs/assign_geographic": { unsupported: true },
+    };
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
+      callbacks?.response_function?.(responses[schema.$id]);
+      await Promise.resolve();
+      return responses[schema.$id];
+    });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.data_id },
+      attachTo: document.body,
+    });
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsSelectorStub"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    document.body
+      .querySelector('[data-testid="crsAssignButton"]')
+      ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await flushPromises();
+    const warnings = useFeedbackStore().feedbacks.filter(({ type }) => type === "warning");
+    expect(warnings.map(({ description }) => description)).toStrictEqual([
+      `${mockItem.name} cannot hold a CRS`,
+    ]);
+    expect(wrapper.emitted("assigned")).toBeUndefined();
+    expect(wrapper.emitted("update:show")).toStrictEqual([[false]]);
+    wrapper.unmount();
+  });
+
   test("refreshes the stored crs from the file", async () => {
     vi.spyOn(getBackStore(), "request").mockImplementation(async (_request, callbacks) => {
       callbacks?.response_function?.(UTM_RESPONSE);

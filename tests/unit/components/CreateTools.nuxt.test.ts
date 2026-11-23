@@ -33,8 +33,8 @@ describe("the CreateTools component", () => {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
         description: TOOL_DESC_ONE,
-        iconType: "mdi",
-        iconSource: "mdi-pencil",
+        iconType: "icon",
+        iconSource: "ph-pencil-simple",
         component: {
           name: DUMMY_COMPONENT_NAME,
           template:
@@ -102,8 +102,8 @@ describe("the CreateTools component", () => {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
         description: TOOL_DESC_ONE,
-        iconType: "mdi",
-        iconSource: "mdi-pencil",
+        iconType: "icon",
+        iconSource: "ph-pencil-simple",
         component: undefined,
       },
     ];

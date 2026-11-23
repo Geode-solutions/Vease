@@ -4,20 +4,20 @@ import {
   buildAssignedEntries,
   plausibleEntries,
   useImplausibleWarning,
+  useOpenCrsAlignment,
 } from "@vease/composables/crs_assign";
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
-import back_schemas, {
-  type CRSList,
-} from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useLiveDataItem } from "@ogw_front/composables/live_data_item";
-import { useUIStore } from "@vease/stores/ui";
 
 const { show = false, itemId = undefined } = defineProps<{
   show?: boolean;
@@ -39,11 +39,10 @@ const backStore = useBackStore();
 const crsStore = useCrsStore();
 const dataStore = useDataStore();
 const currentCrs = ref("");
-const selectedCrs = ref<CRSList | undefined>(undefined);
+const selectedCrs = ref<CRS | undefined>(undefined);
 const assigning = ref(false);
 const loadingCurrentCrs = ref(false);
 const { convertCrs, changeProjectCrs, followProject } = useCrs();
-const UIStore = useUIStore();
 const isGeographic = ref(false);
 const crsKnown = ref(false);
 const mode = ref<"assign" | "convert" | "align">("assign");
@@ -114,22 +113,21 @@ watch(
   { immediate: true },
 );
 
-// Picking only works in the viewer: the alignment continues in its drawer
-async function openAlignment(target: Pick<CrsItem, "data_id">): Promise<void> {
-  // The drawer needs the whole data: a linked data is only known by its CRS fields
-  const full = await dataStore.item(target.data_id);
-  await navigateTo("/");
-  UIStore.openCrsAlign(full);
-}
-
+const openAlignment = useOpenCrsAlignment();
 const warnImplausible = useImplausibleWarning(openAlignment);
 
 async function onAssigned(
   assignedItem: Pick<CrsItem, "data_id" | "name">,
   linked: CrsItem[],
   response: AssignResponse,
-  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRSList | undefined },
+  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRS | undefined },
 ): Promise<void> {
+  if (response.unsupported === true) {
+    // Only the data with points can be georeferenced, not grids
+    useFeedbackStore().add_warning(`${assignedItem.name} cannot hold a CRS`);
+    emit("update:show", false);
+    return;
+  }
   const entries = buildAssignedEntries(assignedItem, linked, response);
   // A data left out by the check keeps its CRS: nothing to store
   for (const entry of entries.filter((assigned) => assigned.crs !== undefined)) {
@@ -229,12 +227,12 @@ async function startAlignment(): Promise<void> {
     max-width="800"
   >
     <GlassCard variant="panel" padding="pa-8" :width="800">
-      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center text-white">
-        <v-icon icon="mdi-earth" class="mr-3 text-h4" color="white"></v-icon>
+      <v-card-title class="pb-2 text-h5 font-weight-bold d-flex align-center">
+        <v-icon icon="ph-globe-hemisphere-west" class="mr-3 text-h4" color="primary"></v-icon>
         Coordinate Reference System
       </v-card-title>
 
-      <v-card-subtitle class="ma-0 text-white opacity-80">
+      <v-card-subtitle class="ma-0">
         Current CRS:
         <v-progress-circular
           v-if="loadingCurrentCrs"
@@ -248,7 +246,7 @@ async function startAlignment(): Promise<void> {
 
       <!-- flex-shrink-0: the scrollable dialog card would otherwise squash the toggle to 0 height -->
       <div class="mt-4 flex-shrink-0">
-        <v-btn-toggle v-model="mode" mandatory density="compact" color="white">
+        <v-btn-toggle v-model="mode" mandatory density="compact" color="primary">
           <v-btn value="assign" data-testid="crsModeAssign" class="text-none">Assign</v-btn>
           <v-btn
             v-if="crsKnown && isGeographic"
@@ -271,7 +269,7 @@ async function startAlignment(): Promise<void> {
         inline
         hide-details
         density="compact"
-        class="mt-4 flex-shrink-0 text-white"
+        class="mt-4 flex-shrink-0"
         data-testid="crsScope"
       >
         <v-radio label="All data" value="all" data-testid="crsScope-all" />
@@ -279,7 +277,7 @@ async function startAlignment(): Promise<void> {
       </v-radio-group>
       <p
         v-if="mode !== 'align'"
-        class="text-caption text-white opacity-80 mt-2 mb-0"
+        class="text-caption text-medium-emphasis mt-2 mb-0"
         data-testid="crsModeHint"
       >
         {{
@@ -326,18 +324,18 @@ async function startAlignment(): Promise<void> {
           v-model="selectedCrs"
           :geode-object-type="item.geode_object_type"
         />
-        <div v-if="mode === 'align'" class="text-white">
+        <div v-if="mode === 'align'">
           <p class="mb-4">
             Pick 3 points on the data and type their real coordinates in the target CRS.
           </p>
           <v-btn
-            color="primary"
+            color="accent"
             variant="flat"
             data-testid="crsStartAlignButton"
-            class="text-none rounded-lg"
+            class="text-none rounded-pill"
             @click="startAlignment"
           >
-            <v-icon start>mdi-vector-triangle</v-icon>
+            <v-icon start>ph-triangle</v-icon>
             Start georeferencing
           </v-btn>
         </div>
@@ -346,12 +344,12 @@ async function startAlignment(): Promise<void> {
       <v-card-actions class="px-0 pb-0 mt-4">
         <v-btn
           variant="text"
-          color="white"
+          color="primary"
           size="large"
           @click="emit('update:show', false)"
-          class="text-none rounded-lg"
+          class="text-none rounded-pill"
         >
-          <v-icon start>mdi-close-circle-outline</v-icon>
+          <v-icon start>ph-x-circle</v-icon>
           Cancel
         </v-btn>
 
@@ -359,32 +357,30 @@ async function startAlignment(): Promise<void> {
 
         <v-btn
           v-if="mode === 'assign'"
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="crsAssignButton"
           :disabled="!selectedCrs || assigning"
           :loading="assigning"
           @click="handleAssign()"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
         >
-          <v-icon start>mdi-check-circle-outline</v-icon>
+          <v-icon start>ph-check-circle</v-icon>
           Assign
         </v-btn>
         <v-btn
           v-if="mode === 'convert'"
-          color="primary"
+          color="accent"
           size="large"
           variant="flat"
           data-testid="crsConvertButton"
           :disabled="!selectedCrs || converting"
           :loading="converting"
           @click="handleConvert"
-          class="text-none rounded-lg font-weight-bold"
-          elevation="4"
+          class="text-none rounded-pill font-weight-bold"
         >
-          <v-icon start>mdi-swap-horizontal</v-icon>
+          <v-icon start>ph-arrows-left-right</v-icon>
           Convert
         </v-btn>
       </v-card-actions>

@@ -114,7 +114,7 @@ describe("the MarketplaceSidebar component", () => {
       props: { extensions: [firstExtension, secondExtension] },
     });
 
-    expect(wrapper.find(".mdi-puzzle-check-outline").exists()).toBe(true);
-    expect(wrapper.find(".mdi-puzzle-outline").exists()).toBe(true);
+    expect(wrapper.find(".ph-seal-check").exists()).toBe(true);
+    expect(wrapper.find(".ph-puzzle-piece").exists()).toBe(true);
   });
 });

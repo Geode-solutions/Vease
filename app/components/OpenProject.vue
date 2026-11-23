@@ -34,10 +34,16 @@ const isVisible = computed({
           </v-container>
         </v-card-text>
         <v-card-actions justify-center>
-          <v-btn variant="outlined" color="white" text @click="emit('close')" class="ml-8 mb-4"
+          <v-btn variant="text" rounded="pill" text @click="emit('close')" class="ml-8 mb-4"
             >Close</v-btn
           >
-          <v-btn variant="outlined" class="mb-4" color="white" text @click="emit('close')"
+          <v-btn
+            variant="flat"
+            class="mb-4"
+            color="accent"
+            rounded="pill"
+            text
+            @click="emit('close')"
             >Load</v-btn
           >
         </v-card-actions>

@@ -7,6 +7,7 @@ interface ToolDefinition {
   extensionPath?: string;
   title?: string;
   description?: string;
+  // "icon": iconSource is an icon of the app icon set (ph-...), "svg": the url of an svg image
   iconType?: string;
   iconSource?: string;
   [key: string]: unknown;
@@ -17,6 +18,34 @@ interface DataManagerTab {
   component: unknown;
   props?: Record<string, unknown>;
   [key: string]: unknown;
+}
+
+// Icon type and names of the extension API before the Phosphor icons (Vease 2): "mdi" is still read as "icon", but
+// MDI icon names have no glyph anymore: they are drawn as the generic extension icon, and reported so the extension
+// Can move to Phosphor names (ph-...)
+const LEGACY_ICON_TYPE = "mdi";
+const FONT_ICON_TYPE = "icon";
+const LEGACY_ICON_PREFIX = "mdi-";
+const EXTENSION_ICON = "ph-puzzle-piece";
+
+function currentIcon<Icon>(owner: string, icon: Icon): Icon | string {
+  if (typeof icon !== "string" || !icon.startsWith(LEGACY_ICON_PREFIX)) {
+    return icon;
+  }
+  consola.warn(`[UIStore] ${owner}: "${icon}" is an MDI icon, use a Phosphor icon name (ph-...)`);
+  return EXTENSION_ICON;
+}
+
+function withCurrentIcon(toolDefinition: ToolDefinition): ToolDefinition {
+  const current = {
+    ...toolDefinition,
+    iconSource: currentIcon(`Tool ${toolDefinition.id}`, toolDefinition.iconSource),
+  };
+  if (toolDefinition.iconType === LEGACY_ICON_TYPE) {
+    consola.warn(`[UIStore] Tool ${toolDefinition.id}: iconType "mdi" is deprecated, use "icon"`);
+    current.iconType = FONT_ICON_TYPE;
+  }
+  return current;
 }
 
 function upsertById<Item extends { id: string }>(list: Ref<Item[]>, newDefinition: Item): void {
@@ -40,7 +69,7 @@ function useToolsRegistry(): ToolsRegistry {
   const toolsDefinitions = ref<ToolDefinition[]>([]);
 
   function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
-    const { id, component, ...rest } = toolDefinition;
+    const { id, component, ...rest } = withCurrentIcon(toolDefinition);
     upsertById(toolsDefinitions, { id, component, extensionPath, ...rest });
   }
 
@@ -92,7 +121,8 @@ function useDataManagerTabs(): DataManagerTabs {
   const dataManagerTabs = ref<DataManagerTab[]>([]);
 
   function registerDataManagerTab(tabDefinition: DataManagerTab): void {
-    const { id, component, ...rest } = tabDefinition;
+    const icon = currentIcon(`Data manager tab ${tabDefinition.id}`, tabDefinition.icon);
+    const { id, component, ...rest } = { ...tabDefinition, icon };
     upsertById(dataManagerTabs, { id, component, ...rest });
   }
 

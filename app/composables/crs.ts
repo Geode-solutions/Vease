@@ -1,10 +1,10 @@
-import back_schemas, {
-  type CRSList,
-} from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { AssignResponse } from "@vease/composables/crs_assign";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@vease/types/data_item";
+import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -33,7 +33,7 @@ function useCrs() {
 
   async function refresh(
     item: Pick<DataItem, "data_id">,
-    { binary_light_viewable, crs }: { binary_light_viewable?: string; crs?: CRSList },
+    { binary_light_viewable, crs }: { binary_light_viewable?: string; crs?: CRS },
     focus = true,
   ): Promise<void> {
     // The local actor is rebuilt from the stored light viewable: store the moved one first
@@ -49,7 +49,7 @@ function useCrs() {
 
   // Each reload rebuilds an actor: one after another, then the camera moves once on the item
   async function refreshLinked(
-    linked: { id: string; binary_light_viewable?: string; crs?: CRSList }[] | undefined,
+    linked: { id: string; binary_light_viewable?: string; crs?: CRS }[] | undefined,
   ): Promise<void> {
     for (const entry of linked ?? []) {
       // oxlint-disable-next-line no-await-in-loop
@@ -59,7 +59,7 @@ function useCrs() {
 
   async function convertCrs(
     item: Pick<DataItem, "data_id">,
-    crs: CRSList,
+    crs: CRS,
     {
       focus = true,
       linkedItems = [],
@@ -74,9 +74,41 @@ function useCrs() {
     await refresh(item, response, focus);
   }
 
+  // Assigning only relabels the coordinates: nothing to reload, the stored CRS follows the back.
+  // With onlyPlausible, data whose coordinates miss the CRS area are left as they are
+  async function assignCrs(
+    item: Pick<DataItem, "data_id">,
+    crs: CRS,
+    {
+      linkedItems = [],
+      onlyPlausible = false,
+    }: { linkedItems?: Pick<DataItem, "data_id">[]; onlyPlausible?: boolean } = {},
+  ): Promise<AssignResponse> {
+    const linkedIds = linkedItems.map(({ data_id }) => data_id);
+    const response = await backStore.request({
+      schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
+      params: {
+        id: item.data_id,
+        ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
+        ...(onlyPlausible && { only_plausible: true }),
+        ...crs,
+      },
+    });
+    for (const { id, crs: assigned } of [
+      { id: item.data_id, ...response },
+      ...(response.linked ?? []),
+    ]) {
+      if (assigned !== undefined) {
+        // oxlint-disable-next-line no-await-in-loop
+        await dataStore.updateItem(id, { crs: assigned });
+      }
+    }
+    return response;
+  }
+
   async function alignCrs(
     item: DataItem,
-    crs: CRSList,
+    crs: CRS,
     { sourcePoints, targetPoints, linkedItems = [] }: Alignment,
   ): Promise<void> {
     const linkedIds = linkedItems.map(({ data_id }) => data_id);
@@ -94,9 +126,10 @@ function useCrs() {
     await refresh(item, response);
   }
 
-  // One request moves every georeferenced data, from its own CRS: all or nothing. The data without
-  // CRS keep none. The project CRS only changes once the back accepted the conversion
-  async function changeProjectCrs(crs: CRSList): Promise<void> {
+  // One request moves every georeferenced data, from its own CRS: all or nothing.
+  // Data without CRS are assigned afterwards, by useProjectCrs().adoptProjectCrs.
+  // The project CRS only changes once the back accepted the conversion
+  async function changeProjectCrs(crs: CRS): Promise<void> {
     const crsStore = useCrsStore();
     const items = crsStore.crsItems;
     const moved = items.filter((item) => item.crs !== undefined && !sameCrs(item.crs, crs));
@@ -111,8 +144,8 @@ function useCrs() {
   // The project may already have followed them: callers pass the project CRS taken before.
   // A refused conversion keeps their CRS and the project one: the warning points to their dialog
   async function followProject(
-    entries: { data_id: DataId; name: string; crs: CRSList }[],
-    project: CRSList | undefined = useCrsStore().projectCrs,
+    entries: { data_id: DataId; name: string; crs: CRS }[],
+    project: CRS | undefined = useCrsStore().projectCrs,
   ): Promise<void> {
     const crsStore = useCrsStore();
     if (project === undefined) {
@@ -142,7 +175,7 @@ function useCrs() {
     }
   }
 
-  return { convertCrs, alignCrs, changeProjectCrs, followProject };
+  return { assignCrs, convertCrs, alignCrs, changeProjectCrs, followProject };
 }
 
 export type { Alignment, CrsPoint };
