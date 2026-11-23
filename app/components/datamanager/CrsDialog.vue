@@ -4,6 +4,7 @@ import {
   buildAssignedEntries,
   plausibleEntries,
   useImplausibleWarning,
+  useOpenCrsAlignment,
 } from "@vease/composables/crs_assign";
 import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
 import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
@@ -15,8 +16,8 @@ import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useLiveDataItem } from "@ogw_front/composables/live_data_item";
-import { useUIStore } from "@vease/stores/ui";
 
 const { show = false, itemId = undefined } = defineProps<{
   show?: boolean;
@@ -42,7 +43,6 @@ const selectedCrs = ref<CRS | undefined>(undefined);
 const assigning = ref(false);
 const loadingCurrentCrs = ref(false);
 const { convertCrs, changeProjectCrs, followProject } = useCrs();
-const UIStore = useUIStore();
 const isGeographic = ref(false);
 const crsKnown = ref(false);
 const mode = ref<"assign" | "convert" | "align">("assign");
@@ -113,14 +113,7 @@ watch(
   { immediate: true },
 );
 
-// Picking only works in the viewer: the alignment continues in its drawer
-async function openAlignment(target: Pick<CrsItem, "data_id">): Promise<void> {
-  // The drawer needs the whole data: a linked data is only known by its CRS fields
-  const full = await dataStore.item(target.data_id);
-  await navigateTo("/");
-  UIStore.openCrsAlign(full);
-}
-
+const openAlignment = useOpenCrsAlignment();
 const warnImplausible = useImplausibleWarning(openAlignment);
 
 async function onAssigned(
@@ -129,6 +122,12 @@ async function onAssigned(
   response: AssignResponse,
   { guarded, projectCrs }: { guarded: boolean; projectCrs: CRS | undefined },
 ): Promise<void> {
+  if (response.unsupported === true) {
+    // Only the data with points can be georeferenced, not grids
+    useFeedbackStore().add_warning(`${assignedItem.name} cannot hold a CRS`);
+    emit("update:show", false);
+    return;
+  }
   const entries = buildAssignedEntries(assignedItem, linked, response);
   // A data left out by the check keeps its CRS: nothing to store
   for (const entry of entries.filter((assigned) => assigned.crs !== undefined)) {

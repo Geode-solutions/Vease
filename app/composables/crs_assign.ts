@@ -1,9 +1,10 @@
+import { type CrsItem, useDataStore } from "@ogw_front/stores/data";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
-import type { CrsItem } from "@ogw_front/stores/data";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataIdentified } from "@ogw_front/types/identifiers";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
+import { useUIStore } from "@vease/stores/ui";
 
 interface AssignedEntry extends DataIdentified {
   name: string;
@@ -11,10 +12,12 @@ interface AssignedEntry extends DataIdentified {
   implausible?: boolean;
 }
 
+// Unsupported: the data cannot hold a CRS, like a grid, and is left as it is
 interface AssignResponse {
   crs?: CRS;
   implausible?: boolean;
-  linked?: { id: string; crs?: CRS; implausible?: boolean }[];
+  unsupported?: boolean;
+  linked?: { id: string; crs?: CRS; implausible?: boolean; unsupported?: boolean }[];
 }
 
 function plausibleEntries(entries: AssignedEntry[]): { data_id: DataId; name: string; crs: CRS }[] {
@@ -63,6 +66,19 @@ type ImplausibleWarning = (
   itemId: string | undefined,
 ) => void;
 
+// Picking only works in the viewer: the alignment continues in its drawer
+function useOpenCrsAlignment(): (target: Pick<CrsItem, "data_id">) => Promise<void> {
+  const dataStore = useDataStore();
+  const UIStore = useUIStore();
+  return async (target) => {
+    // The drawer needs the whole data: a linked data is only known by its CRS fields
+    const full = await dataStore.item(target.data_id);
+    await navigateTo("/");
+    // A copy: the Vease item type is open to any field, the stored one is not
+    UIStore.openCrsAlign({ ...full });
+  };
+}
+
 function useImplausibleWarning(
   openAlignment: (target: Pick<CrsItem, "data_id">) => Promise<void>,
 ): ImplausibleWarning {
@@ -85,4 +101,4 @@ function useImplausibleWarning(
 }
 
 export type { AssignResponse, AssignedEntry };
-export { buildAssignedEntries, plausibleEntries, useImplausibleWarning };
+export { buildAssignedEntries, plausibleEntries, useImplausibleWarning, useOpenCrsAlignment };

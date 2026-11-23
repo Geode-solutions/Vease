@@ -98,9 +98,9 @@ test("assign a crs to the model", async ({ window }) => {
   await expect(window.getByTestId("projectCrs")).toContainText("EPSG:2154");
 });
 
-test("export project", async ({ window, app }, testInfo) => {
+test("export project", async ({ window, electronApp }, testInfo) => {
   exportedProjectPath = testInfo.outputPath("project.vease");
-  await exportProject(window, exportedProjectPath, app.electronApp);
+  await exportProject(window, exportedProjectPath, electronApp);
 });
 
 // Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
@@ -122,10 +122,10 @@ test("modify imported project", async ({ app }) => {
   await toggleModelCorners(window);
 });
 
-test("export modified project", async ({ app }, testInfo) => {
+test("export modified project", async ({ app, electronApp }, testInfo) => {
   const { window } = app;
   modifiedProjectPath = testInfo.outputPath("modified_project.vease");
-  await exportProject(window, modifiedProjectPath, app.electronApp);
+  await exportProject(window, modifiedProjectPath, electronApp);
 });
 
 test("import modified project", async ({ restartApp }) => {

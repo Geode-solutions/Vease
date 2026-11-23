@@ -1,5 +1,6 @@
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { AssignResponse } from "@vease/composables/crs_assign";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@vease/types/data_item";
@@ -73,6 +74,38 @@ function useCrs() {
     await refresh(item, response, focus);
   }
 
+  // Assigning only relabels the coordinates: nothing to reload, the stored CRS follows the back.
+  // With onlyPlausible, data whose coordinates miss the CRS area are left as they are
+  async function assignCrs(
+    item: Pick<DataItem, "data_id">,
+    crs: CRS,
+    {
+      linkedItems = [],
+      onlyPlausible = false,
+    }: { linkedItems?: Pick<DataItem, "data_id">[]; onlyPlausible?: boolean } = {},
+  ): Promise<AssignResponse> {
+    const linkedIds = linkedItems.map(({ data_id }) => data_id);
+    const response = await backStore.request({
+      schema: back_schemas.opengeodeweb_back.crs.assign_geographic,
+      params: {
+        id: item.data_id,
+        ...(linkedIds.length > 0 && { linked_ids: linkedIds }),
+        ...(onlyPlausible && { only_plausible: true }),
+        ...crs,
+      },
+    });
+    for (const { id, crs: assigned } of [
+      { id: item.data_id, ...response },
+      ...(response.linked ?? []),
+    ]) {
+      if (assigned !== undefined) {
+        // oxlint-disable-next-line no-await-in-loop
+        await dataStore.updateItem(id, { crs: assigned });
+      }
+    }
+    return response;
+  }
+
   async function alignCrs(
     item: DataItem,
     crs: CRS,
@@ -93,8 +126,9 @@ function useCrs() {
     await refresh(item, response);
   }
 
-  // One request moves every georeferenced data, from its own CRS: all or nothing. The data without
-  // CRS keep none. The project CRS only changes once the back accepted the conversion
+  // One request moves every georeferenced data, from its own CRS: all or nothing.
+  // Data without CRS are assigned afterwards, by useProjectCrs().adoptProjectCrs.
+  // The project CRS only changes once the back accepted the conversion
   async function changeProjectCrs(crs: CRS): Promise<void> {
     const crsStore = useCrsStore();
     const items = crsStore.crsItems;
@@ -141,7 +175,7 @@ function useCrs() {
     }
   }
 
-  return { convertCrs, alignCrs, changeProjectCrs, followProject };
+  return { assignCrs, convertCrs, alignCrs, changeProjectCrs, followProject };
 }
 
 export type { Alignment, CrsPoint };
