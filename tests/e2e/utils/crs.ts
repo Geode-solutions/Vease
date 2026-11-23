@@ -88,7 +88,8 @@ async function openCrsFromFeedback(window: Page, text: string): Promise<void> {
 // Selecting is its own step so the dialog state is captured before the action
 async function selectCrs(window: Page, crsName: string): Promise<void> {
   await window.getByTestId("crsSearchInput").locator("input").fill(crsName);
-  await window.locator("tr").filter({ hasText: crsName }).locator("input").first().check();
+  // A click on the row selects it: the list has no checkbox column
+  await window.locator("tbody tr").filter({ hasText: crsName }).first().click();
   await waitForActionSettled(window);
 }
 
@@ -166,7 +167,7 @@ async function fillAlignPoints(
 async function selectAlignmentCrs(window: Page, crsName: string): Promise<void> {
   const panel = window.getByTestId("crsAlignPanel");
   await panel.getByTestId("crsSearchInput").locator("input").fill(crsName);
-  await panel.locator("tr").filter({ hasText: crsName }).locator("input").first().check();
+  await panel.locator("tbody tr").filter({ hasText: crsName }).first().click();
   await waitForActionSettled(window);
 }
 
