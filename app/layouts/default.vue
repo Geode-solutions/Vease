@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import MicroservicesBusyIndicator from "@ogw_front/components/MicroservicesBusyIndicator.vue";
 import { consola } from "consola";
 import { runFunctionWhenMicroservicesConnected } from "@ogw_front/composables/run_function_when_microservices_connected";
 import { setIsAppReady } from "@ogw_shared/scripts";
@@ -54,14 +55,7 @@ applyStoredColorTheme();
       </GlassCard>
       <AppDrawers />
     </v-main>
-    <v-progress-linear
-      v-if="infraStore.microservices_busy"
-      data-testid="microservicesBusyIndicator"
-      indeterminate
-      color="accent"
-      class="position-fixed top-0"
-      style="z-index: 4"
-    />
+    <MicroservicesBusyIndicator />
     <AppOverlays />
   </v-app>
 </template>
@@ -71,14 +65,17 @@ applyStoredColorTheme();
   max-height: 100vh;
   overflow: hidden;
 }
+
 .v-main {
   height: 100vh;
 }
+
 :deep(.v-main__wrap) {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .island-wrapper {
   flex-grow: 1;
   height: calc(100% - var(--vease-shell-gutter));
@@ -90,11 +87,13 @@ applyStoredColorTheme();
   /* clip, not hidden: same reason as .custom-background, an overflowing panel scrolled the island */
   overflow: clip;
 }
+
 .custom-background {
   position: relative;
   /* clip, not hidden: the island overflows by a few pixels and a hidden overflow can still be scrolled programmatically (scrollIntoView), shifting the whole viewer */
   overflow: clip;
 }
+
 .custom-background::before {
   content: "";
   position: absolute;
@@ -102,6 +101,7 @@ applyStoredColorTheme();
   opacity: 0.15;
   pointer-events: none;
 }
+
 .drawer-overlay {
   position: fixed;
   inset: 0;

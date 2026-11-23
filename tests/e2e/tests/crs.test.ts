@@ -49,6 +49,8 @@ import {
   pointSetGeodeObjectType,
 } from "#ogw_e2e/constants.js";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
+import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
+import { getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
 import { test } from "@vease_tests/utils/fixtures";
@@ -106,7 +108,7 @@ test("convert to the selected crs", async ({ window }) => {
 
 test("load a curve sharing the model frame", async ({ window }) => {
   // Still in the model frame: the curve keeps no crs until it is georeferenced
-  await expectFeedback(window, "No CRS, project in EPSG:32631", async () => {
+  await expectFeedback(window, "these coordinates do not match EPSG:32631", async () => {
     await loadVeaseTestDatas(window, [CURVE_FILE]);
   });
   await navigateToDataManagerPage(window);
@@ -123,8 +125,18 @@ test("fill the affine alignment points and target crs", async ({ window }) => {
   await fillAlignment(window, ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93);
 });
 
+// The aligned model lies far from the point set, misplaced by the Lambert-93 assigned anyway:
+// Their extent leaves the UTM domain, so the basemap build fails and the basemap is hidden
 test("apply the alignment", async ({ window }) => {
-  await applyAlignment(window);
+  await expectFeedback(window, "Area outside the map projection limits", async () => {
+    await applyAlignment(window);
+  });
+  // Only the last build hides the basemap: no other message comes after
+  const basemapRow = getMainObjectTree(window)
+    .getByTestId("treeRowWrapper")
+    .filter({ hasText: "Basemap" });
+  await expect(basemapRow.getByTestId("hiddenObjectEyeButton")).toBeVisible();
+  await closeFeedbackSnackbar(window);
   await moveMouseOutOfTheWay(window);
 });
 
