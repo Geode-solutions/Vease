@@ -9,6 +9,9 @@ import { createVuetify } from "vuetify";
 import { setActivePinia } from "pinia";
 import { vi } from "vitest";
 
+// Local imports
+import { phosphorIconOptions } from "@ogw_front/utils/phosphor_icons";
+
 if (globalThis.visualViewport === undefined) {
   // oxlint-disable-next-line no-unsafe-type-assertion -- test stub intentionally implements only the subset of VisualViewport this suite touches
   (globalThis as unknown as { visualViewport: unknown }).visualViewport = {
@@ -44,7 +47,7 @@ if (globalThis.ResizeObserver === undefined) {
   (globalThis as unknown as { ResizeObserver: unknown }).ResizeObserver = createFakeResizeObserver;
 }
 
-const vuetify = createVuetify({ components, directives });
+const vuetify = createVuetify({ components, directives, icons: phosphorIconOptions() });
 
 // Shared stub for GlassCard.vue's plain, no-extra-props usage. Components
 // That pass GlassCard extra props (variant, padding, escapeFunction, ...)

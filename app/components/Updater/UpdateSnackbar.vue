@@ -76,7 +76,7 @@ onMounted(() => {
       </template>
       <v-btn
         v-else-if="state === 'error'"
-        icon="mdi-close"
+        icon="ph-x"
         variant="text"
         data-testid="updateCloseButton"
         @click="dismissed = true"

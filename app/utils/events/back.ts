@@ -15,10 +15,10 @@ function isNewDataItem(value: unknown): value is LegacyDataId<NewDataItem> {
     typeof value === "object" &&
     value !== null &&
     "id" in value &&
-    "viewer_type" in value &&
+    "viewer_object_type" in value &&
     "geode_object_type" in value &&
     typeof value.id === "string" &&
-    typeof value.viewer_type === "string" &&
+    typeof value.viewer_object_type === "string" &&
     typeof value.geode_object_type === "string"
   );
 }

@@ -6,7 +6,7 @@ import {
   brepGeodeObjectType,
   edgedCurveGeodeObjectType,
   pointSetGeodeObjectType,
-} from "./constants";
+} from "#ogw_e2e/constants.js";
 import {
   clickAssign,
   confirmConvert,
@@ -19,9 +19,9 @@ import {
   selectCrs,
   selectScope,
 } from "./crs";
-import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "./app_interaction";
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { navigateToDataManagerPage } from "./navigate";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 async function closeCrsDialog(window: Page): Promise<void> {
   await window.keyboard.press("Escape");

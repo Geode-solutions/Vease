@@ -47,7 +47,8 @@ const defaultExpect = {
   toHaveScreenshot: {
     maxDiffPixelRatio,
     threshold,
-    pathTemplate: `./tests/screenshots/{testFileName}/{testName}.png`,
+    // Screenshots/<test file path>/<test name>.png, named by the autoScreenshot fixture (utils/fixtures.ts)
+    pathTemplate: "./tests/screenshots/{arg}{ext}",
   },
 };
 
@@ -62,7 +63,7 @@ const cloudExpect = {
 // oxlint-disable-next-line import/no-default-export
 export default defineConfig<{ mode: string }>({
   expect: defaultExpect,
-  testDir: ".",
+  testDir: "./tests",
   fullyParallel: true,
   workers,
   forbidOnly: Boolean(process.env.CI),

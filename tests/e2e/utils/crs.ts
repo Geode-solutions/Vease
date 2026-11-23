@@ -4,11 +4,14 @@
 import { type Locator, type Page, expect } from "@playwright/test";
 
 // Local imports
-import { expandGeodeObjectTypeInTree, getTreeRowByTextAndParent } from "./object_trees/common";
-import { closeFeedbackSnackbar } from "./app_interaction";
+import {
+  expandGeodeObjectTypeInTree,
+  getTreeRowByTextAndParent,
+} from "#ogw_e2e/object_trees/common.js";
+import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
 import { getDataTableRow } from "./data_manager";
-import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 async function expectDataRows(window: Page, itemNames: string[]): Promise<void> {
   // oxlint-disable no-await-in-loop
@@ -112,8 +115,19 @@ async function clickAssign(window: Page): Promise<void> {
   await waitForActionSettled(window);
 }
 
-async function expectFeedback(window: Page, text: string): Promise<void> {
-  await expect(window.getByTestId("feedbackSnackbar").filter({ hasText: text })).toBeVisible();
+// The snackbar leaves after 10s: a slow basemap build (external tile servers) can outlast it while the action settles, so it is watched from before the action
+const FEEDBACK_TIMEOUT_MS = 60_000;
+
+async function expectFeedback(
+  window: Page,
+  text: string,
+  action: () => Promise<void>,
+): Promise<void> {
+  const shown = window
+    .getByTestId("feedbackSnackbar")
+    .filter({ hasText: text })
+    .waitFor({ state: "visible", timeout: FEEDBACK_TIMEOUT_MS });
+  await Promise.all([shown, action()]);
   await closeFeedbackSnackbar(window);
 }
 

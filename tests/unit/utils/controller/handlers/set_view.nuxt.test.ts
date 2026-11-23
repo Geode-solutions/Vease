@@ -26,18 +26,17 @@ const MODEL: DataItem = {
   data_id: "model-1",
   geode_id: "geode-1",
   name: "brep",
-  viewer_type: "model",
+  viewer_object_type: "model",
   geode_object_type: "BRep",
   visible: true,
   created_at: "2026-10-09",
 };
 
-const MESH: DataItem = { ...MODEL, data_id: "mesh-1", name: "surface", viewer_type: "mesh" };
+const MESH: DataItem = { ...MODEL, data_id: "mesh-1", name: "surface", viewer_object_type: "mesh" };
 
 const ONCE = 1;
 const Z_SCALING = 3;
-// oxlint-disable-next-line eslint/id-length -- r, g, b are the viewer parameter names
-const ORANGE = { r: 255, g: 136, b: 0 };
+const ORANGE = { red: 255, green: 136, blue: 0 };
 const FIRST_VIEWER_ID = 7;
 const SECOND_VIEWER_ID = 8;
 const VIEWER_IDS = [FIRST_VIEWER_ID, SECOND_VIEWER_ID];

@@ -1,4 +1,5 @@
 // Node imports
+import { createHash } from "node:crypto";
 import fs from "node:fs/promises";
 import { once } from "node:events";
 import os from "node:os";
@@ -15,6 +16,7 @@ const LINUX_ICON = "256x256.png";
 const WINDOWS_ICON = "favicon.ico";
 const ICON_SIZE = "256x256";
 const DESKTOP_ENTRY_MARKER = "X-Vease-Generated=true";
+const ICON_HASH_LENGTH = 12;
 
 // Absolute path of the folder holding the app's public assets, independent of the cwd
 function publicFolder(): string {
@@ -85,6 +87,29 @@ async function writeIfChanged(filePath: string, content: Buffer): Promise<boolea
   return true;
 }
 
+// Shells cache icons by path: a file named after its content gives a new logo a new path
+async function installIcon(iconDir: string): Promise<string> {
+  const icon = await fs.readFile(path.join(publicFolder(), LINUX_ICON));
+  const hash = createHash("sha256").update(icon).digest("hex").slice(0, ICON_HASH_LENGTH);
+  const iconFile = path.join(iconDir, `${APP_ID}-${hash}.png`);
+  await writeIfChanged(iconFile, icon);
+  return iconFile;
+}
+
+// Icons from previous logos, including the fixed-name vease.png of older versions
+async function removeStaleIcons(iconFile: string): Promise<void> {
+  const iconDir = path.dirname(iconFile);
+  const stalePattern = new RegExp(`^${APP_ID}(?:-[0-9a-f]{${ICON_HASH_LENGTH}})?\\.png$`, "u");
+  const entries = await fs.readdir(iconDir);
+  await Promise.all(
+    entries
+      .filter((entry) => entry !== path.basename(iconFile) && stalePattern.test(entry))
+      .map(async (entry) => {
+        await fs.rm(path.join(iconDir, entry), { force: true });
+      }),
+  );
+}
+
 async function refreshDesktopDatabase(applicationsDir: string): Promise<void> {
   try {
     const child = spawn("update-desktop-database", [applicationsDir], { stdio: "ignore" });
@@ -103,7 +128,7 @@ async function registerLinuxDesktopEntry(): Promise<void> {
   try {
     const applicationsDir = path.join(dataHome(), "applications");
     const desktopFile = path.join(applicationsDir, `${APP_ID}.desktop`);
-    const iconFile = path.join(dataHome(), "icons", "hicolor", ICON_SIZE, "apps", `${APP_ID}.png`);
+    const iconDir = path.join(dataHome(), "icons", "hicolor", ICON_SIZE, "apps");
 
     const existingEntry = await readOrUndefined(desktopFile);
     if (existingEntry && !existingEntry.toString("utf8").includes(DESKTOP_ENTRY_MARKER)) {
@@ -111,8 +136,7 @@ async function registerLinuxDesktopEntry(): Promise<void> {
       return;
     }
 
-    const icon = await fs.readFile(path.join(publicFolder(), LINUX_ICON));
-    await writeIfChanged(iconFile, icon);
+    const iconFile = await installIcon(iconDir);
 
     const appImage = process.env.APPIMAGE;
     const isAppImage = appImage !== undefined && appImage !== "";
@@ -125,6 +149,7 @@ async function registerLinuxDesktopEntry(): Promise<void> {
       consola.info(`Registered launcher entry: ${desktopFile}`);
       void refreshDesktopDatabase(applicationsDir);
     }
+    await removeStaleIcons(iconFile);
   } catch (error) {
     consola.warn("Could not register the Vease launcher entry", error);
   }

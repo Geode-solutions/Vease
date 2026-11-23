@@ -14,7 +14,16 @@ import {
   saveCredentials,
   // oxlint-disable-next-line import/no-relative-parent-imports
 } from "../utils/desktop";
+import {
+  isolateInstanceSessionData,
+  persistInstanceLocalState,
+  // oxlint-disable-next-line import/no-relative-parent-imports
+} from "../utils/desktop_session_data";
 import { initUpdater } from "./updater";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { readAppSettings, writeAppSettings } from "../utils/desktop_settings";
+// oxlint-disable-next-line import/no-relative-parent-imports
+import { userDataPath } from "../utils/desktop_user_data";
 // oxlint-disable-next-line import/no-relative-parent-imports
 import { loadLaunchFiles } from "../utils/launch_files";
 // oxlint-disable-next-line import/no-relative-parent-imports
@@ -22,6 +31,7 @@ import { registerLinuxDesktopEntry } from "../utils/desktop_icon";
 
 const appArgs = parseArgs();
 consola.info(`App launched with args: ${JSON.stringify(appArgs)}`);
+isolateInstanceSessionData();
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "true";
 let serverCleanup: (() => unknown) | undefined = undefined;
@@ -38,7 +48,11 @@ ipcMain.handle("project_folder_path", (_event, args: { projectFolderPath: string
 
 ipcMain.handle("save_credentials", (_event, args: { email: string; password: string }) => {
   const { email, password } = args;
-  return saveCredentials(email, password);
+  const result = saveCredentials(email, password);
+  if (result.success) {
+    persistInstanceLocalState();
+  }
+  return result;
 });
 
 ipcMain.handle("get_credentials", () => {
@@ -51,6 +65,15 @@ ipcMain.handle("delete_credentials", () => {
   consola.info("Deleting credentials");
   return deleteCredentials();
 });
+
+// Synchronous: the preload reads the settings before the page renders (no theme flash)
+ipcMain.on("app_settings_read", (event) => {
+  event.returnValue = readAppSettings(userDataPath);
+});
+
+ipcMain.handle("app_settings_write", (_event, settings: unknown) =>
+  writeAppSettings(userDataPath, settings),
+);
 
 // oxlint-disable promise/always-return, promise/prefer-await-to-then, promise/catch-or-return, unicorn/prefer-top-level-await
 void app.whenReady().then(async () => {

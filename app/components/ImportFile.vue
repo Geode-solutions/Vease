@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import StepActions from "@vease/components/StepActions.vue";
 import { consola } from "consola";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
@@ -21,8 +21,8 @@ const {
   skippedFiles = [],
 } = defineProps<{
   filenames: string[];
-  // Filename -> type; files without a type are not supported and are skipped
-  geodeObjectTypes: Record<string, string>;
+  // Filename -> types (a file can hold several contents); files without a type are skipped
+  geodeObjectTypes: Record<string, string[]>;
   skippedFiles?: string[];
 }>();
 
@@ -30,7 +30,7 @@ const dataStore = useDataStore();
 const crsStore = useCrsStore();
 const { harmonizeImportedCrs } = useProjectCrs();
 
-async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
+async function harmonize(ids: string[], projectCrs: CRS | undefined): Promise<void> {
   try {
     await harmonizeImportedCrs(ids, projectCrs);
   } catch (error) {
@@ -40,11 +40,11 @@ async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promis
 
 async function import_files(): Promise<void> {
   const files_to_import = filenames.flatMap((filename) => {
-    const geode_object_type = geodeObjectTypes[filename];
-    if (geode_object_type === undefined || skippedFiles.includes(filename)) {
+    const types = geodeObjectTypes[filename];
+    if (types === undefined || skippedFiles.includes(filename)) {
       return [];
     }
-    return [{ filename, geode_object_type }];
+    return types.map((geode_object_type) => ({ filename, geode_object_type }));
   });
   const left_out = filenames.filter(
     (filename) => !files_to_import.some((file) => file.filename === filename),
@@ -74,7 +74,7 @@ async function import_files(): Promise<void> {
 <template>
   <StepActions
     label="Import"
-    icon="mdi-file-upload-outline"
+    icon="ph-file-arrow-up"
     test-id="finalizeImportButton"
     :action="import_files"
     @reset_values="emit('reset_values')"

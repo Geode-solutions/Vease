@@ -29,7 +29,7 @@ function styleCommand(apply: StyleApply): ControllerHandler {
 }
 
 function checkMesh(item: DataItem, element?: MeshElement): void {
-  if (item.viewer_type === "model") {
+  if (item.viewer_object_type === "model") {
     throw new ControllerError(`"${item.name}" is a model; use the style/model routes`);
   }
   const available = meshTargetsOf(item.data_id);
@@ -41,7 +41,7 @@ function checkMesh(item: DataItem, element?: MeshElement): void {
 }
 
 function checkModel(item: DataItem): void {
-  if (item.viewer_type !== "model") {
+  if (item.viewer_object_type !== "model") {
     throw new ControllerError(`"${item.name}" is a mesh; use the style/mesh routes`);
   }
 }

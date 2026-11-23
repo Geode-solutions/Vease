@@ -5,6 +5,7 @@ import ImportFile from "@vease/components/ImportFile.vue";
 import { flushPromises } from "@vue/test-utils";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
+import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import type { useProjectCrs } from "@vease/composables/project_crs";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -41,7 +42,7 @@ async function clickImport(): Promise<void> {
   const wrapper = mountWithPlugins(ImportFile, {
     props: {
       filenames: [SAMPLE_FILENAME],
-      geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+      geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
     },
   });
   await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
@@ -83,7 +84,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+        geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
       },
     });
     await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
@@ -105,7 +106,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+        geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
       },
     });
 
@@ -120,7 +121,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+        geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
       },
     });
 
@@ -142,7 +143,7 @@ describe("the ImportFile component", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
         filenames: [SAMPLE_FILENAME],
-        geodeObjectTypes: { [SAMPLE_FILENAME]: GEODE_TYPE },
+        geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
       },
     });
 
@@ -158,9 +159,9 @@ describe("the ImportFile component", () => {
       props: {
         filenames: [SAMPLE_FILENAME, "model.og_brep", "unsupported.toto", "skipped.vtu"],
         geodeObjectTypes: {
-          [SAMPLE_FILENAME]: GEODE_TYPE,
-          "model.og_brep": "StructuralModel",
-          "skipped.vtu": "SolidMesh3D",
+          [SAMPLE_FILENAME]: [GEODE_TYPE],
+          "model.og_brep": ["StructuralModel"],
+          "skipped.vtu": ["SolidMesh3D"],
         },
         skippedFiles: ["skipped.vtu"],
       },
@@ -173,5 +174,27 @@ describe("the ImportFile component", () => {
       { filename: SAMPLE_FILENAME, geode_object_type: GEODE_TYPE },
       { filename: "model.og_brep", geode_object_type: "StructuralModel" },
     ]);
+  });
+
+  test("imports a file once per type when it holds several contents", async () => {
+    const warningSpy = vi.spyOn(useFeedbackStore(), "add_warning");
+    const wrapper = mountWithPlugins(ImportFile, {
+      props: {
+        filenames: ["mixed.vtu", "empty.vtu"],
+        geodeObjectTypes: {
+          "mixed.vtu": ["TriangulatedSurface3D", "TetrahedralSolid3D"],
+          "empty.vtu": [],
+        },
+      },
+    });
+
+    await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
+    await flushPromises();
+
+    expect(importWorkflow).toHaveBeenCalledWith([
+      { filename: "mixed.vtu", geode_object_type: "TriangulatedSurface3D" },
+      { filename: "mixed.vtu", geode_object_type: "TetrahedralSolid3D" },
+    ]);
+    expect(warningSpy).toHaveBeenCalledExactlyOnceWith("Skipped files: empty.vtu");
   });
 });

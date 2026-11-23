@@ -4,8 +4,8 @@
 import type { Locator, Page } from "@playwright/test";
 
 // Local imports
-import { getMainObjectTree } from "./object_trees/main_object_tree";
-import { waitForActionSettled } from "./wait_for_action_settled";
+import { getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 async function openDataManagerPiP(window: Page): Promise<void> {
   await window.getByTestId("dataManagerPiPButton").click();
@@ -68,7 +68,7 @@ async function confirmDelete(window: Page): Promise<void> {
 
 async function expandObjectTree(window: Page): Promise<void> {
   const mainObjectTree = getMainObjectTree(window);
-  await mainObjectTree.locator("button:has(.mdi-expand-all-outline)").click();
+  await mainObjectTree.locator("button:has(.ph-arrows-out-line-vertical)").click();
   await waitForActionSettled(window);
 }
 

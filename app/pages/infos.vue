@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getBackStore, getInfraStore } from "@vease/utils/external_stores";
+import PageHeader from "@vease/components/Layout/PageHeader.vue";
 import { Status } from "@ogw_front/utils/status";
 import UpdateSettings from "@vease/components/Updater/UpdateSettings.vue";
 import { isUpdaterAvailable } from "@vease/stores/updater";
@@ -68,22 +69,19 @@ runFunctionWhenMicroservicesConnected(() => {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
-    <div class="px-6 pt-6 pb-2">
-      <div class="d-flex align-center mb-4">
-        <v-icon icon="mdi-information-outline" class="mr-3 text-white" size="32" />
-        <h2 class="text-h4 font-weight-bold text-white">Infos</h2>
-      </div>
+  <v-card flat color="transparent" class="d-flex flex-column fill-height">
+    <div class="px-8 pt-8 pb-2">
+      <PageHeader title="Infos" class="mb-6" />
     </div>
 
-    <div class="flex-grow-1 overflow-y-auto px-6 pb-6 infos-content">
+    <div class="flex-grow-1 overflow-y-auto px-8 pb-8 infos-content">
       <v-row>
         <v-col cols="12" md="6" class="d-flex flex-column ga-4">
-          <v-card color="white" variant="tonal" rounded="lg">
-            <v-card-title class="d-flex align-center text-white">
-              <v-icon icon="mdi-application-outline" size="20" class="mr-2" />App</v-card-title
+          <v-card flat border rounded="xl">
+            <v-card-title class="d-flex align-center">
+              <v-icon icon="ph-app-window" size="20" class="mr-2 text-primary" />App</v-card-title
             >
-            <v-card-text class="text-white">
+            <v-card-text>
               <p class="mb-2">
                 Version:
                 <a
@@ -94,8 +92,8 @@ runFunctionWhenMicroservicesConnected(() => {
                   "
                   target="_blank"
                   rel="noopener"
-                  class="text-white text-no-wrap"
-                  >{{ version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                  class="text-primary text-no-wrap"
+                  >{{ version }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                 /></a>
               </p>
               <div class="d-flex align-center">
@@ -104,7 +102,7 @@ runFunctionWhenMicroservicesConnected(() => {
                   <template v-slot:activator="{ props }">
                     <v-btn
                       v-bind="props"
-                      :icon="copied ? 'mdi-check' : 'mdi-content-copy'"
+                      :icon="copied ? 'ph-check' : 'ph-copy'"
                       aria-label="Copy URL"
                       size="small"
                       variant="text"
@@ -120,11 +118,11 @@ runFunctionWhenMicroservicesConnected(() => {
 
           <UpdateSettings v-if="updaterAvailable" />
 
-          <v-card color="white" variant="tonal" rounded="lg">
-            <v-card-title class="d-flex align-center text-white">
-              <v-icon icon="mdi-lifebuoy" size="20" class="mr-2" />Support</v-card-title
+          <v-card flat border rounded="xl">
+            <v-card-title class="d-flex align-center">
+              <v-icon icon="ph-lifebuoy" size="20" class="mr-2 text-primary" />Support</v-card-title
             >
-            <v-card-text class="text-white">
+            <v-card-text>
               <p class="mb-4">
                 Vease is an open-source project.
                 <br />
@@ -135,8 +133,11 @@ runFunctionWhenMicroservicesConnected(() => {
                 href="https://github.com/Geode-solutions/Vease/issues/new"
                 target="_blank"
                 rel="noopener"
-                prepend-icon="mdi-github"
-                append-icon="mdi-open-in-new"
+                prepend-icon="ph-github-logo"
+                append-icon="ph-arrow-square-out"
+                color="primary"
+                variant="tonal"
+                rounded="pill"
                 >Report an issue</v-btn
               >
             </v-card-text>
@@ -144,16 +145,20 @@ runFunctionWhenMicroservicesConnected(() => {
         </v-col>
 
         <v-col cols="12" md="6" class="d-flex flex-column ga-4">
-          <v-card color="white" variant="tonal" rounded="lg">
-            <v-card-title class="d-flex align-center text-white">
-              <v-icon icon="mdi-server-network" size="20" class="mr-2" />Microservices</v-card-title
+          <v-card flat border rounded="xl">
+            <v-card-title class="d-flex align-center">
+              <v-icon
+                icon="ph-hard-drives"
+                size="20"
+                class="mr-2 text-primary"
+              />Microservices</v-card-title
             >
-            <v-table density="compact" class="bg-transparent text-white">
+            <v-table density="compact" class="bg-transparent">
               <thead>
                 <tr>
-                  <th class="text-white">Name</th>
-                  <th class="text-white">Version</th>
-                  <th class="text-white">Status</th>
+                  <th class="text-medium-emphasis">Name</th>
+                  <th class="text-medium-emphasis">Version</th>
+                  <th class="text-medium-emphasis">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -164,9 +169,9 @@ runFunctionWhenMicroservicesConnected(() => {
                       :href="`https://pypi.org/project/${microservice.package}/${microservice.version}/`"
                       target="_blank"
                       rel="noopener"
-                      class="text-white text-no-wrap"
+                      class="text-primary text-no-wrap"
                       >{{ microservice.version
-                      }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                      }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                     /></a>
                   </td>
                   <td>
@@ -175,8 +180,8 @@ runFunctionWhenMicroservicesConnected(() => {
                         <v-icon
                           v-if="microservice.status == Status.NOT_CONNECTED"
                           v-bind="props"
-                          icon="mdi-close-circle"
-                          color="red"
+                          icon="ph-x-circle"
+                          color="error"
                         />
                         <v-progress-circular
                           v-else-if="microservice.status == Status.CONNECTING"
@@ -188,8 +193,8 @@ runFunctionWhenMicroservicesConnected(() => {
                         <v-icon
                           v-else-if="microservice.status == Status.CONNECTED"
                           v-bind="props"
-                          icon="mdi-check-circle"
-                          color="white"
+                          icon="ph-check-circle"
+                          color="success"
                         />
                       </template>
                     </v-tooltip>
@@ -199,16 +204,16 @@ runFunctionWhenMicroservicesConnected(() => {
             </v-table>
           </v-card>
 
-          <v-card color="white" variant="tonal" rounded="lg">
-            <v-card-title class="d-flex align-center text-white">
-              <v-icon icon="mdi-package-variant-closed" size="20" class="mr-2" />Internal
+          <v-card flat border rounded="xl">
+            <v-card-title class="d-flex align-center">
+              <v-icon icon="ph-package" size="20" class="mr-2 text-primary" />Internal
               dependencies</v-card-title
             >
-            <v-table density="compact" class="bg-transparent text-white">
+            <v-table density="compact" class="bg-transparent">
               <thead>
                 <tr>
-                  <th class="text-white">Package</th>
-                  <th class="text-white">Version</th>
+                  <th class="text-medium-emphasis">Package</th>
+                  <th class="text-medium-emphasis">Version</th>
                 </tr>
               </thead>
               <tbody>
@@ -219,8 +224,9 @@ runFunctionWhenMicroservicesConnected(() => {
                       :href="'https://pypi.org/project/' + pkg.package + '/' + pkg.version + '/'"
                       target="_blank"
                       rel="noopener"
-                      class="text-white text-no-wrap"
-                      >{{ pkg.version }}<v-icon icon="mdi-open-in-new" size="x-small" class="ml-1"
+                      class="text-primary text-no-wrap"
+                      >{{ pkg.version
+                      }}<v-icon icon="ph-arrow-square-out" size="x-small" class="ml-1"
                     /></a>
                   </td>
                 </tr>

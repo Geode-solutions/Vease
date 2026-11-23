@@ -166,7 +166,7 @@ function styleCalls(
   request: StyleRequest,
   randomColor: string,
 ): RouteCall[] {
-  if (details.viewer_type === "model") {
+  if (details.viewer_object_type === "model") {
     return modelCalls(details, request);
   }
   return meshCalls(details, request, randomColor);

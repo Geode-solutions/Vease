@@ -65,7 +65,7 @@ describe("desktop icon (electron main process) utils", () => {
     return path.join(dataHome, "applications", "vease.desktop");
   }
   function iconFile(): string {
-    return path.join(dataHome, "icons", "hicolor", "256x256", "apps", "vease.png");
+    return /^Icon=(?<icon>.*)$/mu.exec(fs.readFileSync(desktopFile(), "utf8"))?.groups?.icon ?? "";
   }
 
   beforeEach(() => {
@@ -154,7 +154,6 @@ describe("desktop icon (electron main process) utils", () => {
 
       const content = fs.readFileSync(desktopFile(), "utf8");
       expect(content).toContain(`Exec="${APPIMAGE}" --no-sandbox %U`);
-      expect(content).toContain(`Icon=${iconFile()}`);
       expect(fs.readFileSync(iconFile())).toStrictEqual(
         fs.readFileSync(path.join(PROJECT_ROOT, "public", "256x256.png")),
       );
@@ -181,6 +180,20 @@ describe("desktop icon (electron main process) utils", () => {
       const content = fs.readFileSync(desktopFile(), "utf8");
       expect(content).toContain('Exec="/new/Vease.AppImage" --no-sandbox %U');
       expect(content).not.toContain("/old/");
+    });
+
+    test("points the entry at a new icon file when the shipped logo changes", async () => {
+      await registerLinuxDesktopEntry();
+      const oldIcon = iconFile();
+      // Older versions wrote the icon under a fixed name
+      fs.writeFileSync(path.join(path.dirname(oldIcon), "vease.png"), "legacy");
+      const newLogo = Buffer.from("new logo");
+      fs.writeFileSync(path.join(resourcesPath, "web", "public", "256x256.png"), newLogo);
+      await registerLinuxDesktopEntry();
+      // Shells cache icons by path: only a new path makes them show the new logo
+      expect(iconFile()).not.toBe(oldIcon);
+      expect(fs.readFileSync(iconFile())).toStrictEqual(newLogo);
+      expect(fs.readdirSync(path.dirname(oldIcon))).toStrictEqual([path.basename(iconFile())]);
     });
 
     test("does not rewrite files already up to date", async () => {

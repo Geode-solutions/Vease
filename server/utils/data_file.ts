@@ -6,7 +6,6 @@ import { consola } from "consola";
 import { fetchRaw } from "@ogw_shared/utils/fetch_raw";
 import { fetchSchema } from "@ogw_shared/utils/fetch_schema";
 import { getBackBaseUrl } from "@ogw_server/utils/server_config";
-import { resolveAllowedObjects } from "@ogw_shared/utils/response_handlers/load";
 
 // Local imports
 
@@ -14,8 +13,9 @@ interface AllowedFilesResponse {
   data_extensions: string[];
 }
 
+// The back selects the geode object types needed to load the whole file: one per content
 interface AllowedObjectsResponse {
-  allowed_objects: Parameters<typeof resolveAllowedObjects>[1][number];
+  objects_to_load: string[];
 }
 
 function isAllowedFilesResponse(value: unknown): value is AllowedFilesResponse {
@@ -32,9 +32,9 @@ function isAllowedObjectsResponse(value: unknown): value is AllowedObjectsRespon
   return (
     typeof value === "object" &&
     value !== null &&
-    "allowed_objects" in value &&
-    typeof value.allowed_objects === "object" &&
-    value.allowed_objects !== null
+    "objects_to_load" in value &&
+    Array.isArray(value.objects_to_load) &&
+    value.objects_to_load.every((type) => typeof type === "string")
   );
 }
 
@@ -54,7 +54,7 @@ async function getAllowedFileExtensions(): Promise<string[]> {
   return response.data_extensions;
 }
 
-async function getAllowedGeodeObjectTypes(filename: string): Promise<string | undefined> {
+async function getAllowedGeodeObjectTypes(filename: string): Promise<string[]> {
   const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.allowed_objects;
   const params = { filename };
@@ -68,8 +68,7 @@ async function getAllowedGeodeObjectTypes(filename: string): Promise<string | un
   if (!isAllowedObjectsResponse(response)) {
     throw new Error(`${schema.$id}: unexpected response shape`);
   }
-  const { selectedGeodeObject } = resolveAllowedObjects([filename], [response.allowed_objects]);
-  return selectedGeodeObject === "" ? undefined : selectedGeodeObject;
+  return response.objects_to_load;
 }
 
 async function uploadFile(file: MultiPartData): Promise<unknown> {

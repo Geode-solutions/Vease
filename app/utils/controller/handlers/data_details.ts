@@ -1,6 +1,7 @@
 // Third party imports
-import type { DataId, GeodeIdentified } from "@ogw_front/types/identifiers";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { GeodeIdentified } from "@ogw_front/types/identifiers";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports
@@ -109,16 +110,16 @@ async function dataDetails(params: unknown): Promise<unknown> {
     throw new ControllerError("data-details expects the id of a loaded data");
   }
   const item = await getDataItem(params.id);
-  const { data_id, name, geode_object_type, viewer_type } = item;
+  const { data_id, name, geode_object_type, viewer_object_type } = item;
   let description = await describeMesh(item);
-  if (viewer_type === "model") {
+  if (viewer_object_type === "model") {
     description = await describeModel(data_id);
   }
   return {
     id: data_id,
     name,
     geode_object_type,
-    viewer_type,
+    viewer_object_type,
     ...description,
     style: getDataStyleStore().getStyle(data_id),
   };

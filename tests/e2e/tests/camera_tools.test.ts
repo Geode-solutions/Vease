@@ -41,7 +41,7 @@ import {
   toggleShrinkFilter,
   toggleShrinkTargetAllVisible,
   toggleThresholdFilter,
-} from "@vease_tests/utils/camera_interaction";
+} from "#ogw_e2e/camera_interaction.js";
 import {
   addClippingPlane,
   addSlice,
@@ -54,17 +54,13 @@ import {
   toggleClippingPlanes,
   toggleSlice,
   toggleTargetAllVisible,
-} from "@vease_tests/utils/clipping_planes_interaction";
-import {
-  brepGeodeObjectType,
-  defaultDataName,
-  rgd3dGeodeObjectType,
-} from "@vease_tests/utils/constants";
+} from "#ogw_e2e/clipping_planes_interaction.js";
+import { brepGeodeObjectType, defaultDataName, rgd3dGeodeObjectType } from "#ogw_e2e/constants.js";
 import {
   closeAllMenus,
   closeFeedbackSnackbar,
   moveMouseOutOfTheWay,
-} from "@vease_tests/utils/app_interaction";
+} from "#ogw_e2e/app_interaction.js";
 import {
   dragContextMenu,
   findOverlappingObjectsPicker,
@@ -74,23 +70,23 @@ import {
   sceneContextMenu,
   stabilizeHoverTooltip,
   viewerContextMenu,
-} from "@vease_tests/utils/viewer_interaction";
+} from "#ogw_e2e/viewer_interaction.js";
 import {
   expandGeodeObjectType,
   expandMainObjectTree,
   focusObjectInTree,
   getMainObjectTree,
   showObjectInTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
-import { waitForActionSettled } from "@vease_tests/utils/wait_for_action_settled";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
+import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
 
 import { confirmDelete } from "@vease_tests/utils/data_manager";
-import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { navigateToDataManagerPage } from "@vease_tests/utils/navigate";
-import { setColor } from "@vease_tests/utils/data/helpers/color";
-import { setColorInputText } from "@vease_tests/utils/data/helpers/color_picker";
-import { setMeshEdgesVisibility } from "@vease_tests/utils/data";
+import { setColor } from "#ogw_e2e/data/helpers/color.js";
+import { setColorInputText } from "#ogw_e2e/data/helpers/color_picker.js";
+import { setMeshEdgesVisibility } from "#ogw_e2e/data/index.js";
 // oxlint-disable-next-line import/max-dependencies -- all test helpers and fixtures are required.
 import { test } from "@vease_tests/utils/fixtures";
 
@@ -117,8 +113,9 @@ const RULER_POINT_2_Z = 44.9;
 const RULER_SNAP_X_RATIO = 0.5;
 const SCENE_BACKGROUND_COLOR = "255, 0, 0";
 const SCENE_TEXT_COLOR = "255, 255, 255";
-const SCENE_DEFAULT_BACKGROUND_COLOR = "180, 180, 180";
-const SCENE_DEFAULT_TEXT_COLOR = "0, 0, 0";
+// Vease scene defaults (VIEWER_SCENE_COLORS in app/utils/brand_themes.ts)
+const SCENE_DEFAULT_BACKGROUND_COLOR = "160, 180, 187";
+const SCENE_DEFAULT_TEXT_COLOR = "31, 46, 51";
 const RULER_SNAP_POINT_1_Y_RATIO = 0.35;
 const RULER_SNAP_POINT_2_Y_RATIO = 0.65;
 const ROTATE_DRAG_EDGE_MARGIN = 2;

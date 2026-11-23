@@ -24,7 +24,7 @@ function reset(): Applied {
 async function focus(params: { id: string; componentIds?: string[] }): Promise<Applied> {
   const { id } = params;
   const item = await getDataItem(id);
-  if (params.componentIds !== undefined && item.viewer_type !== "model") {
+  if (params.componentIds !== undefined && item.viewer_object_type !== "model") {
     throw new ControllerError("componentIds only applies to models");
   }
   let blockIds: number[] = [];

@@ -34,8 +34,8 @@ describe("the CreateTools component", () => {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
         description: TOOL_DESC_ONE,
-        iconType: "mdi",
-        iconSource: "mdi-pencil",
+        iconType: "icon",
+        iconSource: "ph-pencil-simple",
         // Raw like the tools registered by the app (plugins/tools.client.ts): a reactive component makes Vue warn
         component: markRaw({
           name: DUMMY_COMPONENT_NAME,
@@ -104,8 +104,8 @@ describe("the CreateTools component", () => {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
         description: TOOL_DESC_ONE,
-        iconType: "mdi",
-        iconSource: "mdi-pencil",
+        iconType: "icon",
+        iconSource: "ph-pencil-simple",
         component: undefined,
       },
     ];

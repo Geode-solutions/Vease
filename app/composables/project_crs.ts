@@ -1,7 +1,7 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { type FeedbackAction, useFeedbackStore } from "@ogw_front/stores/feedback";
 import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
-import type { CRSList } from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 
@@ -52,10 +52,10 @@ function useProjectCrs() {
 
   // The project CRS before the import, else the current one; before any, the first one met
   function referenceCrs(
-    projectCrs: CRSList | undefined,
+    projectCrs: CRS | undefined,
     existing: DataItem[],
     imported: DataItem[],
-  ): CRSList | undefined {
+  ): CRS | undefined {
     return (
       projectCrs ??
       crsStore.projectCrs ??
@@ -65,7 +65,7 @@ function useProjectCrs() {
 
   async function convertImported(
     imported: DataItem[],
-    reference: CRSList,
+    reference: CRS,
   ): Promise<{ converted: DataItem[]; failed: DataItem[]; withoutCrs: DataItem[] }> {
     const converted: DataItem[] = [];
     const failed: DataItem[] = [];
@@ -109,7 +109,7 @@ function useProjectCrs() {
     }
   }
 
-  async function harmonize(ids: string[], projectCrs: CRSList | undefined): Promise<void> {
+  async function harmonize(ids: string[], projectCrs: CRS | undefined): Promise<void> {
     const items = byCreation(await dataStore.allItems());
     const imported = items.filter((item) => ids.includes(item.data_id));
     const existing = items.filter((item) => !ids.includes(item.data_id));
@@ -126,14 +126,14 @@ function useProjectCrs() {
   async function harmonizeAfter(
     previous: Promise<void>,
     ids: string[],
-    projectCrs: CRSList | undefined,
+    projectCrs: CRS | undefined,
   ): Promise<void> {
     await previous;
     await harmonize(ids, projectCrs);
   }
 
   // ProjectCrs: the project CRS taken before the data landed, as the project follows them
-  async function harmonizeImportedCrs(ids: string[], projectCrs?: CRSList): Promise<void> {
+  async function harmonizeImportedCrs(ids: string[], projectCrs?: CRS): Promise<void> {
     if (ids.length === 0) {
       return;
     }

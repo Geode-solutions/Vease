@@ -59,6 +59,21 @@ function savedData(response: unknown): SavedData {
   throw createError({ statusCode: BAD_GATEWAY, statusMessage: "The back returned no data id" });
 }
 
+// A file may hold several contents: it is saved once per geode object type, one after the other
+async function saveAllTypes(
+  filename: string,
+  geodeObjectTypes: string[],
+): Promise<ControllerDataLoadedItem[]> {
+  const data: ControllerDataLoadedItem[] = [];
+  for (const geodeObjectType of geodeObjectTypes) {
+    consola.info(`Saving file as ${geodeObjectType}...`);
+    // oxlint-disable-next-line no-await-in-loop
+    const saved = savedData(await saveViewableFile(filename, geodeObjectType));
+    data.push(...saved.data);
+  }
+  return data;
+}
+
 // The browser fetches the project bytes itself: binary content never goes through the command channel
 async function importProject(
   filePart: MultiPartData,
@@ -103,15 +118,14 @@ export default defineRawEventHandler(
     }
 
     await uploadFile(filePart);
-    const allowedGeodeObjectType = await getAllowedGeodeObjectTypes(filename);
-    if (allowedGeodeObjectType === undefined || allowedGeodeObjectType === "") {
+    const allowedGeodeObjectTypes = await getAllowedGeodeObjectTypes(filename);
+    if (allowedGeodeObjectTypes.length === 0) {
       throw createError({
         statusCode: 400,
         statusMessage: "No allowed geode object type found for file",
       });
     }
-    consola.info(`Saving file as ${allowedGeodeObjectType}...`);
-    const { data } = savedData(await saveViewableFile(filename, allowedGeodeObjectType));
+    const data = await saveAllTypes(filename, allowedGeodeObjectTypes);
     // The browser imports the saved data on the back event: answer once every object is ready to style
     await Promise.all(
       data.map(async ({ id }) => {

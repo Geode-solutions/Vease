@@ -2,6 +2,7 @@ import { type Dirent, existsSync, readdirSync } from "node:fs";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
 import type {
   getLlamaStatus,
+  isLlamaServerStarting,
   runLlamaServer,
   stopLlamaServer,
 } from "@vease_server/utils/llama_cpp";
@@ -85,6 +86,7 @@ function mockExecutableAlreadyExtracted(): void {
 interface LlamaCppModule {
   llamaCpp: {
     getLlamaStatus: typeof getLlamaStatus;
+    isLlamaServerStarting: typeof isLlamaServerStarting;
     runLlamaServer: typeof runLlamaServer;
     stopLlamaServer: typeof stopLlamaServer;
   };

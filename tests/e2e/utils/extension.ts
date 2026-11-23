@@ -4,10 +4,10 @@ import path from "node:path";
 // Third party imports
 import type { Page } from "@playwright/test";
 import { consola } from "consola";
-import { waitForLoadingScreen } from "./other";
+import { waitForLoadingScreen } from "#ogw_e2e/other.js";
 
 // Local imports
-import { modalTransitionWait } from "./constants";
+import { modalTransitionWait } from "#ogw_e2e/constants.js";
 import { navigateToExtensionsPage } from "./navigate";
 
 async function loadExtension(window: Page, extensionFilePath: string): Promise<void> {
@@ -38,7 +38,7 @@ async function loadExtension(window: Page, extensionFilePath: string): Promise<v
 
 async function removeExtension(window: Page, extensionName: string): Promise<void> {
   await waitForLoadingScreen(window);
-  const importExtensionButton = window.locator("button:has(.mdi-puzzle)").first();
+  const importExtensionButton = window.getByTestId("extensionsNavButton");
   await importExtensionButton.waitFor({ state: "visible", timeout: 60_000 });
   await importExtensionButton.click({ timeout: 60_000 });
   // Wait for modal transition

@@ -57,7 +57,7 @@ function isStyleDetails(value: unknown): value is StyleDetails {
     typeof value === "object" &&
     value !== null &&
     "id" in value &&
-    "viewer_type" in value &&
+    "viewer_object_type" in value &&
     "targets" in value &&
     Array.isArray(value.targets) &&
     "attributes" in value &&

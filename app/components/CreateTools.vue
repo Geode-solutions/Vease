@@ -46,12 +46,12 @@ function handleEscape(): void {
   <v-card v-if="!selectedTool" flat color="transparent" class="d-flex flex-column h-100 w-100">
     <div class="pa-3 text-center">
       <div class="d-flex align-center justify-center">
-        <v-icon start icon="mdi-creation" class="me-2 mt-5 text-white" size="18" />
-        <h2 class="text-subtitle-1 font-weight-bold text-white mb-0" style="line-height: 1.2">
+        <v-icon start icon="ph-sparkle" class="me-2 mt-5 text-primary" size="18" />
+        <h2 class="text-subtitle-1 font-weight-bold mb-0" style="line-height: 1.2">
           Create New Object
         </h2>
       </div>
-      <p class="text-caption text-white opacity-70 mb-0">Choose a drawing tool to get started.</p>
+      <p class="text-caption text-medium-emphasis mb-0">Choose a drawing tool to get started.</p>
     </div>
 
     <v-card-text class="pt-2 pb-6 flex-grow-1 overflow-y-auto px-3">
@@ -68,17 +68,17 @@ function handleEscape(): void {
             <div class="d-flex align-center ga-2 w-100">
               <v-sheet
                 class="d-flex align-center justify-center rounded-circle flex-shrink-0"
-                color="rgba(255, 255, 255, 0.1)"
+                color="rgba(var(--v-theme-primary), 0.12)"
                 :width="36"
                 :height="36"
                 elevation="0"
                 :style="{ transition: 'all 0.3s ease' }"
               >
                 <v-icon
-                  v-if="tool.iconType === 'mdi'"
+                  v-if="tool.iconType === 'icon'"
                   :icon="tool.iconSource"
                   size="18"
-                  color="white"
+                  color="primary"
                 />
                 <v-img
                   v-else-if="tool.iconType === 'svg'"
@@ -87,15 +87,15 @@ function handleEscape(): void {
                   height="18"
                   width="18"
                   contain
-                  class="white-svg-filter"
+                  class="tool-svg-icon"
                 />
               </v-sheet>
               <div class="min-w-0 flex-grow-1 text-left">
-                <div class="text-caption font-weight-bold text-white mb-1" style="line-height: 1.2">
+                <div class="text-caption font-weight-bold mb-1" style="line-height: 1.2">
                   {{ tool.title }}
                 </div>
                 <div
-                  class="text-caption text-white opacity-70 text-wrap mt-0.5"
+                  class="text-caption text-medium-emphasis text-wrap mt-0.5"
                   style="font-size: 0.72rem !important; line-height: 1.2"
                 >
                   {{ tool.description }}
@@ -117,7 +117,7 @@ function handleEscape(): void {
       height="32"
     >
       <v-btn icon variant="text" size="small" @click="handleBack" class="w-100 h-100">
-        <v-icon color="white" size="16">mdi-arrow-left</v-icon>
+        <v-icon size="16">ph-arrow-left</v-icon>
       </v-btn>
     </GlassCard>
     <GlassCard
@@ -162,7 +162,12 @@ function handleEscape(): void {
   min-height: 400px;
 }
 
-.white-svg-filter :deep(.v-img__img) {
+/* SVG tool icons are recolored to a flat tint: dark on light themes, light on dark themes. */
+.tool-svg-icon :deep(.v-img__img) {
+  filter: brightness(0) !important;
+}
+
+.v-theme--dark .tool-svg-icon :deep(.v-img__img) {
   filter: brightness(0) invert(1) !important;
 }
 </style>

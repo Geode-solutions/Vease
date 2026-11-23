@@ -101,14 +101,14 @@ describe("sidebar component", () => {
     mockAuthComposable(true);
     const wrapper = mountSideBar();
 
-    expect(wrapper.html()).toContain("mdi-account-outline");
+    expect(wrapper.html()).toContain("ph-user");
   });
 
   test("displays login title when not authenticated", () => {
     mockAuthComposable(false);
     const wrapper = mountSideBar();
 
-    expect(wrapper.html()).toContain("mdi-account-key-outline");
+    expect(wrapper.html()).toContain("ph-key");
   });
 
   test("reorders top pages when drag and drop events occur", async () => {

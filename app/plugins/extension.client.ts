@@ -10,6 +10,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   if (typeof globalThis !== "undefined") {
     globalThis.Vue = await import("vue");
     globalThis.Pinia = await import("pinia");
+    // Extensions query the database of the app: their live queries must come from the same Dexie.
+    globalThis.DexieModule = await import("dexie");
 
     // Expose stores as factory functions - these are auto-imported by Nuxt
     globalThis.__VEASE_STORES__ = {
@@ -23,11 +25,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const { api_fetch } = await import("@ogw_internal/utils/api_fetch.js");
     const StatusModule = await import("@ogw_front/utils/status.js");
     const appModeModule = await import("@geode/opengeodeweb-front/shared/app_mode.js");
-    const { database } = await import("@geode/opengeodeweb-front/internal/database/database.js");
+    // Extensions share the database of the app: Database adds their tables to it.
+    const { Database, database } =
+      await import("@geode/opengeodeweb-front/internal/database/database.js");
     globalThis.__VEASE_UTILS__ = {
       Status: StatusModule.Status,
       appMode: appModeModule.appMode,
       api_fetch,
+      Database,
       database,
     };
 

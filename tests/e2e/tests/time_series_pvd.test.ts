@@ -12,20 +12,17 @@ import {
   selectTimeSeriesFolder,
   selectTimeSeriesTarget,
 } from "@vease_tests/utils/load";
-import { brepGeodeObjectType, defaultDataName } from "@vease_tests/utils/constants";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
-import {
-  expandMainObjectTree,
-  getMainObjectTree,
-} from "@vease_tests/utils/object_trees/main_object_tree";
+import { brepGeodeObjectType, defaultDataName } from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
+import { expandMainObjectTree, getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import {
   expandMeshComponentType,
   getModelComponentsObjectTree,
   openModelComponentTypeContextMenu,
   openModelComponentsTree,
-} from "@vease_tests/utils/object_trees/model_components_object_tree";
-import { setModelPolyhedraPolyhedronAttribute, setModelTimeStep } from "@vease_tests/utils/data";
-import { hideObjectInTree } from "@vease_tests/utils/object_trees/common";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
+import { setModelPolyhedraPolyhedronAttribute, setModelTimeStep } from "#ogw_e2e/data/index.js";
+import { hideObjectInTree } from "#ogw_e2e/object_trees/common.js";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

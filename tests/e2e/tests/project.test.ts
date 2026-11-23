@@ -9,25 +9,25 @@ import {
   brepGeodeObjectType,
   defaultDataName,
   polygonalSurfaceGeodeObjectType,
-} from "@vease_tests/utils/constants";
-import { closeAllMenus, moveMouseOutOfTheWay } from "@vease_tests/utils/app_interaction";
+} from "#ogw_e2e/constants.js";
+import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
 import {
   expandMainObjectTree,
   openDataContextMenu,
-} from "@vease_tests/utils/object_trees/main_object_tree";
+} from "#ogw_e2e/object_trees/main_object_tree.js";
 import { exportProject, importProject } from "@vease_tests/utils/project_interaction";
 import {
   getModelComponentsObjectTree,
   openModelComponentsTree,
   toggleModelTreeRow,
-} from "@vease_tests/utils/object_trees/model_components_object_tree";
+} from "#ogw_e2e/object_trees/model_components_object_tree.js";
 import { navigateToDataManagerPage, navigateToViewerPage } from "@vease_tests/utils/navigate";
 import {
   setMeshEdgesColor,
   setMeshEdgesWidth,
   setMeshPolygonsVertexAttribute,
-} from "@vease_tests/utils/data";
+} from "#ogw_e2e/data/index.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { test } from "@vease_tests/utils/fixtures";
 
@@ -98,9 +98,9 @@ test("assign a crs to the model", async ({ window }) => {
   await expect(window.getByTestId("projectCrs")).toContainText("EPSG:2154");
 });
 
-test("export project", async ({ window, app }, testInfo) => {
+test("export project", async ({ window, electronApp }, testInfo) => {
   exportedProjectPath = testInfo.outputPath("project.vease");
-  await exportProject(window, exportedProjectPath, app.electronApp);
+  await exportProject(window, exportedProjectPath, electronApp);
 });
 
 // Each import runs in a freshly relaunched app, so what is displayed afterwards comes from the project file
@@ -122,10 +122,10 @@ test("modify imported project", async ({ app }) => {
   await toggleModelCorners(window);
 });
 
-test("export modified project", async ({ app }, testInfo) => {
+test("export modified project", async ({ app, electronApp }, testInfo) => {
   const { window } = app;
   modifiedProjectPath = testInfo.outputPath("modified_project.vease");
-  await exportProject(window, modifiedProjectPath, app.electronApp);
+  await exportProject(window, modifiedProjectPath, electronApp);
 });
 
 test("import modified project", async ({ restartApp }) => {

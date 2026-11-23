@@ -22,7 +22,7 @@ async function apply_time_series(): Promise<void> {
 <template>
   <StepActions
     label="Apply"
-    icon="mdi-timeline-clock-outline"
+    icon="ph-clock"
     test-id="applyTimeSeriesButton"
     :action="apply_time_series"
     @reset_values="emit('reset_values')"

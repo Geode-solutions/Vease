@@ -1,66 +1,55 @@
+// The test of Vease: the app test of OpenGeodeWeb-Front (one app per worker, opened and closed by the tests, a
+// Screenshot at the end of each passing test), launched in the mode of the project (browser, cloud or desktop)
+
 // Node imports
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
 // Third party imports
-import type { Browser, Locator, Page } from "@playwright/test";
-// oxlint-disable-next-line eslint/no-duplicate-imports
-import { test as base, expect } from "@playwright/test";
+import type { Browser } from "@playwright/test";
 import type { ElectronApplication } from "playwright";
-import { consola } from "consola";
+// oxlint-disable-next-line eslint/no-duplicate-imports
+import { expect } from "@playwright/test";
 
 // Local imports
+import { test as appTest } from "#ogw_e2e/app_test.js";
 import { navigateToApp } from "./navigate";
 import { takeFrameworkWarnings } from "./framework_warnings";
-import { waitForActionSettled } from "./wait_for_action_settled";
 
-const MILLISECONDS_PER_SECOND = 1000;
+// Whole download deadline of a basemap build in OpenGeodeWeb-Back (FETCH_DEADLINE_SECONDS)
+const BUSY_TIMEOUT_MS = 30_000;
 
-interface ScreenshotMask {
-  locators: Locator[];
-}
-
-interface RunningApp {
-  window: Page;
-  cleanup: () => Promise<void>;
-  // Only set in DESKTOP mode
+// The Electron app of the open app, in DESKTOP mode
+interface DesktopApp {
   electronApp?: ElectronApplication;
-  restart: () => Promise<Page>;
 }
 
 interface WorkerFixtures {
   mode: string;
-  suiteId: string;
-  app: RunningApp;
-  restartApp: () => Promise<Page>;
-  window: Page;
+  desktopApp: DesktopApp;
 }
 
 interface TestFixtures {
-  screenshotMask: ScreenshotMask;
-  logTestProgress: undefined;
-  autoScreenshot: undefined;
+  // Only set in DESKTOP mode
+  electronApp: ElectronApplication | undefined;
   noFrameworkWarnings: undefined;
 }
 
-const test = base.extend<TestFixtures, WorkerFixtures>({
+const test = appTest.extend<TestFixtures, WorkerFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
 
-  suiteId: ["default", { option: true, scope: "worker" }],
-
-  screenshotMask: [
+  desktopApp: [
     // oxlint-disable-next-line no-empty-pattern
     async ({}, use): Promise<void> => {
-      await use({ locators: [] });
+      await use({});
     },
-    { scope: "test" },
+    { scope: "worker" },
   ],
 
-  // Mutable so restartApp can swap in a freshly launched app
-  app: [
+  launchApp: [
     async (
-      { mode, playwright, browserName, headless, channel, launchOptions },
+      { mode, playwright, browserName, headless, channel, launchOptions, desktopApp },
       use,
       workerInfo,
     ): Promise<void> => {
@@ -79,59 +68,47 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
         });
         return browser;
       }
-      const app: RunningApp = {
-        ...(await navigateToApp(mode, launchBrowser)),
-        restart: async (): Promise<Page> => {
-          await app.cleanup();
-          const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
-          app.window = window;
-          app.cleanup = cleanup;
-          app.electronApp = electronApp;
-          return window;
-        },
-      };
-      await use(app);
-      await app.cleanup();
+      await use(async () => {
+        const { window, cleanup, electronApp } = await navigateToApp(mode, launchBrowser);
+        desktopApp.electronApp = electronApp;
+        return {
+          window,
+          cleanup: async (): Promise<void> => {
+            desktopApp.electronApp = undefined;
+            await cleanup();
+          },
+        };
+      });
       fs.rmSync(configPath, { recursive: true, force: true });
     },
     { scope: "worker" },
   ],
 
-  // Kills the running app and launches a new one, like a user closing and reopening it
-  restartApp: [
-    async ({ app }, use): Promise<void> => {
-      await use(app.restart);
-    },
-    { scope: "worker" },
-  ],
-
-  // Page of the app launched with the worker: after restartApp, use the returned page or app.window
-  window: [
-    async ({ app }, use): Promise<void> => {
-      await use(app.window);
-    },
-    { scope: "worker" },
-  ],
-
-  logTestProgress: [
+  // Never capture while the microservices are still busy (busy indicator bar, half-rendered viewer)
+  // A basemap build waits on external tile servers longer than waitForActionSettled does
+  beforeScreenshot: [
     // oxlint-disable-next-line no-empty-pattern
-    async ({}, use, testInfo): Promise<void> => {
-      const name = `${path.basename(testInfo.file)} › ${testInfo.title}`;
-      consola.info(`\u001B[33m[START]\u001B[0m ${name}`);
-      const start = Date.now();
-      await use(undefined);
-      const statusColor = testInfo.status === "passed" ? "\u001B[32m" : "\u001B[31m";
-      const status = (testInfo.status ?? "done").toUpperCase();
-      const duration = ((Date.now() - start) / MILLISECONDS_PER_SECOND).toFixed(2);
-      consola.info(
-        `\u001B[35m[END]\u001B[0m ${name} : ${statusColor}TEST ${status}\u001B[0m (${duration}s)`,
-      );
+    async ({}, use): Promise<void> => {
+      await use(async (window) => {
+        await expect(window.getByTestId("microservicesBusyIndicator")).toBeHidden({
+          timeout: BUSY_TIMEOUT_MS,
+        });
+      });
     },
-    { auto: true },
+    { scope: "worker" },
   ],
 
-  // Fails a passing test on any Vue (Vuetify included) or Nuxt warning emitted during it: the first test of a worker also gets the app startup ones.
-  // Vue's are only there when built with VUE_DEV_WARNINGS (build:browser)
+  // The account icon depends on login state (only cloud is logged in)
+  appScreenshotMask: [
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use): Promise<void> => {
+      await use((window) => [window.getByTestId("accountNavButton")]);
+    },
+    { scope: "worker" },
+  ],
+
+  // Fails a passing test on any Vue (Vuetify included) or Nuxt warning emitted during it: the first test of an app also
+  // Gets its startup ones. Vue's are only there when built with VUE_DEV_WARNINGS (build:browser)
   noFrameworkWarnings: [
     async ({ app: _app }, use, testInfo): Promise<void> => {
       await use(undefined);
@@ -143,22 +120,10 @@ const test = base.extend<TestFixtures, WorkerFixtures>({
     { auto: true },
   ],
 
-  autoScreenshot: [
-    async ({ app, screenshotMask }, use, testInfo): Promise<void> => {
-      await use(undefined);
-      // Read at teardown: the test may have restarted the app
-      const { window } = app;
-      if (testInfo.status === testInfo.expectedStatus) {
-        // Never capture while the microservices are still busy (busy indicator bar, half-rendered viewer)
-        await waitForActionSettled(window);
-        // The account icon depends on login state (only cloud is logged in)
-        await expect(window).toHaveScreenshot({
-          mask: [window.getByTestId("accountNavButton"), ...screenshotMask.locators],
-        });
-      }
-    },
-    { auto: true },
-  ],
+  electronApp: async ({ app, desktopApp }, use): Promise<void> => {
+    await app.open();
+    await use(desktopApp.electronApp);
+  },
 });
 
 export { test };

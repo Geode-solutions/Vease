@@ -45,7 +45,7 @@ function attributeCall(
   request: StyleRequest & { attribute: string },
 ): RouteCall {
   const { target, location, componentIds, attribute } = request;
-  const onModel = details.viewer_type === "model";
+  const onModel = details.viewer_object_type === "model";
   if (componentIds !== undefined && (!onModel || target === undefined)) {
     throw new StylePlanError(
       onModel

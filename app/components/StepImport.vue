@@ -7,6 +7,7 @@ import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue
 import ObjectSelector from "@ogw_front/components/ObjectSelector.vue";
 import Stepper from "@ogw_front/components/Stepper.vue";
 import TimeSeriesTargetSelector from "@ogw_front/components/TimeSeriesTargetSelector.vue";
+import { typeChips } from "@vease/utils/type_chips";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUIStore } from "@vease/stores/ui";
@@ -28,8 +29,8 @@ watch(
 const autoUpload = ref(true);
 // Time series target type
 const geode_object_type = ref("");
-// Each imported file has its own type (filename -> type)
-const geode_object_types = ref<Record<string, string>>({});
+// Each imported file has its own types (filename -> types)
+const geode_object_types = ref<Record<string, string[]>>({});
 // Files left out because their mandatory files are missing
 const skipped_files = ref<string[]>([]);
 const additional_files = ref<File[]>([]);
@@ -47,18 +48,6 @@ const main_time_series_path = computed(() => {
   }
   return "";
 });
-
-// One chip per type, with its file count when several types are imported
-function type_chips(types: Record<string, string>): string[] {
-  const counts = new Map<string, number>();
-  for (const type of Object.values(types)) {
-    counts.set(type, (counts.get(type) ?? 0) + 1);
-  }
-  if (counts.size <= 1) {
-    return [...counts.keys()];
-  }
-  return [...counts].map(([type, count]) => `${type} ×${count}`);
-}
 
 const select_files_step = {
   step_title: "Select files to import",
@@ -85,7 +74,7 @@ const import_steps = [
         filenames: computed(() => files.value.map((file) => uploadPath(file))),
       },
     },
-    chips: computed(() => type_chips(geode_object_types.value)),
+    chips: computed(() => typeChips(geode_object_types.value)),
   },
   {
     step_title: "Add additional files",
@@ -110,7 +99,7 @@ const import_steps = [
       },
     },
     chips: computed(() => {
-      const output_params = [...type_chips(geode_object_types.value), additional_files.value];
+      const output_params = [...typeChips(geode_object_types.value), additional_files.value];
       return output_params.filter((val) => val !== "" && (!Array.isArray(val) || val.length > 0));
     }),
   },

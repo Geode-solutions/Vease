@@ -1,5 +1,5 @@
 // Third party imports
-import type { DataId } from "@ogw_front/types/identifiers";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
@@ -40,7 +40,7 @@ async function setDataVisibility(dataId: DataId, visible: boolean): Promise<void
       item.name,
       dataId,
       item.geode_id,
-      item.viewer_type,
+      item.viewer_object_type,
     );
   } else {
     treeviewStore.removeItem(dataId);

@@ -83,13 +83,83 @@ describe("the useVeaseChat composable with a logged in user", () => {
 
     test("keeps the local provider when the account is not entitled to cloud AI", async () => {
       mockCloudApi(false);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(isCloudAiAllowed.value).toBe(false);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+    });
+
+    test("explains when the account is not entitled to cloud AI", async () => {
+      const { cloudUnavailableReason, CLOUD_UNAVAILABLE_REASON } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBe(CLOUD_UNAVAILABLE_REASON.NOT_ENTITLED);
+    });
+
+    test("has no cloud unavailability reason for an entitled account", async () => {
+      mockCloudApi(true);
+      const { cloudUnavailableReason } = useVeaseChat();
+      await flushPromises();
+
+      expect(cloudUnavailableReason.value).toBeUndefined();
+    });
+
+    test("keeps the provider and reports an error when the gateway key cannot be fetched", async () => {
+      const apiSpy = mockCloudApi(true);
+      const { provider, providerError, isSwitchingProvider, setProvider, CHAT_PROVIDER } =
+        useVeaseChat();
+      await flushPromises();
+      apiSpy.mockRejectedValueOnce(new Error("network down"));
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+      expect(providerError.value).toBeTypeOf("string");
+      expect(isSwitchingProvider.value).toBe(false);
+    });
+
+    test("marks where the conversation continues with another provider", async () => {
+      mockCloudApi(true);
+      const { providerSwitches, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+      expect(providerSwitches.value).toStrictEqual([]);
+
+      chatState.chatMessages.value = [
+        { id: "user-1", role: "user", parts: [{ type: "text", text: "Hi" }] },
+        { id: "assistant-1", role: "assistant", parts: [{ type: "text", text: "Hello" }] },
+      ];
+      await setProvider(CHAT_PROVIDER.LLAMA);
+
+      expect(providerSwitches.value).toStrictEqual([
+        { afterMessageCount: 2, provider: CHAT_PROVIDER.LLAMA },
+      ]);
+    });
+
+    test("ignores provider switches while an answer is in progress", async () => {
+      mockCloudApi(true);
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+      chatState.chatStatus.value = "streaming";
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
+    });
+
+    test("allows switching provider after a failed answer", async () => {
+      mockCloudApi(true);
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
+      await flushPromises();
+      chatState.chatStatus.value = "error";
+
+      await setProvider(CHAT_PROVIDER.GATEWAY);
+
+      expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
     });
 
     test("sends chat requests with a bearer token", async () => {
@@ -102,13 +172,13 @@ describe("the useVeaseChat composable with a logged in user", () => {
 
     test("sends the selected provider and its gateway key with each chat request", async () => {
       mockCloudApi(true);
-      const { toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
       const { body } = lastTransportOptions(transportOptions);
 
       expect(body()).toStrictEqual({ provider: CHAT_PROVIDER.LLAMA, gatewayApiKey: undefined });
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       expect(body()).toStrictEqual({
         provider: CHAT_PROVIDER.GATEWAY,
@@ -116,16 +186,16 @@ describe("the useVeaseChat composable with a logged in user", () => {
       });
     });
 
-    test("toggles between providers, fetching the gateway key only once", async () => {
+    test("switches between providers, fetching the gateway key only once", async () => {
       const apiSpy = mockCloudApi(true);
-      const { provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
 
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.LLAMA);
       expect(provider.value).toBe(CHAT_PROVIDER.LLAMA);
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       expect(provider.value).toBe(CHAT_PROVIDER.GATEWAY);
 
       const keyRequests = apiSpy.mock.calls.filter(([{ schema }]) => schema.$id === KEY_SCHEMA_ID);
@@ -134,9 +204,9 @@ describe("the useVeaseChat composable with a logged in user", () => {
 
     test("does not refresh the local model status after a gateway answer", async () => {
       mockCloudApi(true);
-      const { toggleProvider } = useVeaseChat();
+      const { setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
       appRequest.mockClear();
 
       chatState.chatStatus.value = "streaming";
@@ -149,9 +219,9 @@ describe("the useVeaseChat composable with a logged in user", () => {
 
     test("falls back to the local provider and forgets the gateway key on logout", async () => {
       mockCloudApi(true);
-      const { isCloudAiAllowed, provider, toggleProvider, CHAT_PROVIDER } = useVeaseChat();
+      const { isCloudAiAllowed, provider, setProvider, CHAT_PROVIDER } = useVeaseChat();
       await flushPromises();
-      await toggleProvider();
+      await setProvider(CHAT_PROVIDER.GATEWAY);
 
       chatState.userRef.value = undefined;
       await flushPromises();

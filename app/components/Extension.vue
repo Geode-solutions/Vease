@@ -91,19 +91,19 @@ function removeExtension(): void {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="d-flex flex-column fill-height" theme="dark">
+  <v-card flat color="transparent" class="d-flex flex-column fill-height">
     <div v-if="!hideHeader" class="pa-4 pb-2">
       <div class="d-flex align-center mb-1">
-        <v-icon icon="mdi-puzzle" class="mr-2 text-secondary" size="24"></v-icon>
-        <h2 class="text-h6 font-weight-bold text-white mb-0">Extensions</h2>
+        <v-icon icon="ph-puzzle-piece" class="mr-2 text-secondary" size="24"></v-icon>
+        <h2 class="text-h6 font-weight-bold mb-0">Extensions</h2>
       </div>
-      <p class="text-caption text-white opacity-70 mb-0">
+      <p class="text-caption text-medium-emphasis mb-0">
         Enhance your application with additional features and tools.
       </p>
     </div>
 
     <v-card-text v-if="infraStore.app_mode === appMode.CLOUD" class="px-4 pb-4 overflow-y-auto">
-      <p class="text-caption text-white font-weight-semibold opacity-80">
+      <p class="text-caption text-medium-emphasis font-weight-semibold">
         Feature disabled in cloud mode
       </p>
     </v-card-text>
@@ -149,16 +149,10 @@ function removeExtension(): void {
 
       <v-fade-transition>
         <div v-if="loadedExtensions.length" class="mt-4">
-          <div class="d-flex align-center mb-2 text-subtitle-2 font-weight-semibold text-white">
-            <v-icon icon="mdi-puzzle-check" class="mr-1" size="18" />
+          <div class="d-flex align-center mb-2 text-subtitle-2 font-weight-semibold">
+            <v-icon icon="ph-seal-check" class="mr-1" size="18" />
             Active Extensions
-            <v-chip
-              size="x-small"
-              color="white"
-              variant="flat"
-              class="ml-2 border-opacity-10 bg-white-opacity-10"
-              elevation="0"
-            >
+            <v-chip size="x-small" color="primary" variant="tonal" class="ml-2" elevation="0">
               {{ loadedExtensions.length }}
             </v-chip>
           </div>
@@ -169,12 +163,11 @@ function removeExtension(): void {
                 <v-expansion-panels variant="accordion" class="bg-transparent">
                   <v-expansion-panel
                     rounded="xl"
-                    class="glass-panel border-white border-opacity-10 mb-2"
+                    class="glass-panel mb-2"
                     elevation="0"
                     :style="{
                       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                       opacity: extension.enabled ? 1 : 0.6,
-                      background: 'rgba(0, 0, 0, 0.2)',
                     }"
                   >
                     <v-expansion-panel-title class="pa-3">
@@ -186,20 +179,20 @@ function removeExtension(): void {
                               :color="
                                 extension.enabled
                                   ? isHovering || expanded
-                                    ? 'white'
-                                    : 'rgba(255, 255, 255, 0.15)'
-                                  : 'rgba(255, 255, 255, 0.08)'
+                                    ? 'primary'
+                                    : 'rgba(var(--v-theme-primary), 0.12)'
+                                  : 'rgba(var(--v-theme-on-surface), 0.06)'
                               "
                               rounded="circle"
                             >
                               <v-icon
-                                icon="mdi-puzzle"
+                                icon="ph-puzzle-piece"
                                 size="20"
                                 :color="
                                   extension.enabled
                                     ? isHovering || expanded
-                                      ? 'grey'
-                                      : 'white'
+                                      ? 'on-primary'
+                                      : 'primary'
                                     : 'grey'
                                 "
                               />
@@ -207,15 +200,15 @@ function removeExtension(): void {
 
                             <div class="flex-grow-1 min-w-0">
                               <div
-                                class="text-caption font-weight-semibold mb-0 text-white"
-                                :class="extension.enabled ? 'text-white' : 'text-grey'"
+                                class="text-caption font-weight-semibold mb-0"
+                                :class="extension.enabled ? 'text-high-emphasis' : 'text-grey'"
                               >
                                 {{ getExtensionName(extension) }}
                               </div>
 
                               <div
-                                class="text-caption mb-1 text-wrap opacity-70"
-                                :class="extension.enabled ? 'text-white' : 'text-grey'"
+                                class="text-caption mb-1 text-wrap"
+                                :class="extension.enabled ? 'text-medium-emphasis' : 'text-grey'"
                               >
                                 {{ getExtensionDescription(extension) }}
                               </div>
@@ -225,25 +218,23 @@ function removeExtension(): void {
                                   v-if="getExtensionVersion(extension)"
                                   size="x-small"
                                   variant="outlined"
-                                  color="white"
-                                  class="border-opacity-20"
+                                  color="primary"
                                 >
                                   v{{ getExtensionVersion(extension) }}
                                 </v-chip>
 
                                 <v-chip
                                   size="x-small"
-                                  :color="extension.enabled ? 'white' : 'grey'"
+                                  :color="extension.enabled ? 'primary' : 'grey'"
                                   variant="outlined"
-                                  class="border-opacity-20"
                                 >
-                                  <v-icon start size="10">mdi-tools</v-icon>
+                                  <v-icon start size="10">ph-wrench</v-icon>
                                   {{ getExtensionToolsCount(extension) }}
                                 </v-chip>
 
                                 <v-spacer />
 
-                                <span class="text-caption text-white opacity-70 text-no-wrap">
+                                <span class="text-caption text-medium-emphasis text-no-wrap">
                                   {{ formatDate(extension.loadedAt) }}
                                 </span>
                               </div>
@@ -261,7 +252,7 @@ function removeExtension(): void {
                               />
 
                               <v-btn
-                                icon="mdi-delete"
+                                icon="ph-trash"
                                 size="x-small"
                                 variant="text"
                                 color="error"
@@ -278,17 +269,14 @@ function removeExtension(): void {
                       <v-divider class="mb-2 opacity-10" />
 
                       <div class="d-flex align-center justify-space-between mb-2">
-                        <div
-                          class="d-flex align-center text-caption font-weight-semibold text-white"
-                        >
-                          <v-icon icon="mdi-tools" size="14" class="mr-1" />
+                        <div class="d-flex align-center text-caption font-weight-semibold">
+                          <v-icon icon="ph-wrench" size="14" class="mr-1" />
                           Tools
                         </div>
                         <v-chip
                           size="x-small"
-                          :color="extension.enabled ? 'white' : 'grey'"
+                          :color="extension.enabled ? 'primary' : 'grey'"
                           variant="outlined"
-                          class="border-opacity-20"
                         >
                           {{ getExtensionToolsCount(extension) }}
                         </v-chip>
@@ -307,24 +295,25 @@ function removeExtension(): void {
                             v-bind="toolProps"
                             variant="ui"
                             padding="pa-2"
-                            class="d-flex align-start ga-2 border-white border-opacity-10 active-tool-card"
+                            class="d-flex align-start ga-2 active-tool-card"
                             :style="{
                               transitionDelay: `${toolIndex * 30}ms`,
-                              background: isHovering ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                              background: isHovering
+                                ? 'rgba(var(--v-theme-primary), 0.08)'
+                                : 'transparent',
                               opacity: extension.enabled ? 1 : 0.5,
                             }"
                           >
                             <v-sheet
                               class="d-flex align-center justify-center flex-shrink-0 tool-icon"
-                              :color="isHovering ? 'primary' : 'rgba(255, 255, 255, 0.1)'"
+                              :color="isHovering ? 'primary' : 'rgba(var(--v-theme-primary), 0.12)'"
                               rounded="lg"
                             >
                               <v-icon
-                                v-if="tool.iconType === 'mdi'"
+                                v-if="tool.iconType === 'icon'"
                                 :icon="tool.iconSource"
                                 size="14"
-                                color="white"
-                                :class="{ 'opacity-100': isHovering }"
+                                :color="isHovering ? 'on-primary' : 'primary'"
                               />
                               <v-img
                                 v-else-if="tool.iconType === 'svg'"
@@ -332,18 +321,19 @@ function removeExtension(): void {
                                 width="14"
                                 height="14"
                                 contain
-                                class="white-svg-filter"
+                                class="tool-svg-icon"
+                                :class="{ 'tool-svg-icon--on-primary': isHovering }"
                               />
                             </v-sheet>
 
                             <div class="flex-grow-1 min-w-0">
                               <div class="d-flex align-center ga-1 mb-0">
-                                <span class="text-caption font-weight-semibold text-white">
+                                <span class="text-caption font-weight-semibold">
                                   {{ tool.title }}
                                 </span>
                               </div>
 
-                              <div class="text-caption text-white opacity-70">
+                              <div class="text-caption text-medium-emphasis">
                                 {{ tool.description }}
                               </div>
                             </div>
@@ -382,12 +372,10 @@ function removeExtension(): void {
               class="mx-auto mb-4 d-flex align-center justify-center empty-icon-wrapper"
               rounded="circle"
             >
-              <v-icon icon="mdi-puzzle-outline" size="36" color="white" class="opacity-30" />
+              <v-icon icon="ph-puzzle-piece" size="36" color="primary" class="opacity-60" />
             </v-sheet>
-            <div class="text-subtitle-2 font-weight-bold text-white mb-1">
-              No extensions loaded yet
-            </div>
-            <div class="text-caption text-white opacity-60">
+            <div class="text-subtitle-2 font-weight-bold mb-1">No extensions loaded yet</div>
+            <div class="text-caption text-medium-emphasis">
               Upload an extension file to get started
             </div>
           </div>
@@ -400,21 +388,21 @@ function removeExtension(): void {
         <v-card-title
           class="d-flex align-center text-subtitle-1 font-weight-semibold text-warning pa-0 pb-2"
         >
-          <v-icon icon="mdi-alert-circle" size="20" class="mr-2" color="warning" />
+          <v-icon icon="ph-warning-circle" size="20" class="mr-2" color="warning" />
           Remove Extension?
         </v-card-title>
 
-        <v-card-text class="px-0 pb-4 text-body-2 text-white">
-          <div class="text-white opacity-80 mb-3">
+        <v-card-text class="px-0 pb-4 text-body-2">
+          <div class="text-medium-emphasis mb-3">
             Are you sure you want to delete
-            <span class="font-weight-bold text-white">{{
+            <span class="font-weight-bold text-high-emphasis">{{
               getExtensionName(extensionToRemove)
             }}</span
             >?
           </div>
           <v-alert type="info" variant="tonal" density="compact" rounded="xl" class="text-caption">
             <template #prepend>
-              <v-icon size="14">mdi-information</v-icon>
+              <v-icon size="14">ph-info</v-icon>
             </template>
             This will remove all tools registered by this extension.
           </v-alert>
@@ -424,7 +412,13 @@ function removeExtension(): void {
 
         <v-card-actions class="px-0 pt-3 pb-0">
           <v-spacer />
-          <v-btn variant="text" color="white" size="small" @click="showRemoveDialog = false">
+          <v-btn
+            variant="text"
+            color="primary"
+            size="small"
+            rounded="pill"
+            @click="showRemoveDialog = false"
+          >
             Cancel
           </v-btn>
           <v-btn
@@ -434,7 +428,7 @@ function removeExtension(): void {
             class="font-weight-bold"
             @click="removeExtension"
           >
-            <v-icon start size="14">mdi-delete</v-icon>
+            <v-icon start size="14">ph-trash</v-icon>
             Remove
           </v-btn>
         </v-card-actions>
@@ -467,11 +461,22 @@ function removeExtension(): void {
 .empty-icon-wrapper {
   width: 60px;
   height: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(var(--v-theme-primary), 0.08);
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
-.white-svg-filter :deep(.v-img__img) {
+/* SVG tool icons are recolored to a flat tint: dark on light themes, light on dark themes,
+   reversed on the primary-filled hover state. */
+.tool-svg-icon :deep(.v-img__img) {
+  filter: brightness(0) !important;
+}
+
+.v-theme--dark .tool-svg-icon :deep(.v-img__img),
+.tool-svg-icon.tool-svg-icon--on-primary :deep(.v-img__img) {
   filter: brightness(0) invert(1) !important;
+}
+
+.v-theme--dark .tool-svg-icon.tool-svg-icon--on-primary :deep(.v-img__img) {
+  filter: brightness(0) !important;
 }
 </style>
