@@ -1,14 +1,72 @@
-@import "@fontsource/michroma";
-@import "@fontsource/roboto/100.css";
-@import "@fontsource/roboto/300.css";
-@import "@fontsource/roboto/400.css";
-@import "@fontsource/roboto/500.css";
-@import "@fontsource/roboto/700.css";
-@import "@fontsource/roboto/900.css";
-
-* {
-  font-family: "Roboto", sans-serif;
+/* Geode Solutions brand identity: Urbanist (replaces Youth) for headings, Onest for text.
+   Both self-hosted (SIL Open Font License). Colors come from the Vuetify themes (utils/brand_themes.ts). */
+@font-face {
+  font-family: "Urbanist";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: block;
+  src: url("../fonts/urbanist-latin.woff2") format("woff2");
 }
+
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: block;
+  src: url("../fonts/onest-latin.woff2") format("woff2");
+}
+
+:root {
+  --v-font-body: "Onest", system-ui, sans-serif;
+  --v-font-heading: "Urbanist", "Onest", system-ui, sans-serif;
+  /* Shape and spacing system (8 px grid). Two radii only, as the brand book frames are near-square:
+     controls (buttons, fields, list items, tooltips) 6 px, containers (island, panels, drawers, menus,
+     dialogs) 12 px, nested containers fall back to the control radius; circles are reserved for icon
+     buttons (side bar, viewer toolbar, radial menu), where the round shape reads as the brand circle. */
+  --vease-radius-control: 6px;
+  --vease-radius-container: 12px;
+  --vease-shell-gutter: 16px;
+  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius,
+     and one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
+     capsule sits 1 px in, its own border bringing its first button to the same column. */
+  --ogw-viewer-panel-inset: 8px;
+  --ogw-viewer-panel-radius: var(--vease-radius-control);
+  --ogw-viewer-panel-padding: 8px;
+  --ogw-viewer-row-radius: var(--vease-radius-control);
+  --ogw-viewer-controls-inset: 1px;
+  --ogw-viewer-controls-padding: 0px;
+  --ogw-viewer-controls-icon-size: 24px;
+}
+
+html,
+body {
+  font-family: var(--v-font-body);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.v-card-title,
+.v-toolbar-title {
+  font-family: var(--v-font-heading);
+  letter-spacing: -0.01em;
+}
+
+/* One weight for every card and dialog title (page titles are bolder, see PageHeader) */
+html .v-card-title {
+  font-weight: 600;
+}
+
 * {
   user-select: none;
   box-sizing: border-box;
@@ -24,46 +82,27 @@ body,
   padding: 0;
 }
 
+/* Brand surfaces: flat, tone on tone, thin border. The class names are kept because
+   OpenGeodeWeb-Front's GlassCard relies on them. */
 .custom-background {
-  background: linear-gradient(
-    135deg,
-    rgba(56, 157, 133, 1) 0%,
-    rgb(60, 153, 131) 50%,
-    rgb(20, 19, 19) 100%
-  );
+  background: rgb(var(--v-theme-background));
 }
 
 .glass-ui {
-  background: rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  will-change: backdrop-filter;
-  transform: translateZ(0);
-  isolation: isolate;
-  backface-visibility: hidden;
+  background: rgb(var(--v-theme-surface)) !important;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
 }
 
 .glass-panel {
-  background: rgba(30, 30, 30, 0.8) !important;
-  backdrop-filter: blur(20px) saturate(1.2) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  will-change: backdrop-filter;
-  transform: translateZ(0);
-  isolation: isolate;
-  backface-visibility: hidden;
-}
-.title-text {
-  font-weight: 300;
-  background: linear-gradient(to right, #ffffff, #a7f3d0);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: rgb(var(--v-theme-surface)) !important;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity)) !important;
+  box-shadow: 0 12px 32px -12px rgba(var(--v-theme-on-surface), 0.18) !important;
 }
 
-.font-michroma {
-  font-family: "Michroma", sans-serif;
+.title-text {
+  font-family: var(--v-font-heading);
+  font-weight: 600;
+  color: rgb(var(--v-theme-on-background));
 }
 
 ::-webkit-scrollbar {
@@ -77,12 +116,12 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(var(--v-theme-on-surface), 0.2);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(var(--v-theme-on-surface), 0.4);
 }
 
 .v-btn:hover > .v-btn__overlay,
@@ -115,8 +154,8 @@ body,
 }
 
 .v-app-bar .v-btn--disabled {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: rgba(255, 255, 255, 0.35) !important;
+  background: rgba(var(--v-theme-on-background), 0.06) !important;
+  color: rgba(var(--v-theme-on-background), 0.35) !important;
 }
 
 .v-app-bar .v-btn--disabled .v-btn__overlay,
@@ -124,13 +163,141 @@ body,
   display: none !important;
 }
 
-.splash-screen-active .v-app-bar .v-img,
-.splash-screen-active .v-app-bar .title-text,
+.splash-screen-active .v-app-bar .brand-lockup,
 .splash-screen-active .v-app-bar .v-btn,
 .splash-screen-active .v-navigation-drawer .v-btn,
-.drawer-active .v-app-bar .v-img,
-.drawer-active .v-app-bar .title-text,
+.splash-screen-active .v-navigation-drawer .brand-dot,
+.drawer-active .v-app-bar .brand-lockup,
 .drawer-active .v-app-bar .v-btn:not(.v-btn--active),
-.drawer-active .v-navigation-drawer .v-btn {
+.drawer-active .v-navigation-drawer .v-btn,
+.drawer-active .v-navigation-drawer .brand-dot {
   opacity: 0.35 !important;
+}
+
+/* OpenGeodeWeb-Front chrome hooks (their fallbacks keep the former dark look for other apps).
+   Set on the theme classes so they resolve against the theme of the element using them. */
+.v-theme--light,
+.v-theme--dark {
+  --ogw-loading-overlay: rgb(var(--v-theme-background));
+  --ogw-loading-backdrop: none;
+  --ogw-loading-dots: rgba(var(--v-theme-on-background), 0.07);
+  --ogw-loading-logo-shadow: none;
+  --ogw-loading-title-shadow: none;
+  --ogw-loading-icon-glow: none;
+  --ogw-loading-card-bg: rgb(var(--v-theme-surface));
+  --ogw-loading-card-border: rgba(var(--v-border-color), var(--v-border-opacity));
+  --ogw-loading-progress: rgb(var(--v-theme-primary));
+  --ogw-loading-progress-glow: none;
+  --ogw-launcher-button: rgb(var(--v-theme-accent));
+  --ogw-dropzone-bg: rgba(var(--v-theme-background), 0.88);
+  --ogw-dropzone-text-shadow: none;
+  --ogw-viewer-glass-min-opacity: 0.88;
+}
+
+.v-theme--light {
+  --ogw-mono-icon-filter: brightness(0);
+  --ogw-svg-icon-filter: none;
+  --ogw-svg-icon-active-filter: invert(100%);
+  /* The brand book only allows the official logo colors: Vert (Platine), Anthracite, Noir, Blanc */
+  --vease-logo-color: #1e1e1e;
+}
+
+.v-theme--dark {
+  /* The adaptive glass of the object tree turns to the brand green; lighten would hide it on a bright viewer */
+  --ogw-viewer-glass-tint: var(--v-theme-surface);
+  --ogw-viewer-glass-blend: normal;
+  --ogw-mono-icon-filter: brightness(0) invert(0.92);
+  --ogw-svg-icon-filter: invert(0.92);
+  --ogw-svg-icon-active-filter: none;
+  --vease-logo-color: #ffffff;
+}
+
+html .rounded-xl {
+  border-radius: var(--vease-radius-container) !important;
+}
+
+html .v-btn:not(.v-btn--icon) {
+  border-radius: var(--vease-radius-control);
+}
+
+html .v-btn.rounded-pill:not(.v-btn--icon),
+html .v-btn.rounded-lg:not(.v-btn--icon) {
+  border-radius: var(--vease-radius-control) !important;
+}
+
+html .v-field,
+html .v-list-item,
+html .v-tooltip > .v-overlay__content {
+  border-radius: var(--vease-radius-control);
+}
+
+/* Nested containers (a card inside a panel) take the control radius, so corners stay concentric */
+html .rounded-md,
+html .glass-panel :is(.glass-panel, .glass-ui):not(.rounded-circle) {
+  border-radius: var(--vease-radius-control) !important;
+}
+
+/* Visibility in the object tree reads by weight: filled eye shown, outlined eye partly shown, slashed eye
+   hidden and faded like the object it stands for (full again on hover, as it can be clicked) */
+[data-testid="hiddenObjectEyeButton"] .v-icon {
+  opacity: 0.45;
+  transition: opacity 0.15s ease;
+}
+
+[data-testid="hiddenObjectEyeButton"]:hover .v-icon,
+[data-testid="hiddenObjectEyeButton"]:focus-visible .v-icon {
+  opacity: 1;
+}
+
+html .v-menu > .v-overlay__content,
+html .v-dialog > .v-overlay__content > .v-card {
+  border-radius: var(--vease-radius-container);
+}
+
+/* The brand book marks the current page with a small orange dot */
+.brand-dot {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--v-theme-accent));
+}
+
+/* Loading screen as a brand book cover: a large tone-on-tone circle behind the mark, the title in Urbanist,
+   set tight, and the subtitle as a small uppercase label. */
+.ogw-loading::after {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: min(118vmin, 1200px);
+  height: min(118vmin, 1200px);
+  border-radius: 50%;
+  background: rgb(var(--v-theme-surface));
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.ogw-loading > * {
+  position: relative;
+  z-index: 1;
+}
+
+html .ogw-loading .responsive-title {
+  font-family: var(--v-font-heading);
+  font-weight: 700 !important;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+}
+
+.ogw-loading .responsive-title::first-letter {
+  text-transform: uppercase;
+}
+
+html .ogw-loading .ls-widest {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.14em !important;
 }

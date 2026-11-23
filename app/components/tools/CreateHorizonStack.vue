@@ -48,16 +48,13 @@ async function create(): Promise<void> {
 </script>
 
 <template>
-  <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column" theme="dark">
-    <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center text-white">
-      <v-icon icon="mdi-layers-triple" class="mr-1 text-h5" color="secondary" />
+  <v-card flat color="transparent" class="pa-0 fill-height d-flex flex-column">
+    <v-card-title class="pb-1 text-subtitle-1 font-weight-bold d-flex align-center">
+      <v-icon icon="ph-stack" class="mr-1 text-h5" color="secondary" />
       Create Horizon Stack
     </v-card-title>
 
-    <v-card-subtitle
-      class="ma-0 pb-1 text-caption text-white opacity-70 text-wrap"
-      style="line-height: 1.2"
-    >
+    <v-card-subtitle class="ma-0 pb-1 text-caption text-wrap" style="line-height: 1.2">
       Name the horizons from top to bottom, and optionally the units between them.
     </v-card-subtitle>
 
@@ -66,16 +63,15 @@ async function create(): Promise<void> {
         v-model="name"
         label="Horizon Stack Name"
         variant="outlined"
-        color="white"
+        color="primary"
         density="compact"
-        base-color="white"
-        bg-color="rgba(255, 255, 255, 0.15)"
+        bg-color="surface-light"
         class="mb-2 rounded-lg"
-        prepend-inner-icon="mdi-format-title"
+        prepend-inner-icon="ph-text-t"
         data-testid="horizonStackName"
       />
 
-      <div class="text-caption font-weight-bold text-white opacity-70 mb-1">
+      <div class="text-caption font-weight-bold text-medium-emphasis mb-1">
         Stratigraphic column (top to bottom)
       </div>
       <template v-for="(_, index) in horizons" :key="index">
@@ -93,31 +89,30 @@ async function create(): Promise<void> {
             v-model="horizons[index]"
             variant="outlined"
             density="compact"
-            color="white"
-            base-color="white"
-            bg-color="rgba(var(--v-theme-primary), 0.15)"
+            color="primary"
+            bg-color="surface-light"
             class="rounded-lg text-caption"
             :placeholder="`Horizon ${index + 1}`"
             :rules="horizonRules(horizons[index] ?? '')"
-            prepend-inner-icon="mdi-minus"
+            prepend-inner-icon="ph-minus"
             :data-testid="`horizonStackHorizon-${index}`"
           />
           <v-btn
-            icon="mdi-arrow-up"
+            icon="ph-arrow-up"
             size="x-small"
             variant="text"
             :disabled="index === 0"
             @click="moveHorizon(index, index - 1)"
           />
           <v-btn
-            icon="mdi-arrow-down"
+            icon="ph-arrow-down"
             size="x-small"
             variant="text"
             :disabled="index === horizons.length - 1"
             @click="moveHorizon(index, index + 1)"
           />
           <v-btn
-            icon="mdi-close"
+            icon="ph-x"
             size="x-small"
             variant="text"
             color="error"
@@ -138,12 +133,12 @@ async function create(): Promise<void> {
       />
 
       <v-btn
-        variant="outlined"
-        color="white"
+        variant="tonal"
+        color="primary"
         size="small"
         block
-        class="text-none rounded-lg text-caption mt-3"
-        prepend-icon="mdi-plus"
+        class="text-none rounded-pill text-caption mt-3"
+        prepend-icon="ph-plus"
         data-testid="addHorizonButton"
         @click="addHorizon"
       >
@@ -154,26 +149,25 @@ async function create(): Promise<void> {
     <v-card-actions class="px-0 pb-0 mt-2">
       <v-btn
         variant="text"
-        color="white"
+        color="primary"
         size="small"
-        class="text-none rounded-lg"
+        class="text-none rounded-pill"
         @click="handleClose"
       >
-        <v-icon start size="14">mdi-close-circle</v-icon>Close
+        <v-icon start size="14">ph-x-circle</v-icon>Close
       </v-btn>
       <v-spacer />
       <v-btn
-        color="primary"
+        color="accent"
         size="small"
         variant="flat"
         :loading="loading"
         :disabled="!isValid"
-        class="text-none rounded-lg font-weight-bold"
-        elevation="2"
+        class="text-none rounded-pill font-weight-bold"
         data-testid="submitButton"
         @click="create"
       >
-        <v-icon start size="14">mdi-send</v-icon>
+        <v-icon start size="14">ph-paper-plane-right</v-icon>
         Create Horizon Stack
       </v-btn>
     </v-card-actions>

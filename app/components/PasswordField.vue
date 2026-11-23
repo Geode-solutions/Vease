@@ -27,7 +27,7 @@ const showPassword = ref(false);
     :label="label"
     :required="required"
     :type="showPassword ? 'text' : 'password'"
-    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+    :append-icon="showPassword ? 'ph-fill ph-eye' : 'ph-eye-slash'"
     @input="emit('input', $event)"
     @click:append="toggleVisibility"
   ></v-text-field>

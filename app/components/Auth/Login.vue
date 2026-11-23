@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthForm from "@vease/components/Auth/Form.vue";
-import logo from "@vease/assets/img/logo.png";
+import BrandMark from "@vease/components/Layout/BrandMark.vue";
 import { useAuthPage } from "@vease/composables/auth_page";
 
 const { email, isLogin, password } = useAuthPage();
@@ -10,13 +10,11 @@ const { email, isLogin, password } = useAuthPage();
   <v-row class="align-center justify-center">
     <v-col cols="12" class="auth-column pa-6">
       <v-sheet color="transparent" width="100%" class="text-center mb-4">
-        <v-responsive class="mx-auto mb-2" max-width="120">
-          <v-img :src="logo" contain />
-        </v-responsive>
-        <v-card-title class="text-h3 font-weight-black title-text mb-2 px-0 d-flex justify-center">
+        <BrandMark :size="96" class="text-primary mb-2" />
+        <v-card-title class="text-h3 title-text brand-wordmark mb-2 px-0 d-flex justify-center">
           Vease
         </v-card-title>
-        <v-card-subtitle class="text-body-1 text-white opacity-70 px-0 text-center text-wrap">
+        <v-card-subtitle class="text-body-1 px-0 text-center text-wrap">
           {{
             isLogin
               ? "Welcome back! Please login to your account"
@@ -31,23 +29,15 @@ const { email, isLogin, password } = useAuthPage();
 </template>
 
 <style scoped>
-.auth-page {
-  background: rgba(0, 0, 0, 0.1);
-}
-
 /* Fixed width instead of a grid fraction: the fields stay wide enough to show a full email address,
    even with the icon password managers inject at the end of the input. */
 .auth-column {
   max-width: 520px;
 }
 
-.title-text {
-  font-family: "Michroma", sans-serif !important;
-  background: linear-gradient(135deg, #ffffff 0%, #a7f3d0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 2px !important;
-  text-transform: uppercase;
+.brand-wordmark {
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .fill-height {

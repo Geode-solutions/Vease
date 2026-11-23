@@ -29,7 +29,7 @@ vi.mock(import("@ogw_front/components/SearchBar.vue"), () => ({
 const mockCustomTab: DataManagerTab = {
   id: "custom-tab",
   title: "Custom Tab",
-  icon: "mdi-cog",
+  icon: "ph-gear",
   component: { name: "CustomComponent", template: "<div>Custom</div>" },
 };
 
@@ -46,7 +46,7 @@ describe("data manager header component", () => {
       },
     });
 
-    expect(wrapper.text()).toContain("Data Manager");
+    expect(wrapper.find('[data-testid="dataManagerTab-data"]').text()).toBe("Data");
     expect(wrapper.text()).toContain("Custom Tab");
   });
 

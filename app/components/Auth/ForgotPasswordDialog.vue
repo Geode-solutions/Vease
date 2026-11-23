@@ -25,10 +25,8 @@ async function handleSubmit(event): Promise<void> {
   <v-dialog v-model="show" max-width="450">
     <GlassCard variant="panel" padding="pa-8" rounded="xl" border="border-primary">
       <v-form @submit.prevent="handleSubmit">
-        <v-card-title class="text-h4 font-weight-bold mb-4 text-white px-0">
-          Reset Password
-        </v-card-title>
-        <v-card-text class="text-body-1 text-white opacity-80 mb-6 px-0">
+        <v-card-title class="text-h4 font-weight-bold mb-4 px-0"> Reset Password </v-card-title>
+        <v-card-text class="text-body-1 text-medium-emphasis mb-6 px-0">
           Enter your email address and we'll send you a recovery link.
         </v-card-text>
 
@@ -42,19 +40,26 @@ async function handleSubmit(event): Promise<void> {
           type="email"
           :rules="emailRules"
           variant="outlined"
-          color="white"
+          color="primary"
           class="custom-field mb-8"
           hide-details="auto"
         />
 
         <v-card-actions class="px-0 ga-4">
-          <v-btn variant="text" color="white" class="flex-grow-1 text-none" @click="show = false">
+          <v-btn
+            variant="text"
+            color="primary"
+            rounded="pill"
+            class="flex-grow-1 text-none"
+            @click="show = false"
+          >
             Cancel
           </v-btn>
           <v-btn
             type="submit"
-            color="primary"
+            color="accent"
             variant="flat"
+            rounded="pill"
             class="flex-grow-1 text-none font-weight-black"
             :loading="loading"
           >
@@ -69,30 +74,15 @@ async function handleSubmit(event): Promise<void> {
 <style scoped>
 .custom-field :deep(.v-field) {
   border-radius: 12px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(var(--v-theme-on-surface), 0.04) !important;
   transition: all 0.3s ease;
 }
 
 .custom-field :deep(.v-field:hover) {
-  background: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(var(--v-theme-on-surface), 0.06) !important;
 }
 
 .custom-field :deep(.v-field--focused) {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-color: white !important;
-}
-
-.custom-field :deep(.v-label) {
-  color: white !important;
-  opacity: 0.9 !important;
-}
-
-.custom-field :deep(.v-icon) {
-  color: white !important;
-  opacity: 1 !important;
-}
-
-.custom-field :deep(input) {
-  color: white !important;
+  background: rgba(var(--v-theme-primary), 0.08) !important;
 }
 </style>

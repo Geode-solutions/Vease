@@ -7,11 +7,16 @@ import path from "node:path";
 import { app } from "electron";
 import { consola } from "consola";
 
+// Local imports
+import { persistLocalState, restoreLocalState } from "./desktop_local_state";
+import { userDataPath } from "./desktop_user_data";
+
 // Chromium storage (cache, IndexedDB, quota database...) lives in sessionData, by default the shared userData folder.
 // A second Vease instance cannot open it while the first one runs (locked on Windows) and its window stays blank.
 // The storage is cleared on every launch anyway: each instance gets its own folder, removed on quit.
 const SESSION_DATA_PREFIX = "vease-session-";
 const sessionDataRoot = os.tmpdir();
+let instanceSessionDataPath: string | undefined = undefined;
 
 function isProcessAlive(pid: number): boolean {
   try {
@@ -52,11 +57,21 @@ function isolateInstanceSessionData(): void {
   }
   const sessionDataPath = path.join(sessionDataRoot, `${SESSION_DATA_PREFIX}${process.pid}`);
   fs.mkdirSync(sessionDataPath, { recursive: true });
+  restoreLocalState(userDataPath, sessionDataPath);
   app.setPath("sessionData", sessionDataPath);
+  instanceSessionDataPath = sessionDataPath;
   consola.info(`[Electron] sessionData path: ${sessionDataPath}`);
   app.on("quit", () => {
+    persistLocalState(userDataPath, sessionDataPath);
     removeFolder(sessionDataPath);
   });
 }
 
-export { isolateInstanceSessionData };
+// Keeps the encryption key of this instance when it is the first one to create it
+function persistInstanceLocalState(): void {
+  if (instanceSessionDataPath !== undefined) {
+    persistLocalState(userDataPath, instanceSessionDataPath);
+  }
+}
+
+export { isolateInstanceSessionData, persistInstanceLocalState };

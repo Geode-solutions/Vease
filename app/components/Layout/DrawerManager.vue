@@ -121,9 +121,9 @@ function handleEscape(): void {
 .drawer-container {
   position: fixed;
   top: 0;
-  height: calc(100vh - 100px) !important;
-  margin-top: 84px;
-  padding: 16px;
+  height: calc(100vh - 80px) !important;
+  margin-top: 64px;
+  padding: var(--vease-shell-gutter);
   z-index: 3;
   isolation: isolate;
   backface-visibility: hidden;

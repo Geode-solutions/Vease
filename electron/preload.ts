@@ -1,11 +1,20 @@
 // Electron's sandboxed preload scripts only support CommonJS
 // oxlint-disable-next-line typescript/no-require-imports
 import electron = require("electron");
+import type { AppSettings } from "./app_settings_utils";
 import type { UpdateSettings } from "./updater_utils";
 
 const { contextBridge, ipcRenderer } = electron;
 
+// The saved settings, read once before the page renders
+const appSettings: unknown = ipcRenderer.sendSync("app_settings_read");
+
 contextBridge.exposeInMainWorld("electronAPI", {
+  app_settings: appSettings,
+  app_settings_write: async (settings: AppSettings): Promise<unknown> => {
+    const result = (await ipcRenderer.invoke("app_settings_write", settings)) as unknown;
+    return result;
+  },
   project_folder_path: async (args: { projectFolderPath: string }): Promise<unknown> => {
     const result = (await ipcRenderer.invoke("project_folder_path", args)) as unknown;
     return result;

@@ -29,22 +29,21 @@ function close(): void {
         class="pip-header d-flex align-center px-4"
         style="height: 40px; min-height: 40px; user-select: none"
       >
-        <v-icon size="18" color="primary" class="mr-2">mdi-database</v-icon>
-        <span class="text-subtitle-2 font-weight-bold text-white">Data Manager</span>
+        <v-icon size="18" color="primary" class="mr-2">ph-database</v-icon>
+        <span class="text-subtitle-2 font-weight-bold">Data Manager</span>
         <v-spacer />
         <v-btn
           icon
           size="x-small"
           variant="text"
-          color="white"
           data-testid="dataManagerPiPExpandButton"
           @click="expandToFullPage"
         >
-          <v-icon size="16">mdi-arrow-expand</v-icon>
+          <v-icon size="16">ph-arrows-out-simple</v-icon>
           <v-tooltip activator="parent" location="top">Full screen</v-tooltip>
         </v-btn>
-        <v-btn icon size="x-small" variant="text" color="white" @click="close">
-          <v-icon size="16">mdi-close</v-icon>
+        <v-btn icon size="x-small" variant="text" @click="close">
+          <v-icon size="16">ph-x</v-icon>
           <v-tooltip activator="parent" location="top">Close</v-tooltip>
         </v-btn>
       </div>
