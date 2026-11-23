@@ -106,7 +106,7 @@ test("convert to the selected crs", async ({ window }) => {
 
 test("load a curve sharing the model frame", async ({ window }) => {
   // Still in the model frame: the curve keeps no crs until it is georeferenced
-  await expectFeedback(window, "No CRS, project in EPSG:32631", async () => {
+  await expectFeedback(window, "these coordinates do not match EPSG:32631", async () => {
     await loadVeaseTestDatas(window, [CURVE_FILE]);
   });
   await navigateToDataManagerPage(window);

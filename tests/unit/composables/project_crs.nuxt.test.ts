@@ -1,6 +1,7 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { type FeedbackAction, useFeedbackStore } from "@ogw_front/stores/feedback";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type { AssignResponse } from "@vease/composables/crs_assign";
 import { setupActivePinia } from "@vease_tests/utils";
 import type { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
@@ -8,13 +9,14 @@ import { useProjectCrs } from "@vease/composables/project_crs";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-const { convertCrs } = vi.hoisted(() => ({
+const { assignCrs, convertCrs } = vi.hoisted(() => ({
+  assignCrs: vi.fn<(item: unknown, crs: unknown, options?: unknown) => Promise<AssignResponse>>(),
   convertCrs: vi.fn<(item: unknown, crs: unknown, options?: unknown) => Promise<void>>(),
 }));
 
 vi.mock(import("@vease/composables/crs"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- only these are used by useProjectCrs.
-  useCrs: (() => ({ convertCrs })) as unknown as typeof useCrs,
+  useCrs: (() => ({ assignCrs, convertCrs })) as unknown as typeof useCrs,
 }));
 
 const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
@@ -42,6 +44,7 @@ describe("useProjectCrs composable", () => {
   beforeEach(() => {
     setupActivePinia();
     convertCrs.mockReset().mockResolvedValue(undefined);
+    assignCrs.mockReset().mockResolvedValue({});
   });
 
   test("an empty batch does not read the data", async () => {
@@ -145,26 +148,59 @@ describe("useProjectCrs composable", () => {
     expect(requestCrsEdit).toHaveBeenCalledExactlyOnceWith("b");
   });
 
-  // Only the user knows the crs of the data: the warning leads to the crs dialog
-  test("data without crs stay without crs, with a warning to edit it", async () => {
-    const { addSuccess, addWarning } = spyFeedback();
+  test("data without crs take the project crs in one request, when their coordinates fit it", async () => {
+    const { addSuccess } = spyFeedback();
+    setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2"), dataItem("c", "3")]);
+    assignCrs.mockResolvedValue({
+      crs: LAMBERT,
+      implausible: false,
+      linked: [{ id: "c", crs: LAMBERT, implausible: false }],
+    });
+    await useProjectCrs().harmonizeImportedCrs(["b", "c"]);
+    expect(assignCrs).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ data_id: "b" }),
+      LAMBERT,
+      { linkedItems: [expect.objectContaining({ data_id: "c" })], onlyPlausible: true },
+    );
+    expect(addSuccess).toHaveBeenCalledExactlyOnceWith("EPSG:2154 assigned: b, c");
+  });
+
+  // Coordinates out of the project CRS area are likely local: the warning leads to the alignment
+  test("data without crs whose coordinates miss the project crs get a georeference warning", async () => {
+    const { addWarning } = spyFeedback();
+    setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2"), dataItem("grid", "3")]);
+    assignCrs.mockResolvedValue({
+      implausible: true,
+      linked: [{ id: "grid", unsupported: true }],
+    });
+    await useProjectCrs().harmonizeImportedCrs(["b", "grid"]);
+    expect(addWarning).toHaveBeenCalledExactlyOnceWith(
+      "b: these coordinates do not match EPSG:2154. Georeference the data?",
+      expect.objectContaining({ label: "Georeference" }),
+    );
+  });
+
+  test("a refused assignment falls back to the warning to edit the crs", async () => {
+    const { addWarning } = spyFeedback();
     setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2")]);
+    assignCrs.mockRejectedValue(new Error("back"));
     await useProjectCrs().harmonizeImportedCrs(["b"]);
-    expect(convertCrs).not.toHaveBeenCalled();
-    expect(addSuccess).not.toHaveBeenCalled();
     expect(addWarning).toHaveBeenCalledExactlyOnceWith(
       "No CRS, project in EPSG:2154: b",
       expect.objectContaining({ label: "Edit CRS" }),
     );
   });
 
-  test("several data without crs share one warning, edited from the data manager", async () => {
-    const { addWarning } = spyFeedback();
-    setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2"), dataItem("c", "3")]);
-    await useProjectCrs().harmonizeImportedCrs(["b", "c"]);
-    expect(addWarning).toHaveBeenCalledExactlyOnceWith(
-      "No CRS, project in EPSG:2154: b, c",
-      undefined,
+  test("a project crs chosen later is assigned to the data without crs", async () => {
+    vi.spyOn(useCrsStore(), "crsItems", "get").mockReturnValue([
+      dataItem("a", "1", LAMBERT),
+      dataItem("b", "2"),
+    ]);
+    await useProjectCrs().adoptProjectCrs(UTM);
+    expect(assignCrs).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ data_id: "b" }),
+      UTM,
+      { linkedItems: [], onlyPlausible: true },
     );
   });
 
