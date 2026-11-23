@@ -1,9 +1,9 @@
-import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@vease/types/data_item";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
+import { formatCrsCode } from "@ogw_front/utils/crs";
 import { reloadObject } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -56,6 +56,25 @@ function useCrs() {
     }
   }
 
+  // PROJ has no geoid grid: a change of vertical datum leaves the heights as they are
+  async function warnHeightsUnchanged(
+    entries: { id: string; heights_unchanged?: boolean }[],
+  ): Promise<void> {
+    const ids = entries.filter((entry) => entry.heights_unchanged === true).map(({ id }) => id);
+    if (ids.length === 0) {
+      return;
+    }
+    const storedNames: string[] = [];
+    for (const id of ids) {
+      // oxlint-disable-next-line no-await-in-loop
+      const stored = await dataStore.item(id);
+      storedNames.push(stored.name);
+    }
+    const names = storedNames.join(", ");
+    const keep = ids.length === 1 ? "keeps its heights" : "keep their heights";
+    useFeedbackStore().add_warning(`Heights not converted: ${names} ${keep}`);
+  }
+
   async function convertCrs(
     item: Pick<DataItem, "data_id">,
     crs: CRS,
@@ -71,6 +90,7 @@ function useCrs() {
     });
     await refreshLinked(response.linked);
     await refresh(item, response, focus);
+    await warnHeightsUnchanged([{ id: item.data_id, ...response }, ...(response.linked ?? [])]);
   }
 
   async function alignCrs(
@@ -98,7 +118,10 @@ function useCrs() {
   async function changeProjectCrs(crs: CRS): Promise<void> {
     const crsStore = useCrsStore();
     const items = crsStore.crsItems;
-    const moved = items.filter((item) => item.crs !== undefined && !sameCrs(item.crs, crs));
+    // Heights are a label of each data: only the data placed elsewhere in X and Y move
+    const moved = items.filter(
+      (item) => item.crs !== undefined && !crsStore.sameProjectCrs(item.crs, crs),
+    );
     const [first, ...linkedItems] = moved;
     if (first !== undefined) {
       await convertCrs(first, crs, { focus: false, linkedItems });
@@ -117,7 +140,7 @@ function useCrs() {
     if (project === undefined) {
       return;
     }
-    const moved = entries.filter((entry) => !sameCrs(entry.crs, project));
+    const moved = entries.filter((entry) => !crsStore.sameProjectCrs(entry.crs, project));
     const [first, ...linkedItems] = moved;
     if (first === undefined) {
       return;

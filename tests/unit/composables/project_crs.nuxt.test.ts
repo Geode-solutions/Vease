@@ -107,6 +107,15 @@ describe("useProjectCrs composable", () => {
     );
   });
 
+  test("data in the horizontal part of a compound project crs is left alone", async () => {
+    const nztm = { authority: "EPSG", code: "2193", name: "NZGD2000 / NZTM 2000" };
+    const nztmNzvd = { authority: "EPSG", code: "2193+7839", name: "NZTM 2000 + NZVD2016 height" };
+    useCrsStore().setProjectCrs(nztmNzvd);
+    setItems([dataItem("model", "1", nztmNzvd), dataItem("map", "2", nztm)]);
+    await useProjectCrs().harmonizeImportedCrs(["map"]);
+    expect(convertCrs).not.toHaveBeenCalled();
+  });
+
   test("data in the same crs is left alone", async () => {
     const { addSuccess, addWarning } = spyFeedback();
     setItems([dataItem("a", "1", LAMBERT), dataItem("b", "2", { ...LAMBERT, name: "other name" })]);

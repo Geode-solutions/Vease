@@ -59,6 +59,37 @@ describe("useCrs composable project", () => {
     expect(useCrsStore().projectCrs).toStrictEqual(UTM);
   });
 
+  test("changeProjectCrs leaves the data in the horizontal part of a compound crs", async () => {
+    const nztm = { authority: "EPSG", code: "2193", name: "NZGD2000 / NZTM 2000" };
+    const nztmNzvd = { authority: "EPSG", code: "2193+7839", name: "NZTM 2000 + NZVD2016 height" };
+    mockCrsItems(projectItems().map((projectItem) => Object.assign(projectItem, { crs: nztm })));
+    await useCrs().changeProjectCrs(nztmNzvd);
+
+    // Heights are a label of each data: X and Y do not move
+    expect(request).not.toHaveBeenCalled();
+    expect(useCrsStore().projectCrs).toStrictEqual(nztmNzvd);
+  });
+
+  test("a conversion that leaves the heights as they are warns about them", async () => {
+    vi.spyOn(useDataStore(), "item").mockImplementation(async (dataId) => {
+      await Promise.resolve();
+      // oxlint-disable-next-line no-unsafe-type-assertion -- only the name is read
+      return { data_id: dataId, name: `model ${dataId}` } as never;
+    });
+    request.mockResolvedValueOnce({
+      binary_light_viewable: "light",
+      crs: UTM,
+      heights_unchanged: true,
+      linked: [{ id: "c", binary_light_viewable: "light", crs: UTM }],
+    });
+    const addWarning = vi.spyOn(useFeedbackStore(), "add_warning");
+    await useCrs().convertCrs({ data_id: "a" }, UTM, { linkedItems: [{ data_id: "c" }] });
+
+    expect(addWarning).toHaveBeenCalledExactlyOnceWith(
+      "Heights not converted: model a keeps its heights",
+    );
+  });
+
   test("changeProjectCrs keeps the project crs when the back refuses the conversion", async () => {
     mockCrsItems(projectItems());
     request.mockRejectedValueOnce(new Error("Coordinates cannot be converted to EPSG:32631"));

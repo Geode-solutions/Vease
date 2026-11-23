@@ -1,7 +1,7 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { type FeedbackAction, useFeedbackStore } from "@ogw_front/stores/feedback";
-import { formatCrsCode, sameCrs } from "@ogw_front/utils/crs";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
+import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 
@@ -75,7 +75,7 @@ function useProjectCrs() {
     for (const item of imported) {
       if (item.crs === undefined) {
         withoutCrs.push(item);
-      } else if (!sameCrs(item.crs, reference)) {
+      } else if (!crsStore.sameProjectCrs(item.crs, reference)) {
         try {
           await convertCrs(item, reference, { focus: false });
           converted.push(item);
