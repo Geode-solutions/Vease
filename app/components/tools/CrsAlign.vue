@@ -5,6 +5,7 @@ import PickButton from "@vease/components/tools/PickButton.vue";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsAlign } from "@vease/composables/crs_align";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
@@ -13,6 +14,7 @@ const UIStore = useUIStore();
 const feedbackStore = useFeedbackStore();
 const { alignCrs, followProject } = useCrs();
 const crsStore = useCrsStore();
+const { favorites, recent, toggleFavorite, recordUse } = useCrsShortlist();
 const {
   sourcePoints,
   targetPoints,
@@ -68,6 +70,7 @@ async function apply(): Promise<void> {
       linkedItems,
     });
     feedbackStore.add_success(successMessage(1 + linkedItems.length));
+    recordUse(crs);
     // Typed in the target CRS: the data then join the project CRS
     await followProject(
       [item, ...linkedItems].map(({ data_id, name }) => ({ data_id, name, crs })),
@@ -170,6 +173,9 @@ async function apply(): Promise<void> {
         v-model="targetCrs"
         compact
         :geode-object-type="UIStore.crsAlignItem.geode_object_type"
+        :favorites="favorites"
+        :recent="recent"
+        @toggle-favorite="toggleFavorite"
       />
     </v-card-text>
 

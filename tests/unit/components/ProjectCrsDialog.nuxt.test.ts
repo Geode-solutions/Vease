@@ -5,6 +5,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import ProjectCrsDialog from "@vease/components/ProjectCrsDialog.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import type { useProjectCrs } from "@vease/composables/project_crs";
 
@@ -61,6 +62,7 @@ function click(testId: string): void {
 describe("project crs dialog", () => {
   beforeEach(() => {
     setupActivePinia();
+    localStorage.clear();
     changeProjectCrs.mockReset().mockResolvedValue(undefined);
     adoptProjectCrs.mockReset().mockResolvedValue(undefined);
     useCrsStore().setProjectCrs(LAMBERT);
@@ -95,6 +97,8 @@ describe("project crs dialog", () => {
     // Then the data without CRS take it
     expect(adoptProjectCrs).toHaveBeenCalledWith(UTM);
     expect(wrapper.emitted("changed")).toHaveLength(1);
+    // Offered again as a recent CRS in the next CRS selectors
+    expect(useCrsShortlist().recent.value).toStrictEqual([UTM]);
     expect(wrapper.emitted("update:show")).toStrictEqual([[false]]);
     wrapper.unmount();
   });
@@ -113,6 +117,7 @@ describe("project crs dialog", () => {
     expect(adoptProjectCrs).not.toHaveBeenCalled();
     expect(wrapper.emitted("update:show")).toBeUndefined();
     expect(wrapper.emitted("changed")).toBeUndefined();
+    expect(useCrsShortlist().recent.value).toStrictEqual([]);
     wrapper.unmount();
   });
 });

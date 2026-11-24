@@ -15,6 +15,7 @@ import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schem
 import { useBackStore } from "@ogw_front/stores/back";
 import { useCrs } from "@vease/composables/crs";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useLiveDataItem } from "@ogw_front/composables/live_data_item";
@@ -43,6 +44,7 @@ const selectedCrs = ref<CRS | undefined>(undefined);
 const assigning = ref(false);
 const loadingCurrentCrs = ref(false);
 const { convertCrs, changeProjectCrs, followProject } = useCrs();
+const { favorites, recent, toggleFavorite, recordUse } = useCrsShortlist();
 const isGeographic = ref(false);
 const crsKnown = ref(false);
 const mode = ref<"assign" | "convert" | "align">("assign");
@@ -141,6 +143,9 @@ async function onAssigned(
     assignMismatch.value = formatCrsCode(selectedCrs.value);
     return;
   }
+  if (selectedCrs.value) {
+    recordUse(selectedCrs.value);
+  }
   emit("assigned");
   emit("update:show", false);
   warnImplausible(
@@ -193,16 +198,18 @@ function convertInstead(): void {
 }
 
 async function handleConvert(): Promise<void> {
-  if (!item.value || !selectedCrs.value || converting.value) {
+  const crs = selectedCrs.value;
+  if (!item.value || !crs || converting.value) {
     return;
   }
   converting.value = true;
   try {
     if (scope.value === "all") {
-      await changeProjectCrs(selectedCrs.value);
+      await changeProjectCrs(crs);
     } else {
-      await convertCrs(item.value, selectedCrs.value);
+      await convertCrs(item.value, crs);
     }
+    recordUse(crs);
     emit("converted");
     emit("update:show", false);
   } finally {
@@ -323,6 +330,9 @@ async function startAlignment(): Promise<void> {
           :key="item.data_id"
           v-model="selectedCrs"
           :geode-object-type="item.geode_object_type"
+          :favorites="favorites"
+          :recent="recent"
+          @toggle-favorite="toggleFavorite"
         />
         <div v-if="mode === 'align'">
           <p class="mb-4">

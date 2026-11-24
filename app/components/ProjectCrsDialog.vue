@@ -4,6 +4,7 @@ import CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { formatCrs } from "@ogw_front/utils/crs";
 import { useCrs } from "@vease/composables/crs";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useProjectCrs } from "@vease/composables/project_crs";
 
@@ -16,6 +17,7 @@ const emit = defineEmits<{ "update:show": [value: boolean]; changed: [] }>();
 const crsStore = useCrsStore();
 const { changeProjectCrs } = useCrs();
 const { adoptProjectCrs } = useProjectCrs();
+const { favorites, recent, toggleFavorite, recordUse } = useCrsShortlist();
 const selectedCrs = ref<CRS | undefined>(undefined);
 const changing = ref(false);
 
@@ -29,13 +31,15 @@ watch(
 );
 
 async function apply(): Promise<void> {
-  if (!selectedCrs.value || changing.value) {
+  const crs = selectedCrs.value;
+  if (!crs || changing.value) {
     return;
   }
   changing.value = true;
   try {
-    await changeProjectCrs(selectedCrs.value);
-    await adoptProjectCrs(selectedCrs.value);
+    await changeProjectCrs(crs);
+    await adoptProjectCrs(crs);
+    recordUse(crs);
     emit("changed");
     emit("update:show", false);
   } catch {
@@ -66,7 +70,13 @@ async function apply(): Promise<void> {
         <p class="text-medium-emphasis mb-4">
           Every georeferenced data is converted to the new CRS.
         </p>
-        <CrsSelector v-model="selectedCrs" :geode-object-type="LIST_TYPE" />
+        <CrsSelector
+          v-model="selectedCrs"
+          :geode-object-type="LIST_TYPE"
+          :favorites="favorites"
+          :recent="recent"
+          @toggle-favorite="toggleFavorite"
+        />
       </v-card-text>
       <v-card-actions class="px-0 pb-0 mt-4">
         <v-btn

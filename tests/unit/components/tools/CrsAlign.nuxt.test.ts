@@ -6,6 +6,7 @@ import type CrsSelector from "@ogw_front/components/CrsSelector.vue";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useUIStore } from "@vease/stores/ui";
 import { useViewerStore } from "@ogw_front/stores/viewer";
@@ -54,6 +55,7 @@ vi.mock(import("@vease/composables/crs"), () => ({
 describe("crs align tool", () => {
   beforeEach(() => {
     setupActivePinia();
+    localStorage.clear();
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
     alignCrs.mockReset().mockResolvedValue(undefined);
     followProject.mockReset().mockResolvedValue(undefined);
@@ -87,6 +89,8 @@ describe("crs align tool", () => {
       linkedItems: [],
     });
     expect(success).toHaveBeenCalledWith("Data georeferenced");
+    // Offered again as a recent CRS in the next CRS selectors
+    expect(useCrsShortlist().recent.value).toStrictEqual([LAMBERT]);
     expect(useUIStore().showCrsAlign).toBe(false);
     wrapper.unmount();
   });

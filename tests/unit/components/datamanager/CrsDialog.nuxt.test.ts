@@ -9,6 +9,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import { getBackStore } from "@vease/utils/external_stores";
 import type { useCrs } from "@vease/composables/crs";
+import { useCrsShortlist } from "@vease/composables/crs_shortlist";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
@@ -165,6 +166,7 @@ let storedItem = ref<DataItem>(mockItem);
 describe("crs dialog component", () => {
   beforeEach(() => {
     setupActivePinia();
+    localStorage.clear();
     storedItem = ref<DataItem>(mockItem);
     // oxlint-disable-next-line no-unsafe-type-assertion -- the stored item of the dialog, shared by the suite
     vi.spyOn(useDataStore(), "refItem").mockImplementation(() => storedItem as never);
@@ -311,6 +313,7 @@ describe("crs dialog component", () => {
     expect(changeProjectCrs).toHaveBeenCalledWith(LAMBERT);
     expect(convertCrs).not.toHaveBeenCalled();
     expect(wrapper.emitted("converted")?.length).toBe(EXPECTED_EVENT_COUNT);
+    expect(useCrsShortlist().recent.value).toStrictEqual([LAMBERT]);
     wrapper.unmount();
   });
 
@@ -465,6 +468,8 @@ describe("crs dialog component", () => {
     await flushPromises();
 
     expect(updateItem).toHaveBeenLastCalledWith("item-1", { crs: LAMBERT });
+    // Offered again as a recent CRS in the next CRS selectors
+    expect(useCrsShortlist().recent.value).toStrictEqual([LAMBERT]);
     wrapper.unmount();
   });
 
@@ -510,6 +515,8 @@ describe("crs dialog component", () => {
     expect(document.body.querySelector('[data-testid="crsAssignMismatch"]')?.textContent).toContain(
       "These coordinates do not fit EPSG:2154. Did you mean Convert?",
     );
+    // Not used yet: the user may convert instead
+    expect(useCrsShortlist().recent.value).toStrictEqual([]);
     click('[data-testid="crsAssignAnyway"]');
     await flushPromises();
     expect(request).toHaveBeenLastCalledWith(
