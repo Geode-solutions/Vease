@@ -8,6 +8,8 @@ import { DARK_THEME_NAME, LIGHT_THEME_NAME } from "@vease/utils/brand_themes";
 type ColorTheme = typeof LIGHT_THEME_NAME | typeof DARK_THEME_NAME;
 
 const STORAGE_KEY = "vease-color-theme";
+// Set on the root element while the theme changes: no CSS transition runs (see main.css)
+const SWITCHING_CLASS = "vease-theme-switching";
 
 interface ColorThemeApi {
   colorTheme: Ref<ColorTheme>;
@@ -61,6 +63,36 @@ function storedColorTheme(): Ref<ColorTheme> {
   return theme;
 }
 
+async function nextFrames(): Promise<void> {
+  // oxlint-disable-next-line promise/avoid-new -- requestAnimationFrame has no promise form
+  await new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(resolve);
+    });
+  });
+}
+
+let pendingSwitches = 0;
+
+// Every color of the app changes at once. With the CSS transitions on, the Chromium of the desktop app sometimes
+// Crashed computing the transitions of the new colors: renderer gone, white window until a relaunch (Vease#922).
+// They are off until the new theme is painted, which also switches all the colors together.
+async function switchWithoutTransitions(change: () => void): Promise<void> {
+  const root = document.documentElement;
+  pendingSwitches += 1;
+  root.classList.add(SWITCHING_CLASS);
+  try {
+    change();
+    await nextTick();
+    await nextFrames();
+  } finally {
+    pendingSwitches -= 1;
+    if (pendingSwitches === 0) {
+      root.classList.remove(SWITCHING_CLASS);
+    }
+  }
+}
+
 function useColorTheme(): ColorThemeApi {
   const theme = useTheme();
   const colorTheme = storedColorTheme();
@@ -68,7 +100,9 @@ function useColorTheme(): ColorThemeApi {
 
   function setColorTheme(name: ColorTheme): void {
     colorTheme.value = name;
-    void theme.change(name);
+    void switchWithoutTransitions(() => {
+      void theme.change(name);
+    });
   }
 
   function applyStoredColorTheme(): void {
@@ -84,4 +118,4 @@ function useColorTheme(): ColorThemeApi {
 }
 
 export type { ColorTheme };
-export { useColorTheme };
+export { SWITCHING_CLASS, useColorTheme };
