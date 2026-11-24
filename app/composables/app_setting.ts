@@ -62,6 +62,20 @@ function browserSetting<Key extends SettingKey>(
   });
 }
 
+// A copy without Vue proxies: toRaw only unwraps the outer one, not the elements a filter or a spread returns
+function toPlain(value: unknown): unknown {
+  const raw: unknown = toRaw(value);
+  if (Array.isArray(raw)) {
+    return raw.map((item: unknown) => toPlain(item));
+  }
+  if (typeof raw === "object" && raw !== null) {
+    return Object.fromEntries(
+      Object.entries(raw).map(([entryKey, entryValue]) => [entryKey, toPlain(entryValue)]),
+    );
+  }
+  return raw;
+}
+
 // The desktop app clears its browser storage on every launch: the settings live in its settings.json, read before
 // The page renders and written on every change, nested ones included. The browser keeps them in its local storage.
 function useAppSetting<Key extends SettingKey>(
@@ -92,8 +106,8 @@ function useAppSetting<Key extends SettingKey>(
     watch(
       setting,
       (value) => {
-        // A plain copy: Electron cannot send the Vue proxies of a nested value
-        void api.app_settings_write({ [key]: structuredClone(toRaw(value)) });
+        // Electron cannot send Vue proxies, which a nested value may hold at any depth
+        void api.app_settings_write({ [key]: toPlain(value) });
       },
       { deep: true },
     );

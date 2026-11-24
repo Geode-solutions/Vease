@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import type { AppSettings } from "~~/electron/app_settings_utils";
 import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import { nextTick } from "vue";
 import { useCrsShortlist } from "@vease/composables/crs_shortlist";
@@ -57,5 +58,34 @@ describe("crs shortlist", () => {
     recordUse({ ...LAMBERT, extra: 1 } as CRS);
     await nextTick();
     expect(localStorage.getItem("vease-crs-history")).toBe(JSON.stringify([LAMBERT]));
+  });
+});
+
+describe("crs shortlist on desktop", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(globalThis, "electronAPI");
+  });
+
+  test("saves every change, not only the first one", async () => {
+    const sent: unknown[] = [];
+    // Electron copies every message with the structured clone algorithm, which refuses Vue proxies
+    const writeSettings = vi.fn<(settings: AppSettings) => Promise<unknown>>(async (settings) => {
+      sent.push(structuredClone(settings));
+      await Promise.resolve();
+    });
+    Object.assign(globalThis, {
+      electronAPI: { app_settings: {}, app_settings_write: writeSettings },
+    });
+    const { recordUse, toggleFavorite } = useCrsShortlist();
+
+    recordUse(LAMBERT);
+    await nextTick();
+    recordUse(UTM);
+    toggleFavorite(LAMBERT);
+    await nextTick();
+    toggleFavorite(UTM);
+    await nextTick();
+    expect(sent.at(-1)).toStrictEqual({ crsFavorites: [LAMBERT, UTM] });
+    expect(sent).toContainEqual({ crsHistory: [UTM, LAMBERT] });
   });
 });
