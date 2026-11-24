@@ -4,6 +4,7 @@ import SideBar from "@vease/components/Layout/SideBar.vue";
 import { VLayout } from "vuetify/components";
 import { navigateTo } from "#app/composables/router";
 import { useAuth } from "@vease/composables/auth";
+import { useConsoleStore } from "@ogw_front/stores/console";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -95,6 +96,37 @@ describe("sidebar component", () => {
     expect(chatBtn).toBeDefined();
     await chatBtn?.trigger("click");
     expect(spySetShowChatPiP).toHaveBeenCalledWith(true);
+  });
+
+  test("toggles the console pip on console button click", async () => {
+    const wrapper = mountSideBar();
+    const uiStore = useUIStore();
+
+    await wrapper.find("[data-testid='consoleNavButton']").trigger("click");
+    expect(uiStore.showConsolePiP).toBe(true);
+
+    await wrapper.find("[data-testid='consoleNavButton']").trigger("click");
+    expect(uiStore.showConsolePiP).toBe(false);
+  });
+
+  test("the console button shows the unseen errors", async () => {
+    const wrapper = mountSideBar();
+    const consoleStore = useConsoleStore();
+
+    const hiddenBadge = wrapper.find("[data-testid='consoleNavButton'] .v-badge__badge");
+    expect(hiddenBadge.isVisible()).toBe(false);
+    consoleStore.log({
+      source: "back",
+      kind: "http",
+      route: "test",
+      status: "error",
+      error: "Boom",
+    });
+    await wrapper.vm.$nextTick();
+
+    const badge = wrapper.find("[data-testid='consoleNavButton'] .v-badge__badge");
+    expect(badge.isVisible()).toBe(true);
+    expect(badge.text()).toBe("1");
   });
 
   test("displays account title when authenticated", () => {
