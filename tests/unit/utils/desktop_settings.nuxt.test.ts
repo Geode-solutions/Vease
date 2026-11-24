@@ -12,6 +12,8 @@ import { sanitizeAppSettings } from "~~/electron/app_settings_utils";
 
 vi.setConfig({ testTimeout: 10_000 });
 
+const LAMBERT = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
+
 describe("desktop settings (electron main process)", () => {
   let tmpDir = "";
   let userDataPath = "";
@@ -57,5 +59,27 @@ describe("desktop settings (electron main process)", () => {
       colorTheme: "light",
     });
     expect(sanitizeAppSettings("dark")).toStrictEqual({});
+  });
+
+  test("keeps the valid crs entries of the favorites and history", () => {
+    expect(
+      sanitizeAppSettings({
+        crsFavorites: [LAMBERT, { authority: "EPSG", code: 2154 }, "EPSG:2193"],
+        crsHistory: [LAMBERT],
+      }),
+    ).toStrictEqual({ crsFavorites: [LAMBERT], crsHistory: [LAMBERT] });
+  });
+
+  test("drops crs lists that are not arrays", () => {
+    expect(sanitizeAppSettings({ crsFavorites: "EPSG:2154" })).toStrictEqual({});
+  });
+
+  test("saves the crs favorites next to the color theme", () => {
+    writeAppSettings(userDataPath, { colorTheme: "dark" });
+    writeAppSettings(userDataPath, { crsFavorites: [LAMBERT] });
+    expect(readAppSettings(userDataPath)).toStrictEqual({
+      colorTheme: "dark",
+      crsFavorites: [LAMBERT],
+    });
   });
 });
