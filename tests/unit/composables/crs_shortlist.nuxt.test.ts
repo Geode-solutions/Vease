@@ -34,12 +34,12 @@ describe("crs shortlist", () => {
     expect(favorites.value).toStrictEqual([]);
   });
 
-  test("a favorite is not listed in the recent crs", () => {
+  test("a favorite stays in the recent crs: they are shown apart", () => {
     const { recent, recordUse, toggleFavorite } = useCrsShortlist();
     recordUse(LAMBERT);
     recordUse(UTM);
     toggleFavorite(LAMBERT);
-    expect(recent.value).toStrictEqual([UTM]);
+    expect(recent.value).toStrictEqual([UTM, LAMBERT]);
   });
 
   test("tells apart the same code of two authorities", () => {

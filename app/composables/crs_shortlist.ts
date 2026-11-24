@@ -27,11 +27,8 @@ function useCrsShortlist(): CrsShortlistApi {
   const favorites = useAppSetting("crsFavorites", "vease-crs-favorites", []);
   const history = useAppSetting("crsHistory", "vease-crs-history", []);
 
-  // A favorite is already one click away: not listed twice
-  const recent = computed(() => {
-    const favoriteKeys = new Set(favorites.value.map((entry) => crsKey(entry)));
-    return history.value.filter((entry) => !favoriteKeys.has(crsKey(entry)));
-  });
+  // The whole history, favorites included: the selector shows the two lists in their own row
+  const recent = computed(() => history.value);
 
   function toggleFavorite(crs: CRS): void {
     const key = crsKey(crs);
