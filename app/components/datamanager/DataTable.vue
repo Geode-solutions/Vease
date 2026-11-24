@@ -7,6 +7,8 @@ import { middleTruncate } from "@ogw_front/utils/string";
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
 const SECONDS_IN_DAY = 86_400;
+// Older data show their date: "40d ago" says less than the date itself
+const RELATIVE_DATE_MAX_DAYS = 7;
 const MILLISECONDS_TO_SECONDS = 1000;
 const CRS_MAX_LENGTH = 28;
 const CRS_START_CHARS = 14;
@@ -41,9 +43,11 @@ const DATE_COLUMN = [
     key: "created_at",
     sortable: true,
     align: "center",
-    width: "170px",
+    width: "120px",
   } as const,
 ];
+// Icon buttons only: the default cell padding would push the last one out of the column
+const ICON_CELL = { class: "icon-cell" };
 
 const headers = computed(
   () =>
@@ -71,14 +75,20 @@ const headers = computed(
         key: "visible",
         sortable: false,
         align: "center",
-        width: compact ? "90px" : "140px",
+        // The picture-in-picture view only shows the eye in the header
+        width: compact ? "56px" : "140px",
+        cellProps: ICON_CELL,
+        headerProps: ICON_CELL,
       },
       {
         title: "Actions",
         key: "actions",
         sortable: false,
         align: "end",
-        width: compact ? "140px" : "170px",
+        // Four 32px buttons and their gaps
+        width: "150px",
+        cellProps: ICON_CELL,
+        headerProps: ICON_CELL,
       },
     ] as const,
 );
@@ -98,6 +108,7 @@ function getRowProps({ item }: { item: DataItem }): { class: string } {
   };
 }
 
+// Short enough for the column: the full date and time are in the tooltip
 function formatSmartDate(dateStr: string | undefined): string {
   if (!dateStr) {
     return "";
@@ -105,18 +116,26 @@ function formatSmartDate(dateStr: string | undefined): string {
   const date = new Date(dateStr);
   const diff = Math.floor((Date.now() - date.getTime()) / MILLISECONDS_TO_SECONDS);
 
-  let relative = "";
   if (diff < SECONDS_IN_MINUTE) {
-    relative = "just now";
-  } else if (diff < SECONDS_IN_HOUR) {
-    relative = `${Math.floor(diff / SECONDS_IN_MINUTE)}m ago`;
-  } else if (diff < SECONDS_IN_DAY) {
-    relative = `${Math.floor(diff / SECONDS_IN_HOUR)}h ago`;
-  } else {
-    relative = `${Math.floor(diff / SECONDS_IN_DAY)}d ago`;
+    return "just now";
   }
+  if (diff < SECONDS_IN_HOUR) {
+    return `${Math.floor(diff / SECONDS_IN_MINUTE)}m ago`;
+  }
+  if (diff < SECONDS_IN_DAY) {
+    return `${Math.floor(diff / SECONDS_IN_HOUR)}h ago`;
+  }
+  if (diff < RELATIVE_DATE_MAX_DAYS * SECONDS_IN_DAY) {
+    return `${Math.floor(diff / SECONDS_IN_DAY)}d ago`;
+  }
+  return date.toLocaleDateString();
+}
 
-  return `${relative} (${date.toLocaleDateString()})`;
+function formatFullDate(dateStr: string | undefined): string {
+  if (!dateStr) {
+    return "";
+  }
+  return new Date(dateStr).toLocaleString();
 }
 </script>
 
@@ -145,12 +164,13 @@ function formatSmartDate(dateStr: string | undefined): string {
       <!-- Header slot for Visibility column -->
       <template #[`header.visible`]>
         <div class="d-flex align-center justify-center ga-1">
-          <span>VISIBILITY</span>
+          <span v-if="!compact">VISIBILITY</span>
           <v-btn
             icon
             size="x-small"
             variant="text"
-            class="opacity-70 hover-opacity-100 ml-1"
+            class="opacity-70 hover-opacity-100"
+            :class="{ 'ml-1': !compact }"
             data-testid="toggleVisibilityHeaderButton"
             @click.stop="emit('toggle-visibility-selected')"
           >
@@ -214,16 +234,16 @@ function formatSmartDate(dateStr: string | undefined): string {
         <v-btn
           variant="text"
           size="small"
-          class="text-none text-caption font-weight-regular px-1"
+          class="crs-button text-none text-caption font-weight-regular px-1"
           data-testid="crsCell"
           @click.stop="emit('crs', item.data_id)"
         >
           <!-- The picture-in-picture view is narrow: the code alone, the full name is in the tooltip -->
-          {{
+          <span class="text-truncate">{{
             compact
               ? formatCrsCode(item.crs)
               : middleTruncate(formatCrs(item.crs), CRS_MAX_LENGTH, CRS_START_CHARS, CRS_END_CHARS)
-          }}
+          }}</span>
           <v-tooltip activator="parent" location="top">{{ formatCrs(item.crs) }}</v-tooltip>
         </v-btn>
       </template>
@@ -233,16 +253,22 @@ function formatSmartDate(dateStr: string | undefined): string {
           size="x-small"
           color="primary"
           variant="outlined"
-          class="text-none font-weight-bold"
+          class="type-chip text-none font-weight-bold"
         >
           {{ item.geode_object_type }}
+          <v-tooltip v-if="compact" activator="parent" location="top">{{
+            item.geode_object_type
+          }}</v-tooltip>
         </v-chip>
       </template>
 
       <template #[`item.created_at`]="{ item }">
-        <span class="text-caption text-medium-emphasis">{{
-          formatSmartDate(item.created_at)
-        }}</span>
+        <span class="text-caption text-medium-emphasis" data-testid="dateCell">
+          {{ formatSmartDate(item.created_at) }}
+          <v-tooltip v-if="item.created_at" activator="parent" location="top">{{
+            formatFullDate(item.created_at)
+          }}</v-tooltip>
+        </span>
       </template>
 
       <template #[`item.visible`]="{ item }">
@@ -265,6 +291,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           <v-btn
             icon
             size="small"
+            density="comfortable"
             variant="text"
             data-testid="focusDataButton"
             @click.stop="emit('focus-camera', item)"
@@ -276,6 +303,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           <v-btn
             icon
             size="small"
+            density="comfortable"
             variant="text"
             data-testid="isolateDataButton"
             @click.stop="emit('isolate', item)"
@@ -287,6 +315,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           <v-btn
             icon
             size="small"
+            density="comfortable"
             variant="text"
             data-testid="renameDataButton"
             @click.stop="emit('rename', item)"
@@ -298,6 +327,7 @@ function formatSmartDate(dateStr: string | undefined): string {
           <v-btn
             icon
             size="small"
+            density="comfortable"
             variant="text"
             color="error"
             data-testid="deleteDataButton"
@@ -395,6 +425,30 @@ function formatSmartDate(dateStr: string | undefined): string {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
+}
+
+/* A long type is cut with an ellipsis in the narrow picture-in-picture view */
+.type-chip {
+  max-width: 100%;
+}
+
+.type-chip :deep(.v-chip__content) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A long CRS name is cut with an ellipsis instead of overflowing both sides of the cell */
+.crs-button {
+  max-width: 100%;
+}
+
+.crs-button :deep(.v-btn__content) {
+  min-width: 0;
+}
+
+.transparent-table :deep(.icon-cell) {
+  padding: 0 4px !important;
 }
 
 .transparent-table :deep(.v-data-table__th .v-icon) {

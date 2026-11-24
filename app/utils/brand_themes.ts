@@ -21,15 +21,19 @@ const DARK_THEME_NAME = "dark";
 // Tone on tone, with the brand book pairs: light = Bleu Fumée + Bleu Horizon (business cards, "Typographie"),
 // Dark = Vert Noir + Vert Platine ("Vocabulaire graphique"). Surfaces only change in value, never in hue; Orange is
 // The single accent. Tints come from the brand "palette de travail" (each color mixed with white or black).
+// Text takes the app icon pair (Vert Noir on Bleu Fumée) both ways: Vert Noir on the light theme, Bleu Fumée on
+// The dark one.
 const HORIZON_INK = "#1F2E33";
+const LIGHT_TEXT = BRAND_COLORS.vertNoir;
+const DARK_TEXT = BRAND_COLORS.bleuFumee;
 
 const lightTheme = {
   dark: false,
   colors: {
     background: BRAND_COLORS.bleuFumee,
-    "on-background": HORIZON_INK,
+    "on-background": LIGHT_TEXT,
     surface: "#D9E3E6",
-    "on-surface": HORIZON_INK,
+    "on-surface": LIGHT_TEXT,
     "surface-bright": "#E8EEF0",
     "surface-light": "#CAD7DB",
     "surface-variant": BRAND_COLORS.bleuHorizon,
@@ -58,9 +62,9 @@ const darkTheme = {
   dark: true,
   colors: {
     background: BRAND_COLORS.vertNoir,
-    "on-background": BRAND_COLORS.beige,
+    "on-background": DARK_TEXT,
     surface: "#12322E",
-    "on-surface": BRAND_COLORS.beige,
+    "on-surface": DARK_TEXT,
     "surface-bright": "#1B413C",
     "surface-light": "#173A36",
     "surface-variant": BRAND_COLORS.beige,
