@@ -1,6 +1,7 @@
 import { DARK_THEME_NAME, LIGHT_THEME_NAME } from "@vease/utils/brand_themes";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { AppSettings } from "~~/electron/app_settings_utils";
+import { SWITCHING_CLASS } from "@vease/composables/color_theme";
 import { mountColorTheme } from "@vease_tests/utils/color_theme_harness";
 import { nextTick } from "vue";
 
@@ -40,6 +41,17 @@ describe("color theme", () => {
 
     applyStoredColorTheme();
     expect(isDark.value).toBe(true);
+  });
+
+  test("turns the CSS transitions off while the theme changes", async () => {
+    const { toggleColorTheme } = mountColorTheme();
+    const root = document.documentElement;
+
+    toggleColorTheme();
+    expect(root.classList.contains(SWITCHING_CLASS)).toBe(true);
+    await vi.waitFor(() => {
+      expect(root.classList.contains(SWITCHING_CLASS)).toBe(false);
+    });
   });
 
   test("falls back to light on an unknown stored value", () => {
