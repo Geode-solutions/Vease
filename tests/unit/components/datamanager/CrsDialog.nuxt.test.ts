@@ -477,17 +477,17 @@ describe("crs dialog component", () => {
 
   test("records the assigned crs, not one selected while assigning", async () => {
     vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
-    const wrapper = mountWithPlugins(CrsDialog, {
-      props: { show: true, itemId: mockItem.data_id },
-      attachTo: document.body,
-    });
     vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
       const response = RESPONSES[schema.$id];
-      // The user picks another CRS before the answer comes back
+      // The user picks another CRS before the answer comes back (the one of the assign request counts)
       click('[data-testid="crsSelectorOtherStub"]');
       await flushPromises();
       await callbacks?.response_function?.(response);
       return response;
+    });
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.data_id },
+      attachTo: document.body,
     });
     await flushPromises();
     click('[data-testid="crsSelectorStub"]');
