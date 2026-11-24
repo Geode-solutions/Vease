@@ -22,10 +22,10 @@ export function useCreateObjectTool({
   namePrefix,
   minPoints,
   schema,
-  getAdditionalPayload = () => ({}),
+  getAdditionalPayload = (): Record<string, unknown> => ({}),
   previewStyle,
   previewExtraSources = [],
-  getPreviewParams = () => ({}),
+  getPreviewParams = (): Record<string, unknown> => ({}),
   onPickedPoint,
   onReset,
 }: CreateObjectToolOptions): UseCreateObjectToolReturn {
