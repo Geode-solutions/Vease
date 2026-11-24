@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { useAuth } from "@vease/composables/auth";
+import { useConsoleStore } from "@ogw_front/stores/console";
 import { useUIStore } from "@vease/stores/ui";
 
 interface SidebarPage {
   title: string;
   icon: string;
   testId?: string;
+  badge?: () => number;
   isActive?: () => boolean;
   click: () => unknown;
 }
 
 const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
+const consoleStore = useConsoleStore();
 const route = useRoute();
 
 function isRoute(path: string): () => boolean {
@@ -52,6 +55,14 @@ const bottomPages = computed(() => {
       testId: "chatNavButton",
       isActive: (): boolean => UIStore.showChatPiP,
       click: (): unknown => UIStore.setShowChatPiP(!UIStore.showChatPiP),
+    },
+    {
+      title: "Console",
+      icon: "ph-terminal-window",
+      testId: "consoleNavButton",
+      badge: (): number => consoleStore.unseen_errors,
+      isActive: (): boolean => UIStore.showConsolePiP,
+      click: (): unknown => UIStore.setShowConsolePiP(!UIStore.showConsolePiP),
     },
 
     {
@@ -154,7 +165,15 @@ function onDrop(event: DragEvent, dropIndex: number): void {
               height="48"
               draggable="false"
             >
-              <v-icon :icon="item.icon" size="24" />
+              <v-badge
+                :model-value="(item.badge?.() ?? 0) > 0"
+                :content="item.badge?.()"
+                color="error"
+                max="99"
+                :data-testid="`${item.testId}Badge`"
+              >
+                <v-icon :icon="item.icon" size="24" />
+              </v-badge>
             </v-btn>
           </template>
         </v-tooltip>
