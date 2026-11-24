@@ -41,11 +41,7 @@ applyStoredColorTheme();
   <v-app
     :class="{
       'splash-screen-active': !infraStore.microservices_connected,
-      'drawer-active':
-        UIStore.showStepper ||
-        UIStore.showCreateTools ||
-        UIStore.showExtensions ||
-        UIStore.showCrsAlign,
+      'drawer-active': UIStore.showStepper || UIStore.showCreateTools || UIStore.showExtensions,
     }"
   >
     <MainNavigation />

@@ -1,8 +1,20 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import type { DataItem } from "@ogw_front/stores/data";
 import { setupActivePinia } from "@vease_tests/utils";
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
+
+const ITEM: DataItem = {
+  data_id: "item-1",
+  geode_id: "00000000-0000-0000-0000-000000000001",
+  name: "Points",
+  geode_object_type: "PointSet3D",
+  viewer_object_type: "mesh",
+  visible: true,
+  created_at: "",
+};
 
 describe("the UI store", () => {
   beforeEach(() => {
@@ -42,9 +54,10 @@ describe("the UI store", () => {
       uiStore.setShowStepper(true);
       uiStore.setShowCreateTools(true);
       uiStore.setShowExtensions(true);
-      uiStore.setShowCrsAlign(true);
+      useCrsStore().openCrsAlign(ITEM);
       uiStore.closeAllDrawers();
       expect(uiStore.anyOverlayOpen).toBe(false);
+      expect(useCrsStore().showCrsAlign).toBe(false);
     });
 
     test("toggleDrawer resets dropped files and toggles stepper", () => {

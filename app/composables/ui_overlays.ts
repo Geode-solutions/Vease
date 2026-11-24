@@ -1,29 +1,23 @@
-import type { DataItem } from "@vease/types/data_item";
+import { useCrsStore } from "@ogw_front/stores/crs";
 
 interface UiOverlays {
   showStepper: Ref<boolean>;
   showCreateTools: Ref<boolean>;
-  showCrsAlign: Ref<boolean>;
-  crsAlignItem: Ref<DataItem | undefined>;
   showExtensions: Ref<boolean>;
   anyOverlayOpen: ComputedRef<boolean>;
   setShowStepper: (value: boolean) => void;
   setShowCreateTools: (value: boolean) => void;
-  setShowCrsAlign: (value: boolean) => void;
   setShowExtensions: (value: boolean) => void;
-  openCrsAlign: (item: DataItem) => void;
   closeAllDrawers: () => void;
 }
 
 function useUiOverlays(): UiOverlays {
   const showStepper = ref(false);
   const showCreateTools = ref(false);
-  const showCrsAlign = ref(false);
-  const crsAlignItem = ref<DataItem | undefined>(undefined);
   const showExtensions = ref(false);
 
   const anyOverlayOpen = computed(
-    () => showStepper.value || showCreateTools.value || showExtensions.value || showCrsAlign.value,
+    () => showStepper.value || showCreateTools.value || showExtensions.value,
   );
 
   function setShowStepper(value: boolean): void {
@@ -34,17 +28,8 @@ function useUiOverlays(): UiOverlays {
     showCreateTools.value = value;
   }
 
-  function setShowCrsAlign(value: boolean): void {
-    showCrsAlign.value = value;
-  }
-
   function setShowExtensions(value: boolean): void {
     showExtensions.value = value;
-  }
-
-  function openCrsAlign(item: DataItem): void {
-    crsAlignItem.value = item;
-    showCrsAlign.value = true;
   }
 
   // The overlays counted by anyOverlayOpen
@@ -52,21 +37,18 @@ function useUiOverlays(): UiOverlays {
     showStepper.value = false;
     showCreateTools.value = false;
     showExtensions.value = false;
-    showCrsAlign.value = false;
+    // The CRS alignment is a floating panel of the viewer, closed with the drawers
+    useCrsStore().closeCrsAlign();
   }
 
   return {
     showStepper,
     showCreateTools,
-    showCrsAlign,
-    crsAlignItem,
     showExtensions,
     anyOverlayOpen,
     setShowStepper,
     setShowCreateTools,
-    setShowCrsAlign,
     setShowExtensions,
-    openCrsAlign,
     closeAllDrawers,
   };
 }
