@@ -206,8 +206,8 @@ body,
   --ogw-mono-icon-filter: brightness(0);
   --ogw-svg-icon-filter: none;
   --ogw-svg-icon-active-filter: invert(100%);
-  /* The brand book only allows the official logo colors: Vert (Platine), Anthracite, Noir, Blanc */
-  --vease-logo-color: #1e1e1e;
+  /* The logo takes the text color, as on the app icon: Vert Noir here, Bleu Fumée on the dark theme */
+  --vease-logo-color: #0c2825;
 }
 
 .v-theme--dark {
@@ -217,7 +217,7 @@ body,
   --ogw-mono-icon-filter: brightness(0) invert(0.92);
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
-  --vease-logo-color: #ffffff;
+  --vease-logo-color: #b2c5cc;
 }
 
 html .rounded-xl {
