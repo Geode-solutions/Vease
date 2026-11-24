@@ -50,7 +50,7 @@ async function navigateToApp(
     return {
       window: firstWindow,
       electronApp,
-      cleanup: async () => {
+      cleanup: async (): Promise<void> => {
         await electronApp.close();
       },
     };
@@ -78,7 +78,7 @@ async function navigateToApp(
 
     return {
       window: page,
-      cleanup: async () => {
+      cleanup: async (): Promise<void> => {
         await page.close();
         await browser.close();
         await kill(nuxtPort);

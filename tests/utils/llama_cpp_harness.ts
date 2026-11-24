@@ -1,4 +1,4 @@
-import { type Dirent, existsSync, readdirSync } from "node:fs";
+import { Dirent, existsSync, readdirSync } from "node:fs";
 import { getAvailablePort, waitForReady } from "@ogw_server/utils/scripts";
 import type {
   getLlamaStatus,
@@ -17,21 +17,18 @@ const TEST_PORT = 4891;
 const FAKE_PID = 4242;
 
 function createFakeDirent(name: string, isDirectory: boolean): Dirent {
-  return {
+  // A real instance, not an object literal: only its fields and type checks are faked
+  return Object.assign(new Dirent(), {
     name,
     parentPath: "",
-    // `path` is a required field on Dirent (deprecated alias for parentPath); there is
-    // No way to construct a valid Dirent without setting it.
-    // oxlint-disable-next-line no-deprecated -- required field, deprecated alias for parentPath
-    path: "",
-    isFile: () => !isDirectory,
-    isDirectory: () => isDirectory,
-    isBlockDevice: () => false,
-    isCharacterDevice: () => false,
-    isSymbolicLink: () => false,
-    isFIFO: () => false,
-    isSocket: () => false,
-  };
+    isFile: (): boolean => !isDirectory,
+    isDirectory: (): boolean => isDirectory,
+    isBlockDevice: (): boolean => false,
+    isCharacterDevice: (): boolean => false,
+    isSymbolicLink: (): boolean => false,
+    isFIFO: (): boolean => false,
+    isSocket: (): boolean => false,
+  });
 }
 
 // `vi.mocked(readdirSync)` types mockReturnValue against readdirSync's LAST
