@@ -34,6 +34,23 @@ interface TestFixtures {
   electronApp: ElectronApplication | undefined;
 }
 
+// Each suite starts from the default settings, as a fresh browser context does: the desktop app keeps them in the
+// Settings.json of its userData folder, which the next suites of the worker would read. Asked to the app, since
+// Windows may not resolve it from APPDATA
+async function closeWithoutSettings(
+  electronApp: ElectronApplication | undefined,
+  cleanup: () => Promise<void>,
+): Promise<void> {
+  // A crashed app cannot answer: it is still closed
+  const userDataPath = await electronApp
+    ?.evaluate(({ app }) => app.getPath("userData"))
+    .catch(() => undefined);
+  await cleanup();
+  if (userDataPath !== undefined) {
+    fs.rmSync(path.join(userDataPath, "settings.json"), { force: true });
+  }
+}
+
 const test = appTest.extend<TestFixtures, WorkerFixtures>({
   mode: ["DEFAULT", { option: true, scope: "worker" }],
 
@@ -73,7 +90,7 @@ const test = appTest.extend<TestFixtures, WorkerFixtures>({
           window,
           cleanup: async (): Promise<void> => {
             desktopApp.electronApp = undefined;
-            await cleanup();
+            await closeWithoutSettings(electronApp, cleanup);
           },
         };
       });
