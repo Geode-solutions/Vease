@@ -1,6 +1,6 @@
 // Settings of Vease kept by the desktop app in settings.json (userData folder): its browser storage is cleared
 // On every launch. Pure helpers and IPC types, free of Electron imports so they can be unit tested and shared with
-// The renderer. The browser keeps them in its local storage (see app/composables/color_theme.ts).
+// The renderer. The browser keeps them in its local storage (see app/composables/app_setting.ts).
 
 type ColorTheme = "light" | "dark";
 
