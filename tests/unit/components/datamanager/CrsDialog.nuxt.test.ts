@@ -20,17 +20,20 @@ const EXPECTED_EVENT_COUNT = 1;
 const EXPECTED_REQUEST_COUNT = 2;
 const CREATED_AT = "2026-01-01T00:00:00.000Z";
 
-// Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT
-const { LAMBERT, CRS_SELECTOR_STUB } = vi.hoisted(() => {
+// Hoisted with vi.mock, so the CrsSelector stub can emit LAMBERT, or UTM as another choice
+const { LAMBERT, UTM, CRS_SELECTOR_STUB } = vi.hoisted(() => {
   const lambert = { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" };
+  const utm = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
   return {
     LAMBERT: lambert,
+    UTM: utm,
     CRS_SELECTOR_STUB: {
       name: "CrsSelector",
       emits: ["update:modelValue"],
-      data: (): { crs: typeof lambert } => ({ crs: lambert }),
+      data: (): { crs: typeof lambert; other: typeof utm } => ({ crs: lambert, other: utm }),
       template:
-        "<button data-testid='crsSelectorStub' @click=\"$emit('update:modelValue', crs)\" />",
+        "<div><button data-testid='crsSelectorStub' @click=\"$emit('update:modelValue', crs)\" />" +
+        "<button data-testid='crsSelectorOtherStub' @click=\"$emit('update:modelValue', other)\" /></div>",
     },
   };
 });
@@ -60,7 +63,6 @@ function scopeValue(): string | undefined {
   return document.body.querySelector<HTMLInputElement>('[data-testid="crsScope"] input:checked')
     ?.value;
 }
-const UTM = { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" };
 const UTM_RESPONSE = {
   crs_name: "EPSG:32631",
   crs_info: { authority: "EPSG", code: "32631", name: "WGS 84 / UTM zone 31N" },
@@ -469,6 +471,30 @@ describe("crs dialog component", () => {
 
     expect(updateItem).toHaveBeenLastCalledWith("item-1", { crs: LAMBERT });
     // Offered again as a recent CRS in the next CRS selectors
+    expect(useCrsShortlist().recent.value).toStrictEqual([LAMBERT]);
+    wrapper.unmount();
+  });
+
+  test("records the assigned crs, not one selected while assigning", async () => {
+    vi.spyOn(useDataStore(), "updateItem").mockResolvedValue(undefined);
+    const wrapper = mountWithPlugins(CrsDialog, {
+      props: { show: true, itemId: mockItem.data_id },
+      attachTo: document.body,
+    });
+    vi.spyOn(getBackStore(), "request").mockImplementation(async ({ schema }, callbacks) => {
+      const response = RESPONSES[schema.$id];
+      // The user picks another CRS before the answer comes back
+      click('[data-testid="crsSelectorOtherStub"]');
+      await flushPromises();
+      await callbacks?.response_function?.(response);
+      return response;
+    });
+    await flushPromises();
+    click('[data-testid="crsSelectorStub"]');
+    await flushPromises();
+    click('[data-testid="crsAssignButton"]');
+    await flushPromises();
+
     expect(useCrsShortlist().recent.value).toStrictEqual([LAMBERT]);
     wrapper.unmount();
   });

@@ -122,7 +122,7 @@ async function onAssigned(
   assignedItem: Pick<CrsItem, "data_id" | "name">,
   linked: CrsItem[],
   response: AssignResponse,
-  { guarded, projectCrs }: { guarded: boolean; projectCrs: CRS | undefined },
+  { crs, guarded, projectCrs }: { crs: CRS; guarded: boolean; projectCrs: CRS | undefined },
 ): Promise<void> {
   if (response.unsupported === true) {
     // Only the data with points can be georeferenced, not grids
@@ -140,12 +140,10 @@ async function onAssigned(
   await followProject(plausibleEntries(entries), projectCrs);
   if (guarded && response.crs === undefined) {
     // The user chooses between converting and relabeling anyway
-    assignMismatch.value = formatCrsCode(selectedCrs.value);
+    assignMismatch.value = formatCrsCode(crs);
     return;
   }
-  if (selectedCrs.value) {
-    recordUse(selectedCrs.value);
-  }
+  recordUse(crs);
   emit("assigned");
   emit("update:show", false);
   warnImplausible(
@@ -158,7 +156,9 @@ async function onAssigned(
 // Data already in a CRS are relabeled only when their coordinates fit it, unless confirmed
 async function handleAssign(anyway = false): Promise<void> {
   const assignedItem = item.value;
-  if (!assignedItem || !selectedCrs.value || assigning.value) {
+  // Taken before: the user may pick another CRS while the request runs
+  const crs = selectedCrs.value;
+  if (!assignedItem || !crs || assigning.value) {
     return;
   }
   const linked = scope.value === "all" ? linkCandidates.value : [];
@@ -176,12 +176,13 @@ async function handleAssign(anyway = false): Promise<void> {
           id: assignedItem.data_id,
           ...(linkedDataIds.length > 0 && { linked_ids: linkedDataIds }),
           ...(guarded && { only_plausible: true }),
-          ...selectedCrs.value,
+          ...crs,
         },
       },
       {
         response_function: async (response: AssignResponse) => {
           await onAssigned(assignedItem, linked, response, {
+            crs,
             guarded,
             projectCrs,
           });
