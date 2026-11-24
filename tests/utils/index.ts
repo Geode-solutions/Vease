@@ -135,7 +135,7 @@ function withSetup<TValue>(composable: () => TValue): WithSetupResult<TValue> {
   const composableResult = assertDefined<TValue>(result, "Composable did not run during setup");
   return {
     result: composableResult,
-    unmount: () => {
+    unmount: (): void => {
       app.unmount();
     },
   };
@@ -165,7 +165,7 @@ function createToolMounter(): ToolMounter {
     const handle = withSetup(composable);
     let unmounted = false;
     const tracked: MountedTool = {
-      unmount: () => {
+      unmount: (): void => {
         if (unmounted) {
           return;
         }

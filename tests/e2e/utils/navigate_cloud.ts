@@ -93,7 +93,7 @@ async function openCloudApp(
 
   return {
     window: page,
-    cleanup: async () => {
+    cleanup: async (): Promise<void> => {
       await page.close();
       await browser.close();
     },
