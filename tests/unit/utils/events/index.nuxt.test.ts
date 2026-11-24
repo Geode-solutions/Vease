@@ -5,6 +5,7 @@ import { connectToEventSource } from "@vease/utils/events/index";
 import { flushPromises } from "@vue/test-utils";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import opengeodeweb_back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
+import { useConsoleStore } from "@ogw_front/stores/console";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -92,6 +93,22 @@ describe("events/index", () => {
 
       expect(importItem).toHaveBeenCalledWith(item);
       expect(remoteRenderMock).toHaveBeenCalledWith();
+    });
+
+    test("a received event is logged in the console", async () => {
+      const item = { id: "item-3", viewer_object_type: "model", geode_object_type: "BRep" };
+      getEventSourceState().event.value = saveViewableFileId;
+      getEventSourceState().data.value = JSON.stringify({ data: [item] });
+
+      connectToEventSource();
+      await flushPromises();
+
+      expect(useConsoleStore().entries.at(-1)).toMatchObject({
+        source: "events",
+        kind: "event",
+        route: saveViewableFileId,
+        label: "1 object received",
+      });
     });
 
     test("re-dispatches when a new event arrives after connecting", async () => {
