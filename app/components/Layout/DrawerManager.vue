@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
+import ConsolePiP from "@vease/components/console/ConsolePiP.vue";
 import CreateTools from "@vease/components/CreateTools.vue";
 import CrsAlign from "@vease/components/tools/CrsAlign.vue";
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
@@ -104,6 +105,8 @@ function handleEscape(): void {
   <DataManagerPiP v-if="uiStore.showDataManagerPiP" />
 
   <ChatPiP v-if="uiStore.showChatPiP" />
+
+  <ConsolePiP v-if="uiStore.showConsolePiP" />
 </template>
 
 <style scoped>

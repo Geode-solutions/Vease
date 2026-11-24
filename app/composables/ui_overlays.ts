@@ -76,10 +76,12 @@ interface UiPanels {
   showCreateAOI: Ref<boolean>;
   showDataManagerPiP: Ref<boolean>;
   showChatPiP: Ref<boolean>;
+  showConsolePiP: Ref<boolean>;
   setShowCreateVOI: (value: boolean) => void;
   setShowCreateAOI: (value: boolean) => void;
   setShowDataManagerPiP: (value: boolean) => void;
   setShowChatPiP: (value: boolean) => void;
+  setShowConsolePiP: (value: boolean) => void;
 }
 
 function useUiPanels(): UiPanels {
@@ -87,6 +89,7 @@ function useUiPanels(): UiPanels {
   const showCreateAOI = ref(false);
   const showDataManagerPiP = ref(false);
   const showChatPiP = ref(false);
+  const showConsolePiP = ref(false);
 
   function setShowCreateVOI(value: boolean): void {
     showCreateVOI.value = value;
@@ -104,15 +107,21 @@ function useUiPanels(): UiPanels {
     showChatPiP.value = value;
   }
 
+  function setShowConsolePiP(value: boolean): void {
+    showConsolePiP.value = value;
+  }
+
   return {
     showCreateVOI,
     showCreateAOI,
     showDataManagerPiP,
     showChatPiP,
+    showConsolePiP,
     setShowCreateVOI,
     setShowCreateAOI,
     setShowDataManagerPiP,
     setShowChatPiP,
+    setShowConsolePiP,
   };
 }
 
