@@ -4,11 +4,11 @@
 import { type Locator, type Page, expect } from "@playwright/test";
 
 // Local imports
+import { closeFeedbackSnackbar, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
 import {
   expandGeodeObjectTypeInTree,
   getTreeRowByTextAndParent,
 } from "#ogw_e2e/object_trees/common.js";
-import { closeFeedbackSnackbar } from "#ogw_e2e/app_interaction.js";
 import { getDataTableRow } from "./data_manager";
 import { getMainObjectTree } from "#ogw_e2e/object_trees/main_object_tree.js";
 import { waitForActionSettled } from "#ogw_e2e/wait_for_action_settled.js";
@@ -51,7 +51,7 @@ async function openCrsFromTree(
   const editButton = window.locator(".v-overlay--active").getByTestId("editCrsBtn");
   // The tooltip opens on mouseenter: a hover landing while the tree re-renders misses it, so it is retried from outside the row
   await expect(async () => {
-    await window.mouse.move(0, 0);
+    await moveMouseOutOfTheWay(window);
     await row.getByTestId("treeItemLabel").first().hover();
     await expect(editButton).toBeVisible({ timeout: TOOLTIP_TIMEOUT_MS });
   }).toPass();
