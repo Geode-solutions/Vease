@@ -243,9 +243,7 @@ function close(): void {
       </div>
 
       <div class="console-foot d-flex align-center ga-4 px-4">
-        <span>
-          <b>{{ consoleStore.entries.length }}</b> entries
-        </span>
+        <span> <b>{{ consoleStore.entries.length }}</b> entries </span>
         <span>
           <b :class="{ 'text-error': consoleStore.error_count > 0 }">{{
             consoleStore.error_count
