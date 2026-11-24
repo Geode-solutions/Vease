@@ -40,16 +40,21 @@ async function getDataTreeRow(
   return getTreeRowByTextAndParent(window, geodeObjectType, dataName, tree);
 }
 
+const TOOLTIP_TIMEOUT_MS = 2000;
+
 async function openCrsFromTree(
   window: Page,
   geodeObjectType: string,
   dataName: string,
 ): Promise<void> {
   const row = await getDataTreeRow(window, geodeObjectType, dataName);
-  await row.getByTestId("treeItemLabel").first().hover();
-  await waitForActionSettled(window);
   const editButton = window.locator(".v-overlay--active").getByTestId("editCrsBtn");
-  await editButton.hover();
+  // The tooltip opens on mouseenter: a hover landing while the tree re-renders misses it, so it is retried from outside the row
+  await expect(async () => {
+    await window.mouse.move(0, 0);
+    await row.getByTestId("treeItemLabel").first().hover();
+    await expect(editButton).toBeVisible({ timeout: TOOLTIP_TIMEOUT_MS });
+  }).toPass();
   await editButton.click();
   await waitForActionSettled(window);
 }
@@ -127,6 +132,8 @@ async function expectFeedback(
   const shown = window
     .getByTestId("feedbackSnackbar")
     .filter({ hasText: text })
+    // Several builds can fail with the same message (e.g. one per aligned data): any of them will do
+    .first()
     .waitFor({ state: "visible", timeout: FEEDBACK_TIMEOUT_MS });
   await Promise.all([shown, action()]);
   await closeFeedbackSnackbar(window);
