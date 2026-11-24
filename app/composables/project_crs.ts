@@ -52,7 +52,7 @@ function useProjectCrs() {
     }
     return {
       label: "Edit CRS",
-      onClick: () => {
+      onClick: (): void => {
         crsStore.requestCrsEdit(item.data_id);
       },
     };
