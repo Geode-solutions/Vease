@@ -19,8 +19,24 @@ const ogwTestDataPath = path.join(
   "data",
 );
 
+// A conversion can be long, the test timeout bounds it
+const IMPORT_TIMEOUT_MS = 120_000;
+
 function getLayoutImportButton(window: Page): Locator {
   return window.getByTestId("layoutImportButton");
+}
+
+function getDataImportStepper(window: Page): Locator {
+  return window.getByTestId("DataImportStepper");
+}
+
+// The stepper closes as soon as the import starts: each file shows in the object tree with a spinner until it is loaded
+async function waitForImportDone(window: Page, loadTimeout: number): Promise<void> {
+  await getDataImportStepper(window).waitFor({ state: "detached" });
+  await expect(window.locator(".tree-row-wrapper.is-loading")).toHaveCount(0, {
+    timeout: IMPORT_TIMEOUT_MS,
+  });
+  await waitForActionSettled(window, loadTimeout);
 }
 
 async function loadVeaseTestDatas(
@@ -48,11 +64,8 @@ async function loadVeaseTestDatas(
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputDataFilePaths);
-  const dataImportStepper = window.getByTestId("DataImportStepper");
-  const finalizeImportButton = window.getByTestId("finalizeImportButton");
-  await finalizeImportButton.click();
-  await dataImportStepper.waitFor({ state: "detached" });
-  await waitForActionSettled(window, loadTimeout);
+  await window.getByTestId("finalizeImportButton").click();
+  await waitForImportDone(window, loadTimeout);
 }
 
 async function loadOgwTestDatas(
@@ -64,10 +77,6 @@ async function loadOgwTestDatas(
     loadTimeout,
     inputDataPath: ogwTestDataPath,
   });
-}
-
-function getDataImportStepper(window: Page): Locator {
-  return window.getByTestId("DataImportStepper");
 }
 
 interface CsvColumns {
@@ -112,10 +121,8 @@ async function loadVeaseCsvData(
   await selectCsvColumn(window, csvDialog, "Z Column", columns.z);
   await csvDialog.getByRole("button", { name: "Confirm" }).click();
   await csvDialog.waitFor({ state: "detached" });
-  const dataImportStepper = getDataImportStepper(window);
   await window.getByTestId("finalizeImportButton").click();
-  await dataImportStepper.waitFor({ state: "detached" });
-  await waitForActionSettled(window, loadTimeout);
+  await waitForImportDone(window, loadTimeout);
 }
 
 async function selectTimeSeriesFile(window: Page, timeSeriesPath: string): Promise<void> {
