@@ -11,7 +11,7 @@ import {
   polygonalSurfaceGeodeObjectType,
 } from "#ogw_e2e/constants.js";
 import { closeAllMenus, moveMouseOutOfTheWay } from "#ogw_e2e/app_interaction.js";
-import { confirmAssign, openCrsByButton, selectCrs } from "@vease_tests/utils/crs";
+import { confirmAssign, selectCrs } from "#ogw_e2e/crs.js";
 import {
   expandMainObjectTree,
   openDataContextMenu,
@@ -29,6 +29,7 @@ import {
   setMeshPolygonsVertexAttribute,
 } from "#ogw_e2e/data/index.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
+import { openCrsByButton } from "@vease_tests/utils/crs";
 import { test } from "@vease_tests/utils/fixtures";
 
 // Constants

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AXIS_ICONS } from "@vease/utils/axis_icons";
-import PickButton from "@vease/components/tools/PickButton.vue";
+import PickButton from "@ogw_front/components/PickButton.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 import { singlePolygon } from "@vease/utils/create_geometry";
 import { useCreateObjectTool } from "@vease/composables/create_object";

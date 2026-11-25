@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import type { CRS } from "@geode/opengeodeweb-back/schema_types";
 import StepActions from "@vease/components/StepActions.vue";
 import { consola } from "consola";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
-import { useCrsStore } from "@ogw_front/stores/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useProjectCrs } from "@vease/composables/project_crs";
 
 const emit = defineEmits<{
   update_values: [];
@@ -26,33 +22,13 @@ const {
   skippedFiles?: string[];
 }>();
 
-const dataStore = useDataStore();
-const crsStore = useCrsStore();
-const { harmonizeImportedCrs } = useProjectCrs();
-
-async function harmonize(ids: string[], projectCrs: CRS | undefined): Promise<void> {
-  try {
-    await harmonizeImportedCrs(ids, projectCrs);
-  } catch (error) {
-    consola.error("CRS harmonization failed:", error);
-  }
-}
-
 async function importInBackground(
   files_to_import: Parameters<typeof importWorkflow>[0],
-  existingIds: Set<string>,
-  projectCrs: CRS | undefined,
 ): Promise<void> {
   try {
     await importWorkflow(files_to_import);
   } catch (error) {
     consola.error("Import failed:", error);
-  } finally {
-    const items = await dataStore.allItems();
-    const importedIds = items
-      .map((item) => item.data_id)
-      .filter((dataId) => !existingIds.has(dataId));
-    await harmonize(importedIds, projectCrs);
   }
 }
 
@@ -70,15 +46,10 @@ async function import_files(): Promise<void> {
   if (left_out.length > 0) {
     useFeedbackStore().add_warning(`Skipped files: ${left_out.join(", ")}`);
   }
-  // When a file fails, the import workflow throws once every file ran without returning the
-  // Imported ids: they are found by difference
-  const existingItems = await dataStore.allItems();
-  // The project follows the data as they land: the reference is taken before the import
-  const { projectCrs } = crsStore;
-  const existingIds = new Set(existingItems.map((item) => item.data_id));
-  // Each file shows in the object tree with a spinner while it is imported: the stepper closes
-  // Right away and the UI stays usable, the snackbars report the outcome
-  void importInBackground(files_to_import, existingIds, projectCrs);
+  // Each file shows in the object tree with a spinner while it is imported, then the import workflow harmonizes
+  // The imported data with the project CRS: the stepper closes right away and the UI stays usable, the snackbars
+  // Report the outcome
+  void importInBackground(files_to_import);
 }
 </script>
 
