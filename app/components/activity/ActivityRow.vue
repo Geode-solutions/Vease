@@ -68,6 +68,7 @@ function toggle(): void {
       'activity-row--clickable': hasDetail,
     }"
     data-testid="activityRow"
+    :data-entry-id="entry.id"
     @click="toggle"
   >
     <span class="activity-row__time">{{ formatTime(entry.started_at) }}</span>
@@ -79,7 +80,8 @@ function toggle(): void {
         }}
       </template>
       <template v-else>
-        <span class="text-medium-emphasis">{{ parts.scope }}</span>{{ parts.name }}
+        <span class="text-medium-emphasis">{{ parts.scope }}</span
+        >{{ parts.name }}
         <span v-if="entry.label" class="text-medium-emphasis"> · {{ entry.label }}</span>
       </template>
     </span>

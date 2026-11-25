@@ -3,6 +3,7 @@ import { MAX_ENTRIES, isFailure, useActivityStore } from "@ogw_front/stores/acti
 import { matchesSearch, sortSources } from "@vease/utils/activity_display";
 import ActivityRow from "@vease/components/activity/ActivityRow.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
+import { useActivityFollow } from "@vease/composables/activity_follow";
 import { useNow } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
 
@@ -25,8 +26,6 @@ const statusFilter = ref<StatusFilter>("all");
 // Vuetify sets a cleared field to null
 const search = ref<string | null>("");
 const expandedIds = ref(new Set<number>());
-// While paused, the history stops at the last entry seen: new lines wait instead of pushing the list down
-const pausedAfterId = ref<number | undefined>(undefined);
 
 const sources = computed(() => sortSources(activityStore.entries.map((entry) => entry.source)));
 
@@ -48,21 +47,15 @@ const history = computed(() => {
   return visibleEntries.value
     .filter(
       (entry) =>
-        entry.status !== "running" &&
-        (statusFilter.value === "all" || isFailure(entry.status)) &&
-        (pausedAfterId.value === undefined || entry.id <= pausedAfterId.value),
+        entry.status !== "running" && (statusFilter.value === "all" || isFailure(entry.status)),
     )
     .toReversed();
 });
-const waitingCount = computed(() => {
-  const pausedAfter = pausedAfterId.value;
-  if (pausedAfter === undefined) {
-    return 0;
-  }
-  return activityStore.entries.filter(
-    (entry) => entry.id > pausedAfter && entry.status !== "running",
-  ).length;
-});
+const list = useTemplateRef<HTMLElement>("list");
+const { atTop, newCount, onScroll, backToTop } = useActivityFollow(list, () => [
+  ...running.value,
+  ...history.value,
+]);
 
 watch(
   () => activityStore.running.length > 0,
@@ -105,14 +98,6 @@ function toggleExpanded(entryId: number): void {
   expandedIds.value = next;
 }
 
-function togglePause(): void {
-  if (pausedAfterId.value === undefined) {
-    pausedAfterId.value = activityStore.entries.at(-1)?.id ?? 0;
-  } else {
-    pausedAfterId.value = undefined;
-  }
-}
-
 function clear(): void {
   activityStore.clear();
   expandedIds.value = new Set();
@@ -143,18 +128,6 @@ function close(): void {
           <span class="activity-live__dot" />{{ activityStore.running.length }} running
         </span>
         <v-spacer />
-        <v-btn
-          icon
-          size="x-small"
-          :variant="pausedAfterId === undefined ? 'text' : 'tonal'"
-          data-testid="activityPauseButton"
-          @click="togglePause"
-        >
-          <v-icon size="16">{{ pausedAfterId === undefined ? "ph-pause" : "ph-play" }}</v-icon>
-          <v-tooltip activator="parent" location="top">
-            {{ pausedAfterId === undefined ? "Pause" : "Resume" }}
-          </v-tooltip>
-        </v-btn>
         <v-btn icon size="x-small" variant="text" data-testid="activityClearButton" @click="clear">
           <v-icon size="16">ph-trash</v-icon>
           <v-tooltip activator="parent" location="top">Clear</v-tooltip>
@@ -213,49 +186,69 @@ function close(): void {
         </div>
       </div>
 
-      <div class="activity-list flex-grow-1 overflow-y-auto">
-        <template v-if="running.length > 0">
-          <div class="activity-section">
-            <v-icon size="12" class="mr-1">ph-circle-notch</v-icon>In progress
+      <div class="activity-list-wrapper flex-grow-1">
+        <v-fade-transition>
+          <v-btn
+            v-if="!atTop"
+            size="small"
+            rounded="pill"
+            color="primary"
+            variant="flat"
+            prepend-icon="ph-arrow-up"
+            class="activity-back-to-top text-none"
+            data-testid="activityBackToTop"
+            @click="backToTop"
+          >
+            {{ newCount > 0 ? `${newCount} new` : "Back to top" }}
+          </v-btn>
+        </v-fade-transition>
+        <div
+          ref="list"
+          class="activity-list fill-height overflow-y-auto"
+          @scroll.passive="onScroll"
+        >
+          <template v-if="running.length > 0">
+            <div class="activity-section">
+              <v-icon size="12" class="mr-1">ph-circle-notch</v-icon>In progress
+            </div>
+            <ActivityRow
+              v-for="entry in running"
+              :key="entry.id"
+              :entry="entry"
+              :now="now.getTime()"
+              :expanded="expandedIds.has(entry.id)"
+              @toggle="toggleExpanded(entry.id)"
+            />
+          </template>
+
+          <div v-if="history.length > 0" class="activity-section">
+            <v-icon size="12" class="mr-1">ph-clock-counter-clockwise</v-icon>History
           </div>
           <ActivityRow
-            v-for="entry in running"
+            v-for="entry in history"
             :key="entry.id"
             :entry="entry"
-            :now="now.getTime()"
             :expanded="expandedIds.has(entry.id)"
             @toggle="toggleExpanded(entry.id)"
           />
-        </template>
 
-        <div v-if="history.length > 0" class="activity-section">
-          <v-icon size="12" class="mr-1">ph-clock-counter-clockwise</v-icon>History
-          <span v-if="waitingCount > 0" class="activity-waiting ml-2">
-            paused · {{ waitingCount }} new
-          </span>
-        </div>
-        <ActivityRow
-          v-for="entry in history"
-          :key="entry.id"
-          :entry="entry"
-          :expanded="expandedIds.has(entry.id)"
-          @toggle="toggleExpanded(entry.id)"
-        />
-
-        <div
-          v-if="running.length === 0 && history.length === 0"
-          class="d-flex flex-column align-center justify-center text-center fill-height px-6"
-          data-testid="activityEmpty"
-        >
-          <v-icon size="32" class="mb-2 text-medium-emphasis">ph-pulse</v-icon>
-          <div class="text-caption text-medium-emphasis">
-            Requests to the back and the viewer show up here as they run.
+          <div
+            v-if="running.length === 0 && history.length === 0"
+            class="d-flex flex-column align-center justify-center text-center fill-height px-6"
+            data-testid="activityEmpty"
+          >
+            <v-icon size="32" class="mb-2 text-medium-emphasis">ph-pulse</v-icon>
+            <div class="text-caption text-medium-emphasis">
+              Requests to the back and the viewer show up here as they run.
+            </div>
           </div>
         </div>
       </div>
 
       <div class="activity-foot d-flex align-center ga-4 px-4">
-        <span> <b>{{ activityStore.entries.length }}</b> entries </span>
+        <span>
+          <b>{{ activityStore.entries.length }}</b> entries
+        </span>
         <span>
           <b :class="{ 'text-error': activityStore.error_count > 0 }">{{
             activityStore.error_count
@@ -373,10 +366,24 @@ function close(): void {
   opacity: 0.6;
 }
 
-.activity-waiting {
-  text-transform: none;
-  letter-spacing: 0;
-  color: rgb(var(--v-theme-accent));
+.activity-list-wrapper {
+  position: relative;
+  min-height: 0;
+}
+
+/* The rows keep their place by themselves (useActivityFollow): no native anchoring on top of it */
+.activity-list {
+  position: relative;
+  overflow-anchor: none;
+}
+
+.activity-back-to-top {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(var(--v-theme-on-surface), 0.2);
 }
 
 .activity-foot {
