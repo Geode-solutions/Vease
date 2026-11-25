@@ -113,7 +113,7 @@ describe("sidebar component", () => {
     const wrapper = mountSideBar();
     const activityStore = useActivityStore();
 
-    const hiddenBadge = wrapper.find("[data-testid='activityNavButton'] .v-badge__badge");
+    const hiddenBadge = wrapper.find("[data-testid='activityNavButtonBadge'] .v-badge__badge");
     expect(hiddenBadge.isVisible()).toBe(false);
     activityStore.log({
       source: "back",
@@ -124,7 +124,7 @@ describe("sidebar component", () => {
     });
     await wrapper.vm.$nextTick();
 
-    const badge = wrapper.find("[data-testid='activityNavButton'] .v-badge__badge");
+    const badge = wrapper.find("[data-testid='activityNavButtonBadge'] .v-badge__badge");
     expect(badge.isVisible()).toBe(true);
     expect(badge.text()).toBe("1");
   });
