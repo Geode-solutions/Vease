@@ -26,15 +26,18 @@
   --vease-radius-control: 6px;
   --vease-radius-container: 12px;
   --vease-shell-gutter: 16px;
-  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius,
-     and one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
-     capsule sits 1 px in, its own border bringing its first button to the same column. */
+  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius, and one
+     icon column (header icon, toolbar first icon, row caret) 8 px after a 6 px gutter, the room of the model tree
+     accent. The toolbar capsule sits 1 px in, its own border bringing its first button to the same column, 4 px
+     from the header above and from the first row below. */
   --ogw-viewer-panel-inset: 8px;
   --ogw-viewer-panel-radius: var(--vease-radius-control);
   --ogw-viewer-panel-padding: 8px;
+  --ogw-viewer-panel-gutter: 6px;
   --ogw-viewer-row-radius: var(--vease-radius-control);
   --ogw-viewer-controls-inset: 1px;
   --ogw-viewer-controls-padding: 0px;
+  --ogw-viewer-controls-padding-block: 4px;
   --ogw-viewer-controls-icon-size: 24px;
 }
 
