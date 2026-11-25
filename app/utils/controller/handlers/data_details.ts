@@ -105,16 +105,22 @@ async function describeModel(modelId: DataId): Promise<TargetsDescription> {
   };
 }
 
+async function describe(item: DataItem): Promise<TargetsDescription> {
+  if (item.viewer_object_type === "model") {
+    const description = await describeModel(item.data_id);
+    return description;
+  }
+  const description = await describeMesh(item);
+  return description;
+}
+
 async function dataDetails(params: unknown): Promise<unknown> {
   if (!isDetailsParams(params)) {
     throw new ControllerError("data-details expects the id of a loaded data");
   }
   const item = await getDataItem(params.id);
   const { data_id, name, geode_object_type, viewer_object_type } = item;
-  let description = await describeMesh(item);
-  if (viewer_object_type === "model") {
-    description = await describeModel(data_id);
-  }
+  const description = await describe(item);
   return {
     id: data_id,
     name,

@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getDataStyleStore } from "@vease/utils/external_stores";
@@ -208,6 +209,17 @@ describe("the data-details controller handler", () => {
       schema: backSchemas.model_component_vertex_attribute_names,
       params: { id: MODEL.data_id, component_ids: ["c1"] },
     });
+  });
+
+  test("describes a model without reading mesh attributes", async () => {
+    item.mockResolvedValue(MODEL);
+    getStyle.mockReturnValue({ id: MODEL.data_id, points: {}, edges: {} });
+    getAllMeshComponents.mockResolvedValue([]);
+    answerAttributes({});
+
+    await controllerHandlers["data-details"]?.({ id: MODEL.data_id });
+
+    expect(requestedSchemaIds()).toStrictEqual([]);
   });
 
   test("throws a ControllerError for an unknown id", async () => {
