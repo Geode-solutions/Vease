@@ -1,12 +1,23 @@
 import type { ComputedRef, Ref } from "vue";
-import { useAppSetting } from "@vease/composables/app_setting";
+import {
+  defineUserSetting,
+  useUserSetting,
+} from "@ogw_front/composables/user_setting";
 import { useTheme } from "vuetify";
+import { z } from "zod";
 
 import { DARK_THEME_NAME, LIGHT_THEME_NAME } from "@vease/utils/brand_themes";
 
 type ColorTheme = typeof LIGHT_THEME_NAME | typeof DARK_THEME_NAME;
 
 const STORAGE_KEY = "vease-color-theme";
+// Saved in settings.json in the desktop app, in the local storage in the browser (kept as a raw string there)
+const colorThemeSetting = defineUserSetting<ColorTheme>({
+  key: "colorTheme",
+  schema: z.enum([LIGHT_THEME_NAME, DARK_THEME_NAME]),
+  fallback: LIGHT_THEME_NAME,
+  browserKey: STORAGE_KEY,
+});
 // Set on the root element while the theme changes: no CSS transition runs (see main.css)
 const SWITCHING_CLASS = "vease-theme-switching";
 
@@ -50,8 +61,7 @@ async function switchWithoutTransitions(change: () => void): Promise<void> {
 
 function useColorTheme(): ColorThemeApi {
   const theme = useTheme();
-  // Saved in settings.json in the desktop app, in the local storage in the browser
-  const colorTheme = useAppSetting("colorTheme", STORAGE_KEY, LIGHT_THEME_NAME);
+  const colorTheme = useUserSetting(colorThemeSetting);
   const isDark = computed(() => theme.global.current.value.dark);
 
   function setColorTheme(name: ColorTheme): void {
@@ -62,7 +72,8 @@ function useColorTheme(): ColorThemeApi {
   }
 
   function applyStoredColorTheme(): void {
-    const stored = colorTheme.value === DARK_THEME_NAME ? DARK_THEME_NAME : LIGHT_THEME_NAME;
+    const stored =
+      colorTheme.value === DARK_THEME_NAME ? DARK_THEME_NAME : LIGHT_THEME_NAME;
     void theme.change(stored);
   }
 
@@ -70,7 +81,13 @@ function useColorTheme(): ColorThemeApi {
     setColorTheme(isDark.value ? LIGHT_THEME_NAME : DARK_THEME_NAME);
   }
 
-  return { colorTheme, isDark, applyStoredColorTheme, setColorTheme, toggleColorTheme };
+  return {
+    colorTheme,
+    isDark,
+    applyStoredColorTheme,
+    setColorTheme,
+    toggleColorTheme,
+  };
 }
 
 export type { ColorTheme };
