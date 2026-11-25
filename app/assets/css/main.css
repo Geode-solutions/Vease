@@ -304,6 +304,8 @@ html .ogw-loading .responsive-title {
   font-weight: 700 !important;
   letter-spacing: -0.03em;
   text-transform: lowercase;
+  /* The tight line height was set for capitals: the descender of the "g" goes past it, the card title would clip it */
+  overflow: visible;
 }
 
 .ogw-loading .responsive-title::first-letter {
