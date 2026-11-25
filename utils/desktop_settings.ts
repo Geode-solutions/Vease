@@ -29,10 +29,17 @@ function readAppSettings(userDataPath: string): AppSettings {
 
 // Merges the given settings into the saved ones and returns the result
 function writeAppSettings(userDataPath: string, settings: unknown): AppSettings {
-  const merged = { ...readAppSettings(userDataPath), ...sanitizeAppSettings(settings) };
+  const merged = {
+    ...readAppSettings(userDataPath),
+    ...sanitizeAppSettings(settings),
+  };
   try {
     fs.mkdirSync(userDataPath, { recursive: true });
-    fs.writeFileSync(path.join(userDataPath, SETTINGS_FILE), JSON.stringify(merged, undefined, 2));
+    // Written aside then renamed: a crash while writing never leaves a truncated settings.json
+    const settingsPath = path.join(userDataPath, SETTINGS_FILE);
+    const temporaryPath = `${settingsPath}.tmp`;
+    fs.writeFileSync(temporaryPath, JSON.stringify(merged, undefined, 2));
+    fs.renameSync(temporaryPath, settingsPath);
   } catch (error) {
     consola.warn("[Electron] Failed to save settings", error);
   }

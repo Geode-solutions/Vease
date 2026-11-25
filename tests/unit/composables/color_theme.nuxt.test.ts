@@ -27,15 +27,15 @@ describe("color theme", () => {
     toggleColorTheme();
     await nextTick();
     expect(isDark.value).toBe(true);
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(DARK_THEME_NAME);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(DARK_THEME_NAME));
 
     toggleColorTheme();
     await nextTick();
     expect(isDark.value).toBe(false);
-    expect(localStorage.getItem(STORAGE_KEY)).toBe(LIGHT_THEME_NAME);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify(LIGHT_THEME_NAME));
   });
 
-  test("applies the stored theme", () => {
+  test("applies the theme stored raw by a previous version", () => {
     localStorage.setItem(STORAGE_KEY, DARK_THEME_NAME);
     const { applyStoredColorTheme, isDark } = mountColorTheme();
 

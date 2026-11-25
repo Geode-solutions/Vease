@@ -1,13 +1,20 @@
-import { type AppSettings, sanitizeAppSettings } from "~~/electron/app_settings_utils";
 import type { ComputedRef, Ref } from "vue";
-import { useLocalStorage } from "@vueuse/core";
+import { defineUserSetting, useUserSetting } from "@ogw_front/composables/user_setting";
 import { useTheme } from "vuetify";
+import { z } from "zod";
 
 import { DARK_THEME_NAME, LIGHT_THEME_NAME } from "@vease/utils/brand_themes";
 
 type ColorTheme = typeof LIGHT_THEME_NAME | typeof DARK_THEME_NAME;
 
 const STORAGE_KEY = "vease-color-theme";
+// Saved in settings.json in the desktop app, in the local storage in the browser (kept as a raw string there)
+const colorThemeSetting = defineUserSetting<ColorTheme>({
+  key: "colorTheme",
+  schema: z.enum([LIGHT_THEME_NAME, DARK_THEME_NAME]),
+  fallback: LIGHT_THEME_NAME,
+  browserKey: STORAGE_KEY,
+});
 // Set on the root element while the theme changes: no CSS transition runs (see main.css)
 const SWITCHING_CLASS = "vease-theme-switching";
 
@@ -17,50 +24,6 @@ interface ColorThemeApi {
   applyStoredColorTheme: () => void;
   setColorTheme: (name: ColorTheme) => void;
   toggleColorTheme: () => void;
-}
-
-interface DesktopSettingsAPI {
-  app_settings: unknown;
-  app_settings_write: (settings: AppSettings) => Promise<unknown>;
-}
-
-function hasDesktopSettingsAPI(
-  value: typeof globalThis,
-): value is typeof globalThis & { electronAPI: DesktopSettingsAPI } {
-  return (
-    "electronAPI" in value &&
-    typeof value.electronAPI === "object" &&
-    value.electronAPI !== null &&
-    "app_settings_write" in value.electronAPI
-  );
-}
-
-// One ref shared by every caller, as the local storage ref is in the browser
-const desktopColorThemes = new WeakMap<DesktopSettingsAPI, Ref<ColorTheme>>();
-
-// The desktop app clears its browser storage on every launch: the choice lives in its settings.json, read before
-// The page renders and written on every change. The browser keeps it in its local storage.
-function storedColorTheme(): Ref<ColorTheme> {
-  const globalScope = globalThis;
-  if (!hasDesktopSettingsAPI(globalScope)) {
-    return useLocalStorage<ColorTheme>(STORAGE_KEY, LIGHT_THEME_NAME);
-  }
-  const api = globalScope.electronAPI;
-  const shared = desktopColorThemes.get(api);
-  if (shared) {
-    return shared;
-  }
-  const theme = ref<ColorTheme>(
-    sanitizeAppSettings(api.app_settings).colorTheme ?? LIGHT_THEME_NAME,
-  );
-  // Detached: the first caller's unmount must not stop the saving
-  effectScope(true).run(() => {
-    watch(theme, (colorTheme) => {
-      void api.app_settings_write({ colorTheme });
-    });
-  });
-  desktopColorThemes.set(api, theme);
-  return theme;
 }
 
 async function nextFrames(): Promise<void> {
@@ -95,7 +58,7 @@ async function switchWithoutTransitions(change: () => void): Promise<void> {
 
 function useColorTheme(): ColorThemeApi {
   const theme = useTheme();
-  const colorTheme = storedColorTheme();
+  const colorTheme = useUserSetting(colorThemeSetting);
   const isDark = computed(() => theme.global.current.value.dark);
 
   function setColorTheme(name: ColorTheme): void {
@@ -114,7 +77,13 @@ function useColorTheme(): ColorThemeApi {
     setColorTheme(isDark.value ? LIGHT_THEME_NAME : DARK_THEME_NAME);
   }
 
-  return { colorTheme, isDark, applyStoredColorTheme, setColorTheme, toggleColorTheme };
+  return {
+    colorTheme,
+    isDark,
+    applyStoredColorTheme,
+    setColorTheme,
+    toggleColorTheme,
+  };
 }
 
 export type { ColorTheme };
