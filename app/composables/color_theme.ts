@@ -1,8 +1,5 @@
 import type { ComputedRef, Ref } from "vue";
-import {
-  defineUserSetting,
-  useUserSetting,
-} from "@ogw_front/composables/user_setting";
+import { defineUserSetting, useUserSetting } from "@ogw_front/composables/user_setting";
 import { useTheme } from "vuetify";
 import { z } from "zod";
 
@@ -72,8 +69,7 @@ function useColorTheme(): ColorThemeApi {
   }
 
   function applyStoredColorTheme(): void {
-    const stored =
-      colorTheme.value === DARK_THEME_NAME ? DARK_THEME_NAME : LIGHT_THEME_NAME;
+    const stored = colorTheme.value === DARK_THEME_NAME ? DARK_THEME_NAME : LIGHT_THEME_NAME;
     void theme.change(stored);
   }
 
