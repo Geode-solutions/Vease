@@ -137,6 +137,14 @@ test("lower the routes opacity", async ({ window }) => {
   await moveMouseOutOfTheWay(window);
 });
 
+test("show the geology under the routes", async ({ window }) => {
+  await toggleBasemap(window, "Geology");
+});
+
+test("hide the geology", async ({ window }) => {
+  await toggleBasemap(window, "Geology");
+});
+
 test("crop the routes only", async ({ window }) => {
   await toggleBasemapCrop(window, "Routes");
   await moveMouseOutOfTheWay(window);
