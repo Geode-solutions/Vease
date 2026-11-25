@@ -153,28 +153,29 @@ function onDrop(event: DragEvent, dropIndex: number): void {
         <span v-if="item.isActive?.()" class="brand-dot rail-item__dot" aria-hidden="true" />
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              icon
-              :color="item.isActive?.() ? 'primary' : undefined"
-              :variant="item.isActive?.() ? 'tonal' : 'text'"
-              :data-testid="item.testId"
-              @click="item.click"
-              class="icon-style"
-              width="48"
-              height="48"
-              draggable="false"
+            <!-- On the button, not the icon: the count sits on the edge of the circle -->
+            <v-badge
+              :model-value="(item.badge?.() ?? 0) > 0"
+              :content="item.badge?.()"
+              color="error"
+              max="99"
+              :data-testid="`${item.testId}Badge`"
             >
-              <v-badge
-                :model-value="(item.badge?.() ?? 0) > 0"
-                :content="item.badge?.()"
-                color="error"
-                max="99"
-                :data-testid="`${item.testId}Badge`"
+              <v-btn
+                v-bind="props"
+                icon
+                :color="item.isActive?.() ? 'primary' : undefined"
+                :variant="item.isActive?.() ? 'tonal' : 'text'"
+                :data-testid="item.testId"
+                @click="item.click"
+                class="icon-style"
+                width="48"
+                height="48"
+                draggable="false"
               >
                 <v-icon :icon="item.icon" size="24" />
-              </v-badge>
-            </v-btn>
+              </v-btn>
+            </v-badge>
           </template>
         </v-tooltip>
       </div>
