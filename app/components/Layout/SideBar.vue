@@ -159,6 +159,7 @@ function onDrop(event: DragEvent, dropIndex: number): void {
               :content="item.badge?.()"
               color="error"
               max="99"
+              offset-x="6"
               :data-testid="`${item.testId}Badge`"
             >
               <v-btn
