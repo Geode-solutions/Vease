@@ -17,7 +17,8 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
 
 const UIStore = useUIStore();
 const consoleStore = useConsoleStore();
-const now = useNow({ interval: NOW_INTERVAL_MS });
+// The clock only ticks while a request runs: the history rows keep their own duration
+const { now, pause, resume } = useNow({ interval: NOW_INTERVAL_MS, controls: true });
 
 const hiddenSources = ref(new Set<string>());
 const statusFilter = ref<StatusFilter>("all");
@@ -62,6 +63,18 @@ const waitingCount = computed(() => {
     (entry) => entry.id > pausedAfter && entry.status !== "running",
   ).length;
 });
+
+watch(
+  () => consoleStore.running.length > 0,
+  (isRunning) => {
+    if (isRunning) {
+      resume();
+    } else {
+      pause();
+    }
+  },
+  { immediate: true },
+);
 
 // The errors are seen as long as the console is open
 watch(
@@ -225,7 +238,6 @@ function close(): void {
           v-for="entry in history"
           :key="entry.id"
           :entry="entry"
-          :now="now.getTime()"
           :expanded="expandedIds.has(entry.id)"
           @toggle="toggleExpanded(entry.id)"
         />

@@ -9,9 +9,14 @@ import {
   routeParts,
 } from "@vease/utils/console_display";
 
-const { entry, now, expanded } = defineProps<{
+// `now` ticks only for the running rows: a finished row shows its own duration
+const {
+  entry,
+  now = 0,
+  expanded,
+} = defineProps<{
   entry: ConsoleEntry;
-  now: number;
+  now?: number;
   expanded: boolean;
 }>();
 const emit = defineEmits<{ toggle: [] }>();
