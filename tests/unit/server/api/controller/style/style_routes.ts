@@ -24,7 +24,7 @@ const POST_SUFFIX = /\.post\.ts$/u;
 
 // The style routes of a viewer type found on disk, so a route added without a test is noticed
 function styleRoutesOnDisk(
-  viewerObjectType: "mesh" | "model",
+  viewerObjectType: "image" | "mesh" | "model",
   { attribute }: { attribute: boolean },
 ): string[] {
   return (

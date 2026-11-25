@@ -29,6 +29,24 @@ interface Stores {
   request: Mock<(args: RequestArgs) => Promise<unknown>>;
 }
 
+const IMAGE_2D: DataItem = {
+  data_id: "image-1",
+  geode_id: "geode-4",
+  name: "raster",
+  viewer_object_type: "image",
+  geode_object_type: "RasterImage2D",
+  visible: true,
+  created_at: "2026-10-08",
+};
+
+const IMAGE_3D: DataItem = {
+  ...IMAGE_2D,
+  data_id: "image-2",
+  geode_id: "geode-5",
+  name: "volume",
+  geode_object_type: "RasterImage3D",
+};
+
 const MESH: DataItem = {
   data_id: "mesh-1",
   geode_id: "geode-1",
@@ -123,7 +141,9 @@ function setupStores(stores: Stores): void {
     stores.dataStore as unknown as ReturnType<typeof useDataStore>,
   );
   /* oxlint-enable no-unsafe-type-assertion */
-  const items = new Map([MESH, OTHER_MESH, MODEL].map((item) => [item.data_id, item]));
+  const items = new Map(
+    [IMAGE_2D, IMAGE_3D, MESH, OTHER_MESH, MODEL].map((item) => [item.data_id, item]),
+  );
   stores.dataStore.item.mockReset().mockImplementation(async (id) => {
     await Promise.resolve();
     const item = items.get(id);
@@ -174,6 +194,8 @@ async function colorOne(
 export {
   DEPTH,
   DEPTH_MAX,
+  IMAGE_2D,
+  IMAGE_3D,
   MESH,
   MISSING_ERROR,
   MISSING_ID,

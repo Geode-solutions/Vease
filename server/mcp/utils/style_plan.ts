@@ -161,11 +161,41 @@ function modelCalls(details: StyleDetails, request: StyleRequest): RouteCall[] {
   return calls;
 }
 
+// An image shows its own colors: only its visibility and its opacity are styled, as a whole
+function imageCalls(details: StyleDetails, request: StyleRequest): RouteCall[] {
+  if (request.componentIds !== undefined) {
+    throw new StylePlanError("componentIds only applies to model corners, lines, surfaces, blocks");
+  }
+  if (request.target !== undefined) {
+    throw new StylePlanError(
+      `An image has no targets: style the whole image "${details.name}" without target`,
+    );
+  }
+  rejectProperties(
+    request,
+    ["visibility", "opacity"],
+    `the image "${details.name}"; an image only takes visibility and opacity`,
+  );
+  const calls = visibilityCall("image", details, request);
+  if (request.opacity !== undefined) {
+    calls.push(call("image/opacity", details, { opacity: request.opacity }));
+  }
+  return calls;
+}
+
 function styleCalls(
   details: StyleDetails,
   request: StyleRequest,
   randomColor: string,
 ): RouteCall[] {
+  if (details.viewer_object_type === "image") {
+    return imageCalls(details, request);
+  }
+  if (request.opacity !== undefined) {
+    throw new StylePlanError(
+      `opacity only applies to images; "${details.name}" is a ${details.viewer_object_type}`,
+    );
+  }
   if (details.viewer_object_type === "model") {
     return modelCalls(details, request);
   }

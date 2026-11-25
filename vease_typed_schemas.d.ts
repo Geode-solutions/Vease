@@ -239,6 +239,26 @@ export interface ControllerColormapsResponseResponse {
   categories: { [key: string]: string[] };
 }
 
+export interface ControllerStyleImageVisibilityParams {
+  ids: string[];
+  visibility: boolean;
+}
+
+export interface ControllerStyleImageVisibilityResponse {
+  response: any;
+  statusCode: number;
+}
+
+export interface ControllerStyleImageOpacityParams {
+  ids: string[];
+  opacity: number;
+}
+
+export interface ControllerStyleImageOpacityResponse {
+  response: any;
+  statusCode: number;
+}
+
 export interface ControllerStyleMeshCellsCellAttributeParams {
   colormap?: string;
   ids: string[];
@@ -1004,6 +1024,15 @@ export interface Schemas {
       readonly colormaps: (typeof json)["api"]["controller"]["colormaps"] &
         TypedSchema<ControllerColormapsParams, ControllerColormapsResponse>;
       readonly style: {
+        readonly image: {
+          readonly visibility: (typeof json)["api"]["controller"]["style"]["image"]["visibility"] &
+            TypedSchema<
+              ControllerStyleImageVisibilityParams,
+              ControllerStyleImageVisibilityResponse
+            >;
+          readonly opacity: (typeof json)["api"]["controller"]["style"]["image"]["opacity"] &
+            TypedSchema<ControllerStyleImageOpacityParams, ControllerStyleImageOpacityResponse>;
+        };
         readonly mesh: {
           readonly cells: {
             readonly cell: {

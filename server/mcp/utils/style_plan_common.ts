@@ -11,6 +11,7 @@ interface StyleRequest {
   target?: string;
   componentIds?: string[];
   visibility?: boolean;
+  opacity?: number;
   color?: string;
   size?: number;
   width?: number;
@@ -32,7 +33,7 @@ interface RouteCall {
   params: Record<string, unknown>;
 }
 
-const STYLE_PROPERTIES = ["visibility", "color", "size", "width", "coloring"] as const;
+const STYLE_PROPERTIES = ["visibility", "opacity", "color", "size", "width", "coloring"] as const;
 
 type StyleProperty = (typeof STYLE_PROPERTIES)[number];
 

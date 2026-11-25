@@ -46,6 +46,29 @@ const MODEL: DataItem = {
   created_at: "2026-10-08",
 };
 
+const IMAGE_2D: DataItem = {
+  data_id: "image-1",
+  geode_id: "geode-3",
+  name: "raster",
+  viewer_object_type: "image",
+  geode_object_type: "RasterImage2D",
+  visible: true,
+  created_at: "2026-10-08",
+};
+
+const IMAGE_3D: DataItem = {
+  ...IMAGE_2D,
+  data_id: "image-2",
+  geode_id: "geode-4",
+  name: "volume",
+  geode_object_type: "RasterImage3D",
+};
+
+const IMAGE_CASES = [
+  { image: IMAGE_2D, dimension: 2 },
+  { image: IMAGE_3D, dimension: 3 },
+];
+
 const MODEL_COMPONENTS = [
   {
     id: "c1",
@@ -209,6 +232,40 @@ describe("the data-details controller handler", () => {
       schema: backSchemas.model_component_vertex_attribute_names,
       params: { id: MODEL.data_id, component_ids: ["c1"] },
     });
+  });
+
+  test.each(IMAGE_CASES)(
+    "describes the image $image.name with its dimension and no attributes",
+    async ({ image, dimension }) => {
+      const style = { id: image.data_id, visibility: true, opacity: 1 };
+      item.mockResolvedValue(image);
+      getStyle.mockReturnValue(style);
+
+      const details = await controllerHandlers["data-details"]?.({ id: image.data_id });
+
+      expect(details).toStrictEqual({
+        id: image.data_id,
+        name: image.name,
+        geode_object_type: image.geode_object_type,
+        viewer_object_type: "image",
+        dimension,
+        targets: [],
+        attributes: [],
+        style,
+      });
+      expect(request).not.toHaveBeenCalled();
+      expect(getAllMeshComponents).not.toHaveBeenCalled();
+    },
+  );
+
+  test("never asks the back for the attributes of an image, whatever its style", async () => {
+    item.mockResolvedValue(IMAGE_3D);
+    getStyle.mockReturnValue({ id: IMAGE_3D.data_id, visibility: true, cells: {}, points: {} });
+
+    const details = await controllerHandlers["data-details"]?.({ id: IMAGE_3D.data_id });
+
+    expect(details).toMatchObject({ dimension: 3, targets: [], attributes: [] });
+    expect(request).not.toHaveBeenCalled();
   });
 
   test("describes a model without reading mesh attributes", async () => {

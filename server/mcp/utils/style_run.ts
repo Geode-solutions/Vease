@@ -44,7 +44,7 @@ function requestError(ids: string[], request: StyleRequest): string | undefined 
     return `${stray.join(", ")}: only for coloring by an attribute`;
   }
   if (properties.length === 0) {
-    return "Nothing to change: give visibility, color, size, width, coloring or attribute";
+    return "Nothing to change: give visibility, opacity, color, size, width, coloring or attribute";
   }
   if (request.coloring === "random" && request.color !== undefined) {
     return 'Give either a color or coloring "random", not both';

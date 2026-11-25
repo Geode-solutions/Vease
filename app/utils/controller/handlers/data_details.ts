@@ -2,6 +2,7 @@
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { GeodeIdentified } from "@ogw_front/types/identifiers";
+import type { GeodeImageType } from "@geode/opengeodeweb-microservice/data_types";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 
 // Local imports
@@ -44,7 +45,20 @@ interface TargetsDescription {
   attributes: AttributeSummary[];
 }
 
+interface ImageDescription extends TargetsDescription {
+  dimension: number;
+}
+
 const MODEL_WHOLE_TARGETS: ModelWholeTarget[] = ["points", "edges"];
+
+const IMAGE_DIMENSION: Record<GeodeImageType, number> = {
+  RasterImage2D: 2,
+  RasterImage3D: 3,
+};
+
+function isImageType(geodeObjectType: string): geodeObjectType is GeodeImageType {
+  return Object.hasOwn(IMAGE_DIMENSION, geodeObjectType);
+}
 
 function isDetailsParams(params: unknown): params is { id: string } {
   return (
@@ -70,6 +84,14 @@ function summarizeSources(sourceAttributes: SourceAttributes[]): AttributeSummar
   return sourceAttributes.flatMap(({ source, attributes }) =>
     attributes.map((attribute) => summarizeAttribute(source.target, source.kind, attribute)),
   );
+}
+
+// An image is only styled as a whole and carries no attributes: the back is not asked for them
+function describeImage({ name, geode_object_type }: DataItem): ImageDescription {
+  if (!isImageType(geode_object_type)) {
+    throw new ControllerError(`"${name}" is an image of unknown type ${geode_object_type}`);
+  }
+  return { dimension: IMAGE_DIMENSION[geode_object_type], targets: [], attributes: [] };
 }
 
 async function describeMesh({ data_id, geode_object_type }: DataItem): Promise<TargetsDescription> {
@@ -105,12 +127,15 @@ async function describeModel(modelId: DataId): Promise<TargetsDescription> {
   };
 }
 
-async function describe(item: DataItem): Promise<TargetsDescription> {
-  if (item.viewer_object_type === "model") {
-    const description = await describeModel(item.data_id);
+async function describe(item: DataItem): Promise<TargetsDescription | ImageDescription> {
+  if (item.viewer_object_type === "image") {
+    return describeImage(item);
+  }
+  if (item.viewer_object_type === "mesh") {
+    const description = await describeMesh(item);
     return description;
   }
-  const description = await describeMesh(item);
+  const description = await describeModel(item.data_id);
   return description;
 }
 
