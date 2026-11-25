@@ -246,9 +246,7 @@ function close(): void {
       </div>
 
       <div class="activity-foot d-flex align-center ga-4 px-4">
-        <span>
-          <b>{{ activityStore.entries.length }}</b> entries
-        </span>
+        <span> <b>{{ activityStore.entries.length }}</b> entries </span>
         <span>
           <b :class="{ 'text-error': activityStore.error_count > 0 }">{{
             activityStore.error_count

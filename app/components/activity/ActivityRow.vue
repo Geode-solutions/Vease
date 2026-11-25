@@ -80,8 +80,7 @@ function toggle(): void {
         }}
       </template>
       <template v-else>
-        <span class="text-medium-emphasis">{{ parts.scope }}</span
-        >{{ parts.name }}
+        <span class="text-medium-emphasis">{{ parts.scope }}</span>{{ parts.name }}
         <span v-if="entry.label" class="text-medium-emphasis"> · {{ entry.label }}</span>
       </template>
     </span>
