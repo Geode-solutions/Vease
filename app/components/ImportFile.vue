@@ -38,6 +38,24 @@ async function harmonize(ids: string[], projectCrs: CRS | undefined): Promise<vo
   }
 }
 
+async function importInBackground(
+  files_to_import: Parameters<typeof importWorkflow>[0],
+  existingIds: Set<string>,
+  projectCrs: CRS | undefined,
+): Promise<void> {
+  try {
+    await importWorkflow(files_to_import);
+  } catch (error) {
+    consola.error("Import failed:", error);
+  } finally {
+    const items = await dataStore.allItems();
+    const importedIds = items
+      .map((item) => item.data_id)
+      .filter((dataId) => !existingIds.has(dataId));
+    await harmonize(importedIds, projectCrs);
+  }
+}
+
 async function import_files(): Promise<void> {
   const files_to_import = filenames.flatMap((filename) => {
     const types = geodeObjectTypes[filename];
@@ -58,16 +76,9 @@ async function import_files(): Promise<void> {
   // The project follows the data as they land: the reference is taken before the import
   const { projectCrs } = crsStore;
   const existingIds = new Set(existingItems.map((item) => item.data_id));
-  try {
-    await importWorkflow(files_to_import);
-  } finally {
-    const items = await dataStore.allItems();
-    const importedIds = items
-      .map((item) => item.data_id)
-      .filter((dataId) => !existingIds.has(dataId));
-    // Conversions can be long: the stepper closes now, the snackbars report the outcome
-    void harmonize(importedIds, projectCrs);
-  }
+  // Each file shows in the object tree with a spinner while it is imported: the stepper closes
+  // Right away and the UI stays usable, the snackbars report the outcome
+  void importInBackground(files_to_import, existingIds, projectCrs);
 }
 </script>
 
