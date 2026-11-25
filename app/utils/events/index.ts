@@ -2,12 +2,26 @@
 import { consola } from "consola";
 
 // Local imports
+import { EVENTS_SOURCE } from "@vease/utils/activity_display";
 import { getBackStore } from "@vease/utils/external_stores";
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useEventSource } from "@vueuse/core";
 
 import { backEventHandlers } from "./back";
 
 type EventHandlerMap = Record<string, (payload: unknown) => unknown>;
+
+// "2 objects" for the events carrying a data list (save_viewable_file)
+function eventLabel(payload: unknown): string | undefined {
+  if (typeof payload !== "object" || payload === null || !("data" in payload)) {
+    return undefined;
+  }
+  if (!Array.isArray(payload.data)) {
+    return undefined;
+  }
+  const count = payload.data.length;
+  return `${count} ${count === 1 ? "object" : "objects"} received`;
+}
 
 function getEventHandler(
   eventName: string,
@@ -40,6 +54,14 @@ function dispatchEvent(
     return;
   }
 
+  useActivityStore().log({
+    source: EVENTS_SOURCE,
+    kind: "event",
+    route: eventName,
+    status: "info",
+    label: eventLabel(payload),
+    params: payload,
+  });
   handler(payload);
 }
 
