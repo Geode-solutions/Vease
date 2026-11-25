@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ConsolePiP from "@vease/components/console/ConsolePiP.vue";
+import ConsoleRow from "@vease/components/console/ConsoleRow.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useConsoleStore } from "@ogw_front/stores/console";
 import { useUIStore } from "@vease/stores/ui";
@@ -79,6 +80,16 @@ describe("console pip component", () => {
     expect(rows[FIRST_INDEX]).toContain("save_viewable_file");
     expect(rows[SECOND_INDEX]).toContain("mesh.register");
     expect(wrapper.text()).toContain("1 running");
+  });
+
+  test("only the running rows follow the clock", () => {
+    fillConsole();
+    const wrapper = mountWithPlugins(ConsolePiP);
+
+    const nows = wrapper.findAllComponents(ConsoleRow).map((row) => row.props("now"));
+    expect(nows[FIRST_INDEX]).toBeGreaterThan(0);
+    // The history rows get no clock: the prop keeps its default
+    expect(nows.slice(SECOND_INDEX)).toStrictEqual([0, 0]);
   });
 
   test("the errors filter keeps only the failed requests", async () => {
