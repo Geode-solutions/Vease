@@ -93,6 +93,19 @@ describe("the ImportFile component", () => {
     expect(wrapper.emitted("reset_values")).toStrictEqual([[]]);
   });
 
+  // The object tree shows each file with a spinner meanwhile
+  test("closes the stepper without waiting for the import", async () => {
+    const uiStore = useUIStore();
+    const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
+    vi.mocked(importWorkflow).mockReturnValue(Promise.withResolvers<string[]>().promise);
+    await clickImport();
+    expect(importWorkflow).toHaveBeenCalledWith([
+      { filename: SAMPLE_FILENAME, geode_object_type: GEODE_TYPE },
+    ]);
+    expect(setShowStepperSpy).toHaveBeenCalledWith(false);
+    expect(harmonizeImportedCrs).not.toHaveBeenCalled();
+  });
+
   test("harmonizes the imported items even when another file failed", async () => {
     vi.mocked(importWorkflow).mockRejectedValue(
       new AggregateError([], "1 file(s) could not be imported"),
