@@ -199,6 +199,10 @@ body,
   --ogw-launcher-button: rgb(var(--v-theme-accent));
   --ogw-dropzone-bg: rgba(var(--v-theme-background), 0.88);
   --ogw-dropzone-text-shadow: none;
+  /* The adaptive glass of the object tree takes the surface color in both themes and, like the radial menu, covers
+     most of the bright viewer background: its text keeps the contrast of a surface over any mesh */
+  --ogw-viewer-glass-tint: var(--v-theme-surface);
+  --ogw-viewer-glass-blend: normal;
   --ogw-viewer-glass-min-opacity: 0.88;
 }
 
@@ -211,9 +215,6 @@ body,
 }
 
 .v-theme--dark {
-  /* The adaptive glass of the object tree turns to the brand green; lighten would hide it on a bright viewer */
-  --ogw-viewer-glass-tint: var(--v-theme-surface);
-  --ogw-viewer-glass-blend: normal;
   --ogw-mono-icon-filter: brightness(0) invert(0.92);
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
