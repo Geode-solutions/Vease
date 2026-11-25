@@ -32,7 +32,7 @@ async function importInBackground(
   }
 }
 
-async function import_files(): Promise<void> {
+function import_files(): void {
   const files_to_import = filenames.flatMap((filename) => {
     const types = geodeObjectTypes[filename];
     if (types === undefined || skippedFiles.includes(filename)) {
