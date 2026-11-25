@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { ConsoleEntry } from "@ogw_front/stores/console";
+import { type ConsoleEntry, isFailure } from "@ogw_front/stores/console";
 
 import {
   KNOWN_SOURCES,
   formatDuration,
   formatTime,
-  isFailed,
   isSlow,
   routeParts,
 } from "@vease/utils/console_display";
@@ -26,7 +25,7 @@ const STATUS_ICONS: Record<ConsoleEntry["status"], string> = {
 };
 
 const parts = computed(() => routeParts(entry.route));
-const failed = computed(() => isFailed(entry));
+const failed = computed(() => isFailure(entry.status));
 const sourceClass = computed(() =>
   KNOWN_SOURCES.includes(entry.source) ? `src--${entry.source}` : "src--ext",
 );

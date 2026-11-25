@@ -54,10 +54,6 @@ function isSlow(milliseconds: number): boolean {
   return milliseconds >= SLOW_REQUEST_MS;
 }
 
-function isFailed(entry: ConsoleEntry): boolean {
-  return entry.status === "error" || entry.status === "timeout";
-}
-
 // Known sources first, in a fixed order; extensions after, alphabetically
 function sortSources(sources: Iterable<string>): string[] {
   return [...new Set(sources)].toSorted((left, right) => {
@@ -88,7 +84,6 @@ export {
   KNOWN_SOURCES,
   formatDuration,
   formatTime,
-  isFailed,
   isSlow,
   matchesSearch,
   routeParts,

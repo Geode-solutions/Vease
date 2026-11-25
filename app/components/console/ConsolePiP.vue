@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { MAX_ENTRIES, useConsoleStore } from "@ogw_front/stores/console";
-import { isFailed, matchesSearch, sortSources } from "@vease/utils/console_display";
+import { MAX_ENTRIES, isFailure, useConsoleStore } from "@ogw_front/stores/console";
+import { matchesSearch, sortSources } from "@vease/utils/console_display";
 import ConsoleRow from "@vease/components/console/ConsoleRow.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useNow } from "@vueuse/core";
@@ -48,7 +48,7 @@ const history = computed(() => {
     .filter(
       (entry) =>
         entry.status !== "running" &&
-        (statusFilter.value === "all" || isFailed(entry)) &&
+        (statusFilter.value === "all" || isFailure(entry.status)) &&
         (pausedAfterId.value === undefined || entry.id <= pausedAfterId.value),
     )
     .toReversed();
