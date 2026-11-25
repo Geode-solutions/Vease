@@ -58,7 +58,7 @@ const bottomPages = computed(() => {
     },
     {
       title: "Activity",
-      icon: "ph-terminal-window",
+      icon: "ph-pulse",
       testId: "activityNavButton",
       badge: (): number => activityStore.unseen_errors,
       isActive: (): boolean => UIStore.showActivityPiP,

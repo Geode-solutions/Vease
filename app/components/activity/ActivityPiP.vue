@@ -137,7 +137,7 @@ function close(): void {
         class="pip-header d-flex align-center px-4"
         style="height: 40px; min-height: 40px; user-select: none"
       >
-        <v-icon size="18" color="primary" class="mr-2">ph-terminal-window</v-icon>
+        <v-icon size="18" color="primary" class="mr-2">ph-pulse</v-icon>
         <span class="text-subtitle-2 font-weight-bold">Activity</span>
         <span v-if="activityStore.running.length > 0" class="activity-live ml-3">
           <span class="activity-live__dot" />{{ activityStore.running.length }} running
@@ -247,7 +247,7 @@ function close(): void {
           class="d-flex flex-column align-center justify-center text-center fill-height px-6"
           data-testid="activityEmpty"
         >
-          <v-icon size="32" class="mb-2 text-medium-emphasis">ph-terminal-window</v-icon>
+          <v-icon size="32" class="mb-2 text-medium-emphasis">ph-pulse</v-icon>
           <div class="text-caption text-medium-emphasis">
             Requests to the back and the viewer show up here as they run.
           </div>
