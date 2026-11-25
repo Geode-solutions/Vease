@@ -204,6 +204,8 @@ body,
   --ogw-viewer-glass-tint: var(--v-theme-surface);
   --ogw-viewer-glass-blend: normal;
   --ogw-viewer-glass-min-opacity: 0.88;
+  /* Without blur nor dimming, the mesh behind the tree stays a faint sharp shape instead of a dark smudge */
+  --ogw-viewer-glass-backdrop: none;
 }
 
 .v-theme--light {
