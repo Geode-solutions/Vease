@@ -156,8 +156,8 @@ function toggle(): void {
 }
 
 .src--viewer {
-  background: #3e6965;
-  color: #e8eef0;
+  background: rgb(var(--v-theme-console-viewer));
+  color: rgb(var(--v-theme-on-console-viewer));
 }
 
 .src--app {
@@ -170,8 +170,8 @@ function toggle(): void {
 }
 
 .src--ext {
-  background: #be8388;
-  color: #1e1e1e;
+  background: rgb(var(--v-theme-console-extension));
+  color: rgb(var(--v-theme-on-console-extension));
 }
 
 .console-row__route {
