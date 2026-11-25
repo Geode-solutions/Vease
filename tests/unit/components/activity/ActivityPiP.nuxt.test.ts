@@ -10,6 +10,7 @@ vi.setConfig({ testTimeout: 10_000 });
 
 const FIRST_INDEX = 0;
 const SECOND_INDEX = 1;
+const SCROLLED_DOWN_PX = 200;
 
 vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
   // oxlint-disable-next-line no-unsafe-type-assertion -- stub only implements the subset of ResizablePiP this suite touches; defineComponent() can't be used here as it would reference the "vue" import from inside the hoisted vi.mock factory, which breaks at runtime
@@ -136,17 +137,44 @@ describe("activity pip component", () => {
     expect(activityStore.unseen_errors).toBe(0);
   });
 
-  test("pause holds the new entries back", async () => {
+  test("at the top, new entries show up live with no back to top button", async () => {
     fillActivity();
     const activityStore = useActivityStore();
     const wrapper = mountWithPlugins(ActivityPiP);
 
-    await wrapper.find("[data-testid='activityPauseButton']").trigger("click");
     activityStore.log({ source: "back", kind: "http", route: "late_request", status: "success" });
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.text()).not.toContain("late_request");
-    expect(wrapper.text()).toContain("1 new");
+    expect(rowTexts(wrapper)[SECOND_INDEX]).toContain("late_request");
+    expect(wrapper.find("[data-testid='activityBackToTop']").exists()).toBe(false);
+  });
+
+  test("scrolled down, the back to top button counts the new entries", async () => {
+    fillActivity();
+    const activityStore = useActivityStore();
+    const wrapper = mountWithPlugins(ActivityPiP);
+    const list = wrapper.find(".activity-list");
+
+    list.element.scrollTop = SCROLLED_DOWN_PX;
+    await list.trigger("scroll");
+    expect(wrapper.find("[data-testid='activityBackToTop']").text()).toBe("Back to top");
+
+    activityStore.log({ source: "back", kind: "http", route: "late_request", status: "success" });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find("[data-testid='activityBackToTop']").text()).toBe("1 new");
+  });
+
+  test("back to top goes up and hides the button", async () => {
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
+    const list = wrapper.find(".activity-list");
+    list.element.scrollTop = SCROLLED_DOWN_PX;
+    await list.trigger("scroll");
+
+    await wrapper.find("[data-testid='activityBackToTop']").trigger("click");
+
+    expect(list.element.scrollTop).toBe(0);
+    expect(wrapper.find("[data-testid='activityBackToTop']").exists()).toBe(false);
   });
 
   test("clear empties the history but keeps running requests", async () => {
