@@ -8,7 +8,7 @@ import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
 import type Extension from "@vease/components/Extension.vue";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import type StepImport from "@vease/components/StepImport.vue";
-import type { useUIStore } from "@vease/stores/ui";
+import type { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -120,7 +120,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
       attachTo: document.body,
     });
@@ -137,7 +137,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
     });
 
@@ -149,7 +149,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
     });
 
@@ -161,7 +161,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
     });
 
@@ -180,7 +180,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
     });
 
@@ -194,7 +194,7 @@ describe("drawermanager component", () => {
     const wrapper = mountWithPlugins(DrawerManager, {
       props: {
         // oxlint-disable-next-line no-unsafe-type-assertion -- mock only implements the subset of the store this suite touches
-        uiStore: mockUi as unknown as ReturnType<typeof useUIStore>,
+        userInterfaceStore: mockUi as unknown as ReturnType<typeof useUserInterfaceStore>,
       },
       attachTo: document.body,
     });

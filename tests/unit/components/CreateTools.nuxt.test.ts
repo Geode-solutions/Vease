@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateTools from "@vease/components/CreateTools.vue";
 import type GlassCardComponent from "@ogw_front/components/GlassCard.vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -27,8 +27,8 @@ const DUMMY_COMPONENT_NAME = "DummyToolComponent";
 describe("the CreateTools component", () => {
   beforeEach(() => {
     setupActivePinia();
-    const uiStore = useUIStore();
-    uiStore.toolsDefinitions = [
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.toolsDefinitions = [
       {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,
@@ -42,7 +42,7 @@ describe("the CreateTools component", () => {
         },
       },
     ];
-    uiStore.showCreateTools = true;
+    userInterfaceStore.showCreateTools = true;
   });
 
   test("renders the list of active tools when no tool is selected", () => {
@@ -78,8 +78,8 @@ describe("the CreateTools component", () => {
   });
 
   test("hides creation view and calls setShowCreateTools when tool emits created", async () => {
-    const uiStore = useUIStore();
-    const setShowCreateToolsSpy = vi.spyOn(uiStore, "setShowCreateTools");
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowCreateToolsSpy = vi.spyOn(userInterfaceStore, "setShowCreateTools");
 
     const wrapper = mountWithPlugins(CreateTools);
 
@@ -93,11 +93,11 @@ describe("the CreateTools component", () => {
   });
 
   test("displays alert message when selected tool component is missing", async () => {
-    const uiStore = useUIStore();
+    const userInterfaceStore = useUserInterfaceStore();
     // ActiveTools is derived from toolsDefinitions, so to exercise the
     // "component missing" fallback the tool must still be listed but have
     // No registered component.
-    uiStore.toolsDefinitions = [
+    userInterfaceStore.toolsDefinitions = [
       {
         id: TOOL_ID_ONE,
         title: TOOL_TITLE_ONE,

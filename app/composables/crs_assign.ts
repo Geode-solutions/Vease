@@ -4,7 +4,7 @@ import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataIdentified } from "@ogw_front/types/identifiers";
 import { formatCrsCode } from "@ogw_front/utils/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 interface AssignedEntry extends DataIdentified {
   name: string;
@@ -69,13 +69,13 @@ type ImplausibleWarning = (
 // Picking only works in the viewer: the alignment continues in its drawer
 function useOpenCrsAlignment(): (target: Pick<CrsItem, "data_id">) => Promise<void> {
   const dataStore = useDataStore();
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
   return async (target) => {
     // The drawer needs the whole data: a linked data is only known by its CRS fields
     const full = await dataStore.item(target.data_id);
     await navigateTo("/");
     // A copy: the Vease item type is open to any field, the stored one is not
-    UIStore.openCrsAlign({ ...full });
+    userInterfaceStore.openCrsAlign({ ...full });
   };
 }
 

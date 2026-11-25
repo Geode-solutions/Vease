@@ -5,7 +5,7 @@ import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import CreateCurve from "@vease/components/tools/CreateCurve.vue";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_schemas.json";
 import { importItem } from "@ogw_front/utils/import_workflow";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -128,14 +128,14 @@ describe("the CreateCurve component", () => {
   });
 
   test("resets state when tool is closed", async () => {
-    const uiStore = useUIStore();
-    uiStore.setShowCreateTools(true);
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.setShowCreateTools(true);
 
     const wrapper: VueWrapper = mountWithPlugins(CreateCurve);
 
     const closeBtn = wrapper.findAll("button").find((btn) => btn.text().includes("Close"));
     await closeBtn?.trigger("click");
 
-    expect(uiStore.showCreateTools).toBe(false);
+    expect(userInterfaceStore.showCreateTools).toBe(false);
   });
 });

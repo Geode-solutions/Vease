@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import GlassCard from "@ogw_front/components/GlassCard.vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const selectedTool = ref<string | undefined>(undefined);
 
 function getToolComponent(toolId): unknown {
-  return UIStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component;
+  return userInterfaceStore.toolsDefinitions.find((tool) => tool.id === toolId)?.component;
 }
 
 function handleSelectTool(toolId): void {
@@ -19,11 +19,11 @@ function handleBack(): void {
 
 function handleToolCreated(): void {
   selectedTool.value = undefined;
-  UIStore.setShowCreateTools(false);
+  userInterfaceStore.setShowCreateTools(false);
 }
 
 watch(
-  () => UIStore.showCreateTools,
+  () => userInterfaceStore.showCreateTools,
   (newVal) => {
     if (!newVal) {
       selectedTool.value = undefined;
@@ -32,11 +32,11 @@ watch(
 );
 
 function handleEscape(): void {
-  if (UIStore.showCreateTools) {
+  if (userInterfaceStore.showCreateTools) {
     if (selectedTool.value) {
       selectedTool.value = undefined;
     } else {
-      UIStore.setShowCreateTools(false);
+      userInterfaceStore.setShowCreateTools(false);
     }
   }
 }
@@ -56,7 +56,7 @@ function handleEscape(): void {
 
     <v-card-text class="pt-2 pb-6 flex-grow-1 overflow-y-auto px-3">
       <v-row dense>
-        <v-col v-for="tool in UIStore.activeTools" :key="tool.id" cols="12" class="d-flex pa-1">
+        <v-col v-for="tool in userInterfaceStore.activeTools" :key="tool.id" cols="12" class="d-flex pa-1">
           <GlassCard
             variant="ui"
             class="cursor-pointer flex-grow-1 custom-tool-card"

@@ -7,7 +7,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -57,7 +57,7 @@ describe("crs align tool", () => {
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
     alignCrs.mockReset().mockResolvedValue(undefined);
     followProject.mockReset().mockResolvedValue(undefined);
-    useUIStore().openCrsAlign(item);
+    useUserInterfaceStore().openCrsAlign(item);
   });
 
   test("asks for three pairs", () => {
@@ -87,14 +87,14 @@ describe("crs align tool", () => {
       linkedItems: [],
     });
     expect(success).toHaveBeenCalledWith("Data georeferenced");
-    expect(useUIStore().showCrsAlign).toBe(false);
+    expect(useUserInterfaceStore().showCrsAlign).toBe(false);
     wrapper.unmount();
   });
 
   test("opening for another item resets points", async () => {
     const wrapper = mountWithPlugins(CrsAlign);
     await fill(wrapper, "crsAlignSource-0", { x: 1, y: 2 });
-    useUIStore().openCrsAlign({ ...item, data_id: "item-2" });
+    useUserInterfaceStore().openCrsAlign({ ...item, data_id: "item-2" });
     await flushPromises();
 
     const inputs = wrapper.find('[data-testid="crsAlignSource-0"]').findAll("input");

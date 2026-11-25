@@ -7,7 +7,7 @@ import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import type { useProjectCrs } from "@vease/composables/project_crs";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -114,9 +114,9 @@ describe("the ImportFile component", () => {
     expect(wrapper.text()).toContain("Cancel");
   });
 
-  test("calls importWorkflow and updates UIStore on import click", async () => {
-    const uiStore = useUIStore();
-    const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
+  test("calls importWorkflow and updates userInterfaceStore on import click", async () => {
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowStepperSpy = vi.spyOn(userInterfaceStore, "setShowStepper");
 
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
@@ -137,8 +137,8 @@ describe("the ImportFile component", () => {
   });
 
   test("emits reset_values and closes stepper when cancel button is clicked", async () => {
-    const uiStore = useUIStore();
-    const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowStepperSpy = vi.spyOn(userInterfaceStore, "setShowStepper");
 
     const wrapper = mountWithPlugins(ImportFile, {
       props: {

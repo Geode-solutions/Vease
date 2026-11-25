@@ -32,7 +32,7 @@ function currentIcon<Icon>(owner: string, icon: Icon): Icon | string {
   if (typeof icon !== "string" || !icon.startsWith(LEGACY_ICON_PREFIX)) {
     return icon;
   }
-  consola.warn(`[UIStore] ${owner}: "${icon}" is an MDI icon, use a Phosphor icon name (ph-...)`);
+  consola.warn(`[userInterfaceStore] ${owner}: "${icon}" is an MDI icon, use a Phosphor icon name (ph-...)`);
   return EXTENSION_ICON;
 }
 
@@ -42,7 +42,7 @@ function withCurrentIcon(toolDefinition: ToolDefinition): ToolDefinition {
     iconSource: currentIcon(`Tool ${toolDefinition.id}`, toolDefinition.iconSource),
   };
   if (toolDefinition.iconType === LEGACY_ICON_TYPE) {
-    consola.warn(`[UIStore] Tool ${toolDefinition.id}: iconType "mdi" is deprecated, use "icon"`);
+    consola.warn(`[userInterfaceStore] Tool ${toolDefinition.id}: iconType "mdi" is deprecated, use "icon"`);
     current.iconType = FONT_ICON_TYPE;
   }
   return current;
@@ -79,7 +79,7 @@ function useToolsRegistry(): ToolsRegistry {
       return;
     }
     toolsDefinitions.value.splice(index, 1);
-    consola.info(`[UIStore] Tool unregistered: ${toolId}`);
+    consola.info(`[userInterfaceStore] Tool unregistered: ${toolId}`);
   }
 
   function unregisterToolsByExtension(extensionPath: string): void {
@@ -88,7 +88,7 @@ function useToolsRegistry(): ToolsRegistry {
       (tool) => tool.extensionPath !== extensionPath,
     );
     const removedCount = beforeCount - toolsDefinitions.value.length;
-    consola.info(`[UIStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
+    consola.info(`[userInterfaceStore] Removed ${removedCount} tools from extension: ${extensionPath}`);
   }
 
   function getActiveTools(): ToolDefinition[] {

@@ -7,9 +7,9 @@ import { useCrsAlign } from "@vease/composables/crs_align";
 import { useCrsLinkCandidates } from "@vease/composables/crs_link";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const feedbackStore = useFeedbackStore();
 const { alignCrs, followProject } = useCrs();
 const crsStore = useCrsStore();
@@ -29,10 +29,10 @@ const targetCrs = ref<CRS | undefined>(undefined);
 const applying = ref(false);
 // "All data": the data in the same CRS state, usually sharing the local frame of the item
 const scope = ref<"all" | "one">("all");
-const linkCandidates = useCrsLinkCandidates(() => UIStore.crsAlignItem);
+const linkCandidates = useCrsLinkCandidates(() => userInterfaceStore.crsAlignItem);
 
 watch(
-  () => UIStore.crsAlignItem,
+  () => userInterfaceStore.crsAlignItem,
   (crsAlignItem) => {
     reset();
     targetCrs.value = undefined;
@@ -48,11 +48,11 @@ function successMessage(count: number): string {
 
 function close(): void {
   reset();
-  UIStore.setShowCrsAlign(false);
+  userInterfaceStore.setShowCrsAlign(false);
 }
 
 async function apply(): Promise<void> {
-  const item = UIStore.crsAlignItem;
+  const item = userInterfaceStore.crsAlignItem;
   if (!item || !targetCrs.value || !isComplete.value || applying.value) {
     return;
   }
@@ -86,9 +86,9 @@ async function apply(): Promise<void> {
       <v-icon start icon="ph-triangle" size="18" />
       <!-- One line: a long data name is truncated, the full name is in the tooltip -->
       <h2 class="text-subtitle-1 font-weight-bold mb-0 text-truncate" style="min-width: 0">
-        Georeference {{ UIStore.crsAlignItem?.name }}
+        Georeference {{ userInterfaceStore.crsAlignItem?.name }}
         <v-tooltip activator="parent" location="bottom">
-          Georeference {{ UIStore.crsAlignItem?.name }}
+          Georeference {{ userInterfaceStore.crsAlignItem?.name }}
         </v-tooltip>
       </h2>
       <v-spacer />
@@ -165,11 +165,11 @@ async function apply(): Promise<void> {
         Target CRS
       </div>
       <CrsSelector
-        v-if="UIStore.crsAlignItem"
-        :key="UIStore.crsAlignItem.data_id"
+        v-if="userInterfaceStore.crsAlignItem"
+        :key="userInterfaceStore.crsAlignItem.data_id"
         v-model="targetCrs"
         compact
-        :geode-object-type="UIStore.crsAlignItem.geode_object_type"
+        :geode-object-type="userInterfaceStore.crsAlignItem.geode_object_type"
       />
     </v-card-text>
 

@@ -8,7 +8,7 @@ import { flushPromises } from "@vue/test-utils";
 import type { useCrs } from "@vease/composables/crs";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -58,7 +58,7 @@ describe("crs align tool scope", () => {
     vi.spyOn(useViewerStore(), "request").mockResolvedValue(undefined);
     alignCrs.mockReset().mockResolvedValue(undefined);
     followProject.mockReset().mockResolvedValue(undefined);
-    useUIStore().openCrsAlign(item);
+    useUserInterfaceStore().openCrsAlign(item);
   });
 
   test("georeferences every data in the same crs state by default, then follows the project", async () => {
@@ -90,7 +90,7 @@ describe("crs align tool scope", () => {
 
   // Data in the same CRS are usually the whole project: a re-align moves this data only by default
   test("re-aligning a georeferenced data defaults to this data only", async () => {
-    useUIStore().openCrsAlign({ ...item, crs: LAMBERT });
+    useUserInterfaceStore().openCrsAlign({ ...item, crs: LAMBERT });
     const wrapper = mountWithPlugins(CrsAlign);
     await flushPromises();
     expect(wrapper.find('[data-testid="crsAlignScope-one"] input').element).toHaveProperty(

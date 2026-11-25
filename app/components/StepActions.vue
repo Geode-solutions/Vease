@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from "vue";
 import { consola } from "consola";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 // Last step of an import stepper: runs the action, then resets and closes the stepper either way.
 const emit = defineEmits<{ reset_values: [] }>();
@@ -13,7 +13,7 @@ const { label, icon, testId, action } = defineProps<{
   action: () => Promise<unknown>;
 }>();
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 
 const confirm_button = useTemplateRef("confirm_button");
 // VueUse's useFocus supports component refs at runtime (it reads `.$el`), but
@@ -26,7 +26,7 @@ const toggle_loading = useToggle(loading);
 
 function close(): void {
   emit("reset_values");
-  UIStore.setShowStepper(false);
+  userInterfaceStore.setShowStepper(false);
 }
 
 async function confirm(): Promise<void> {

@@ -4,7 +4,7 @@ import SideBar from "@vease/components/Layout/SideBar.vue";
 import { VLayout } from "vuetify/components";
 import { navigateTo } from "#app/composables/router";
 import { useAuth } from "@vease/composables/auth";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -87,8 +87,8 @@ describe("sidebar component", () => {
 
   test("toggles chat pip on chat button click", async () => {
     const wrapper = mountSideBar();
-    const uiStore = useUIStore();
-    const spySetShowChatPiP = vi.spyOn(uiStore, "setShowChatPiP");
+    const userInterfaceStore = useUserInterfaceStore();
+    const spySetShowChatPiP = vi.spyOn(userInterfaceStore, "setShowChatPiP");
 
     const buttons = wrapper.findAll("button");
     const chatBtn = buttons[CHAT_BUTTON_INDEX];
