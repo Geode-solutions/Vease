@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useAuth } from "@vease/composables/auth";
-import { useConsoleStore } from "@ogw_front/stores/console";
 import { useUIStore } from "@vease/stores/ui";
 
 interface SidebarPage {
@@ -14,7 +14,7 @@ interface SidebarPage {
 
 const { isUserAuthenticated } = useAuth();
 const UIStore = useUIStore();
-const consoleStore = useConsoleStore();
+const activityStore = useActivityStore();
 const route = useRoute();
 
 function isRoute(path: string): () => boolean {
@@ -57,12 +57,12 @@ const bottomPages = computed(() => {
       click: (): unknown => UIStore.setShowChatPiP(!UIStore.showChatPiP),
     },
     {
-      title: "Console",
+      title: "Activity",
       icon: "ph-terminal-window",
-      testId: "consoleNavButton",
-      badge: (): number => consoleStore.unseen_errors,
-      isActive: (): boolean => UIStore.showConsolePiP,
-      click: (): unknown => UIStore.setShowConsolePiP(!UIStore.showConsolePiP),
+      testId: "activityNavButton",
+      badge: (): number => activityStore.unseen_errors,
+      isActive: (): boolean => UIStore.showActivityPiP,
+      click: (): unknown => UIStore.setShowActivityPiP(!UIStore.showActivityPiP),
     },
 
     {

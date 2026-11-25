@@ -2,9 +2,9 @@
 import { consola } from "consola";
 
 // Local imports
-import { EVENTS_SOURCE } from "@vease/utils/console_display";
+import { EVENTS_SOURCE } from "@vease/utils/activity_display";
 import { getBackStore } from "@vease/utils/external_stores";
-import { useConsoleStore } from "@ogw_front/stores/console";
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useEventSource } from "@vueuse/core";
 
 import { backEventHandlers } from "./back";
@@ -54,7 +54,7 @@ function dispatchEvent(
     return;
   }
 
-  useConsoleStore().log({
+  useActivityStore().log({
     source: EVENTS_SOURCE,
     kind: "event",
     route: eventName,

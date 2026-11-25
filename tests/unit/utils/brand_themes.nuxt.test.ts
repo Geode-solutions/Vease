@@ -3,17 +3,17 @@ import { describe, expect, test, vi } from "vitest";
 
 vi.setConfig({ testTimeout: 10_000 });
 
-const CONSOLE_TOKENS = [
-  "console-viewer",
-  "on-console-viewer",
-  "console-extension",
-  "on-console-extension",
+const ACTIVITY_TOKENS = [
+  "activity-viewer",
+  "on-activity-viewer",
+  "activity-extension",
+  "on-activity-extension",
 ];
 
 describe("brand themes", () => {
-  test("both themes define the console source colors", () => {
+  test("both themes define the activity source colors", () => {
     for (const theme of [lightTheme, darkTheme]) {
-      expect(Object.keys(theme.colors)).toStrictEqual(expect.arrayContaining(CONSOLE_TOKENS));
+      expect(Object.keys(theme.colors)).toStrictEqual(expect.arrayContaining(ACTIVITY_TOKENS));
     }
   });
 });

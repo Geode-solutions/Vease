@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import ConsolePiP from "@vease/components/console/ConsolePiP.vue";
-import ConsoleRow from "@vease/components/console/ConsoleRow.vue";
+import ActivityPiP from "@vease/components/activity/ActivityPiP.vue";
+import ActivityRow from "@vease/components/activity/ActivityRow.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
-import { useConsoleStore } from "@ogw_front/stores/console";
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useUIStore } from "@vease/stores/ui";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -33,22 +33,22 @@ vi.mock(import("@vease/components/Layout/ResizablePiP.vue"), () => ({
 }));
 
 // One finished back request, one failed viewer request, one back request still running
-function fillConsole(): void {
-  const consoleStore = useConsoleStore();
-  const done = consoleStore.start_request({
+function fillActivity(): void {
+  const activityStore = useActivityStore();
+  const done = activityStore.start_request({
     source: "back",
     kind: "http",
     route: "opengeodeweb_back/upload_file",
   });
-  consoleStore.finish_request(done, { status: "success" });
-  const failed = consoleStore.start_request({
+  activityStore.finish_request(done, { status: "success" });
+  const failed = activityStore.start_request({
     source: "viewer",
     kind: "ws",
     route: "opengeodeweb_viewer.mesh.register",
     params: { id: "123" },
   });
-  consoleStore.finish_request(failed, { status: "error", error: "Data not found" });
-  consoleStore.start_request({
+  activityStore.finish_request(failed, { status: "error", error: "Data not found" });
+  activityStore.start_request({
     source: "back",
     kind: "http",
     route: "opengeodeweb_back/save_viewable_file",
@@ -56,24 +56,24 @@ function fillConsole(): void {
 }
 
 function rowTexts(wrapper: ReturnType<typeof mountWithPlugins>): string[] {
-  return wrapper.findAll("[data-testid='consoleRow']").map((row) => row.text());
+  return wrapper.findAll("[data-testid='activityRow']").map((row) => row.text());
 }
 
-describe("console pip component", () => {
+describe("activity pip component", () => {
   beforeEach(() => {
     setupActivePinia();
   });
 
   test("shows an empty state without entries", () => {
-    const wrapper = mountWithPlugins(ConsolePiP);
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    expect(wrapper.text()).toContain("Console");
-    expect(wrapper.find("[data-testid='consoleEmpty']").exists()).toBe(true);
+    expect(wrapper.text()).toContain("Activity");
+    expect(wrapper.find("[data-testid='activityEmpty']").exists()).toBe(true);
   });
 
   test("running requests come first, then the history newest first", () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
     const rows = rowTexts(wrapper);
     expect(rows).toHaveLength(3);
@@ -83,20 +83,20 @@ describe("console pip component", () => {
   });
 
   test("only the running rows follow the clock", () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    const nows = wrapper.findAllComponents(ConsoleRow).map((row) => row.props("now"));
+    const nows = wrapper.findAllComponents(ActivityRow).map((row) => row.props("now"));
     expect(nows[FIRST_INDEX]).toBeGreaterThan(0);
     // The history rows get no clock: the prop keeps its default
     expect(nows.slice(SECOND_INDEX)).toStrictEqual([0, 0]);
   });
 
   test("the errors filter keeps only the failed requests", async () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    await wrapper.find("[data-testid='consoleStatus-errors']").trigger("click");
+    await wrapper.find("[data-testid='activityStatus-errors']").trigger("click");
 
     const rows = rowTexts(wrapper);
     expect(rows).toHaveLength(1);
@@ -104,10 +104,10 @@ describe("console pip component", () => {
   });
 
   test("a source chip hides its entries", async () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    await wrapper.find("[data-testid='consoleSource-back']").trigger("click");
+    await wrapper.find("[data-testid='activitySource-back']").trigger("click");
 
     const rows = rowTexts(wrapper);
     expect(rows).toHaveLength(1);
@@ -115,34 +115,34 @@ describe("console pip component", () => {
   });
 
   test("a failed row unfolds its params and error", async () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
-    const failedRow = wrapper.find(".console-row--failed");
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
+    const failedRow = wrapper.find(".activity-row--failed");
 
     await failedRow.trigger("click");
 
-    const detail = wrapper.find(".console-detail");
+    const detail = wrapper.find(".activity-detail");
     expect(detail.text()).toContain('{"id":"123"}');
     expect(detail.text()).toContain("Data not found");
   });
 
-  test("opening the console marks the errors as seen", () => {
-    fillConsole();
-    const consoleStore = useConsoleStore();
-    expect(consoleStore.unseen_errors).toBe(1);
+  test("opening the activity panel marks the errors as seen", () => {
+    fillActivity();
+    const activityStore = useActivityStore();
+    expect(activityStore.unseen_errors).toBe(1);
 
-    mountWithPlugins(ConsolePiP);
+    mountWithPlugins(ActivityPiP);
 
-    expect(consoleStore.unseen_errors).toBe(0);
+    expect(activityStore.unseen_errors).toBe(0);
   });
 
   test("pause holds the new entries back", async () => {
-    fillConsole();
-    const consoleStore = useConsoleStore();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const activityStore = useActivityStore();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    await wrapper.find("[data-testid='consolePauseButton']").trigger("click");
-    consoleStore.log({ source: "back", kind: "http", route: "late_request", status: "success" });
+    await wrapper.find("[data-testid='activityPauseButton']").trigger("click");
+    activityStore.log({ source: "back", kind: "http", route: "late_request", status: "success" });
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).not.toContain("late_request");
@@ -150,10 +150,10 @@ describe("console pip component", () => {
   });
 
   test("clear empties the history but keeps running requests", async () => {
-    fillConsole();
-    const wrapper = mountWithPlugins(ConsolePiP);
+    fillActivity();
+    const wrapper = mountWithPlugins(ActivityPiP);
 
-    await wrapper.find("[data-testid='consoleClearButton']").trigger("click");
+    await wrapper.find("[data-testid='activityClearButton']").trigger("click");
 
     const rows = rowTexts(wrapper);
     expect(rows).toHaveLength(1);
@@ -161,12 +161,12 @@ describe("console pip component", () => {
   });
 
   test("closes on close button click", async () => {
-    const wrapper = mountWithPlugins(ConsolePiP);
+    const wrapper = mountWithPlugins(ActivityPiP);
     const uiStore = useUIStore();
-    uiStore.setShowConsolePiP(true);
+    uiStore.setShowActivityPiP(true);
 
-    await wrapper.find("[data-testid='consoleCloseButton']").trigger("click");
+    await wrapper.find("[data-testid='activityCloseButton']").trigger("click");
 
-    expect(uiStore.showConsolePiP).toBe(false);
+    expect(uiStore.showActivityPiP).toBe(false);
   });
 });

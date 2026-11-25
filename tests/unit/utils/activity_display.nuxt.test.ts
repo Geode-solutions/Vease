@@ -6,8 +6,8 @@ import {
   routeParts,
   shortRoute,
   sortSources,
-} from "@vease/utils/console_display";
-import type { ConsoleEntry } from "@ogw_front/stores/console";
+} from "@vease/utils/activity_display";
+import type { ActivityEntry } from "@ogw_front/stores/activity";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -19,7 +19,7 @@ const MINUTES = 2;
 const SECONDS = 5;
 const MILLISECONDS = 7;
 
-const entry: ConsoleEntry = {
+const entry: ActivityEntry = {
   id: 1,
   source: "back",
   kind: "http",
@@ -30,7 +30,7 @@ const entry: ConsoleEntry = {
   error: "Request timed out",
 };
 
-describe("console display", () => {
+describe("activity display", () => {
   test("routes lose their microservice prefix", () => {
     expect(shortRoute("opengeodeweb_back/upload_file")).toBe("upload_file");
     expect(shortRoute("vease_back/packages_versions")).toBe("packages_versions");

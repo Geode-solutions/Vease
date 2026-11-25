@@ -1,4 +1,4 @@
-import type { ConsoleEntry } from "@ogw_front/stores/console";
+import type { ActivityEntry } from "@ogw_front/stores/activity";
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SLOW_REQUEST_MS = 1000;
@@ -69,7 +69,7 @@ function sortSources(sources: Iterable<string>): string[] {
   });
 }
 
-function matchesSearch(entry: ConsoleEntry, search: string): boolean {
+function matchesSearch(entry: ActivityEntry, search: string): boolean {
   const needle = search.trim().toLowerCase();
   if (needle === "") {
     return true;

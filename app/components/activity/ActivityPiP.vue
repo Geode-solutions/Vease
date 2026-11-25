@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { MAX_ENTRIES, isFailure, useConsoleStore } from "@ogw_front/stores/console";
-import { matchesSearch, sortSources } from "@vease/utils/console_display";
-import ConsoleRow from "@vease/components/console/ConsoleRow.vue";
+import { MAX_ENTRIES, isFailure, useActivityStore } from "@ogw_front/stores/activity";
+import { matchesSearch, sortSources } from "@vease/utils/activity_display";
+import ActivityRow from "@vease/components/activity/ActivityRow.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useNow } from "@vueuse/core";
 import { useUIStore } from "@vease/stores/ui";
@@ -16,7 +16,7 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
 ];
 
 const UIStore = useUIStore();
-const consoleStore = useConsoleStore();
+const activityStore = useActivityStore();
 // The clock only ticks while a request runs: the history rows keep their own duration
 const { now, pause, resume } = useNow({ interval: NOW_INTERVAL_MS, controls: true });
 
@@ -28,10 +28,10 @@ const expandedIds = ref(new Set<number>());
 // While paused, the history stops at the last entry seen: new lines wait instead of pushing the list down
 const pausedAfterId = ref<number | undefined>(undefined);
 
-const sources = computed(() => sortSources(consoleStore.entries.map((entry) => entry.source)));
+const sources = computed(() => sortSources(activityStore.entries.map((entry) => entry.source)));
 
 const visibleEntries = computed(() =>
-  consoleStore.entries.filter(
+  activityStore.entries.filter(
     (entry) => !hiddenSources.value.has(entry.source) && matchesSearch(entry, search.value ?? ""),
   ),
 );
@@ -59,13 +59,13 @@ const waitingCount = computed(() => {
   if (pausedAfter === undefined) {
     return 0;
   }
-  return consoleStore.entries.filter(
+  return activityStore.entries.filter(
     (entry) => entry.id > pausedAfter && entry.status !== "running",
   ).length;
 });
 
 watch(
-  () => consoleStore.running.length > 0,
+  () => activityStore.running.length > 0,
   (isRunning) => {
     if (isRunning) {
       resume();
@@ -76,11 +76,11 @@ watch(
   { immediate: true },
 );
 
-// The errors are seen as long as the console is open
+// The errors are seen as long as the activity panel is open
 watch(
-  () => consoleStore.unseen_errors,
+  () => activityStore.unseen_errors,
   () => {
-    consoleStore.mark_errors_seen();
+    activityStore.mark_errors_seen();
   },
   { immediate: true },
 );
@@ -107,25 +107,25 @@ function toggleExpanded(entryId: number): void {
 
 function togglePause(): void {
   if (pausedAfterId.value === undefined) {
-    pausedAfterId.value = consoleStore.entries.at(-1)?.id ?? 0;
+    pausedAfterId.value = activityStore.entries.at(-1)?.id ?? 0;
   } else {
     pausedAfterId.value = undefined;
   }
 }
 
 function clear(): void {
-  consoleStore.clear();
+  activityStore.clear();
   expandedIds.value = new Set();
 }
 
 function close(): void {
-  UIStore.setShowConsolePiP(false);
+  UIStore.setShowActivityPiP(false);
 }
 </script>
 
 <template>
   <ResizablePiP
-    storage-key="console-pip"
+    storage-key="activity-pip"
     :escapeFunction="close"
     :default-width="680"
     :default-height="460"
@@ -138,16 +138,16 @@ function close(): void {
         style="height: 40px; min-height: 40px; user-select: none"
       >
         <v-icon size="18" color="primary" class="mr-2">ph-terminal-window</v-icon>
-        <span class="text-subtitle-2 font-weight-bold">Console</span>
-        <span v-if="consoleStore.running.length > 0" class="console-live ml-3">
-          <span class="console-live__dot" />{{ consoleStore.running.length }} running
+        <span class="text-subtitle-2 font-weight-bold">Activity</span>
+        <span v-if="activityStore.running.length > 0" class="activity-live ml-3">
+          <span class="activity-live__dot" />{{ activityStore.running.length }} running
         </span>
         <v-spacer />
         <v-btn
           icon
           size="x-small"
           :variant="pausedAfterId === undefined ? 'text' : 'tonal'"
-          data-testid="consolePauseButton"
+          data-testid="activityPauseButton"
           @click="togglePause"
         >
           <v-icon size="16">{{ pausedAfterId === undefined ? "ph-pause" : "ph-play" }}</v-icon>
@@ -155,19 +155,19 @@ function close(): void {
             {{ pausedAfterId === undefined ? "Pause" : "Resume" }}
           </v-tooltip>
         </v-btn>
-        <v-btn icon size="x-small" variant="text" data-testid="consoleClearButton" @click="clear">
+        <v-btn icon size="x-small" variant="text" data-testid="activityClearButton" @click="clear">
           <v-icon size="16">ph-trash</v-icon>
           <v-tooltip activator="parent" location="top">Clear</v-tooltip>
         </v-btn>
-        <v-btn icon size="x-small" variant="text" data-testid="consoleCloseButton" @click="close">
+        <v-btn icon size="x-small" variant="text" data-testid="activityCloseButton" @click="close">
           <v-icon size="16">ph-x</v-icon>
           <v-tooltip activator="parent" location="top">Close</v-tooltip>
         </v-btn>
       </div>
     </template>
 
-    <div class="console d-flex flex-column fill-height overflow-hidden" data-testid="console">
-      <div class="console-bar d-flex align-center flex-wrap ga-3 px-4 pb-3">
+    <div class="activity d-flex flex-column fill-height overflow-hidden" data-testid="activity">
+      <div class="activity-bar d-flex align-center flex-wrap ga-3 px-4 pb-3">
         <div class="d-flex align-center flex-wrap ga-1">
           <v-chip
             v-for="source in sources"
@@ -176,23 +176,23 @@ function close(): void {
             :variant="hiddenSources.has(source) ? 'outlined' : 'flat'"
             :color="hiddenSources.has(source) ? undefined : 'primary'"
             class="text-none"
-            :data-testid="`consoleSource-${source}`"
+            :data-testid="`activitySource-${source}`"
             @click="toggleSource(source)"
           >
             {{ source }}
           </v-chip>
         </div>
-        <div class="console-filters d-flex align-center ga-3">
-          <div class="console-status" role="radiogroup" aria-label="Status filter">
+        <div class="activity-filters d-flex align-center ga-3">
+          <div class="activity-status" role="radiogroup" aria-label="Status filter">
             <button
               v-for="option in STATUS_OPTIONS"
               :key="option.value"
               type="button"
               role="radio"
-              class="console-status__option"
-              :class="{ 'console-status__option--active': statusFilter === option.value }"
+              class="activity-status__option"
+              :class="{ 'activity-status__option--active': statusFilter === option.value }"
               :aria-checked="statusFilter === option.value"
-              :data-testid="`consoleStatus-${option.value}`"
+              :data-testid="`activityStatus-${option.value}`"
               @click="statusFilter = option.value"
             >
               {{ option.label }}
@@ -207,18 +207,18 @@ function close(): void {
             rounded="pill"
             hide-details
             clearable
-            class="console-search"
-            data-testid="consoleSearch"
+            class="activity-search"
+            data-testid="activitySearch"
           />
         </div>
       </div>
 
-      <div class="console-list flex-grow-1 overflow-y-auto">
+      <div class="activity-list flex-grow-1 overflow-y-auto">
         <template v-if="running.length > 0">
-          <div class="console-section">
+          <div class="activity-section">
             <v-icon size="12" class="mr-1">ph-circle-notch</v-icon>In progress
           </div>
-          <ConsoleRow
+          <ActivityRow
             v-for="entry in running"
             :key="entry.id"
             :entry="entry"
@@ -228,13 +228,13 @@ function close(): void {
           />
         </template>
 
-        <div v-if="history.length > 0" class="console-section">
+        <div v-if="history.length > 0" class="activity-section">
           <v-icon size="12" class="mr-1">ph-clock-counter-clockwise</v-icon>History
-          <span v-if="waitingCount > 0" class="console-waiting ml-2">
+          <span v-if="waitingCount > 0" class="activity-waiting ml-2">
             paused · {{ waitingCount }} new
           </span>
         </div>
-        <ConsoleRow
+        <ActivityRow
           v-for="entry in history"
           :key="entry.id"
           :entry="entry"
@@ -245,7 +245,7 @@ function close(): void {
         <div
           v-if="running.length === 0 && history.length === 0"
           class="d-flex flex-column align-center justify-center text-center fill-height px-6"
-          data-testid="consoleEmpty"
+          data-testid="activityEmpty"
         >
           <v-icon size="32" class="mb-2 text-medium-emphasis">ph-terminal-window</v-icon>
           <div class="text-caption text-medium-emphasis">
@@ -254,13 +254,13 @@ function close(): void {
         </div>
       </div>
 
-      <div class="console-foot d-flex align-center ga-4 px-4">
-        <span> <b>{{ consoleStore.entries.length }}</b> entries </span>
+      <div class="activity-foot d-flex align-center ga-4 px-4">
+        <span> <b>{{ activityStore.entries.length }}</b> entries </span>
         <span>
-          <b :class="{ 'text-error': consoleStore.error_count > 0 }">{{
-            consoleStore.error_count
+          <b :class="{ 'text-error': activityStore.error_count > 0 }">{{
+            activityStore.error_count
           }}</b>
-          {{ consoleStore.error_count === 1 ? "error" : "errors" }}
+          {{ activityStore.error_count === 1 ? "error" : "errors" }}
         </span>
         <v-spacer />
         <span>last {{ MAX_ENTRIES }} kept</span>
@@ -270,8 +270,8 @@ function close(): void {
 </template>
 
 <style scoped>
-.console {
-  --console-mono: ui-monospace, "JetBrains Mono", "Cascadia Mono", "DejaVu Sans Mono", monospace;
+.activity {
+  --activity-mono: ui-monospace, "JetBrains Mono", "Cascadia Mono", "DejaVu Sans Mono", monospace;
 }
 
 .pip-header {
@@ -282,7 +282,7 @@ function close(): void {
   cursor: grabbing;
 }
 
-.console-live {
+.activity-live {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -293,7 +293,7 @@ function close(): void {
   background: rgba(var(--v-theme-accent), 0.16);
 }
 
-.console-live__dot {
+.activity-live__dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -301,17 +301,17 @@ function close(): void {
   box-shadow: 0 0 0 3px rgba(var(--v-theme-accent), 0.25);
 }
 
-.console-bar {
+.activity-bar {
   border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
 }
 
 /* On its own line once the panel is narrow, still aligned right */
-.console-filters {
+.activity-filters {
   flex: 1 0 auto;
   justify-content: flex-end;
 }
 
-.console-status {
+.activity-status {
   display: flex;
   height: 30px;
   flex-shrink: 0;
@@ -320,7 +320,7 @@ function close(): void {
   overflow: hidden;
 }
 
-.console-status__option {
+.activity-status__option {
   appearance: none;
   border: 0;
   background: transparent;
@@ -332,37 +332,37 @@ function close(): void {
   transition: background-color 0.15s ease;
 }
 
-.console-status__option + .console-status__option {
+.activity-status__option + .activity-status__option {
   border-left: 1px solid rgba(var(--v-theme-on-surface), 0.25);
 }
 
-.console-status__option:hover {
+.activity-status__option:hover {
   background: rgba(var(--v-theme-on-surface), 0.06);
 }
 
-.console-status__option--active,
-.console-status__option--active:hover {
+.activity-status__option--active,
+.activity-status__option--active:hover {
   background: rgba(var(--v-theme-on-surface), 0.12);
   font-weight: 700;
 }
 
-.console-search {
+.activity-search {
   width: 180px;
   flex: 0 0 180px;
 }
 
-.console-search :deep(.v-field) {
+.activity-search :deep(.v-field) {
   font-size: 12px;
   --v-input-control-height: 30px;
 }
 
-.console-search :deep(.v-field__input) {
+.activity-search :deep(.v-field__input) {
   min-height: 30px;
   padding-top: 0;
   padding-bottom: 0;
 }
 
-.console-section {
+.activity-section {
   display: flex;
   align-items: center;
   padding: 8px 16px 4px;
@@ -373,13 +373,13 @@ function close(): void {
   opacity: 0.6;
 }
 
-.console-waiting {
+.activity-waiting {
   text-transform: none;
   letter-spacing: 0;
   color: rgb(var(--v-theme-accent));
 }
 
-.console-foot {
+.activity-foot {
   height: 26px;
   min-height: 26px;
   font-size: 11px;
