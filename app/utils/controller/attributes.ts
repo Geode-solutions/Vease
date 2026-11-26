@@ -2,6 +2,7 @@
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@ogw_front/stores/data";
 import { consola } from "consola";
+import { isModel } from "@ogw_front/utils/viewer_object_type";
 
 // Local imports
 import {
@@ -187,7 +188,7 @@ function matchesLocation(
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
   let sources: AttributeSource[] = [];
-  if (item.viewer_object_type === "model") {
+  if (isModel(item)) {
     sources = await modelSearchSources(item, args);
   } else {
     sources = meshSearchSources(item, args);

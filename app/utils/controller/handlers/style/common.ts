@@ -7,6 +7,7 @@ import { forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import { isModel } from "@ogw_front/utils/viewer_object_type";
 
 type StyleStore = ReturnType<typeof getDataStyleStore>;
 // Each style command declares its own params, validated by its route schema
@@ -29,7 +30,7 @@ function styleCommand(apply: StyleApply): ControllerHandler {
 }
 
 function checkMesh(item: DataItem, element?: MeshElement): void {
-  if (item.viewer_object_type === "model") {
+  if (isModel(item)) {
     throw new ControllerError(`"${item.name}" is a model; use the style/model routes`);
   }
   const available = meshTargetsOf(item.data_id);
@@ -41,7 +42,7 @@ function checkMesh(item: DataItem, element?: MeshElement): void {
 }
 
 function checkModel(item: DataItem): void {
-  if (item.viewer_object_type !== "model") {
+  if (!isModel(item)) {
     throw new ControllerError(`"${item.name}" is a mesh; use the style/mesh routes`);
   }
 }
