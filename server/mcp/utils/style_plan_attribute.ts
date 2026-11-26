@@ -40,7 +40,7 @@ function availableAttributes(details: StyleDetails): string {
   return listed.join("; ") || "none";
 }
 
-function attributeCall(
+function elementAttributeCall(
   details: StyleDetails,
   request: StyleRequest & { attribute: string },
 ): RouteCall {
@@ -93,6 +93,16 @@ function attributeCall(
       noDataColor,
     },
   );
+}
+
+function attributeCall(
+  details: StyleDetails,
+  request: StyleRequest & { attribute: string },
+): RouteCall {
+  if (details.viewer_object_type === "image") {
+    throw new StylePlanError(`"${details.name}" is an image: images have no attributes`);
+  }
+  return elementAttributeCall(details, request);
 }
 
 export { attributeCall };

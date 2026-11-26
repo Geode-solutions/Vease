@@ -1,5 +1,6 @@
-"""Style routes, mirroring the dataStyle store: style.<mesh|model>.<target>[.<location>].<property>.
+"""Style routes, mirroring the dataStyle store: style.<image|mesh|model>.<target>[.<location>].<property>.
 
+    vease.style.image.opacity(ids, 0.5)
     vease.style.mesh.polygons.color(ids, "#ff8800")
     vease.style.mesh.polygons.vertex.attribute(ids, "depth", colormap="batlow")
     vease.style.model.surfaces.visibility(model_id, False, component_ids=[surface_id])
@@ -50,6 +51,12 @@ class _Color(_StyleNode):
     ) -> dict[str, Any]:
         """Constant color, as a "#rrggbb" hex string."""
         return self._set("color", ids, component_ids, color=color)
+
+
+class _Opacity(_StyleNode):
+    def opacity(self, ids: str | Sequence[str], opacity: float) -> dict[str, Any]:
+        """Opacity, from 0 (transparent) to 1 (opaque)."""
+        return self._set("opacity", ids, None, opacity=opacity)
 
 
 class _Size(_StyleNode):
@@ -154,6 +161,10 @@ class MeshPolyhedraStyle(_Visibility, _Color):
         self.polyhedron = _attribute(self, "polyhedron")
 
 
+class ImageStyle(_Visibility, _Opacity):
+    """An image shows its own colors: only its visibility and its opacity are styled."""
+
+
 class MeshStyle(_Visibility, _Color):
     def __init__(self, client: VeaseClient, base_path: str):
         super().__init__(client, base_path)
@@ -214,6 +225,7 @@ class ModelStyle(_Visibility):
 class StyleResource(Resource):
     def __init__(self, client: VeaseClient):
         super().__init__(client, "/style")
+        self.image = ImageStyle(client, self.route("image"))
         self.mesh = MeshStyle(client, self.route("mesh"))
         self.model = ModelStyle(client, self.route("model"))
 

@@ -28,10 +28,25 @@ function styleCommand(apply: StyleApply): ControllerHandler {
   };
 }
 
-function checkMesh(item: DataItem, element?: MeshElement): void {
-  if (item.viewer_object_type === "model") {
-    throw new ControllerError(`"${item.name}" is a model; use the style/model routes`);
+const STYLE_ROUTES_OF = {
+  image: "is an image; use the style/image routes",
+  mesh: "is a mesh; use the style/mesh routes",
+  model: "is a model; use the style/model routes",
+} as const;
+
+// Each viewer object type has its own style routes
+function checkViewerObjectType(item: DataItem, expected: DataItem["viewer_object_type"]): void {
+  if (item.viewer_object_type !== expected) {
+    throw new ControllerError(`"${item.name}" ${STYLE_ROUTES_OF[item.viewer_object_type]}`);
   }
+}
+
+function checkImage(item: DataItem): void {
+  checkViewerObjectType(item, "image");
+}
+
+function checkMesh(item: DataItem, element?: MeshElement): void {
+  checkViewerObjectType(item, "mesh");
   const available = meshTargetsOf(item.data_id);
   if (element !== undefined && !available.includes(element)) {
     throw new ControllerError(
@@ -41,9 +56,7 @@ function checkMesh(item: DataItem, element?: MeshElement): void {
 }
 
 function checkModel(item: DataItem): void {
-  if (item.viewer_object_type !== "model") {
-    throw new ControllerError(`"${item.name}" is a mesh; use the style/mesh routes`);
-  }
+  checkViewerObjectType(item, "model");
 }
 
-export { type StyleStore, checkMesh, checkModel, styleCommand };
+export { type StyleStore, checkImage, checkMesh, checkModel, styleCommand };

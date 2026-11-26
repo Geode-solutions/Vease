@@ -4,11 +4,13 @@ import { describe, expect, test, vi } from "vitest";
 
 // Local imports
 import {
+  IMAGE_ID,
   MODEL,
   MODEL_ID,
   SOLID,
   SOLID_ID,
   SURFACE_ID,
+  imageDetails,
   surfaceDetails,
 } from "@vease_tests/unit/server/mcp/utils/style_fixtures";
 import {
@@ -23,7 +25,9 @@ vi.setConfig({ testTimeout: 10_000 });
 
 const RANDOM_COLOR = "#d74242";
 const SIZE = 2.5;
+const HALF = 0.5;
 const SURFACE = surfaceDetails();
+const IMAGE = imageDetails();
 const MODEL_WITHOUT_BLOCKS: StyleDetails = {
   ...MODEL,
   targets: ["points", "edges", "corners", "lines", "surfaces"],
@@ -118,6 +122,32 @@ const MESH_CASES: { name: string; details: StyleDetails; request: StyleRequest; 
     },
   ];
 
+const IMAGE_CASES: { name: string; request: StyleRequest; calls: unknown }[] = [
+  {
+    name: "the image visibility",
+    request: { visibility: false },
+    calls: [routeCall(IMAGE_ID, "image/visibility", { visibility: false })],
+  },
+  {
+    name: "the image opacity",
+    request: { opacity: HALF },
+    calls: [routeCall(IMAGE_ID, "image/opacity", { opacity: HALF })],
+  },
+  {
+    name: "a zero opacity",
+    request: { opacity: 0 },
+    calls: [routeCall(IMAGE_ID, "image/opacity", { opacity: 0 })],
+  },
+  {
+    name: "the image visibility, then its opacity",
+    request: { opacity: HALF, visibility: true },
+    calls: [
+      routeCall(IMAGE_ID, "image/visibility", { visibility: true }),
+      routeCall(IMAGE_ID, "image/opacity", { opacity: HALF }),
+    ],
+  },
+];
+
 const MODEL_CASES: { name: string; request: StyleRequest; calls: unknown }[] = [
   {
     name: "every surface of the model",
@@ -171,6 +201,48 @@ const MODEL_CASES: { name: string; request: StyleRequest; calls: unknown }[] = [
 ];
 
 const ERROR_CASES: { details: StyleDetails; request: StyleRequest; message: string }[] = [
+  {
+    details: IMAGE,
+    request: { color: "#ff8800" },
+    message:
+      'color cannot be set on the image "raster"; an image only takes visibility and opacity',
+  },
+  {
+    details: IMAGE,
+    request: { opacity: HALF, size: SIZE, width: 1, coloring: "random" },
+    message:
+      'size, width, coloring cannot be set on the image "raster"; an image only takes visibility and opacity',
+  },
+  {
+    details: IMAGE,
+    request: { target: "points", visibility: true },
+    message: 'An image has no targets: style the whole image "raster" without target',
+  },
+  {
+    details: IMAGE,
+    request: { componentIds: ["surface-1"], visibility: true },
+    message: "componentIds only applies to model corners, lines, surfaces, blocks",
+  },
+  {
+    details: SURFACE,
+    request: { opacity: HALF },
+    message: 'opacity only applies to images; "surface" is a mesh',
+  },
+  {
+    details: SURFACE,
+    request: { target: "polygons", visibility: true, opacity: HALF },
+    message: 'opacity only applies to images; "surface" is a mesh',
+  },
+  {
+    details: MODEL,
+    request: { opacity: HALF },
+    message: 'opacity only applies to images; "model" is a model',
+  },
+  {
+    details: MODEL,
+    request: { target: "surfaces", opacity: HALF },
+    message: 'opacity only applies to images; "model" is a model',
+  },
   {
     details: SURFACE,
     request: { componentIds: ["surface-1"], visibility: true },
@@ -276,6 +348,10 @@ describe("the style plan of a data", () => {
     expect(styleCalls(details, request, RANDOM_COLOR)).toStrictEqual(calls);
   });
 
+  test.each(IMAGE_CASES)("plans $name", ({ request, calls }) => {
+    expect(styleCalls(IMAGE, request, RANDOM_COLOR)).toStrictEqual(calls);
+  });
+
   test.each(MODEL_CASES)("plans $name", ({ request, calls }) => {
     expect(styleCalls(MODEL, request, RANDOM_COLOR)).toStrictEqual(calls);
   });
@@ -297,5 +373,13 @@ describe("the style plan of a data", () => {
     expect(
       givenProperties({ visibility: false, coloring: "random", attribute: "depth", item: 0 }),
     ).toStrictEqual(["visibility", "coloring"]);
+  });
+
+  test("lists a zero opacity as given, after the visibility", () => {
+    expect(givenProperties({ opacity: 0, color: "#ff8800", visibility: true })).toStrictEqual([
+      "visibility",
+      "opacity",
+      "color",
+    ]);
   });
 });

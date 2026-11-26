@@ -26,7 +26,8 @@ export default defineMcpResource({
     "Details of one item loaded in Vease (ID from vease://data): its stylable targets " +
     "(mesh elements, or model points, edges and component types), its model components " +
     "(geode ID, name, type), its attributes per target and location with their value range " +
-    "and time steps, and its current style.",
+    "and time steps, and its current style. An image has no targets nor attributes and gives " +
+    "its dimension (2 or 3).",
   uri: new ResourceTemplate("vease://data/{id}", { list: undefined }),
   metadata: { mimeType: "application/json" },
   handler: readDataDetails,
