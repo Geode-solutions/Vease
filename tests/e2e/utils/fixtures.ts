@@ -74,6 +74,9 @@ const test = appTest.extend<TestFixtures, WorkerFixtures>({
       );
       process.env.XDG_CONFIG_HOME = configPath;
       process.env.APPDATA = configPath;
+      // Electron reads the Windows roaming folder from the system, not from APPDATA: without its own userData
+      // Folder, the workers would share one settings.json (a CRS starred by one shows in the screenshots of another)
+      process.env.VEASE_E2E_USER_DATA_DIR = path.join(configPath, "userData");
       // Launched on demand instead of using the browser fixture, which would start (and require installing) a browser in DESKTOP mode too
       async function launchBrowser(): Promise<Browser> {
         const browser = await playwright[browserName].launch({
