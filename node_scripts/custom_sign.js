@@ -2,20 +2,40 @@ import child_process from "node:child_process";
 import { consola } from "consola";
 
 /**
+ * Signs with Azure Artifact Signing. The environment comes from the
+ * Geode-solutions/actions install/azure-sign action, set on master and next only.
  * @param {{ path: string }} configuration
  */
 export default function customSign(configuration) {
-  consola.info("customSign", configuration);
-
-  child_process.execSync(
-    `AzureSignTool sign \
-    --azure-key-vault-url "${process.env.AZURE_KEY_VAULT_URI}" \
-    --azure-key-vault-client-id "${process.env.AZURE_CLIENT_ID}" \
-    --azure-key-vault-tenant-id "${process.env.AZURE_TENANT_ID}" \
-    --azure-key-vault-client-secret "${process.env.AZURE_CLIENT_SECRET}" \
-    --azure-key-vault-certificate ${process.env.AZURE_CERT_NAME} \
-    --timestamp-rfc3161 http://timestamp.digicert.com \
-    -v ${configuration.path}`,
+  const token = process.env.ARTIFACT_SIGNING_TOKEN;
+  if (token === undefined || token === "") {
+    consola.info("Code signing skipped: no Artifact Signing token", configuration.path);
+    return;
+  }
+  consola.info("customSign", configuration.path);
+  child_process.execFileSync(
+    "java",
+    [
+      "-jar",
+      process.env.JSIGN_JAR,
+      "--storetype",
+      "TRUSTEDSIGNING",
+      "--keystore",
+      process.env.ARTIFACT_SIGNING_ENDPOINT,
+      "--storepass",
+      "env:ARTIFACT_SIGNING_TOKEN",
+      "--alias",
+      process.env.ARTIFACT_SIGNING_PROFILE,
+      "--tsaurl",
+      "http://timestamp.acs.microsoft.com",
+      "--tsmode",
+      "RFC3161",
+      "--tsretries",
+      "3",
+      "--tsretrywait",
+      "10",
+      configuration.path,
+    ],
     { stdio: "inherit" },
   );
 }
