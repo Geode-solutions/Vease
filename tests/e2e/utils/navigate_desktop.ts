@@ -19,8 +19,17 @@ async function runDesktopBuild(): Promise<{
   // Set the CI environment variable to true
   //oxlint-disable-next-line id-length
   process.env.CI = "e2e";
+  // The userData folder of the worker (see fixtures.ts): on Windows, Electron ignores APPDATA
+  const userDataPath = process.env.VEASE_E2E_USER_DATA;
+  const userDataArgs = userDataPath === undefined ? [] : [`--user-data-dir=${userDataPath}`];
   const electronApp = await electron.launch({
-    args: ["--no-sandbox", "--no-update", "--enable-unsafe-swiftshader", `--lang=${LOCALE}`],
+    args: [
+      "--no-sandbox",
+      "--no-update",
+      "--enable-unsafe-swiftshader",
+      `--lang=${LOCALE}`,
+      ...userDataArgs,
+    ],
     executablePath: appInfo,
     timeout: 60_000,
     env: {
