@@ -1,12 +1,15 @@
 // Third party imports
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { z } from "zod";
 
 // Local imports
 import {
+  IMAGE_ID,
   OTHER_SURFACE_ID,
   SURFACE_ID,
   THIRD_SURFACE_ID,
   fakeController,
+  imageDetails,
   routeRequests,
   surfaceDetails,
 } from "@vease_tests/unit/server/mcp/utils/style_fixtures";
@@ -26,7 +29,9 @@ vi.mock(import("@nuxtjs/mcp-toolkit/server"), () => ({
 
 const HEX = /^#[0-9a-f]{6}$/u;
 const SURFACE_IDS = [SURFACE_ID, OTHER_SURFACE_ID, THIRD_SURFACE_ID];
+const HALF = 0.5;
 const DETAILS = [
+  imageDetails(),
   surfaceDetails(SURFACE_ID, "top"),
   surfaceDetails(OTHER_SURFACE_ID, "middle"),
   surfaceDetails(THIRD_SURFACE_ID, "bottom"),
@@ -39,6 +44,7 @@ function toolInput(input: Pick<ToolInput, "ids"> & Partial<ToolInput>): ToolInpu
     target: undefined,
     componentIds: undefined,
     visibility: undefined,
+    opacity: undefined,
     color: undefined,
     size: undefined,
     width: undefined,
@@ -118,6 +124,34 @@ describe("set-style MCP tool", () => {
       },
     ]);
     expect(result).toBe(`Style updated: ${JSON.stringify({ ids: [SURFACE_ID], attributes })}`);
+  });
+
+  test("sets the opacity of an image through the image opacity route", async () => {
+    const result = await tool.handler(
+      toolInput({ ids: [IMAGE_ID], opacity: HALF }),
+      fakeMcpRequestExtra(),
+    );
+
+    expect(routeRequests(fetchMock)).toStrictEqual([
+      { route: "style/image/opacity", body: { ids: [IMAGE_ID], opacity: HALF } },
+    ]);
+    expect(result).toBe(
+      `Style updated: ${JSON.stringify({ ids: [IMAGE_ID], applied: ["opacity"] })}`,
+    );
+  });
+
+  test("validates the opacity between 0 and 1", () => {
+    const schema = z.object(tool.inputSchema);
+    expect(
+      [0, HALF, 1, undefined].map(
+        (opacity) => schema.safeParse({ ids: [IMAGE_ID], opacity }).success,
+      ),
+    ).toStrictEqual([true, true, true, true]);
+    expect(
+      [-HALF, 1 + HALF, "half"].map(
+        (opacity) => schema.safeParse({ ids: [IMAGE_ID], opacity }).success,
+      ),
+    ).toStrictEqual([false, false, false]);
   });
 
   test("passes the controller error through", async () => {

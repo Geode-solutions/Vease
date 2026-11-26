@@ -40,6 +40,22 @@ const MESH: DataItem = {
 
 const VERTEX_SCHEMA_ID = backSchemas.vertex_attribute_names.$id;
 const OTHER: DataItem = { ...MESH, data_id: "mesh-2", name: "other" };
+const IMAGES: DataItem[] = [
+  {
+    ...MESH,
+    data_id: "image-1",
+    name: "raster",
+    viewer_object_type: "image",
+    geode_object_type: "RasterImage2D",
+  },
+  {
+    ...MESH,
+    data_id: "image-2",
+    name: "volume",
+    viewer_object_type: "image",
+    geode_object_type: "RasterImage3D",
+  },
+];
 
 const DEPTH_MAX = 10;
 const OTHER_DEPTH_MAX = 20;
@@ -133,6 +149,10 @@ describe("the filter controller handlers", () => {
       }
       if (id === OTHER.data_id) {
         return OTHER;
+      }
+      const image = IMAGES.find(({ data_id }) => data_id === id);
+      if (image !== undefined) {
+        return image;
       }
       throw new Error(`Item not found: ${id}`);
     });
@@ -342,6 +362,14 @@ describe("the filter controller handlers", () => {
     await expect(
       applyFilter("apply-threshold", { ids: [MESH.data_id, OTHER.data_id], attribute: "depth" }),
     ).rejects.toThrow(`Attribute "depth" not found on "${OTHER.name}"`);
+    expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
+  });
+
+  test.each(IMAGES)("threshold rejects the image $name, which has no attributes", async (image) => {
+    await expect(
+      applyFilter("apply-threshold", { ids: [MESH.data_id, image.data_id], attribute: "depth" }),
+    ).rejects.toThrow(`"${image.name}" is an image: images have no attributes`);
+    expect(request.mock.calls.map(([{ params }]) => params?.id)).not.toContain(image.data_id);
     expect(hybridViewerStore.setThreshold).not.toHaveBeenCalled();
   });
 

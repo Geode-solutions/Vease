@@ -1,3 +1,4 @@
+// oxlint-disable max-lines
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBackStore, getDataStyleStore } from "@vease/utils/external_stores";
@@ -41,6 +42,23 @@ const MODEL: DataItem = {
   viewer_object_type: "model",
   geode_object_type: "BRep",
 };
+
+const IMAGES: DataItem[] = [
+  {
+    ...MESH,
+    data_id: "image-1",
+    name: "raster",
+    viewer_object_type: "image",
+    geode_object_type: "RasterImage2D",
+  },
+  {
+    ...MESH,
+    data_id: "image-2",
+    name: "volume",
+    viewer_object_type: "image",
+    geode_object_type: "RasterImage3D",
+  },
+];
 
 const DEPTH = { attribute_name: "depth", nb_items: 1, min_value: 0, max_value: 10 };
 const HEIGHT = { attribute_name: "height", nb_items: 1, min_value: 0, max_value: 1 };
@@ -220,4 +238,18 @@ describe("the controller attribute lookup", () => {
       findAttribute({ id: MESH.data_id, name: "depth", target: "polygons", componentIds: ["s1"] }),
     ).rejects.toThrow("componentIds only applies to model");
   });
+
+  test.each(IMAGES)(
+    "finds no attribute on the image $name, without asking the back",
+    async (image) => {
+      item.mockResolvedValue(image);
+      getStyle.mockReturnValue({ visibility: true, opacity: 1, cells: {}, points: {} });
+
+      const found = findAttribute({ id: image.data_id, name: "depth" });
+
+      await expect(found).rejects.toBeInstanceOf(ControllerError);
+      await expect(found).rejects.toThrow(`"${image.name}" is an image: images have no attributes`);
+      expect(request).not.toHaveBeenCalled();
+    },
+  );
 });
