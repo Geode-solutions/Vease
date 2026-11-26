@@ -61,10 +61,6 @@ function toolInput(input: Pick<ToolInput, "ids"> & Partial<ToolInput>): ToolInpu
   };
 }
 
-function acceptsOpacity(opacity: unknown): boolean {
-  return z.object(tool.inputSchema).safeParse({ ids: [IMAGE_ID], opacity }).success;
-}
-
 function sentColor({ body }: { body: unknown }): string {
   if (typeof body === "object" && body !== null && "color" in body) {
     return String(body.color);
@@ -145,17 +141,17 @@ describe("set-style MCP tool", () => {
   });
 
   test("validates the opacity between 0 and 1", () => {
-    expect([0, HALF, 1, undefined].map((opacity) => acceptsOpacity(opacity))).toStrictEqual([
-      true,
-      true,
-      true,
-      true,
-    ]);
-    expect([-HALF, 1 + HALF, "half"].map((opacity) => acceptsOpacity(opacity))).toStrictEqual([
-      false,
-      false,
-      false,
-    ]);
+    const schema = z.object(tool.inputSchema);
+    expect(
+      [0, HALF, 1, undefined].map(
+        (opacity) => schema.safeParse({ ids: [IMAGE_ID], opacity }).success,
+      ),
+    ).toStrictEqual([true, true, true, true]);
+    expect(
+      [-HALF, 1 + HALF, "half"].map(
+        (opacity) => schema.safeParse({ ids: [IMAGE_ID], opacity }).success,
+      ),
+    ).toStrictEqual([false, false, false]);
   });
 
   test("passes the controller error through", async () => {
