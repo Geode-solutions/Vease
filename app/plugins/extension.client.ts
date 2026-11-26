@@ -26,7 +26,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const StatusModule = await import("@ogw_front/utils/status.js");
     const appModeModule = await import("@geode/opengeodeweb-front/shared/app_mode.js");
     // Extensions share the database of the app: Database adds their tables to it.
-    const { Database, database } =
+    const { Database, database, getTable } =
       await import("@geode/opengeodeweb-front/internal/database/database.js");
     globalThis.__VEASE_UTILS__ = {
       Status: StatusModule.Status,
@@ -34,6 +34,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       api_fetch,
       Database,
       database,
+      getTable,
     };
 
     // Expose schema JSON modules for extensions — each module is keyed by the same name it's
