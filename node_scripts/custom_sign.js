@@ -7,7 +7,8 @@ import { consola } from "consola";
  * @param {{ path: string }} configuration
  */
 export default function customSign(configuration) {
-  if (!process.env.ARTIFACT_SIGNING_TOKEN) {
+  const token = process.env.ARTIFACT_SIGNING_TOKEN;
+  if (token === undefined || token === "") {
     consola.info("Code signing skipped: no Artifact Signing token", configuration.path);
     return;
   }
