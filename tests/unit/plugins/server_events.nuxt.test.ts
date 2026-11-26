@@ -33,7 +33,7 @@ describe("server_events plugin", () => {
 
   test("connecting the back sends its URL to the server and listens to its events", async () => {
     const backStore = useBackStore();
-    await backStore.connect();
+    backStore.connect();
 
     expect(setBackBaseUrl).toHaveBeenCalledWith(useAppStore().base_url, backStore.base_url);
     await vi.waitFor(() => {

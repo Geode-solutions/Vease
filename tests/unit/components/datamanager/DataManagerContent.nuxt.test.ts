@@ -8,7 +8,6 @@ import DataTable from "@vease/components/datamanager/DataTable.vue";
 import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 import { flushPromises } from "@vue/test-utils";
-import { setDataItems } from "@ogw_tests/unit/stores/data_helpers";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
@@ -104,7 +103,8 @@ describe("data manager content component", () => {
     const dataStore = useDataStore();
     // Copies: the component writes `visible` back onto the listed items
     const items: DataItem[] = [{ ...mockItem1 }, { ...mockItem2 }];
-    setDataItems(items);
+    // The testing pinia makes the store's getters writable
+    Object.assign(dataStore, { items });
     vi.spyOn(dataStore, "item").mockImplementation(async (id: string) => {
       await Promise.resolve();
       return assertDefined(items.find((item) => item.data_id === id));
