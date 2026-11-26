@@ -53,6 +53,11 @@ export const VeaseExtensionAPI = {
     appStore.registerStore(store as RegisterableStore);
   },
 
+  unregisterStore(storeId: string): void {
+    const appStore = useAppStore();
+    appStore.unregisterStore(storeId);
+  },
+
   get userInterfaceStore(): ReturnType<typeof useUserInterfaceStore> {
     return useUserInterfaceStore();
   },

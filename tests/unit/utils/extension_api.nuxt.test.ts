@@ -104,6 +104,20 @@ describe("the VeaseExtensionAPI object", () => {
     });
   });
 
+  describe("unregisterStore", () => {
+    test("unregisters the store from the app store", () => {
+      const unregisterStoreMock = vi.fn<(storeId: string) => void>();
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
+      vi.mocked(useAppStore).mockReturnValue({
+        unregisterStore: unregisterStoreMock,
+      } as unknown as ReturnType<typeof useAppStore>);
+
+      VeaseExtensionAPI.unregisterStore("custom-store");
+
+      expect(unregisterStoreMock).toHaveBeenCalledWith("custom-store");
+    });
+  });
+
   describe("store accessors", () => {
     test("returns the real UI store via userInterfaceStore", () => {
       expect(VeaseExtensionAPI.userInterfaceStore).toBe(useUserInterfaceStore());
