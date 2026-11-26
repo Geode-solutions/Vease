@@ -27,6 +27,14 @@ const HORIZON_INK = "#1F2E33";
 const LIGHT_TEXT = BRAND_COLORS.vertNoir;
 const DARK_TEXT = BRAND_COLORS.bleuFumee;
 
+// Activity source badges that have no matching role in the palette: the same brand pairs on both themes
+const ACTIVITY_SOURCE_COLORS = {
+  "activity-viewer": BRAND_COLORS.vertPlatine,
+  "on-activity-viewer": "#E8EEF0",
+  "activity-extension": BRAND_COLORS.roseQuartz,
+  "on-activity-extension": BRAND_COLORS.anthracite,
+};
+
 const lightTheme = {
   dark: false,
   colors: {
@@ -47,6 +55,7 @@ const lightTheme = {
     error: "#8F3326",
     info: BRAND_COLORS.bleuHorizon,
     success: "#2E6448",
+    ...ACTIVITY_SOURCE_COLORS,
     warning: BRAND_COLORS.orange,
   },
   variables: {
@@ -78,6 +87,7 @@ const darkTheme = {
     error: "#E8796E",
     info: BRAND_COLORS.bleuFumee,
     success: "#7FB89A",
+    ...ACTIVITY_SOURCE_COLORS,
     warning: BRAND_COLORS.orange,
   },
   variables: {

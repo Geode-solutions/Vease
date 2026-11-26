@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useAuth } from "@vease/composables/auth";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
@@ -6,12 +7,14 @@ interface SidebarPage {
   title: string;
   icon: string;
   testId?: string;
+  badge?: () => number;
   isActive?: () => boolean;
   click: () => unknown;
 }
 
 const { isUserAuthenticated } = useAuth();
 const userInterfaceStore = useUserInterfaceStore();
+const activityStore = useActivityStore();
 const route = useRoute();
 
 function isRoute(path: string): () => boolean {
@@ -52,6 +55,14 @@ const bottomPages = computed(() => {
       testId: "chatNavButton",
       isActive: (): boolean => userInterfaceStore.showChatPiP,
       click: (): unknown => userInterfaceStore.setShowChatPiP(!userInterfaceStore.showChatPiP),
+    },
+    {
+      title: "Activity",
+      icon: "ph-pulse",
+      testId: "activityNavButton",
+      badge: (): number => activityStore.unseen_errors,
+      isActive: (): boolean => userInterfaceStore.showActivityPiP,
+      click: (): unknown => userInterfaceStore.setShowActivityPiP(!userInterfaceStore.showActivityPiP),
     },
 
     {
@@ -142,20 +153,30 @@ function onDrop(event: DragEvent, dropIndex: number): void {
         <span v-if="item.isActive?.()" class="brand-dot rail-item__dot" aria-hidden="true" />
         <v-tooltip :text="item.title" location="right">
           <template v-slot:activator="{ props }">
-            <v-btn
-              v-bind="props"
-              icon
-              :color="item.isActive?.() ? 'primary' : undefined"
-              :variant="item.isActive?.() ? 'tonal' : 'text'"
-              :data-testid="item.testId"
-              @click="item.click"
-              class="icon-style"
-              width="48"
-              height="48"
-              draggable="false"
+            <!-- On the button, not the icon: the count sits on the edge of the circle -->
+            <v-badge
+              :model-value="(item.badge?.() ?? 0) > 0"
+              :content="item.badge?.()"
+              color="error"
+              max="99"
+              offset-x="6"
+              :data-testid="`${item.testId}Badge`"
             >
-              <v-icon :icon="item.icon" size="24" />
-            </v-btn>
+              <v-btn
+                v-bind="props"
+                icon
+                :color="item.isActive?.() ? 'primary' : undefined"
+                :variant="item.isActive?.() ? 'tonal' : 'text'"
+                :data-testid="item.testId"
+                @click="item.click"
+                class="icon-style"
+                width="48"
+                height="48"
+                draggable="false"
+              >
+                <v-icon :icon="item.icon" size="24" />
+              </v-btn>
+            </v-badge>
           </template>
         </v-tooltip>
       </div>

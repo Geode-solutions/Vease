@@ -4,8 +4,8 @@
 import { expect } from "@playwright/test";
 
 // Local imports
-import { ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93 } from "@vease_tests/utils/crs_test_data";
-import { applyAlignment, openCrsByButton, startAlignment } from "@vease_tests/utils/crs";
+import { ALIGN_SOURCE, ALIGN_TARGET, LAMBERT_93 } from "#ogw_e2e/crs_test_data.js";
+import { applyAlignment, startAlignment } from "#ogw_e2e/crs.js";
 import {
   expectNoBasemapInTree,
   setBasemapOpacity,
@@ -23,9 +23,10 @@ import {
   toggleGridScale,
 } from "#ogw_e2e/camera_interaction.js";
 import { brepGeodeObjectType } from "#ogw_e2e/constants.js";
-import { fillAlignment } from "@vease_tests/utils/crs_flows";
+import { fillAlignment } from "#ogw_e2e/crs_flows.js";
 import { loadVeaseTestDatas } from "@vease_tests/utils/load";
 import { moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
+import { openCrsByButton } from "@vease_tests/utils/crs";
 import { test } from "@vease_tests/utils/fixtures";
 import { toggleClippingPlanes } from "#ogw_e2e/clipping_planes_interaction.js";
 

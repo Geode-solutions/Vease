@@ -3,6 +3,7 @@ import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import SideBar from "@vease/components/Layout/SideBar.vue";
 import { VLayout } from "vuetify/components";
 import { navigateTo } from "#app/composables/router";
+import { useActivityStore } from "@ogw_front/stores/activity";
 import { useAuth } from "@vease/composables/auth";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
@@ -95,6 +96,37 @@ describe("sidebar component", () => {
     expect(chatBtn).toBeDefined();
     await chatBtn?.trigger("click");
     expect(spySetShowChatPiP).toHaveBeenCalledWith(true);
+  });
+
+  test("toggles the activity pip on activity button click", async () => {
+    const wrapper = mountSideBar();
+    const userInterfaceStore = useUserInterfaceStore();
+
+    await wrapper.find("[data-testid='activityNavButton']").trigger("click");
+    expect(userInterfaceStore.showActivityPiP).toBe(true);
+
+    await wrapper.find("[data-testid='activityNavButton']").trigger("click");
+    expect(userInterfaceStore.showActivityPiP).toBe(false);
+  });
+
+  test("the activity button shows the unseen errors", async () => {
+    const wrapper = mountSideBar();
+    const activityStore = useActivityStore();
+
+    const hiddenBadge = wrapper.find("[data-testid='activityNavButtonBadge'] .v-badge__badge");
+    expect(hiddenBadge.isVisible()).toBe(false);
+    activityStore.log({
+      source: "back",
+      kind: "http",
+      route: "test",
+      status: "error",
+      error: "Boom",
+    });
+    await wrapper.vm.$nextTick();
+
+    const badge = wrapper.find("[data-testid='activityNavButtonBadge'] .v-badge__badge");
+    expect(badge.isVisible()).toBe(true);
+    expect(badge.text()).toBe("1");
   });
 
   test("displays account title when authenticated", () => {

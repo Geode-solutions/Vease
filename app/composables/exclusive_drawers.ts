@@ -1,8 +1,11 @@
+import { useCrsStore } from "@ogw_front/stores/crs";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-// Only one of the stepper, create tools, extensions and CRS align drawers is open at a time.
+// Only one of the stepper, create tools, extensions and CRS align panels is open at a time:
+// Each of them may start its own picking in the viewer
 function useExclusiveDrawers(): void {
   const userInterfaceStore = useUserInterfaceStore();
+  const crsStore = useCrsStore();
 
   watch(
     () =>
@@ -10,7 +13,7 @@ function useExclusiveDrawers(): void {
         userInterfaceStore.showStepper,
         userInterfaceStore.showCreateTools,
         userInterfaceStore.showExtensions,
-        userInterfaceStore.showCrsAlign,
+        crsStore.showCrsAlign,
       ] as const,
     (
       [stepper, tools, extensions, crsAlign],
@@ -19,17 +22,17 @@ function useExclusiveDrawers(): void {
       if (stepper && !oldStepper) {
         userInterfaceStore.setShowCreateTools(false);
         userInterfaceStore.setShowExtensions(false);
-        userInterfaceStore.setShowCrsAlign(false);
+        crsStore.closeCrsAlign();
       }
       if (tools && !oldTools) {
         userInterfaceStore.setShowStepper(false);
         userInterfaceStore.setShowExtensions(false);
-        userInterfaceStore.setShowCrsAlign(false);
+        crsStore.closeCrsAlign();
       }
       if (extensions && !oldExtensions) {
         userInterfaceStore.setShowStepper(false);
         userInterfaceStore.setShowCreateTools(false);
-        userInterfaceStore.setShowCrsAlign(false);
+        crsStore.closeCrsAlign();
       }
       if (crsAlign && !oldCrsAlign) {
         userInterfaceStore.setShowStepper(false);

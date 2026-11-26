@@ -22,7 +22,7 @@ const hybridViewerStore = getHybridViewerStore();
 
 const search = ref("");
 const viewMode = ref("list");
-const items = dataStore.refAllItems();
+const items = computed(() => dataStore.items);
 const activeTab = ref("data");
 const selectedIds = ref<DataItem[]>([]);
 
