@@ -77,9 +77,8 @@ function piniaSharedState() {
   };
 }
 
-// The state shared between the tabs is off for now
 const piniaPlugin = defineNuxtPlugin(() => {
-  // NuxtApp.$pinia.use(piniaSharedState());
+  // Shared state disabled: nuxtApp.$pinia.use(piniaSharedState());
 });
 
 export default piniaPlugin;
