@@ -742,6 +742,76 @@
         }
       },
       "style": {
+        "image": {
+          "visibility": {
+            "$id": "api/controller/style/image/visibility",
+            "route": "/visibility",
+            "methods": ["POST"],
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "minItems": 1
+              },
+              "visibility": {
+                "type": "boolean"
+              }
+            },
+            "required": ["ids", "visibility"],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer"
+                },
+                "response": {}
+              },
+              "required": ["statusCode", "response"],
+              "additionalProperties": false
+            }
+          },
+          "opacity": {
+            "$id": "api/controller/style/image/opacity",
+            "route": "/opacity",
+            "methods": ["POST"],
+            "type": "object",
+            "properties": {
+              "ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 32,
+                  "maxLength": 32
+                },
+                "minItems": 1
+              },
+              "opacity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "required": ["ids", "opacity"],
+            "additionalProperties": false,
+            "response": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer"
+                },
+                "response": {}
+              },
+              "required": ["statusCode", "response"],
+              "additionalProperties": false
+            }
+          }
+        },
         "mesh": {
           "cells": {
             "cell": {

@@ -250,3 +250,23 @@ def test_client_raises_the_controller_error():
 
     with pytest.raises(RuntimeError, match="No data with id"):
         client.post("/style/mesh/color", json={})
+
+
+def test_style_image_posts_visibility_and_opacity():
+    client = FakeClient()
+    style = StyleResource(client)
+
+    style.image.visibility([DATA_ID, OTHER_ID], False)
+    style.image.opacity(DATA_ID, 0.5)
+
+    assert [call[1] for call in client.calls] == [
+        "/style/image/visibility",
+        "/style/image/opacity",
+    ]
+    assert [call[2]["json"] for call in client.calls] == [
+        {"ids": [DATA_ID, OTHER_ID], "visibility": False},
+        {"ids": [DATA_ID], "opacity": 0.5},
+    ]
+    with pytest.raises(TypeError):
+        style.image.visibility(DATA_ID, True, component_ids=["s1"])
+    assert not hasattr(style.image, "color")

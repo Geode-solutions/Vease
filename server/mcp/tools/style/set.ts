@@ -14,10 +14,12 @@ import { runStyle } from "@vease_server/mcp/utils/style_run";
 export default defineMcpTool({
   name: "set-style",
   description:
-    "The required way to change how loaded data looks in Vease: visibility, color, point size, " +
-    "edge width, coloring mode, or coloring by an attribute. Style several data in one call by " +
-    "listing all their IDs. Read vease://data for the data IDs and vease://data/{id} for the " +
-    "targets, components and attributes a mesh or model offers.\n" +
+    "The required way to change how loaded data looks in Vease: visibility, opacity, color, " +
+    "point size, edge width, coloring mode, or coloring by an attribute. Style several data in " +
+    "one call by listing all their IDs. Read vease://data for the data IDs and vease://data/{id} " +
+    "for the targets, components and attributes a mesh or model offers.\n" +
+    "Images (raster images, viewer type image) show their own colors: they only take visibility " +
+    "and opacity, without target, and have no attributes; opacity only applies to images.\n" +
     "Style: without target the whole mesh is styled (visibility and color only; a whole model " +
     "accepts visibility only). Mesh targets: points, edges, cells, polygons, polyhedra (size only " +
     "on points, width only on edges, textures only on cells and polygons). Model targets: points, " +
@@ -33,7 +35,7 @@ export default defineMcpTool({
     "vease://colormaps. timeStep is one of the attribute time_steps values; without it a time " +
     "series keeps its current step, or shows the first one.",
   inputSchema: {
-    ids: z.array(dataId).min(1).describe("IDs of the meshes or models to style"),
+    ids: z.array(dataId).min(1).describe("IDs of the images, meshes or models to style"),
     target: styleTarget
       .optional()
       .describe("Element or component type; omit to style the whole data or find the attribute"),
@@ -41,6 +43,12 @@ export default defineMcpTool({
       .optional()
       .describe("Geode ids of one model's corners, lines, surfaces or blocks"),
     visibility: z.boolean().optional().describe("Show (true) or hide (false)"),
+    opacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .optional()
+      .describe("Opacity, from 0 (transparent) to 1 (opaque); only for images"),
     color: hexColor.optional().describe("Hex color, #rrggbb or #rrggbbaa (e.g. #ff8800)"),
     size: z.number().positive().optional().describe("Point size; only for the points target"),
     width: z.number().positive().optional().describe("Edge width; only for the edges target"),
