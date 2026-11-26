@@ -1,4 +1,6 @@
 import {
+  IMAGE_2D,
+  IMAGE_3D,
   MESH,
   MISSING_ERROR,
   MISSING_ID,
@@ -13,7 +15,7 @@ import {
   styleSetter,
 } from "@vease_tests/unit/utils/controller/handlers/style/fixtures";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { checkMesh, checkModel } from "@vease/utils/controller/handlers/style/common";
+import { checkImage, checkMesh, checkModel } from "@vease/utils/controller/handlers/style/common";
 import type {
   getBackStore,
   getDataStyleStore,
@@ -35,8 +37,8 @@ vi.mock(import("@vease/utils/external_stores"), () => ({
   getHybridViewerStore: vi.fn<typeof getHybridViewerStore>(),
 }));
 
-// 16 mesh, 16 model and 16 attribute routes
-const STYLE_COMMAND_COUNT = 48;
+// 2 image, 16 mesh, 16 model and 16 attribute routes
+const STYLE_COMMAND_COUNT = 50;
 
 describe("the style commands", () => {
   const stores = createStores();
@@ -130,5 +132,33 @@ describe("the style viewer type checks", () => {
     expect(() => {
       checkModel(MESH);
     }).toThrow('"surface" is a mesh; use the style/mesh routes');
+  });
+
+  test.each([IMAGE_2D, IMAGE_3D])(
+    "rejects the image $name on the mesh and model routes",
+    (image) => {
+      expect(() => {
+        checkMesh(image);
+      }).toThrow(`"${image.name}" is an image; use the style/image routes`);
+      expect(() => {
+        checkMesh(image, "points");
+      }).toThrow(`"${image.name}" is an image; use the style/image routes`);
+      expect(() => {
+        checkModel(image);
+      }).toThrow(`"${image.name}" is an image; use the style/image routes`);
+    },
+  );
+
+  test("accepts 2D and 3D images and rejects a mesh and a model on the image routes", () => {
+    expect(() => {
+      checkImage(IMAGE_2D);
+      checkImage(IMAGE_3D);
+    }).not.toThrow();
+    expect(() => {
+      checkImage(MESH);
+    }).toThrow('"surface" is a mesh; use the style/mesh routes');
+    expect(() => {
+      checkImage(MODEL);
+    }).toThrow('"brep" is a model; use the style/model routes');
   });
 });

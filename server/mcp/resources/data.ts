@@ -17,7 +17,7 @@ async function readData(uri: URL): Promise<ReadResourceResult> {
 export default defineMcpResource({
   name: "vease-data",
   description:
-    "The data loaded in Vease: the ID, name, Geode object type, viewer type (mesh or model) " +
+    "The data loaded in Vease: the ID, name, Geode object type, viewer type (image, mesh or model) " +
     "and visibility of each item. Read vease://data/{id} for the details of one item.",
   uri: "vease://data",
   metadata: { mimeType: "application/json" },
