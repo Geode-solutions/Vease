@@ -22,6 +22,8 @@ const {
   skippedFiles?: string[];
 }>();
 
+// The import is not awaited: a failed file is reported by the snackbar of its request, and the rejection of the
+// Workflow is caught here so that it is not left unhandled
 async function importInBackground(
   files_to_import: Parameters<typeof importWorkflow>[0],
 ): Promise<void> {
