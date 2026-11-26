@@ -73,6 +73,18 @@ describe("desktop settings (electron main process)", () => {
     expect(fs.readdirSync(userDataPath)).toStrictEqual([SETTINGS_FILE]);
   });
 
+  // Two instances saving at the same moment must not write into the same temporary file
+  test("saves through a temporary file of its own instance", () => {
+    const writeSpy = vi.spyOn(fs, "writeFileSync");
+    writeAppSettings(userDataPath, { colorTheme: "dark" });
+    expect(writeSpy).toHaveBeenCalledWith(
+      path.join(userDataPath, `${SETTINGS_FILE}.${process.pid}.tmp`),
+      expect.any(String),
+    );
+    writeSpy.mockRestore();
+    expect(readAppSettings(userDataPath)).toStrictEqual({ colorTheme: "dark" });
+  });
+
   test("saves the crs favorites next to the color theme", () => {
     writeAppSettings(userDataPath, { colorTheme: "dark" });
     writeAppSettings(userDataPath, { crsFavorites: [LAMBERT] });
