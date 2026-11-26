@@ -21,6 +21,8 @@ const ogwTestDataPath = path.join(
 
 // A conversion can be long, the test timeout bounds it
 const IMPORT_TIMEOUT_MS = 120_000;
+// The first spinner shows once the import has read the data already loaded: shortly after the stepper closes
+const SPINNER_SHOWN_TIMEOUT_MS = 5000;
 
 function getLayoutImportButton(window: Page): Locator {
   return window.getByTestId("layoutImportButton");
@@ -30,12 +32,21 @@ function getDataImportStepper(window: Page): Locator {
   return window.getByTestId("DataImportStepper");
 }
 
-// The stepper closes as soon as the import starts: each file shows in the object tree with a spinner until it is loaded
+// The stepper closes as soon as the import starts: each file shows in the object tree with a spinner until it is loaded.
+// The spinners come a moment after the stepper closes: wait for the first one, unless a fast import is already done,
+// Then for the last one to go
 async function waitForImportDone(window: Page, loadTimeout: number): Promise<void> {
   await getDataImportStepper(window).waitFor({ state: "detached" });
-  await expect(window.locator(".tree-row-wrapper.is-loading")).toHaveCount(0, {
-    timeout: IMPORT_TIMEOUT_MS,
-  });
+  // A loading data, or a folded group showing that some of its data are loading
+  const loadingRows = window
+    .getByTestId("loadingObjectSpinner")
+    .or(window.getByTestId("loadingGroupSpinner"));
+  try {
+    await loadingRows.first().waitFor({ state: "attached", timeout: SPINNER_SHOWN_TIMEOUT_MS });
+  } catch {
+    consola.info("No import spinner shown: the import was already done");
+  }
+  await expect(loadingRows).toHaveCount(0, { timeout: IMPORT_TIMEOUT_MS });
   await waitForActionSettled(window, loadTimeout);
 }
 
