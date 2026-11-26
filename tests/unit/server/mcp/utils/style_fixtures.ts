@@ -21,6 +21,13 @@ const OTHER_SURFACE_ID = "22222222222222222222222222222222";
 const THIRD_SURFACE_ID = "33333333333333333333333333333333";
 const SOLID_ID = "44444444444444444444444444444444";
 const MODEL_ID = "55555555555555555555555555555555";
+const IMAGE_ID = "66666666666666666666666666666666";
+const OTHER_IMAGE_ID = "77777777777777777777777777777777";
+
+// An image has neither targets nor attributes: only its visibility and its opacity are styled
+function imageDetails(id: string = IMAGE_ID, name = "raster"): StyleDetails {
+  return { id, name, viewer_object_type: "image", targets: [], attributes: [] };
+}
 
 // A polygonal surface: vertex attributes are listed for both its points and its polygons
 function surfaceDetails(id: string = SURFACE_ID, name = "surface"): StyleDetails {
@@ -135,8 +142,10 @@ function detailsReads(fetchMock: Mock<typeof fetch>): string[] {
 }
 
 export {
+  IMAGE_ID,
   MODEL,
   MODEL_ID,
+  OTHER_IMAGE_ID,
   OTHER_SURFACE_ID,
   type RouteAnswer,
   SOLID,
@@ -145,6 +154,7 @@ export {
   THIRD_SURFACE_ID,
   detailsReads,
   fakeController,
+  imageDetails,
   routeRequests,
   surfaceDetails,
 };

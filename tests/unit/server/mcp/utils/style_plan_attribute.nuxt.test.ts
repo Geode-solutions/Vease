@@ -4,12 +4,14 @@ import { describe, expect, test, vi } from "vitest";
 
 // Local imports
 import {
+  IMAGE_ID,
   MODEL,
   MODEL_ID,
   OTHER_SURFACE_ID,
   SOLID,
   SOLID_ID,
   SURFACE_ID,
+  imageDetails,
   surfaceDetails,
 } from "@vease_tests/unit/server/mcp/utils/style_fixtures";
 import {
@@ -96,6 +98,16 @@ const FOUND_CASES: {
 ];
 
 const ERROR_CASES: { details: StyleDetails; request: AttributeRequest; message: string }[] = [
+  {
+    details: imageDetails(IMAGE_ID, "raster"),
+    request: { attribute: "depth" },
+    message: '"raster" is an image: images have no attributes',
+  },
+  {
+    details: imageDetails(IMAGE_ID, "raster"),
+    request: { attribute: "depth", target: "cells", location: "cell" },
+    message: '"raster" is an image: images have no attributes',
+  },
   {
     details: SURFACE,
     request: { attribute: "depth", componentIds: ["surface-1"] },

@@ -34,6 +34,14 @@ const MODEL: DataItem = {
 
 const MESH: DataItem = { ...MODEL, data_id: "mesh-1", name: "surface", viewer_object_type: "mesh" };
 
+const IMAGE: DataItem = {
+  ...MODEL,
+  data_id: "image-1",
+  name: "raster",
+  viewer_object_type: "image",
+  geode_object_type: "RasterImage2D",
+};
+
 const ONCE = 1;
 const Z_SCALING = 3;
 const ORANGE = { red: 255, green: 136, blue: 0 };
@@ -150,6 +158,25 @@ describe("the view controller handlers", () => {
     await expect(view("focus-view", { id: MESH.data_id, componentIds: ["a"] })).rejects.toThrow(
       "componentIds only applies to models",
     );
+  });
+
+  test("focus focuses the camera on a whole image", async () => {
+    dataStore.item.mockResolvedValue(IMAGE);
+
+    await expect(view("focus-view", { id: IMAGE.data_id })).resolves.toStrictEqual({
+      id: IMAGE.data_id,
+    });
+    expect(hybridViewerStore.focusCameraOnObject).toHaveBeenCalledWith(IMAGE.data_id, []);
+  });
+
+  test("focus rejects componentIds on an image", async () => {
+    dataStore.item.mockResolvedValue(IMAGE);
+
+    await expect(view("focus-view", { id: IMAGE.data_id, componentIds: ["a"] })).rejects.toThrow(
+      "componentIds only applies to models",
+    );
+    expect(dataStore.getMeshComponentGeodeIds).not.toHaveBeenCalled();
+    expect(hybridViewerStore.focusCameraOnObject).not.toHaveBeenCalled();
   });
 
   test("orient sets the camera orientation", async () => {

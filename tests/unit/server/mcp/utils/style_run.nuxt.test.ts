@@ -4,12 +4,15 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 // Local imports
 import {
+  IMAGE_ID,
   MODEL,
   MODEL_ID,
+  OTHER_IMAGE_ID,
   OTHER_SURFACE_ID,
   SURFACE_ID,
   detailsReads,
   fakeController,
+  imageDetails,
   routeRequests,
   surfaceDetails,
 } from "@vease_tests/unit/server/mcp/utils/style_fixtures";
@@ -32,7 +35,14 @@ vi.mock(import("@vease_server/mcp/utils/distinct_colors"), () => ({
 const UNKNOWN_ID = "99999999999999999999999999999999";
 const SURFACE = surfaceDetails();
 const OTHER_SURFACE = surfaceDetails(OTHER_SURFACE_ID, "other surface");
-const DETAILS = [SURFACE, OTHER_SURFACE, MODEL];
+const DETAILS = [
+  SURFACE,
+  OTHER_SURFACE,
+  MODEL,
+  imageDetails(),
+  imageDetails(OTHER_IMAGE_ID, "volume"),
+];
+const HALF = 0.5;
 
 const REQUEST_ERRORS: { ids: string[]; request: StyleRequest; error: string }[] = [
   {
@@ -53,7 +63,7 @@ const REQUEST_ERRORS: { ids: string[]; request: StyleRequest; error: string }[] 
   {
     ids: [SURFACE_ID],
     request: { target: "polygons" },
-    error: "Nothing to change: give visibility, color, size, width, coloring or attribute",
+    error: "Nothing to change: give visibility, opacity, color, size, width, coloring or attribute",
   },
   {
     ids: [SURFACE_ID],
@@ -157,6 +167,31 @@ describe("the style run", () => {
     await expect(runStyle([SURFACE_ID], { visibility: true })).resolves.toBe(
       "Error setting style: Unexpected data details",
     );
+  });
+
+  test("sets the opacity of every image in one call and reports the meshes", async () => {
+    const result = await runStyle([IMAGE_ID, SURFACE_ID, OTHER_IMAGE_ID], { opacity: HALF });
+
+    expect(routeRequests(fetchMock)).toStrictEqual([
+      { route: "style/image/opacity", body: { ids: [IMAGE_ID, OTHER_IMAGE_ID], opacity: HALF } },
+    ]);
+    expect(result).toBe(
+      styleUpdated({
+        ids: [IMAGE_ID, OTHER_IMAGE_ID],
+        applied: ["opacity"],
+        failed: [{ id: SURFACE_ID, error: 'opacity only applies to images; "surface" is a mesh' }],
+      }),
+    );
+  });
+
+  test("hides images and meshes together, each through its own route", async () => {
+    const result = await runStyle([IMAGE_ID, SURFACE_ID], { visibility: false });
+
+    expect(routeRequests(fetchMock)).toStrictEqual([
+      { route: "style/image/visibility", body: { ids: [IMAGE_ID], visibility: false } },
+      { route: "style/mesh/visibility", body: { ids: [SURFACE_ID], visibility: false } },
+    ]);
+    expect(result).toBe(styleUpdated({ ids: [IMAGE_ID, SURFACE_ID], applied: ["visibility"] }));
   });
 
   test("reports a data the request cannot style and styles the others", async () => {
