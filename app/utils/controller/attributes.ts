@@ -186,6 +186,9 @@ function matchesLocation(
 
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
+  if (item.viewer_object_type === "image") {
+    throw new ControllerError(`"${item.name}" is an image: images have no attributes`);
+  }
   let sources: AttributeSource[] = [];
   if (item.viewer_object_type === "model") {
     sources = await modelSearchSources(item, args);
