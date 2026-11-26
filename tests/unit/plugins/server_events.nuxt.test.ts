@@ -22,7 +22,10 @@ vi.mock(import("@vease/utils/events/index"), () => ({
 // The back pings on connect: keep it off the network
 vi.mock(import("@ogw_internal/stores/microservice"), async (importOriginal) => ({
   ...(await importOriginal()),
-  usePing: (): ReturnType<typeof usePing> => ({ start_ping: vi.fn<() => void>(), stop_ping: vi.fn<() => void>() }),
+  usePing: (): ReturnType<typeof usePing> => ({
+    start_ping: vi.fn<() => void>(),
+    stop_ping: vi.fn<() => void>(),
+  }),
 }));
 
 // `connect` is what every mode calls once the microservices exist; in cloud
