@@ -10,7 +10,8 @@ const { label, icon, testId, action } = defineProps<{
   label: string;
   icon: string;
   testId: string;
-  action: () => Promise<unknown>;
+  // An import returns at once (it goes on in the background), an apply waits for its result
+  action: (() => void) | (() => Promise<unknown>);
 }>();
 
 const UIStore = useUIStore();
