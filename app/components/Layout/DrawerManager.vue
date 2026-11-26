@@ -10,12 +10,16 @@ import StepImport from "@vease/components/StepImport.vue";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
-const { userInterfaceStore } = defineProps<{ userInterfaceStore: ReturnType<typeof useUserInterfaceStore> }>();
+const { userInterfaceStore } = defineProps<{
+  userInterfaceStore: ReturnType<typeof useUserInterfaceStore>;
+}>();
 
 const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
 const viewerStore = useViewerStore();
 
-const showRightDrawer = computed(() => userInterfaceStore.showStepper || userInterfaceStore.showCreateTools);
+const showRightDrawer = computed(
+  () => userInterfaceStore.showStepper || userInterfaceStore.showCreateTools,
+);
 
 function handleFilesDropped(files): void {
   emit("files-dropped", files);

@@ -52,7 +52,9 @@ function useExtensionMetadata(): {
     if (!extension) {
       return [];
     }
-    return userInterfaceStore.toolsDefinitions.filter((tool) => tool.extensionPath === extension.id);
+    return userInterfaceStore.toolsDefinitions.filter(
+      (tool) => tool.extensionPath === extension.id,
+    );
   }
 
   function getExtensionToolsCount(extension: Extension | null | undefined): number {

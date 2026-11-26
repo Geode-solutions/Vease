@@ -56,7 +56,12 @@ function handleEscape(): void {
 
     <v-card-text class="pt-2 pb-6 flex-grow-1 overflow-y-auto px-3">
       <v-row dense>
-        <v-col v-for="tool in userInterfaceStore.activeTools" :key="tool.id" cols="12" class="d-flex pa-1">
+        <v-col
+          v-for="tool in userInterfaceStore.activeTools"
+          :key="tool.id"
+          cols="12"
+          class="d-flex pa-1"
+        >
           <GlassCard
             variant="ui"
             class="cursor-pointer flex-grow-1 custom-tool-card"

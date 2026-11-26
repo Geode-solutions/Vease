@@ -62,7 +62,8 @@ const bottomPages = computed(() => {
       testId: "activityNavButton",
       badge: (): number => activityStore.unseen_errors,
       isActive: (): boolean => userInterfaceStore.showActivityPiP,
-      click: (): unknown => userInterfaceStore.setShowActivityPiP(!userInterfaceStore.showActivityPiP),
+      click: (): unknown =>
+        userInterfaceStore.setShowActivityPiP(!userInterfaceStore.showActivityPiP),
     },
 
     {

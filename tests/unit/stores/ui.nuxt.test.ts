@@ -101,7 +101,11 @@ describe("the UI store", () => {
         { id: "mdiTool", component: {}, iconType: "mdi", iconSource: "mdi-cube-outline" },
         "ext/legacy",
       );
-      userInterfaceStore.registerDataManagerTab({ id: "mdiTab", component: {}, icon: "mdi-tag-outline" });
+      userInterfaceStore.registerDataManagerTab({
+        id: "mdiTab",
+        component: {},
+        icon: "mdi-tag-outline",
+      });
       expect(userInterfaceStore.toolsDefinitions[0]?.iconSource).toBe("ph-puzzle-piece");
       expect(userInterfaceStore.dataManagerTabs[0]?.icon).toBe("ph-puzzle-piece");
     });
