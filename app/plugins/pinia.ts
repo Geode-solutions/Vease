@@ -77,10 +77,8 @@ function piniaSharedState() {
   };
 }
 
-const piniaPlugin = defineNuxtPlugin((nuxtApp) => {
-  const { $pinia } = nuxtApp;
-  void $pinia;
-  // $pinia.use(piniaSharedState());
+const piniaPlugin = defineNuxtPlugin(() => {
+  // Shared state disabled: nuxtApp.$pinia.use(piniaSharedState());
 });
 
 export default piniaPlugin;
