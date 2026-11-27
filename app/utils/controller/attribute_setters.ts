@@ -11,6 +11,7 @@ import type { FoundAttribute } from "@vease/utils/controller/attributes";
 import { MODEL_SETTERS } from "@vease/utils/controller/model_attribute_setters";
 import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
+import { isNonEmpty } from "@ogw_front/utils/arrays";
 
 interface MeshAttributeSetters {
   colorMap: (store: StyleStore, meshId: DataId) => AttributeColorMap | undefined;
@@ -126,6 +127,9 @@ function bindAttribute(
   { target, kind, componentIds = [] }: FoundAttribute,
 ): AttributeBinding {
   if (isModelComponentTarget(target)) {
+    if (!isNonEmpty(componentIds)) {
+      throw new ControllerError(`Model ${target} has no component to color`);
+    }
     const { kinds, activate } = MODEL_SETTERS[target];
     const setters = kinds[kind];
     if (setters === undefined) {

@@ -3,6 +3,7 @@ import type { AttributeColorMap, AttributeTimeStep } from "@ogw_front/types/attr
 import type { AttributeKind, ModelComponentTarget } from "@vease/utils/controller/targets";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { ModelComponentId } from "@ogw_front/types/identifiers";
+import type { NonEmptyArray } from "@ogw_front/utils/arrays";
 import type { StyleStore } from "@vease/utils/controller/attribute_setter_types";
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 
@@ -20,13 +21,13 @@ interface ModelAttributeSetters {
   attribute: (
     store: StyleStore,
     modelId: DataId,
-    componentIds: ModelComponentId[],
+    componentIds: NonEmptyArray<ModelComponentId>,
     input: ValidAttributeInput,
   ) => Promise<unknown>;
   timeStep: (
     store: StyleStore,
     modelId: DataId,
-    componentIds: ModelComponentId[],
+    componentIds: NonEmptyArray<ModelComponentId>,
     timeStep: AttributeTimeStep,
   ) => Promise<unknown>;
 }
@@ -36,7 +37,7 @@ interface ModelComponentSetters {
   activate: (
     store: StyleStore,
     modelId: DataId,
-    componentIds: ModelComponentId[],
+    componentIds: NonEmptyArray<ModelComponentId>,
     kind: AttributeKind,
   ) => Promise<unknown>;
 }

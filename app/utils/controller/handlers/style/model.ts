@@ -10,6 +10,7 @@ import {
   checkComponentIdsOwner,
   resolveComponentIds,
 } from "@vease/utils/controller/targets";
+import { type NonEmptyArray, isNonEmpty } from "@ogw_front/utils/arrays";
 import {
   type StyleStore,
   checkModel,
@@ -24,7 +25,7 @@ import { setDataVisibility } from "@vease/utils/data_actions";
 type ComponentSetter<Value> = (
   store: StyleStore,
   modelId: DataId,
-  componentIds: ModelComponentId[],
+  componentIds: NonEmptyArray<ModelComponentId>,
   value: Value,
 ) => Promise<unknown>;
 
@@ -92,18 +93,27 @@ function componentCommands(target: ModelComponentTarget): Record<string, Control
     [`style/model/${target}/visibility`]: styleCommand(
       async (store, item, params: ComponentParams & { visibility: boolean }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.visibility(store, item.data_id, components, params.visibility);
       },
     ),
     [`style/model/${target}/color`]: styleCommand(
       async (store, item, params: ComponentParams & { color: CssColor }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.color(store, item.data_id, components, hexToRgba(params.color));
       },
     ),
     [`style/model/${target}/coloring`]: styleCommand(
       async (store, item, params: ComponentParams & { coloring: "constant" | "random" }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.coloring(store, item.data_id, components, params.coloring);
       },
     ),
