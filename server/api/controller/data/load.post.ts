@@ -11,6 +11,8 @@ import {
   uploadFile,
 } from "@vease_server/utils/data_file";
 import { stageDownload, takeDownload } from "@vease_server/utils/file_transfer";
+import type { Filename } from "@geode/opengeodeweb-back/schema_types";
+import type { GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
 
 import { getFileExtension } from "@ogw_shared/utils/response_handlers/load";
 
@@ -61,8 +63,8 @@ function savedData(response: unknown): SavedData {
 
 // A file may hold several contents: it is saved once per geode object type, one after the other
 async function saveAllTypes(
-  filename: string,
-  geodeObjectTypes: string[],
+  filename: Filename,
+  geodeObjectTypes: GeodeObjectType[],
 ): Promise<ControllerDataLoadedItem[]> {
   const data: ControllerDataLoadedItem[] = [];
   for (const geodeObjectType of geodeObjectTypes) {
@@ -77,7 +79,7 @@ async function saveAllTypes(
 // The browser fetches the project bytes itself: binary content never goes through the command channel
 async function importProject(
   filePart: MultiPartData,
-  filename: string,
+  filename: Filename,
 ): Promise<ControllerDataLoadResponse> {
   const token = stageDownload(filePart.data, filename);
   try {

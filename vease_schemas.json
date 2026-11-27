@@ -116,13 +116,45 @@
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "title": "DataId",
+                              "type": "string",
+                              "minLength": 32,
+                              "maxLength": 32
                             },
                             "name": {
                               "type": "string"
                             },
                             "geode_object_type": {
-                              "type": "string"
+                              "title": "GeodeObjectType",
+                              "type": "string",
+                              "enum": [
+                                "RasterImage2D",
+                                "RasterImage3D",
+                                "VertexSet",
+                                "Graph",
+                                "PointSet2D",
+                                "PointSet3D",
+                                "EdgedCurve2D",
+                                "EdgedCurve3D",
+                                "PolygonalSurface2D",
+                                "PolygonalSurface3D",
+                                "TriangulatedSurface2D",
+                                "TriangulatedSurface3D",
+                                "RegularGrid2D",
+                                "LightRegularGrid2D",
+                                "PolyhedralSolid3D",
+                                "TetrahedralSolid3D",
+                                "HybridSolid3D",
+                                "RegularGrid3D",
+                                "LightRegularGrid3D",
+                                "BRep",
+                                "Section",
+                                "StructuralModel",
+                                "CrossSection",
+                                "ImplicitStructuralModel",
+                                "ImplicitCrossSection",
+                                "HorizonStack3D"
+                              ]
                             }
                           },
                           "required": ["id", "name", "geode_object_type"]
