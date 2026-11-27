@@ -22,6 +22,24 @@ describe("the ImportFile component", () => {
     vi.mocked(importWorkflow).mockResolvedValue([]);
   });
 
+  // The object tree shows each file with a spinner meanwhile
+  test("closes the stepper without waiting for the import", async () => {
+    const setShowStepperSpy = vi.spyOn(useUserInterfaceStore(), "setShowStepper");
+    vi.mocked(importWorkflow).mockReturnValue(Promise.withResolvers<string[]>().promise);
+    const wrapper = mountWithPlugins(ImportFile, {
+      props: {
+        filenames: [SAMPLE_FILENAME],
+        geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
+      },
+    });
+    await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
+    await flushPromises();
+    expect(importWorkflow).toHaveBeenCalledWith([
+      { filename: SAMPLE_FILENAME, geode_object_type: GEODE_TYPE },
+    ]);
+    expect(setShowStepperSpy).toHaveBeenCalledWith(false);
+  });
+
   test("renders import and cancel buttons", () => {
     const wrapper = mountWithPlugins(ImportFile, {
       props: {

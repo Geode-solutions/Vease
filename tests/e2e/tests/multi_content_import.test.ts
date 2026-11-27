@@ -16,7 +16,7 @@ import { test } from "@vease_tests/utils/fixtures";
 // This VTU file holds one triangle and one tetrahedron: each content becomes its own data
 const MIXED_CONTENT_FILE = "mixed_polygons_polyhedra.vtu";
 // The tree truncates long names in the middle: match the visible start of the file name
-const MIXED_CONTENT_NAME_START = "mixed_polygo";
+const MIXED_CONTENT_NAME_START = "mixed_polyg";
 
 test.use({ suiteId: import.meta.url });
 test.describe.configure({ mode: "serial" });

@@ -19,8 +19,35 @@ const ogwTestDataPath = path.join(
   "data",
 );
 
+// A conversion can be long, the test timeout bounds it
+const IMPORT_TIMEOUT_MS = 120_000;
+// The first spinner shows once the import has read the data already loaded: shortly after the stepper closes
+const SPINNER_SHOWN_TIMEOUT_MS = 5000;
+
 function getLayoutImportButton(window: Page): Locator {
   return window.getByTestId("layoutImportButton");
+}
+
+function getDataImportStepper(window: Page): Locator {
+  return window.getByTestId("DataImportStepper");
+}
+
+// The stepper closes as soon as the import starts: each file shows in the object tree with a spinner until it is loaded.
+// The spinners come a moment after the stepper closes: wait for the first one, unless a fast import is already done,
+// Then for the last one to go
+async function waitForImportDone(window: Page, loadTimeout: number): Promise<void> {
+  await getDataImportStepper(window).waitFor({ state: "detached" });
+  // A loading data, or a folded group showing that some of its data are loading
+  const loadingRows = window
+    .getByTestId("loadingObjectSpinner")
+    .or(window.getByTestId("loadingGroupSpinner"));
+  try {
+    await loadingRows.first().waitFor({ state: "attached", timeout: SPINNER_SHOWN_TIMEOUT_MS });
+  } catch {
+    consola.info("No import spinner shown: the import was already done");
+  }
+  await expect(loadingRows).toHaveCount(0, { timeout: IMPORT_TIMEOUT_MS });
+  await waitForActionSettled(window, loadTimeout);
 }
 
 async function loadVeaseTestDatas(
@@ -48,11 +75,8 @@ async function loadVeaseTestDatas(
   const fileInput = window.locator(`input[type="file"][accept*="${inputFileExtension}"]`);
   await fileInput.waitFor({ state: "attached" });
   await fileInput.setInputFiles(inputDataFilePaths);
-  const dataImportStepper = window.getByTestId("DataImportStepper");
-  const finalizeImportButton = window.getByTestId("finalizeImportButton");
-  await finalizeImportButton.click();
-  await dataImportStepper.waitFor({ state: "detached" });
-  await waitForActionSettled(window, loadTimeout);
+  await window.getByTestId("finalizeImportButton").click();
+  await waitForImportDone(window, loadTimeout);
 }
 
 async function loadOgwTestDatas(
@@ -64,10 +88,6 @@ async function loadOgwTestDatas(
     loadTimeout,
     inputDataPath: ogwTestDataPath,
   });
-}
-
-function getDataImportStepper(window: Page): Locator {
-  return window.getByTestId("DataImportStepper");
 }
 
 interface CsvColumns {
@@ -112,10 +132,8 @@ async function loadVeaseCsvData(
   await selectCsvColumn(window, csvDialog, "Z Column", columns.z);
   await csvDialog.getByRole("button", { name: "Confirm" }).click();
   await csvDialog.waitFor({ state: "detached" });
-  const dataImportStepper = getDataImportStepper(window);
   await window.getByTestId("finalizeImportButton").click();
-  await dataImportStepper.waitFor({ state: "detached" });
-  await waitForActionSettled(window, loadTimeout);
+  await waitForImportDone(window, loadTimeout);
 }
 
 async function selectTimeSeriesFile(window: Page, timeSeriesPath: string): Promise<void> {

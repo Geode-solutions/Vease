@@ -35,8 +35,7 @@ interface TestFixtures {
 }
 
 // Each suite starts from the default settings, as a fresh browser context does: the desktop app keeps them in the
-// Settings.json of its userData folder, which the next suites of the worker would read. Asked to the app, since
-// Windows may not resolve it from APPDATA
+// Settings.json of its userData folder (one per worker), which the next suites of the worker would read
 async function closeWithoutSettings(
   electronApp: ElectronApplication | undefined,
   cleanup: () => Promise<void>,
@@ -74,6 +73,9 @@ const test = appTest.extend<TestFixtures, WorkerFixtures>({
       );
       process.env.XDG_CONFIG_HOME = configPath;
       process.env.APPDATA = configPath;
+      // Windows resolves userData from the user profile, not from APPDATA: without its own folder, the workers would
+      // Share one settings.json and see the settings (CRS history...) of the suites running on the other workers
+      process.env.VEASE_E2E_USER_DATA = path.join(configPath, "userData");
       // Launched on demand instead of using the browser fixture, which would start (and require installing) a browser in DESKTOP mode too
       async function launchBrowser(): Promise<Browser> {
         const browser = await playwright[browserName].launch({

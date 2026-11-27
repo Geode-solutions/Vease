@@ -26,15 +26,18 @@
   --vease-radius-control: 6px;
   --vease-radius-container: 12px;
   --vease-shell-gutter: 16px;
-  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius,
-     and one icon column (header icon, toolbar first icon, row caret) 8 px from the panel edge. The toolbar
-     capsule sits 1 px in, its own border bringing its first button to the same column. */
+  /* Object tree panels, floating inside the viewer island: 8 px from its edges, nested container radius, and one
+     icon column (header icon, toolbar first icon, row caret) 8 px after a 6 px gutter, the room of the model tree
+     accent. The toolbar capsule sits 1 px in, its own border bringing its first button to the same column, 4 px
+     from the header above and from the first row below. */
   --ogw-viewer-panel-inset: 8px;
   --ogw-viewer-panel-radius: var(--vease-radius-control);
   --ogw-viewer-panel-padding: 8px;
+  --ogw-viewer-panel-gutter: 6px;
   --ogw-viewer-row-radius: var(--vease-radius-control);
   --ogw-viewer-controls-inset: 1px;
   --ogw-viewer-controls-padding: 0px;
+  --ogw-viewer-controls-padding-block: 4px;
   --ogw-viewer-controls-icon-size: 24px;
 }
 
@@ -199,7 +202,13 @@ body,
   --ogw-launcher-button: rgb(var(--v-theme-accent));
   --ogw-dropzone-bg: rgba(var(--v-theme-background), 0.88);
   --ogw-dropzone-text-shadow: none;
+  /* The adaptive glass of the object tree takes the surface color in both themes and, like the radial menu, covers
+     most of the bright viewer background: its text keeps the contrast of a surface over any mesh */
+  --ogw-viewer-glass-tint: var(--v-theme-surface);
+  --ogw-viewer-glass-blend: normal;
   --ogw-viewer-glass-min-opacity: 0.88;
+  /* Without blur nor dimming, the mesh behind the tree stays a faint sharp shape instead of a dark smudge */
+  --ogw-viewer-glass-backdrop: none;
 }
 
 .v-theme--light {
@@ -211,9 +220,6 @@ body,
 }
 
 .v-theme--dark {
-  /* The adaptive glass of the object tree turns to the brand green; lighten would hide it on a bright viewer */
-  --ogw-viewer-glass-tint: var(--v-theme-surface);
-  --ogw-viewer-glass-blend: normal;
   --ogw-mono-icon-filter: brightness(0) invert(0.92);
   --ogw-svg-icon-filter: invert(0.92);
   --ogw-svg-icon-active-filter: none;
@@ -298,6 +304,8 @@ html .ogw-loading .responsive-title {
   font-weight: 700 !important;
   letter-spacing: -0.03em;
   text-transform: lowercase;
+  /* The tight line height was set for capitals: the descender of the "g" goes past it, the card title would clip it */
+  overflow: visible;
 }
 
 .ogw-loading .responsive-title::first-letter {

@@ -35,9 +35,10 @@ function writeAppSettings(userDataPath: string, settings: unknown): AppSettings 
   };
   try {
     fs.mkdirSync(userDataPath, { recursive: true });
-    // Written aside then renamed: a crash while writing never leaves a truncated settings.json
+    // Written aside then renamed: a crash while writing never leaves a truncated settings.json. The temporary file
+    // Is named after the process: two instances saving at the same moment don't write into the same file
     const settingsPath = path.join(userDataPath, SETTINGS_FILE);
-    const temporaryPath = `${settingsPath}.tmp`;
+    const temporaryPath = `${settingsPath}.${process.pid}.tmp`;
     fs.writeFileSync(temporaryPath, JSON.stringify(merged, undefined, 2));
     fs.renameSync(temporaryPath, settingsPath);
   } catch (error) {
