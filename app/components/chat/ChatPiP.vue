@@ -3,10 +3,10 @@ import ChatMessage from "@vease/components/chat/ChatMessage.vue";
 import ChatProviderSwitch from "@vease/components/chat/ChatProviderSwitch.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useAuth } from "@vease/composables/auth";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useVeaseChat } from "@vease/composables/chat";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const { isUserAuthenticated } = useAuth();
 const {
   messages,
@@ -54,7 +54,7 @@ const pendingText = computed(() =>
 );
 
 function close(): void {
-  UIStore.setShowChatPiP(false);
+  userInterfaceStore.setShowChatPiP(false);
 }
 
 function switchesAfter(index: number): typeof providerSwitches.value {

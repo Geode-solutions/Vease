@@ -5,16 +5,16 @@ import { importProject } from "@ogw_front/composables/project_manager";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
 import DrawerManager from "@vease/components/Layout/DrawerManager.vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 
 function isProjectFile(file: File): boolean {
   return file.name.toLowerCase().endsWith(".vease");
 }
 
 function handleFilesDropped(files: File[]): void {
-  if (UIStore.showStepper || UIStore.showExtensions) {
+  if (userInterfaceStore.showStepper || userInterfaceStore.showExtensions) {
     return;
   }
   // A .vease is a whole project: it is opened like from the Project menu, not imported as data
@@ -27,12 +27,12 @@ function handleFilesDropped(files: File[]): void {
     }
     return;
   }
-  UIStore.setDroppedFiles([...files]);
-  UIStore.setShowStepper(true);
+  userInterfaceStore.setDroppedFiles([...files]);
+  userInterfaceStore.setShowStepper(true);
 }
 
 function handleFoldersDropped(): void {
-  if (!UIStore.showStepper && !UIStore.showExtensions) {
+  if (!userInterfaceStore.showStepper && !userInterfaceStore.showExtensions) {
     useFeedbackStore().add_warning(foldersIgnoredWarning);
   }
 }
@@ -40,7 +40,7 @@ function handleFoldersDropped(): void {
 <template>
   <InfraConnected>
     <DrawerManager
-      :ui-store="UIStore"
+      :user-interface-store="userInterfaceStore"
       @files-dropped="handleFilesDropped"
       @folders-dropped="handleFoldersDropped"
     />

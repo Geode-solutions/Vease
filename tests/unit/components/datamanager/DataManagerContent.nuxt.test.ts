@@ -1,4 +1,4 @@
-import { type CrsItem, type DataItem, useDataStore } from "@ogw_front/stores/data";
+import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { assertDefined, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
@@ -102,14 +102,13 @@ describe("data manager content component", () => {
 
     const dataStore = useDataStore();
     // Copies: the component writes `visible` back onto the listed items
-    const items = ref<DataItem[]>([{ ...mockItem1 }, { ...mockItem2 }]);
-    vi.spyOn(dataStore, "refAllItems").mockReturnValue(items);
+    const items: DataItem[] = [{ ...mockItem1 }, { ...mockItem2 }];
+    // The testing pinia makes the store's getters writable
+    Object.assign(dataStore, { items });
     vi.spyOn(dataStore, "item").mockImplementation(async (id: string) => {
       await Promise.resolve();
-      return assertDefined(items.value.find((item) => item.data_id === id));
+      return assertDefined(items.find((item) => item.data_id === id));
     });
-    // Read by the crs store (project crs, warnings)
-    vi.spyOn(dataStore, "refCrsItems").mockReturnValue(ref<CrsItem[]>([mockItem1, mockItem2]));
     vi.spyOn(dataStore, "updateItem").mockImplementation(mockUpdateItem);
     vi.spyOn(dataStore, "deregisterObject").mockImplementation(mockDeregisterObject);
     vi.spyOn(dataStore, "deleteItem").mockImplementation(mockDeleteItem);

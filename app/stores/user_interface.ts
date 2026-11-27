@@ -1,7 +1,7 @@
 import { useDataManagerTabs, useToolsRegistry } from "@vease/composables/ui_registry";
 import { useUiOverlays, useUiPanels } from "@vease/composables/ui_overlays";
 
-const useUIStore = defineStore("UI", () => {
+const useUserInterfaceStore = defineStore("userInterface", () => {
   const showDropZone = ref(false);
   const droppedFiles = ref<File[]>([]);
   const showButton = ref(false);
@@ -45,4 +45,4 @@ const useUIStore = defineStore("UI", () => {
 });
 
 export type { ToolDefinition, DataManagerTab } from "@vease/composables/ui_registry";
-export { useUIStore };
+export { useUserInterfaceStore };

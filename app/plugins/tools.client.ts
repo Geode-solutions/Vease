@@ -1,5 +1,5 @@
 import type { Component } from "vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 function asyncTool(load: () => Promise<Component>): Component {
   return markRaw(defineAsyncComponent(load));
@@ -53,8 +53,8 @@ const TOOLS = [
 ];
 
 export default defineNuxtPlugin(() => {
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
   for (const tool of TOOLS) {
-    UIStore.registerToolComponent(tool);
+    userInterfaceStore.registerToolComponent(tool);
   }
 });

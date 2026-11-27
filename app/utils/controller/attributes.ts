@@ -1,9 +1,4 @@
 // Third party imports
-import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
-import type { DataItem } from "@ogw_front/stores/data";
-import { consola } from "consola";
-
-// Local imports
 import {
   type AttributeKind,
   type BackAttribute,
@@ -20,6 +15,10 @@ import {
   resolveComponentIds,
 } from "@vease/utils/controller/targets";
 import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
+import { isImage, isModel } from "@ogw_front/utils/viewer_object_type";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataItem } from "@ogw_front/stores/data";
+import { consola } from "consola";
 
 interface AttributeSource {
   target: MeshElement | ModelComponentTarget;
@@ -186,11 +185,11 @@ function matchesLocation(
 
 async function findAttribute(args: FindAttributeArgs): Promise<FoundAttribute> {
   const item = await getDataItem(args.id);
-  if (item.viewer_object_type === "image") {
+  if (isImage(item)) {
     throw new ControllerError(`"${item.name}" is an image: images have no attributes`);
   }
   let sources: AttributeSource[] = [];
-  if (item.viewer_object_type === "model") {
+  if (isModel(item)) {
     sources = await modelSearchSources(item, args);
   } else {
     sources = meshSearchSources(item, args);

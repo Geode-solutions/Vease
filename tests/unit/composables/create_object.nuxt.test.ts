@@ -7,7 +7,7 @@ import {
 } from "@vease_tests/utils/create_object_stubs";
 import type { importItem } from "@ogw_front/utils/import_workflow";
 import { useCreateObjectTool } from "@vease/composables/create_object";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -116,8 +116,8 @@ describe("useCreateObjectTool composable", () => {
       const { result } = mountTool(() =>
         useCreateObjectTool({ namePrefix: "Curve", minPoints: 2, schema, onReset }),
       );
-      const uiStore = useUIStore();
-      uiStore.setShowCreateTools(true);
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.setShowCreateTools(true);
       const viewerStore = useViewerStore();
       const toggleSpy = vi.spyOn(viewerStore, "toggle_picking_mode");
 
@@ -131,7 +131,7 @@ describe("useCreateObjectTool composable", () => {
       expect(result.points.value.every((point) => point.x === "")).toBe(true);
       expect(toggleSpy).toHaveBeenLastCalledWith(false);
       expect(onReset).toHaveBeenCalledWith();
-      expect(uiStore.showCreateTools).toBe(false);
+      expect(userInterfaceStore.showCreateTools).toBe(false);
     });
 
     test("does not toggle picking mode when it was already inactive", () => {

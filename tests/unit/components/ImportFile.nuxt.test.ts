@@ -4,7 +4,7 @@ import ImportFile from "@vease/components/ImportFile.vue";
 import { flushPromises } from "@vue/test-utils";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -24,7 +24,7 @@ describe("the ImportFile component", () => {
 
   // The object tree shows each file with a spinner meanwhile
   test("closes the stepper without waiting for the import", async () => {
-    const setShowStepperSpy = vi.spyOn(useUIStore(), "setShowStepper");
+    const setShowStepperSpy = vi.spyOn(useUserInterfaceStore(), "setShowStepper");
     vi.mocked(importWorkflow).mockReturnValue(Promise.withResolvers<string[]>().promise);
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
@@ -52,9 +52,9 @@ describe("the ImportFile component", () => {
     expect(wrapper.text()).toContain("Cancel");
   });
 
-  test("calls importWorkflow and updates UIStore on import click", async () => {
-    const uiStore = useUIStore();
-    const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
+  test("calls importWorkflow and updates userInterfaceStore on import click", async () => {
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowStepperSpy = vi.spyOn(userInterfaceStore, "setShowStepper");
 
     const wrapper = mountWithPlugins(ImportFile, {
       props: {
@@ -75,8 +75,8 @@ describe("the ImportFile component", () => {
   });
 
   test("emits reset_values and closes stepper when cancel button is clicked", async () => {
-    const uiStore = useUIStore();
-    const setShowStepperSpy = vi.spyOn(uiStore, "setShowStepper");
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowStepperSpy = vi.spyOn(userInterfaceStore, "setShowStepper");
 
     const wrapper = mountWithPlugins(ImportFile, {
       props: {

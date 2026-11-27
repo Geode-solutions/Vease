@@ -5,7 +5,7 @@ import { VLayout } from "vuetify/components";
 import { navigateTo } from "#app/composables/router";
 import { useActivityStore } from "@ogw_front/stores/activity";
 import { useAuth } from "@vease/composables/auth";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -88,8 +88,8 @@ describe("sidebar component", () => {
 
   test("toggles chat pip on chat button click", async () => {
     const wrapper = mountSideBar();
-    const uiStore = useUIStore();
-    const spySetShowChatPiP = vi.spyOn(uiStore, "setShowChatPiP");
+    const userInterfaceStore = useUserInterfaceStore();
+    const spySetShowChatPiP = vi.spyOn(userInterfaceStore, "setShowChatPiP");
 
     const buttons = wrapper.findAll("button");
     const chatBtn = buttons[CHAT_BUTTON_INDEX];
@@ -100,13 +100,13 @@ describe("sidebar component", () => {
 
   test("toggles the activity pip on activity button click", async () => {
     const wrapper = mountSideBar();
-    const uiStore = useUIStore();
+    const userInterfaceStore = useUserInterfaceStore();
 
     await wrapper.find("[data-testid='activityNavButton']").trigger("click");
-    expect(uiStore.showActivityPiP).toBe(true);
+    expect(userInterfaceStore.showActivityPiP).toBe(true);
 
     await wrapper.find("[data-testid='activityNavButton']").trigger("click");
-    expect(uiStore.showActivityPiP).toBe(false);
+    expect(userInterfaceStore.showActivityPiP).toBe(false);
   });
 
   test("the activity button shows the unseen errors", async () => {
