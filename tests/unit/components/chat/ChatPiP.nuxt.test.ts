@@ -11,7 +11,7 @@ import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import ChatPiP from "@vease/components/chat/ChatPiP.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import type { useAuth } from "@vease/composables/auth";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import type { useVeaseChat } from "@vease/composables/chat";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -59,8 +59,8 @@ describe("the ChatPiP component", () => {
   });
 
   test("closes the chat pip when the close button is clicked", async () => {
-    const uiStore = useUIStore();
-    const setShowChatPiPSpy = vi.spyOn(uiStore, "setShowChatPiP");
+    const userInterfaceStore = useUserInterfaceStore();
+    const setShowChatPiPSpy = vi.spyOn(userInterfaceStore, "setShowChatPiP");
 
     const wrapper = mountWithPlugins(ChatPiP);
 

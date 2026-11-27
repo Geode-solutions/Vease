@@ -4,7 +4,7 @@ import type DataManagerContent from "@vease/components/datamanager/DataManagerCo
 import DataManagerPiP from "@vease/components/datamanager/DataManagerPiP.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { navigateTo } from "#app/composables/router";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -67,26 +67,26 @@ describe("data manager pip component", () => {
   test("expands to full page on expand button click", async () => {
     const wrapper = mountWithPlugins(DataManagerPiP);
 
-    const uiStore = useUIStore();
-    uiStore.setShowDataManagerPiP(true);
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.setShowDataManagerPiP(true);
 
     const expandButton = wrapper.find('[data-testid="dataManagerPiPExpandButton"]');
     await expandButton.trigger("click");
 
-    expect(uiStore.showDataManagerPiP).toBe(false);
+    expect(userInterfaceStore.showDataManagerPiP).toBe(false);
     expect(navigateTo).toHaveBeenCalledWith("/data_manager");
   });
 
   test("closes pip on close button click", async () => {
     const wrapper = mountWithPlugins(DataManagerPiP);
 
-    const uiStore = useUIStore();
-    uiStore.setShowDataManagerPiP(true);
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.setShowDataManagerPiP(true);
 
     const [, closeButton] = wrapper.findAll(".v-btn");
     expect(closeButton).toBeDefined();
     await closeButton?.trigger("click");
 
-    expect(uiStore.showDataManagerPiP).toBe(false);
+    expect(userInterfaceStore.showDataManagerPiP).toBe(false);
   });
 });

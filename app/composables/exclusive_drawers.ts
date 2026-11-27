@@ -1,18 +1,18 @@
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 // Only one of the stepper, create tools, extensions and CRS align panels is open at a time:
 // Each of them may start its own picking in the viewer
 function useExclusiveDrawers(): void {
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
   const crsStore = useCrsStore();
 
   watch(
     () =>
       [
-        UIStore.showStepper,
-        UIStore.showCreateTools,
-        UIStore.showExtensions,
+        userInterfaceStore.showStepper,
+        userInterfaceStore.showCreateTools,
+        userInterfaceStore.showExtensions,
         crsStore.showCrsAlign,
       ] as const,
     (
@@ -20,24 +20,24 @@ function useExclusiveDrawers(): void {
       [oldStepper, oldTools, oldExtensions, oldCrsAlign],
     ) => {
       if (stepper && !oldStepper) {
-        UIStore.setShowCreateTools(false);
-        UIStore.setShowExtensions(false);
+        userInterfaceStore.setShowCreateTools(false);
+        userInterfaceStore.setShowExtensions(false);
         crsStore.closeCrsAlign();
       }
       if (tools && !oldTools) {
-        UIStore.setShowStepper(false);
-        UIStore.setShowExtensions(false);
+        userInterfaceStore.setShowStepper(false);
+        userInterfaceStore.setShowExtensions(false);
         crsStore.closeCrsAlign();
       }
       if (extensions && !oldExtensions) {
-        UIStore.setShowStepper(false);
-        UIStore.setShowCreateTools(false);
+        userInterfaceStore.setShowStepper(false);
+        userInterfaceStore.setShowCreateTools(false);
         crsStore.closeCrsAlign();
       }
       if (crsAlign && !oldCrsAlign) {
-        UIStore.setShowStepper(false);
-        UIStore.setShowCreateTools(false);
-        UIStore.setShowExtensions(false);
+        userInterfaceStore.setShowStepper(false);
+        userInterfaceStore.setShowCreateTools(false);
+        userInterfaceStore.setShowExtensions(false);
       }
     },
   );

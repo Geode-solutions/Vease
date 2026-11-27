@@ -10,10 +10,10 @@ import TimeSeriesTargetSelector from "@ogw_front/components/TimeSeriesTargetSele
 import { typeChips } from "@vease/utils/type_chips";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 const emit = defineEmits<{ close: [] }>();
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 
 const { files: initialFiles = [] } = defineProps<{ files?: File[] }>();
 
@@ -157,7 +157,7 @@ const stepper_tree = useStepperTree(import_steps, {
 });
 
 function reset_values(): void {
-  UIStore.setDroppedFiles([]);
+  userInterfaceStore.setDroppedFiles([]);
   stepper_tree.reset_values();
 }
 
@@ -181,7 +181,7 @@ watch(
 );
 
 watch(
-  () => UIStore.showStepper,
+  () => userInterfaceStore.showStepper,
   (newVal) => {
     if (!newVal) {
       reset_values();

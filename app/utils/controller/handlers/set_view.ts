@@ -1,5 +1,6 @@
 // Third party imports
 import type { CameraOptions } from "@ogw_internal/stores/hybrid_viewer/vtk_types.js";
+import { isModel } from "@ogw_front/utils/viewer_object_type";
 import { toRaw } from "vue";
 import { useCameraManagerStore } from "@ogw_front/stores/camera_manager";
 import { useDataStore } from "@ogw_front/stores/data";
@@ -24,7 +25,7 @@ function reset(): Applied {
 async function focus(params: { id: string; componentIds?: string[] }): Promise<Applied> {
   const { id } = params;
   const item = await getDataItem(id);
-  if (params.componentIds !== undefined && item.viewer_object_type !== "model") {
+  if (params.componentIds !== undefined && !isModel(item)) {
     throw new ControllerError("componentIds only applies to models");
   }
   let blockIds: number[] = [];

@@ -5,7 +5,7 @@ import type Stepper from "@ogw_front/components/Stepper.vue";
 import { flushPromises } from "@vue/test-utils";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -46,8 +46,8 @@ describe("the StepImport component", () => {
   });
 
   test("resets values and emits close when close event is triggered on Stepper", async () => {
-    const uiStore = useUIStore();
-    const setDroppedFilesSpy = vi.spyOn(uiStore, "setDroppedFiles");
+    const userInterfaceStore = useUserInterfaceStore();
+    const setDroppedFilesSpy = vi.spyOn(userInterfaceStore, "setDroppedFiles");
 
     const sampleFile = new File(["dummy"], FILE_NAME);
     const wrapper = mountWithPlugins(StepImport, {
@@ -88,12 +88,12 @@ describe("the StepImport component", () => {
   });
 
   test("resets stepper tree values when showStepper becomes false", async () => {
-    const uiStore = useUIStore();
-    uiStore.showStepper = true;
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.showStepper = true;
 
     mountWithPlugins(StepImport);
 
-    uiStore.setShowStepper(false);
+    userInterfaceStore.setShowStepper(false);
     await nextTick();
 
     expect(resetValuesMock).toHaveBeenCalledWith();

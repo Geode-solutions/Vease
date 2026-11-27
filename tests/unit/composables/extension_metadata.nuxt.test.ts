@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useExtensionMetadata } from "@vease/composables/extension_metadata";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -81,10 +81,10 @@ describe("useExtensionMetadata composable", () => {
 
   describe("getExtensionTools / getExtensionToolsCount", () => {
     test("returns only tools registered under the extension's path", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent({ id: "tool-a", component: {} }, "ext-1");
-      uiStore.registerToolComponent({ id: "tool-b", component: {} }, "ext-2");
-      uiStore.registerToolComponent({ id: "tool-c", component: {} }, "ext-1");
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent({ id: "tool-a", component: {} }, "ext-1");
+      userInterfaceStore.registerToolComponent({ id: "tool-b", component: {} }, "ext-2");
+      userInterfaceStore.registerToolComponent({ id: "tool-c", component: {} }, "ext-1");
 
       const { getExtensionTools, getExtensionToolsCount } = useExtensionMetadata();
       const tools = getExtensionTools({ id: "ext-1" });
@@ -100,8 +100,8 @@ describe("useExtensionMetadata composable", () => {
     });
 
     test("returns an empty list when no tool matches the extension", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent({ id: "tool-a", component: {} }, "ext-1");
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent({ id: "tool-a", component: {} }, "ext-1");
 
       const { getExtensionTools } = useExtensionMetadata();
       expect(getExtensionTools({ id: "ext-unknown" })).toStrictEqual([]);

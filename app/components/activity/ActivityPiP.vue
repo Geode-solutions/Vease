@@ -5,7 +5,7 @@ import ActivityRow from "@vease/components/activity/ActivityRow.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useActivityFollow } from "@vease/composables/activity_follow";
 import { useNow } from "@vueuse/core";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 type StatusFilter = "all" | "running" | "errors";
 
@@ -16,7 +16,7 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
   { value: "errors", label: "Errors" },
 ];
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const activityStore = useActivityStore();
 // The clock only ticks while a request runs: the history rows keep their own duration
 const { now, pause, resume } = useNow({ interval: NOW_INTERVAL_MS, controls: true });
@@ -104,7 +104,7 @@ function clear(): void {
 }
 
 function close(): void {
-  UIStore.setShowActivityPiP(false);
+  userInterfaceStore.setShowActivityPiP(false);
 }
 </script>
 

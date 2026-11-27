@@ -34,7 +34,7 @@ function isUpdaterAvailable(): boolean {
   return getDesktopUpdaterAPI() !== undefined;
 }
 
-const useUpdaterStore = defineStore("Updater", () => {
+const useUpdaterStore = defineStore("updater", () => {
   const api = getDesktopUpdaterAPI();
   const status = ref<UpdaterStatus>({ state: "idle" });
   const channel = ref<UpdateChannel>("master");

@@ -5,9 +5,9 @@ import ColorThemeToggle from "@vease/components/Layout/ColorThemeToggle.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import { Status } from "@ogw_front/utils/status";
 import { getInfraStore } from "@vease/utils/external_stores";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const infraStore = getInfraStore();
 
 const importFileInput = useTemplateRef("importFileInput");
@@ -90,10 +90,10 @@ function onImportFileSelected(event): void {
         variant="flat"
         rounded="pill"
         class="text-none px-6 font-weight-bold"
-        :class="{ 'v-btn--active': UIStore.showStepper }"
+        :class="{ 'v-btn--active': userInterfaceStore.showStepper }"
         prepend-icon="ph-file-arrow-up"
         :disabled="!infraStore.microservices_connected"
-        @click="UIStore.setShowStepper(!UIStore.showStepper)"
+        @click="userInterfaceStore.setShowStepper(!userInterfaceStore.showStepper)"
       >
         Import
       </v-btn>
@@ -102,11 +102,11 @@ function onImportFileSelected(event): void {
         variant="tonal"
         rounded="pill"
         class="text-none px-6 font-weight-bold"
-        :class="{ 'v-btn--active': UIStore.showCreateTools }"
+        :class="{ 'v-btn--active': userInterfaceStore.showCreateTools }"
         data-testid="createButton"
         prepend-icon="ph-shapes"
         :disabled="!infraStore.microservices_connected"
-        @click="UIStore.setShowCreateTools(!UIStore.showCreateTools)"
+        @click="userInterfaceStore.setShowCreateTools(!userInterfaceStore.showCreateTools)"
       >
         Create
       </v-btn>
