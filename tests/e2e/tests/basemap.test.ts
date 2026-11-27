@@ -29,6 +29,7 @@ import { moveMouseOutOfTheWay } from "#ogw_e2e/viewer_interaction.js";
 import { openCrsByButton } from "@vease_tests/utils/crs";
 import { test } from "@vease_tests/utils/fixtures";
 import { toggleClippingPlanes } from "#ogw_e2e/clipping_planes_interaction.js";
+import { toggleGeologyBasemap } from "@vease_tests/utils/basemap";
 
 // Constants
 const BREP_FILE = "test.og_brep";
@@ -138,11 +139,11 @@ test("lower the routes opacity", async ({ window }) => {
 });
 
 test("show the geology under the routes", async ({ window }) => {
-  await toggleBasemap(window, "Geology");
+  await toggleGeologyBasemap(window);
 });
 
 test("hide the geology", async ({ window }) => {
-  await toggleBasemap(window, "Geology");
+  await toggleGeologyBasemap(window);
 });
 
 test("crop the routes only", async ({ window }) => {
