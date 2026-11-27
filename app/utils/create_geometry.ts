@@ -1,4 +1,6 @@
-function curveEdges(count: number, closed: boolean): [number, number][] {
+import type { Count } from "@ogw_front/types/ui";
+
+function curveEdges(count: Count, closed: boolean): [number, number][] {
   const edges = Array.from({ length: count - 1 }, (_, index): [number, number] => [
     index,
     index + 1,
@@ -9,7 +11,7 @@ function curveEdges(count: number, closed: boolean): [number, number][] {
   return edges;
 }
 
-function singlePolygon(count: number): number[][] {
+function singlePolygon(count: Count): number[][] {
   return [Array.from({ length: count }, (_, index) => index)];
 }
 

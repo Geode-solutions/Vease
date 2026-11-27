@@ -1,3 +1,5 @@
+import type { Count } from "@ogw_front/types/ui";
+
 const SECONDS = 1000;
 const MINUTES = 60;
 const HOURS = 60;
@@ -34,7 +36,7 @@ function timeDifferences(date: Date): TimeDifferences {
   return { secs, mins, hours, days, weeks, months };
 }
 
-function ago(count: number, unit: string): string {
+function ago(count: Count, unit: string): string {
   return `${count} ${count === 1 ? unit : `${unit}s`} ago`;
 }
 

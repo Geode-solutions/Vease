@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import { MAX_ENTRIES, isFailure, useActivityStore } from "@ogw_front/stores/activity";
+import {
+  type ActivityEntryId,
+  MAX_ENTRIES,
+  isFailure,
+  useActivityStore,
+} from "@ogw_front/stores/activity";
 import { matchesSearch, sortSources } from "@vease/utils/activity_display";
 import ActivityRow from "@vease/components/activity/ActivityRow.vue";
+import type { Label } from "@ogw_front/types/ui";
+import type { MicroserviceId } from "@ogw_front/types/identifiers";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useActivityFollow } from "@vease/composables/activity_follow";
 import { useNow } from "@vueuse/core";
@@ -10,7 +17,7 @@ import { useUserInterfaceStore } from "@vease/stores/user_interface";
 type StatusFilter = "all" | "running" | "errors";
 
 const NOW_INTERVAL_MS = 100;
-const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
+const STATUS_OPTIONS: { value: StatusFilter; label: Label }[] = [
   { value: "all", label: "All" },
   { value: "running", label: "Running" },
   { value: "errors", label: "Errors" },
@@ -21,11 +28,11 @@ const activityStore = useActivityStore();
 // The clock only ticks while a request runs: the history rows keep their own duration
 const { now, pause, resume } = useNow({ interval: NOW_INTERVAL_MS, controls: true });
 
-const hiddenSources = ref(new Set<string>());
+const hiddenSources = ref(new Set<MicroserviceId>());
 const statusFilter = ref<StatusFilter>("all");
 // Vuetify sets a cleared field to null
 const search = ref<string | null>("");
-const expandedIds = ref(new Set<number>());
+const expandedIds = ref(new Set<ActivityEntryId>());
 
 const sources = computed(() => sortSources(activityStore.entries.map((entry) => entry.source)));
 
@@ -78,7 +85,7 @@ watch(
   { immediate: true },
 );
 
-function toggleSource(source: string): void {
+function toggleSource(source: MicroserviceId): void {
   const next = new Set(hiddenSources.value);
   if (next.has(source)) {
     next.delete(source);
@@ -88,7 +95,7 @@ function toggleSource(source: string): void {
   hiddenSources.value = next;
 }
 
-function toggleExpanded(entryId: number): void {
+function toggleExpanded(entryId: ActivityEntryId): void {
   const next = new Set(expandedIds.value);
   if (next.has(entryId)) {
     next.delete(entryId);

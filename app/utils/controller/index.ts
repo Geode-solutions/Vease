@@ -3,13 +3,14 @@ import { consola } from "consola";
 
 // Local imports
 import type { ControllerCommand, ControllerReply } from "@vease_server/utils/command_bus";
+import type { Timestamp } from "@ogw_front/types/time";
 import { appServerUrl } from "@vease/utils/app_server_url";
 import { commandHandlers } from "@vease/utils/controller/handlers/index";
 import { errorMessage } from "@vease/utils/controller/errors";
 
 interface CommandContext {
   // Epoch ms on the browser clock after which the server no longer waits for the reply
-  deadline: number;
+  deadline: Timestamp;
 }
 
 type QueuedCommand = ControllerCommand & CommandContext;

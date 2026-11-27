@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import type { Pixels } from "@ogw_front/types/ui";
 import markUrl from "@vease/assets/img/brand/geode_mark.svg";
 
-const DEFAULT_SIZE = 32;
+interface Props {
+  size: Pixels;
+}
 
-const { size = DEFAULT_SIZE } = defineProps<{ size?: number }>();
+const { size } = defineProps<Props>();
 
 // The mark is drawn with currentColor (CSS mask), so it follows the theme like text does.
 const style = computed(() => ({

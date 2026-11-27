@@ -7,6 +7,7 @@ import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed
 
 // Local imports
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { Url } from "@ogw_front/types/files";
 import { appServerUrl } from "@vease/utils/app_server_url";
 import { getBackStore } from "@vease/utils/external_stores";
 
@@ -15,11 +16,11 @@ type ScreenshotFormat = "png" | "jpg";
 interface ExportScreenshotParams {
   format: ScreenshotFormat;
   includeBackground?: boolean;
-  uploadUrl: string;
+  uploadUrl: Url;
 }
 
 interface ExportProjectParams {
-  uploadUrl: string;
+  uploadUrl: Url;
 }
 
 const SCREENSHOT_FILENAME = "controller_screenshot";

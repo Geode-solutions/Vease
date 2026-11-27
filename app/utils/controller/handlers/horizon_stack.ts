@@ -6,17 +6,21 @@ import { importItem } from "@ogw_front/utils/import_workflow";
 
 // Local imports
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataName } from "@ogw_front/types/data";
+import type { ModelComponentId } from "@ogw_front/types/identifiers";
+import type { ModelComponentName } from "@ogw_front/types/model";
 import { getBackStore } from "@vease/utils/external_stores";
 
 interface CreateHorizonStackParams {
-  name: string;
-  horizons: string[];
-  unit_names?: string[];
+  name: DataName;
+  horizons: ModelComponentName[];
+  unit_names?: ModelComponentName[];
 }
 
 interface NamedComponent {
-  id: string;
-  name: string;
+  id: ModelComponentId;
+  name: ModelComponentName;
 }
 
 interface HorizonStackInfo {
@@ -30,7 +34,7 @@ interface ColumnRow extends NamedComponent {
 
 const schemas = back_schemas.opengeodeweb_back;
 
-async function createHorizonStack(params: unknown): Promise<{ id: string; name: string }> {
+async function createHorizonStack(params: unknown): Promise<{ id: DataId; name: DataName }> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const { name, horizons, unit_names: unitNames = [] } = params as CreateHorizonStackParams;
   if (unitNames.length > 0 && unitNames.length !== horizons.length + 1) {
@@ -50,7 +54,7 @@ async function createHorizonStack(params: unknown): Promise<{ id: string; name: 
 
 async function horizonStackInfo(params: unknown): Promise<HorizonStackInfo> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-  const { id } = params as { id: string };
+  const { id } = params as { id: DataId };
   const info = await getBackStore().request({ schema: schemas.horizon_stack_info, params: { id } });
   return info;
 }

@@ -1,13 +1,15 @@
-import { useUserInterfaceStore } from "@vease/stores/user_interface";
+import { type ToolDefinition, useUserInterfaceStore } from "@vease/stores/user_interface";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import type { ToolDefinition } from "@vease/stores/user_interface";
+import type { ExtensionName, PackageVersion } from "@ogw_front/types/server";
+import type { Description } from "@ogw_front/types/ui";
+import type { ExtensionId } from "@ogw_front/types/identifiers";
 
 interface Extension {
-  id?: string;
+  id?: ExtensionId;
   metadata?: {
-    name?: string;
-    description?: string;
-    version?: string;
+    name?: ExtensionName;
+    description?: Description;
+    version?: PackageVersion;
   };
   [key: string]: unknown;
 }

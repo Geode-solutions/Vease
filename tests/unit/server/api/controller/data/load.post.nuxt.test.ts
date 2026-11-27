@@ -87,8 +87,8 @@ describe("the POST /api/controller/data/load endpoint", () => {
   });
 
   test("saves the file once per geode object type of a multi-content file", async () => {
-    const types = ["TriangulatedSurface3D", "TetrahedralSolid3D"];
-    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue(types);
+    const types = ["TriangulatedSurface3D", "TetrahedralSolid3D"] as const;
+    vi.mocked(getAllowedGeodeObjectTypes).mockResolvedValue([...types]);
     // The first save returns OTHER_ITEM, the next ones the default ITEM
     vi.mocked(saveViewableFile).mockResolvedValueOnce({ data: [OTHER_ITEM] });
 

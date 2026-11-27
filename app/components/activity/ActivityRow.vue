@@ -8,18 +8,21 @@ import {
   isSlow,
   routeParts,
 } from "@vease/utils/activity_display";
+import type { Timestamp } from "@ogw_front/types/time";
+
+interface Props {
+  entry: ActivityEntry;
+  now?: Timestamp;
+  expanded: boolean;
+}
+
+interface Emits {
+  toggle: [];
+}
 
 // `now` ticks only for the running rows: a finished row shows its own duration
-const {
-  entry,
-  now = 0,
-  expanded,
-} = defineProps<{
-  entry: ActivityEntry;
-  now?: number;
-  expanded: boolean;
-}>();
-const emit = defineEmits<{ toggle: [] }>();
+const { entry, now = 0, expanded } = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 const STATUS_ICONS: Record<ActivityEntry["status"], string> = {
   running: "ph-circle-notch",

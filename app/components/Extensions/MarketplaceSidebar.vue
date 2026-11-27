@@ -3,19 +3,20 @@ import GlassCard from "@ogw_front/components/GlassCard.vue";
 import type { MarketplaceExtension } from "@vease/types/marketplace_extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
-const {
-  extensions = [],
-  pending = false,
-  fetchError = false,
-  modelValue = undefined,
-} = defineProps<{
-  extensions?: MarketplaceExtension[];
-  pending?: boolean;
-  fetchError?: Error | Record<string, unknown> | boolean | null;
+interface Props {
+  extensions: MarketplaceExtension[];
+  pending: boolean;
+  fetchError: Error | Record<string, unknown> | boolean | null | undefined;
   modelValue?: MarketplaceExtension;
-}>();
+}
 
-const emit = defineEmits<{ "update:modelValue": [value: MarketplaceExtension] }>();
+interface Emits {
+  "update:modelValue": [value: MarketplaceExtension];
+}
+
+const { extensions, pending, fetchError, modelValue = undefined } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 const searchQuery = ref("");
 

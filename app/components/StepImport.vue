@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type UploadFile, fileExtension, uploadPath } from "@ogw_front/utils/upload_path";
+import { fileExtension, uploadPath } from "@ogw_front/utils/upload_path";
 import ApplyTimeSeries from "@vease/components/ApplyTimeSeries.vue";
 import FileSelector from "@ogw_front/components/FileSelector.vue";
 import ImportFile from "@vease/components/ImportFile.vue";
@@ -7,15 +7,24 @@ import MissingFilesSelector from "@ogw_front/components/MissingFilesSelector.vue
 import ObjectSelector from "@ogw_front/components/ObjectSelector.vue";
 import Stepper from "@ogw_front/components/Stepper.vue";
 import TimeSeriesTargetSelector from "@ogw_front/components/TimeSeriesTargetSelector.vue";
+import type { UploadFile } from "@ogw_front/types/files";
 import { typeChips } from "@vease/utils/type_chips";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 import { useStepperTree } from "@ogw_front/composables/stepper_tree.js";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const emit = defineEmits<{ close: [] }>();
+interface Props {
+  files: File[];
+}
+
+interface Emits {
+  close: [];
+}
+
+const emit = defineEmits<Emits>();
 const userInterfaceStore = useUserInterfaceStore();
 
-const { files: initialFiles = [] } = defineProps<{ files?: File[] }>();
+const { files: initialFiles } = defineProps<Props>();
 
 const files = ref<UploadFile[]>(initialFiles);
 watch(

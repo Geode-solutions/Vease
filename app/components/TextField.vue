@@ -1,21 +1,22 @@
 <script setup lang="ts">
+import type { Count, Label } from "@ogw_front/types/ui";
 import type { ValidationRule } from "vuetify";
 
-const {
-  value,
-  rules = [],
-  label,
-  required = false,
-  counter = undefined,
-} = defineProps<{
+interface Props {
   value: string;
   rules?: ValidationRule[];
-  label: string;
+  label: Label;
   required?: boolean;
-  counter?: number;
-}>();
+  counter?: Count;
+}
 
-const emit = defineEmits<{ input: [value: string] }>();
+interface Emits {
+  input: [value: string];
+}
+
+const { value, rules = [], label, required = false, counter = undefined } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 </script>
 
 <template>

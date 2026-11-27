@@ -1,20 +1,27 @@
+import type { Description, IconName, Title } from "@ogw_front/types/ui";
+import type { ExtensionId } from "@ogw_front/types/identifiers";
 import { consola } from "consola";
 import { useExtensionsStore } from "@vease/stores/extensions";
 
+// A tool of the create tools panel, by the id its definition declares
+type ToolId = string;
+// A tab of the data manager, by the id its definition declares
+type DataManagerTabId = string;
+
 interface ToolDefinition {
-  id: string;
+  id: ToolId;
   component: unknown;
-  extensionPath?: string;
-  title?: string;
-  description?: string;
+  extensionPath?: ExtensionId;
+  title?: Title;
+  description?: Description;
   // "icon": iconSource is an icon of the app icon set (ph-...), "svg": the url of an svg image
   iconType?: string;
-  iconSource?: string;
+  iconSource?: IconName;
   [key: string]: unknown;
 }
 
 interface DataManagerTab {
-  id: string;
+  id: DataManagerTabId;
   component: unknown;
   props?: Record<string, unknown>;
   [key: string]: unknown;
@@ -28,7 +35,7 @@ const FONT_ICON_TYPE = "icon";
 const LEGACY_ICON_PREFIX = "mdi-";
 const EXTENSION_ICON = "ph-puzzle-piece";
 
-function currentIcon<Icon>(owner: string, icon: Icon): Icon | string {
+function currentIcon<Icon>(owner: string, icon: Icon): Icon | IconName {
   if (typeof icon !== "string" || !icon.startsWith(LEGACY_ICON_PREFIX)) {
     return icon;
   }
@@ -64,20 +71,23 @@ function upsertById<Item extends { id: string }>(list: Ref<Item[]>, newDefinitio
 interface ToolsRegistry {
   toolsDefinitions: Ref<ToolDefinition[]>;
   activeTools: ComputedRef<ToolDefinition[]>;
-  registerToolComponent: (toolDefinition: ToolDefinition, extensionPath?: string) => void;
-  unregisterTool: (toolId: string) => void;
-  unregisterToolsByExtension: (extensionPath: string) => void;
+  registerToolComponent: (toolDefinition: ToolDefinition, extensionPath?: ExtensionId) => void;
+  unregisterTool: (toolId: ToolId) => void;
+  unregisterToolsByExtension: (extensionPath: ExtensionId) => void;
 }
 
 function useToolsRegistry(): ToolsRegistry {
   const toolsDefinitions = ref<ToolDefinition[]>([]);
 
-  function registerToolComponent(toolDefinition: ToolDefinition, extensionPath?: string): void {
+  function registerToolComponent(
+    toolDefinition: ToolDefinition,
+    extensionPath?: ExtensionId,
+  ): void {
     const { id, component, ...rest } = withCurrentIcon(toolDefinition);
     upsertById(toolsDefinitions, { id, component, extensionPath, ...rest });
   }
 
-  function unregisterTool(toolId: string): void {
+  function unregisterTool(toolId: ToolId): void {
     const index = toolsDefinitions.value.findIndex((tool) => tool.id === toolId);
     if (index === -1) {
       return;
@@ -86,7 +96,7 @@ function useToolsRegistry(): ToolsRegistry {
     consola.info(`[userInterfaceStore] Tool unregistered: ${toolId}`);
   }
 
-  function unregisterToolsByExtension(extensionPath: string): void {
+  function unregisterToolsByExtension(extensionPath: ExtensionId): void {
     const beforeCount = toolsDefinitions.value.length;
     toolsDefinitions.value = toolsDefinitions.value.filter(
       (tool) => tool.extensionPath !== extensionPath,
@@ -135,5 +145,5 @@ function useDataManagerTabs(): DataManagerTabs {
   return { dataManagerTabs, registerDataManagerTab };
 }
 
-export type { ToolDefinition, DataManagerTab };
+export type { DataManagerTab, DataManagerTabId, ToolDefinition, ToolId };
 export { useToolsRegistry, useDataManagerTabs };

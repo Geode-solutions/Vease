@@ -1,4 +1,9 @@
 /* oxlint-disable typescript/no-unsafe-type-assertion */
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { MicroserviceId } from "@ogw_front/types/identifiers";
+import type { MicroserviceStatus } from "@ogw_front/utils/status";
+import type { PackageVersion } from "@ogw_front/types/server";
+import type { Url } from "@ogw_front/types/files";
 import { useBackStore } from "@ogw_front/stores/back";
 import { useDataStyleStore } from "@ogw_front/stores/data_style";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
@@ -16,7 +21,7 @@ interface ApiCallbacks {
 }
 
 interface BackStoreExtra {
-  base_url: string;
+  base_url: Url;
   request: (
     args: { schema: ApiSchema; params?: Record<string, unknown> },
     callbacks?: ApiCallbacks,
@@ -29,8 +34,8 @@ function getBackStore(): ReturnType<typeof useBackStore> & BackStoreExtra {
 
 interface HybridViewerStoreExtra {
   remoteRender: () => Promise<void> | undefined;
-  focusCameraOnObject: (id: string) => unknown;
-  removeItem: (id: string) => unknown;
+  focusCameraOnObject: (id: DataId) => unknown;
+  removeItem: (id: DataId) => unknown;
 }
 
 function getHybridViewerStore(): ReturnType<typeof useHybridViewerStore> & HybridViewerStoreExtra {
@@ -38,9 +43,9 @@ function getHybridViewerStore(): ReturnType<typeof useHybridViewerStore> & Hybri
 }
 
 interface MicroserviceStore {
-  $id: string;
-  status: string;
-  version?: string;
+  $id: MicroserviceId;
+  status: MicroserviceStatus;
+  version?: PackageVersion;
   is_busy?: boolean;
   get_version?: (schema?: unknown) => unknown;
   [key: string]: unknown;
@@ -51,7 +56,7 @@ interface InfraStoreExtra {
   microservices_connected: boolean;
   microservices_busy: boolean;
   register_microservice: (store: unknown) => void;
-  unregister_microservice: (microserviceId: string) => void;
+  unregister_microservice: (microserviceId: MicroserviceId) => void;
   create_connection: () => Promise<void>;
 }
 
@@ -65,7 +70,7 @@ function getInfraStore(): Omit<ReturnType<typeof useInfraStore>, keyof InfraStor
 }
 
 interface DataStyleStoreExtra {
-  setVisibility: (id: string, visible: boolean, item?: unknown) => unknown;
+  setVisibility: (id: DataId, visible: boolean, item?: unknown) => unknown;
 }
 
 function getDataStyleStore(): ReturnType<typeof useDataStyleStore> & DataStyleStoreExtra {

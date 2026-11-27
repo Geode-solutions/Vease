@@ -4,13 +4,14 @@ import {
   horizonStackInfo,
   stratigraphicColumn,
 } from "@vease/utils/controller/handlers/horizon_stack";
+import type { DataName } from "@ogw_front/types/data";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import type { TreeNode } from "@ogw_front/types/tree";
 import { consola } from "consola";
 import { useEventListener } from "@vueuse/core";
 
 interface TreeItem extends Partial<TreeNode> {
-  name?: string;
+  name?: DataName;
 }
 
 const isOpen = ref(false);

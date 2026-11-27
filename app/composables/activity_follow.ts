@@ -1,11 +1,12 @@
 import type { ActivityEntry } from "@ogw_front/stores/activity";
+import type { Pixels } from "@ogw_front/types/ui";
 
 // Below this scroll offset the list is "at the top" and follows the new entries
 const TOP_THRESHOLD_PX = 8;
 
 interface ScrollAnchor {
   entryId: string;
-  offset: number;
+  offset: Pixels;
 }
 
 interface ActivityFollow {

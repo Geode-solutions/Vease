@@ -8,12 +8,15 @@ import { importExtensionFile } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
+import { type Extension, useExtensionMetadata } from "@/composables/extension_metadata";
 import { formatRelativeTime } from "@/utils/format_date";
-import { useExtensionMetadata } from "@/composables/extension_metadata";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import type { Extension } from "@/composables/extension_metadata";
 
-const { hideHeader = false } = defineProps<{ hideHeader?: boolean }>();
+interface Props {
+  hideHeader?: boolean;
+}
+
+const { hideHeader = false } = defineProps<Props>();
 
 const MESSAGE_TIMEOUT = 4000;
 

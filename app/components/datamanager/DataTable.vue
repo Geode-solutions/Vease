@@ -1,8 +1,28 @@
 <script setup lang="ts">
 import { formatCrs, formatCrsCode } from "@ogw_front/utils/crs";
 import BatchActionBanner from "@vease/components/datamanager/BatchActionBanner.vue";
-import type { DataItem } from "@vease/types/data_item";
+import type { CreationDate } from "@ogw_front/types/data";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataItem } from "@ogw_front/stores/data";
+import type { SearchQuery } from "@ogw_front/types/ui";
 import { middleTruncate } from "@ogw_front/utils/string";
+
+interface Props {
+  items: DataItem[];
+  search: SearchQuery;
+  compact: boolean;
+}
+
+interface Emits {
+  "toggle-visibility": [item: DataItem];
+  "focus-camera": [item: DataItem];
+  isolate: [item: DataItem];
+  rename: [item: DataItem];
+  crs: [id: DataId];
+  delete: [item: DataItem];
+  "delete-selected": [];
+  "toggle-visibility-selected": [];
+}
 
 const SECONDS_IN_MINUTE = 60;
 const SECONDS_IN_HOUR = 3600;
@@ -14,28 +34,11 @@ const CRS_MAX_LENGTH = 28;
 const CRS_START_CHARS = 14;
 const CRS_END_CHARS = 10;
 
-const {
-  items,
-  search = "",
-  compact = false,
-} = defineProps<{
-  items: DataItem[];
-  search?: string;
-  compact?: boolean;
-}>();
+const { items, search, compact } = defineProps<Props>();
 
 const selectedIds = defineModel<DataItem[]>("selectedIds", { default: () => [] });
 
-const emit = defineEmits<{
-  "toggle-visibility": [item: DataItem];
-  "focus-camera": [item: DataItem];
-  isolate: [item: DataItem];
-  rename: [item: DataItem];
-  crs: [id: string];
-  delete: [item: DataItem];
-  "delete-selected": [];
-  "toggle-visibility-selected": [];
-}>();
+const emit = defineEmits<Emits>();
 
 const DATE_COLUMN = [
   {
@@ -109,7 +112,7 @@ function getRowProps({ item }: { item: DataItem }): { class: string } {
 }
 
 // Short enough for the column: the full date and time are in the tooltip
-function formatSmartDate(dateStr: string | undefined): string {
+function formatSmartDate(dateStr: CreationDate | undefined): string {
   if (!dateStr) {
     return "";
   }
@@ -131,7 +134,7 @@ function formatSmartDate(dateStr: string | undefined): string {
   return date.toLocaleDateString();
 }
 
-function formatFullDate(dateStr: string | undefined): string {
+function formatFullDate(dateStr: CreationDate | undefined): string {
   if (!dateStr) {
     return "";
   }

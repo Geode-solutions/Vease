@@ -5,15 +5,20 @@ import DeleteDialog from "@ogw_front/components/DeleteDialog.vue";
 import PageHeader from "@vease/components/Layout/PageHeader.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 
+import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import { deleteData, renameData, setDataVisibility } from "@vease/utils/data_actions";
 import { useEventListener, useMagicKeys, whenever } from "@vueuse/core";
-import type { DataItem } from "@vease/types/data_item";
+import type { DataName } from "@ogw_front/types/data";
+import type { Message } from "@ogw_front/types/ui";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useDataStore } from "@ogw_front/stores/data";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const { compact = false } = defineProps<{ compact?: boolean }>();
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = defineProps<Props>();
 
 const userInterfaceStore = useUserInterfaceStore();
 const dataStore = useDataStore();
@@ -35,7 +40,7 @@ const newItemName = ref("");
 const snackbar = reactive({ show: false, text: "", color: "success" });
 const headerRef = useTemplateRef("headerRef");
 
-function showFeedback(text: string, color = "success"): void {
+function showFeedback(text: Message, color = "success"): void {
   snackbar.text = text;
   snackbar.color = color;
   snackbar.show = true;
@@ -74,7 +79,7 @@ function openRenameDialog(item: DataItem): void {
   renameDialog.value = true;
 }
 
-async function confirmRename(newName: string): Promise<void> {
+async function confirmRename(newName: DataName): Promise<void> {
   const item = itemToRename.value;
   if (!newName || !item) {
     return;

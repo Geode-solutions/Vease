@@ -1,22 +1,23 @@
 // Local imports
 import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
+import type { Index, Message } from "@ogw_front/types/ui";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 
 interface FailedData {
-  id: string;
-  error: string;
+  id: DataId;
+  error: Message;
 }
 
 interface EachDataResult<Result> {
-  ids: string[];
+  ids: DataId[];
   results: Result[];
   failed: FailedData[];
 }
 
 // One failing data must not undo the others: report it and keep going; fail only when none succeeded
 async function forEachData<Result>(
-  ids: string[],
-  apply: (dataId: DataId, index: number) => Promise<Result>,
+  ids: DataId[],
+  apply: (dataId: DataId, index: Index) => Promise<Result>,
 ): Promise<EachDataResult<Result>> {
   const settled = await Promise.allSettled(
     ids.map(async (dataId, index) => {
@@ -24,7 +25,7 @@ async function forEachData<Result>(
       return result;
     }),
   );
-  const done: { id: string; result: Result }[] = [];
+  const done: { id: DataId; result: Result }[] = [];
   const failed: FailedData[] = [];
   for (const [index, outcome] of settled.entries()) {
     const dataId = ids[index] ?? "";

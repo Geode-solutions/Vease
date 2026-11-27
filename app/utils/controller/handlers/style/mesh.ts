@@ -1,5 +1,5 @@
 // Third party imports
-import type { ColorRGBA } from "@geode/opengeodeweb-viewer/schema_types";
+import type { ColorRGBA, EdgeWidth, PointSize } from "@geode/opengeodeweb-viewer/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 
 // Local imports
@@ -9,6 +9,7 @@ import {
   styleCommand,
 } from "@vease/utils/controller/handlers/style/common";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import type { CssColor } from "@ogw_front/types/ui";
 import type { MeshElement } from "@vease/utils/controller/targets";
 import { hexToRgba } from "@vease/utils/controller/color";
 import { setDataVisibility } from "@vease/utils/data_actions";
@@ -64,7 +65,7 @@ function elementCommands(element: MeshElement): Record<string, ControllerHandler
     ),
     // A color shows only under the constant coloring, so it switches the element to it
     [`style/mesh/${element}/color`]: styleCommand(
-      async (store, item, { color }: { color: string }) => {
+      async (store, item, { color }: { color: CssColor }) => {
         checkMesh(item, element);
         await setters.color(store, item.data_id, hexToRgba(color));
         await setters.constantColoring(store, item.data_id);
@@ -81,18 +82,18 @@ const MESH_STYLE_COMMANDS: Record<string, ControllerHandler> = {
       await setDataVisibility(item.data_id, visibility);
     },
   ),
-  "style/mesh/color": styleCommand(async (store, item, { color }: { color: string }) => {
+  "style/mesh/color": styleCommand(async (store, item, { color }: { color: CssColor }) => {
     checkMesh(item);
     await store.setMeshColor(item.data_id, hexToRgba(color));
   }),
   ...Object.fromEntries(
     MESH_ELEMENTS.flatMap((element) => Object.entries(elementCommands(element))),
   ),
-  "style/mesh/points/size": styleCommand(async (store, item, { size }: { size: number }) => {
+  "style/mesh/points/size": styleCommand(async (store, item, { size }: { size: PointSize }) => {
     checkMesh(item, "points");
     await store.setMeshPointsSize(item.data_id, size);
   }),
-  "style/mesh/edges/width": styleCommand(async (store, item, { width }: { width: number }) => {
+  "style/mesh/edges/width": styleCommand(async (store, item, { width }: { width: EdgeWidth }) => {
     checkMesh(item, "edges");
     await store.setMeshEdgesWidth(item.data_id, width);
   }),

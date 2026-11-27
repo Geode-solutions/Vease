@@ -5,12 +5,14 @@ import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed
 
 // Local imports
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { CssColor } from "@ogw_front/types/ui";
+import type { ZScale } from "@ogw_front/types/geometry";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { hexToRgba } from "@vease/utils/controller/color";
 
 interface SceneSettings {
-  zScaling?: number;
-  backgroundColor?: string;
+  zScaling?: ZScale;
+  backgroundColor?: CssColor;
   axes?: boolean;
   grid?: boolean;
 }

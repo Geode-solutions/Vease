@@ -1,8 +1,16 @@
 // Local imports
+import type {
+  AttributeItem,
+  AttributeRangeMaximum,
+  AttributeRangeMinimum,
+} from "@geode/opengeodeweb-viewer/schema_types";
 import type { BackAttribute } from "@vease/utils/controller/targets";
 import { ControllerError } from "@vease/utils/controller/errors";
 
-function checkRange(minimum: number | undefined, maximum: number | undefined): void {
+function checkRange(
+  minimum: AttributeRangeMinimum | undefined,
+  maximum: AttributeRangeMaximum | undefined,
+): void {
   if ((minimum === undefined) !== (maximum === undefined)) {
     throw new ControllerError("Give both minimum and maximum, or neither for the attribute range");
   }
@@ -13,7 +21,7 @@ function checkRange(minimum: number | undefined, maximum: number | undefined): v
   }
 }
 
-function resolveItem(item: number | undefined, attribute: BackAttribute): number {
+function resolveItem(item: AttributeItem | undefined, attribute: BackAttribute): AttributeItem {
   const resolved = item ?? 0;
   if (resolved >= attribute.nb_items) {
     throw new ControllerError(

@@ -4,18 +4,26 @@ import { consola } from "consola";
 import { importExtensionURL } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";
 
+import { type Extension, useExtensionMetadata } from "@vease/composables/extension_metadata";
 import cloud_api_schemas, {
   type ExtensionsListResponse,
 } from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
 import { useAuth } from "./auth";
-import { useExtensionMetadata } from "@vease/composables/extension_metadata";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import type { Extension } from "@vease/composables/extension_metadata";
+import type { FileName, Url } from "@ogw_front/types/files";
+import type { ExtensionId } from "@ogw_front/types/identifiers";
+import type { PackageVersion } from "@ogw_front/types/server";
 
 // The API returns the Firestore extension documents as stored: `version` is not guaranteed.
 type ExtensionInfo = ExtensionsListResponse["extensions"][number];
-type RemoteExtensionInfo = ExtensionInfo & { version: string };
+type RemoteExtensionInfo = ExtensionInfo & { version: PackageVersion };
+
+// Where to download an extension package from, and the name to save it under
+interface ExtensionDownload {
+  url: Url;
+  extensionFileName: FileName;
+}
 
 function hasVersion(info: ExtensionInfo): info is RemoteExtensionInfo {
   return typeof info.version === "string";
@@ -30,7 +38,7 @@ function getStringField(source: Record<string, unknown>, field: string): string 
   return typeof value === "string" ? value : undefined;
 }
 
-function toExtension(loadedExtension: { id: string; metadata: unknown }): Extension {
+function toExtension(loadedExtension: { id: ExtensionId; metadata: unknown }): Extension {
   const metadata = isRecord(loadedExtension.metadata) ? loadedExtension.metadata : {};
   return {
     id: loadedExtension.id,
@@ -57,7 +65,7 @@ function getUserPlatform(): string {
 
 interface UseExtensionsReturn {
   allowedExtensions: () => Promise<RemoteExtensionInfo[]>;
-  downloadExtension: (extensionId: string) => Promise<{ url: string; extensionFileName: string }>;
+  downloadExtension: (extensionId: ExtensionId) => Promise<ExtensionDownload>;
   updateExtensions: () => Promise<void>;
 }
 
@@ -78,9 +86,7 @@ export function useExtensions(): UseExtensionsReturn {
     return extensions.every((info) => hasVersion(info)) ? extensions : [];
   }
 
-  async function downloadExtension(
-    extensionId: string,
-  ): Promise<{ url: string; extensionFileName: string }> {
+  async function downloadExtension(extensionId: ExtensionId): Promise<ExtensionDownload> {
     if (!isUserAuthenticated.value || !user.value) {
       throw new Error("User not authenticated");
     }

@@ -106,7 +106,7 @@ describe("the MarketplaceDetails component", () => {
 
   test("renders extension details header and readme when extension is passed", () => {
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: sampleExtension },
+      props: { extension: sampleExtension, pending: false },
     });
 
     expect(wrapper.text()).toContain("ext-alpha");
@@ -117,7 +117,7 @@ describe("the MarketplaceDetails component", () => {
 
   test("renders fallback readme message when extension lacks a readme", () => {
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: extensionWithoutReadme },
+      props: { extension: extensionWithoutReadme, pending: false },
     });
 
     expect(wrapper.text()).toContain("No README provided for this extension.");
@@ -133,7 +133,7 @@ describe("the MarketplaceDetails component", () => {
     );
 
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: sampleExtension },
+      props: { extension: sampleExtension, pending: false },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -143,7 +143,7 @@ describe("the MarketplaceDetails component", () => {
 
   test("installs extension successfully when clicking the install button", async () => {
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: sampleExtension },
+      props: { extension: sampleExtension, pending: false },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -159,7 +159,7 @@ describe("the MarketplaceDetails component", () => {
     downloadExtensionMock.mockRejectedValue(new Error(failureMessage));
 
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: sampleExtension },
+      props: { extension: sampleExtension, pending: false },
     });
 
     const button = wrapper.findComponent(VBtn);
@@ -172,7 +172,7 @@ describe("the MarketplaceDetails component", () => {
     downloadExtensionMock.mockRejectedValue("unexpected error string");
 
     const wrapper = mountWithPlugins(MarketplaceDetails, {
-      props: { extension: sampleExtension },
+      props: { extension: sampleExtension, pending: false },
     });
 
     const button = wrapper.findComponent(VBtn);

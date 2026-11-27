@@ -25,6 +25,8 @@ describe("forgot password dialog component", () => {
       props: {
         modelValue: true,
         email: "user@example.com",
+        loading: false,
+        error: "",
       },
       attachTo: document.body,
     });
@@ -40,6 +42,7 @@ describe("forgot password dialog component", () => {
       props: {
         modelValue: true,
         error: "Failed to send reset email",
+        loading: false,
       },
       attachTo: document.body,
     });

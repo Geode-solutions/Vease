@@ -1,35 +1,36 @@
 <script setup lang="ts">
 import { type RemovableRef, useDraggable, useStorage, useWindowSize } from "@vueuse/core";
+import type { BrowserStorageKey } from "@ogw_front/composables/user_setting";
+import type { Coordinate } from "@ogw_front/types/geometry";
+import type { Pixels } from "@ogw_front/types/ui";
 import type { Ref } from "vue";
+
+interface Props {
+  defaultWidth: Pixels;
+  defaultHeight: Pixels;
+  minWidth: Pixels;
+  minHeight: Pixels;
+  storageKey: BrowserStorageKey;
+  zIndex?: number;
+  escapeFunction: () => void;
+}
 
 const RATIO = 0.9;
 
 const edgeSize = 6;
 const margin = 16;
 
-const DEFAULT_WIDTH = 560;
-const DEFAULT_HEIGHT = 480;
-const DEFAULT_MIN_WIDTH = 400;
-const DEFAULT_MIN_HEIGHT = 300;
 const DEFAULT_Z_INDEX = 1500;
 
 const {
-  defaultWidth = DEFAULT_WIDTH,
-  defaultHeight = DEFAULT_HEIGHT,
-  minWidth = DEFAULT_MIN_WIDTH,
-  minHeight = DEFAULT_MIN_HEIGHT,
-  storageKey = undefined,
+  defaultWidth,
+  defaultHeight,
+  minWidth,
+  minHeight,
+  storageKey,
   zIndex = DEFAULT_Z_INDEX,
-  escapeFunction = undefined,
-} = defineProps<{
-  defaultWidth?: number;
-  defaultHeight?: number;
-  minWidth?: number;
-  minHeight?: number;
-  storageKey?: string;
-  zIndex?: number;
-  escapeFunction?: () => void;
-}>();
+  escapeFunction,
+} = defineProps<Props>();
 
 const { width: winWidth, height: winHeight } = useWindowSize();
 
@@ -37,8 +38,8 @@ const maxWidth = computed(() => Math.floor(winWidth.value * RATIO));
 const maxHeight = computed(() => Math.floor(winHeight.value * RATIO));
 
 interface Position {
-  x: number | undefined;
-  y: number | undefined;
+  x: Coordinate | undefined;
+  y: Coordinate | undefined;
 }
 
 function createSavedPosition(): Ref<Position> | RemovableRef<Position> {
@@ -49,8 +50,8 @@ function createSavedPosition(): Ref<Position> | RemovableRef<Position> {
 }
 
 function createSavedSize():
-  | Ref<{ width: number; height: number }>
-  | RemovableRef<{ width: number; height: number }> {
+  | Ref<{ width: Pixels; height: Pixels }>
+  | RemovableRef<{ width: Pixels; height: Pixels }> {
   if (storageKey) {
     return useStorage(`${storageKey}-size`, {
       width: defaultWidth,

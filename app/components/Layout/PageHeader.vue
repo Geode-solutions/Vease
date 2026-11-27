@@ -1,7 +1,14 @@
 <script setup lang="ts">
+import type { DisplayText, Title } from "@ogw_front/types/ui";
+
+interface Props {
+  title: Title;
+  subtitle?: DisplayText;
+}
+
 // Page header following the brand book inner pages: a small uppercase label marked with the orange dot
 // Over a hairline, then the title in Urbanist, set tight.
-const { title, subtitle = undefined } = defineProps<{ title: string; subtitle?: string }>();
+const { title, subtitle = undefined } = defineProps<Props>();
 </script>
 
 <template>

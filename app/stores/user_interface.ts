@@ -44,5 +44,10 @@ const useUserInterfaceStore = defineStore("userInterface", () => {
   };
 });
 
-export type { ToolDefinition, DataManagerTab } from "@vease/composables/ui_registry";
+export type {
+  DataManagerTab,
+  DataManagerTabId,
+  ToolDefinition,
+  ToolId,
+} from "@vease/composables/ui_registry";
 export { useUserInterfaceStore };

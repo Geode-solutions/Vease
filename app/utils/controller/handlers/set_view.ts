@@ -6,13 +6,18 @@ import { useCameraManagerStore } from "@ogw_front/stores/camera_manager";
 import { useDataStore } from "@ogw_front/stores/data";
 
 // Local imports
+import type { CameraPositionId, CameraPositionName } from "@ogw_internal/database/types";
 import {
   type CameraPositionRecord,
   listCameraPositions,
 } from "@vease/utils/controller/handlers/viewer_state";
 import { type SceneSettings, applyScene } from "@vease/utils/controller/handlers/set_view_scene";
 import { getDataItem, resolveComponentIds } from "@vease/utils/controller/targets";
+import type { CameraOrientationKey } from "@ogw_internal/stores/hybrid_viewer/camera_helpers";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { ModelComponentId } from "@ogw_front/types/identifiers";
+import type { ViewerId } from "@geode/opengeodeweb-viewer/schema_types";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
 type Applied = Record<string, unknown>;
@@ -22,13 +27,13 @@ function reset(): Applied {
   return {};
 }
 
-async function focus(params: { id: string; componentIds?: string[] }): Promise<Applied> {
+async function focus(params: { id: DataId; componentIds?: ModelComponentId[] }): Promise<Applied> {
   const { id } = params;
   const item = await getDataItem(id);
   if (params.componentIds !== undefined && !isModel(item)) {
     throw new ControllerError("componentIds only applies to models");
   }
-  let blockIds: number[] = [];
+  let blockIds: ViewerId[] = [];
   if (params.componentIds !== undefined) {
     const componentIds = await resolveComponentIds(item, undefined, params.componentIds);
     blockIds = await useDataStore().getMeshComponentsViewerIds(id, componentIds);
@@ -37,12 +42,12 @@ async function focus(params: { id: string; componentIds?: string[] }): Promise<A
   return { id };
 }
 
-function orient({ orientation }: { orientation: string }): Applied {
+function orient({ orientation }: { orientation: CameraOrientationKey }): Applied {
   getHybridViewerStore().setCameraOrientation(orientation);
   return { orientation };
 }
 
-async function save({ name }: { name: string }): Promise<Applied> {
+async function save({ name }: { name: CameraPositionName }): Promise<Applied> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- camera_options holds a full CameraOptions once the viewer is initialized
   const cameraOptions = toRaw(getHybridViewerStore().camera_options) as unknown as CameraOptions;
   await useCameraManagerStore().saveCameraPosition(name, cameraOptions);
@@ -56,7 +61,7 @@ function describePositions(positions: CameraPositionRecord[]): string {
   return positions.map(({ id, name }) => `${id} (${name})`).join(", ");
 }
 
-async function restore({ positionId }: { positionId: number }): Promise<Applied> {
+async function restore({ positionId }: { positionId: CameraPositionId }): Promise<Applied> {
   const cameraManagerStore = useCameraManagerStore();
   const position = await cameraManagerStore.getCameraPosition(positionId);
   if (position === undefined) {

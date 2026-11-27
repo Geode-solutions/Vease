@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import type { Message } from "@ogw_front/types/ui";
+import type { ModelComponentName } from "@ogw_front/types/model";
 import { createHorizonStack } from "@vease/utils/controller/handlers/horizon_stack";
 import { useHorizonStackForm } from "@vease/composables/horizon_stack_form";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const emit = defineEmits<{ created: [] }>();
+interface Emits {
+  created: [];
+}
+
+const emit = defineEmits<Emits>();
 
 const userInterfaceStore = useUserInterfaceStore();
 const {
@@ -20,7 +26,7 @@ const {
 } = useHorizonStackForm();
 const loading = ref(false);
 
-function horizonRules(value: string): (string | boolean)[] {
+function horizonRules(value: ModelComponentName): (Message | boolean)[] {
   return [
     value.trim() !== "" || "Horizon name is required",
     !duplicateHorizons.value.includes(value.trim()) || "Horizon names must be unique",

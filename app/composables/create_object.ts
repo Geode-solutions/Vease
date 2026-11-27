@@ -7,6 +7,7 @@ import {
   sanitizePointInput,
 } from "./create_object_points";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { Index } from "@ogw_front/types/ui";
 import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 import type { NewDataItem } from "@ogw_front/stores/data";
 import { importItem } from "@ogw_front/utils/import_workflow";
@@ -50,7 +51,7 @@ export function useCreateObjectTool({
     points.value.push(createEmptyPoint());
   }
 
-  function removePoint(index: number): void {
+  function removePoint(index: Index): void {
     if (points.value.length > minPoints) {
       points.value.splice(index, 1);
     }
@@ -146,7 +147,7 @@ export function useCreateObjectTool({
     );
   }
 
-  function sanitizeInput(value: unknown, index: number, field: keyof Point): void {
+  function sanitizeInput(value: unknown, index: Index, field: keyof Point): void {
     const point = points.value[index];
     if (!point) {
       return;
@@ -154,7 +155,7 @@ export function useCreateObjectTool({
     sanitizePointInput(point, value, field);
   }
 
-  function handlePaste(event: ClipboardEvent, index: number, field: keyof Point): void {
+  function handlePaste(event: ClipboardEvent, index: Index, field: keyof Point): void {
     const text = event.clipboardData?.getData("text") ?? "";
     const coords = text.match(/[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?/gu);
     if (!coords) {

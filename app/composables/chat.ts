@@ -4,6 +4,13 @@ import { useChat } from "@ai-sdk/vue";
 import { useIntervalFn } from "@vueuse/core";
 
 // Local imports
+import {
+  CHAT_PROVIDER,
+  CLOUD_UNAVAILABLE_REASON,
+  type ChatProvider,
+  type CloudUnavailableReason,
+} from "@vease/utils/chat_provider";
+import type { Count } from "@ogw_front/types/ui";
 import { appServerUrl } from "@vease/utils/app_server_url";
 import cloud_api_schemas from "@geode/cloud-api/cloud_api_typed_schemas.js";
 import { useAPIStore } from "@ogw_front/stores/api";
@@ -12,15 +19,6 @@ import { useAuth } from "@vease/composables/auth";
 import vease_schemas from "vease/vease_typed_schemas.js";
 
 const CHAT_ROUTE = "/api/llm/chat";
-const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
-type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
-
-const CLOUD_UNAVAILABLE_REASON = {
-  SIGNED_OUT: "signed_out",
-  NOT_ENTITLED: "not_entitled",
-} as const;
-type CloudUnavailableReason =
-  (typeof CLOUD_UNAVAILABLE_REASON)[keyof typeof CLOUD_UNAVAILABLE_REASON];
 
 interface LlamaStatus {
   running: boolean;
@@ -29,7 +27,7 @@ interface LlamaStatus {
 
 // Marks where the conversation continues with another provider
 interface ProviderSwitch {
-  afterMessageCount: number;
+  afterMessageCount: Count;
   provider: ChatProvider;
 }
 

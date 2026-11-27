@@ -1,28 +1,31 @@
 <script setup lang="ts">
-import type { DataManagerTab } from "@vease/stores/user_interface";
+import {
+  type DataManagerTab,
+  type DataManagerTabId,
+  useUserInterfaceStore,
+} from "@vease/stores/user_interface";
 import SearchBar from "@ogw_front/components/SearchBar.vue";
 import { useTemplateRef } from "vue";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import { useUserInterfaceStore } from "@vease/stores/user_interface";
+import type { SearchQuery } from "@ogw_front/types/ui";
+
+interface Props {
+  searchValue: SearchQuery;
+  activeTab: DataManagerTabId;
+  tabs: DataManagerTab[];
+  compact: boolean;
+}
+
+interface Emits {
+  "update:searchValue": [value: SearchQuery];
+  "update:activeTab": [value: DataManagerTabId];
+}
 
 const userInterfaceStore = useUserInterfaceStore();
 
-const {
-  searchValue = "",
-  activeTab = "data",
-  tabs = [],
-  compact = false,
-} = defineProps<{
-  searchValue?: string;
-  activeTab?: string;
-  tabs?: DataManagerTab[];
-  compact?: boolean;
-}>();
+const { searchValue, activeTab, tabs, compact } = defineProps<Props>();
 
-const emit = defineEmits<{
-  "update:searchValue": [value: string];
-  "update:activeTab": [value: string];
-}>();
+const emit = defineEmits<Emits>();
 const searchInput = useTemplateRef("searchInput");
 
 function enterPiP(): void {

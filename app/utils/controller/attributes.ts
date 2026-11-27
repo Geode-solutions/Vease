@@ -6,6 +6,7 @@ import {
   type MeshElement,
   type ModelComponentTarget,
   TARGET_PRIORITY,
+  type TargetName,
   fetchAttributes,
   getDataItem,
   isModelComponentTarget,
@@ -16,14 +17,17 @@ import {
 } from "@vease/utils/controller/targets";
 import { ControllerError, errorMessage } from "@vease/utils/controller/errors";
 import { isImage, isModel } from "@ogw_front/utils/viewer_object_type";
+import type { AttributeName } from "@geode/opengeodeweb-viewer/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@ogw_front/stores/data";
+import type { GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
+import type { ModelComponentId } from "@ogw_front/types/identifiers";
 import { consola } from "consola";
 
 interface AttributeSource {
   target: MeshElement | ModelComponentTarget;
   kind: AttributeKind;
-  componentIds?: string[];
+  componentIds?: ModelComponentId[];
 }
 
 interface SourceAttributes {
@@ -35,18 +39,21 @@ interface FoundAttribute {
   target: MeshElement | ModelComponentTarget;
   kind: AttributeKind;
   attribute: BackAttribute;
-  componentIds?: string[];
+  componentIds?: ModelComponentId[];
 }
 
 interface FindAttributeArgs {
-  id: string;
-  name: string;
-  target?: string;
+  id: DataId;
+  name: AttributeName;
+  target?: TargetName;
   location?: AttributeKind | AttributeKind[];
-  componentIds?: string[];
+  componentIds?: ModelComponentId[];
 }
 
-function meshAttributeSources(geodeObjectType: string, targets: MeshElement[]): AttributeSource[] {
+function meshAttributeSources(
+  geodeObjectType: GeodeObjectType,
+  targets: MeshElement[],
+): AttributeSource[] {
   return targets.flatMap((target) =>
     meshAttributeKinds(geodeObjectType, target).map((kind) => ({ target, kind })),
   );
@@ -54,7 +61,7 @@ function meshAttributeSources(geodeObjectType: string, targets: MeshElement[]): 
 
 function modelAttributeSources(
   target: ModelComponentTarget,
-  componentIds: string[],
+  componentIds: ModelComponentId[],
 ): AttributeSource[] {
   return MODEL_COMPONENT_KINDS[target].map((kind) => ({ target, kind, componentIds }));
 }

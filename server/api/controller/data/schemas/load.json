@@ -24,13 +24,13 @@
                   "type": "object",
                   "properties": {
                     "id": {
-                      "type": "string"
+                      "title": "DataId"
                     },
                     "name": {
                       "type": "string"
                     },
                     "geode_object_type": {
-                      "type": "string"
+                      "title": "GeodeObjectType"
                     }
                   },
                   "required": ["id", "name", "geode_object_type"]

@@ -8,10 +8,12 @@ import { useInfraStore } from "@ogw_front/stores/infra";
 
 import { useExtensions } from "@vease/composables/extensions";
 
-const { extension = undefined, pending = false } = defineProps<{
-  extension?: MarketplaceExtension | null;
-  pending?: boolean;
-}>();
+interface Props {
+  extension: MarketplaceExtension | null | undefined;
+  pending: boolean;
+}
+
+const { extension, pending } = defineProps<Props>();
 
 const MESSAGE_TIMEOUT = 5000;
 

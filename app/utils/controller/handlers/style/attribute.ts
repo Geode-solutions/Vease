@@ -1,10 +1,15 @@
 // Third party imports
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
-import { getPresetByName } from "@ogw_front/utils/colormap";
 
 // Local imports
-import { type AttributeBinding, bindAttribute } from "@vease/utils/controller/attribute_setters";
+import {
+  type AttributeColoring,
+  type AttributeRouteParams,
+  type ColorByAttributeParams,
+  type ColorByAttributeResult,
+  resolveColorMap,
+} from "@vease/utils/controller/handlers/style/attribute_coloring";
 import {
   type AttributeKind,
   type BackAttribute,
@@ -16,59 +21,24 @@ import {
   getDataItem,
   isModelComponentTarget,
 } from "@vease/utils/controller/targets";
-import { type FailedData, forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { checkMesh, checkModel } from "@vease/utils/controller/handlers/style/common";
 import { checkRange, resolveItem } from "@vease/utils/controller/attribute_range";
+import { forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import {
   requestedTimeStepIndex,
   seriesTimeStepIndex,
 } from "@vease/utils/controller/handlers/style/time_step";
-import { ControllerError } from "@vease/utils/controller/errors";
+import type { AttributeColorMap } from "@ogw_front/types/attribute";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import { bindAttribute } from "@vease/utils/controller/attribute_setters";
 import { findAttribute } from "@vease/utils/controller/attributes";
 import { hexToRgba } from "@vease/utils/controller/color";
-
-const DEFAULT_COLORMAP = "batlow";
-
-interface ColorByAttributeParams {
-  id: string;
-  target?: MeshElement | ModelComponentTarget;
-  componentIds?: string[];
-  attribute: string;
-  location?: AttributeKind;
-  item?: number;
-  colormap?: string;
-  minimum?: number;
-  maximum?: number;
-  timeStep?: number;
-  noDataColor?: string;
-}
-
-interface AttributeColoring {
-  id: string;
-  target: string;
-  location: string;
-  attribute: string;
-  item: number;
-  colormap: string;
-  minimum: number;
-  maximum: number;
-  timeStep?: number;
-}
-
-function resolveColorMap(colormap: string | undefined, binding: AttributeBinding): string {
-  const resolved = colormap ?? binding.currentColorMap() ?? DEFAULT_COLORMAP;
-  if (getPresetByName(resolved) === undefined) {
-    throw new ControllerError(`Unknown colormap "${resolved}"; read vease://colormaps`);
-  }
-  return resolved;
-}
 
 function attributeInput(
   request: ColorByAttributeParams,
   attribute: BackAttribute,
-  colorMap: string,
+  colorMap: AttributeColorMap,
 ): ValidAttributeInput {
   const item = resolveItem(request.item, attribute);
   const range = getAttributeRange(attribute, item);
@@ -120,24 +90,6 @@ async function colorItemByAttribute(request: ColorByAttributeParams): Promise<At
     coloring.timeStep = attribute.time_steps?.[timeStepIndex];
   }
   return coloring;
-}
-
-interface AttributeRouteParams {
-  ids: string[];
-  componentIds?: string[];
-  name: string;
-  item?: number;
-  colormap?: string;
-  minimum?: number;
-  maximum?: number;
-  timeStep?: number;
-  noDataColor?: string;
-}
-
-interface ColorByAttributeResult {
-  ids: string[];
-  attributes: AttributeColoring[];
-  failed?: FailedData[];
 }
 
 // Each data gets its own attribute range unless minimum and maximum are given

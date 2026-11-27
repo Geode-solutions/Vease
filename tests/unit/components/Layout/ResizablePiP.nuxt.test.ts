@@ -16,6 +16,8 @@ function getResizablePipElement(): HTMLElement {
 const DEFAULT_TEST_WIDTH = 560;
 const DEFAULT_TEST_HEIGHT = 480;
 const DEFAULT_TEST_Z_INDEX = 1500;
+const MIN_TEST_WIDTH = 400;
+const MIN_TEST_HEIGHT = 300;
 const CUSTOM_TEST_WIDTH = 600;
 const CUSTOM_TEST_HEIGHT = 500;
 const CUSTOM_TEST_Z_INDEX = 2000;
@@ -37,6 +39,14 @@ describe("resizablepip component", () => {
 
   test("renders slot content inside teleported container", () => {
     mountWithPlugins(ResizablePiP, {
+      props: {
+        defaultWidth: DEFAULT_TEST_WIDTH,
+        defaultHeight: DEFAULT_TEST_HEIGHT,
+        minWidth: MIN_TEST_WIDTH,
+        minHeight: MIN_TEST_HEIGHT,
+        storageKey: "resizable-pip-test-slots",
+        escapeFunction: vi.fn<() => void>(),
+      },
       slots: {
         default: "<div data-testid='pip-content'>Main Content</div>",
         handle: "<div data-testid='pip-handle'>Handle Content</div>",
@@ -50,6 +60,14 @@ describe("resizablepip component", () => {
 
   test("applies default width height and z-index styles", () => {
     mountWithPlugins(ResizablePiP, {
+      props: {
+        defaultWidth: DEFAULT_TEST_WIDTH,
+        defaultHeight: DEFAULT_TEST_HEIGHT,
+        minWidth: MIN_TEST_WIDTH,
+        minHeight: MIN_TEST_HEIGHT,
+        storageKey: "resizable-pip-test-default",
+        escapeFunction: vi.fn<() => void>(),
+      },
       attachTo: document.body,
     });
 
@@ -66,6 +84,10 @@ describe("resizablepip component", () => {
         defaultWidth: CUSTOM_TEST_WIDTH,
         defaultHeight: CUSTOM_TEST_HEIGHT,
         zIndex: CUSTOM_TEST_Z_INDEX,
+        minWidth: MIN_TEST_WIDTH,
+        minHeight: MIN_TEST_HEIGHT,
+        storageKey: "resizable-pip-test-custom",
+        escapeFunction: vi.fn<() => void>(),
       },
       attachTo: document.body,
     });
@@ -81,6 +103,10 @@ describe("resizablepip component", () => {
       props: {
         defaultWidth: CUSTOM_TEST_WIDTH,
         defaultHeight: CUSTOM_TEST_HEIGHT,
+        minWidth: MIN_TEST_WIDTH,
+        minHeight: MIN_TEST_HEIGHT,
+        storageKey: "resizable-pip-test-resize",
+        escapeFunction: vi.fn<() => void>(),
       },
       attachTo: document.body,
     });

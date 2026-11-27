@@ -1,3 +1,5 @@
+import type { Filename } from "@geode/opengeodeweb-back/schema_types";
+import type { GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
 // Third party imports
 import { CHUNK_SIZE_BYTES } from "@ogw_shared/utils/file";
 import type { MultiPartData } from "h3";
@@ -15,7 +17,7 @@ interface AllowedFilesResponse {
 
 // The back selects the geode object types needed to load the whole file: one per content
 interface AllowedObjectsResponse {
-  objects_to_load: string[];
+  objects_to_load: GeodeObjectType[];
 }
 
 function isAllowedFilesResponse(value: unknown): value is AllowedFilesResponse {
@@ -54,7 +56,7 @@ async function getAllowedFileExtensions(): Promise<string[]> {
   return response.data_extensions;
 }
 
-async function getAllowedGeodeObjectTypes(filename: string): Promise<string[]> {
+async function getAllowedGeodeObjectTypes(filename: Filename): Promise<GeodeObjectType[]> {
   const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.allowed_objects;
   const params = { filename };
@@ -105,7 +107,10 @@ async function uploadFile(file: MultiPartData): Promise<unknown> {
   return response;
 }
 
-async function saveViewableFile(filename: string, geode_object_type: string): Promise<unknown> {
+async function saveViewableFile(
+  filename: Filename,
+  geode_object_type: GeodeObjectType,
+): Promise<unknown> {
   const backBaseUrl = getBackBaseUrl();
   const schema = back_schemas.opengeodeweb_back.save_viewable_file;
   const params = { filename, geode_object_type };

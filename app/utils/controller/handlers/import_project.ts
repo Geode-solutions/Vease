@@ -2,11 +2,12 @@
 import { importProject } from "@ogw_front/composables/project_manager";
 
 // Local imports
+import type { FileName, Url } from "@ogw_front/types/files";
 import { appServerUrl } from "@vease/utils/app_server_url";
 
 interface ImportProjectParams {
-  downloadUrl: string;
-  filename: string;
+  downloadUrl: Url;
+  filename: FileName;
 }
 
 async function importProjectFile(params: unknown): Promise<Record<string, never>> {

@@ -1,5 +1,5 @@
 // Third party imports
-import type { ColorRGBA } from "@geode/opengeodeweb-viewer/schema_types";
+import type { ColorRGBA, PointSize } from "@geode/opengeodeweb-viewer/schema_types";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { DataItem } from "@ogw_front/stores/data";
 
@@ -10,19 +10,22 @@ import {
   checkComponentIdsOwner,
   resolveComponentIds,
 } from "@vease/utils/controller/targets";
+import { type NonEmptyArray, isNonEmpty } from "@ogw_front/utils/arrays";
 import {
   type StyleStore,
   checkModel,
   styleCommand,
 } from "@vease/utils/controller/handlers/style/common";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import type { CssColor } from "@ogw_front/types/ui";
+import type { ModelComponentId } from "@ogw_front/types/identifiers";
 import { hexToRgba } from "@vease/utils/controller/color";
 import { setDataVisibility } from "@vease/utils/data_actions";
 
 type ComponentSetter<Value> = (
   store: StyleStore,
   modelId: DataId,
-  componentIds: string[],
+  componentIds: NonEmptyArray<ModelComponentId>,
   value: Value,
 ) => Promise<unknown>;
 
@@ -68,8 +71,8 @@ const MODEL_COMPONENT_SETTERS: Record<ModelComponentTarget, ModelComponentSetter
 /* oxlint-enable typescript/promise-function-async */
 
 interface ComponentParams {
-  ids: string[];
-  componentIds?: string[];
+  ids: DataId[];
+  componentIds?: ModelComponentId[];
 }
 
 // Without componentIds every component of the target type is styled
@@ -77,7 +80,7 @@ async function targetComponents(
   item: DataItem,
   target: ModelComponentTarget,
   { ids, componentIds }: ComponentParams,
-): Promise<string[]> {
+): Promise<ModelComponentId[]> {
   checkModel(item);
   checkComponentIdsOwner(ids, componentIds);
   const resolved = await resolveComponentIds(item, target, componentIds);
@@ -90,18 +93,27 @@ function componentCommands(target: ModelComponentTarget): Record<string, Control
     [`style/model/${target}/visibility`]: styleCommand(
       async (store, item, params: ComponentParams & { visibility: boolean }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.visibility(store, item.data_id, components, params.visibility);
       },
     ),
     [`style/model/${target}/color`]: styleCommand(
-      async (store, item, params: ComponentParams & { color: string }) => {
+      async (store, item, params: ComponentParams & { color: CssColor }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.color(store, item.data_id, components, hexToRgba(params.color));
       },
     ),
     [`style/model/${target}/coloring`]: styleCommand(
       async (store, item, params: ComponentParams & { coloring: "constant" | "random" }) => {
         const components = await targetComponents(item, target, params);
+        if (!isNonEmpty(components)) {
+          return;
+        }
         await setters.coloring(store, item.data_id, components, params.coloring);
       },
     ),
@@ -122,7 +134,7 @@ const MODEL_STYLE_COMMANDS: Record<string, ControllerHandler> = {
       await store.setModelPointsVisibility(item.data_id, visibility);
     },
   ),
-  "style/model/points/size": styleCommand(async (store, item, { size }: { size: number }) => {
+  "style/model/points/size": styleCommand(async (store, item, { size }: { size: PointSize }) => {
     checkModel(item);
     await store.setModelPointsSize(item.data_id, size);
   }),

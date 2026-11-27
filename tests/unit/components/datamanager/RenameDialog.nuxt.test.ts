@@ -1,6 +1,6 @@
 import { GLASS_CARD_STUB, mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import type { DataItem } from "@vease/types/data_item";
+import type { DataItem } from "@ogw_front/stores/data";
 import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import RenameDialog from "@vease/components/datamanager/RenameDialog.vue";
 

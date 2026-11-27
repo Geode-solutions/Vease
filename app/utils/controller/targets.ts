@@ -1,7 +1,16 @@
 // Third party imports
+import type {
+  AttributeName,
+  AttributeRangeMaximum,
+  AttributeRangeMinimum,
+} from "@geode/opengeodeweb-viewer/schema_types";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { AttributeTimeValue } from "@ogw_front/types/attribute";
+import type { Count } from "@ogw_front/types/ui";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import { MESH_ELEMENT_KINDS as ELEMENT_KIND_BY_MESH_TYPE } from "@ogw_front/utils/attributes";
+import type { GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
+import type { ModelComponentId } from "@ogw_front/types/identifiers";
 import back_schemas from "@geode/opengeodeweb-back/opengeodeweb_back_typed_schemas.js";
 
 // Local imports
@@ -12,16 +21,18 @@ type MeshElement = "points" | "edges" | "cells" | "polygons" | "polyhedra";
 type ModelComponentTarget = "corners" | "lines" | "surfaces" | "blocks";
 type ModelWholeTarget = "points" | "edges";
 type AttributeKind = "vertex" | "edge" | "cell" | "polygon" | "polyhedron";
+// What a command targets on a data, as the tool names it: a mesh element ("points", "polygons"...) or a model component type ("surfaces", "blocks"...)
+type TargetName = string;
 
 interface BackAttribute {
-  attribute_name: string;
-  nb_items: number;
-  min_value?: number;
-  max_value?: number;
-  min_values?: number[];
-  max_values?: number[];
+  attribute_name: AttributeName;
+  nb_items: Count;
+  min_value?: AttributeRangeMinimum;
+  max_value?: AttributeRangeMaximum;
+  min_values?: AttributeRangeMinimum[];
+  max_values?: AttributeRangeMaximum[];
   no_data?: boolean;
-  time_steps?: number[];
+  time_steps?: AttributeTimeValue[];
 }
 
 // Every kind an element can carry; a given mesh type only has some of them, so read them through meshAttributeKinds
@@ -72,7 +83,7 @@ const MODEL_COMPONENT_ATTRIBUTE_SCHEMAS: Partial<Record<AttributeKind, ApiSchema
   polyhedron: backSchemas.model_component_polyhedron_attribute_names,
 };
 
-function isModelComponentTarget(target: string): target is ModelComponentTarget {
+function isModelComponentTarget(target: TargetName): target is ModelComponentTarget {
   return Object.hasOwn(MODEL_COMPONENT_TYPE, target);
 }
 
@@ -85,7 +96,10 @@ function meshTargetsOf(meshId: DataId): MeshElement[] {
 }
 
 // The back rejects an element kind the mesh type does not have (e.g. edge attributes of a surface)
-function meshAttributeKinds(geodeObjectType: string, target: MeshElement): AttributeKind[] {
+function meshAttributeKinds(
+  geodeObjectType: GeodeObjectType,
+  target: MeshElement,
+): AttributeKind[] {
   const elementKind = ELEMENT_KIND_BY_MESH_TYPE[geodeObjectType];
   return MESH_ELEMENT_ATTRIBUTE_KINDS[target].filter(
     (kind) => kind === "vertex" || kind === elementKind,
@@ -95,7 +109,7 @@ function meshAttributeKinds(geodeObjectType: string, target: MeshElement): Attri
 async function modelComponentGeodeIds(
   modelId: DataId,
   target: ModelComponentTarget,
-): Promise<string[]> {
+): Promise<ModelComponentId[]> {
   const geodeIds = await useDataStore().getMeshComponentGeodeIds(
     modelId,
     MODEL_COMPONENT_TYPE[target],
@@ -107,8 +121,8 @@ async function modelComponentGeodeIds(
 async function resolveComponentIds(
   item: DataItem,
   target: ModelComponentTarget | undefined,
-  componentIds: string[] | undefined,
-): Promise<string[]> {
+  componentIds: ModelComponentId[] | undefined,
+): Promise<ModelComponentId[]> {
   let targets = MODEL_COMPONENT_TARGETS;
   if (target !== undefined) {
     targets = [target];
@@ -136,7 +150,7 @@ async function resolveComponentIds(
 }
 
 // Geode component ids belong to one model: they cannot be spread over several data
-function checkComponentIdsOwner(ids: string[], componentIds: string[] | undefined): void {
+function checkComponentIdsOwner(ids: DataId[], componentIds: ModelComponentId[] | undefined): void {
   if (componentIds !== undefined && ids.length > 1) {
     throw new ControllerError("componentIds belong to one model: give a single id with them");
   }
@@ -167,7 +181,7 @@ function hasAttributes(response: unknown): response is { attributes: BackAttribu
 async function fetchAttributes(
   dataId: DataId,
   kind: AttributeKind,
-  componentIds?: string[],
+  componentIds?: ModelComponentId[],
 ): Promise<BackAttribute[]> {
   const schema =
     componentIds === undefined
@@ -176,7 +190,7 @@ async function fetchAttributes(
   if (schema === undefined) {
     throw new ControllerError(`Model components have no ${kind} attributes`);
   }
-  const params: { id: string; component_ids?: string[] } = { id: dataId };
+  const params: { id: DataId; component_ids?: ModelComponentId[] } = { id: dataId };
   if (componentIds !== undefined) {
     params.component_ids = componentIds;
   }
@@ -199,4 +213,11 @@ export {
   modelComponentGeodeIds,
   resolveComponentIds,
 };
-export type { AttributeKind, BackAttribute, MeshElement, ModelComponentTarget, ModelWholeTarget };
+export type {
+  AttributeKind,
+  BackAttribute,
+  MeshElement,
+  ModelComponentTarget,
+  ModelWholeTarget,
+  TargetName,
+};
