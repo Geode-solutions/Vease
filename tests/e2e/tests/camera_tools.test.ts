@@ -420,6 +420,13 @@ test("scene compass", async ({ window }) => {
   await closeAllMenus(window);
 });
 
+test("camera orientation with the compass", async ({ window }) => {
+  // The panel reads N, E, S, W, Up and Down on a dial turned with the camera, like the scene compass
+  await toggleCameraOrientation(window);
+  await window.getByTestId("cameraOrientationYPlusButton").hover();
+  await waitForActionSettled(window);
+});
+
 test("scene defaults restored", async ({ window }) => {
   await openSceneMenuItem(window, "sceneOrientationWidgetMenu");
   await window.getByTestId("sceneOrientationWidgetAxes").click();
