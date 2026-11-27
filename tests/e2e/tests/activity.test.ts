@@ -58,7 +58,16 @@ async function firstVisibleRowId(window: Page): Promise<string | undefined> {
   return rowId;
 }
 
-test("an import shows up in the activity panel", async ({ window, screenshotMask }) => {
+// Hides every source but the back. The app source only logs the launch of the microservices by the app server:
+// On cloud they already run, so there is no app chip
+async function showOnlyBackSource(window: Page, mode: string): Promise<void> {
+  await window.getByTestId("activitySource-viewer").click();
+  if (mode !== "CLOUD") {
+    await window.getByTestId("activitySource-app").click();
+  }
+}
+
+test("an import shows up in the activity panel", async ({ window, mode, screenshotMask }) => {
   await loadVeaseTestDatas(window, [BREP_FILE]);
   await openActivity(window);
   await expect(activityRows(window).filter({ hasText: "upload_file" }).first()).toBeVisible();
@@ -66,8 +75,7 @@ test("an import shows up in the activity panel", async ({ window, screenshotMask
     activityRows(window).filter({ hasText: "save_viewable_file" }).first(),
   ).toBeVisible();
   // The back requests of an import run one after the other: the same lines at every run
-  await window.getByTestId("activitySource-viewer").click();
-  await window.getByTestId("activitySource-app").click();
+  await showOnlyBackSource(window, mode);
   await moveMouseOutOfTheWay(window);
   maskRunDetails(window, screenshotMask.locators);
 });
