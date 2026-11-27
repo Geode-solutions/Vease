@@ -428,6 +428,8 @@ test("camera orientation with the compass", async ({ window }) => {
 });
 
 test("scene defaults restored", async ({ window }) => {
+  // The orientation panel holds a canvas (its cube) in the viewer: closed before the scene menu
+  await toggleCameraOrientation(window);
   await openSceneMenuItem(window, "sceneOrientationWidgetMenu");
   await window.getByTestId("sceneOrientationWidgetAxes").click();
   await waitForActionSettled(window);
