@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import DataManagerContent from "@vease/components/datamanager/DataManagerContent.vue";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 
 function expandToFullPage(): void {
-  UIStore.setShowDataManagerPiP(false);
+  userInterfaceStore.setShowDataManagerPiP(false);
   navigateTo("/data_manager");
 }
 
 function close(): void {
-  UIStore.setShowDataManagerPiP(false);
+  userInterfaceStore.setShowDataManagerPiP(false);
 }
 </script>
 

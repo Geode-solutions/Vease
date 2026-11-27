@@ -7,7 +7,7 @@ import { defineComponent, nextTick } from "vue";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import Extension from "@vease/components/Extension.vue";
-import type { ToolDefinition } from "@vease/stores/ui";
+import type { ToolDefinition } from "@vease/stores/user_interface";
 import type { formatRelativeTime } from "@vease/utils/format_date";
 import { importExtensionFile } from "@ogw_front/utils/extension";
 import { useAppStore } from "@ogw_front/stores/app";

@@ -4,7 +4,7 @@ import ActivityPiP from "@vease/components/activity/ActivityPiP.vue";
 import ActivityRow from "@vease/components/activity/ActivityRow.vue";
 import type ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useActivityStore } from "@ogw_front/stores/activity";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -190,11 +190,11 @@ describe("activity pip component", () => {
 
   test("closes on close button click", async () => {
     const wrapper = mountWithPlugins(ActivityPiP);
-    const uiStore = useUIStore();
-    uiStore.setShowActivityPiP(true);
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.setShowActivityPiP(true);
 
     await wrapper.find("[data-testid='activityCloseButton']").trigger("click");
 
-    expect(uiStore.showActivityPiP).toBe(false);
+    expect(userInterfaceStore.showActivityPiP).toBe(false);
   });
 });

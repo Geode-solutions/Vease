@@ -4,7 +4,7 @@ import type { DataItem } from "@ogw_front/stores/data";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useExclusiveDrawers } from "@vease/composables/exclusive_drawers";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -34,19 +34,19 @@ describe("exclusive drawers", () => {
   });
 
   test("opening the crs alignment closes the stepper, create tools and extensions", async () => {
-    const UIStore = useUIStore();
-    UIStore.setShowCreateTools(true);
+    const userInterfaceStore = useUserInterfaceStore();
+    userInterfaceStore.setShowCreateTools(true);
     await nextTick();
     useCrsStore().openCrsAlign(ITEM);
     await nextTick();
-    expect(UIStore.showCreateTools).toBe(false);
+    expect(userInterfaceStore.showCreateTools).toBe(false);
   });
 
   test("opening create tools closes the crs alignment", async () => {
     const crsStore = useCrsStore();
     crsStore.openCrsAlign(ITEM);
     await nextTick();
-    useUIStore().setShowCreateTools(true);
+    useUserInterfaceStore().setShowCreateTools(true);
     await nextTick();
     expect(crsStore.showCrsAlign).toBe(false);
   });

@@ -1,6 +1,6 @@
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import type { ToolDefinition } from "@vease/stores/ui";
+import type { ToolDefinition } from "@vease/stores/user_interface";
 
 interface Extension {
   id?: string;
@@ -46,13 +46,15 @@ function useExtensionMetadata(): {
   getExtensionTools: (extension: Extension | null | undefined) => ToolDefinition[];
   getExtensionToolsCount: (extension: Extension | null | undefined) => number;
 } {
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
 
   function getExtensionTools(extension: Extension | null | undefined): ToolDefinition[] {
     if (!extension) {
       return [];
     }
-    return UIStore.toolsDefinitions.filter((tool) => tool.extensionPath === extension.id);
+    return userInterfaceStore.toolsDefinitions.filter(
+      (tool) => tool.extensionPath === extension.id,
+    );
   }
 
   function getExtensionToolsCount(extension: Extension | null | undefined): number {

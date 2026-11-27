@@ -95,6 +95,7 @@ function transformUtilImports(code: string): string {
     `from "data:text/javascript,${encodeURIComponent(`
       export const Database = globalThis.__VEASE_UTILS__.Database;
       export const database = globalThis.__VEASE_UTILS__.database;
+      export const getTable = globalThis.__VEASE_UTILS__.getTable;
     `)}"`,
   );
   return transformedCode;

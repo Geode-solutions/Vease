@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { DataItem } from "@ogw_front/stores/data";
 import { setupActivePinia } from "@vease_tests/utils";
 import { useCrsStore } from "@ogw_front/stores/crs";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -23,108 +23,112 @@ describe("the UI store", () => {
 
   describe("state & setters", () => {
     test("initial state", () => {
-      const uiStore = useUIStore();
-      expect(uiStore.showDropZone).toBe(false);
-      expect(uiStore.showStepper).toBe(false);
-      expect(uiStore.showCreateTools).toBe(false);
-      expect(uiStore.showExtensions).toBe(false);
-      expect(uiStore.anyOverlayOpen).toBe(false);
+      const userInterfaceStore = useUserInterfaceStore();
+      expect(userInterfaceStore.showDropZone).toBe(false);
+      expect(userInterfaceStore.showStepper).toBe(false);
+      expect(userInterfaceStore.showCreateTools).toBe(false);
+      expect(userInterfaceStore.showExtensions).toBe(false);
+      expect(userInterfaceStore.anyOverlayOpen).toBe(false);
     });
 
     test("setters update overlay visibility", () => {
-      const uiStore = useUIStore();
-      uiStore.setShowDropZone(true);
-      expect(uiStore.showDropZone).toBe(true);
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.setShowDropZone(true);
+      expect(userInterfaceStore.showDropZone).toBe(true);
 
-      uiStore.setShowStepper(true);
-      expect(uiStore.showStepper).toBe(true);
-      expect(uiStore.anyOverlayOpen).toBe(true);
+      userInterfaceStore.setShowStepper(true);
+      expect(userInterfaceStore.showStepper).toBe(true);
+      expect(userInterfaceStore.anyOverlayOpen).toBe(true);
 
-      uiStore.setShowStepper(false);
-      uiStore.setShowCreateTools(true);
-      expect(uiStore.anyOverlayOpen).toBe(true);
+      userInterfaceStore.setShowStepper(false);
+      userInterfaceStore.setShowCreateTools(true);
+      expect(userInterfaceStore.anyOverlayOpen).toBe(true);
 
-      uiStore.setShowCreateTools(false);
-      uiStore.setShowExtensions(true);
-      expect(uiStore.anyOverlayOpen).toBe(true);
+      userInterfaceStore.setShowCreateTools(false);
+      userInterfaceStore.setShowExtensions(true);
+      expect(userInterfaceStore.anyOverlayOpen).toBe(true);
     });
 
     test("closeAllDrawers closes every overlay", () => {
-      const uiStore = useUIStore();
-      uiStore.setShowStepper(true);
-      uiStore.setShowCreateTools(true);
-      uiStore.setShowExtensions(true);
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.setShowStepper(true);
+      userInterfaceStore.setShowCreateTools(true);
+      userInterfaceStore.setShowExtensions(true);
       useCrsStore().openCrsAlign(ITEM);
-      uiStore.closeAllDrawers();
-      expect(uiStore.anyOverlayOpen).toBe(false);
+      userInterfaceStore.closeAllDrawers();
+      expect(userInterfaceStore.anyOverlayOpen).toBe(false);
       expect(useCrsStore().showCrsAlign).toBe(false);
     });
 
     test("toggleDrawer resets dropped files and toggles stepper", () => {
-      const uiStore = useUIStore();
+      const userInterfaceStore = useUserInterfaceStore();
       const mockFile = new File(["dummy content"], "test.txt", { type: "text/plain" });
-      uiStore.setDroppedFiles([mockFile]);
-      expect(uiStore.droppedFiles).toHaveLength(1);
+      userInterfaceStore.setDroppedFiles([mockFile]);
+      expect(userInterfaceStore.droppedFiles).toHaveLength(1);
 
-      uiStore.toggleDrawer();
-      expect(uiStore.droppedFiles).toHaveLength(0);
-      expect(uiStore.showStepper).toBe(true);
+      userInterfaceStore.toggleDrawer();
+      expect(userInterfaceStore.droppedFiles).toHaveLength(0);
+      expect(userInterfaceStore.showStepper).toBe(true);
     });
   });
 
   describe("tool management", () => {
     test("registerToolComponent and unregisterTool", () => {
-      const uiStore = useUIStore();
+      const userInterfaceStore = useUserInterfaceStore();
       const toolDef = { id: "testTool", component: {} };
 
-      uiStore.registerToolComponent(toolDef, "ext/path");
-      expect(uiStore.toolsDefinitions).toHaveLength(1);
-      expect(uiStore.toolsDefinitions[0]?.id).toBe("testTool");
+      userInterfaceStore.registerToolComponent(toolDef, "ext/path");
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(1);
+      expect(userInterfaceStore.toolsDefinitions[0]?.id).toBe("testTool");
 
-      uiStore.unregisterTool("testTool");
-      expect(uiStore.toolsDefinitions).toHaveLength(0);
+      userInterfaceStore.unregisterTool("testTool");
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(0);
     });
 
     test("reads the former mdi icon type of extension tools as a font icon", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent(
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent(
         { id: "legacyTool", component: {}, iconType: "mdi", iconSource: "ph-cube" },
         "ext/legacy",
       );
-      expect(uiStore.toolsDefinitions[0]?.iconType).toBe("icon");
-      expect(uiStore.toolsDefinitions[0]?.iconSource).toBe("ph-cube");
+      expect(userInterfaceStore.toolsDefinitions[0]?.iconType).toBe("icon");
+      expect(userInterfaceStore.toolsDefinitions[0]?.iconSource).toBe("ph-cube");
     });
 
     test("draws an MDI icon of an extension as the generic extension icon", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent(
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent(
         { id: "mdiTool", component: {}, iconType: "mdi", iconSource: "mdi-cube-outline" },
         "ext/legacy",
       );
-      uiStore.registerDataManagerTab({ id: "mdiTab", component: {}, icon: "mdi-tag-outline" });
-      expect(uiStore.toolsDefinitions[0]?.iconSource).toBe("ph-puzzle-piece");
-      expect(uiStore.dataManagerTabs[0]?.icon).toBe("ph-puzzle-piece");
+      userInterfaceStore.registerDataManagerTab({
+        id: "mdiTab",
+        component: {},
+        icon: "mdi-tag-outline",
+      });
+      expect(userInterfaceStore.toolsDefinitions[0]?.iconSource).toBe("ph-puzzle-piece");
+      expect(userInterfaceStore.dataManagerTabs[0]?.icon).toBe("ph-puzzle-piece");
     });
 
     test("unregisterToolsByExtension removes all matching extension tools", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent({ id: "tool1", component: {} }, "ext/a");
-      uiStore.registerToolComponent({ id: "tool2", component: {} }, "ext/b");
-      uiStore.registerToolComponent({ id: "tool3", component: {} }, "ext/a");
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent({ id: "tool1", component: {} }, "ext/a");
+      userInterfaceStore.registerToolComponent({ id: "tool2", component: {} }, "ext/b");
+      userInterfaceStore.registerToolComponent({ id: "tool3", component: {} }, "ext/a");
 
-      expect(uiStore.toolsDefinitions).toHaveLength(3);
-      uiStore.unregisterToolsByExtension("ext/a");
-      expect(uiStore.toolsDefinitions).toHaveLength(1);
-      expect(uiStore.toolsDefinitions[0]?.id).toBe("tool2");
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(3);
+      userInterfaceStore.unregisterToolsByExtension("ext/a");
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(1);
+      expect(userInterfaceStore.toolsDefinitions[0]?.id).toBe("tool2");
     });
 
     test("registerDataManagerTab registers tabs correctly", () => {
-      const uiStore = useUIStore();
+      const userInterfaceStore = useUserInterfaceStore();
       const tabDef = { id: "tab1", component: {} };
 
-      uiStore.registerDataManagerTab(tabDef);
-      expect(uiStore.dataManagerTabs).toHaveLength(1);
-      expect(uiStore.dataManagerTabs[0]?.id).toBe("tab1");
+      userInterfaceStore.registerDataManagerTab(tabDef);
+      expect(userInterfaceStore.dataManagerTabs).toHaveLength(1);
+      expect(userInterfaceStore.dataManagerTabs[0]?.id).toBe("tab1");
     });
   });
 });
