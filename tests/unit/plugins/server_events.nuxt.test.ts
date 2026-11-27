@@ -6,6 +6,7 @@ import { setActivePinia } from "pinia";
 import { setBackBaseUrl } from "@ogw_shared/scripts";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useBackStore } from "@ogw_front/stores/back";
+import type { usePing } from "@ogw_internal/stores/microservice";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -18,22 +19,28 @@ vi.mock(import("@vease/utils/events/index"), () => ({
   connectToEventSource: vi.fn<typeof connectToEventSource>(),
 }));
 
+// The back pings on connect: keep it off the network
+vi.mock(import("@ogw_internal/stores/microservice"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  usePing: (): ReturnType<typeof usePing> => ({
+    start_ping: vi.fn<() => void>(),
+    stop_ping: vi.fn<() => void>(),
+  }),
+}));
+
 // `connect` is what every mode calls once the microservices exist; in cloud
 // Mode it is the only one, since the microservices are never launched.
 describe("server_events plugin", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
-    // Keep the real `connect` actions so their $onAction hooks fire, but
-    // Stub the back ping so nothing reaches the network.
-    setActivePinia(
-      createTestingPinia({ stubActions: (action) => action === "set_ping", createSpy: vi.fn }),
-    );
+    // Keep the real `connect` actions so their $onAction hooks fire
+    setActivePinia(createTestingPinia({ stubActions: false, createSpy: vi.fn }));
     await serverEventsPlugin(useNuxtApp());
   });
 
   test("connecting the back sends its URL to the server and listens to its events", async () => {
     const backStore = useBackStore();
-    await backStore.connect();
+    backStore.connect();
 
     expect(setBackBaseUrl).toHaveBeenCalledWith(useAppStore().base_url, backStore.base_url);
     await vi.waitFor(() => {

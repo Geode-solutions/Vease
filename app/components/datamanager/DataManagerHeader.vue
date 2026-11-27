@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { DataManagerTab } from "@vease/stores/ui";
+import type { DataManagerTab } from "@vease/stores/user_interface";
 import SearchBar from "@ogw_front/components/SearchBar.vue";
 import { useTemplateRef } from "vue";
 // oxlint-disable-next-line eslint/no-duplicate-imports
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 
 const {
   searchValue = "",
@@ -26,7 +26,7 @@ const emit = defineEmits<{
 const searchInput = useTemplateRef("searchInput");
 
 function enterPiP(): void {
-  UIStore.setShowDataManagerPiP(true);
+  userInterfaceStore.setShowDataManagerPiP(true);
   navigateTo("/");
 }
 

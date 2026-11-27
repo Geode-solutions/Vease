@@ -11,18 +11,17 @@ import type { DataItem } from "@vease/types/data_item";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 import { useCrsStore } from "@ogw_front/stores/crs";
 import { useDataStore } from "@ogw_front/stores/data";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 const { compact = false } = defineProps<{ compact?: boolean }>();
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const dataStore = useDataStore();
 const crsStore = useCrsStore();
 const hybridViewerStore = getHybridViewerStore();
 
 const search = ref("");
 const viewMode = ref("list");
-const items = dataStore.refAllItems();
 const activeTab = ref("data");
 const selectedIds = ref<DataItem[]>([]);
 
@@ -51,7 +50,7 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
 }
 
 async function toggleSelectedVisibility(): Promise<void> {
-  const targetItems = selectedIds.value.length > 0 ? selectedIds.value : items.value;
+  const targetItems = selectedIds.value.length > 0 ? selectedIds.value : dataStore.items;
   if (!targetItems || targetItems.length === 0) {
     return;
   }
@@ -91,7 +90,7 @@ async function confirmRename(newName: string): Promise<void> {
 }
 
 async function isolateItem(item: DataItem): Promise<void> {
-  const promises = items.value.map(async (i) => {
+  const promises = dataStore.items.map(async (i) => {
     const visible = i.data_id === item.data_id;
     await setDataVisibility(i.data_id, visible);
     i.visible = visible;
@@ -169,7 +168,7 @@ useEventListener(document, "keydown", (event) => {
         <DataManagerHeader
           v-model:search-value="search"
           v-model:active-tab="activeTab"
-          :tabs="UIStore.dataManagerTabs"
+          :tabs="userInterfaceStore.dataManagerTabs"
           :compact="compact"
           ref="headerRef"
           :class="compact ? 'mb-0' : 'mb-6'"
@@ -183,7 +182,7 @@ useEventListener(document, "keydown", (event) => {
             <DataTable
               v-if="viewMode === 'list'"
               v-model:selected-ids="selectedIds"
-              :items="items"
+              :items="dataStore.items"
               :search="search"
               :compact="compact"
               @toggle-visibility="toggleVisibility"
@@ -198,7 +197,7 @@ useEventListener(document, "keydown", (event) => {
           </v-window-item>
 
           <v-window-item
-            v-for="tab in UIStore.dataManagerTabs"
+            v-for="tab in userInterfaceStore.dataManagerTabs"
             :key="tab.id"
             :value="tab.id"
             class="fill-height overflow-y-auto overflow-x-hidden pa-4"

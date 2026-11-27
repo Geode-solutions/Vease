@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { createHorizonStack } from "@vease/utils/controller/handlers/horizon_stack";
 import { useHorizonStackForm } from "@vease/composables/horizon_stack_form";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 const emit = defineEmits<{ created: [] }>();
 
-const UIStore = useUIStore();
+const userInterfaceStore = useUserInterfaceStore();
 const {
   name,
   horizons,
@@ -29,7 +29,7 @@ function horizonRules(value: string): (string | boolean)[] {
 
 function handleClose(): void {
   reset();
-  UIStore.setShowCreateTools(false);
+  userInterfaceStore.setShowCreateTools(false);
 }
 
 async function create(): Promise<void> {

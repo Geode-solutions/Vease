@@ -38,10 +38,11 @@ describe("the transformExtensionCode utility", () => {
 
   test("transforms database imports to the database of the app", () => {
     const inputCode =
-      'import { Database, database } from "@geode/opengeodeweb-front/internal/database/database.js";';
+      'import { Database, database, getTable } from "@geode/opengeodeweb-front/internal/database/database.js";';
     const outputCode = decodeURIComponent(transformExtensionCode(inputCode));
 
     expect(outputCode).toContain("export const Database = globalThis.__VEASE_UTILS__.Database;");
     expect(outputCode).toContain("export const database = globalThis.__VEASE_UTILS__.database;");
+    expect(outputCode).toContain("export const getTable = globalThis.__VEASE_UTILS__.getTable;");
   });
 });

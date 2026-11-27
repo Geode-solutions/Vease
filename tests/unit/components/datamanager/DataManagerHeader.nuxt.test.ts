@@ -1,4 +1,4 @@
-import { type DataManagerTab, useUIStore } from "@vease/stores/ui";
+import { type DataManagerTab, useUserInterfaceStore } from "@vease/stores/user_interface";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
 import DataManagerHeader from "@vease/components/datamanager/DataManagerHeader.vue";
@@ -95,11 +95,11 @@ describe("data manager header component", () => {
       },
     });
 
-    const uiStore = useUIStore();
+    const userInterfaceStore = useUserInterfaceStore();
     const pipButton = wrapper.find('[data-testid="dataManagerPiPButton"]');
     await pipButton.trigger("click");
 
-    expect(uiStore.showDataManagerPiP).toBe(true);
+    expect(userInterfaceStore.showDataManagerPiP).toBe(true);
     expect(navigateTo).toHaveBeenCalledWith("/");
   });
 

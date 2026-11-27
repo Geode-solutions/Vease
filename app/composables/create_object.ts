@@ -11,7 +11,7 @@ import type { LegacyDataId } from "@ogw_front/utils/legacy_data_id";
 import type { NewDataItem } from "@ogw_front/stores/data";
 import { importItem } from "@ogw_front/utils/import_workflow";
 import { onKeyStroke } from "@vueuse/core";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 import viewer_schemas from "@geode/opengeodeweb-viewer/opengeodeweb_viewer_typed_schemas.js";
 
@@ -29,7 +29,7 @@ export function useCreateObjectTool({
   onPickedPoint,
   onReset,
 }: CreateObjectToolOptions): UseCreateObjectToolReturn {
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
   const backStore = getBackStore();
   const hybridViewerStore = getHybridViewerStore();
   const viewerStore = useViewerStore();
@@ -71,7 +71,7 @@ export function useCreateObjectTool({
     if (onReset !== undefined) {
       onReset();
     }
-    UIStore.setShowCreateTools(false);
+    userInterfaceStore.setShowCreateTools(false);
   }
 
   watch(

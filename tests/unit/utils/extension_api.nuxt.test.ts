@@ -7,7 +7,7 @@ import { setupActivePinia } from "@vease_tests/utils";
 import { useAppStore } from "@ogw_front/stores/app";
 import { useDataStore } from "@ogw_front/stores/data";
 import { useHybridViewerStore } from "@ogw_front/stores/hybrid_viewer";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -32,11 +32,11 @@ describe("the VeaseExtensionAPI object", () => {
 
   describe("registerTool", () => {
     test("registers a valid tool against the UI store", () => {
-      const uiStore = useUIStore();
+      const userInterfaceStore = useUserInterfaceStore();
       VeaseExtensionAPI.registerTool("ext-1", { id: "tool-1", component: {} });
 
-      expect(uiStore.toolsDefinitions).toHaveLength(1);
-      expect(uiStore.toolsDefinitions[0]).toStrictEqual(
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(1);
+      expect(userInterfaceStore.toolsDefinitions[0]).toStrictEqual(
         expect.objectContaining({ id: "tool-1", extensionPath: "ext-1" }),
       );
     });
@@ -59,15 +59,15 @@ describe("the VeaseExtensionAPI object", () => {
 
   describe("unregisterTool / unregisterToolsByExtension", () => {
     test("delegate to the UI store", () => {
-      const uiStore = useUIStore();
-      uiStore.registerToolComponent({ id: "tool-1", component: {} }, "ext-1");
-      uiStore.registerToolComponent({ id: "tool-2", component: {} }, "ext-1");
+      const userInterfaceStore = useUserInterfaceStore();
+      userInterfaceStore.registerToolComponent({ id: "tool-1", component: {} }, "ext-1");
+      userInterfaceStore.registerToolComponent({ id: "tool-2", component: {} }, "ext-1");
 
       VeaseExtensionAPI.unregisterTool("tool-1");
-      expect(uiStore.toolsDefinitions.map((tool) => tool.id)).toStrictEqual(["tool-2"]);
+      expect(userInterfaceStore.toolsDefinitions.map((tool) => tool.id)).toStrictEqual(["tool-2"]);
 
       VeaseExtensionAPI.unregisterToolsByExtension("ext-1");
-      expect(uiStore.toolsDefinitions).toHaveLength(0);
+      expect(userInterfaceStore.toolsDefinitions).toHaveLength(0);
     });
   });
 
@@ -104,9 +104,23 @@ describe("the VeaseExtensionAPI object", () => {
     });
   });
 
+  describe("unregisterStore", () => {
+    test("unregisters the store from the app store", () => {
+      const unregisterStoreMock = vi.fn<(storeId: string) => void>();
+      // oxlint-disable-next-line no-unsafe-type-assertion -- established pattern for mocking a partial store/return type, see tests/unit/server/utils/data_file.nuxt.test.ts
+      vi.mocked(useAppStore).mockReturnValue({
+        unregisterStore: unregisterStoreMock,
+      } as unknown as ReturnType<typeof useAppStore>);
+
+      VeaseExtensionAPI.unregisterStore("custom-store");
+
+      expect(unregisterStoreMock).toHaveBeenCalledWith("custom-store");
+    });
+  });
+
   describe("store accessors", () => {
-    test("returns the real UI store via UIStore", () => {
-      expect(VeaseExtensionAPI.UIStore).toBe(useUIStore());
+    test("returns the real UI store via userInterfaceStore", () => {
+      expect(VeaseExtensionAPI.userInterfaceStore).toBe(useUserInterfaceStore());
     });
 
     test("delegates DataBaseStore to useDataStore", () => {

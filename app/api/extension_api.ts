@@ -1,11 +1,11 @@
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 export function useExtensionAPI(): {
-  registerDataManagerTab: typeof UIStore.registerDataManagerTab;
+  registerDataManagerTab: typeof userInterfaceStore.registerDataManagerTab;
 } {
-  const UIStore = useUIStore();
+  const userInterfaceStore = useUserInterfaceStore();
 
   return {
-    registerDataManagerTab: UIStore.registerDataManagerTab,
+    registerDataManagerTab: userInterfaceStore.registerDataManagerTab,
   };
 }

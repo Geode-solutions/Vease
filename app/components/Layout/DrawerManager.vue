@@ -7,40 +7,44 @@ import DragAndDrop from "@ogw_front/components/DragAndDrop.vue";
 import Extension from "@vease/components/Extension.vue";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 import StepImport from "@vease/components/StepImport.vue";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
-const { uiStore } = defineProps<{ uiStore: ReturnType<typeof useUIStore> }>();
+const { userInterfaceStore } = defineProps<{
+  userInterfaceStore: ReturnType<typeof useUserInterfaceStore>;
+}>();
 
 const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
 const viewerStore = useViewerStore();
 
-const showRightDrawer = computed(() => uiStore.showStepper || uiStore.showCreateTools);
+const showRightDrawer = computed(
+  () => userInterfaceStore.showStepper || userInterfaceStore.showCreateTools,
+);
 
 function handleFilesDropped(files): void {
   emit("files-dropped", files);
 }
 
 function handleEscape(): void {
-  if (uiStore.anyOverlayOpen && !viewerStore.picking_mode) {
-    uiStore.closeAllDrawers();
+  if (userInterfaceStore.anyOverlayOpen && !viewerStore.picking_mode) {
+    userInterfaceStore.closeAllDrawers();
   }
 }
 </script>
 
 <template>
   <div
-    v-if="uiStore.anyOverlayOpen"
+    v-if="userInterfaceStore.anyOverlayOpen"
     v-show="!viewerStore.picking_mode"
     class="drawer-overlay"
-    @click="uiStore.closeAllDrawers()"
+    @click="userInterfaceStore.closeAllDrawers()"
   />
 
   <v-card
     v-if="showRightDrawer"
     color="transparent"
     elevation="0"
-    :width="uiStore.showStepper ? 548 : 380"
+    :width="userInterfaceStore.showStepper ? 548 : 380"
     class="drawer-container right-0"
   >
     <GlassCard
@@ -50,13 +54,13 @@ function handleEscape(): void {
       :escapeFunction="handleEscape"
     >
       <StepImport
-        v-if="uiStore.showStepper"
+        v-if="userInterfaceStore.showStepper"
         data-testid="DataImportStepper"
-        :files="uiStore.droppedFiles"
-        @close="uiStore.setShowStepper(false)"
+        :files="userInterfaceStore.droppedFiles"
+        @close="userInterfaceStore.setShowStepper(false)"
       />
       <div
-        v-if="uiStore.showCreateTools"
+        v-if="userInterfaceStore.showCreateTools"
         data-testid="createToolsPanel"
         class="d-flex flex-column h-100 w-100"
       >
@@ -67,7 +71,7 @@ function handleEscape(): void {
 
   <v-fade-transition>
     <v-card
-      v-if="uiStore.showExtensions"
+      v-if="userInterfaceStore.showExtensions"
       color="transparent"
       elevation="0"
       :width="380"
@@ -92,11 +96,11 @@ function handleEscape(): void {
     @folders-ignored="emit('folders-dropped')"
   />
 
-  <DataManagerPiP v-if="uiStore.showDataManagerPiP" />
+  <DataManagerPiP v-if="userInterfaceStore.showDataManagerPiP" />
 
-  <ChatPiP v-if="uiStore.showChatPiP" />
+  <ChatPiP v-if="userInterfaceStore.showChatPiP" />
 
-  <ActivityPiP v-if="uiStore.showActivityPiP" />
+  <ActivityPiP v-if="userInterfaceStore.showActivityPiP" />
 </template>
 
 <style scoped>

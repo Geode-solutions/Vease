@@ -5,7 +5,7 @@ import type GlassCard from "@ogw_front/components/GlassCard.vue";
 import TopBar from "@vease/components/Layout/TopBar.vue";
 import { VLayout } from "vuetify/components";
 import { getInfraStore } from "@vease/utils/external_stores";
-import { useUIStore } from "@vease/stores/ui";
+import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 vi.setConfig({ testTimeout: 10_000 });
 
@@ -81,15 +81,15 @@ describe("topbar component", () => {
 
   test("toggles uistore flags when import and create buttons are clicked", async () => {
     const wrapper = mountTopBar();
-    const uiStore = useUIStore();
+    const userInterfaceStore = useUserInterfaceStore();
 
     const importBtn = wrapper.find("[data-testid='layoutImportButton']");
     await importBtn.trigger("click");
-    expect(uiStore.showStepper).toBe(true);
+    expect(userInterfaceStore.showStepper).toBe(true);
 
     const createBtn = wrapper.find("[data-testid='createButton']");
     await createBtn.trigger("click");
-    expect(uiStore.showCreateTools).toBe(true);
+    expect(userInterfaceStore.showCreateTools).toBe(true);
   });
 
   test("calls exportProject when export button is clicked", async () => {

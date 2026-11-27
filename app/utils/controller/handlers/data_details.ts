@@ -1,11 +1,4 @@
 // Third party imports
-import { type DataItem, useDataStore } from "@ogw_front/stores/data";
-import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
-import type { GeodeIdentified } from "@ogw_front/types/identifiers";
-import type { GeodeImageType } from "@geode/opengeodeweb-microservice/data_types";
-import { getAttributeRange } from "@ogw_front/utils/attributes";
-
-// Local imports
 import {
   type AttributeKind,
   type BackAttribute,
@@ -15,13 +8,19 @@ import {
   getDataItem,
   meshTargetsOf,
 } from "@vease/utils/controller/targets";
+import { type DataItem, useDataStore } from "@ogw_front/stores/data";
 import {
   type SourceAttributes,
   fetchSourceAttributes,
   meshAttributeSources,
   modelAttributeSources,
 } from "@vease/utils/controller/attributes";
+import { isImage, isMesh } from "@ogw_front/utils/viewer_object_type";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { GeodeIdentified } from "@ogw_front/types/identifiers";
+import type { GeodeImageType } from "@geode/opengeodeweb-microservice/data_types";
+import { getAttributeRange } from "@ogw_front/utils/attributes";
 import { getDataStyleStore } from "@vease/utils/external_stores";
 
 interface AttributeSummary {
@@ -128,10 +127,10 @@ async function describeModel(modelId: DataId): Promise<TargetsDescription> {
 }
 
 async function describe(item: DataItem): Promise<TargetsDescription | ImageDescription> {
-  if (item.viewer_object_type === "image") {
+  if (isImage(item)) {
     return describeImage(item);
   }
-  if (item.viewer_object_type === "mesh") {
+  if (isMesh(item)) {
     const description = await describeMesh(item);
     return description;
   }
