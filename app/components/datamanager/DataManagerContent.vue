@@ -22,7 +22,6 @@ const hybridViewerStore = getHybridViewerStore();
 
 const search = ref("");
 const viewMode = ref("list");
-const items = computed(() => dataStore.items);
 const activeTab = ref("data");
 const selectedIds = ref<DataItem[]>([]);
 
@@ -51,7 +50,7 @@ async function toggleVisibility(item: DataItem, targetVisible = !item.visible): 
 }
 
 async function toggleSelectedVisibility(): Promise<void> {
-  const targetItems = selectedIds.value.length > 0 ? selectedIds.value : items.value;
+  const targetItems = selectedIds.value.length > 0 ? selectedIds.value : dataStore.items;
   if (!targetItems || targetItems.length === 0) {
     return;
   }
@@ -91,7 +90,7 @@ async function confirmRename(newName: string): Promise<void> {
 }
 
 async function isolateItem(item: DataItem): Promise<void> {
-  const promises = items.value.map(async (i) => {
+  const promises = dataStore.items.map(async (i) => {
     const visible = i.data_id === item.data_id;
     await setDataVisibility(i.data_id, visible);
     i.visible = visible;
@@ -183,7 +182,7 @@ useEventListener(document, "keydown", (event) => {
             <DataTable
               v-if="viewMode === 'list'"
               v-model:selected-ids="selectedIds"
-              :items="items"
+              :items="dataStore.items"
               :search="search"
               :compact="compact"
               @toggle-visibility="toggleVisibility"
