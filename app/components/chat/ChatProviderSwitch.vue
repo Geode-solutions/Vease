@@ -1,22 +1,25 @@
 <script setup lang="ts">
-const CHAT_PROVIDER = { LLAMA: "llama", GATEWAY: "gateway" } as const;
-type ChatProvider = (typeof CHAT_PROVIDER)[keyof typeof CHAT_PROVIDER];
+import {
+  CHAT_PROVIDER,
+  type ChatProvider,
+  type CloudUnavailableReason,
+} from "@vease/utils/chat_provider";
+import type { Message } from "@ogw_front/types/ui";
 
 interface Props {
   provider: ChatProvider;
-  cloudUnavailableReason?: string;
-  disabled?: boolean;
-  loading?: boolean;
+  cloudUnavailableReason: CloudUnavailableReason | undefined;
+  disabled: boolean;
+  loading: boolean;
 }
 
-const {
-  provider,
-  cloudUnavailableReason = undefined,
-  disabled = false,
-  loading = false,
-} = defineProps<Props>();
+interface Emits {
+  select: [provider: ChatProvider];
+}
 
-const emit = defineEmits<{ select: [provider: ChatProvider] }>();
+const { provider, cloudUnavailableReason, disabled, loading } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 const PROVIDERS = [
   {
@@ -34,7 +37,7 @@ const PROVIDERS = [
   },
 ] as const;
 
-const CLOUD_UNAVAILABLE_MESSAGES: Record<string, string> = {
+const CLOUD_UNAVAILABLE_MESSAGES: Record<string, Message> = {
   signed_out: "Sign in to use the cloud AI",
   not_entitled: "The cloud AI is restricted to authorized accounts",
 };

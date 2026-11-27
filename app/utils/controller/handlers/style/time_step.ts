@@ -1,13 +1,14 @@
 // Local imports
+import type { AttributeTimeStep, AttributeTimeValue } from "@ogw_front/types/attribute";
 import type { AttributeBinding } from "@vease/utils/controller/attribute_setters";
 import type { BackAttribute } from "@vease/utils/controller/targets";
 import { ControllerError } from "@vease/utils/controller/errors";
 
 // The store keeps a step as an index into time_steps, while the tool speaks in time values
 function requestedTimeStepIndex(
-  timeStep: number | undefined,
+  timeStep: AttributeTimeValue | undefined,
   attribute: BackAttribute,
-): number | undefined {
+): AttributeTimeStep | undefined {
   if (timeStep === undefined) {
     return undefined;
   }
@@ -25,10 +26,10 @@ function requestedTimeStepIndex(
 
 // Like the attribute selector: a series keeps its stored step when valid, otherwise shows the first one
 function seriesTimeStepIndex(
-  requested: number | undefined,
+  requested: AttributeTimeStep | undefined,
   attribute: BackAttribute,
   binding: AttributeBinding,
-): number | undefined {
+): AttributeTimeStep | undefined {
   const stepCount = attribute.time_steps?.length ?? 0;
   if (requested !== undefined || stepCount === 0) {
     return requested;

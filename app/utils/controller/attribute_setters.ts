@@ -1,4 +1,5 @@
 // Local imports
+import type { AttributeColorMap, AttributeTimeStep } from "@ogw_front/types/attribute";
 import {
   type AttributeKind,
   type MeshElement,
@@ -12,10 +13,10 @@ import type { StyleStore } from "@vease/utils/controller/attribute_setter_types"
 import type { ValidAttributeInput } from "@ogw_internal/stores/data_style/attribute_types";
 
 interface MeshAttributeSetters {
-  colorMap: (store: StyleStore, meshId: DataId) => string | undefined;
-  storedTimeStep: (store: StyleStore, meshId: DataId) => number | undefined;
+  colorMap: (store: StyleStore, meshId: DataId) => AttributeColorMap | undefined;
+  storedTimeStep: (store: StyleStore, meshId: DataId) => AttributeTimeStep | undefined;
   attribute: (store: StyleStore, meshId: DataId, input: ValidAttributeInput) => Promise<unknown>;
-  timeStep: (store: StyleStore, meshId: DataId, timeStep: number) => Promise<unknown>;
+  timeStep: (store: StyleStore, meshId: DataId, timeStep: AttributeTimeStep) => Promise<unknown>;
 }
 
 interface MeshElementSetters {
@@ -24,10 +25,10 @@ interface MeshElementSetters {
 }
 
 interface AttributeBinding {
-  currentColorMap: () => string | undefined;
-  storedTimeStep: () => number | undefined;
+  currentColorMap: () => AttributeColorMap | undefined;
+  storedTimeStep: () => AttributeTimeStep | undefined;
   apply: (input: ValidAttributeInput) => Promise<unknown>;
-  applyTimeStep: (timeStep: number) => Promise<unknown>;
+  applyTimeStep: (timeStep: AttributeTimeStep) => Promise<unknown>;
   activate: () => Promise<unknown>;
 }
 

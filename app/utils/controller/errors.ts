@@ -1,5 +1,7 @@
+import type { Message } from "@ogw_front/types/ui";
+
 class ControllerError extends Error {
-  public constructor(message: string) {
+  public constructor(message: Message) {
     super(message);
     this.name = "ControllerError";
   }

@@ -30,6 +30,7 @@ describe("the ImportFile component", () => {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
+        skippedFiles: [],
       },
     });
     await wrapper.find('[data-testid="finalizeImportButton"]').trigger("click");
@@ -45,6 +46,7 @@ describe("the ImportFile component", () => {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
+        skippedFiles: [],
       },
     });
 
@@ -60,6 +62,7 @@ describe("the ImportFile component", () => {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
+        skippedFiles: [],
       },
     });
 
@@ -82,6 +85,7 @@ describe("the ImportFile component", () => {
       props: {
         filenames: [SAMPLE_FILENAME],
         geodeObjectTypes: { [SAMPLE_FILENAME]: [GEODE_TYPE] },
+        skippedFiles: [],
       },
     });
 
@@ -99,7 +103,7 @@ describe("the ImportFile component", () => {
         geodeObjectTypes: {
           [SAMPLE_FILENAME]: [GEODE_TYPE],
           "model.og_brep": ["StructuralModel"],
-          "skipped.vtu": ["SolidMesh3D"],
+          "skipped.vtu": ["TetrahedralSolid3D"],
         },
         skippedFiles: ["skipped.vtu"],
       },
@@ -123,6 +127,7 @@ describe("the ImportFile component", () => {
           "mixed.vtu": ["TriangulatedSurface3D", "TetrahedralSolid3D"],
           "empty.vtu": [],
         },
+        skippedFiles: [],
       },
     });
 

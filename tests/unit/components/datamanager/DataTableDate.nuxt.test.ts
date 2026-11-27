@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import type { DataItem } from "@vease/types/data_item";
+import type { DataItem } from "@ogw_front/stores/data";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -24,7 +24,9 @@ function itemCreatedAt(createdAt: Date): DataItem {
 }
 
 function dateCellText(createdAt: Date): string {
-  const wrapper = mountWithPlugins(DataTable, { props: { items: [itemCreatedAt(createdAt)] } });
+  const wrapper = mountWithPlugins(DataTable, {
+    props: { items: [itemCreatedAt(createdAt)], search: "", compact: false },
+  });
   return wrapper.find('[data-testid="dateCell"]').text();
 }
 

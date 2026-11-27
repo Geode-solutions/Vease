@@ -1,13 +1,17 @@
+import type { Coordinate } from "@ogw_front/types/geometry";
+// A coordinate as the user types it: a number, or a string not parsed yet
+type EditableCoordinate = number | string;
+
 interface Point {
-  x: number | string;
-  y: number | string;
-  z: number | string;
+  x: EditableCoordinate;
+  y: EditableCoordinate;
+  z: EditableCoordinate;
 }
 
 interface FormattedPoint {
-  x: number;
-  y: number;
-  z: number;
+  x: Coordinate;
+  y: Coordinate;
+  z: Coordinate;
 }
 
 function createEmptyPoint(): Point {

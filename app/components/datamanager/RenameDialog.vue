@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import type { DataItem } from "@vease/types/data_item";
+import type { DataItem } from "@ogw_front/stores/data";
+import type { DataName } from "@ogw_front/types/data";
 import GlassCard from "@ogw_front/components/GlassCard.vue";
 
-const {
-  show = false,
-  item = undefined,
-  initialName = "",
-} = defineProps<{
-  show?: boolean;
-  item?: DataItem;
-  initialName?: string;
-}>();
+interface Props {
+  show: boolean;
+  item: DataItem | undefined;
+  initialName: DataName;
+}
 
-const emit = defineEmits<{
+interface Emits {
   "update:show": [value: boolean];
-  confirm: [name: string];
-}>();
+  confirm: [name: DataName];
+}
+
+const { show, item, initialName } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 const currentName = ref(initialName);
 

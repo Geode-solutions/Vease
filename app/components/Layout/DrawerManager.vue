@@ -10,11 +10,18 @@ import StepImport from "@vease/components/StepImport.vue";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 import { useViewerStore } from "@ogw_front/stores/viewer";
 
-const { userInterfaceStore } = defineProps<{
+interface Props {
   userInterfaceStore: ReturnType<typeof useUserInterfaceStore>;
-}>();
+}
 
-const emit = defineEmits<{ "files-dropped": [files: File[]]; "folders-dropped": [] }>();
+interface Emits {
+  "files-dropped": [files: File[]];
+  "folders-dropped": [];
+}
+
+const { userInterfaceStore } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 const viewerStore = useViewerStore();
 
 const showRightDrawer = computed(

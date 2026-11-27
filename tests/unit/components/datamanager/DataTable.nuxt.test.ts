@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { mountWithPlugins, setupActivePinia } from "@vease_tests/utils";
-import type { DataItem } from "@vease/types/data_item";
+import type { DataItem } from "@ogw_front/stores/data";
 import DataTable from "@vease/components/datamanager/DataTable.vue";
 
 vi.setConfig({ testTimeout: 10_000 });
@@ -36,9 +36,7 @@ describe("data table component", () => {
 
   test("renders items in data table", () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1, mockItem2],
-      },
+      props: { items: [mockItem1, mockItem2], search: "", compact: false },
     });
 
     expect(wrapper.text()).toContain("Mesh Model");
@@ -49,9 +47,7 @@ describe("data table component", () => {
 
   test("renders empty state message when no items provided", () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [],
-      },
+      props: { items: [], search: "", compact: false },
     });
 
     expect(wrapper.text()).toContain("No data available");
@@ -59,9 +55,7 @@ describe("data table component", () => {
 
   test("emits toggle-visibility event on item visibility button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const visibilityButton = wrapper.find('[data-testid="dataVisibilityButton"]');
@@ -75,9 +69,7 @@ describe("data table component", () => {
 
   test("emits focus-camera event on focus camera button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const focusButton = wrapper.find('[data-testid="focusDataButton"]');
@@ -91,9 +83,7 @@ describe("data table component", () => {
 
   test("emits isolate event on isolate item button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const isolateButton = wrapper.find('[data-testid="isolateDataButton"]');
@@ -107,9 +97,7 @@ describe("data table component", () => {
 
   test("emits rename event on rename button click and double click on name", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const renameButton = wrapper.find('[data-testid="renameDataButton"]');
@@ -123,9 +111,7 @@ describe("data table component", () => {
 
   test("emits crs event on crs cell click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const crsCell = wrapper.find('[data-testid="crsCell"]');
@@ -147,6 +133,8 @@ describe("data table component", () => {
           { ...mockItem1, crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" } },
           mockItem2,
         ],
+        search: "",
+        compact: false,
       },
     });
     const cells = wrapper.findAll('[data-testid="crsCell"]');
@@ -160,6 +148,7 @@ describe("data table component", () => {
       props: {
         items: [mockItem1],
         compact: true,
+        search: "",
       },
     });
 
@@ -174,6 +163,7 @@ describe("data table component", () => {
           { ...mockItem1, crs: { authority: "EPSG", code: "2154", name: "RGF93 v1 / Lambert-93" } },
         ],
         compact: true,
+        search: "",
       },
     });
 
@@ -182,9 +172,7 @@ describe("data table component", () => {
 
   test("emits delete event on row delete button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const deleteButton = wrapper.find('[data-testid="deleteDataButton"]');
@@ -198,9 +186,7 @@ describe("data table component", () => {
 
   test("emits toggle-visibility-selected on header visibility button click", async () => {
     const wrapper = mountWithPlugins(DataTable, {
-      props: {
-        items: [mockItem1],
-      },
+      props: { items: [mockItem1], search: "", compact: false },
     });
 
     const headerVisibilityButton = wrapper.find('[data-testid="toggleVisibilityHeaderButton"]');
@@ -217,6 +203,8 @@ describe("data table component", () => {
       props: {
         items: [mockItem1],
         selectedIds: [mockItem1],
+        search: "",
+        compact: false,
       },
     });
 

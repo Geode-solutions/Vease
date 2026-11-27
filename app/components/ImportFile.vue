@@ -1,26 +1,28 @@
 <script setup lang="ts">
+import type { FileName } from "@ogw_front/types/files";
+import type { GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
 import StepActions from "@vease/components/StepActions.vue";
 import { consola } from "consola";
 import { importWorkflow } from "@ogw_front/utils/import_workflow";
 import { useFeedbackStore } from "@ogw_front/stores/feedback";
 
-const emit = defineEmits<{
+interface Props {
+  filenames: FileName[];
+  // Filename -> types (a file can hold several contents); files without a type are skipped
+  geodeObjectTypes: Record<FileName, GeodeObjectType[]>;
+  skippedFiles: FileName[];
+}
+
+interface Emits {
   update_values: [];
   increment_step: [];
   decrement_step: [];
   reset_values: [];
-}>();
+}
 
-const {
-  filenames,
-  geodeObjectTypes,
-  skippedFiles = [],
-} = defineProps<{
-  filenames: string[];
-  // Filename -> types (a file can hold several contents); files without a type are skipped
-  geodeObjectTypes: Record<string, string[]>;
-  skippedFiles?: string[];
-}>();
+const emit = defineEmits<Emits>();
+
+const { filenames, geodeObjectTypes, skippedFiles } = defineProps<Props>();
 
 // The import is not awaited: a failed file is reported by the snackbar of its request, and the rejection of the
 // Workflow is caught here so that it is not left unhandled

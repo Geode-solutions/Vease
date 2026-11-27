@@ -8,13 +8,16 @@ import { importItem } from "@ogw_front/utils/import_workflow";
 import { curveEdges, singlePolygon } from "@vease/utils/create_geometry";
 import { getBackStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { Count } from "@ogw_front/types/ui";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataName } from "@ogw_front/types/data";
 
 type DataKind = "point" | "curve" | "surface";
 type Coordinates = [number, number, number];
 
 interface CreateDataParams {
   kind: DataKind;
-  name: string;
+  name: DataName;
   points: Coordinates[];
   closed?: boolean;
 }
@@ -31,7 +34,7 @@ const MIN_POINTS: Record<DataKind, number> = { point: 1, curve: 2, surface: 3 };
 
 function additionalParams(
   kind: DataKind,
-  count: number,
+  count: Count,
   closed: boolean,
 ): Record<string, number[][]> {
   if (kind === "curve") {
@@ -43,7 +46,7 @@ function additionalParams(
   return {};
 }
 
-async function createData(params: unknown): Promise<{ id: string; name: string }> {
+async function createData(params: unknown): Promise<{ id: DataId; name: DataName }> {
   // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
   const { kind, name, points, closed = false } = params as CreateDataParams;
   if (points.length < MIN_POINTS[kind]) {

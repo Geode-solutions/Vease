@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type UpdateChannel, type UpdaterState, useUpdaterStore } from "@vease/stores/updater";
+import type { PackageVersion } from "@ogw_front/types/server";
 
 const updaterStore = useUpdaterStore();
 
@@ -45,7 +46,7 @@ function onChannelChange(channel: UpdateChannel): void {
   });
 }
 
-function onPinChange(version: string): void {
+function onPinChange(version: PackageVersion): void {
   void updaterStore.saveSettings({
     channel: updaterStore.channel,
     pinnedVersion: version === NO_PIN ? undefined : version,

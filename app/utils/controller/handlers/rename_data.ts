@@ -1,10 +1,12 @@
 // Local imports
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { DataName } from "@ogw_front/types/data";
 import { getDataItem } from "@vease/utils/controller/targets";
 import { renameData as renameDataItem } from "@vease/utils/data_actions";
 
 interface RenameDataParams {
-  id: string;
-  name: string;
+  id: DataId;
+  name: DataName;
 }
 
 // A rename only changes the tree and the database, the viewer has nothing to render

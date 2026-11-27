@@ -51,7 +51,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("shows a loading indicator while pending", () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [], pending: true },
+      props: { extensions: [], pending: true, fetchError: false },
     });
 
     expect(wrapper.findComponent({ name: "VProgressCircular" }).exists()).toBe(true);
@@ -59,7 +59,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("shows an error message when fetching failed", () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [], fetchError: true },
+      props: { extensions: [], fetchError: true, pending: false },
     });
 
     expect(wrapper.text()).toContain("Failed to load extensions");
@@ -67,7 +67,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("shows an empty state when there are no extensions", () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [] },
+      props: { extensions: [], pending: false, fetchError: false },
     });
 
     expect(wrapper.text()).toContain("No extensions found");
@@ -75,7 +75,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("lists every provided extension with its version", () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [firstExtension, secondExtension] },
+      props: { extensions: [firstExtension, secondExtension], pending: false, fetchError: false },
     });
 
     expect(wrapper.text()).toContain("ext-alpha");
@@ -86,7 +86,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("filters extensions by the search query, matching id or description", async () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [firstExtension, secondExtension] },
+      props: { extensions: [firstExtension, secondExtension], pending: false, fetchError: false },
     });
 
     const searchField = wrapper.find("input");
@@ -98,7 +98,7 @@ describe("the MarketplaceSidebar component", () => {
 
   test("emits update:modelValue with the clicked extension", async () => {
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [firstExtension, secondExtension] },
+      props: { extensions: [firstExtension, secondExtension], pending: false, fetchError: false },
     });
 
     const items = wrapper.findAllComponents(VListItem);
@@ -111,7 +111,7 @@ describe("the MarketplaceSidebar component", () => {
     mockInstalledExtensions([firstExtension.id]);
 
     const wrapper = mountWithPlugins(MarketplaceSidebar, {
-      props: { extensions: [firstExtension, secondExtension] },
+      props: { extensions: [firstExtension, secondExtension], pending: false, fetchError: false },
     });
 
     expect(wrapper.find(".ph-seal-check").exists()).toBe(true);

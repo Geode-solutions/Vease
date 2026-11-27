@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { Count, IconName, Index, TestId, Title } from "@ogw_front/types/ui";
+import type { Route } from "@ogw_front/types/server";
 import { useActivityStore } from "@ogw_front/stores/activity";
 import { useAuth } from "@vease/composables/auth";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
 interface SidebarPage {
-  title: string;
-  icon: string;
-  testId?: string;
-  badge?: () => number;
+  title: Title;
+  icon: IconName;
+  testId?: TestId;
+  badge?: () => Count;
   isActive?: () => boolean;
   click: () => unknown;
 }
@@ -17,7 +19,7 @@ const userInterfaceStore = useUserInterfaceStore();
 const activityStore = useActivityStore();
 const route = useRoute();
 
-function isRoute(path: string): () => boolean {
+function isRoute(path: Route): () => boolean {
   return (): boolean => route.path === path;
 }
 
@@ -93,7 +95,7 @@ function startDrag(event: DragEvent, item: SidebarPage): void {
   event.dataTransfer?.setData("text/plain", "sidebar-icon");
 }
 
-function onDrop(event: DragEvent, dropIndex: number): void {
+function onDrop(event: DragEvent, dropIndex: Index): void {
   if (!draggedItem) {
     return;
   }

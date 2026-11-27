@@ -7,9 +7,13 @@ import { getBackStore } from "@vease/utils/external_stores";
 import { useActivityStore } from "@ogw_front/stores/activity";
 import { useEventSource } from "@vueuse/core";
 
+import type { MicroserviceId } from "@ogw_front/types/identifiers";
 import { backEventHandlers } from "./back";
 
-type EventHandlerMap = Record<string, (payload: unknown) => unknown>;
+// The name of an event the back sends, such as "save_viewable_file"
+type EventName = string;
+
+type EventHandlerMap = Record<EventName, (payload: unknown) => unknown>;
 
 // "2 objects" for the events carrying a data list (save_viewable_file)
 function eventLabel(payload: unknown): string | undefined {
@@ -24,7 +28,7 @@ function eventLabel(payload: unknown): string | undefined {
 }
 
 function getEventHandler(
-  eventName: string,
+  eventName: EventName,
   handlerMap: EventHandlerMap,
 ): (payload: unknown) => unknown {
   const handler = handlerMap[eventName];
@@ -35,10 +39,10 @@ function getEventHandler(
 }
 
 function dispatchEvent(
-  eventName: string,
+  eventName: EventName,
   rawPayload: unknown,
   handlerMap: EventHandlerMap,
-  source: string,
+  source: MicroserviceId,
 ): void {
   consola.debug(`[${source}] Event received:`, eventName, rawPayload);
 

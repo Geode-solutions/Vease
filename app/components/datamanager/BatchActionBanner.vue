@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import type { DataItem } from "@vease/types/data_item";
+import type { DataItem } from "@ogw_front/stores/data";
 
-const { selectedIds = [] } = defineProps<{ selectedIds?: DataItem[] }>();
+interface Props {
+  selectedIds: DataItem[];
+}
 
-const emit = defineEmits<{
+interface Emits {
   delete: [];
   "toggle-visibility-selected": [];
   clear: [];
-}>();
+}
+
+const { selectedIds } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 </script>
 
 <template>

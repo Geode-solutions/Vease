@@ -1,21 +1,23 @@
 <script setup lang="ts">
+import type { Label } from "@ogw_front/types/ui";
+import type { Password } from "@vease/types/auth";
 import type { ValidationRule } from "vuetify";
 
-const {
-  value,
-  rules = [],
-  label,
-  required = false,
-  toggleVisibility,
-} = defineProps<{
-  value: string;
+interface Props {
+  value: Password;
   rules?: ValidationRule[];
-  label: string;
+  label: Label;
   required?: boolean;
   toggleVisibility: () => void;
-}>();
+}
 
-const emit = defineEmits<{ input: [value: string] }>();
+interface Emits {
+  input: [value: Password];
+}
+
+const { value, rules = [], label, required = false, toggleVisibility } = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 const showPassword = ref(false);
 </script>

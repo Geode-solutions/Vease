@@ -7,6 +7,7 @@ import { forEachData, withFailed } from "@vease/utils/controller/for_each_data";
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { ControllerHandler } from "@vease/utils/controller/index";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 
 type StyleStore = ReturnType<typeof getDataStyleStore>;
 // Each style command declares its own params, validated by its route schema
@@ -16,7 +17,7 @@ type StyleApply = (store: StyleStore, item: DataItem, params: never) => Promise<
 function styleCommand(apply: StyleApply): ControllerHandler {
   return async (params) => {
     // oxlint-disable-next-line no-unsafe-type-assertion -- params are validated by the route schema
-    const request = params as { ids: string[] };
+    const request = params as { ids: DataId[] };
     const store = getDataStyleStore();
     const { ids, failed } = await forEachData(request.ids, async (dataId) => {
       const item = await getDataItem(dataId);

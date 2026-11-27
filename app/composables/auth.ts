@@ -15,19 +15,21 @@ import { useFirebaseAuth } from "vuefire";
 import { useInfraStore } from "@ogw_front/stores/infra";
 
 // Local imports
+import type { Email, Password } from "@vease/types/auth";
 import cloud_api_schemas, {
   type AuthSendPasswordResetResponse,
 } from "@geode/cloud-api/cloud_api_typed_schemas.js";
+import type { Message } from "@ogw_front/types/ui";
 import { useAPIStore } from "@ogw_front/stores/api";
 
 interface DesktopElectronAPI {
-  save_credentials: (args: { email: string; password: string }) => void;
+  save_credentials: (args: { email: Email; password: Password }) => void;
   get_credentials: () => Promise<{
     success: boolean;
-    credentials?: { email: string; password: string };
-    error?: string;
+    credentials?: { email: Email; password: Password };
+    error?: Message;
   }>;
-  delete_credentials: () => Promise<{ success: boolean; error?: string }>;
+  delete_credentials: () => Promise<{ success: boolean; error?: Message }>;
 }
 
 function hasDesktopElectronAPI(
@@ -48,11 +50,11 @@ interface UseAuthReturn {
   user: ReturnType<typeof useCurrentUser>;
   isUserAuthenticated: ComputedRef<boolean>;
   autoLogin: () => Promise<void>;
-  deleteAccount: (password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<User>;
-  login: (email: string, password: string) => Promise<User>;
+  deleteAccount: (password: Password) => Promise<void>;
+  register: (email: Email, password: Password) => Promise<User>;
+  login: (email: Email, password: Password) => Promise<User>;
   logout: () => Promise<void>;
-  resetPassword: (email: string) => Promise<unknown>;
+  resetPassword: (email: Email) => Promise<unknown>;
 }
 
 //oxlint-disable max-lines-per-function
@@ -68,7 +70,7 @@ function useAuth(): UseAuthReturn {
 
   const isUserAuthenticated = computed(() => Boolean(user.value));
 
-  async function register(email: string, password: string): Promise<User> {
+  async function register(email: Email, password: Password): Promise<User> {
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
     const schema = cloud_api_schemas.cloud_api.auth.send_verification;
     const params = { email };
@@ -77,7 +79,7 @@ function useAuth(): UseAuthReturn {
     return newUser;
   }
 
-  async function login(email: string, password: string): Promise<User> {
+  async function login(email: Email, password: Password): Promise<User> {
     const { user: loggedInUser } = await signInWithEmailAndPassword(auth, email, password);
     await loggedInUser.reload();
     if (!loggedInUser.emailVerified) {
@@ -132,7 +134,7 @@ function useAuth(): UseAuthReturn {
     await signOut(auth);
   }
 
-  async function deleteAccount(password: string): Promise<void> {
+  async function deleteAccount(password: Password): Promise<void> {
     const currentUser = user.value;
     if (!currentUser) {
       throw new Error("No user logged in");
@@ -146,7 +148,7 @@ function useAuth(): UseAuthReturn {
     await logout();
   }
 
-  async function resetPassword(email: string): Promise<AuthSendPasswordResetResponse> {
+  async function resetPassword(email: Email): Promise<AuthSendPasswordResetResponse> {
     const schema = cloud_api_schemas.cloud_api.auth.send_password_reset;
     const params = { email };
     try {

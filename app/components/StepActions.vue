@@ -1,18 +1,25 @@
 <script setup lang="ts">
+import type { IconName, Label, TestId } from "@ogw_front/types/ui";
 import type { Ref } from "vue";
 import { consola } from "consola";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
 
-// Last step of an import stepper: runs the action, then resets and closes the stepper either way.
-const emit = defineEmits<{ reset_values: [] }>();
-
-const { label, icon, testId, action } = defineProps<{
-  label: string;
-  icon: string;
-  testId: string;
+interface Props {
+  label: Label;
+  icon: IconName;
+  testId: TestId;
   // An import returns at once (it goes on in the background), an apply waits for its result
   action: (() => void) | (() => Promise<unknown>);
-}>();
+}
+
+interface Emits {
+  reset_values: [];
+}
+
+// Last step of an import stepper: runs the action, then resets and closes the stepper either way.
+const emit = defineEmits<Emits>();
+
+const { label, icon, testId, action } = defineProps<Props>();
 
 const userInterfaceStore = useUserInterfaceStore();
 

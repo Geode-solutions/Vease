@@ -1,4 +1,8 @@
+import type { Milliseconds, Timestamp } from "@ogw_front/types/time";
 import type { ActivityEntry } from "@ogw_front/stores/activity";
+import type { MicroserviceId } from "@ogw_front/types/identifiers";
+import type { Route } from "@ogw_front/types/server";
+import type { SearchQuery } from "@ogw_front/types/ui";
 
 const MILLISECONDS_IN_SECOND = 1000;
 const SLOW_REQUEST_MS = 1000;
@@ -17,12 +21,12 @@ interface RouteParts {
   name: string;
 }
 
-function shortRoute(route: string): string {
+function shortRoute(route: Route): Route {
   return route.replace(MICROSERVICE_PREFIX, "");
 }
 
 // The scope ("model.", "local/app/") is shown dimmed so the action name stands out
-function routeParts(route: string): RouteParts {
+function routeParts(route: Route): RouteParts {
   const short = shortRoute(route);
   let cut = short.lastIndexOf("/") + 1;
   if (cut === 0) {
@@ -35,7 +39,7 @@ function pad(value: number, digits: number): string {
   return String(value).padStart(digits, "0");
 }
 
-function formatTime(timestamp: number): string {
+function formatTime(timestamp: Timestamp): string {
   const date = new Date(timestamp);
   const clock = [date.getHours(), date.getMinutes(), date.getSeconds()]
     .map((part) => pad(part, TIME_DIGITS))
@@ -43,19 +47,19 @@ function formatTime(timestamp: number): string {
   return `${clock}.${pad(date.getMilliseconds(), MILLISECOND_DIGITS)}`;
 }
 
-function formatDuration(milliseconds: number): string {
+function formatDuration(milliseconds: Milliseconds): string {
   if (milliseconds < MILLISECONDS_IN_SECOND) {
     return `${Math.round(milliseconds)} ms`;
   }
   return `${(milliseconds / MILLISECONDS_IN_SECOND).toFixed(SECOND_DECIMALS)} s`;
 }
 
-function isSlow(milliseconds: number): boolean {
+function isSlow(milliseconds: Milliseconds): boolean {
   return milliseconds >= SLOW_REQUEST_MS;
 }
 
 // Known sources first, in a fixed order; extensions after, alphabetically
-function sortSources(sources: Iterable<string>): string[] {
+function sortSources(sources: Iterable<MicroserviceId>): MicroserviceId[] {
   return [...new Set(sources)].toSorted((left, right) => {
     const leftIndex = KNOWN_SOURCES.indexOf(left);
     const rightIndex = KNOWN_SOURCES.indexOf(right);
@@ -69,7 +73,7 @@ function sortSources(sources: Iterable<string>): string[] {
   });
 }
 
-function matchesSearch(entry: ActivityEntry, search: string): boolean {
+function matchesSearch(entry: ActivityEntry, search: SearchQuery): boolean {
   const needle = search.trim().toLowerCase();
   if (needle === "") {
     return true;

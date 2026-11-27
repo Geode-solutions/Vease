@@ -39,7 +39,7 @@ describe("the StepImport component", () => {
   });
 
   test("renders Stepper container component", async () => {
-    const wrapper = mountWithPlugins(StepImport);
+    const wrapper = mountWithPlugins(StepImport, { props: { files: [] } });
     await flushPromises();
 
     expect(wrapper.find(".stepper-stub").exists()).toBe(true);
@@ -75,7 +75,7 @@ describe("the StepImport component", () => {
     });
     const warningSpy = vi.spyOn(useFeedbackStore(), "add_warning");
 
-    mountWithPlugins(StepImport);
+    mountWithPlugins(StepImport, { props: { files: [] } });
     const [stepperTree] = stepperTrees;
     // What the file selector emits once the files are uploaded
     stepperTree?.update_values({
@@ -91,7 +91,7 @@ describe("the StepImport component", () => {
     const userInterfaceStore = useUserInterfaceStore();
     userInterfaceStore.showStepper = true;
 
-    mountWithPlugins(StepImport);
+    mountWithPlugins(StepImport, { props: { files: [] } });
 
     userInterfaceStore.setShowStepper(false);
     await nextTick();

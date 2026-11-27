@@ -43,6 +43,8 @@ describe("data manager header component", () => {
       props: {
         activeTab: "data",
         tabs: [mockCustomTab],
+        searchValue: "",
+        compact: false,
       },
     });
 
@@ -55,6 +57,8 @@ describe("data manager header component", () => {
       props: {
         activeTab: "data",
         tabs: [mockCustomTab],
+        searchValue: "",
+        compact: false,
       },
     });
 
@@ -72,6 +76,9 @@ describe("data manager header component", () => {
     const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: false,
+        searchValue: "",
+        activeTab: "data",
+        tabs: [],
       },
     });
 
@@ -82,6 +89,9 @@ describe("data manager header component", () => {
     const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: true,
+        searchValue: "",
+        activeTab: "data",
+        tabs: [],
       },
     });
 
@@ -92,6 +102,9 @@ describe("data manager header component", () => {
     const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         compact: false,
+        searchValue: "",
+        activeTab: "data",
+        tabs: [],
       },
     });
 
@@ -107,6 +120,9 @@ describe("data manager header component", () => {
     const wrapper = mountWithPlugins(DataManagerHeader, {
       props: {
         searchValue: "",
+        activeTab: "data",
+        tabs: [],
+        compact: false,
       },
     });
 
@@ -120,7 +136,9 @@ describe("data manager header component", () => {
   });
 
   test("exposes focusSearch method", () => {
-    const wrapper = mountWithPlugins(DataManagerHeader);
+    const wrapper = mountWithPlugins(DataManagerHeader, {
+      props: { searchValue: "", activeTab: "data", tabs: [], compact: false },
+    });
 
     // MountWithPlugins's shared generics don't propagate defineExpose() types, so the
     // Exposed member has to be re-typed from the component's own definition here.

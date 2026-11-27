@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { PackageName, PackageVersion } from "@ogw_front/types/server";
 import { getBackStore, getInfraStore } from "@vease/utils/external_stores";
 import PageHeader from "@vease/components/Layout/PageHeader.vue";
 import { Status } from "@ogw_front/utils/status";
@@ -11,9 +12,10 @@ import { useViewerStore } from "@ogw_front/stores/viewer";
 import vease_back_schemas from "@geode/vease-back/vease_back_typed_schemas.js";
 import vease_viewer_schemas from "@geode/vease-viewer/vease_viewer_typed_schemas.js";
 
-interface PackageVersion {
-  package: string;
-  version: string;
+// A package and its version, as the back lists them
+interface PackageVersionEntry {
+  package: PackageName;
+  version: PackageVersion;
 }
 
 const version = useRuntimeConfig().public.VERSION;
@@ -26,7 +28,7 @@ const back_version = ref("");
 const viewer_version = ref("");
 
 const infraStore = getInfraStore();
-const packages_versions = ref<PackageVersion[]>([]);
+const packages_versions = ref<PackageVersionEntry[]>([]);
 
 const { copy, copied } = useClipboard({ copiedDuring: 1500 });
 function copy_url(): void {

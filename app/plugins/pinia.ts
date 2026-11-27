@@ -1,9 +1,10 @@
 //oxlint-disable unicorn/require-post-message-target-origin
 import { BroadcastChannel, createLeaderElection } from "broadcast-channel";
 import type { PiniaPluginContext, StateTree } from "pinia";
+import type { Timestamp } from "@ogw_front/types/time";
 
 interface SharedStateMessage {
-  timestamp: number;
+  timestamp: Timestamp;
   state: Record<string, unknown>;
 }
 

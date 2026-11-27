@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ChatMessage from "@vease/components/chat/ChatMessage.vue";
 import ChatProviderSwitch from "@vease/components/chat/ChatProviderSwitch.vue";
+import type { Index } from "@ogw_front/types/ui";
 import ResizablePiP from "@vease/components/Layout/ResizablePiP.vue";
 import { useAuth } from "@vease/composables/auth";
 import { useUserInterfaceStore } from "@vease/stores/user_interface";
@@ -57,7 +58,7 @@ function close(): void {
   userInterfaceStore.setShowChatPiP(false);
 }
 
-function switchesAfter(index: number): typeof providerSwitches.value {
+function switchesAfter(index: Index): typeof providerSwitches.value {
   return providerSwitches.value.filter((change) => change.afterMessageCount === index + 1);
 }
 

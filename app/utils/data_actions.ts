@@ -5,6 +5,7 @@ import { useTreeviewStore } from "@ogw_front/stores/treeview";
 
 // Local imports
 import { getDataStyleStore, getHybridViewerStore } from "@vease/utils/external_stores";
+import type { DataName } from "@ogw_front/types/data";
 
 async function deleteData(dataId: DataId): Promise<void> {
   const dataStore = useDataStore();
@@ -16,7 +17,7 @@ async function deleteData(dataId: DataId): Promise<void> {
   treeviewStore.closeView(dataId);
 }
 
-async function renameData(dataId: DataId, name: string): Promise<void> {
+async function renameData(dataId: DataId, name: DataName): Promise<void> {
   await useDataStore().updateItem(dataId, { name });
   useTreeviewStore().renameItem(dataId, name);
 }

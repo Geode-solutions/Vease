@@ -5,10 +5,18 @@ import {
   MODEL_COMPONENT_TARGETS,
   MODEL_COMPONENT_TYPE,
   type ModelWholeTarget,
+  type TargetName,
   getDataItem,
   meshTargetsOf,
 } from "@vease/utils/controller/targets";
+import type {
+  AttributeName,
+  AttributeRangeMaximum,
+  AttributeRangeMinimum,
+} from "@geode/opengeodeweb-viewer/schema_types";
 import { type DataItem, useDataStore } from "@ogw_front/stores/data";
+import type { GeodeImageType, GeodeObjectType } from "@geode/opengeodeweb-microservice/data_types";
+import type { ModelComponentName, ModelComponentType } from "@ogw_front/types/model";
 import {
   type SourceAttributes,
   fetchSourceAttributes,
@@ -16,30 +24,31 @@ import {
   modelAttributeSources,
 } from "@vease/utils/controller/attributes";
 import { isImage, isMesh } from "@ogw_front/utils/viewer_object_type";
+import type { AttributeTimeValue } from "@ogw_front/types/attribute";
 import { ControllerError } from "@vease/utils/controller/errors";
+import type { Count } from "@ogw_front/types/ui";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { GeodeIdentified } from "@ogw_front/types/identifiers";
-import type { GeodeImageType } from "@geode/opengeodeweb-microservice/data_types";
 import { getAttributeRange } from "@ogw_front/utils/attributes";
 import { getDataStyleStore } from "@vease/utils/external_stores";
 
 interface AttributeSummary {
-  target: string;
+  target: TargetName;
   location: AttributeKind;
-  name: string;
-  nb_items: number;
-  min: number;
-  max: number;
-  time_steps?: number[];
+  name: AttributeName;
+  nb_items: Count;
+  min: AttributeRangeMinimum;
+  max: AttributeRangeMaximum;
+  time_steps?: AttributeTimeValue[];
 }
 
 interface ComponentSummary extends GeodeIdentified {
-  name: string;
-  type: string;
+  name: ModelComponentName;
+  type: ModelComponentType;
 }
 
 interface TargetsDescription {
-  targets: string[];
+  targets: TargetName[];
   components?: ComponentSummary[];
   attributes: AttributeSummary[];
 }
@@ -55,18 +64,18 @@ const IMAGE_DIMENSION: Record<GeodeImageType, number> = {
   RasterImage3D: 3,
 };
 
-function isImageType(geodeObjectType: string): geodeObjectType is GeodeImageType {
+function isImageType(geodeObjectType: GeodeObjectType): geodeObjectType is GeodeImageType {
   return Object.hasOwn(IMAGE_DIMENSION, geodeObjectType);
 }
 
-function isDetailsParams(params: unknown): params is { id: string } {
+function isDetailsParams(params: unknown): params is { id: DataId } {
   return (
     typeof params === "object" && params !== null && "id" in params && typeof params.id === "string"
   );
 }
 
 function summarizeAttribute(
-  target: string,
+  target: TargetName,
   location: AttributeKind,
   attribute: BackAttribute,
 ): AttributeSummary {

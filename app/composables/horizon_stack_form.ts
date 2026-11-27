@@ -1,37 +1,40 @@
 import type { ComputedRef, Ref } from "vue";
+import type { DataName } from "@ogw_front/types/data";
+import type { Index } from "@ogw_front/types/ui";
+import type { ModelComponentName } from "@ogw_front/types/model";
 
 const DEFAULT_NAME = "New Horizon Stack";
 
 interface HorizonStackPayload {
-  name: string;
-  horizons: string[];
-  unit_names: string[];
+  name: DataName;
+  horizons: ModelComponentName[];
+  unit_names: ModelComponentName[];
 }
 
 interface HorizonStackColumn {
   // Top to bottom; one more unit than horizons: units[index] is just above horizons[index]
-  horizons: Ref<string[]>;
-  units: Ref<string[]>;
+  horizons: Ref<ModelComponentName[]>;
+  units: Ref<ModelComponentName[]>;
   addHorizon: () => void;
-  removeHorizon: (index: number) => void;
-  moveHorizon: (source: number, target: number) => void;
+  removeHorizon: (index: Index) => void;
+  moveHorizon: (source: Index, target: Index) => void;
 }
 
 interface HorizonStackForm extends HorizonStackColumn {
-  name: Ref<string>;
-  duplicateHorizons: ComputedRef<string[]>;
+  name: Ref<DataName>;
+  duplicateHorizons: ComputedRef<ModelComponentName[]>;
   isValid: ComputedRef<boolean>;
   payload: () => HorizonStackPayload;
   reset: () => void;
 }
 
-function duplicatesOf(names: string[]): string[] {
+function duplicatesOf(names: ModelComponentName[]): ModelComponentName[] {
   const trimmed = names.map((name) => name.trim()).filter((name) => name !== "");
   return [...new Set(trimmed.filter((name, index) => trimmed.indexOf(name) !== index))];
 }
 
 // Blank units are named after their position, so the stack always has n + 1 named units
-function unitNames(units: string[]): string[] {
+function unitNames(units: ModelComponentName[]): ModelComponentName[] {
   return units.map((unit, index) => unit.trim() || `Unit ${index + 1}`);
 }
 
@@ -44,7 +47,7 @@ function useHorizonStackColumn(): HorizonStackColumn {
     units.value.push("");
   }
 
-  function removeHorizon(index: number): void {
+  function removeHorizon(index: Index): void {
     if (horizons.value.length <= 1) {
       return;
     }
@@ -54,7 +57,7 @@ function useHorizonStackColumn(): HorizonStackColumn {
   }
 
   // Only horizons move: the units stay the layers between consecutive horizons
-  function moveHorizon(source: number, target: number): void {
+  function moveHorizon(source: Index, target: Index): void {
     if (target < 0 || target >= horizons.value.length || source === target) {
       return;
     }

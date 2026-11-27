@@ -1,6 +1,7 @@
 // Local imports
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { Milliseconds } from "@ogw_front/types/time";
 
 type ImportWaiter = (imported: Promise<unknown>) => void;
 
@@ -43,7 +44,7 @@ function nextImport(dataId: DataId): { imported: Promise<unknown>; cancel: () =>
   return { imported, cancel };
 }
 
-async function waitForImport(dataId: DataId, timeout: number): Promise<void> {
+async function waitForImport(dataId: DataId, timeout: Milliseconds): Promise<void> {
   let timer: ReturnType<typeof setTimeout> | undefined = undefined;
   // oxlint-disable-next-line promise/avoid-new -- the promise is settled later by the timer
   const expired = new Promise<never>((_resolve, reject) => {

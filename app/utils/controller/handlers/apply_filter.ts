@@ -3,25 +3,35 @@ import { attributeArrayName, getAttributeRange } from "@ogw_front/utils/attribut
 import type { SliceAxis } from "@ogw_front/utils/slice";
 
 // Local imports
+import type {
+  AttributeItem,
+  AttributeName,
+  AttributeRangeMaximum,
+  AttributeRangeMinimum,
+} from "@geode/opengeodeweb-viewer/schema_types";
 import { type AttributeKind, getDataItem } from "@vease/utils/controller/targets";
 import { ControllerError, need } from "@vease/utils/controller/errors";
 import { type FoundAttribute, findAttribute } from "@vease/utils/controller/attributes";
 import { checkRange, resolveItem } from "@vease/utils/controller/attribute_range";
+import type { Coordinates } from "@ogw_front/types/geometry";
+import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
+import type { FilterFactor } from "@ogw_front/types/ui";
+import type { SliceLayer } from "@ogw_front/composables/clipping_slices";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
 type ThresholdLocation = AttributeKind | "point";
 
 interface ApplyFilterParams {
-  ids: string[];
+  ids: DataId[];
   remove?: boolean;
-  factor?: number;
-  slices?: { axis: SliceAxis; index: number }[];
-  planes?: { origin: number[]; normal: number[] }[];
-  attribute?: string;
+  factor?: FilterFactor;
+  slices?: { axis: SliceAxis; index: SliceLayer }[];
+  planes?: { origin: Coordinates; normal: Coordinates }[];
+  attribute?: AttributeName;
   location?: ThresholdLocation;
-  item?: number;
-  minimum?: number;
-  maximum?: number;
+  item?: AttributeItem;
+  minimum?: AttributeRangeMinimum;
+  maximum?: AttributeRangeMaximum;
 }
 
 type HybridViewerStore = ReturnType<typeof getHybridViewerStore>;
@@ -60,7 +70,7 @@ async function explode(params: ApplyFilterParams, store: HybridViewerStore): Pro
 }
 
 async function slice(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  let slices: { axis: SliceAxis; index: number }[] = [];
+  let slices: { axis: SliceAxis; index: SliceLayer }[] = [];
   if (params.remove !== true) {
     slices = need("slice", "slices", params.slices);
   }
@@ -69,7 +79,7 @@ async function slice(params: ApplyFilterParams, store: HybridViewerStore): Promi
 }
 
 async function clip(params: ApplyFilterParams, store: HybridViewerStore): Promise<Applied> {
-  let planes: { origin: number[]; normal: number[] }[] = [];
+  let planes: { origin: Coordinates; normal: Coordinates }[] = [];
   if (params.remove !== true) {
     planes = need("clip", "planes", params.planes);
   }
@@ -86,7 +96,11 @@ function isTimeSeries({ attribute }: FoundAttribute): boolean {
 }
 
 // One threshold request carries a single array name and location for every id
-function checkSameArray(name: string, first: FoundAttribute, others: FoundAttribute[]): void {
+function checkSameArray(
+  name: AttributeName,
+  first: FoundAttribute,
+  others: FoundAttribute[],
+): void {
   if (others.some((found) => viewerLocation(found) !== viewerLocation(first))) {
     throw new ControllerError(
       `"${name}" is on points for some data and on cells for others; threshold them separately`,
@@ -100,7 +114,10 @@ function checkSameArray(name: string, first: FoundAttribute, others: FoundAttrib
 }
 
 // The default range spans every id, so that no data loses elements it holds
-function defaultRange(founds: FoundAttribute[], item: number): { min: number; max: number } {
+function defaultRange(
+  founds: FoundAttribute[],
+  item: AttributeItem,
+): { min: AttributeRangeMinimum; max: AttributeRangeMaximum } {
   const ranges = founds.map(({ attribute }) => getAttributeRange(attribute, item));
   return {
     min: Math.min(...ranges.map(({ min }) => min)),

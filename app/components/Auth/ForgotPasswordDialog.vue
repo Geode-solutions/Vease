@@ -1,17 +1,24 @@
 <script setup lang="ts">
 import GlassCard from "@ogw_front/components/GlassCard.vue";
+import type { Message } from "@ogw_front/types/ui";
 import { emailRules } from "~/utils/validation";
+
+interface Props {
+  loading: boolean;
+  error: Message;
+}
+
+interface Emits {
+  submit: [];
+}
 
 const show = defineModel({ type: Boolean, default: false });
 
 const email = defineModel("email", { type: String });
 
-const { loading = false, error = "" } = defineProps<{
-  loading?: boolean;
-  error?: string;
-}>();
+const { loading, error } = defineProps<Props>();
 
-const emit = defineEmits<{ submit: [] }>();
+const emit = defineEmits<Emits>();
 
 async function handleSubmit(event): Promise<void> {
   const { valid } = await event;
