@@ -3,7 +3,7 @@ import { getTable } from "@ogw_internal/database/database.js";
 
 // Local imports
 import type { CameraPositionId, CameraPositionName } from "@ogw_internal/database/types";
-import type { CameraOrientation } from "@ogw_internal/stores/hybrid_viewer/camera_helpers";
+import type { CameraOrientationKey } from "@ogw_internal/stores/hybrid_viewer/camera_helpers";
 import type { ZScale } from "@ogw_front/types/geometry";
 import { getHybridViewerStore } from "@vease/utils/external_stores";
 
@@ -15,7 +15,7 @@ interface CameraPositionRecord {
 interface ViewerState {
   zScaling: ZScale;
   cameraPositions: CameraPositionRecord[];
-  orientations: CameraOrientation[];
+  orientations: CameraOrientationKey[];
 }
 
 const ORIENTATIONS = ["xplus", "xminus", "yplus", "yminus", "zplus", "zminus"];

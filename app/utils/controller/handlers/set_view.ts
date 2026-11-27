@@ -13,7 +13,7 @@ import {
 } from "@vease/utils/controller/handlers/viewer_state";
 import { type SceneSettings, applyScene } from "@vease/utils/controller/handlers/set_view_scene";
 import { getDataItem, resolveComponentIds } from "@vease/utils/controller/targets";
-import type { CameraOrientation } from "@ogw_internal/stores/hybrid_viewer/camera_helpers";
+import type { CameraOrientationKey } from "@ogw_internal/stores/hybrid_viewer/camera_helpers";
 import { ControllerError } from "@vease/utils/controller/errors";
 import type { DataId } from "@geode/opengeodeweb-microservice/schema_types";
 import type { ModelComponentId } from "@ogw_front/types/identifiers";
@@ -42,7 +42,7 @@ async function focus(params: { id: DataId; componentIds?: ModelComponentId[] }):
   return { id };
 }
 
-function orient({ orientation }: { orientation: CameraOrientation }): Applied {
+function orient({ orientation }: { orientation: CameraOrientationKey }): Applied {
   getHybridViewerStore().setCameraOrientation(orientation);
   return { orientation };
 }
